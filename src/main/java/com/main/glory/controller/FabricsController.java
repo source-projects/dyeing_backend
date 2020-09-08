@@ -1,7 +1,8 @@
-package controller;
+package com.main.glory.controller;
 
 import java.util.List;
 
+import com.main.glory.config.ControllerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.Fabric;
-import servicesImpl.FabricsServiceImpl;
+import com.main.glory.model.Fabric;
+import com.main.glory.servicesImpl.FabricsServiceImpl;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
-public class FabricsController {
+public class FabricsController extends ControllerConfig {
 
 	@Autowired
 	private FabricsServiceImpl fabricsServiceImpl;

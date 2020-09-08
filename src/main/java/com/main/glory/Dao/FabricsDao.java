@@ -1,12 +1,9 @@
-package Dao;
-
-import javax.transaction.Transactional;
+package com.main.glory.Dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.stereotype.Repository;
 
-import model.Fabric;
+import com.main.glory.model.Fabric;
 
 
 @EnableJpaRepositories

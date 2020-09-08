@@ -1,4 +1,4 @@
-package model;
+package com.main.glory.model;
 
 import java.util.Date;
 

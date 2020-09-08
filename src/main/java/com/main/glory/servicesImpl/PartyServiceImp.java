@@ -1,16 +1,13 @@
-package servicesImpl;
+package com.main.glory.servicesImpl;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import Dao.PartyDao;
-import model.Party;
-import services.PartyServiceInterface;
+import com.main.glory.Dao.PartyDao;
+import com.main.glory.model.Party;
+import com.main.glory.services.PartyServiceInterface;
 
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface{

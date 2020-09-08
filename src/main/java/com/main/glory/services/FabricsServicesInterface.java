@@ -1,7 +1,7 @@
-package services;
+package com.main.glory.services;
 
 import java.util.List;
-import model.Fabric;
+import com.main.glory.model.Fabric;
 public interface FabricsServicesInterface {
 
 	public int saveFabrics(Fabric fabrics) throws Exception;

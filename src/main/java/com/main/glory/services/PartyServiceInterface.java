@@ -1,7 +1,7 @@
-package services;
+package com.main.glory.services;
 import java.util.List;
 
-import model.Party;
+import com.main.glory.model.Party;
 
 public interface PartyServiceInterface {
 	public int saveParty(Party party);

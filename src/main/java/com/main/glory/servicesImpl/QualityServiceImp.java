@@ -1,17 +1,14 @@
-package servicesImpl;
+package com.main.glory.servicesImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import Dao.PartyDao;
-import Dao.QualityDao;
-import model.Party;
-import model.Quality;
-import services.QualityServiceInterface;
+import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.QualityDao;
+import com.main.glory.model.Quality;
+import com.main.glory.services.QualityServiceInterface;
 
 @Service("qualityServiceImp")
 public class QualityServiceImp implements QualityServiceInterface{

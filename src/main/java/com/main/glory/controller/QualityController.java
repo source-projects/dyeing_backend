@@ -1,7 +1,8 @@
-package controller;
+package com.main.glory.controller;
 
 import java.util.List;
 
+import com.main.glory.config.ControllerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sun.istack.NotNull;
 
-import model.Quality;
-import servicesImpl.QualityServiceImp;
+import com.main.glory.model.Quality;
+import com.main.glory.servicesImpl.QualityServiceImp;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 @RestController
 @RequestMapping("/api")
-public class QualityController {
+public class QualityController  extends ControllerConfig {
 
 	@Autowired 
 	private QualityServiceImp qualityServiceImp;

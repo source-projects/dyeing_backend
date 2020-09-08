@@ -1,7 +1,8 @@
-package controller;
+package com.main.glory.controller;
 
 import java.util.List;
 
+import com.main.glory.config.ControllerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,14 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sun.istack.NotNull;
 
-import model.Party;
-import servicesImpl.PartyServiceImp;
-import servicesImpl.QualityServiceImp;
+import com.main.glory.model.Party;
+import com.main.glory.servicesImpl.PartyServiceImp;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
-public class PartyController {
+public class PartyController  extends ControllerConfig {
 
 	@Autowired 
 	private PartyServiceImp partyServiceImp;

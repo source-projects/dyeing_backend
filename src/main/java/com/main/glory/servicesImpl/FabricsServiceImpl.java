@@ -1,6 +1,5 @@
-package servicesImpl;
+package com.main.glory.servicesImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -8,11 +7,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import Dao.FabDataDao;
-import Dao.FabricsDao;
-import model.Fabric;
-import model.FabricInRecord;
-import services.FabricsServicesInterface;
+import com.main.glory.Dao.FabricsDao;
+import com.main.glory.model.Fabric;
+import com.main.glory.services.FabricsServicesInterface;
 
 @Service("fabricsServiceImpl")
 public class FabricsServiceImpl implements FabricsServicesInterface {
