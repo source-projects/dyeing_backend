@@ -11,5 +11,4 @@ public class GloryautofabApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GloryautofabApplication.class, args);
 	}
-
 }
