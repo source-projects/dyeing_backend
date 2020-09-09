@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class BatchGrDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entry_id")
+//    @Column(name = "entry_id")
     private Long id;
     private Double quantity;
     private Long control_id;

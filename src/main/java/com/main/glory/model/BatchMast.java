@@ -17,7 +17,7 @@ public class BatchMast {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entry_id")
+//    @Column(name = "entry_id")
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -35,7 +35,7 @@ public class BatchMast {
     private Integer user_head_id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "control_id", referencedColumnName = "entry_id")
+    @JoinColumn(name = "control_id", referencedColumnName = "id")
     private List<BatchData> batchData;
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class BatchData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entry_id")
+//    @Column(name = "entry_id")
     private Long id;
     private Long control_id;
     private Long gr;
@@ -31,7 +31,7 @@ public class BatchData {
     private Long referenced_id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "control_id", referencedColumnName = "entry_id")
+    @JoinColumn(name = "control_id", referencedColumnName = "id")
     private List<BatchGrDetail> batchGrDetails;
 
 }
