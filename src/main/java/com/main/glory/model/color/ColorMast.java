@@ -1,20 +1,20 @@
-package com.main.glory.model;
+package com.main.glory.model.color;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "color_mast")
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ColorMast {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -29,6 +29,13 @@ public class ColorMast {
     Double bill_amount;
     Long user_id;
     String remark;
+    @ApiModelProperty(hidden = true)
     Date created_date;
-    Time created_time;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "purchase_id",referencedColumnName = "id")
+    List<ColorData> colorDataList;
+
+    public ColorMast() {
+       this.created_date = new Date(System.currentTimeMillis());
+    }
 }
