@@ -1,9 +1,13 @@
 package com.main.glory.servicesImpl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
+import com.main.glory.model.FabricInRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +20,12 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 
 	@Autowired
 	private FabricsDao fabricsDao;
-	
+
 	@Override
-	@Transactional
+//	@Transactional
 	public int saveFabrics(Fabric fabrics) throws Exception {
 		try {
-			if (fabrics!=null)
-			{
-				
+			if (fabrics != null) {
 				fabricsDao.saveAndFlush(fabrics);
 				return 1;
 			}
@@ -40,10 +42,15 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 	}
 
 	@Override
-	public boolean editFabricsDetails(Fabric fabs) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updateFabricsDetails(Fabric fabs) throws Exception {
+		var partyIndex= fabricsDao.findById(fabs.getId());
+		if(!partyIndex.isPresent())
+			return false;
+		else
+			fabricsDao.save(fabs);
+		return true;
 	}
+
 
 	@Override
 	public boolean deleteFabricsById(Long id) {
@@ -51,4 +58,21 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 		return false;
 	}
 
+	@Override
+	public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
+		List<MasterLookUpWithRecord> listMaster = fabricsDao.getFabStockMasterRecordList();
+		return listMaster;
+	}
+
+	@Override
+	public Fabric getFabRecordById(Long id) {
+		var getData=fabricsDao.findById(id);
+		if(getData.isEmpty())
+			return null;
+		else {
+			return getData.get();
+		}
+	}
 }
+
+

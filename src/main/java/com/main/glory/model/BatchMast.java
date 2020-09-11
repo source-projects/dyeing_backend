@@ -17,11 +17,11 @@ public class BatchMast {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "entry_id")
+   //@Column(name = "entry_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "entry_id", referencedColumnName = "id")
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "entry_id", referencedColumnName = "id")
     private Long quality_id;
     private Date date;
     private String remark;

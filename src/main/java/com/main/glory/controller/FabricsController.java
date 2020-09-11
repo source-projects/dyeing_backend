@@ -2,14 +2,10 @@ package com.main.glory.controller;
 
 import java.util.List;
 
+import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.config.ControllerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.main.glory.model.Fabric;
 import com.main.glory.servicesImpl.FabricsServiceImpl;
@@ -22,19 +18,46 @@ public class FabricsController extends ControllerConfig {
 	private FabricsServiceImpl fabricsServiceImpl;
 
 	@PostMapping("/add-fab-stock")
-	public String addFabricIn(@RequestBody Fabric fabrics) throws Exception {
+	public boolean addFabricIn(@RequestBody Fabric fabrics) throws Exception {
 		if (fabrics != null) {
-			
+
 			int msg = fabricsServiceImpl.saveFabrics(fabrics);
 			if (msg == 1) {
-				return "SuccessFully Inserted";
+				return true;
 			}
 		}
-		return "Something Went Wrong While Saving";
+		return false;
 	}
 
 	@GetMapping("/getfabstock-data")
-	public List<Fabric> getFabListData() {
-		return fabricsServiceImpl.getAllFabricsDetails();
+	public List<MasterLookUpWithRecord> getFabListData()
+	{
+		//return fabricsServiceImpl.getAllFabricsDetails();
+		List<MasterLookUpWithRecord> getFabricDataByQualityId=fabricsServiceImpl.getFabStockMasterListRecord();
+		if(getFabricDataByQualityId.isEmpty())
+		{
+			System.out.println("No Record Found..");
+		}
+		return  getFabricDataByQualityId;
+	}
+
+	@GetMapping(value="/get-fab-stock-by-id/{id}")
+	public Fabric getFabStockDataById(@PathVariable(value = "id") Long id)
+	{
+		if(id!=null) {
+			Fabric fabData = fabricsServiceImpl.getFabRecordById(id);
+			return fabData;
+		}
+		return null;
+	}
+	@PostMapping("/update-stock")
+	public boolean updateFabricIn(@RequestBody Fabric fabrics) throws Exception {
+		if (fabrics != null) {
+			boolean flag = fabricsServiceImpl.updateFabricsDetails(fabrics);
+			if (flag) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

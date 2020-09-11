@@ -2,7 +2,6 @@ package com.main.glory.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,9 +13,8 @@ import javax.persistence.Table;
 public class Quality {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entry_id", updatable = false, nullable = false)
     private Long id;
-	private Integer  quality_Id;
+	private String  quality_id;
 	private String  quality_name;
 	private String quality_type;
 	private String quality_sub_type;
@@ -36,17 +34,19 @@ public class Quality {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getQuality_Id() {
-		return quality_Id;
+
+	public String getQuality_id() {
+		return quality_id;
 	}
+
 	public Long getParty_id() {
 		return party_id;
 	}
 	public void setParty_id(Long party_id) {
 		this.party_id = party_id;
 	}
-	public void setQuality_Id(Integer quality_Id) {
-		this.quality_Id = quality_Id;
+	public void setQuality_id(String quality_id) {
+		this.quality_id = quality_id;
 	}
 	public String getQuality_name() {
 		return quality_name;
@@ -123,7 +123,7 @@ public class Quality {
 	}
 	@Override
 	public String toString() {
-		return "Quality [id=" + id + ", quality_Id=" + quality_Id + ", quality_name=" + quality_name + ", quality_type="
+		return "Quality [id=" + id + ", quality_id=" + quality_id + ", quality_name=" + quality_name + ", quality_type="
 				+ quality_type + ", quality_sub_type=" + quality_sub_type + ", party_id=" + party_id + ", party_name="
 				+ party_name + ", wt_per100m=" + wt_per100m + ", remark=" + remark + ", created_date=" + created_date
 				+ ", created_by=" + created_by + ", updated_by=" + updated_by + ", updated_date=" + updated_date

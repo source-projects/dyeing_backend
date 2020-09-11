@@ -27,18 +27,19 @@ public class PartyController  extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 	
 	@PostMapping(value="/party")
-	public String saveQuality(@NotNull @RequestBody Party party)
+	public boolean saveQuality(@NotNull @RequestBody Party party)
 	{
 		if(party==null)
 		{
-			return "Nullable Object";
+			return false;
 		}
 		int flag=partyServiceImp.saveParty(party);
 		if(flag!=1)
 		{
-			return "Something went wrong";
+			System.out.println("Something went wrong");
+			return false;
 		}else
-			return "Succefully Inserted";
+			return true;
 	}
 	
 	@GetMapping(value="/get-party-list")
@@ -46,7 +47,20 @@ public class PartyController  extends ControllerConfig {
 	{
 		return partyServiceImp.getAllPartyDetails();
 	}
-	
+
+	@GetMapping(value="/get-party-by-id/{id}")
+	public Party getPartyDetailsById(@PathVariable(value = "id") Long id)
+	{
+           if(id!=null)
+		   {
+			   Party partyObject=partyServiceImp.getPartyDetailById(id);
+			   if(partyObject!=null)
+			   {
+			   	return partyObject;
+			   }
+		   }
+           return null;
+	}
 
 	@PutMapping(value="/update-party")
 	public boolean  updateQuality(@RequestBody Party party) throws Exception
@@ -54,11 +68,9 @@ public class PartyController  extends ControllerConfig {
 		if(party!=null)
 		{
 			 boolean flag=partyServiceImp.editPartyDetails(party);
-			 if(flag)
-			 {
-				 return true; 
+			 if(flag) {
+				 return true;
 			 }
-			 
 		}
 		return false;
 	}

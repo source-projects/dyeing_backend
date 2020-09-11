@@ -8,5 +8,6 @@ public interface PartyServiceInterface {
 	public List<Party> getAllPartyDetails();
 	public boolean editPartyDetails(Party pary) throws Exception;
 	public boolean deletePartyById(Long id);
+	public Party getPartyDetailById(Long id);
 }
 	
