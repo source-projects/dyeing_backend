@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ColorServicesInterface {
 	public Boolean addColor(ColorMast colorMast);
-	public List<ColorMast >getAll();
+	public List<ColorMast> getAll();
 }
