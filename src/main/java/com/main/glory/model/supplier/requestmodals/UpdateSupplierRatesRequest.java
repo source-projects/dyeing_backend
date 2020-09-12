@@ -14,6 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateSupplierRatesRequest {
-    Long supplier_id;
+    Long supplierId;
     List<SupplierRate> supplierRates;
 }
