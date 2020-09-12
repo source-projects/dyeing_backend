@@ -3,6 +3,7 @@ package com.main.glory.services;
 import java.util.List;
 
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
+import com.main.glory.model.BatchGrDetail;
 import com.main.glory.model.Fabric;
 public interface FabricsServicesInterface {
 
@@ -12,4 +13,5 @@ public interface FabricsServicesInterface {
 	public boolean deleteFabricsById(Long id);
 	public List<MasterLookUpWithRecord> getFabStockMasterListRecord();
 	public Fabric getFabRecordById(Long id);
+
 }

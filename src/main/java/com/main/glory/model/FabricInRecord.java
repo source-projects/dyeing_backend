@@ -35,8 +35,8 @@ public class FabricInRecord {
     private Date updated_date;
     private String created_by;
     private String updated_by;
-    @Column(columnDefinition = "bit(1) default 1")
-    private boolean is_active;
+//    @Column(columnDefinition = "bit(1) default 1")
+    private String is_active;
 
     public FabricInRecord(Long control_id, String gr, Long quality_id, Long quality_entry_id, String quality_name, String quality_type, Double mtr, Double wt, Long no_of_cones, Long no_of_boxes) {
 

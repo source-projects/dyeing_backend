@@ -41,18 +41,18 @@ public class Fabric {
 	private Long lot_no;
 	private String remark;
 	private Long bill_id;
-//	private Long record_count;
 	private Date created_date;
 	private Date updated_date;
 	private String created_by;
 	private String updated_by;
 	private Long user_head_id;
+	private Long record_count;
 	
 	 @OneToMany(cascade = CascadeType.ALL)
 	 @JoinColumn(name = "control_id", referencedColumnName = "id")
 	 List <FabricInRecord> fabricInRecord;
 
-	public Fabric(Long id, Long stock_id, String stock_in_type, Long batch, Long party_id, String party_name, Date date, String bill_no, String chl_no, Date bill_date, Date chl_date, Long lot_no, String remark, Long bill_id, Date created_date, Date updated_date, String created_by, String updated_by, Long user_head_id) {
+	public Fabric(Long id, Long stock_id, String stock_in_type, Long batch, Long party_id, String party_name, Date date, String bill_no, String chl_no, Date bill_date, Date chl_date, Long lot_no, String remark, Long bill_id, Date created_date, Date updated_date, String created_by, String updated_by, Long user_head_id,Long record_count) {
 		this.id = id;
 		this.stock_id = stock_id;
 		this.stock_in_type = stock_in_type;
@@ -72,6 +72,7 @@ public class Fabric {
 		this.created_by = created_by;
 		this.updated_by = updated_by;
 		this.user_head_id = user_head_id;
+		this.record_count=record_count;
 	}
 
 	public void setId(Long id) {
@@ -148,5 +149,9 @@ public class Fabric {
 
 	public void setUser_head_id(Long user_head_id) {
 		this.user_head_id = user_head_id;
+	}
+
+	public void setRecordCount(Long record_count) {
+		this.record_count = record_count;
 	}
 }

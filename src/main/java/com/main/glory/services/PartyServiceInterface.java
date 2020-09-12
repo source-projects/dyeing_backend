@@ -9,5 +9,6 @@ public interface PartyServiceInterface {
 	public boolean editPartyDetails(Party pary) throws Exception;
 	public boolean deletePartyById(Long id);
 	public Party getPartyDetailById(Long id);
+	public String getPartyNameByPartyId(Long partyId);
 }
 	
