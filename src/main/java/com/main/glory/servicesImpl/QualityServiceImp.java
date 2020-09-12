@@ -67,14 +67,14 @@ qualityLisobject.forEach(c->{
 	}
 
 	@Override
-	public Quality getQualityByID(Long id) {
+	public List<Quality> getQualityByID(Long id) {
 		var findQualityDataById=qualityDao.findById(id);
 		if(findQualityDataById.isEmpty())
 		{
 		  System.out.println("No Record Found");
 		  return null;
 		}
-		Quality getQualityData=findQualityDataById.get();
+		List<Quality> getQualityData=qualityDao.getQualityListById(findQualityDataById.get().getQuality_id());
 		return getQualityData;
 	}
 

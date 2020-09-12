@@ -22,7 +22,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 		
 		if(party!=null)
 		{
-			partyDao.save(party);
+			partyDao.saveAndFlush(party);
 			return 1;
 		}else
 			return 0;
@@ -63,5 +63,11 @@ public class PartyServiceImp implements PartyServiceInterface{
 		else
 		partyDao.deleteById(id);
 		 return true;	
+	}
+
+	@Override
+	public String getPartyNameByPartyId(Long partyId) {
+		String partyName=partyDao.getPartyNameByPartyId(partyId);
+		return partyName;
 	}
 }

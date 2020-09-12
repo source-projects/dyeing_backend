@@ -3,7 +3,9 @@ package com.main.glory.controller;
 import java.util.List;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.GeneralResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,65 +29,70 @@ public class PartyController  extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 	
 	@PostMapping(value="/party")
-	public boolean saveQuality(@NotNull @RequestBody Party party)
+	public GeneralResponse<Boolean> saveParty(@NotNull @RequestBody Party party)
 	{
-		if(party==null)
-		{
-			return false;
-		}
 		int flag=partyServiceImp.saveParty(party);
 		if(flag!=1)
 		{
 			System.out.println("Something went wrong");
-			return false;
+			return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}else
-			return true;
+			return new GeneralResponse<Boolean>(null, "Supplier Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value="/get-party-list")
-	public List<Party>getQualityList()
+	public GeneralResponse<List<Party>> getQualityList()
 	{
-		return partyServiceImp.getAllPartyDetails();
+		try{
+			var x = partyServiceImp.getAllPartyDetails();
+			return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new GeneralResponse<List<Party>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping(value="/get-party-by-id/{id}")
-	public Party getPartyDetailsById(@PathVariable(value = "id") Long id)
+	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id)
 	{
            if(id!=null)
 		   {
 			   Party partyObject=partyServiceImp.getPartyDetailById(id);
 			   if(partyObject!=null)
 			   {
-			   	return partyObject;
+			   	    return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			   }
+			   return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		   }
-           return null;
+           return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 
 	@PutMapping(value="/update-party")
-	public boolean  updateQuality(@RequestBody Party party) throws Exception
+	public GeneralResponse<Boolean> updateQuality(@RequestBody Party party) throws Exception
 	{
 		if(party!=null)
 		{
 			 boolean flag=partyServiceImp.editPartyDetails(party);
 			 if(flag) {
-				 return true;
+				 return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			 }
+			return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return false;
+		return new GeneralResponse<Boolean>(false, "Null Party Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 	
 	@DeleteMapping(value="/delete-party/{id}")
-	public boolean deletePartyDetailsByID(@PathVariable(value = "id") Long id)
+	public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id)
 	{
 		if(id!=null)
 		{
 			boolean flag=partyServiceImp.deletePartyById(id);
 			if(flag)
 			{
-			 return true;
+				return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}
+			return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return false;
+		return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 }
