@@ -11,4 +11,5 @@ public interface SupplierServiceInterface {
     public Object getSupplier(Long id);
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest);
     public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest);
+    public Object getAllSupplier();
 }

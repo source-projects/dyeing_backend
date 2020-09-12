@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service("SupplierServiceImpl")
@@ -115,5 +116,16 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             return false;
         }
     }
+
+    @Override
+    public Object getAllSupplier() {
+        try{
+            return supplierDao.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }
