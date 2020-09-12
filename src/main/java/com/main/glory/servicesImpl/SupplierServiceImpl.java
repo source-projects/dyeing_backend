@@ -4,6 +4,7 @@ import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.services.SupplierServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Transactional
     public Boolean addSupplier(Supplier supplier){
         try{
-            supplier.setCreated_date(new Date(System.currentTimeMillis()));
+            supplier.setCreatedDate(new Date(System.currentTimeMillis()));
             supplierDao.save(supplier);
             return true;
         } catch (Exception e){
@@ -46,13 +47,13 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
         try{
             Optional<Supplier> supplier = (Optional<Supplier>) supplierDao.findById(addSupplierRateRequest.getId());
-            Double disc = (supplier).get().getDiscount_percentage();
-            Double gst = (supplier).get().getGst_percentage();
+            Double disc = (supplier).get().getDiscountPercentage();
+            Double gst = (supplier).get().getGstPercentage();
             addSupplierRateRequest.getSupplierRates().forEach(e -> {
                 e.setSupplierId(addSupplierRateRequest.getId());
-                e.setCreated_date(new Date(System.currentTimeMillis()));
-                e.setDiscounted_rate(e.getRate() * (1 - disc/100));
-                e.setGst_rate(e.getDiscounted_rate() * (1 + gst/100));
+                e.setCreatedDate(new Date(System.currentTimeMillis()));
+                e.setDiscountedRate(e.getRate() * (1 - disc/100));
+                e.setGstRate(e.getDiscountedRate() * (1 + gst/100));
             });
             supplierRateDao.saveAll(addSupplierRateRequest.getSupplierRates());
             return true;
@@ -69,7 +70,6 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             Supplier s = supplierDao.findById(id).get();
             s.setSupplierRates(supplierRateDao.findBySupplierIdAndIsActive(s.getId(),true));
             return s;
-
         } catch (Exception e){
             return null;
         }
@@ -84,13 +84,13 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             if(supplier == null){
                 return false;
             }
-            supplier.setDiscount_percentage(updateSupplierRequest.getDiscount_percentage());
-            supplier.setGst_percentage(updateSupplierRequest.getGst_percentage());
-            supplier.setPayment_terms(updateSupplierRequest.getPayment_terms());
+            supplier.setDiscountPercentage(updateSupplierRequest.getDiscountPercentage());
+            supplier.setGstPercentage(updateSupplierRequest.getGstPercentage());
+            supplier.setPaymentTerms(updateSupplierRequest.getPaymentTerms());
             supplier.setRemark(updateSupplierRequest.getRemark());
-            supplier.setSupplier_name(updateSupplierRequest.getSupplier_name());
-            supplier.setUpdated_date(new Date(System.currentTimeMillis()));
-            supplier.setUpdated_by(updateSupplierRequest.getUpdated_by());
+            supplier.setSupplierName(updateSupplierRequest.getSupplierName());
+            supplier.setUpdatedDate(new Date(System.currentTimeMillis()));
+            supplier.setUpdatedBy(updateSupplierRequest.getUpdatedBy());
             supplierDao.save(supplier);
             return true;
         } catch (Exception e) {
@@ -98,4 +98,22 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             return false;
         }
     }
+
+    @Override
+    @Transactional
+    public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) {
+        try{
+            Long sid = updateSupplierRatesRequest.getSupplierId();
+            supplierRateDao.setInactive(sid);
+            updateSupplierRatesRequest.getSupplierRates().forEach(e -> {
+                e.setSupplierId(updateSupplierRatesRequest.getSupplierId());
+            });
+            supplierRateDao.saveAll(updateSupplierRatesRequest.getSupplierRates());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

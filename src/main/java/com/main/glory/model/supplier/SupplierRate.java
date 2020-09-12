@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Entity
-@Table(name = "supplier_rate")
+@Table(name = "supplierRate")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,31 +21,28 @@ public class SupplierRate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(hidden = true)
     Long id;
-
-    @Column(name = "supplier_id")
     Long supplierId;
-    String item_name;
+    String itemName;
     Double rate;
     @ApiModelProperty(hidden = true)
-    Double discounted_rate;
+    Double discountedRate;
 
     @ApiModelProperty(hidden = true)
-    Double gst_rate;
+    Double gstRate;
 
-    Long user_id;
-
-    @ApiModelProperty(hidden = true)
-    Date created_date;
-    String created_by;
+    Long userId;
 
     @ApiModelProperty(hidden = true)
-    @Column(name = "is_active")
+    Date createdDate;
+    String createdBy;
+
+    @ApiModelProperty(hidden = true)
     Boolean isActive;
 
-    String updated_by;
+    String updatedBy;
 
     @ApiModelProperty(hidden = true)
-    Date updated_date;
+    Date updatedDate;
 
     public SupplierRate() {
         this.isActive = true;

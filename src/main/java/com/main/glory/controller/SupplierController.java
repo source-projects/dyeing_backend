@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,10 @@ public class SupplierController {
     @PutMapping("/supplier")
     public Boolean updateSupplier(@RequestBody UpdateSupplierRequest updateSupplierRequest){
         return supplierService.updateSupplier(updateSupplierRequest);
+    }
+
+    @PutMapping("/supplier/rates")
+    public Boolean updateSupplier(@RequestBody UpdateSupplierRatesRequest updateSupplierRequest){
+        return supplierService.updateSupplierRates(updateSupplierRequest);
     }
 }

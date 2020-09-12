@@ -22,22 +22,23 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(hidden = true)
     Long id;
-    String supplier_name;
-    Double discount_percentage;
-    Double gst_percentage;
-    Long user_id;
+    String supplierName;
+    Double discountPercentage;
+    Double gstPercentage;
+    Long userId;
     String remark;
     @ApiModelProperty(hidden = true)
-    Date created_date;
-    Long payment_terms;
+    Date createdDate;
+    Long paymentTerms;
 
-    String updated_by;
+    String updatedBy;
 
     @ApiModelProperty(hidden = true)
-    Date updated_date;
+    Date updatedDate;
 
+    @Transient
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "supplier_id", referencedColumnName = "id")
+    @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 }
