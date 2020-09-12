@@ -16,7 +16,7 @@
 //public class GrDetailsController {
 //
 //    @Autowired
-//    private GrDetailsServiceImpl grDetailsServiceImpl;
+////    private GrDetailsServiceImp grDetailsServiceImpl;
 //
 //    @GetMapping("/get-fab-stock-detail")
 //    public List<GrLooKUpDetails> getGrDetailsByQualityId()

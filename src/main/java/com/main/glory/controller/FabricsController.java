@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.BatchGrDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,26 +31,26 @@ public class FabricsController extends ControllerConfig {
 	}
 
 	@GetMapping("/getfabstock-data")
-	public List<MasterLookUpWithRecord> getFabListData()
-	{
+	public List<MasterLookUpWithRecord> getFabListData() {
 		//return fabricsServiceImpl.getAllFabricsDetails();
-		List<MasterLookUpWithRecord> getFabricDataByQualityId=fabricsServiceImpl.getFabStockMasterListRecord();
-		if(getFabricDataByQualityId.isEmpty())
-		{
+		List<MasterLookUpWithRecord> getFabricDataByQualityId = fabricsServiceImpl.getFabStockMasterListRecord();
+		if (getFabricDataByQualityId.isEmpty()) {
 			System.out.println("No Record Found..");
 		}
-		return  getFabricDataByQualityId;
+		return getFabricDataByQualityId;
 	}
 
-	@GetMapping(value="/get-fab-stock-by-id/{id}")
-	public Fabric getFabStockDataById(@PathVariable(value = "id") Long id)
-	{
-		if(id!=null) {
+	@GetMapping(value = "/get-fab-stock-by-id/{id}")
+	public Fabric getFabStockDataById(@PathVariable(value = "id") Long id) {
+		if (id != null) {
 			Fabric fabData = fabricsServiceImpl.getFabRecordById(id);
+			System.out.println(fabData.getParty_name().toString());
 			return fabData;
 		}
 		return null;
 	}
+
+
 	@PostMapping("/update-stock")
 	public boolean updateFabricIn(@RequestBody Fabric fabrics) throws Exception {
 		if (fabrics != null) {
@@ -59,5 +60,17 @@ public class FabricsController extends ControllerConfig {
 			}
 		}
 		return false;
+	}
+
+	@DeleteMapping(value = "/delete-stock/{id}")
+	public boolean deleteFabDetailsByID(@PathVariable(value = "id") Long id) {
+		boolean flag = false;
+		if (id != null) {
+			flag = fabricsServiceImpl.deleteFabricsById(id);
+		}
+		if (flag)
+			return true;
+		else
+			return false;
 	}
 }

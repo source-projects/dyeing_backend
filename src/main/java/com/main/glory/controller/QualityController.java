@@ -50,7 +50,7 @@ public class QualityController  extends ControllerConfig {
 	}
 
 	@GetMapping(value="/getqualitydataById/{id}")
-	public Quality getQualityDataById(@PathVariable(value = "id") Long id)
+	public List<Quality> getQualityDataById(@PathVariable(value = "id") Long id)
 	{
 		if(id!=null)
 		{

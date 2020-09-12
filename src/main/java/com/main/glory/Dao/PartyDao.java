@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 
-
 public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	void save(Quality quality);

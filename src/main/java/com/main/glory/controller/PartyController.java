@@ -27,12 +27,8 @@ public class PartyController  extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 	
 	@PostMapping(value="/party")
-	public boolean saveQuality(@NotNull @RequestBody Party party)
+	public boolean saveParty(@NotNull @RequestBody Party party)
 	{
-		if(party==null)
-		{
-			return false;
-		}
 		int flag=partyServiceImp.saveParty(party);
 		if(flag!=1)
 		{
