@@ -21,7 +21,9 @@ public class SupplierRate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(hidden = true)
     Long id;
-    Long supplier_id;
+
+    @Column(name = "supplier_id")
+    Long supplierId;
     String item_name;
     Double rate;
     @ApiModelProperty(hidden = true)
@@ -37,14 +39,16 @@ public class SupplierRate {
     String created_by;
 
     @ApiModelProperty(hidden = true)
-    Boolean is_active;
+    @Column(name = "is_active")
+    Boolean isActive;
+
     String updated_by;
 
     @ApiModelProperty(hidden = true)
     Date updated_date;
 
     public SupplierRate() {
-        this.is_active = true;
+        this.isActive = true;
     }
 
 

@@ -49,7 +49,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             Double disc = (supplier).get().getDiscount_percentage();
             Double gst = (supplier).get().getGst_percentage();
             addSupplierRateRequest.getSupplierRates().forEach(e -> {
-                e.setSupplier_id(addSupplierRateRequest.getId());
+                e.setSupplierId(addSupplierRateRequest.getId());
                 e.setCreated_date(new Date(System.currentTimeMillis()));
                 e.setDiscounted_rate(e.getRate() * (1 - disc/100));
                 e.setGst_rate(e.getDiscounted_rate() * (1 + gst/100));
@@ -64,10 +64,12 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Override
     public Object getSupplier(Long id) {
-//        return supplierDao.findActiveById();
+
         try {
-//             return entityManager.createNativeQuery("SELECT count(supplier_id) FROM supplier as s inner join supplier_rate as sr on s.id = sr.supplier_id WHERE (sr.is_active = 1 and s.id = "+ id +")", Supplier.class).getSingleResult();
-            return supplierDao.findById(id).get();
+            Supplier s = supplierDao.findById(id).get();
+            s.setSupplierRates(supplierRateDao.findBySupplierIdAndIsActive(s.getId(),true));
+            return s;
+
         } catch (Exception e){
             return null;
         }
