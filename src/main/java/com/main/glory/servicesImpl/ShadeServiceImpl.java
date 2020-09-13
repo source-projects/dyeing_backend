@@ -4,7 +4,9 @@ import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.shade.requestmodals.UpdateShadeMastRequest;
 import com.main.glory.services.ShadeServicesInterface;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,5 +75,41 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(data != null)
 			data.setShadeDataList(shadeDataDao.findByStateAndControlId("original", id));
 		return data;
+	}
+
+	@Override
+	public void deleteData(Long aLong) {
+		shadeMastDao.setInactiveById(aLong);
+		shadeDataDao.setInactiveByControlId(aLong);
+	}
+
+	@Override
+	public void updateShadeMast(UpdateShadeMastRequest updateShadeMastRequest) {
+//		shadeMastDao.setInactiveById(updateShadeMastRequest.getId());
+		ShadeMast temp = shadeMastDao.findById(updateShadeMastRequest.getId()).get();
+		ShadeMast updated = updateShadeMastRequest.getShadeMast();
+		if(temp != null) {
+			temp.setUpdatedDate(new Date(System.currentTimeMillis()));
+			temp.setPartyShadeNo(updated.getPartyShadeNo());
+			temp.setProcessId(updated.getProcessId());
+			temp.setQualityId(updated.getQualityId());
+			temp.setQualityName(updated.getQualityName());
+			temp.setQualityType(updated.getQualityType());
+			temp.setPartyName(updated.getPartyName());
+			temp.setColorTone(updated.getColorTone());
+			temp.setUpdatedBy(updated.getUpdatedBy());
+			temp.setUserHeadId(updated.getUserHeadId());
+			temp.setCuttingId(updated.getCuttingId());
+			temp.setRemark(updated.getRemark());
+			temp.setCategory(updated.getCategory());
+			temp.setLabColorNo(updated.getLabColorNo());
+			shadeMastDao.save(temp);
+		}
+
+	}
+
+	@Override
+	public void updateShadeData(List<ShadeData> shadeDataList) {
+
 	}
 }

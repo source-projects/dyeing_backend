@@ -28,6 +28,7 @@ public class ShadeController {
 			return new GeneralResponse<>(true, "Data Inserted Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -38,6 +39,7 @@ public class ShadeController {
 			var data = shadeService.getAllActiveData();
 			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -48,6 +50,7 @@ public class ShadeController {
 			var data = shadeService.getAllOriginalData();
 			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -61,6 +64,7 @@ public class ShadeController {
 			}
 			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -74,6 +78,7 @@ public class ShadeController {
 			}
 			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -84,7 +89,19 @@ public class ShadeController {
 			var data = shadeService.getShadeMastList();
 			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@DeleteMapping("/shade/{id}")
+	public GeneralResponse<Boolean> deleteShadeData(@PathVariable("id") Long id){
+		try{
+			shadeService.deleteData(id);
+			return new GeneralResponse<>(true, "deleted successfully", false, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new GeneralResponse<>(false, e.getMessage(),false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
