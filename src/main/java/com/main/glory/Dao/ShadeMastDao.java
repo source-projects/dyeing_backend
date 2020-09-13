@@ -3,6 +3,9 @@ package com.main.glory.Dao;
 import com.main.glory.model.shade.ShadeMast;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
+import java.util.List;
 
+public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
+	List<ShadeMast> findByIsActive(Boolean aBoolean);
+	ShadeMast findByIdAndIsActive(Long aLong, Boolean aBoolean);
 }

@@ -6,10 +6,9 @@ import com.main.glory.services.ShadeServicesInterface;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -30,6 +29,62 @@ public class ShadeController {
 
 		} catch (Exception e) {
 			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/shade/current/all")
+	public GeneralResponse<List<ShadeMast>> getAllCurrentShadeData(){
+		try{
+			var data = shadeService.getAllActiveData();
+			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/shade/original/all")
+	public GeneralResponse<List<ShadeMast>> getAllOriginalShadeData(){
+		try{
+			var data = shadeService.getAllOriginalData();
+			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/shade/current/{id}")
+	public GeneralResponse<ShadeMast> getCurrentShadeData(@PathVariable("id") Long id){
+		try{
+			var data = shadeService.getActiveShadeData(id);
+			if(data == null){
+				return new GeneralResponse<>(data, "No such active shade found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/shade/original/{id}")
+	public GeneralResponse<ShadeMast> getOriginalShadeData(@PathVariable("id") Long id){
+		try{
+			var data = shadeService.getOriginalShadeData(id);
+			if(data == null){
+				return new GeneralResponse<>(data, "No such active shade found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/shade/all")
+	public GeneralResponse<List<ShadeMast>> getShadeMastList(){
+		try{
+			var data = shadeService.getShadeMastList();
+			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
