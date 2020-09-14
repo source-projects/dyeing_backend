@@ -77,8 +77,8 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 	@Override
 	public Fabric getFabRecordById(Long id) {
 		Optional<Fabric> getData=fabricsDao.findById(id);
-		String getPartyName=partyDao.getPartyNameByPartyId(getData.get().getParty_id());
-		getData.get().setParty_name(getPartyName);
+		String getPartyName=partyDao.getPartyNameByPartyId(getData.get().getId());
+		getData.get().setPartyName(getPartyName);
 		if(getData.isEmpty())
 			return null;
 		else {
