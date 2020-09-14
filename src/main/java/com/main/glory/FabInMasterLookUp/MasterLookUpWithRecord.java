@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +20,8 @@ public class MasterLookUpWithRecord extends Fabric {
 
     public MasterLookUpWithRecord() {
     }
-    public MasterLookUpWithRecord(Long id, Long stock_id, String stock_in_type, Long batch, Long party_id, String party_name, Date date, String bill_no, String chl_no, Date bill_date, Date chl_date, Long lot_no, String remark, Long bill_id, Date created_date, Date updated_date, String created_by, String updated_by, Long user_head_id, Long record_count) {
-        super(id, stock_id, stock_in_type, batch, party_id, party_name, date, bill_no, chl_no, bill_date, chl_date, lot_no, remark, bill_id, created_date, updated_date, created_by, updated_by, user_head_id,record_count);
+
+    public MasterLookUpWithRecord(Long id, Long stockId, String stockInType, Long batch, Long partyId, String partyName, Date date, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Long billId, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Long recordCount) {
+        super(id, stockId, stockInType, batch, partyId, partyName, date, billNo, chlNo, billDate, chlDate, lotNo, remark, billId, createdDate, updatedDate, createdBy, updatedBy, userHeadId, recordCount);
     }
 }

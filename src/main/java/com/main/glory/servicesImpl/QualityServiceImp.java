@@ -32,12 +32,12 @@ public class QualityServiceImp implements QualityServiceInterface{
 		List<Quality> getQualityDataWithPartyName=new ArrayList<Quality>();
 
 qualityLisobject.forEach(c->{
-	 if(c.getParty_id()!=null)
+	 if(c.getPartyId()!=null)
 	 {
-		 String getPartyName= getPartyNameByPartyId(c.getParty_id());
-		 if(getPartyName!=null && c.getParty_name()==null)
+		 String getPartyName= getPartyNameByPartyId(c.getPartyId());
+		 if(getPartyName!=null && c.getPartyName()==null)
 		 {
-		 	c.setParty_name(getPartyName);
+		 	c.setPartyName(getPartyName);
 			 getQualityDataWithPartyName.add(c);
 		 }
 	 }
@@ -74,7 +74,7 @@ qualityLisobject.forEach(c->{
 		  System.out.println("No Record Found");
 		  return null;
 		}
-		List<Quality> getQualityData=qualityDao.getQualityListById(findQualityDataById.get().getQuality_id());
+		List<Quality> getQualityData=qualityDao.getQualityListById(findQualityDataById.get().getQualityId());
 		return getQualityData;
 	}
 

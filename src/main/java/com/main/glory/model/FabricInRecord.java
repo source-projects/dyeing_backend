@@ -21,35 +21,35 @@ public class FabricInRecord {
     @GeneratedValue(strategy = GenerationType.AUTO)
 	@ApiModelProperty(hidden = true)
 	private Long id;
-    private Long control_id;
+    private Long controlId;
     private String gr;
-    private Long quality_id;
-    private Long quality_entry_id;
-    private String quality_name;
-    private String quality_type;
+    private Long qualityId;
+    private Long qualityEntryId;
+    private String qualityName;
+    private String qualityType;
     private Double mtr;
     private Double wt;
-    private Long no_of_cones;
-    private Long no_of_boxes;
-    private Date created_date;
-    private Date updated_date;
-    private String created_by;
-    private String updated_by;
+    private Long noOfCones;
+    private Long noOfBoxes;
+    private Date createdDate;
+    private Date updatedDate;
+    private String createdBy;
+    private String updatedBy;
 //    @Column(columnDefinition = "bit(1) default 1")
-    private String is_active;
-
-    public FabricInRecord(Long control_id, String gr, Long quality_id, Long quality_entry_id, String quality_name, String quality_type, Double mtr, Double wt, Long no_of_cones, Long no_of_boxes) {
-
-        this.control_id = control_id;
-        this.gr = gr;
-        this.quality_id = quality_id;
-        this.quality_entry_id = quality_entry_id;
-        this.quality_name = quality_name;
-        this.quality_type = quality_type;
-        this.mtr = mtr;
-        this.wt = wt;
-        this.no_of_cones = no_of_cones;
-        this.no_of_boxes = no_of_boxes;
-        this.is_active = is_active;
-    }
+    private String isActive;
+//
+//    public FabricInRecord(Long controlId, String gr, Long quality_id, Long quality_entry_id, String quality_name, String quality_type, Double mtr, Double wt, Long no_of_cones, Long no_of_boxes) {
+//
+//        this.controlId = controlId;
+//        this.gr = gr;
+//        this.qualityId = qualityId;
+//        this.quality_entry_id = quality_entry_id;
+//        this.quality_name = quality_name;
+//        this.quality_type = quality_type;
+//        this.mtr = mtr;
+//        this.wt = wt;
+//        this.no_of_cones = no_of_cones;
+//        this.no_of_boxes = no_of_boxes;
+//        this.is_active = is_active;
+//    }
 }
