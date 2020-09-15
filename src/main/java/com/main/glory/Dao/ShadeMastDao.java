@@ -17,5 +17,14 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 	public void setInactiveById(@Param("eid") Long id);
 
 	List<ShadeMast> findByIsActive(Boolean aBoolean);
+
+//	String partyName;
+//	String qualityName;
+//	String qualityType;
+//	String processName;
+
+//	@Query(value = "Select sm.*, (Select party_name from party where entry_id = sm.party_id) as party_name, (Select quality_name from quality where id = sm.quality_id) as quality_name,(Select quality_type from quality where id = sm.quality_id) as quality_type from shade_mast as sm where sm.is_active = :Active", nativeQuery = true)
+//	List<ShadeMastWithDetails> findDetailsByIsActive(@Param("Active") Boolean aBoolean);
+
 	ShadeMast findByIdAndIsActive(Long aLong, Boolean aBoolean);
 }

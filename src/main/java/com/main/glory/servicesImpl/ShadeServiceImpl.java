@@ -1,18 +1,24 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
+import com.main.glory.model.Quality;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.UpdateShadeMastRequest;
+import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
 import com.main.glory.services.ShadeServicesInterface;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl implements ShadeServicesInterface {
@@ -22,6 +28,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Autowired
 	ShadeDataDao shadeDataDao;
+
+	@Autowired
+	QualityDao qualityDao;
+
+	@Autowired
+	PartyDao partyDao;
 
 	@Transactional
 	public void saveShade(ShadeMast shadeMast){
@@ -57,8 +69,25 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	}
 
 	@Override
-	public List<ShadeMast> getShadeMastList() {
-		return shadeMastDao.findByIsActive(true);
+	public List<ShadeMastWithDetails> getShadeMastList() {
+		List<ShadeMast> shadeMast = shadeMastDao.findByIsActive(true);
+		List<ShadeMastWithDetails> data = new ArrayList<>();
+		System.out.println(shadeMast);
+		shadeMast.forEach(e -> {
+			try {
+				ShadeMastWithDetails t = new ShadeMastWithDetails(e);
+				t.setPartyName(partyDao.getPartyNameByPartyId(e.getPartyId()));
+
+				Optional<Quality> q = qualityDao.findById(e.getQualityId());
+				t.setQualityType(q.get().getQualityType());
+				t.setQualityName(q.get().getQualityName());
+				System.out.println(t);
+				data.add(t);
+			} catch (Exception x) {
+				System.out.println(x.getMessage());
+			}
+		});
+		return data;
 	}
 
 	@Override
@@ -93,9 +122,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			temp.setPartyShadeNo(updated.getPartyShadeNo());
 			temp.setProcessId(updated.getProcessId());
 			temp.setQualityId(updated.getQualityId());
-			temp.setQualityName(updated.getQualityName());
-			temp.setQualityType(updated.getQualityType());
-			temp.setPartyName(updated.getPartyName());
+			temp.setPartyId(updated.getPartyId());
 			temp.setColorTone(updated.getColorTone());
 			temp.setUpdatedBy(updated.getUpdatedBy());
 			temp.setUserHeadId(updated.getUserHeadId());

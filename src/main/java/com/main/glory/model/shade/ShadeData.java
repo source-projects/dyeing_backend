@@ -23,10 +23,15 @@ public class ShadeData {
 	Long id;
 	@ApiModelProperty(hidden = true)
 	Long controlId;
+	@Column(nullable = false)
 	String itemName;
-	String supplierName;
+	@Column(nullable = false)
+	Long supplierId;
+	@Column(nullable = false)
 	Double rate;
+	@Column(nullable = false)
 	Double amount;
+	@Column(nullable = false)
 	Double concentration;
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
@@ -38,5 +43,6 @@ public class ShadeData {
 	String state;
 	@ApiModelProperty(hidden = true)
 	Boolean isActive;
+	@Column(nullable = false)
 	Long supplierItemId;
 }

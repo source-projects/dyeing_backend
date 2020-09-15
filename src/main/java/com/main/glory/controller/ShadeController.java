@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
 import com.main.glory.services.ShadeServicesInterface;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class ShadeController {
 	}
 
 	@GetMapping("/shade/all")
-	public GeneralResponse<List<ShadeMast>> getShadeMastList(){
+	public GeneralResponse<List<ShadeMastWithDetails>> getShadeMastList(){
 		try{
 			var data = shadeService.getShadeMastList();
 			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);

@@ -21,12 +21,14 @@ public class ShadeMast {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@ApiModelProperty(hidden = true)
 	Long id;
+	@Column(unique = true,nullable = false)
 	String partyShadeNo;
+	@Column(nullable = false)
 	Long processId;
+	@Column(nullable = false)
 	Long qualityId;
-	String qualityName;
-	String qualityType;
-	String partyName;
+	@Column(nullable = false)
+	Long partyId;
 	String colorTone;
 	String createdBy;
 	String updatedBy;
@@ -36,10 +38,14 @@ public class ShadeMast {
 	Date updatedDate;
 	@ApiModelProperty(hidden = true)
 	Boolean isActive;
+	@Column(nullable = false)
 	Long userHeadId;
+	@Column(nullable = false)
 	Long cuttingId;
 	String remark;
+	@Column(nullable = false)
 	String category;
+	@Column(nullable = false)
 	Long labColorNo;
 	@Transient
 	@OneToMany(cascade = CascadeType.ALL)
