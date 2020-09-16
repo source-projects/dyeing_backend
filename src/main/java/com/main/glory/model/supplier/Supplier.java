@@ -16,7 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +30,9 @@ public class Supplier {
     Date createdDate;
     Long paymentTerms;
 
+    @ApiModelProperty(hidden = true)
+    Boolean isActive;
+
     String updatedBy;
 
     @ApiModelProperty(hidden = true)
@@ -41,6 +43,10 @@ public class Supplier {
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
+
+    public Supplier() {
+        isActive = true;
+    }
 }
 
 

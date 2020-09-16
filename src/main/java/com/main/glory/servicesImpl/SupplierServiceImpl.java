@@ -66,10 +66,10 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Override
     public Object getSupplier(Long id) {
-
         try {
-            Supplier s = supplierDao.findById(id).get();
-            s.setSupplierRates(supplierRateDao.findBySupplierIdAndIsActive(s.getId(),true));
+            Supplier s = supplierDao.findByIdAndIsActive(id,true);
+            if(s != null)
+                s.setSupplierRates(supplierRateDao.findBySupplierIdAndIsActive(s.getId(),true));
             return s;
         } catch (Exception e){
             return null;
@@ -120,12 +120,16 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Override
     public Object getAllSupplier() {
         try{
-            return supplierDao.findAll();
+            return supplierDao.findByIsActive(true);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
+    public void deleteSupplier(Long id){
+        supplierDao.setInactive(id);
+        supplierRateDao.setInactive(id);
+    }
 
 }
