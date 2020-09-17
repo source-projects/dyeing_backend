@@ -1,10 +1,7 @@
 package com.main.glory.model.shade;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "ShadeMast")
+@ToString
 public class ShadeMast {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
