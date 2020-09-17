@@ -4,8 +4,11 @@ import java.util.List;
 
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.Party;
 import com.main.glory.services.QualityServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.sun.istack.NotNull;
@@ -15,72 +18,82 @@ import com.main.glory.servicesImpl.QualityServiceImp;
 
 @RestController
 @RequestMapping("/api")
-public class QualityController  extends ControllerConfig {
+public class QualityController extends ControllerConfig {
 
-	@Autowired 
-	private QualityServiceImp qualityServiceImp;
+    @Autowired
+    private QualityServiceImp qualityServiceImp;
 
-	@Autowired
-	private QualityDao qualityDao;
-	
-	@PostMapping(value="/add-quality")
-	public boolean saveQuality(@NotNull @RequestBody Quality quality)
-	{
-		int flag=qualityServiceImp.saveQuality(quality);
-		if(flag==1)
-			return  true;
-		else
-		return false;
-	}
+    @Autowired
+    private QualityDao qualityDao;
 
-	@GetMapping(value="/get-quality-list")
-	public List<Quality>getQualityList()
-	{
-		return qualityServiceImp.getAllQuality();
-	}
+    @PostMapping(value = "/add-quality")
+    public GeneralResponse<Boolean> saveQuality(@NotNull @RequestBody Quality quality) {
+        int flag = qualityServiceImp.saveQuality(quality);
+        if (flag == 1)
+            return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+        else
+            return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
 
-	@PutMapping(value="/update_quality_By_ID")
-	public boolean  updateQualityById(@RequestBody Quality quality) throws Exception {
-		if(quality.getId()!=null)
-		{
-			boolean flag=qualityServiceImp.updateQuality(quality);
-			return true;
-		}
-		return false;
-	}
+    @GetMapping(value = "/get-quality-list")
+    public GeneralResponse<List<Quality>> getQualityList() {
+        try {
+            var x = qualityServiceImp.getAllQuality();
+            return new GeneralResponse<List<Quality>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new GeneralResponse<List<Quality>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-	@GetMapping(value="/getqualitydataById/{id}")
-	public List<Quality> getQualityDataById(@PathVariable(value = "id") Long id)
-	{
-		if(id!=null)
-		{
-			return qualityServiceImp.getQualityByID(id);
-		}
-		return null;
-	}
-	@DeleteMapping(value="/delete-quality/{id}")
-	public boolean deletePartyDetailsByID(@PathVariable(value = "id") Long id)
-	{
-		if(id!=null)
-		{
-			boolean flag=qualityServiceImp.deleteQualityById(id);
-			if(flag)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @PutMapping(value = "/update_quality_By_ID")
+    public GeneralResponse<Boolean> updateQualityById(@RequestBody Quality quality) throws Exception {
+        if (quality.getId() != null) {
+            boolean flag = qualityServiceImp.updateQuality(quality);
+            if (flag) {
+                return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
 
-	@GetMapping(value="/isExistQualityId/{quality_id}")
-	public boolean IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id)
-	{
-		String flag = qualityDao.isQualityNameExist(quality_id);
-		if(flag!=null)
-		{
-			return true;
-		}
-		return false;
-	}
+    @GetMapping(value = "/get_quality_data_by_id/{id}")
+    public GeneralResponse<List<Quality>> getQualityDataById(@PathVariable(value = "id") Long id) {
+        try {
+            if (id != null) {
+                var x = qualityServiceImp.getQualityByID(id);
+                return new GeneralResponse<List<Quality>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @DeleteMapping(value = "/delete-quality/{id}")
+    public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
+        if (id != null) {
+            boolean flag = qualityServiceImp.deleteQualityById(id);
+            if (flag) {
+                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/isExistQualityId/{quality_id}")
+    public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id) {
+
+        if (quality_id != null) {
+            String flag = qualityDao.isQualityNameExist(quality_id);
+            if (flag!=null) {
+                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
 
 }

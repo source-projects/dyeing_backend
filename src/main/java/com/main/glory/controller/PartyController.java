@@ -37,7 +37,7 @@ public class PartyController  extends ControllerConfig {
 			System.out.println("Something went wrong");
 			return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}else
-			return new GeneralResponse<Boolean>(null, "Supplier Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value="/get-party-list")
