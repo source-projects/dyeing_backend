@@ -1,7 +1,6 @@
 package com.main.glory.controller;
 
 import java.util.List;
-
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
@@ -10,9 +9,7 @@ import com.main.glory.services.QualityServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import com.sun.istack.NotNull;
-
 import com.main.glory.model.Quality;
 import com.main.glory.servicesImpl.QualityServiceImp;
 
@@ -27,7 +24,7 @@ public class QualityController extends ControllerConfig {
     private QualityDao qualityDao;
 
     @PostMapping(value = "/add-quality")
-    public GeneralResponse<Boolean> saveQuality(@NotNull @RequestBody Quality quality) {
+    public GeneralResponse<Boolean> saveQuality(@RequestBody Quality quality) {
         int flag = qualityServiceImp.saveQuality(quality);
         if (flag == 1)
             return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
@@ -46,7 +43,7 @@ public class QualityController extends ControllerConfig {
         }
     }
 
-    @PutMapping(value = "/update_quality_By_ID")
+    @PutMapping(value = "/update_quality_by_id")
     public GeneralResponse<Boolean> updateQualityById(@RequestBody Quality quality) throws Exception {
         if (quality.getId() != null) {
             boolean flag = qualityServiceImp.updateQuality(quality);
@@ -83,7 +80,7 @@ public class QualityController extends ControllerConfig {
         return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/isExistQualityId/{quality_id}")
+    @GetMapping(value = "/is_quality_exist/{quality_id}")
     public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id) {
 
         if (quality_id != null) {
