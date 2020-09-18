@@ -19,23 +19,25 @@ public class ColorMast {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     Long id;
-    Long supplier_id;
+    Long supplierId;
     Date ddate;
-    String bill_no;
-    Date bill_date;
-    String chl_no;
-    Date chl_date;
-    Long lot_no;
-    Double bill_amount;
-    Long user_id;
+    String billNo;
+    Date billDate;
+    String chlNo;
+    Date chlDate;
+    Long lotNo;
+    Double billAmount;
+    Long userId;
     String remark;
     @ApiModelProperty(hidden = true)
-    Date created_date;
+    Date createdDate;
+
+    @Transient
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "purchase_id",referencedColumnName = "id")
+    @JoinColumn(name = "purchaseId",referencedColumnName = "id")
     List<ColorData> colorDataList;
 
     public ColorMast() {
-       this.created_date = new Date(System.currentTimeMillis());
+       this.createdDate = new Date(System.currentTimeMillis());
     }
 }

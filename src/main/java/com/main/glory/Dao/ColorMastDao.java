@@ -1,6 +1,7 @@
 package com.main.glory.Dao;
 
 import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;

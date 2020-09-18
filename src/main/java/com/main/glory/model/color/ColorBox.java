@@ -17,8 +17,10 @@ import java.util.Date;
 public class ColorBox {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	Long box_no;
-	Long control_id;
+	Long boxNo;
+	Long controlId;
 	Boolean issued;
-	Date issued_date;
+	Date issuedDate;
+	Boolean finished;
+	Double quantityLeft;
 }

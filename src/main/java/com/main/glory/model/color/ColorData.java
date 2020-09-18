@@ -21,10 +21,10 @@ public class ColorData {
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	Long id;
 	@Column(nullable = false)
-	Long purchase_id;
+	Long purchaseId;
 
 	@Column(nullable = false)
-	String item_name;
+	Long itemId;
 
 	@Column(nullable = false)
 	Integer quantity;
@@ -33,21 +33,17 @@ public class ColorData {
 	Double rate;
 
 	@Column(nullable = false)
-	String quantity_unit;
+	String quantityUnit;
 
 	@Column(nullable = false)
-	Integer quantity_per_box;
+	Integer quantityPerBox;
 
 	@Column(nullable = false)
-	Integer no_of_box;
+	Integer noOfBox;
 
+	@Transient
 	@ApiModelProperty(hidden = true)
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "control_id", referencedColumnName = "id")
+	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ColorBox> colorBoxes;
-//	@Column(nullable = false)
-//	Boolean issued;
-//
-//	Date issued_date;
-
 }
