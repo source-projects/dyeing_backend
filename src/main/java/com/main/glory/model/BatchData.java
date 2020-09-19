@@ -30,6 +30,7 @@ public class BatchData {
     private String detail;
     private Long referenced_id;
 
+    @Transient
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "control_id", referencedColumnName = "id")
     private List<BatchGrDetail> batchGrDetails;

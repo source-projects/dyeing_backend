@@ -15,6 +15,7 @@ public class BatchController {
 
     @PostMapping("/batch")
     private int addBatch(@RequestBody BatchMast batchMast) throws Exception {
+
         return batchService.saveBatch(batchMast);
     }
 }

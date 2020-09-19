@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+@ComponentScan(basePackages = {"com.main.glory.controller","com.main.glory.servicesImpl"})
+@EnableJpaRepositories("com.main.glory.Dao")
+@EntityScan("com.main.glory.model")
 @SpringBootApplication
 public class GloryautofabApplication {
 	public static void main(String[] args) {
