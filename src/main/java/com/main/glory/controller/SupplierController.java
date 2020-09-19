@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class SupplierController {
+public class SupplierController extends ControllerConfig {
     @Autowired
     SupplierServiceImpl supplierService;
 
