@@ -29,12 +29,11 @@ public class PartyController  extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 	
 	@PostMapping(value="/party")
-	public GeneralResponse<Boolean> saveParty(@NotNull @RequestBody Party party)
+	public GeneralResponse<Boolean> saveParty(@RequestBody Party party)
 	{
 		int flag=partyServiceImp.saveParty(party);
 		if(flag!=1)
 		{
-			System.out.println("Something went wrong");
 			return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}else
 			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);

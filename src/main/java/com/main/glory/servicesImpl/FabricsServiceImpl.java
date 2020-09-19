@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.model.BatchGrDetail;
@@ -21,70 +22,98 @@ import com.main.glory.services.FabricsServicesInterface;
 @Service("fabricsServiceImpl")
 public class FabricsServiceImpl implements FabricsServicesInterface {
 
-	@Autowired
-	private FabricsDao fabricsDao;
+    @Autowired
+    private FabricsDao fabricsDao;
 
-	@Autowired
-	private PartyDao partyDao;
-	@Override
+    @Autowired
+    private PartyDao partyDao;
+
+    @Autowired
+    private FabDataDao fabDataDao;
+
+    @Override
 //	@Transactional
-	public int saveFabrics(Fabric fabrics) throws Exception {
-		try {
-			if (fabrics != null) {
-				fabricsDao.saveAndFlush(fabrics);
-				return 1;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return 0;
-	}
+    public int saveFabrics(Fabric fabrics) throws Exception {
+        try {
+            if (fabrics != null) {
+                Fabric x = fabricsDao.save(fabrics);
+                fabrics.getFabricInRecord().forEach(e -> {
+                    e.setControlId(x.getId());
+                });
+                fabDataDao.saveAll(fabrics.getFabricInRecord());
+                return 1;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
 
-	@Override
-	public List<Fabric> getAllFabricsDetails() {
-		// TODO Auto-generated method stub
-		return fabricsDao.findAll();
-	}
+    @Override
+    public List<Fabric> getAllFabricsDetails() {
+        var getFabMasterData = fabricsDao.findAll();
 
-	@Override
-	public boolean updateFabricsDetails(Fabric fabs) throws Exception {
-		var partyIndex= fabricsDao.findById(fabs.getId());
-		if(!partyIndex.isPresent())
-			return false;
-		else
-			fabricsDao.save(fabs);
-		return true;
-	}
+        return getFabMasterData;
+
+    }
+
+    @Override
+    @Transactional
+    public boolean updateFabricsDetails(Fabric fabrics) throws Exception {
+        var partyIndex = fabricsDao.findById(fabrics.getId());
+
+        if (!partyIndex.isPresent())
+            return false;
+        else {
+            // List<FabricInRecord> fabstocdata = fabDataDao.getAllFabStockById(fabs.getId());
+            fabDataDao.setisDeActive(fabrics.getId());
+            Fabric x = fabricsDao.save(fabrics);
+            fabrics.getFabricInRecord().forEach(e -> {
+                e.setControlId(x.getId());
+            });
+            fabDataDao.saveAll(fabrics.getFabricInRecord());
 
 
-	@Override
-	public boolean deleteFabricsById(Long id) {
-		var findId=fabricsDao.findById(id);
-		if(findId.get().getId()!=null)
-		{
-			fabricsDao.deleteById(findId.get().getId());
-			return true;
-		}
-		return false;
-	}
+//            fabstocdata.forEach(c -> {
+//                c.setIsActive("0");
+//                c.setControlId(fabs.getId());
+//            });
+//            fabDataDao.saveAll(fabstocdata);
+//            fabs.getFabricInRecord().forEach(c->{
+//                c.setIsActive("1");
+//            });
 
-	@Override
-	public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
-		List<MasterLookUpWithRecord> listMaster = fabricsDao.getFabStockMasterRecordList();
-	   return listMaster;
-	}
+        }
+        return true;
+    }
 
-	@Override
-	public Fabric getFabRecordById(Long id) {
-		Optional<Fabric> getData=fabricsDao.findById(id);
-		String getPartyName=partyDao.getPartyNameByPartyId(getData.get().getId());
-		getData.get().setPartyName(getPartyName);
-		if(getData.isEmpty())
-			return null;
-		else {
-			return getData.get();
-		}
-	}
+
+    @Override
+    public boolean deleteFabricsById(Long id) {
+        var findId = fabricsDao.findById(id);
+        if (findId.get().getId() != null) {
+            fabricsDao.deleteById(findId.get().getId());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
+        List<MasterLookUpWithRecord> listMaster = fabricsDao.getFabStockMasterRecordList();
+        return listMaster;
+    }
+
+    @Override
+    public Fabric getFabRecordById(Long id) {
+        var getData = fabricsDao.findById(id);
+        if (getData.isPresent()) {
+            var fablistData = fabDataDao.getAllFabStockById(getData.get().getId());
+            String getPartyName = partyDao.getPartyNameByPartyId(getData.get().getId());
+            getData.get().setPartyName(getPartyName);
+            getData.get().setFabricInRecord(fablistData);
+        }
+        return getData.get();
+    }
 }
-
 
