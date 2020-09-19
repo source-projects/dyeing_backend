@@ -9,6 +9,7 @@ import com.main.glory.model.qualityProcess.QualityTypeData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class QualityProcessImpl {
 	@Autowired
 	QualityTypeDataDao qualityTypeDataDao;
 
+	@Transactional
 	public void saveQualityProcess(QualityProcessMast qualityProcessMast){
 		QualityProcessMast m = qualityProcessMastDao.save(qualityProcessMast);
 		qualityProcessMast.getQualityProcessData().forEach(e -> {
@@ -37,10 +39,12 @@ public class QualityProcessImpl {
 		});
 	}
 
+	@Transactional
 	public List<QualityProcessMast> qualityProcessMasts(){
 		return qualityProcessMastDao.findAll();
 	}
 
+	@Transactional
 	public QualityProcessMast findById(Long id){
 		Optional<QualityProcessMast> qualityProcessMast = qualityProcessMastDao.findById(id);
 		if(!qualityProcessMast.isPresent()) {
@@ -57,6 +61,20 @@ public class QualityProcessImpl {
 		qualityProcessMast.get().setQualityProcessData(qualityProcessData);
 
 		return qualityProcessMast.get();
+	}
+
+	@Transactional
+	public void update(QualityProcessMast qualityProcessMast) throws Exception {
+		Optional<QualityProcessMast> qualityProcessMast1 = qualityProcessMastDao.findById(qualityProcessMast.getId());
+		if(!qualityProcessMast1.isPresent()){
+			throw new Exception("No such process data with id:"+ qualityProcessMast1.get());
+		} else {
+			qualityProcessMastDao.save(qualityProcessMast);
+			qualityProcessDataDao.saveAll(qualityProcessMast.getQualityProcessData());
+			qualityProcessMast.getQualityProcessData().forEach(e -> {
+				qualityTypeDataDao.saveAll(e.getQualityTypeData());
+			});
+		}
 	}
 
 

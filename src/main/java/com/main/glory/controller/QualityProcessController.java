@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.Quality;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
 import com.main.glory.servicesImpl.QualityProcessImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,4 +50,18 @@ public class QualityProcessController {
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@PutMapping("/qualityprocess")
+	public GeneralResponse<Boolean> updateQualityProcess(@RequestBody QualityProcessMast qualityProcessMast){
+		try{
+			if(qualityProcessMast == null){
+				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			}
+			qualityProcess.update(qualityProcessMast);
+			return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }
