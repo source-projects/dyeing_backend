@@ -20,9 +20,6 @@ public class BatchMast {
 
    //@Column(name = "entry_id")
     private Long id;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "entry_id", referencedColumnName = "id")
     private Long quality_id;
     private Date date;
     private String remark;

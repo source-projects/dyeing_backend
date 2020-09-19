@@ -23,11 +23,9 @@ public class FabricsController extends ControllerConfig {
     private FabricsServiceImpl fabricsServiceImpl;
 
     @PostMapping("/add-fab-stock")
-    public GeneralResponse<Boolean> addFabricIn(@NotNull @RequestBody Fabric fabrics) throws Exception {
-
+    public GeneralResponse<Boolean> addFabricIn(@RequestBody Fabric fabrics) throws Exception {
         int flag = fabricsServiceImpl.saveFabrics(fabrics);
         if (flag != 1) {
-            System.out.println("Something went wrong");
             return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         } else
             return new GeneralResponse<Boolean>(null, "FabStock Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
