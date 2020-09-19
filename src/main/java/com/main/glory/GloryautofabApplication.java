@@ -8,9 +8,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@ComponentScan(basePackages = {"com.main.glory.controller","com.main.glory.servicesImpl"})
-@EnableJpaRepositories("com.main.glory.Dao")
-@EntityScan("com.main.glory.model")
+
+@ComponentScan({"com.main.glory.controller","com.main.glory.servicesImpl","com.main.glory.config"})
+@EnableJpaRepositories({"com.main.glory.Dao"})
 @SpringBootApplication
 public class GloryautofabApplication {
 	public static void main(String[] args) {
