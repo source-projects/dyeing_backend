@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ public class QualityServiceImp implements QualityServiceInterface{
 	
 	@Override
 	public int saveQuality(Quality quality) {
-		 
 		qualityDao.save(quality);
 		return 1;
 	}
@@ -29,23 +29,21 @@ public class QualityServiceImp implements QualityServiceInterface{
 	@Override
 	public List<Quality> getAllQuality() {
 		List<Quality> qualityLisobject=qualityDao.findAll();
-//		qualityLisobject.forEach(c->
-//		{
-//			if(c.getParty_id()!=null)
-//			{
-//				var partyIndex=  partyDao.findById(c.getParty_id());
-//				
-//				if(partyIndex!=null && c.getParty_name()==null)
-//				{ 
-//					if(partyIndex.get().getId()==c.getId())
-//					{
-//						c.setParty_name(partyIndex.get().getParty_name());
-//					}
-//					 
-//				}
-//			}
-//		});
-		return qualityLisobject;
+		List<Quality> getQualityDataWithPartyName=new ArrayList<Quality>();
+
+qualityLisobject.forEach(c->{
+	 if(c.getPartyId()!=null)
+	 {
+		 String getPartyName= getPartyNameByPartyId(c.getPartyId());
+		 if(getPartyName!=null && c.getPartyName()==null)
+		 {
+		 	c.setPartyName(getPartyName);
+			 getQualityDataWithPartyName.add(c);
+		 }
+	 }
+
+});
+		return getQualityDataWithPartyName;
 	}
 
 	@Override
@@ -67,5 +65,30 @@ public class QualityServiceImp implements QualityServiceInterface{
 			qualityDao.deleteById(id);
 		 return true;	
 	}
+
+	@Override
+	public List<Quality> getQualityByID(Long id) {
+		var findQualityDataById=qualityDao.findById(id);
+		if(findQualityDataById.isEmpty())
+		{
+		  System.out.println("No Record Found");
+		  return null;
+		}
+		List<Quality> getQualityData=qualityDao.getQualityListById(findQualityDataById.get().getQualityId());
+		return getQualityData;
+	}
+
+	@Override
+	public String isQualityAlreadyExist(String qualityId) {
+		 String quakit=qualityDao.isQualityNameExist(qualityId);
+		 return quakit;
+	}
+
+	@Override
+	public String getPartyNameByPartyId(Long partyId) {
+		String partyName=partyDao.getPartyNameByPartyId(partyId);
+		return partyName;
+	}
+
 
 }

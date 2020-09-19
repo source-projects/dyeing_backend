@@ -9,6 +9,8 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.Party;
 import com.main.glory.services.PartyServiceInterface;
 
+import javax.servlet.http.Part;
+
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface{
 
@@ -20,7 +22,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 		
 		if(party!=null)
 		{
-			partyDao.save(party);
+			partyDao.saveAndFlush(party);
 			return 1;
 		}else
 			return 0;
@@ -30,6 +32,16 @@ public class PartyServiceImp implements PartyServiceInterface{
 	public List<Party> getAllPartyDetails() {
 	  List<Party> partyDetailsList=partyDao.findAll();
 		return partyDetailsList;
+	}
+
+	@Override
+	public Party getPartyDetailById(Long id) {
+		var partyData=partyDao.findById(id);
+		if(partyData.isEmpty())
+			return null;
+		else
+			return partyData.get();
+
 	}
 
 	@Override
@@ -44,12 +56,18 @@ public class PartyServiceImp implements PartyServiceInterface{
 
 	@Override
 	public boolean deletePartyById(Long id) {
-	
+
   		var partyIndex= partyDao.findById(id);
 		if(!partyIndex.isPresent())
 		return false;
 		else
 		partyDao.deleteById(id);
 		 return true;	
+	}
+
+	@Override
+	public String getPartyNameByPartyId(Long partyId) {
+		String partyName=partyDao.getPartyNameByPartyId(partyId);
+		return partyName;
 	}
 }
