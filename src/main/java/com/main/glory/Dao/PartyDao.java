@@ -14,5 +14,4 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query(value = "SELECT party_name FROM party as p WHERE p.entry_id = :pparty_id", nativeQuery = true)
 	String getPartyNameByPartyId(@Param("pparty_id") Long quality_id);
 
-
 }
