@@ -103,20 +103,7 @@ public class SupplierController extends ControllerConfig {
                 return new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @DeleteMapping("/supplier/{id}")
-    public GeneralResponse<Boolean> deleteSupplier(@PathVariable("id") Long id){
-        try{
-            supplierService.deleteSupplier(id);
-            if (id != null) {
-                return new GeneralResponse<>(null, "Supplier Details Deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            } else {
-                return new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
+            e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,24 +31,37 @@ public class Supplier {
     String remark;
     @ApiModelProperty(hidden = true)
     Date createdDate;
-    Long paymentTerms;
-
-    @ApiModelProperty(hidden = true)
-    Boolean isActive;
-
-    String updatedBy;
-
     @ApiModelProperty(hidden = true)
     Date updatedDate;
+    Long paymentTerms;
+    String updatedBy;
 
-    @Transient
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 
-    public Supplier() {
-        isActive = true;
+    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, Long userId, String remark, Date createdDate, Date updatedDate, Long paymentTerms, String updatedBy) {
+        this.id = id;
+        this.supplierName = supplierName;
+        this.discountPercentage = discountPercentage;
+        this.gstPercentage = gstPercentage;
+        this.userId = userId;
+        this.remark = remark;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.paymentTerms = paymentTerms;
+        this.updatedBy = updatedBy;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
     }
 }
 

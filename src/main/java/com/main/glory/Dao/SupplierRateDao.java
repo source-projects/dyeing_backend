@@ -11,12 +11,5 @@ import java.util.List;
 
 
 public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
-
-    @Transactional
-    @Modifying
-    @Query("update SupplierRate sr set sr.isActive = 0 where sr.supplierId = :cid")
-    public void setInactive(@Param("cid") Long control_id);
-
-
-    List<SupplierRate> findBySupplierIdAndIsActive(Long aLong, Boolean aBoolean);
+    List<SupplierRate> findBySupplierId(Long aLong);
 }

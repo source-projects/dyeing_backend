@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -16,10 +18,10 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SupplierRate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(hidden = true)
     Long id;
     Long supplierId;
     String itemName;
@@ -29,25 +31,24 @@ public class SupplierRate {
 
     @ApiModelProperty(hidden = true)
     Double gstRate;
-
     Long userId;
 
     @ApiModelProperty(hidden = true)
     Date createdDate;
     String createdBy;
-
-    @ApiModelProperty(hidden = true)
-    Boolean isActive;
-
     String updatedBy;
 
     @ApiModelProperty(hidden = true)
     Date updatedDate;
 
-    public SupplierRate() {
-        this.isActive = true;
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
     }
 
-
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 }
 
