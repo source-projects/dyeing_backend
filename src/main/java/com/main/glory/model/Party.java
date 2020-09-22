@@ -1,16 +1,12 @@
 package com.main.glory.model;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Setter
@@ -33,19 +29,29 @@ public class Party {
     @Column(name = "GSTIN")
     private String GSTIN;
     private String mailId;
+    @ApiModelProperty(hidden = true)
     private Date createdDate;
     private String createdBy;
+    @ApiModelProperty(hidden = true)
     private Date updatedDate;
     private String updatedBy;
     private Integer debtor;
     private Integer creditor;
     private Integer internalTransfer;
-    private Integer isActive;
     private String partyType;
     private String paymentTerms;
     private Double percentageDiscount;
-    @Column(name = "gstPercentage")
     private Double gstPercentage;
     private Integer userHeadId;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 
 }

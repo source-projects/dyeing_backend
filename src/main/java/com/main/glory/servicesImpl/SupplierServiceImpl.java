@@ -34,7 +34,6 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Transactional
     public Boolean addSupplier(Supplier supplier){
         try{
-            supplier.setCreatedDate(new Date(System.currentTimeMillis()));
             supplierDao.save(supplier);
             return true;
         } catch (Exception e){
@@ -47,16 +46,20 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Transactional
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
         try{
-            Optional<Supplier> supplier = (Optional<Supplier>) supplierDao.findById(addSupplierRateRequest.getId());
-            Double disc = (supplier).get().getDiscountPercentage();
-            Double gst = (supplier).get().getGstPercentage();
+            Optional<Supplier> supplierOptional = (Optional<Supplier>) supplierDao.findById(addSupplierRateRequest.getId());
+            if(!supplierOptional.isPresent()){
+                return false;
+            }
+            Supplier supplier = supplierOptional.get();
+            Double disc = (supplier).getDiscountPercentage();
+            Double gst = (supplier).getGstPercentage();
             addSupplierRateRequest.getSupplierRates().forEach(e -> {
-                e.setSupplierId(addSupplierRateRequest.getId());
-                e.setCreatedDate(new Date(System.currentTimeMillis()));
                 e.setDiscountedRate(e.getRate() * (1 - disc/100));
                 e.setGstRate(e.getDiscountedRate() * (1 + gst/100));
+                supplier.getSupplierRates().add(e);
             });
-            supplierRateDao.saveAll(addSupplierRateRequest.getSupplierRates());
+            supplierDao.saveAndFlush(supplier);
+//            supplierRateDao.saveAll(addSupplierRateRequest.getSupplierRates());
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,12 +69,11 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Override
     public Object getSupplier(Long id) {
-
         try {
             Supplier s = supplierDao.findById(id).get();
-            s.setSupplierRates(supplierRateDao.findBySupplierIdAndIsActive(s.getId(),true));
             return s;
         } catch (Exception e){
+            e.printStackTrace();
             return null;
         }
 
@@ -85,6 +87,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             if(supplier == null){
                 return false;
             }
+             
             supplier.setDiscountPercentage(updateSupplierRequest.getDiscountPercentage());
             supplier.setGstPercentage(updateSupplierRequest.getGstPercentage());
             supplier.setPaymentTerms(updateSupplierRequest.getPaymentTerms());
@@ -105,11 +108,20 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) {
         try{
             Long sid = updateSupplierRatesRequest.getSupplierId();
-            supplierRateDao.setInactive(sid);
+//            supplierRateDao.setInactive(sid);
+            Optional<Supplier> temp = supplierDao.findById(sid);
+            if(temp.isEmpty()){
+                return false;
+            }
+            Supplier s = temp.get();
+            Double disc = (s).getDiscountPercentage();
+            Double gst = (s).getGstPercentage();
             updateSupplierRatesRequest.getSupplierRates().forEach(e -> {
-                e.setSupplierId(updateSupplierRatesRequest.getSupplierId());
+                e.setDiscountedRate(e.getRate() * (1 - disc/100));
+                e.setGstRate(e.getDiscountedRate() * (1 + gst/100));
             });
-            supplierRateDao.saveAll(updateSupplierRatesRequest.getSupplierRates());
+            s.setSupplierRates(updateSupplierRatesRequest.getSupplierRates());
+            supplierDao.saveAndFlush(s);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,12 +132,11 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Override
     public Object getAllSupplier() {
         try{
-            return supplierDao.findAll();
+            return supplierDao.findAllWithoutRates();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-
 
 }

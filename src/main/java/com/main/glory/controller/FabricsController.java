@@ -7,6 +7,8 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.BatchGrDetail;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.Party;
+import com.main.glory.model.fabric.FabStockData;
+import com.main.glory.model.fabric.FabStockMast;
 import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,17 +24,17 @@ public class FabricsController extends ControllerConfig {
     @Autowired
     private FabricsServiceImpl fabricsServiceImpl;
 
-    @PostMapping("/add-fab-stock")
-    public GeneralResponse<Boolean> addFabricIn(@RequestBody Fabric fabrics) throws Exception {
-        int flag = fabricsServiceImpl.saveFabrics(fabrics);
+    @PostMapping("/fabric")
+    public GeneralResponse<Boolean> addFabricIn(@RequestBody FabStockMast fabStockMast) throws Exception {
+        int flag = fabricsServiceImpl.saveFabrics(fabStockMast);
         if (flag != 1) {
             return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         } else
             return new GeneralResponse<Boolean>(null, "FabStock Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
     }
 
-    @GetMapping("/get-all-fablist")
-    public GeneralResponse<List<MasterLookUpWithRecord>> getFabListData() {
+    @GetMapping("/fabrics/all")
+    public GeneralResponse<List<MasterLookUpWithRecord>> getFabList() {
         try {
             var x = fabricsServiceImpl.getFabStockMasterListRecord();
             return new GeneralResponse<List<MasterLookUpWithRecord>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
@@ -42,15 +44,15 @@ public class FabricsController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value = "/get-fab-stock-by-id/{id}")
-    public GeneralResponse<Fabric> getFabStockDataById(@PathVariable(value = "id") Long id) {
+    @GetMapping(value = "/fabric/{id}")
+    public GeneralResponse<FabStockMast> getFabStockDataById(@PathVariable(value = "id") Long id) {
 
         if (id != null) {
             var fabData = fabricsServiceImpl.getFabRecordById(id);
             if (fabData != null) {
-                return new GeneralResponse<Fabric>(fabData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                return new GeneralResponse<>(fabData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
             } else
-                return new GeneralResponse<Fabric>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } else
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 
