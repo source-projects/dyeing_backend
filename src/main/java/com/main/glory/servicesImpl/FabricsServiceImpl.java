@@ -9,9 +9,11 @@ import javax.transaction.Transactional;
 
 import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.fabric.FabStockMastDao;
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.model.BatchGrDetail;
 import com.main.glory.model.FabricInRecord;
+import com.main.glory.model.fabric.FabStockMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,21 +28,19 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     private FabricsDao fabricsDao;
 
     @Autowired
+    private FabStockMastDao fabStockMastDao;
+
+    @Autowired
     private PartyDao partyDao;
 
     @Autowired
     private FabDataDao fabDataDao;
 
-    @Override
-//	@Transactional
-    public int saveFabrics(Fabric fabrics) throws Exception {
+	@Transactional
+    public int saveFabrics(FabStockMast fabStockMast) throws Exception {
         try {
-            if (fabrics != null) {
-                Fabric x = fabricsDao.save(fabrics);
-                fabrics.getFabricInRecord().forEach(e -> {
-                    e.setControlId(x.getId());
-                });
-                fabDataDao.saveAll(fabrics.getFabricInRecord());
+            if (fabStockMast != null) {
+                FabStockMast x = fabStockMastDao.save(fabStockMast);
                 return 1;
             }
         } catch (Exception ex) {
@@ -49,7 +49,6 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
         return 0;
     }
 
-    @Override
     public List<Fabric> getAllFabricsDetails() {
         var getFabMasterData = fabricsDao.findAll();
 
@@ -57,7 +56,6 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 
     }
 
-    @Override
     @Transactional
     public boolean updateFabricsDetails(Fabric fabrics) throws Exception {
         var partyIndex = fabricsDao.findById(fabrics.getId());
@@ -88,7 +86,6 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     }
 
 
-    @Override
     public boolean deleteFabricsById(Long id) {
         var findId = fabricsDao.findById(id);
         if (findId.get().getId() != null) {
@@ -98,21 +95,13 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
         return false;
     }
 
-    @Override
     public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
-        List<MasterLookUpWithRecord> listMaster = fabricsDao.getFabStockMasterRecordList();
+        List<MasterLookUpWithRecord> listMaster = fabStockMastDao.findAllMasterWithDetails();
         return listMaster;
     }
 
-    @Override
-    public Fabric getFabRecordById(Long id) {
-        var getData = fabricsDao.findById(id);
-        if (getData.isPresent()) {
-            var fablistData = fabDataDao.getAllFabStockById(getData.get().getId());
-            String getPartyName = partyDao.getPartyNameByPartyId(getData.get().getId());
-            getData.get().setPartyName(getPartyName);
-            getData.get().setFabricInRecord(fablistData);
-        }
+    public FabStockMast getFabRecordById(Long id) {
+        var getData = fabStockMastDao.findById(id);
         return getData.get();
     }
 }
