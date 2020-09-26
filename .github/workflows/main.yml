@@ -22,7 +22,7 @@ jobs:
         with:
           # Command to run on the remote server
           command: |
-            echo "hello world" > temp.txt
+            bash run.sh
             
           # Hostname or IP address of the server.
           host: 18.222.194.176 # optional, default is localhost
