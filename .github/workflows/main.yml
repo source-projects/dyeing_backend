@@ -22,11 +22,7 @@ jobs:
         with:
           # Command to run on the remote server
           command: |
-            cd glory_dyeing/dyeing_backend
-            git pull origin master
-            sudo mvn clean install
-            sudo fuser -k -n tcp 8080
-            sudo java -jar ./target/gloryautofab-0.0.1-SNAPSHOT.jar > log.txt &
+            sudo bash ./run.sh
             
           # Hostname or IP address of the server.
           host: 18.221.220.41 # optional, default is localhost
