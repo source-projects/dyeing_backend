@@ -35,4 +35,4 @@ jobs:
           # Port number of the server.
           port: 22 # optional, default is 22
           # File Location or string that contains a private key for either key-based or hostbased user authentication (OpenSSH format)
-          privateKey: ${{ secrets.SSH_KEY }} # optional
+          privateKey: ${{ secrets.GFL_BACKEND_KEY }} # optional
