@@ -4,12 +4,8 @@ import java.util.List;
 
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.BatchGrDetail;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.Party;
-import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
-import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +22,16 @@ public class FabricsController extends ControllerConfig {
 
     @PostMapping("/fabric")
     public GeneralResponse<Boolean> addFabricIn(@RequestBody FabStockMast fabStockMast) throws Exception {
-        int flag = fabricsServiceImpl.saveFabrics(fabStockMast);
-        if (flag != 1) {
-            return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        } else
-            return new GeneralResponse<Boolean>(null, "FabStock Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+        try {
+            fabricsServiceImpl.saveFabrics(fabStockMast);
+            return new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            String cause = e.getCause().getMessage();
+            if(cause.equals("BR") || msg.contains("null"))
+                return new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/fabrics/all")

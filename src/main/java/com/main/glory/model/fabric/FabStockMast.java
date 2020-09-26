@@ -19,14 +19,22 @@ public class FabStockMast {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	@Column(nullable = false)
 	private String stockInType;
 	private Long batch;
+	@Column(nullable = false)
 	private Long partyId;
+	@Column(nullable = false)
 	private Date date;
+	@Column(nullable = false)
 	private String billNo;
+	@Column(nullable = false)
 	private String chlNo;
+	@Column(nullable = false)
 	private Date billDate;
+	@Column(nullable = false)
 	private Date chlDate;
+	@Column(nullable = false)
 	private Long lotNo;
 	private String remark;
 //	private Long billId;
@@ -36,6 +44,7 @@ public class FabStockMast {
 	private Date updatedDate;
 	private String createdBy;
 	private String updatedBy;
+	@Column(nullable = false)
 	private Long userHeadId;
 
 

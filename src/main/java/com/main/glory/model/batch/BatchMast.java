@@ -1,5 +1,6 @@
-package com.main.glory.model;
+package com.main.glory.model.batch;
 
+import com.main.glory.model.batch.BatchData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,24 +18,18 @@ public class BatchMast {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-   //@Column(name = "entry_id")
     private Long id;
-    private Long quality_id;
+    private Long qualityId;
     private Date date;
     private String remark;
-    private String created_by;
-    private Date create_date;
-    private Boolean is_active;
-    private Date updated_date;
-    private String updated_name;
-    private Integer batch_id;
-    private Integer bunch_id;
-    private Integer user_head_id;
+    private String createdBy;
+    private Date createDate;
+    private Date updatedDate;
+    private String updatedName;
+    private Integer userHeadId;
 
-    @Transient
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "control_id", referencedColumnName = "id")
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<BatchData> batchData;
 
 }

@@ -1,4 +1,4 @@
-package com.main.glory.model;
+package com.main.glory.model.batch;
 
 import lombok.*;
 
@@ -14,10 +14,7 @@ import javax.persistence.*;
 public class BatchGrDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "entry_id")
     private Long id;
     private Double quantity;
-    private Long control_id;
-    private String state;
-    private Boolean is_active;
+    private Long controlId;
 }

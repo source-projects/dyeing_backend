@@ -1,9 +1,6 @@
 package com.main.glory.servicesImpl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -11,8 +8,6 @@ import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
-import com.main.glory.model.BatchGrDetail;
-import com.main.glory.model.FabricInRecord;
 import com.main.glory.model.fabric.FabStockMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,16 +32,12 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     private FabDataDao fabDataDao;
 
 	@Transactional
-    public int saveFabrics(FabStockMast fabStockMast) throws Exception {
-        try {
-            if (fabStockMast != null) {
-                FabStockMast x = fabStockMastDao.save(fabStockMast);
-                return 1;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public void saveFabrics(FabStockMast fabStockMast) throws Exception {
+        if (fabStockMast != null) {
+            FabStockMast x = fabStockMastDao.save(fabStockMast);
+        } else {
+            throw new Exception("Null Data Passed", new Exception("BR"));
         }
-        return 0;
     }
 
     public List<Fabric> getAllFabricsDetails() {

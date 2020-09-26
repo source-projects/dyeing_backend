@@ -1,9 +1,8 @@
-package com.main.glory.model;
+package com.main.glory.model.batch;
 
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,23 +15,19 @@ import java.util.List;
 public class BatchData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "entry_id")
     private Long id;
-    private Long control_id;
+    private Long controlId;
     private Long gr;
     private Long lot_no;
-    private Long no_of_cones_taka;
+    private Long noOfConesTaka;
     private Double mtr;
     private Double wt;
-    private Boolean is_active;
-    private String state;
     private String unit;
     private String detail;
-    private Long referenced_id;
+    private Long fabDataId;
 
-    @Transient
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "control_id", referencedColumnName = "id")
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<BatchGrDetail> batchGrDetails;
 
 }

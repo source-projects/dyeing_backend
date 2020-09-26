@@ -1,6 +1,6 @@
 package com.main.glory.Dao;
 
-import com.main.glory.model.BatchData;
+import com.main.glory.model.batch.BatchData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
