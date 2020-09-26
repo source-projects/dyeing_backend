@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build_and_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Commands via SSH
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          # ssh host
+          host: 3.137.138.62 # optional
+          # ssh port
+        
+          username: ubuntu # optional
+          
+          key:  ${{ secrets.GFL_BACKEND_KEY }} # optional
+          # execute commands
+          script: echo hi # bash run.sh  # optional
+          # enable debug mode
+          debug: true # optional
+    # You may pin to the exact commit or the version.
+    # uses: Flaavius/ssh-commands@79ae027ae651731b483988ee69b2f628c75422f1
+#         uses: Flaavius/ssh-commands@1.0
+#         with:
+#           # Command to run on the remote server
+#           command: |
+#             bash run.sh
+            
+#           # Hostname or IP address of the server.
+#           host: 18.222.194.176 # optional, default is localhost
+#           # Username for authentication.
+#           username: ubuntu # optional
+#           # Port number of the server.
+#           port: 22 # optional, default is 22
+#           # File Location or string that contains a private key for either key-based or hostbased user authentication (OpenSSH format)
+#           privateKey: ${{ secrets.GFL_BACKEND_KEY }} # optional

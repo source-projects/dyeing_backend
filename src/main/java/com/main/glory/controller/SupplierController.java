@@ -47,6 +47,7 @@ public class SupplierController extends ControllerConfig {
         }
     }
 
+
     @GetMapping("/supplier/rate/{id}")
     public GeneralResponse<Object> getSupplierAlongWithRates(@PathVariable("id") Long id){
         try{
@@ -55,6 +56,20 @@ public class SupplierController extends ControllerConfig {
             }
 
             Object obj =  supplierService.getSupplier(id);
+            if(obj != null){
+                return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/supplier/rates/all")
+    public GeneralResponse<Object> getAllSupplierRates(){
+        try{
+            Object obj = supplierService.getAllRates();
             if(obj != null){
                 return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
