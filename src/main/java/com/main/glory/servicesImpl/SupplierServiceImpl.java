@@ -139,4 +139,12 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         }
     }
 
+	public Object getAllRates() {
+	    try{
+	        return supplierRateDao.findAll();
+        } catch (Exception e){
+	        e.printStackTrace();
+	        return false;
+        }
+    }
 }
