@@ -26,7 +26,7 @@ jobs:
           
           key:  ${{ secrets.GFL_BACKEND_KEY }} # optional
           # execute commands
-          script: bash run.sh  # optional
+          script: echo hi # bash run.sh  # optional
           # enable debug mode
           debug: true # optional
     # You may pin to the exact commit or the version.
