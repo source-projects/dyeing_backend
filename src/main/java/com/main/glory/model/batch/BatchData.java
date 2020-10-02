@@ -24,7 +24,21 @@ public class BatchData {
     private Double wt;
     private String unit;
     private String detail;
-    private Long fabDataId;
+    private Long fabInId;
+
+    public BatchData(BatchData other) {
+        this.id = other.id;
+        this.controlId = other.controlId;
+        this.gr = other.gr;
+        this.lot_no = other.lot_no;
+        this.noOfConesTaka = other.noOfConesTaka;
+        this.mtr = other.mtr;
+        this.wt = other.wt;
+        this.unit = other.unit;
+        this.detail = other.detail;
+        this.batchGrDetails = other.batchGrDetails;
+        this.fabInId = other.fabInId;
+    }
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")

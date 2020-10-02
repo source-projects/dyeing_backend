@@ -16,8 +16,8 @@ public class BatchController {
     private BatchServiceImpl batchService;
 
     @PostMapping("/batch/create")
-    public GeneralResponse<Boolean> createBatch(BatchMast batchMast){
-//        batchService
+    public GeneralResponse<Boolean> createBatch(@RequestBody BatchMast batchMast) throws Exception{
+        batchService.createBatch(batchMast);
         return null;
     }
 

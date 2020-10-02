@@ -26,6 +26,7 @@ public class FabricsController extends ControllerConfig {
             fabricsServiceImpl.saveFabrics(fabStockMast);
             return new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             String msg = e.getMessage();
             String cause = e.getCause().getMessage();
             if(cause.equals("BR") || msg.contains("null"))
