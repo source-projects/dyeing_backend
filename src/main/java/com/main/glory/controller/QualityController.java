@@ -86,7 +86,7 @@ public class QualityController extends ControllerConfig {
         if (quality_id != null) {
             String flag = qualityDao.isQualityNameExist(quality_id);
             if (flag!=null) {
-                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
