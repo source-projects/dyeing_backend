@@ -6,6 +6,7 @@ import com.main.glory.Dao.BatchMastDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
+import com.main.glory.model.Quality;
 import com.main.glory.model.batch.BatchData;
 import com.main.glory.model.batch.BatchGrDetail;
 import com.main.glory.model.batch.BatchMast;
@@ -43,13 +44,53 @@ public class BatchServiceImpl implements BatchServicesInterface {
     @Transactional
     public void createBatch(BatchMast batchMast) throws Exception{
 
+        /*
+        * Validations
+        * phase 1: fab id should be present in the db.
+        * phase 2: Batch must not be already created.
+        * phase 3: Required amount of mtr and wt for batch creation is present in the stock.
+        * phase 4: Mtr and Wt Validation based on Quality (wt per 100 mtr).
+        */
+
+        Optional<Quality> quality = qualityDao.findById(batchMast.getQualityId());
+        if(quality.isEmpty()){
+            throw new Exception("This quality does not exist");
+        }
+
+        Double ratio = quality.get().getWtPer100m();
+
         for (BatchData e : batchMast.getBatchData()) {
-            Boolean isPresent = fabStockDataDao.existsById(e.getFabInId());
-            if (!isPresent) {
+            Optional<FabStockData> fabStockData = fabStockDataDao.findById(e.getFabInId());
+            if (fabStockData.isEmpty()) {
                 throw new Exception("No fabric in of id: " + e.getFabInId());
+            }
+
+            if(fabStockData.get().getBatchCreated()){
+                throw new Exception("Batch already created for fabricIn with id:" + e.getFabInId() + " and GR:" + e.getGr());
+            }
+
+            if(fabStockData.get().getMtr() < e.getMtr() || fabStockData.get().getWt() < e.getWt()){
+                throw new Exception("Mtr and wt is more than in Stock for GR:"+e.getGr());
+            }
+
+            if(fabStockData.get().getWt() != fabStockData.get().getMtr() * ratio / 100.0){
+                throw new Exception("Mtr and wt ratio is not as per quality for GR:"+e.getGr());
             }
         }
 
+        /*
+        * Batch Creation Process:
+        * find the stock.
+        *   if the stock amount equals required batch size
+        *       create the batch and set batchCreated = true for that fab_stock
+        *   else
+        *       update the fab in to the amount used in the batch creation
+        *           - then set isCut = true as that stock is sliced.
+        *           - and set batchCreated = true
+        *       create new fab stock with the remaining amount
+        *       give old stock's GR as a refGR to this new stock
+        *
+        */
         for (BatchData e : batchMast.getBatchData()) {
             FabStockData fabStockData = fabStockDataDao.findById(e.getFabInId()).get();
             if(e.getMtr() == fabStockData.getMtr()){
@@ -61,6 +102,11 @@ public class BatchServiceImpl implements BatchServicesInterface {
                 FabStockData newData = new FabStockData(fabStockData);
                 newData.setId(null);
                 newData.setMtr(fabStockData.getMtr() - e.getMtr());
+                newData.setWt(fabStockData.getWt() - e.getWt());
+                newData.setRefGr(fabStockData.getGr());
+                fabStockData.setMtr(e.getMtr());
+                fabStockData.setWt(e.getWt());
+                fabStockDataDao.save(fabStockData);
                 fabStockDataDao.save(newData);
             }
         }

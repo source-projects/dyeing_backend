@@ -25,7 +25,7 @@ public class BatchMast {
     private String createdBy;
     private Date createDate;
     private Date updatedDate;
-    private String updatedName;
+    private String updatedBy;
     private Integer userHeadId;
 
     @OneToMany(cascade = CascadeType.ALL)

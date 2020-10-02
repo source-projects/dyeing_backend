@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class FabStockData {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Long id;
 	private Long controlId;
 	private Long gr;
@@ -33,6 +33,7 @@ public class FabStockData {
 	private String updatedBy;
 	private Boolean isCut;
 	private Boolean batchCreated;
+	private Long refGr;
 
 	public FabStockData(FabStockData other) {
 		this.id = other.id;
@@ -49,6 +50,7 @@ public class FabStockData {
 		this.updatedBy = other.updatedBy;
 		this.isCut = other.isCut;
 		this.batchCreated = other.batchCreated;
+		this.refGr = other.refGr;
 	}
 
 	@PrePersist
