@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 	
 	@Override
 	public int saveQuality(Quality quality) {
+		quality.setCreatedDate(new Date(System.currentTimeMillis()));
 		qualityDao.save(quality);
 		return 1;
 	}

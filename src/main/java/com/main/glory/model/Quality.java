@@ -30,7 +30,7 @@ public class Quality {
 	private String  partyName;
 	private Double wtPer100m;
 	private String remark;
-	private  Date createddDate;
+	private  Date createdDate;
 	private String createdBy;
 	private String updatedBy;
 	private Date updatedDate;

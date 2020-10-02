@@ -23,7 +23,7 @@ public class QualityController extends ControllerConfig {
     @Autowired
     private QualityDao qualityDao;
 
-    @PostMapping(value = "/add-quality")
+    @PostMapping(value = "/quality")
     public GeneralResponse<Boolean> saveQuality(@RequestBody Quality quality) {
         int flag = qualityServiceImp.saveQuality(quality);
         if (flag == 1)
@@ -32,7 +32,7 @@ public class QualityController extends ControllerConfig {
             return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/get-quality-list")
+    @GetMapping(value = "/quality/all")
     public GeneralResponse<List<Quality>> getQualityList() {
         try {
             var x = qualityServiceImp.getAllQuality();
@@ -43,7 +43,7 @@ public class QualityController extends ControllerConfig {
         }
     }
 
-    @PutMapping(value = "/update_quality_by_id")
+    @PutMapping(value = "/quality")
     public GeneralResponse<Boolean> updateQualityById(@RequestBody Quality quality) throws Exception {
         if (quality.getId() != null) {
             boolean flag = qualityServiceImp.updateQuality(quality);
@@ -55,7 +55,7 @@ public class QualityController extends ControllerConfig {
         return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/get_quality_data_by_id/{id}")
+    @GetMapping(value = "/quality/{id}")
     public GeneralResponse<List<Quality>> getQualityDataById(@PathVariable(value = "id") Long id) {
         try {
             if (id != null) {
@@ -68,17 +68,17 @@ public class QualityController extends ControllerConfig {
         return null;
     }
 
-    @DeleteMapping(value = "/delete-quality/{id}")
-    public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
-        if (id != null) {
-            boolean flag = qualityServiceImp.deleteQualityById(id);
-            if (flag) {
-                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-    }
+//    @DeleteMapping(value = "/delete-quality/{id}")
+//    public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
+//        if (id != null) {
+//            boolean flag = qualityServiceImp.deleteQualityById(id);
+//            if (flag) {
+//                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+//            }
+//            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+//    }
 
     @GetMapping(value = "/is_quality_exist/{quality_id}")
     public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id) {
@@ -86,7 +86,7 @@ public class QualityController extends ControllerConfig {
         if (quality_id != null) {
             String flag = qualityDao.isQualityNameExist(quality_id);
             if (flag!=null) {
-                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
