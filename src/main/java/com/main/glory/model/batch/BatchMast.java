@@ -33,6 +33,18 @@ public class BatchMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<BatchData> batchData;
 
+    public BatchMast(Long id, Long qualityId, Date date, String remark, String createdBy, Date createdDate, Date updatedDate, String updatedBy, Integer userHeadId, Boolean isProductionPlaned) {
+        this.id = id;
+        this.qualityId = qualityId;
+        this.date = date;
+        this.remark = remark;
+        this.createdBy = createdBy;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.updatedBy = updatedBy;
+        this.userHeadId = userHeadId;
+        this.isProductionPlaned = isProductionPlaned;
+    }
 
     @PrePersist
     protected void onCreate() {

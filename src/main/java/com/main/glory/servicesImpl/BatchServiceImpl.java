@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service("batchServiceImpl")
@@ -121,7 +123,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
             throw new Exception("No such batch present with id:"+batchMast.getId());
         }
 
-        // Validate if batch is not given to the production planning
+        // Validate, if batch is not given to the production planning then throw the exception
         if(original.get().getIsProductionPlaned()){
             throw new Exception("Batch is already sent to production, for id:"+batchMast.getId());
         }
@@ -129,5 +131,28 @@ public class BatchServiceImpl implements BatchServicesInterface {
         batchMastDao.save(batchMast);
     }
 
+    @Transactional
+    public void deleteBatch(Long id) throws Exception{
+        Optional<BatchMast> batchMast = batchMastDao.findById(id);
+        if(batchMast.isEmpty()){
+            throw new Exception("No such batch present with id:"+id);
+        }
+
+        if(Objects.equals(batchMast.get().getIsProductionPlaned(),true)){
+            throw new Exception("Can't delete the batch, already in production, for id:"+id);
+        }
+
+        for (BatchData batchDatum : batchMast.get().getBatchData()) {
+            Long fabId = batchDatum.getFabInId();
+            fabStockDataDao.findById(fabId).get().setBatchCreated(false);
+        }
+
+        batchMastDao.deleteById(id);
+    }
+
+    @Transactional
+    public List<BatchMast> getBatchList(){
+        return batchMastDao.findAllByIdWithoutData();
+    }
 }
 

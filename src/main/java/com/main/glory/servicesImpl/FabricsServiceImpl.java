@@ -1,13 +1,16 @@
 package com.main.glory.servicesImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
+import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,9 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 
     @Autowired
     private FabStockMastDao fabStockMastDao;
+
+    @Autowired
+    private FabStockDataDao fabStockDataDao;
 
     @Autowired
     private PartyDao partyDao;
@@ -48,42 +54,49 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     }
 
     @Transactional
-    public boolean updateFabricsDetails(Fabric fabrics) throws Exception {
-        var partyIndex = fabricsDao.findById(fabrics.getId());
+    public boolean updateFabric(FabStockMast fabStockMast) throws Exception {
 
-        if (!partyIndex.isPresent())
-            return false;
-        else {
-            // List<FabricInRecord> fabstocdata = fabDataDao.getAllFabStockById(fabs.getId());
-            fabDataDao.setisDeActive(fabrics.getId());
-            Fabric x = fabricsDao.save(fabrics);
-            fabrics.getFabricInRecord().forEach(e -> {
-                e.setControlId(x.getId());
-            });
-            fabDataDao.saveAll(fabrics.getFabricInRecord());
+	    Optional<FabStockMast> fabStockMast1 = fabStockMastDao.findById(fabStockMast.getId());
 
-
-//            fabstocdata.forEach(c -> {
-//                c.setIsActive("0");
-//                c.setControlId(fabs.getId());
-//            });
-//            fabDataDao.saveAll(fabstocdata);
-//            fabs.getFabricInRecord().forEach(c->{
-//                c.setIsActive("1");
-//            });
-
+	    if(fabStockMast1.isEmpty()){
+	        throw new Exception("No such stock present with id:"+ fabStockMast.getId());
         }
-        return true;
+
+	    for(FabStockData fabStockData: fabStockMast.getFabStockData()){
+	        Optional<FabStockData> fabStockData1 = fabStockDataDao.findById(fabStockData.getId());
+	        if(fabStockData1.isPresent()){
+	            if(fabStockData1.get().getBatchCreated() == true){
+	                throw new Exception("Batch already created for id:"+fabStockData1.get().getId());
+                }
+            }
+        }
+
+	    fabStockMastDao.save(fabStockMast);
+	    return true;
     }
 
 
-    public boolean deleteFabricsById(Long id) {
-        var findId = fabricsDao.findById(id);
-        if (findId.get().getId() != null) {
-            fabricsDao.deleteById(findId.get().getId());
-            return true;
+    @Transactional
+    public boolean deleteFabricsById(Long id) throws Exception{
+        Optional<FabStockMast> fabStockMast = fabStockMastDao.findById(id);
+
+        // check if this is present in the database
+        if(fabStockMast.isEmpty()){
+            throw new Exception("Fabric stock does not exist with id:"+id);
         }
-        return false;
+
+        // check if any of its child is not already used in the batch
+        for (FabStockData e : fabStockMast.get().getFabStockData()) {
+            if (e.getBatchCreated()) {
+                throw new Exception("Can't be deleted as batch is already created for id:" + e.getId());
+            }
+        }
+
+
+
+        fabStockMastDao.deleteById(id);
+
+        return true;
     }
 
     public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {

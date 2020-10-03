@@ -61,28 +61,30 @@ public class FabricsController extends ControllerConfig {
     }
 
 
-    @PostMapping("/update-stock")
-    public GeneralResponse<Boolean> updateFabricIn(@RequestBody Fabric fabrics) throws Exception {
-        if (fabrics != null) {
-            boolean flag = fabricsServiceImpl.updateFabricsDetails(fabrics);
-            if (flag) {
-                return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @PutMapping("/fabric")
+    public GeneralResponse<Boolean> updateFabricIn(@RequestBody FabStockMast fabStockMast) throws Exception {
+//        if (fabrics != null) {
+//            boolean flag = fabricsServiceImpl.updateFabricsDetails(fabrics);
+//            if (flag) {
+//            }
+//        }
+//        return new GeneralResponse<Boolean>(false, "Null Party Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        try {
+            fabricsServiceImpl.updateFabric(fabStockMast);
+            return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return new GeneralResponse<Boolean>(false, "Null Party Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-
     }
 
-    @DeleteMapping(value = "/delete-stock/{id}")
+    @DeleteMapping(value = "/fabric/{id}")
     public GeneralResponse<Boolean> deleteFabDetailsByID(@PathVariable(value = "id") Long id) {
-        if (id != null) {
-            boolean flag = fabricsServiceImpl.deleteFabricsById(id);
-            if (flag) {
-                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        try{
+            fabricsServiceImpl.deleteFabricsById(id);
+            return new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
+
 }
