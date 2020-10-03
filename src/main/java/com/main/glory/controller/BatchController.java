@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchGrDetail;
@@ -25,6 +26,16 @@ public class BatchController extends ControllerConfig {
             return new GeneralResponse<>(true,"batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
 
+            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/batch")
+    public GeneralResponse<Boolean> updateBatch(@RequestBody BatchMast batchMast){
+        try{
+            batchService.updateBatch(batchMast);
+            return new GeneralResponse<>(true,"batch updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
             return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }

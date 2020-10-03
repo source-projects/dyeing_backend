@@ -1,8 +1,8 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.ColorBoxDao;
-import com.main.glory.Dao.ColorDataDao;
-import com.main.glory.Dao.ColorMastDao;
+import com.main.glory.Dao.color.ColorBoxDao;
+import com.main.glory.Dao.color.ColorDataDao;
+import com.main.glory.Dao.color.ColorMastDao;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;

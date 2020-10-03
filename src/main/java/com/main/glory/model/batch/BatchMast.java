@@ -23,13 +23,25 @@ public class BatchMast {
     private Date date;
     private String remark;
     private String createdBy;
-    private Date createDate;
+    private Date createdDate;
     private Date updatedDate;
     private String updatedBy;
     private Integer userHeadId;
+    private Boolean isProductionPlaned;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<BatchData> batchData;
 
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+        isProductionPlaned = false;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 }

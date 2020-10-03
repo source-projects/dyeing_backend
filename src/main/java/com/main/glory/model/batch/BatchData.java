@@ -3,6 +3,7 @@ package com.main.glory.model.batch;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,8 @@ public class BatchData {
     private String unit;
     private String detail;
     private Long fabInId;
+    private Date createdDate;
+    private Date updatedDate;
 
     public BatchData(BatchData other) {
         this.id = other.id;
@@ -36,12 +39,24 @@ public class BatchData {
         this.wt = other.wt;
         this.unit = other.unit;
         this.detail = other.detail;
-        this.batchGrDetails = other.batchGrDetails;
         this.fabInId = other.fabInId;
+        this.createdDate = other.createdDate;
+        this.updatedDate = other.updatedDate;
+        this.batchGrDetails = other.batchGrDetails;
     }
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<BatchGrDetail> batchGrDetails;
 
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 }

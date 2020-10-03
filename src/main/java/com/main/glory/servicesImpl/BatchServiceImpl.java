@@ -1,23 +1,21 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.BatchDataDao;
-import com.main.glory.Dao.BatchGrDetailDao;
-import com.main.glory.Dao.BatchMastDao;
+import com.main.glory.Dao.batch.BatchDataDao;
+import com.main.glory.Dao.batch.BatchGrDetailDao;
+import com.main.glory.Dao.batch.BatchMastDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
-import com.main.glory.model.Quality;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.batch.BatchData;
-import com.main.glory.model.batch.BatchGrDetail;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.fabric.FabStockData;
-import com.main.glory.model.fabric.FabStockMast;
 import com.main.glory.services.BatchServicesInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service("batchServiceImpl")
@@ -53,6 +51,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
         */
 
         Optional<Quality> quality = qualityDao.findById(batchMast.getQualityId());
+
         if(quality.isEmpty()){
             throw new Exception("This quality does not exist");
         }
@@ -112,6 +111,22 @@ public class BatchServiceImpl implements BatchServicesInterface {
         }
         BatchMast batchMast1 = batchMastDao.save(batchMast);
 
+    }
+
+    @Transactional
+    public void updateBatch(BatchMast batchMast) throws Exception {
+        Optional<BatchMast> original = batchMastDao.findById(batchMast.getId());
+
+        if(original.isEmpty()){
+            throw new Exception("No such batch present with id:"+batchMast.getId());
+        }
+
+        // Validate if batch is not given to the production planning
+        if(original.get().getIsProductionPlaned()){
+            throw new Exception("Batch is already sent to production, for id:"+batchMast.getId());
+        }
+
+        batchMastDao.save(batchMast);
     }
 
 }

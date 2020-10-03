@@ -1,4 +1,4 @@
-package com.main.glory.Dao;
+package com.main.glory.Dao.batch;
 
 import com.main.glory.model.batch.BatchMast;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -4,13 +4,11 @@ import java.util.List;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.Party;
-import com.main.glory.services.QualityServiceInterface;
+import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import com.sun.istack.NotNull;
-import com.main.glory.model.Quality;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.servicesImpl.QualityServiceImp;
 
 @RestController
@@ -33,13 +31,13 @@ public class QualityController extends ControllerConfig {
     }
 
     @GetMapping(value = "/quality/all")
-    public GeneralResponse<List<Quality>> getQualityList() {
+    public GeneralResponse<List<QualityWithPartyName>> getQualityList() {
         try {
-            var x = qualityServiceImp.getAllQuality();
-            return new GeneralResponse<List<Quality>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            List<QualityWithPartyName> x = qualityServiceImp.getAllQuality();
+            return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new GeneralResponse<List<Quality>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
