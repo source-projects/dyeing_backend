@@ -21,7 +21,7 @@ public class FabStockMast {
 	private Long id;
 	@Column(nullable = false)
 	private String stockInType;
-	private Long batch;
+	private Boolean batch;
 	@Column(nullable = false)
 	private Long partyId;
 	@Column(nullable = false)
