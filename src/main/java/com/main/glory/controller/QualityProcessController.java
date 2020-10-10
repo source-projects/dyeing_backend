@@ -1,7 +1,6 @@
 package com.main.glory.controller;
 
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.Quality;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
 import com.main.glory.servicesImpl.QualityProcessImpl;
 import org.springframework.beans.factory.annotation.Autowired;

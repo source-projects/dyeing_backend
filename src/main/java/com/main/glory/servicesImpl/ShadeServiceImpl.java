@@ -4,13 +4,12 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
-import com.main.glory.model.Quality;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.UpdateShadeMastRequest;
 import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
 import com.main.glory.services.ShadeServicesInterface;
-import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

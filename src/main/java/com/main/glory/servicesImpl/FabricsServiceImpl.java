@@ -1,7 +1,5 @@
 package com.main.glory.servicesImpl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,9 +7,11 @@ import javax.transaction.Transactional;
 
 import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.fabric.FabStockDataDao;
+import com.main.glory.Dao.fabric.FabStockMastDao;
 import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
-import com.main.glory.model.BatchGrDetail;
-import com.main.glory.model.FabricInRecord;
+import com.main.glory.model.fabric.FabStockData;
+import com.main.glory.model.fabric.FabStockMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,30 +26,26 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     private FabricsDao fabricsDao;
 
     @Autowired
+    private FabStockMastDao fabStockMastDao;
+
+    @Autowired
+    private FabStockDataDao fabStockDataDao;
+
+    @Autowired
     private PartyDao partyDao;
 
     @Autowired
     private FabDataDao fabDataDao;
 
-    @Override
-//	@Transactional
-    public int saveFabrics(Fabric fabrics) throws Exception {
-        try {
-            if (fabrics != null) {
-                Fabric x = fabricsDao.save(fabrics);
-                fabrics.getFabricInRecord().forEach(e -> {
-                    e.setControlId(x.getId());
-                });
-                fabDataDao.saveAll(fabrics.getFabricInRecord());
-                return 1;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+	@Transactional
+    public void saveFabrics(FabStockMast fabStockMast) throws Exception {
+        if (fabStockMast != null) {
+            FabStockMast x = fabStockMastDao.save(fabStockMast);
+        } else {
+            throw new Exception("Null Data Passed", new Exception("BR"));
         }
-        return 0;
     }
 
-    @Override
     public List<Fabric> getAllFabricsDetails() {
         var getFabMasterData = fabricsDao.findAll();
 
@@ -57,62 +53,59 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 
     }
 
-    @Override
     @Transactional
-    public boolean updateFabricsDetails(Fabric fabrics) throws Exception {
-        var partyIndex = fabricsDao.findById(fabrics.getId());
+    public boolean updateFabric(FabStockMast fabStockMast) throws Exception {
 
-        if (!partyIndex.isPresent())
-            return false;
-        else {
-            // List<FabricInRecord> fabstocdata = fabDataDao.getAllFabStockById(fabs.getId());
-            fabDataDao.setisDeActive(fabrics.getId());
-            Fabric x = fabricsDao.save(fabrics);
-            fabrics.getFabricInRecord().forEach(e -> {
-                e.setControlId(x.getId());
-            });
-            fabDataDao.saveAll(fabrics.getFabricInRecord());
+	    Optional<FabStockMast> fabStockMast1 = fabStockMastDao.findById(fabStockMast.getId());
 
-
-//            fabstocdata.forEach(c -> {
-//                c.setIsActive("0");
-//                c.setControlId(fabs.getId());
-//            });
-//            fabDataDao.saveAll(fabstocdata);
-//            fabs.getFabricInRecord().forEach(c->{
-//                c.setIsActive("1");
-//            });
-
+	    if(fabStockMast1.isEmpty()){
+	        throw new Exception("No such stock present with id:"+ fabStockMast.getId());
         }
+
+	    for(FabStockData fabStockData: fabStockMast.getFabStockData()){
+	        Optional<FabStockData> fabStockData1 = fabStockDataDao.findById(fabStockData.getId());
+	        if(fabStockData1.isPresent()){
+	            if(fabStockData1.get().getBatchCreated() == true){
+	                throw new Exception("Batch already created for id:"+fabStockData1.get().getId());
+                }
+            }
+        }
+
+	    fabStockMastDao.save(fabStockMast);
+	    return true;
+    }
+
+
+    @Transactional
+    public boolean deleteFabricsById(Long id) throws Exception{
+        Optional<FabStockMast> fabStockMast = fabStockMastDao.findById(id);
+
+        // check if this is present in the database
+        if(fabStockMast.isEmpty()){
+            throw new Exception("Fabric stock does not exist with id:"+id);
+        }
+
+        // check if any of its child is not already used in the batch
+        for (FabStockData e : fabStockMast.get().getFabStockData()) {
+            if (e.getBatchCreated()) {
+                throw new Exception("Can't be deleted as batch is already created for id:" + e.getId());
+            }
+        }
+
+
+
+        fabStockMastDao.deleteById(id);
+
         return true;
     }
 
-
-    @Override
-    public boolean deleteFabricsById(Long id) {
-        var findId = fabricsDao.findById(id);
-        if (findId.get().getId() != null) {
-            fabricsDao.deleteById(findId.get().getId());
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
-        List<MasterLookUpWithRecord> listMaster = fabricsDao.getFabStockMasterRecordList();
+        List<MasterLookUpWithRecord> listMaster = fabStockMastDao.findAllMasterWithDetails();
         return listMaster;
     }
 
-    @Override
-    public Fabric getFabRecordById(Long id) {
-        var getData = fabricsDao.findById(id);
-        if (getData.isPresent()) {
-            var fablistData = fabDataDao.getAllFabStockById(getData.get().getId());
-            String getPartyName = partyDao.getPartyNameByPartyId(getData.get().getId());
-            getData.get().setPartyName(getPartyName);
-            getData.get().setFabricInRecord(fablistData);
-        }
+    public FabStockMast getFabRecordById(Long id) {
+        var getData = fabStockMastDao.findById(id);
         return getData.get();
     }
 }

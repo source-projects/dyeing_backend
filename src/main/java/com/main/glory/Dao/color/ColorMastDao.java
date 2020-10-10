@@ -1,4 +1,4 @@
-package com.main.glory.Dao;
+package com.main.glory.Dao.color;
 
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;

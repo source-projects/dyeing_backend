@@ -1,16 +1,18 @@
 package com.main.glory.controller;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.Party;
-import com.main.glory.services.QualityServiceInterface;
+import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import com.sun.istack.NotNull;
-import com.main.glory.model.Quality;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.servicesImpl.QualityServiceImp;
 
 @RestController
@@ -23,27 +25,40 @@ public class QualityController extends ControllerConfig {
     @Autowired
     private QualityDao qualityDao;
 
-    @PostMapping(value = "/add-quality")
-    public GeneralResponse<Boolean> saveQuality(@RequestBody Quality quality) {
-        int flag = qualityServiceImp.saveQuality(quality);
-        if (flag == 1)
-            return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-        else
-            return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-    }
+    @Autowired
+    private PartyDao partyDao;
 
-    @GetMapping(value = "/get-quality-list")
-    public GeneralResponse<List<Quality>> getQualityList() {
-        try {
-            var x = qualityServiceImp.getAllQuality();
-            return new GeneralResponse<List<Quality>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+    @PostMapping(value = "/quality")
+    public GeneralResponse<Boolean> saveQuality(@RequestBody Quality quality) {
+        try{
+
+            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            if(party.isEmpty()){
+                throw new Exception("No party present with id:"+quality.getPartyId());
+            }
+
+            int flag = qualityServiceImp.saveQuality(quality);
+            if (flag == 1)
+                return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new GeneralResponse<List<Quality>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping(value = "/update_quality_by_id")
+    @GetMapping(value = "/quality/all")
+    public GeneralResponse<List<QualityWithPartyName>> getQualityList() {
+        try {
+            List<QualityWithPartyName> x = qualityServiceImp.getAllQuality();
+            return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(value = "/quality")
     public GeneralResponse<Boolean> updateQualityById(@RequestBody Quality quality) throws Exception {
         if (quality.getId() != null) {
             boolean flag = qualityServiceImp.updateQuality(quality);
@@ -55,7 +70,7 @@ public class QualityController extends ControllerConfig {
         return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/get_quality_data_by_id/{id}")
+    @GetMapping(value = "/quality/{id}")
     public GeneralResponse<List<Quality>> getQualityDataById(@PathVariable(value = "id") Long id) {
         try {
             if (id != null) {
@@ -68,17 +83,17 @@ public class QualityController extends ControllerConfig {
         return null;
     }
 
-    @DeleteMapping(value = "/delete-quality/{id}")
-    public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
-        if (id != null) {
-            boolean flag = qualityServiceImp.deleteQualityById(id);
-            if (flag) {
-                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-    }
+//    @DeleteMapping(value = "/delete-quality/{id}")
+//    public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
+//        if (id != null) {
+//            boolean flag = qualityServiceImp.deleteQualityById(id);
+//            if (flag) {
+//                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+//            }
+//            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+//    }
 
     @GetMapping(value = "/is_quality_exist/{quality_id}")
     public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id) {
@@ -86,7 +101,7 @@ public class QualityController extends ControllerConfig {
         if (quality_id != null) {
             String flag = qualityDao.isQualityNameExist(quality_id);
             if (flag!=null) {
-                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
