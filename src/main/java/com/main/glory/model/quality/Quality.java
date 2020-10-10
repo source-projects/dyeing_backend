@@ -44,7 +44,7 @@ public class Quality {
 		this.createdBy = other.createdBy;
 		this.updatedBy = other.updatedBy;
 		this.updatedDate = other.updatedDate;
-		this.qualityDate = other.qualityDate;
+//		this.qualityDate = other.qualityDate;
 		this.userHeadId = other.userHeadId;
 	}
 

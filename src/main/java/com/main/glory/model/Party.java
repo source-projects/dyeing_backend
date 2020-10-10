@@ -35,9 +35,9 @@ public class Party {
     @ApiModelProperty(hidden = true)
     private Date updatedDate;
     private String updatedBy;
-    private Integer debtor;
-    private Integer creditor;
-    private Integer internalTransfer;
+    private Boolean debtor;
+    private Boolean creditor;
+    private Boolean internalTransfer;
     private String partyType;
     private String paymentTerms;
     private Double percentageDiscount;

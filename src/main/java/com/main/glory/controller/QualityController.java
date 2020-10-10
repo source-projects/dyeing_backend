@@ -1,9 +1,13 @@
 package com.main.glory.controller;
 
 import java.util.List;
+import java.util.Optional;
+
+import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.Party;
 import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,13 +25,26 @@ public class QualityController extends ControllerConfig {
     @Autowired
     private QualityDao qualityDao;
 
+    @Autowired
+    private PartyDao partyDao;
+
     @PostMapping(value = "/quality")
     public GeneralResponse<Boolean> saveQuality(@RequestBody Quality quality) {
-        int flag = qualityServiceImp.saveQuality(quality);
-        if (flag == 1)
-            return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-        else
-            return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        try{
+
+            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            if(party.isEmpty()){
+                throw new Exception("No party present with id:"+quality.getPartyId());
+            }
+
+            int flag = qualityServiceImp.saveQuality(quality);
+            if (flag == 1)
+                return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/quality/all")
