@@ -40,6 +40,10 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 	@Transactional
     public void saveFabrics(FabStockMast fabStockMast) throws Exception {
         if (fabStockMast != null) {
+            Long i = 1l;
+            for (FabStockData e : fabStockMast.getFabStockData()) {
+                e.setGr(i++);
+            }
             FabStockMast x = fabStockMastDao.save(fabStockMast);
         } else {
             throw new Exception("Null Data Passed", new Exception("BR"));
