@@ -25,7 +25,7 @@ jobs:
       with:
         host: 13.235.71.124
         username: ubuntu
-        key: ${{ secrets.SSH_KEY }}
+        key: ${{ secrets.GFL_BACKEND_KEY }}
         source: "target/*.jar"
         target: "builds"
         
@@ -34,7 +34,7 @@ jobs:
       with:
         host: 13.235.71.124
         username: ubuntu
-        key: ${{ secrets.SSH_KEY }}
+        key: ${{ secrets.GFL_BACKEND_KEY }}
         script: |
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
