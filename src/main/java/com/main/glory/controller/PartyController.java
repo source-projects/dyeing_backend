@@ -39,8 +39,8 @@ public class PartyController  extends ControllerConfig {
 			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value="/get-party-list")
-	public GeneralResponse<List<Party>> getQualityList()
+	@GetMapping(value="/party/all")
+	public GeneralResponse<List<Party>> getPartyList()
 	{
 		try{
 			var x = partyServiceImp.getAllPartyDetails();
@@ -51,7 +51,7 @@ public class PartyController  extends ControllerConfig {
 		}
 	}
 
-	@GetMapping(value="/get-party-by-id/{id}")
+	@GetMapping(value="/party/{id}")
 	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id)
 	{
            if(id!=null)
@@ -66,8 +66,8 @@ public class PartyController  extends ControllerConfig {
            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 
-	@PutMapping(value="/update-party")
-	public GeneralResponse<Boolean> updateQuality(@RequestBody Party party) throws Exception
+	@PutMapping(value="/party")
+	public GeneralResponse<Boolean> updateParty(@RequestBody Party party) throws Exception
 	{
 		if(party!=null)
 		{
@@ -80,7 +80,7 @@ public class PartyController  extends ControllerConfig {
 		return new GeneralResponse<Boolean>(false, "Null Party Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 	
-	@DeleteMapping(value="/delete-party/{id}")
+	@DeleteMapping(value="/party/{id}")
 	public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id)
 	{
 		if(id!=null)
