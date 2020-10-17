@@ -2,7 +2,7 @@ package com.main.glory.controller;
 
 import java.util.List;
 
-import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
+import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.fabric.FabStockMast;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.main.glory.model.Fabric;
 import com.main.glory.servicesImpl.FabricsServiceImpl;
 
 @RestController

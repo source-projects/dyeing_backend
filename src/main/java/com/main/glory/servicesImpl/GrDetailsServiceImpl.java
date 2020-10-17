@@ -3,7 +3,7 @@
 //import com.main.glory.Dao.FabDataDao;
 //import com.main.glory.Dao.FabricsDao;
 //import com.main.glory.Dao.GrLookUpDao;
-//import com.main.glory.grLookUp.GrLooKUpDetails;
+//import com.main.glory.Lookup.grLookUp.GrLooKUpDetails;
 //import com.main.glory.model.Fabric;
 //import com.main.glory.services.GrDetailsLookUPInterface;
 //import org.springframework.beans.factory.annotation.Autowired;
