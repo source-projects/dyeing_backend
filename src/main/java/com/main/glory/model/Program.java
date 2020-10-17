@@ -22,18 +22,18 @@ public class Program {
  @GeneratedValue(strategy = GenerationType.IDENTITY)
 // @ApiModelProperty(hidden = true)
     private Long id;
-    private Long party_id;
-    private String quality_id;
-    private Long quality_entry_id;
-    private String quality_type;
-    private String quality_name;
-    private String program_given_by;
+    private Long partyId;
+    private String qualityId;
+    private Long qualityEntryId;
+    private String qualityType;
+    private String qualityName;
+    private String programGivenBy;
     private String remark;
-    private Date created_date;
-    private Date updated_date;
-    private String created_by;
-    private String updated_by;
-    private Long user_head_id;
+    private Date createdDate;
+    private Date updatedDate;
+    private String createdBy;
+    private String updatedBy;
+    private Long userHeadId;
     private String priority;
 
     @OneToMany(cascade = CascadeType.ALL)
