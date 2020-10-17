@@ -1,4 +1,4 @@
-//package com.main.glory.grLookUp;
+//package com.main.glory.Lookup.grLookUp;
 //
 //
 //import com.main.glory.model.FabricInRecord;

@@ -1,6 +1,6 @@
 //package com.main.glory.services;
 //
-//import com.main.glory.grLookUp.GrLooKUpDetails;
+//import com.main.glory.Lookup.grLookUp.GrLooKUpDetails;
 //
 //import java.util.List;
 //
