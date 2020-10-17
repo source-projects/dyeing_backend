@@ -5,8 +5,8 @@ import com.main.glory.model.quality.QualityWithPartyName;
 
 public interface QualityServiceInterface {
 
-	public int saveQuality(Quality obj);
 	public List<QualityWithPartyName> getAllQuality();
+	public int saveQuality(Quality obj) throws Exception;
 	public boolean updateQuality(Quality obj) throws Exception;
 	public boolean deleteQualityById(Long id);
 	public List<Quality> getQualityByID(Long id);

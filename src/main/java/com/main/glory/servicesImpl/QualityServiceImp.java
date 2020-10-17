@@ -1,6 +1,8 @@
 package com.main.glory.servicesImpl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,12 @@ public class QualityServiceImp implements QualityServiceInterface{
 	private PartyDao partyDao;
 	
 	@Override
-	public int saveQuality(Quality quality) {
+	public int saveQuality(Quality quality) throws Exception {
+		Optional<Quality> quality1 = qualityDao.findByQualityId(quality.getQualityId());
+		if(quality1.isPresent()){
+			throw new Exception("Entry already exist for Quality Id:"+ quality.getQualityId());
+		}
+		quality.setCreatedDate(new Date(System.currentTimeMillis()));
 		qualityDao.save(quality);
 		return 1;
 	}
