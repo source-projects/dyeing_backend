@@ -9,7 +9,7 @@ import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
-import com.main.glory.FabInMasterLookUp.MasterLookUpWithRecord;
+import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
 import org.springframework.beans.factory.annotation.Autowired;

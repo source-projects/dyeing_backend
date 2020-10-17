@@ -1,6 +1,6 @@
 //package com.main.glory.Dao;
 //
-//import com.main.glory.grLookUp.GrLooKUpDetails;
+//import com.main.glory.Lookup.grLookUp.GrLooKUpDetails;
 //import com.main.glory.model.FabricInRecord;
 //import org.springframework.data.jpa.repository.JpaRepository;
 //import org.springframework.data.jpa.repository.Query;

@@ -1,17 +1,11 @@
-package com.main.glory.FabInMasterLookUp;
+package com.main.glory.Lookup.FabInMasterLookUp;
 
-import com.main.glory.model.Fabric;
-import com.main.glory.model.FabricInRecord;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Getter
