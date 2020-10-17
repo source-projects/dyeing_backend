@@ -31,12 +31,12 @@ public class ProgramController extends ControllerConfig {
             return true;
     }
 
-    @GetMapping(value="/get-program-list")
+    @GetMapping(value="/program/all")
     public List<Program> getProgramList() throws Exception {
         return programServiceImpl.getAllProgram();
     }
 
-    @GetMapping(value="/get-program-by-id/{id}")
+    @GetMapping(value="/program/{id}")
     public Program getProgramDetailsById(@PathVariable(value = "id") Long id) throws Exception {
         if(id!=null)
         {
@@ -49,7 +49,7 @@ public class ProgramController extends ControllerConfig {
         return null;
     }
 
-    @PutMapping(value="/update-program")
+    @PutMapping(value="/program")
     public boolean  updateProgram(@RequestBody Program program) throws Exception
     {
         if(program!=null)
@@ -62,7 +62,7 @@ public class ProgramController extends ControllerConfig {
         return false;
     }
 
-    @DeleteMapping(value="/delete-programDetailsById/{id}")
+    @DeleteMapping(value="/program/{id}")
     public boolean deleteProgramDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
         if(id!=null)
         {
