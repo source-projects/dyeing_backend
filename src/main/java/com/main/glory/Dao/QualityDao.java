@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @EnableJpaRepositories
@@ -22,6 +23,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q")
     List<QualityWithPartyName> findAllWithPartyName();
+
+    Optional<Quality> findByQualityId(String qualityId);
+
 }
 
 
