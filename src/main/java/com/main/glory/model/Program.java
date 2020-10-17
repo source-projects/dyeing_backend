@@ -37,8 +37,8 @@ public class Program {
     private String priority;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "program_control_id", referencedColumnName = "id")
-    private List<ProgramRecord> program_record;
+    @JoinColumn(name = "programControlId", referencedColumnName = "id")
+    private List<ProgramRecord> programRecords;
 
 //    @OneToOne
 //    @JoinColumn(name="entry_id", referencedColumnName = "party_id")

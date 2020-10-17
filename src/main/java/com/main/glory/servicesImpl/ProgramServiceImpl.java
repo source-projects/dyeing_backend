@@ -1,13 +1,19 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.ProgramDao;
+import com.main.glory.Dao.batch.BatchDataDao;
+import com.main.glory.Dao.batch.BatchMastDao;
 import com.main.glory.model.Program;
+import com.main.glory.model.ProgramRecord;
+import com.main.glory.model.batch.BatchData;
+import com.main.glory.model.batch.BatchMast;
 import com.main.glory.services.ProgramServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service("programServiceImpl")
 public class ProgramServiceImpl implements ProgramServiceInterface {
@@ -15,18 +21,42 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Autowired
     private ProgramDao programDao;
 
+    @Autowired
+    private BatchMastDao batchMastDao;
+
+    @Autowired
+    private BatchDataDao batchDataDao;
+
 
     @Override
-//    @Transactional
+    @Transactional
     public boolean saveProgram(Program program) throws Exception {
-        try {
-            if (program!= null) {
-                programDao.saveAndFlush(program);
-                return true;
+
+        if (program!= null) {
+
+            if(program.getProgramRecords() == null){
+                throw new Exception("Program record can not be null");
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+
+            for (ProgramRecord programRecord : program.getProgramRecords()) {
+                Optional<BatchMast> batchMast = batchMastDao.findById(programRecord.getBatchId());
+
+                if (batchMast.isEmpty()) {
+                    throw new Exception("No batch present with id:" + programRecord.getId());
+                }
+
+                if (batchMast.get().getIsProductionPlaned()){
+                    throw new Exception("Production already planned for batchId:"+programRecord.getId());
+                }
+
+                batchMast.get().setIsProductionPlaned(true);
+
+            }
+
+            programDao.saveAndFlush(program);
+            return true;
         }
+
         return false;
     }
 

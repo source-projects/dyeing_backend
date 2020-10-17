@@ -19,15 +19,13 @@ public class ProgramRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "program_control_id")
     private Long  programControlId;
-    private Long shade_no;
-    private Long party_shade_no;
+    private Long shadeNo;
+    private Long partyShadeNo;
     private Long quantity;
-    private Long batch;
-    private Long lot_no;
-    private String colour_tone;
+    private Long batchId;
+    private Long lotNo;
+    private String colourTone;
     private String  remark;
 
 //    @ManyToOne(cascade = {CascadeType.ALL},fetch= FetchType.EAGER)
