@@ -29,6 +29,7 @@ public class Supplier {
     Double gstPercentage;
     Long userId;
     String remark;
+    String createdBy;
     @ApiModelProperty(hidden = true)
     Date createdDate;
     @ApiModelProperty(hidden = true)
@@ -41,13 +42,14 @@ public class Supplier {
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 
-    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, Long userId, String remark, Date createdDate, Date updatedDate, Long paymentTerms, String updatedBy) {
+    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, Long userId, String remark, String createdBy, Date createdDate, Date updatedDate, Long paymentTerms, String updatedBy) {
         this.id = id;
         this.supplierName = supplierName;
         this.discountPercentage = discountPercentage;
         this.gstPercentage = gstPercentage;
         this.userId = userId;
         this.remark = remark;
+        this.createdBy = createdBy;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.paymentTerms = paymentTerms;
