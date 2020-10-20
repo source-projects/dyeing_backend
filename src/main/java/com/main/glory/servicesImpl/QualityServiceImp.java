@@ -60,15 +60,14 @@ public class QualityServiceImp implements QualityServiceInterface{
 	}
 
 	@Override
-	public List<Quality> getQualityByID(Long id) {
-		var findQualityDataById=qualityDao.findById(id);
-		if(findQualityDataById.isEmpty())
+	public Quality getQualityByID(Long id) {
+		var quality =qualityDao.findById(id);
+		if(quality.isEmpty())
 		{
 		  System.out.println("No Record Found");
 		  return null;
 		}
-		List<Quality> getQualityData=qualityDao.getQualityListById(findQualityDataById.get().getQualityId());
-		return getQualityData;
+		return quality.get();
 	}
 
 	@Override
