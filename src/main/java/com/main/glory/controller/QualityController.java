@@ -71,11 +71,14 @@ public class QualityController extends ControllerConfig {
     }
 
     @GetMapping(value = "/quality/{id}")
-    public GeneralResponse<List<Quality>> getQualityDataById(@PathVariable(value = "id") Long id) {
+    public GeneralResponse<Quality> getQualityDataById(@PathVariable(value = "id") Long id) {
         try {
             if (id != null) {
                 var x = qualityServiceImp.getQualityByID(id);
-                return new GeneralResponse<List<Quality>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                if(x == null){
+                    return new GeneralResponse<Quality>(x, "No such data found", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+                return new GeneralResponse<Quality>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
             }
         } catch (Exception e) {
             e.printStackTrace();
