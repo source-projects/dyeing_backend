@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class ShadeController {
+public class ShadeController extends ControllerConfig {
 
 	@Autowired
 	ShadeServiceImpl shadeService;
