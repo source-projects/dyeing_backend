@@ -43,7 +43,6 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
-    @Transactional
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
         try{
             Optional<Supplier> supplierOptional = (Optional<Supplier>) supplierDao.findById(addSupplierRateRequest.getId());
