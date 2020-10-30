@@ -103,7 +103,6 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
-    @Transactional
     public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) {
         try{
             Long sid = updateSupplierRatesRequest.getSupplierId();
