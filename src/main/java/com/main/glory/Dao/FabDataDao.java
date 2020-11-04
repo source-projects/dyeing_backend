@@ -17,5 +17,4 @@ public interface FabDataDao extends JpaRepository<FabricInRecord, Long> {
     @Query(value = "UPDATE fabstock SET is_active = '0' WHERE control_id = :mid", nativeQuery = true)
     void setisDeActive(@Param("mid") Long fabmasterId);
 
-
 }

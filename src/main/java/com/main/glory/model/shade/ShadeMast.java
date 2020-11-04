@@ -24,7 +24,7 @@ public class ShadeMast {
 	@Column(nullable = false)
 	Long processId;
 	@Column(nullable = false)
-	Long qualityId;
+	String qualityId;
 	@Column(nullable = false)
 	Long partyId;
 	String colorTone;

@@ -73,17 +73,25 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		List<ShadeMastWithDetails> data = new ArrayList<>();
 		System.out.println(shadeMast);
 		shadeMast.forEach(e -> {
-			try {
+			try{
+				System.out.println(e);
 				ShadeMastWithDetails t = new ShadeMastWithDetails(e);
-				t.setPartyName(partyDao.getPartyNameByPartyId(e.getPartyId()));
+				t.setPartyName(partyDao.getPartyNameByPartyId(1l));
+				//System.out.println("PartyName:"+t.getPartyName());
+				Optional<Quality> q = qualityDao.findByQualityId(e.getQualityId());
+				if(q.isPresent()){
+					System.out.println("Q:-----"+q);
+					t.setQualityType(q.get().getQualityType());
+					t.setQualityName(q.get().getQualityName());
+				}
 
-				Optional<Quality> q = qualityDao.findById(e.getQualityId());
+				/*System.out.println("Q:-----"+q);
 				t.setQualityType(q.get().getQualityType());
 				t.setQualityName(q.get().getQualityName());
-				System.out.println(t);
+*/
 				data.add(t);
 			} catch (Exception x) {
-				System.out.println(x.getMessage());
+				System.out.println("asassasasas"+x.getMessage());
 			}
 		});
 		return data;

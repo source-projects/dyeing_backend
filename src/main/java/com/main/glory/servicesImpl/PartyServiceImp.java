@@ -41,7 +41,6 @@ public class PartyServiceImp implements PartyServiceInterface{
 			return null;
 		else
 			return partyData.get();
-
 	}
 
 	@Override
