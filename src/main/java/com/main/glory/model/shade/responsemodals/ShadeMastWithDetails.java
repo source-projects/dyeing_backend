@@ -22,7 +22,7 @@ public class ShadeMastWithDetails extends ShadeMast {
 	String qualityType;
 //	String processName;
 
-	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, Long qualityId, Long partyId, String colorTone, String createdBy, String updatedBy, Date createdDate, Date updatedDate, Boolean isActive, Long userHeadId, Long cuttingId, String remark, String category, Long labColorNo, List<ShadeData> shadeDataList) {
+	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, String qualityId, Long partyId, String colorTone, String createdBy, String updatedBy, Date createdDate, Date updatedDate, Boolean isActive, Long userHeadId, Long cuttingId, String remark, String category, Long labColorNo, List<ShadeData> shadeDataList) {
 		super(id, partyShadeNo, processId, qualityId, partyId, colorTone, createdBy, updatedBy, createdDate, updatedDate, isActive, userHeadId, cuttingId, remark, category, labColorNo, shadeDataList);
 	}
 
