@@ -37,7 +37,6 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     @Autowired
     private FabDataDao fabDataDao;
 
-	@Transactional
     public void saveFabrics(FabStockMast fabStockMast) throws Exception {
         if (fabStockMast != null) {
             Long i = 1l;
@@ -57,7 +56,7 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 
     }
 
-    @Transactional
+
     public boolean updateFabric(FabStockMast fabStockMast) throws Exception {
 
 	    Optional<FabStockMast> fabStockMast1 = fabStockMastDao.findById(fabStockMast.getId());
@@ -80,7 +79,7 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     }
 
 
-    @Transactional
+
     public boolean deleteFabricsById(Long id) throws Exception{
         Optional<FabStockMast> fabStockMast = fabStockMastDao.findById(id);
 
