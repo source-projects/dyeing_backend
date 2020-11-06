@@ -24,8 +24,8 @@ public class FabStockMast {
 	private Boolean batch;
 	@Column(nullable = false)
 	private Long partyId;
-	@Column(nullable = false)
-	private Date date;
+	//@Column(nullable = false)
+	//private Date date;
 	@Column(nullable = false)
 	private String billNo;
 	@Column(nullable = false)
@@ -51,6 +51,7 @@ public class FabStockMast {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id", name = "controlId")
 	Set<FabStockData> fabStockData;
+
 
 
 	@PrePersist

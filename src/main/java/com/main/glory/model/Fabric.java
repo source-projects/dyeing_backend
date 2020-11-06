@@ -26,7 +26,6 @@ public class Fabric {
 	private Long batch;
 	private Long partyId;
 	private String partyName;
-	private Date date;
 	private String billNo;
 	private String chlNo;
 	private Date billDate;
@@ -47,14 +46,14 @@ public class Fabric {
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<FabricInRecord> fabricInRecord;
 
-	public Fabric(Long id, Long stockId, String stockInType, Long batch, Long partyId, String partyName, Date date, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Long billId, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Long recordCount) {
+	public Fabric(Long id, Long stockId, String stockInType, Long batch, Long partyId, String partyName, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Long billId, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Long recordCount) {
 		this.id = id;
 		this.stockId = stockId;
 		this.stockInType = stockInType;
 		this.batch = batch;
 		this.partyId = partyId;
 		this.partyName = partyName;
-		this.date = date;
+
 		this.billNo = billNo;
 		this.chlNo = chlNo;
 		this.billDate = billDate;
