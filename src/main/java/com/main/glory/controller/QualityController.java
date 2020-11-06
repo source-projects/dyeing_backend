@@ -64,26 +64,23 @@ public class QualityController extends ControllerConfig {
             boolean flag = qualityServiceImp.updateQuality(quality);
             if (flag) {
                 return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }else{
+                return new GeneralResponse<Boolean>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/quality/{id}")
     public GeneralResponse<Quality> getQualityDataById(@PathVariable(value = "id") Long id) {
-        try {
-            if (id != null) {
-                var x = qualityServiceImp.getQualityByID(id);
-                if(x == null){
-                    return new GeneralResponse<Quality>(x, "No such data found", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                }
-                return new GeneralResponse<Quality>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        if (id != null) {
+            var qualityData = qualityServiceImp.getQualityByID(id);
+            if (!qualityData.isPresent()) {
+                return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            } else
+                return new GeneralResponse<>(qualityData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        } else
+            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
 //    @DeleteMapping(value = "/delete-quality/{id}")

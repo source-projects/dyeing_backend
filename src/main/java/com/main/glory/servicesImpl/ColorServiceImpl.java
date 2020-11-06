@@ -5,8 +5,12 @@ import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.model.color.ColorBox;
+import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
+import com.main.glory.model.fabric.FabStockData;
+import com.main.glory.model.fabric.FabStockMast;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.services.ColorServicesInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ColorServiceImpl implements ColorServicesInterface {
@@ -35,18 +40,23 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	public void addColor(ColorMast colorMast) {
 			ColorMast colorMast1 = colorMastDao.save(colorMast);
 			List<ColorBox> colorBoxes = new ArrayList<>();
-
-
 			colorMast.getColorDataList().forEach(e -> {
-				e.setPurchaseId(colorMast.getId());
+				e.setControlId(colorMast1.getId());
+			});
+			colorDataDao.saveAll(colorMast.getColorDataList());
+
+			colorMast1.getColorDataList().forEach(e -> {
+				e.setPurchaseId(colorMast1.getId());
 				for (int i = 0; i < e.getNoOfBox(); i++) {
 					ColorBox temp = new ColorBox();
 					temp.setControlId(e.getId());
 					temp.setIssued(false);
+					temp.setFinished(false);
+					temp.setQuantity(e.getQuantityPerBox());
 					colorBoxes.add(temp);
 				}
 			});
-			colorDataDao.saveAll(colorMast.getColorDataList());
+
 			colorBoxDao.saveAll(colorBoxes);
 	}
 
@@ -79,5 +89,36 @@ public class ColorServiceImpl implements ColorServicesInterface {
 				}
 			});
 		return colorMastDetails;
+	}
+
+	@Transactional
+	public boolean updateColor(ColorMast colorMast) throws Exception {
+		Optional<ColorMast> original = colorMastDao.findById(colorMast.getId());
+
+		if(original.isEmpty()) {
+			throw new Exception("No such color data present with id:" + colorMast.getId());
+		}
+		colorMastDao.save(colorMast);
+		return true;
+	}
+
+	@Transactional
+	public boolean deleteColorById(Long id) throws Exception{
+		Optional<ColorMast> colorMast = colorMastDao.findById(id);
+
+		// check if this is present in the database
+		if(colorMast.isEmpty()){
+			throw new Exception("color data does not exist with id:"+id);
+		}
+
+		colorMastDao.deleteById(id);
+
+		return true;
+	}
+
+	public Optional<ColorMast> getColorById(Long id) {
+		var getData = colorMastDao.findById(id);
+		System.out.println(getData.get().getColorDataList());
+		return getData;
 	}
 }

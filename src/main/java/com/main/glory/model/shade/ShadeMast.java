@@ -45,7 +45,7 @@ public class ShadeMast {
 	String category;
 	@Column(nullable = false)
 	Long labColorNo;
-	@Transient
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ShadeData> shadeDataList;

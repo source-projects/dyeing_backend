@@ -20,6 +20,10 @@ public class ColorData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
+
+	@Column(nullable = false)
+	Long controlId;
+
 	@Column(nullable = false)
 	Long purchaseId;
 

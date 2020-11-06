@@ -50,8 +50,8 @@ public class FabricsController extends ControllerConfig {
 
         if (id != null) {
             var fabData = fabricsServiceImpl.getFabRecordById(id);
-            if (fabData != null) {
-                return new GeneralResponse<>(fabData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            if (!fabData.isEmpty()) {
+                return new GeneralResponse<>(fabData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
             } else
                 return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } else

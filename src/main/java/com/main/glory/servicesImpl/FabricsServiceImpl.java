@@ -107,9 +107,9 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
         return listMaster;
     }
 
-    public FabStockMast getFabRecordById(Long id) {
+    public Optional<FabStockMast> getFabRecordById(Long id) {
         var getData = fabStockMastDao.findById(id);
-        return getData.get();
+        return getData;
     }
 }
 

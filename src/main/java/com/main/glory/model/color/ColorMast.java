@@ -32,7 +32,6 @@ public class ColorMast {
     @ApiModelProperty(hidden = true)
     Date createdDate;
 
-    @Transient
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "purchaseId",referencedColumnName = "id")
     List<ColorData> colorDataList;
