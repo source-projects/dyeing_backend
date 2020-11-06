@@ -41,6 +41,20 @@ public class BatchController extends ControllerConfig {
         }
     }
 
+    @GetMapping(value="/batch/{id}")
+    public GeneralResponse<BatchMast> getBatchById(@PathVariable(value = "id") Long id)
+    {
+        if(id!=null)
+        {
+            var batchObj=batchService.getBatchMastById(id);
+            if(batchObj!=null)
+            {
+                return new GeneralResponse<BatchMast>(batchObj, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            }
+            return new GeneralResponse<BatchMast>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
 
     @PutMapping("/batch")
     public GeneralResponse<Boolean> updateBatch(@RequestBody BatchMast batchMast) {
