@@ -35,13 +35,13 @@ public class FabricsController extends ControllerConfig {
     }
 
     @GetMapping("/fabrics/all")
-    public GeneralResponse<List<MasterLookUpWithRecord>> getFabList() {
+    public GeneralResponse<List<FabStockMast>> getFabList() {
         try {
             var x = fabricsServiceImpl.getFabStockMasterListRecord();
-            return new GeneralResponse<List<MasterLookUpWithRecord>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            return new GeneralResponse<List<FabStockMast>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new GeneralResponse<List<MasterLookUpWithRecord>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<List<FabStockMast>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

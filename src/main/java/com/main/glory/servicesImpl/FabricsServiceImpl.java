@@ -102,8 +102,8 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
         return true;
     }
 
-    public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
-        List<MasterLookUpWithRecord> listMaster = fabStockMastDao.findAllMasterWithDetails();
+    public List<FabStockMast> getFabStockMasterListRecord() {
+        List<FabStockMast> listMaster = fabStockMastDao.findAll();
         return listMaster;
     }
 
