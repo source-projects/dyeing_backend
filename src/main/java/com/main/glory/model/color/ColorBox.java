@@ -23,4 +23,7 @@ public class ColorBox {
 	Date issuedDate;
 	Boolean finished;
 	Double quantityLeft;
+
+	@Column(nullable = false)
+	Integer quantity;
 }

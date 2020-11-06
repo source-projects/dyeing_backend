@@ -77,11 +77,13 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 				ShadeMastWithDetails t = new ShadeMastWithDetails(e);
 				t.setPartyName(partyDao.getPartyNameByPartyId(e.getPartyId()));
 
-				Optional<Quality> q = qualityDao.findById(e.getQualityId());
-				t.setQualityType(q.get().getQualityType());
-				t.setQualityName(q.get().getQualityName());
-				System.out.println(t);
-				data.add(t);
+				Optional<Quality> q = qualityDao.findByQualityId(String.valueOf(e.getQualityId()));
+				if(q.isPresent()) {
+					t.setQualityType(q.get().getQualityType());
+					t.setQualityName(q.get().getQualityName());
+					System.out.println(t);
+					data.add(t);
+				}
 			} catch (Exception x) {
 				System.out.println(x.getMessage());
 			}
