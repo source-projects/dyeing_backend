@@ -6,6 +6,7 @@ import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.fabric.FabStockMast;
+import com.main.glory.servicesImpl.PartyServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class FabricsController extends ControllerConfig {
 
     @Autowired
     private FabricsServiceImpl fabricsServiceImpl;
+    @Autowired
+    private PartyServiceImp partyServiceImp;
 
     @PostMapping("/fabric")
     public GeneralResponse<Boolean> addFabricIn(@RequestBody FabStockMast fabStockMast) throws Exception {
@@ -38,6 +41,7 @@ public class FabricsController extends ControllerConfig {
     public GeneralResponse<List<FabStockMast>> getFabList() {
         try {
             var x = fabricsServiceImpl.getFabStockMasterListRecord();
+
             return new GeneralResponse<List<FabStockMast>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface BatchMastDao extends JpaRepository<BatchMast, Long> {
 
-	@Query("Select new BatchMast(b.id, b.qualityId, b.date, b.remark, b.createdBy, b.createdDate, b.updatedDate, b.updatedBy, b.userHeadId, b.isProductionPlaned) from BatchMast b")
+	@Query("Select new BatchMast(b.id, b.qualityId, b.remark, b.createdBy, b.createdDate, b.updatedDate, b.updatedBy, b.userHeadId, b.isProductionPlaned) from BatchMast b")
 	public List<BatchMast> findAllByIdWithoutData();
 }

@@ -20,7 +20,7 @@ public class BatchMast {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long qualityId;
-    private Date date;
+
     private String remark;
     private String createdBy;
     private Date createdDate;
@@ -33,10 +33,10 @@ public class BatchMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<BatchData> batchData;
 
-    public BatchMast(Long id, Long qualityId, Date date, String remark, String createdBy, Date createdDate, Date updatedDate, String updatedBy, Integer userHeadId, Boolean isProductionPlaned) {
+    public BatchMast(Long id, Long qualityId, String remark, String createdBy, Date createdDate, Date updatedDate, String updatedBy, Integer userHeadId, Boolean isProductionPlaned) {
         this.id = id;
         this.qualityId = qualityId;
-        this.date = date;
+
         this.remark = remark;
         this.createdBy = createdBy;
         this.createdDate = createdDate;
