@@ -18,4 +18,5 @@ public interface ShadeDataDao extends JpaRepository<ShadeData, Long> {
 
 	public List<ShadeData> findByIsActiveAndControlId(Boolean aBoolean, Long aLong);
 	public List<ShadeData> findByStateAndControlId(String s, Long aLong);
+	public List<ShadeData> findByControlId(Long aLong);
 }

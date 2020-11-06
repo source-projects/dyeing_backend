@@ -132,6 +132,15 @@ public class BatchServiceImpl implements BatchServicesInterface {
     }
 
     @Transactional
+    public BatchMast getBatchMastById(Long id) {
+        var data=batchMastDao.findById(id);
+        if(data.isEmpty())
+            return null;
+        else
+            return data.get();
+    }
+
+    @Transactional
     public void deleteBatch(Long id) throws Exception{
         Optional<BatchMast> batchMast = batchMastDao.findById(id);
         if(batchMast.isEmpty()){

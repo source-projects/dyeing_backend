@@ -35,75 +35,21 @@ public class ShadeController extends ControllerConfig {
 		}
 	}
 
-	@GetMapping("/shade/current/all")
-	public GeneralResponse<List<ShadeMast>> getAllCurrentShadeData(){
-		try{
-			var data = shadeService.getAllActiveData();
-			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/shade/original/all")
-	public GeneralResponse<List<ShadeMast>> getAllOriginalShadeData(){
-		try{
-			var data = shadeService.getAllOriginalData();
-			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/shade/current/{id}")
-	public GeneralResponse<ShadeMast> getCurrentShadeData(@PathVariable("id") Long id){
-		try{
-			var data = shadeService.getActiveShadeData(id);
-			if(data == null){
-				return new GeneralResponse<>(data, "No such active shade found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-			}
-			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/shade/original/{id}")
-	public GeneralResponse<ShadeMast> getOriginalShadeData(@PathVariable("id") Long id){
-		try{
-			var data = shadeService.getOriginalShadeData(id);
-			if(data == null){
-				return new GeneralResponse<>(data, "No such active shade found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-			}
-			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	@GetMapping("/shade/all")
-	public GeneralResponse<List<ShadeMastWithDetails>> getShadeMastList(){
+	public GeneralResponse<List<ShadeMast>> getAllShades(){
 		try{
-			var data = shadeService.getShadeMastList();
-			return new GeneralResponse<>(data, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
+			List<ShadeMast> shadeMast = shadeService.getAllShadeMast();
+			if(shadeMast != null){
+				return new GeneralResponse<List<ShadeMast>>(shadeMast, "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
+			}else{
+				return new GeneralResponse<>(null, "No shade data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+		}catch (Exception e){
 			e.printStackTrace();
-			return new GeneralResponse<>(null, "Internal Server Error",false,  System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@DeleteMapping("/shade/{id}")
-	public GeneralResponse<Boolean> deleteShadeData(@PathVariable("id") Long id){
-		try{
-			shadeService.deleteData(id);
-			return new GeneralResponse<>(true, "deleted successfully", false, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new GeneralResponse<>(false, e.getMessage(),false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+
+
 }

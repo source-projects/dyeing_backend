@@ -41,8 +41,6 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		shadeMast.setIsActive(true);
 		ShadeMast x = shadeMastDao.save(shadeMast);
 		shadeMast.getShadeDataList().forEach(e -> {
-			e.setIsActive(true);
-			e.setState("original");
 			e.setControlId(x.getId());
 			e.setCreatedDate(dt);
 		});
@@ -50,97 +48,18 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	}
 
 	@Override
-	public List<ShadeMast> getAllActiveData() {
-		List<ShadeMast> data = shadeMastDao.findAll();
-		data.forEach(e -> {
-			e.setShadeDataList(shadeDataDao.findByIsActiveAndControlId(true, e.getId()));
+	public List<ShadeMast> getAllShadeMast() {
+		List<ShadeMast> shadeMastList = shadeMastDao.findAll();
+		shadeMastList.forEach(shadeMast -> {
+			List<ShadeData> sd = shadeDataDao.findByControlId(shadeMast.getId());
+			//shadeMast.getShadeDataList().
 		});
-		return data;
-	}
-
-	@Override
-	public List<ShadeMast> getAllOriginalData() {
-		List<ShadeMast> data = shadeMastDao.findAll();
-		data.forEach(e -> {
-			e.setShadeDataList(shadeDataDao.findByStateAndControlId("original",e.getId()));
-		});
-		return data;
-	}
-
-	@Override
-	public List<ShadeMastWithDetails> getShadeMastList() {
-		List<ShadeMast> shadeMast = shadeMastDao.findByIsActive(true);
-		List<ShadeMastWithDetails> data = new ArrayList<>();
-		System.out.println(shadeMast);
-		shadeMast.forEach(e -> {
-			try{
-				System.out.println(e);
-				ShadeMastWithDetails t = new ShadeMastWithDetails(e);
-
-				t.setPartyName(partyDao.getPartyNameByPartyId(e.getPartyId()));
-
-				Optional<Quality> q = qualityDao.findByQualityId(String.valueOf(e.getQualityId()));
-				if(q.isPresent()) {
-					t.setQualityType(q.get().getQualityType());
-					t.setQualityName(q.get().getQualityName());
-					System.out.println(t);
-					data.add(t);
-				}
-
-			} catch (Exception x) {
-				System.out.println("asassasasas"+x.getMessage());
-			}
-		});
-		return data;
-	}
-
-	@Override
-	public ShadeMast getActiveShadeData(Long id) {
-		ShadeMast data = shadeMastDao.findByIdAndIsActive(id, true);
-		if(data != null)
-			data.setShadeDataList(shadeDataDao.findByIsActiveAndControlId(true, id));
-		return data;
-	}
-
-	@Override
-	public ShadeMast getOriginalShadeData(Long id) {
-		ShadeMast data = shadeMastDao.findByIdAndIsActive(id, true);
-		if(data != null)
-			data.setShadeDataList(shadeDataDao.findByStateAndControlId("original", id));
-		return data;
-	}
-
-	@Override
-	public void deleteData(Long aLong) {
-		shadeMastDao.setInactiveById(aLong);
-		shadeDataDao.setInactiveByControlId(aLong);
-	}
-
-	@Override
-	public void updateShadeMast(UpdateShadeMastRequest updateShadeMastRequest) {
-//		shadeMastDao.setInactiveById(updateShadeMastRequest.getId());
-		ShadeMast temp = shadeMastDao.findById(updateShadeMastRequest.getId()).get();
-		ShadeMast updated = updateShadeMastRequest.getShadeMast();
-		if(temp != null) {
-			temp.setUpdatedDate(new Date(System.currentTimeMillis()));
-			temp.setPartyShadeNo(updated.getPartyShadeNo());
-			temp.setProcessId(updated.getProcessId());
-			temp.setQualityId(updated.getQualityId());
-			temp.setPartyId(updated.getPartyId());
-			temp.setColorTone(updated.getColorTone());
-			temp.setUpdatedBy(updated.getUpdatedBy());
-			temp.setUserHeadId(updated.getUserHeadId());
-			temp.setCuttingId(updated.getCuttingId());
-			temp.setRemark(updated.getRemark());
-			temp.setCategory(updated.getCategory());
-			temp.setLabColorNo(updated.getLabColorNo());
-			shadeMastDao.save(temp);
+		if(shadeMastList.isEmpty())
+			return null;
+		else{
+			return shadeMastList;
 		}
-
 	}
 
-	@Override
-	public void updateShadeData(List<ShadeData> shadeDataList) {
 
-	}
 }
