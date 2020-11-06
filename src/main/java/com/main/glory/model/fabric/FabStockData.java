@@ -19,6 +19,8 @@ public class FabStockData {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private Long controlId;
+	private Long noOfCons;
+	private Long noOfBox;
 	private Long gr;
 	private Long qualityId;
 	private String qualityName;
@@ -51,6 +53,8 @@ public class FabStockData {
 		this.isCut = other.isCut;
 		this.batchCreated = other.batchCreated;
 		this.refGr = other.refGr;
+		this.noOfBox = other.noOfBox;
+		this.noOfCons = other.noOfCons;
 	}
 
 	@PrePersist
