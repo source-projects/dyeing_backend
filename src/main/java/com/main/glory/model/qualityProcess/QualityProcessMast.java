@@ -15,7 +15,7 @@ import java.util.List;
 @Table
 public class QualityProcessMast {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@ApiModelProperty(hidden = true)
 	Long id;
 	String name;

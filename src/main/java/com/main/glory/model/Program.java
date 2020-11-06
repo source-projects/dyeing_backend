@@ -19,7 +19,7 @@ import java.util.List;
 public class Program {
 
  @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
+ @GeneratedValue(strategy = GenerationType.AUTO)
 // @ApiModelProperty(hidden = true)
     private Long id;
     private Long party_id;

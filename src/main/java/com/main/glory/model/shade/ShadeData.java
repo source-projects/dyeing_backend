@@ -18,7 +18,7 @@ import java.util.Date;
 @Table(name = "ShadeData")
 public class ShadeData {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@ApiModelProperty(hidden = true)
 	Long id;
 	@ApiModelProperty(hidden = true)
