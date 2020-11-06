@@ -15,7 +15,7 @@ import javax.persistence.*;
 @ToString
 public class Quality {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String  qualityId;
 	private String  qualityName;

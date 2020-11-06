@@ -52,21 +52,34 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Override
     public boolean deleteProgramById(Long id) throws Exception {
         if (id != null) {
-            programDao.deleteById(id);
-            return true;
-        } else
+            var findProgram = programDao.findById(id);
+            if (findProgram.isPresent()) {
+                programDao.deleteById(id);
+                return true;
+            } else {
+                System.out.println("Record not Found");
+                return false;
+            }
+        }
             return false;
     }
 
     @Override
     public boolean updateProgramByID(Program bm) throws Exception {
+
         if (bm.getId() != null) {
             var findProgram = programDao.findById(bm.getId());
-            if (findProgram.get().getId() != null) {
+            if (findProgram.isPresent()) {
                 programDao.saveAndFlush(bm);
                 return true;
             }
-            System.out.println("Record not Found");
+            else
+            {
+                System.out.println("Record not Found");
+                return false;
+            }
+
+
         }
         return false;
     }

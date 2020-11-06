@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class FabStockData {
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private Long controlId;
 	private Long gr;

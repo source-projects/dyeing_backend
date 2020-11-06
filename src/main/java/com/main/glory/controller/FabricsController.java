@@ -56,9 +56,7 @@ public class FabricsController extends ControllerConfig {
                 return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } else
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-
     }
-
 
     @PutMapping("/fabric")
     public GeneralResponse<Boolean> updateFabricIn(@RequestBody FabStockMast fabStockMast) throws Exception {
@@ -85,5 +83,4 @@ public class FabricsController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

@@ -82,11 +82,12 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Transactional
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest) {
         try{
+            //System.out.println(updateSupplierRequest.getId());
             Supplier supplier = ((Optional<Supplier>) supplierDao.findById(updateSupplierRequest.getId())).get();
             if(supplier == null){
                 return false;
             }
-             
+
             supplier.setDiscountPercentage(updateSupplierRequest.getDiscountPercentage());
             supplier.setGstPercentage(updateSupplierRequest.getGstPercentage());
             supplier.setPaymentTerms(updateSupplierRequest.getPaymentTerms());
@@ -106,6 +107,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) {
         try{
             Long sid = updateSupplierRatesRequest.getSupplierId();
+            //System.out.println("_______________"+sid);
 //            supplierRateDao.setInactive(sid);
             Optional<Supplier> temp = supplierDao.findById(sid);
             if(temp.isEmpty()){

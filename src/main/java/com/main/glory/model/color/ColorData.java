@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ColorData {
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
 
 	@Column(nullable = false)

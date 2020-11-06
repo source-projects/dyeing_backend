@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ColorMast {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     Long supplierId;
     Date ddate;

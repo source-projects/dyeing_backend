@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class ColorBox {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long boxNo;
 	Long controlId;
 	Boolean issued;
