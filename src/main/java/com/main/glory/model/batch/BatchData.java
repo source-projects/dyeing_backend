@@ -19,8 +19,6 @@ public class BatchData {
     private Long id;
     private Long controlId;
     private Long gr;
-    private Long lot_no;
-    private Long noOfConesTaka;
     private Double mtr;
     private Double wt;
     private String unit;
@@ -33,8 +31,6 @@ public class BatchData {
         this.id = other.id;
         this.controlId = other.controlId;
         this.gr = other.gr;
-        this.lot_no = other.lot_no;
-        this.noOfConesTaka = other.noOfConesTaka;
         this.mtr = other.mtr;
         this.wt = other.wt;
         this.unit = other.unit;
