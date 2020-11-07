@@ -38,13 +38,7 @@ public class BatchData {
         this.fabInId = other.fabInId;
         this.createdDate = other.createdDate;
         this.updatedDate = other.updatedDate;
-        this.batchGrDetails = other.batchGrDetails;
     }
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "controlId", referencedColumnName = "id")
-    private List<BatchGrDetail> batchGrDetails;
-
 
     @PrePersist
     protected void onCreate() {
