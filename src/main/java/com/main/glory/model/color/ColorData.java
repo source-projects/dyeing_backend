@@ -25,9 +25,6 @@ public class ColorData {
 	Long controlId;
 
 	@Column(nullable = false)
-	Long purchaseId;
-
-	@Column(nullable = false)
 	Long itemId;
 
 	@Column(nullable = false)

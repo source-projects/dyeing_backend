@@ -20,12 +20,10 @@ public class ColorMast {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     Long supplierId;
-    Date ddate;
     String billNo;
     Date billDate;
     String chlNo;
     Date chlDate;
-    Long lotNo;
     Double billAmount;
     Long userId;
     String remark;
@@ -38,5 +36,19 @@ public class ColorMast {
 
     public ColorMast() {
        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    public ColorMast(ColorMast other) {
+        this.id = other.id;
+        this.supplierId = other.supplierId;
+        this.billNo = other.billNo;
+        this.billDate = other.billDate;
+        this.chlNo = other.chlNo;
+        this.chlDate = other.chlDate;
+        this.billAmount = other.billAmount;
+        this.userId = other.userId;
+        this.remark = other.remark;
+        this.createdDate = other.createdDate;
+        this.colorDataList = other.colorDataList;
     }
 }
