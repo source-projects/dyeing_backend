@@ -17,7 +17,7 @@ public class MasterLookUpWithRecord extends FabStockMast {
     Double totalWt;
 
 
-    public MasterLookUpWithRecord(Long id, String stockInType, Date date,Boolean batch, Long partyId, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Set<FabStockData> fabStockData, Long recordCount, Double totalMtr, Double totalWt) {
+    public MasterLookUpWithRecord(Long id, String stockInType,Boolean batch, Long partyId, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Set<FabStockData> fabStockData, Long recordCount, Double totalMtr, Double totalWt) {
         super(id, stockInType,batch, partyId,  billNo, chlNo, billDate, chlDate, lotNo, remark, createdDate, updatedDate, createdBy, updatedBy, userHeadId, fabStockData);
         this.recordCount = recordCount;
         this.totalMtr = totalMtr;
