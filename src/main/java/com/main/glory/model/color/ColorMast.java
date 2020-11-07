@@ -31,7 +31,7 @@ public class ColorMast {
     Date createdDate;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "purchaseId",referencedColumnName = "id")
+    @JoinColumn(name = "controlId",referencedColumnName = "id")
     List<ColorData> colorDataList;
 
     public ColorMast() {
