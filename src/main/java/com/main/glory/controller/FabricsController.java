@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import java.util.List;
 
+import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpPartyRecord;
 import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
@@ -39,14 +40,14 @@ public class FabricsController extends ControllerConfig {
     }
 
     @GetMapping("/fabrics/all")
-    public GeneralResponse<List<FabStockMast>> getFabList() {
+    public GeneralResponse<List<MasterLookUpWithRecord>> getFabList() {
         try {
             var x = fabricsServiceImpl.getFabStockMasterListRecord();
 
-            return new GeneralResponse<List<FabStockMast>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new GeneralResponse<List<FabStockMast>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

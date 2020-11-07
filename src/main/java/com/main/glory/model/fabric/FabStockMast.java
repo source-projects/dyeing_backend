@@ -63,4 +63,23 @@ public class FabStockMast {
 	protected void onUpdate() {
 		this.updatedDate = new Date(System.currentTimeMillis());
 	}
+
+	public FabStockMast(FabStockMast other) {
+		this.id = other.id;
+		this.stockInType = other.stockInType;
+		this.batch = other.batch;
+		this.partyId = other.partyId;
+		this.billNo = other.billNo;
+		this.chlNo = other.chlNo;
+		this.billDate = other.billDate;
+		this.chlDate = other.chlDate;
+		this.lotNo = other.lotNo;
+		this.remark = other.remark;
+		this.createdDate = other.createdDate;
+		this.updatedDate = other.updatedDate;
+		this.createdBy = other.createdBy;
+		this.updatedBy = other.updatedBy;
+		this.userHeadId = other.userHeadId;
+		this.fabStockData = other.fabStockData;
+	}
 }
