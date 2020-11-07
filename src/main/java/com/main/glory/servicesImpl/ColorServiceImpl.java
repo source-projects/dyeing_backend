@@ -46,7 +46,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
 			colorDataDao.saveAll(colorMast.getColorDataList());
 
 			colorMast1.getColorDataList().forEach(e -> {
-				e.setPurchaseId(colorMast1.getId());
+//				e.setPurchaseId(colorMast1.getId());
 				for (int i = 0; i < e.getNoOfBox(); i++) {
 					ColorBox temp = new ColorBox();
 					temp.setControlId(e.getId());
