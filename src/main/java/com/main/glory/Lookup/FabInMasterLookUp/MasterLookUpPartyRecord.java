@@ -22,6 +22,11 @@ public class MasterLookUpPartyRecord extends FabStockMast {
         this.partName = partName;
     }
 
+    public MasterLookUpPartyRecord(FabStockMast other, String partName) {
+        super(other);
+        this.partName = partName;
+    }
+
     public MasterLookUpPartyRecord(String partName) {
         this.partName = partName;
     }

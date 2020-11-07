@@ -8,6 +8,8 @@ import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
+import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpPartyRecord;
+import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,8 +102,8 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
         return true;
     }
 
-    public List<FabStockMast> getFabStockMasterListRecord() {
-        List<FabStockMast> listMaster = fabStockMastDao.findAll();
+    public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
+        List<MasterLookUpWithRecord> listMaster = fabStockMastDao.findAllMasterWithDetails();
         return listMaster;
     }
 
