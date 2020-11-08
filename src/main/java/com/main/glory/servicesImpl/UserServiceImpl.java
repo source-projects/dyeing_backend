@@ -38,15 +38,8 @@ public class UserServiceImpl implements UserServiceInterface {
 
     }
 
-    public int checkUser(String userName,String password) {
+    public UserData checkUser(String userName,String password) {
+        return userDao.findByUserNameAndPassword(userName, password);
+    }
 
-        UserData userData = userDao.findByUserNameAndPassword(userName,password);
-        if(userData!=null)
-        {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-        }
 }
