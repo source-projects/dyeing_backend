@@ -71,7 +71,9 @@ public class UserController extends ControllerConfig {
             if(user!=null){
                 LoginResponse loginResponse = new LoginResponse();
                 var token = jwtUtil.generateToken(user);
-                loginResponse.setToken(token);
+                loginResponse.setAccessToken(token);
+                token = jwtUtil.generateRefreshToken(user.getId().toString());
+                loginResponse.setRefreshToken(token);
                 return new GeneralResponse<>(loginResponse,"successfully logged in", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
