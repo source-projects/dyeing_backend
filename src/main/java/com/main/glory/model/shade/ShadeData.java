@@ -45,4 +45,5 @@ public class ShadeData {
 	Boolean isActive;
 	@Column(nullable = false)
 	Long supplierItemId;
+
 }

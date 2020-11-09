@@ -38,7 +38,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		System.out.println("-------------"+request.getRequestURI());
 
 		final String authorizationHeader = request.getHeader("Authorization");
-		System.out.println("-------------"+authorizationHeader);
+
 		String id = null;
 		String jwt = null;
 		try {
@@ -47,14 +47,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				id = jwtUtil.extractUsername(jwt);
 				Claims claims = jwtUtil.extractAllClaims(jwt);
 				Object userPermissions = claims.get("permissions", Object.class);
-
+				//All permissions
 				System.out.println(userPermissions);
+
+				//userPermissions.
 
 			}
 
-
+			//System.out.println(SecurityContextHolder.getContext().getAuthentication());
 			if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserData userDetails = userService.getUserById(Long.parseLong(id));
+				//System.out.println(userDetails);
 				if (userDetails != null && jwtUtil.validateToken(jwt, userDetails, System.currentTimeMillis())) {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 							userDetails, null, new ArrayList<>());

@@ -21,6 +21,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query(value = "Select * from quality as qa where qa.quality_id=:qid",nativeQuery = true)
     List<Quality> getQualityListById(@Param("qid") String quality_id);
 
+    //@Query(value = "Select * from quality as qa where qa.party_id=:party_id",nativeQuery = true)
+    //List<Quality> getQualityListByPartyId(@Param("party_id") String quality_id);
+
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q")
     List<QualityWithPartyName> findAllWithPartyName();
 
