@@ -28,7 +28,7 @@ public class UserController extends ControllerConfig {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
-
+/*
     @GetMapping("/user/{id}")
     public GeneralResponse<UserData> getUserById(@PathVariable(value = "id") Long id)
     {
@@ -43,7 +43,7 @@ public class UserController extends ControllerConfig {
         }
         return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
-
+*/
     @PostMapping("/user")
     public GeneralResponse<Boolean> createUser(@RequestBody UserData userData) throws Exception{
 

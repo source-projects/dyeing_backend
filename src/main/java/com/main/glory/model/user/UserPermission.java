@@ -18,8 +18,7 @@ public class UserPermission {
     Long pa;
     Long qu;
     Long u;
-    Long f;
-    Long b;
+    Long sb;
     Long prg;
     Long sh;
     Long su;
@@ -30,13 +29,12 @@ public class UserPermission {
     Long jp;
 
 
-    public UserPermission(Long id, Long pa, Long qu, Long u, Long f, Long b, Long prg, Long sh, Long su, Long sr, Long cs, Long pr, Long pp, Long jp) {
+    public UserPermission(Long id, Long pa, Long qu, Long u, Long sb, Long prg, Long sh, Long su, Long sr, Long cs, Long pr, Long pp, Long jp) {
         this.id = id;
         this.pa = pa;
         this.qu = qu;
         this.u = u;
-        this.f = f;
-        this.b = b;
+        this.sb=sb;
         this.prg = prg;
         this.sh = sh;
         this.su = su;
