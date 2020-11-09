@@ -70,9 +70,9 @@ public class UserController extends ControllerConfig {
             var user = userService.checkUser(userData.getUserName(),userData.getPassword());
             if(user!=null){
                 LoginResponse loginResponse = new LoginResponse();
-                var token = jwtUtil.generateToken(user);
+                var token = jwtUtil.generateToken(user, "accessToken");
                 loginResponse.setAccessToken(token);
-                token = jwtUtil.generateRefreshToken(user.getId().toString());
+                token = jwtUtil.generateToken(user, "refreshToken");
                 loginResponse.setRefreshToken(token);
                 return new GeneralResponse<>(loginResponse,"successfully logged in", true, System.currentTimeMillis(), HttpStatus.OK);
             }

@@ -47,19 +47,28 @@ public class JwtUtil {
 		return extractExpiration(token).before(new Date());
 	}
 
-	public String generateToken(UserData user) {
+	public String generateToken(UserData user, String tokenType) {
 		Map<String, Object> claims = new HashMap<>();
 		long timeStamp = System.currentTimeMillis();
+		long exp = 0;
+		if(tokenType.equals("accessToken")){
+			exp = timeStamp + 1000 * 60 * 60;
+			claims.put("permissions", user.getUserPermissionData());
+		} else if(tokenType.equals("refreshToken")) {
+			exp = timeStamp + 1000 * 60 * 60 * 60;
+			claims.put("passcode", CipherModule.encrypt(user.getPassword()));
+		}
+		claims.put("tokenType", tokenType);
 		claims.put("ts",timeStamp);
-		claims.put("permissions", user.getUserPermissionData());
 		claims.put("secret", CipherModule.encrypt(user.getId().toString()+ timeStamp));
-		return createToken(claims, user.getId().toString(), timeStamp);
+
+		return createToken(claims, user.getId().toString(), timeStamp, exp);
 	}
 
-	private String createToken(Map<String, Object> claims, String subject, long timeStamp) {
+	private String createToken(Map<String, Object> claims, String subject, long timeStamp, long exp) {
 
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(timeStamp))
-				.setExpiration(new Date(timeStamp + 1000 * 60 * 60))
+				.setExpiration(new Date(exp))
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
 	}
 
