@@ -15,6 +15,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class UserController extends ControllerConfig {
@@ -28,7 +30,7 @@ public class UserController extends ControllerConfig {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
-/*
+
     @GetMapping("/user/{id}")
     public GeneralResponse<UserData> getUserById(@PathVariable(value = "id") Long id)
     {
@@ -43,7 +45,20 @@ public class UserController extends ControllerConfig {
         }
         return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
-*/
+
+    @GetMapping("/userHead")
+    public GeneralResponse<List<UserData>> getAllHead()
+    {
+
+        if(userService.getAllHeadUser()!=null) {
+            return new GeneralResponse<>(userService.getAllHeadUser(), "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        else
+        {
+            return new GeneralResponse<>(null, "User Head Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping("/user")
     public GeneralResponse<Boolean> createUser(@RequestBody UserData userData) throws Exception{
 
@@ -87,5 +102,41 @@ public class UserController extends ControllerConfig {
         }
     }
 
+
+
+    @PutMapping("/user")
+    public GeneralResponse<Boolean> upddateUser(@RequestBody UserData userData) throws Exception{
+
+        try{
+            int flag = userService.isAvailable(userData);
+
+            if(flag==1){
+                return new GeneralResponse<>(true,"User Updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                return new GeneralResponse<>(true,"User not Updated ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping(value="/user/{id}")
+    public GeneralResponse<Boolean> deleteUserDetailsByID(@PathVariable(value = "id") Long id)
+    {
+        if(id!=null)
+        {
+            boolean flag=userService.deletePartyById(id);
+            if(flag)
+            {
+                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }else{
+                return new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }
+        return new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
 
 }
