@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 
+import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.UserData;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class DesignationController {
+public class DesignationController extends ControllerConfig {
 
     @Autowired
     private DesignationServiceImpl designationService;
