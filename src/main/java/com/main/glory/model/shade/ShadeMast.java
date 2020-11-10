@@ -17,15 +17,14 @@ import java.util.List;
 public class ShadeMast {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@ApiModelProperty(hidden = true)
 	Long id;
-	@Column(unique = true,nullable = false)
+	//@Column(unique = true,nullable = false)
 	String partyShadeNo;
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	Long processId;
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	String qualityId;
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	Long partyId;
 	String colorTone;
 	String createdBy;
@@ -33,17 +32,15 @@ public class ShadeMast {
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
-	Date updatedDate;
-	@ApiModelProperty(hidden = true)
-	Boolean isActive;
-	@Column(nullable = false)
+	Date updatedDate;;
+	//@Column(nullable = false)
 	Long userHeadId;
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	Long cuttingId;
 	String remark;
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	String category;
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	Long labColorNo;
 
 	@OneToMany(cascade = CascadeType.ALL)
