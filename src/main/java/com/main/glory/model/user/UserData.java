@@ -1,5 +1,6 @@
 package com.main.glory.model.user;
 
+import com.main.glory.model.designation.Designation;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,10 +24,13 @@ public class UserData {
     Long contact;
     String password;
     String company;
-    String designation;
+
     String department;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "designationId", referencedColumnName = "id")
+    private Designation designationData;
 }
