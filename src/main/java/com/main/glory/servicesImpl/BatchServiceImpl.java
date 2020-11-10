@@ -162,5 +162,14 @@ public class BatchServiceImpl implements BatchServicesInterface {
     public List<BatchMast> getBatchList(){
         return batchMastDao.findAllByIdWithoutData();
     }
+
+    @Transactional
+    public BatchMast getBatchMastById(Long id) {
+        var data=batchMastDao.findById(id);
+        if(data.isEmpty())
+            return null;
+        else
+            return data.get();
+    }
 }
 

@@ -1,14 +1,14 @@
 package com.main.glory.servicesImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import com.main.glory.Dao.FabDataDao;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
+import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpPartyRecord;
 import com.main.glory.Lookup.FabInMasterLookUp.MasterLookUpWithRecord;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
@@ -102,14 +102,24 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
         return true;
     }
 
-    public List<FabStockMast> getFabStockMasterListRecord() {
-        List<FabStockMast> listMaster = fabStockMastDao.findAll();
+    public List<MasterLookUpWithRecord> getFabStockMasterListRecord() {
+        List<MasterLookUpWithRecord> listMaster = fabStockMastDao.findAllMasterWithDetails();
         return listMaster;
     }
 
     public Optional<FabStockMast> getFabRecordById(Long id) {
         var getData = fabStockMastDao.findById(id);
         return getData;
+    }
+
+    public List<FabStockData> getGrList(Long id){
+        Optional<List<FabStockData>> data = fabStockDataDao.getByQualityId(id);
+        System.out.println(data.get());
+        if(!data.isEmpty()){
+            return (List<FabStockData>) data.get();
+        }else {
+            return null;
+        }
     }
 }
 

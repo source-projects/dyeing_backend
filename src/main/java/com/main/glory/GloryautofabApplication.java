@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
-@ComponentScan({"com.main.glory.controller","com.main.glory.servicesImpl","com.main.glory.config"})
+@ComponentScan({"com.main.glory.controller","com.main.glory.servicesImpl","com.main.glory.config","com.main.glory.filters","com.main.glory.utils","com.main.glory.*"})
 @EnableJpaRepositories({"com.main.glory.Dao"})
 @SpringBootApplication
 public class GloryautofabApplication {

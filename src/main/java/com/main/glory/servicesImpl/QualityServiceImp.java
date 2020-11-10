@@ -39,6 +39,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 		return qualityListobject;
 	}
 
+
 	@Override
 	public boolean updateQuality(Quality quality) throws Exception {
 		var partyIndex = qualityDao.findById(quality.getId());

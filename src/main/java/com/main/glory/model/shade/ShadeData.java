@@ -40,4 +40,5 @@ public class ShadeData {
 	String updatedBy;
 	@Column(nullable = false)
 	Long supplierItemId;
+
 }

@@ -24,8 +24,8 @@ public class FabStockMast {
 	private Boolean batch;
 	@Column(nullable = false)
 	private Long partyId;
-	@Column(nullable = false)
-	private Date date;
+	//@Column(nullable = false)
+	//private Date date;
 	@Column(nullable = false)
 	private String billNo;
 	@Column(nullable = false)
@@ -53,6 +53,7 @@ public class FabStockMast {
 	Set<FabStockData> fabStockData;
 
 
+
 	@PrePersist
 	protected void onCreate() {
 		this.createdDate = new Date(System.currentTimeMillis());
@@ -61,5 +62,24 @@ public class FabStockMast {
 	@PreUpdate
 	protected void onUpdate() {
 		this.updatedDate = new Date(System.currentTimeMillis());
+	}
+
+	public FabStockMast(FabStockMast other) {
+		this.id = other.id;
+		this.stockInType = other.stockInType;
+		this.batch = other.batch;
+		this.partyId = other.partyId;
+		this.billNo = other.billNo;
+		this.chlNo = other.chlNo;
+		this.billDate = other.billDate;
+		this.chlDate = other.chlDate;
+		this.lotNo = other.lotNo;
+		this.remark = other.remark;
+		this.createdDate = other.createdDate;
+		this.updatedDate = other.updatedDate;
+		this.createdBy = other.createdBy;
+		this.updatedBy = other.updatedBy;
+		this.userHeadId = other.userHeadId;
+		this.fabStockData = other.fabStockData;
 	}
 }

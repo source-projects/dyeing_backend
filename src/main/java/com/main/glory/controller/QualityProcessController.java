@@ -6,12 +6,12 @@ import com.main.glory.servicesImpl.QualityProcessImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
+import com.main.glory.config.ControllerConfig;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class QualityProcessController {
+public class QualityProcessController extends ControllerConfig {
 
 	@Autowired
 	QualityProcessImpl qualityProcess;

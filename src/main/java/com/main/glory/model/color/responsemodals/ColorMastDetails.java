@@ -15,11 +15,11 @@ import java.util.List;
 public class ColorMastDetails extends ColorMast {
 	String SupplierName;
 
-	public ColorMastDetails(Long id, Long supplierId, Date ddate, String billNo, Date billDate, String chlNo, Date chlDate, Long lotNo, Double billAmount, Long userId, String remark, Date createdDate, List<ColorData> colorDataList) {
-		super(id, supplierId, ddate, billNo, billDate, chlNo, chlDate, lotNo, billAmount, userId, remark, createdDate, colorDataList);
+	public ColorMastDetails(Long id, Long supplierId, String billNo, Date billDate, String chlNo, Date chlDate, Double billAmount, Long userId, String remark, Date createdDate, List<ColorData> colorDataList) {
+		super(id, supplierId, billNo, billDate, chlNo, chlDate, billAmount, userId, remark, createdDate, colorDataList);
 	}
 
 	public ColorMastDetails(ColorMast colorMast) {
-		super(colorMast.getId(), colorMast.getSupplierId(), colorMast.getDdate(), colorMast.getBillNo(), colorMast.getBillDate(), colorMast.getChlNo(), colorMast.getChlDate(), colorMast.getLotNo(), colorMast.getBillAmount(), colorMast.getUserId(), colorMast.getRemark(), colorMast.getCreatedDate(), colorMast.getColorDataList());
+		super(colorMast.getId(), colorMast.getSupplierId(), colorMast.getBillNo(), colorMast.getBillDate(), colorMast.getChlNo(), colorMast.getChlDate(), colorMast.getBillAmount(), colorMast.getUserId(), colorMast.getRemark(), colorMast.getCreatedDate(), colorMast.getColorDataList());
 	}
 }

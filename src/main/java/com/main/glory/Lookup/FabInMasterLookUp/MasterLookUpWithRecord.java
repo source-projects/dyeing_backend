@@ -16,15 +16,16 @@ public class MasterLookUpWithRecord extends FabStockMast {
     Double totalMtr;
     Double totalWt;
 
-    public MasterLookUpWithRecord(Long id, String stockInType, Boolean batch, Long partyId, Date date, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Set<FabStockData> fabStockData, Long recordCount, Double totalMtr, Double totalWt) {
-        super(id, stockInType, batch, partyId, date, billNo, chlNo, billDate, chlDate, lotNo, remark, createdDate, updatedDate, createdBy, updatedBy, userHeadId, fabStockData);
+
+    public MasterLookUpWithRecord(Long id, String stockInType,Boolean batch, Long partyId, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Set<FabStockData> fabStockData, Long recordCount, Double totalMtr, Double totalWt) {
+        super(id, stockInType,batch, partyId,  billNo, chlNo, billDate, chlDate, lotNo, remark, createdDate, updatedDate, createdBy, updatedBy, userHeadId, fabStockData);
         this.recordCount = recordCount;
         this.totalMtr = totalMtr;
         this.totalWt = totalWt;
     }
 
-    public MasterLookUpWithRecord(Long id, String stockInType, Boolean batch, Long partyId, Date date, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Long recordCount, Double totalMtr, Double totalWt) {
-        super(id, stockInType, batch, partyId, date, billNo, chlNo, billDate, chlDate, lotNo, remark, createdDate, updatedDate, createdBy, updatedBy, userHeadId, null);
+    public MasterLookUpWithRecord(Long id, String stockInType, Boolean batch, Long partyId, String billNo, String chlNo, Date billDate, Date chlDate, Long lotNo, String remark, Date createdDate, Date updatedDate, String createdBy, String updatedBy, Long userHeadId, Long recordCount, Double totalMtr, Double totalWt) {
+        super(id, stockInType, batch, partyId, billNo, chlNo, billDate, chlDate, lotNo, remark, createdDate, updatedDate, createdBy, updatedBy, userHeadId, null);
         this.recordCount = recordCount;
         this.totalMtr = totalMtr;
         this.totalWt = totalWt;
@@ -35,6 +36,7 @@ public class MasterLookUpWithRecord extends FabStockMast {
         this.totalMtr = totalMtr;
         this.totalWt = totalWt;
     }
+
 
     public MasterLookUpWithRecord() {
 

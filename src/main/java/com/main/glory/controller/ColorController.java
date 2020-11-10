@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.color.ColorMast;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class ColorController {
+public class ColorController extends ControllerConfig {
 
 	@Autowired
 	ColorServiceImpl colorService;

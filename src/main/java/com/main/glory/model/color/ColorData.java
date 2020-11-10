@@ -21,11 +21,7 @@ public class ColorData {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
 
-	@Column(nullable = false)
 	Long controlId;
-
-	@Column(nullable = false)
-	Long purchaseId;
 
 	@Column(nullable = false)
 	Long itemId;

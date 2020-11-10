@@ -83,6 +83,8 @@ public class QualityController extends ControllerConfig {
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
+
+
 //    @DeleteMapping(value = "/delete-quality/{id}")
 //    public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
 //        if (id != null) {

@@ -25,6 +25,7 @@ public class SupplierRate {
     Long id;
     Long supplierId;
     String itemName;
+    String itemType;
     Double rate;
     @ApiModelProperty(hidden = true)
     Double discountedRate;
