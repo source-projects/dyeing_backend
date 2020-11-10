@@ -118,7 +118,11 @@ public class ColorServiceImpl implements ColorServicesInterface {
 
 	public Optional<ColorMast> getColorById(Long id) {
 		var getData = colorMastDao.findById(id);
-		System.out.println(getData.get().getColorDataList());
-		return getData;
+		if(getData.isPresent())
+			return getData;
+
+
+		return null;
+
 	}
 }
