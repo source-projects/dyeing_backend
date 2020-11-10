@@ -46,4 +46,7 @@ public class ShadeMast {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ShadeData> shadeDataList;
+
+	@PreUpdate
+	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 }

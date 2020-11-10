@@ -41,4 +41,9 @@ public class StockMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<Batch> batch;
 
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
 }
