@@ -4,6 +4,7 @@ import com.main.glory.model.designation.Designation;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Setter
@@ -27,6 +28,10 @@ public class UserData {
 
     String department;
     Long userHeadId;
+    Date createdDate;
+    Date updatedDate;
+    String createdBy;
+    String updatedBy;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;
@@ -34,5 +39,16 @@ public class UserData {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "designationId", referencedColumnName = "id")
     private Designation designationData;
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 
 }
