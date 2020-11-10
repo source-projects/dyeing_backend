@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="user")
+@Table(name="User")
 @ToString
 public class UserData {
 
@@ -18,7 +18,7 @@ public class UserData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String userName;
-    String fistName;
+    String firstName;
     String lastName;
     String email;
     Long contact;
@@ -26,6 +26,7 @@ public class UserData {
     String company;
 
     String department;
+    Long userHeadId;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;
@@ -33,4 +34,5 @@ public class UserData {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "designationId", referencedColumnName = "id")
     private Designation designationData;
+
 }
