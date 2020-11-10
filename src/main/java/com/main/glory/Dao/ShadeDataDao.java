@@ -11,11 +11,5 @@ import java.util.List;
 
 public interface ShadeDataDao extends JpaRepository<ShadeData, Long> {
 
-	@Transactional
-	@Modifying
-	@Query("update ShadeData s set s.isActive = 0 where s.controlId = :cid")
-	public void setInactiveByControlId(@Param("cid") Long controlId);
-
-	public List<ShadeData> findByIsActiveAndControlId(Boolean aBoolean, Long aLong);
-	public List<ShadeData> findByStateAndControlId(String s, Long aLong);
+	public List<ShadeData> findByControlId(Long aLong);
 }

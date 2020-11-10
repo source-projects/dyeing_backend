@@ -21,7 +21,6 @@ public class ShadeData {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@ApiModelProperty(hidden = true)
 	Long id;
-	@ApiModelProperty(hidden = true)
 	Long controlId;
 	@Column(nullable = false)
 	String itemName;
@@ -39,10 +38,6 @@ public class ShadeData {
 	Date updatedDate;
 	String createdBy;
 	String updatedBy;
-	@ApiModelProperty(hidden = true)
-	String state;
-	@ApiModelProperty(hidden = true)
-	Boolean isActive;
 	@Column(nullable = false)
 	Long supplierItemId;
 
