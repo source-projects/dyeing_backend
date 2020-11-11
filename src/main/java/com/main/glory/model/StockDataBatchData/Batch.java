@@ -24,8 +24,6 @@ public class Batch {
     Double mtr;
     Double wt;
     String batchId;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "controlId", referencedColumnName = "id")
-    private StockMast stockMast;
+    Long controlId;
 
 }

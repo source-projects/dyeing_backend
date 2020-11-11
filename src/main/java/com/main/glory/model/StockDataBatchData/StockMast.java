@@ -2,12 +2,15 @@ package com.main.glory.model.StockDataBatchData;
 
 import com.main.glory.model.CommonModel.CommonField;
 import com.main.glory.model.user.UserPermission;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -22,15 +25,25 @@ public class StockMast {
     String stockInType;
     Long partyId;
     String billNo;
-    String billDate;
+    Date billDate;
     Long chalNo;
-    String chlDate;
+    Date chlDate;
     String unit;
     String updatedBy;
     String createdBy;
-    String createDate;
-    String updatedDate;
+    Boolean isProductionPlanned;
+    @ApiModelProperty(hidden = true)
+    Date createDate;
+    @ApiModelProperty(hidden = true)
+    Date updatedDate;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
+    List<Batch> batch;
 
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 
 }

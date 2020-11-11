@@ -94,5 +94,4 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		return true;
 	}
 
-
 }
