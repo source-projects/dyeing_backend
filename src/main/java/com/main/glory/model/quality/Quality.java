@@ -20,7 +20,7 @@ public class Quality {
 	private String  qualityId;
 	private String  qualityName;
 	private String qualityType;
-	private String qualitySubType;
+	private String unit;
 	private Long  partyId;
 	private Double wtPer100m;
 	private String remark;
@@ -36,7 +36,7 @@ public class Quality {
 		this.qualityId = other.qualityId;
 		this.qualityName = other.qualityName;
 		this.qualityType = other.qualityType;
-		this.qualitySubType = other.qualitySubType;
+		this.unit = other.unit;
 		this.partyId = other.partyId;
 		this.wtPer100m = other.wtPer100m;
 		this.remark = other.remark;
