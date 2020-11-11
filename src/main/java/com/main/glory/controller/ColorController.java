@@ -81,7 +81,7 @@ public class ColorController extends ControllerConfig {
 	public GeneralResponse<ColorMast> getColorDataById(@PathVariable(value = "id") Long id) {
 		if (id != null) {
 			var colorData = colorService.getColorById(id);
-			if (!colorData.isEmpty()) {
+			if (colorData!=null) {
 				return new GeneralResponse<>(colorData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			} else
 				return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
