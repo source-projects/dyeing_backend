@@ -27,8 +27,8 @@ public class StockMast {
     Long partyId;
     String billNo;
     Date billDate;
-    Long chalNo;
-    Date chalDate;
+    Long chlNo;
+    Date chlDate;
     String unit;
     String updatedBy;
     String createdBy;

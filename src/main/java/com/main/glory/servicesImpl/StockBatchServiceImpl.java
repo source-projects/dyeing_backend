@@ -103,10 +103,24 @@ public class StockBatchServiceImpl {
         stockMastDao.deleteById(id);
     }
 
-    public List<Batch> getAllBatchByQuality(String qualityId) {
-        StockMast stock= stockMastDao.findByQualityId(qualityId);
-        System.out.print(stock);
-        return null;
+    public List<Batch> getAllBatchByQuality(Long qualityId) {
+        Optional<Quality> quality = qualityDao.findById(qualityId);
+       try {
+           if (quality.isPresent())
+           {
+               StockMast stock= stockMastDao.findByQualityId(quality.get().getId());
+               List<Batch> dataList = batchDao.findByControlId(stock.getId());
+               System.out.print(stock);
+               System.out.print(dataList);
+               return dataList;
 
+           } else
+               throw new Exception("Quality not found");
+       }
+       catch (Exception e)
+       {
+           System.out.print(e.getMessage());
+       }
+    return null;
     }
 }

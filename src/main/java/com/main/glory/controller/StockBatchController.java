@@ -57,8 +57,9 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatchQty/ByQualityId")
-    public GeneralResponse<List<Batch>> ByQualityId(@PathVariable(value = "qualityId") String qualityId) throws Exception{
+    public GeneralResponse<List<Batch>> ByQualityId(@PathVariable(value = "qualityId") Long qualityId) throws Exception{
         try{
+
             List<Batch> stockMast = stockBatchService.getAllBatchByQuality(qualityId);
             if(stockMast == null){
                 return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);

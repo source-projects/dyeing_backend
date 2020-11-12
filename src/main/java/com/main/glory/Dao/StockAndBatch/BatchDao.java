@@ -9,6 +9,6 @@ import java.util.List;
 public interface BatchDao extends  JpaRepository<Batch, Long> {
 
 
-    List<Batch> findByControlId(Long Id);
+    List<Batch> findByControlId(Long controlId);
 }
 

@@ -4,6 +4,7 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.Batch;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class BatchImpl {
         batchDao.saveAndFlush(batch);
     }
 
-    public List<Batch> getAllStockBatch(String qualityId) {
+    public List<Batch> getAllStockBatch(Long qualityId) {
 
         StockMast stock=stockMastDao.findByQualityId(qualityId);
         System.out.print(stock);

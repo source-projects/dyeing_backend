@@ -58,6 +58,18 @@ public class UserController extends ControllerConfig {
             return new GeneralResponse<>(null, "User Head Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/userAllUsers")
+    public GeneralResponse<List<UserData>> getAllUser()
+    {
+
+        if(userService.getAllHeadUser()!=null) {
+            return new GeneralResponse<>(userService.getAllUser(), "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        else
+        {
+            return new GeneralResponse<>(null, "User Head Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PostMapping("/user")
     public GeneralResponse<Boolean> createUser(@RequestBody UserData userData) throws Exception{
