@@ -2,13 +2,11 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
-import com.main.glory.model.StockDataBatchData.Batch;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("batchImpl")
@@ -21,18 +19,18 @@ public class BatchImpl {
     StockMastDao stockMastDao;
 
 
-    public void saveBatch(Batch batch) {
+    public void saveBatch(BatchData batchData) {
 
-        batchDao.saveAndFlush(batch);
+        batchDao.saveAndFlush(batchData);
     }
 
-    public List<Batch> getAllStockBatch(Long qualityId) {
+    public List<BatchData> getAllStockBatch(Long qualityId) {
 
         StockMast stock=stockMastDao.findByQualityId(qualityId);
         System.out.print(stock);
-        List<Batch> batchList = batchDao.findByControlId(stock.getId());
-        System.out.print(batchList);
-        return batchList;
+        List<BatchData> batchDataList = batchDao.findByControlId(stock.getId());
+        System.out.print(batchDataList);
+        return batchDataList;
 
     }
 }

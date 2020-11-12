@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "OldBatchData")
@@ -13,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BatchData {
+public class OldBatchData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,7 +26,7 @@ public class BatchData {
     private Date createdDate;
     private Date updatedDate;
 
-    public BatchData(BatchData other) {
+    public OldBatchData(OldBatchData other) {
         this.id = other.id;
         this.controlId = other.controlId;
         this.gr = other.gr;

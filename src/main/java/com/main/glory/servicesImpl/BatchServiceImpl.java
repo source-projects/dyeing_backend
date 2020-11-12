@@ -7,7 +7,7 @@ import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
 import com.main.glory.model.quality.Quality;
-import com.main.glory.model.batch.BatchData;
+import com.main.glory.model.batch.OldBatchData;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.services.BatchServicesInterface;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,7 +46,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
         /*
         * Validations
         * phase 1: fab id should be present in the db.
-        * phase 2: Batch must not be already created.
+        * phase 2: BatchData must not be already created.
         * phase 3: Required amount of mtr and wt for batch creation is present in the stock.
         * phase 4: Mtr and Wt Validation based on Quality (wt per 100 mtr).
         */
@@ -59,14 +58,14 @@ public class BatchServiceImpl implements BatchServicesInterface {
 
         Double ratio = quality.get().getWtPer100m();
 
-        for (BatchData e : batchMast.getBatchData()) {
+        for (OldBatchData e : batchMast.getOldBatchData()) {
             Optional<FabStockData> fabStockData = fabStockDataDao.findById(e.getFabInId());
             if (fabStockData.isEmpty()) {
                 throw new Exception("No fabric in of id: " + e.getFabInId());
             }
 
             if(fabStockData.get().getBatchCreated()){
-                throw new Exception("Batch already created for fabricIn with id:" + e.getFabInId() + " and GR:" + e.getGr());
+                throw new Exception("BatchData already created for fabricIn with id:" + e.getFabInId() + " and GR:" + e.getGr());
             }
 
             if(fabStockData.get().getMtr() < e.getMtr() || fabStockData.get().getWt() < e.getWt()){
@@ -79,7 +78,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
         }
 
         /*
-        * Batch Creation Process:
+        * BatchData Creation Process:
         * find the stock.
         *   if the stock amount equals required batch size
         *       create the batch and set batchCreated = true for that fab_stock
@@ -91,7 +90,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
         *       give old stock's GR as a refGR to this new stock
         *
         */
-        for (BatchData e : batchMast.getBatchData()) {
+        for (OldBatchData e : batchMast.getOldBatchData()) {
             FabStockData fabStockData = fabStockDataDao.findById(e.getFabInId()).get();
             if(e.getMtr() == fabStockData.getMtr()){
                 fabStockData.setIsCut(false);
@@ -124,7 +123,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
 
         // Validate, if batch is not given to the production planning then throw the exception
         if(original.get().getIsProductionPlaned()){
-            throw new Exception("Batch is already sent to production, for id:"+batchMast.getId());
+            throw new Exception("BatchData is already sent to production, for id:"+batchMast.getId());
         }
 
         batchMastDao.save(batchMast);
@@ -141,7 +140,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
             throw new Exception("Can't delete the batch, already in production, for id:"+id);
         }
 
-        for (BatchData batchDatum : batchMast.get().getBatchData()) {
+        for (OldBatchData batchDatum : batchMast.get().getOldBatchData()) {
             Long fabId = batchDatum.getFabInId();
             fabStockDataDao.findById(fabId).get().setBatchCreated(false);
         }
