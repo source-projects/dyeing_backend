@@ -1,6 +1,7 @@
 package com.main.glory.model.StockDataBatchData;
 
 import com.main.glory.model.CommonModel.CommonField;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.UserPermission;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -27,19 +28,29 @@ public class StockMast {
     String billNo;
     Date billDate;
     Long chalNo;
-    Date chlDate;
+    Date chalDate;
     String unit;
     String updatedBy;
     String createdBy;
     Boolean isProductionPlanned;
     @ApiModelProperty(hidden = true)
-    Date createDate;
+    Date createdDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<Batch> batch;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "qualityId", referencedColumnName = "id")
+    Quality qualityId;
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
 
     @PreUpdate
     protected void onUpdate() {
