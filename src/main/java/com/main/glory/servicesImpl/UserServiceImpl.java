@@ -4,14 +4,11 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.UserServiceInterface;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserServiceInterface {
@@ -75,6 +72,13 @@ public class UserServiceImpl implements UserServiceInterface {
         else
             userDao.deleteById(id);
         return true;
+
+    }
+
+    public List<UserData> getAllUser() {
+
+        return userDao.findAll();
+
 
     }
 }

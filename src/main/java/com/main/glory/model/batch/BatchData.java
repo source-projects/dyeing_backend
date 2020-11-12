@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "batchData")
+@Table(name = "OldBatchData")
 @Getter
 @Setter
 @AllArgsConstructor

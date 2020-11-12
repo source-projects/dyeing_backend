@@ -30,8 +30,11 @@ public class StockBatchController extends ControllerConfig {
     @PostMapping("/stockBatch")
     public GeneralResponse<Boolean> createBatch(@RequestBody StockMast stockMast) throws Exception{
         try{
-           stockBatchService.saveStockBatch(stockMast);
+           Boolean flag = stockBatchService.saveStockBatch(stockMast);
+           if(flag==true)
             return new GeneralResponse<>(true,"Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+           else
+               return new GeneralResponse<>(false,"Stock batch not created because quality in not availble", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
@@ -46,6 +49,23 @@ public class StockBatchController extends ControllerConfig {
             }
             else{
                 return new GeneralResponse<List<StockMast>>(stockMast, "data fetched successfully", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/stockBatchQty/ByQualityId")
+    public GeneralResponse<List<Batch>> ByQualityId(@PathVariable(value = "qualityId") Long qualityId) throws Exception{
+        try{
+
+            List<Batch> stockMast = stockBatchService.getAllBatchByQuality(qualityId);
+            if(stockMast == null){
+                return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            else{
+                return new GeneralResponse<List<Batch>>(stockMast, "data fetched successfully", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e){
             e.printStackTrace();
