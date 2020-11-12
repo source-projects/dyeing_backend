@@ -1,8 +1,6 @@
 package com.main.glory.model.StockDataBatchData;
 
-import com.main.glory.model.CommonModel.CommonField;
 import com.main.glory.model.quality.Quality;
-import com.main.glory.model.user.UserPermission;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,11 +38,9 @@ public class StockMast {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
-    List<Batch> batch;
+    List<BatchData> batchData;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "qualityId", referencedColumnName = "id")
-    Quality qualityId;
+    Long qualityId;
 
 
     @PrePersist

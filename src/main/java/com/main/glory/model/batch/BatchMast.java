@@ -1,6 +1,5 @@
 package com.main.glory.model.batch;
 
-import com.main.glory.model.batch.BatchData;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class BatchMast {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
-    private List<BatchData> batchData;
+    private List<OldBatchData> oldBatchData;
 
     public BatchMast(Long id, Long qualityId, String remark, String createdBy, Date createdDate, Date updatedDate, String updatedBy, Integer userHeadId, Boolean isProductionPlaned) {
         this.id = id;

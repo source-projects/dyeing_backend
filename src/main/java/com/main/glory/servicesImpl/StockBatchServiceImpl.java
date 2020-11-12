@@ -3,12 +3,9 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
-import com.main.glory.model.StockDataBatchData.Batch;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.batch.BatchData;
-import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.quality.Quality;
-import com.main.glory.model.shade.ShadeMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +32,7 @@ public class StockBatchServiceImpl {
         Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
-        Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId().getId());
+        Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
         try {
             if (!quality.isPresent()) {
                 throw new Exception("Insert Quality first");
@@ -43,7 +40,7 @@ public class StockBatchServiceImpl {
             else
             {
                 StockMast x = stockMastDao.save(stockMast);
-                x.getBatch().forEach(e -> {
+                x.getBatchData().forEach(e -> {
                     e.setControlId(x.getId());
                 });
                 return true;
@@ -84,7 +81,7 @@ public class StockBatchServiceImpl {
         }
         // Validate, if batch is not given to the production planning then throw the exception
         if(original.get().getIsProductionPlanned()){
-            throw new Exception("Batch is already sent to production, for id:"+stockMast.getId());
+            throw new Exception("BatchData is already sent to production, for id:"+stockMast.getId());
         }
         stockMastDao.save(stockMast);
     }
@@ -103,13 +100,13 @@ public class StockBatchServiceImpl {
         stockMastDao.deleteById(id);
     }
 
-    public List<Batch> getAllBatchByQuality(Long qualityId) {
+    public List<BatchData> getAllBatchByQuality(Long qualityId) {
         Optional<Quality> quality = qualityDao.findById(qualityId);
        try {
            if (quality.isPresent())
            {
                StockMast stock= stockMastDao.findByQualityId(quality.get().getId());
-               List<Batch> dataList = batchDao.findByControlId(stock.getId());
+               List<BatchData> dataList = batchDao.findByControlId(stock.getId());
                System.out.print(stock);
                System.out.print(dataList);
                return dataList;

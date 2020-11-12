@@ -69,7 +69,7 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
 	        Optional<FabStockData> fabStockData1 = fabStockDataDao.findById(fabStockData.getId());
 	        if(fabStockData1.isPresent()){
 	            if(fabStockData1.get().getBatchCreated() == true){
-	                throw new Exception("Batch already created for id:"+fabStockData1.get().getId());
+	                throw new Exception("BatchData already created for id:"+fabStockData1.get().getId());
                 }
             }
         }

@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "batchData")
-public class Batch {
+public class BatchData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +25,6 @@ public class Batch {
     Double mtr;
     Double wt;
     String batchId;
-    Long quantity;
     Long controlId;
 
 }

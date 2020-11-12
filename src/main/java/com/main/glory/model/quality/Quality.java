@@ -1,8 +1,11 @@
 package com.main.glory.model.quality;
 
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -30,6 +33,12 @@ public class Quality {
 	private Date updatedDate;
 	private Date qualityDate;
 	private Long userHeadId;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "qualityId", referencedColumnName = "id")
+	List<StockMast> stockMasts;
+
+
 
 	public Quality(Quality other) {
 		this.id = other.id;
