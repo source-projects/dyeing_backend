@@ -25,6 +25,7 @@ public class StockBatchController extends ControllerConfig {
     private StockBatchServiceImpl stockBatchService;
 
 
+
     @PostMapping("/stockBatch")
     public GeneralResponse<Boolean> createBatch(@RequestBody StockMast stockMast) throws Exception{
         try{
@@ -54,22 +55,7 @@ public class StockBatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/stockBatchQty/ByQualityId")
-    public GeneralResponse<List<BatchData>> ByQualityId(@PathVariable(value = "qualityId") Long qualityId) throws Exception{
-        try{
 
-            List<BatchData> stockMast = stockBatchService.getAllBatchByQuality(qualityId);
-            if(stockMast == null){
-                return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-            }
-            else{
-                return new GeneralResponse<List<BatchData>>(stockMast, "data fetched successfully", false, System.currentTimeMillis(), HttpStatus.OK);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @GetMapping("/stockBatch/{id}")
     public GeneralResponse<StockMast> getStockMastById(@PathVariable(value = "id") Long id){

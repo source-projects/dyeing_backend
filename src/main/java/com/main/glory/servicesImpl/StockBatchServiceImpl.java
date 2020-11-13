@@ -27,6 +27,16 @@ public class StockBatchServiceImpl {
     @Autowired
     BatchDao batchDao;
 
+
+    public List<StockMast> getAllStockBatch(Long qualityId) {
+
+        List<StockMast> stock=stockMastDao.findByQualityId(qualityId);
+        System.out.println(stock);
+        return stock;
+
+    }
+
+
     @Transactional
     public Boolean saveStockBatch(StockMast stockMast) throws Exception{
         Date dt = new Date(System.currentTimeMillis());
@@ -100,24 +110,5 @@ public class StockBatchServiceImpl {
         stockMastDao.deleteById(id);
     }
 
-    public List<BatchData> getAllBatchByQuality(Long qualityId) {
-        Optional<Quality> quality = qualityDao.findById(qualityId);
-       try {
-           if (quality.isPresent())
-           {
-               StockMast stock= stockMastDao.findByQualityId(quality.get().getId());
-               List<BatchData> dataList = batchDao.findByControlId(stock.getId());
-               System.out.print(stock);
-               System.out.print(dataList);
-               return dataList;
 
-           } else
-               throw new Exception("Quality not found");
-       }
-       catch (Exception e)
-       {
-           System.out.print(e.getMessage());
-       }
-    return null;
-    }
 }

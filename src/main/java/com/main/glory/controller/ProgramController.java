@@ -1,8 +1,11 @@
 package com.main.glory.controller;
 
+import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.Program;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.servicesImpl.ProgramServiceImpl;
 import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,4 +87,24 @@ public class ProgramController extends ControllerConfig {
         }
         return new GeneralResponse<>(false,"Data not deleted",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping(value="/program/BatchData/{id}")
+    public GeneralResponse<List<GetAllBatchResponse>> getBatchDetailByQualityId(@PathVariable(value = "id") String qualityId) throws Exception {
+        if(qualityId!=null)
+        {
+            List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityId);
+            if(flag!=null)
+            {
+                return new GeneralResponse<>(flag,"Batch Fetched Successfully",true,System.currentTimeMillis(),HttpStatus.OK);
+            }
+            else
+            {
+                return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
+            }
+        }
+        return new GeneralResponse<>(null,"Data not deleted",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+    }
+
+
+
 }

@@ -24,13 +24,5 @@ public class BatchImpl {
         batchDao.saveAndFlush(batchData);
     }
 
-    public List<BatchData> getAllStockBatch(Long qualityId) {
 
-        StockMast stock=stockMastDao.findByQualityId(qualityId);
-        System.out.print(stock);
-        List<BatchData> batchDataList = batchDao.findByControlId(stock.getId());
-        System.out.print(batchDataList);
-        return batchDataList;
-
-    }
 }
