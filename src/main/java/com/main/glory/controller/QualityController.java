@@ -9,6 +9,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.Party;
 import com.main.glory.model.quality.QualityWithPartyName;
+import com.main.glory.model.quality.request.AddQualityRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class QualityController extends ControllerConfig {
     private PartyDao partyDao;
 
     @PostMapping(value = "/quality")
-    public GeneralResponse<Boolean> saveQuality(@RequestBody Quality quality) {
+    public GeneralResponse<Boolean> saveQuality(@RequestBody AddQualityRequest quality) {
         try{
 
             Optional<Party> party = partyDao.findById(quality.getPartyId());

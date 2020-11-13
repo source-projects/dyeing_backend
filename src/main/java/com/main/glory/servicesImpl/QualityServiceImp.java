@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.main.glory.model.quality.QualityWithPartyName;
+import com.main.glory.model.quality.request.AddQualityRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +23,23 @@ public class QualityServiceImp implements QualityServiceInterface{
 	
 	@Autowired
 	private PartyDao partyDao;
-	
+
+	@Autowired
+	ModelMapper modelMapper;
+
 	@Override
-	public int saveQuality(Quality quality) throws Exception {
-		Optional<Quality> quality1 = qualityDao.findByQualityId(quality.getQualityId());
+	public int saveQuality(AddQualityRequest qualityDto) throws Exception {
+
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+		Quality quality = modelMapper.map(qualityDto, Quality.class);
+
+		System.out.println(quality);
+
+		Optional<Quality> quality1 = qualityDao.findByQualityId(qualityDto.getQualityId());
 		if(quality1.isPresent()){
-			throw new Exception("Entry already exist for Quality Id:"+ quality.getQualityId());
+			throw new Exception("Entry already exist for Quality Id:"+ qualityDto.getQualityId());
 		}
-		quality.setCreatedDate(new Date(System.currentTimeMillis()));
 		qualityDao.save(quality);
 		return 1;
 	}
