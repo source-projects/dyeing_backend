@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
- @Query(value = "Select * from com.main.glory.model.StockDataBatchData.StockMast s where s.qualityId.id = id",nativeQuery = true)
- StockMast findByQualityId(@Param("id") Long qualityId);
+
+ List<StockMast> findByQualityId(Long qualityId);
 }

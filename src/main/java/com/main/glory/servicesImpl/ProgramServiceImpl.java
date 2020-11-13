@@ -1,13 +1,21 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.ProgramDao;
+import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.model.Program;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.services.ProgramServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("programServiceImpl")
 public class ProgramServiceImpl implements ProgramServiceInterface {
@@ -15,12 +23,27 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Autowired
     private ProgramDao programDao;
 
+    @Autowired
+    private BatchImpl batchService;
+
+    @Autowired
+    private StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    private QualityDao qualityDao;
+
+
+
+    @Autowired
+    BatchDao batchDao;
 
     @Override
 //    @Transactional
     public boolean saveProgram(Program program) throws Exception {
         try {
-            if (program!= null) {
+
+            Optional<Quality> dataQuality = qualityDao.findByQualityId(program.getQuality_id());
+            if (dataQuality.isPresent()) {
                 programDao.saveAndFlush(program);
                 return true;
             }
@@ -82,5 +105,34 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
         }
         return false;
+    }
+
+    public List<GetAllBatchResponse> getAllBatchByQuality(String qualityId) {
+        Optional<Quality> quality = qualityDao.findByQualityId(qualityId);
+        try {
+            if (quality.isPresent())
+            {
+                System.out.print(quality.get().getId());
+                List<GetAllBatchResponse> allBatch=new ArrayList<>();
+                List<StockMast> stock= stockBatchService.getAllStockBatch(quality.get().getId());
+                System.out.println("stockc:"+stock.toString());
+                stock.forEach(e->{
+                    System.out.println("e:"+e.getId());
+                    List<GetAllBatchResponse> batchDataList = batchDao.findAllQTYControlId(e.getId());
+                    System.out.println("BatchData:"+batchDataList.toString());
+                    allBatch.addAll(batchDataList);
+                });
+
+                System.out.print(allBatch);
+                return allBatch;
+
+            } else
+                throw new Exception("Quality not found");
+        }
+        catch (Exception e)
+        {
+            System.out.print(e.getMessage());
+        }
+        return null;
     }
 }

@@ -25,8 +25,6 @@ public class Program {
     private Long party_id;
     private String quality_id;
     private Long quality_entry_id;
-    private String quality_type;
-    private String quality_name;
     private String program_given_by;
     private String remark;
     private Date created_date;

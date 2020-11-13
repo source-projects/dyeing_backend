@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 
@@ -26,5 +27,10 @@ public class BatchData {
     Double wt;
     String batchId;
     Long controlId;
+    Boolean isProductionPlanned;
 
+    @PrePersist
+    protected void onCreate() {
+        this.isProductionPlanned = false;
+    }
 }
