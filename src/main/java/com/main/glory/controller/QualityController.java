@@ -10,6 +10,8 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.Party;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
+import com.main.glory.model.quality.request.UpdateQualityRequest;
+import com.main.glory.model.quality.response.GetQualityResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -49,9 +51,9 @@ public class QualityController extends ControllerConfig {
     }
 
     @GetMapping(value = "/quality/all")
-    public GeneralResponse<List<QualityWithPartyName>> getQualityList() {
+    public GeneralResponse<List<GetQualityResponse>> getQualityList() {
         try {
-            List<QualityWithPartyName> x = qualityServiceImp.getAllQuality();
+            List<GetQualityResponse> x = qualityServiceImp.getAllQuality();
             return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -60,7 +62,7 @@ public class QualityController extends ControllerConfig {
     }
 
     @PutMapping(value = "/quality")
-    public GeneralResponse<Boolean> updateQualityById(@RequestBody Quality quality) throws Exception {
+    public GeneralResponse<Boolean> updateQualityById(@RequestBody UpdateQualityRequest quality) throws Exception {
         if (quality.getId() != null) {
             boolean flag = qualityServiceImp.updateQuality(quality);
             if (flag) {
@@ -73,13 +75,13 @@ public class QualityController extends ControllerConfig {
     }
 
     @GetMapping(value = "/quality/{id}")
-    public GeneralResponse<Quality> getQualityDataById(@PathVariable(value = "id") Long id) {
+    public GeneralResponse<GetQualityResponse> getQualityDataById(@PathVariable(value = "id") Long id) {
         if (id != null) {
             var qualityData = qualityServiceImp.getQualityByID(id);
-            if (!qualityData.isPresent()) {
+            if (qualityData == null) {
                 return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             } else
-                return new GeneralResponse<>(qualityData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } else
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
