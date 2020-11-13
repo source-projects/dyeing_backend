@@ -1,10 +1,13 @@
 package com.main.glory.servicesImpl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import com.main.glory.model.quality.QualityWithPartyName;
+import com.main.glory.model.quality.request.AddQualityRequest;
+import com.main.glory.model.quality.request.UpdateQualityRequest;
+import com.main.glory.model.quality.response.GetQualityResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,33 +24,47 @@ public class QualityServiceImp implements QualityServiceInterface{
 	
 	@Autowired
 	private PartyDao partyDao;
-	
+
+	@Autowired
+	ModelMapper modelMapper;
+
 	@Override
-	public int saveQuality(Quality quality) throws Exception {
-		Optional<Quality> quality1 = qualityDao.findByQualityId(quality.getQualityId());
+	public int saveQuality(AddQualityRequest qualityDto) throws Exception {
+
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+		Quality quality = modelMapper.map(qualityDto, Quality.class);
+
+		System.out.println(quality);
+
+		Optional<Quality> quality1 = qualityDao.findByQualityId(qualityDto.getQualityId());
 		if(quality1.isPresent()){
-			throw new Exception("Entry already exist for Quality Id:"+ quality.getQualityId());
+			throw new Exception("Entry already exist for Quality Id:"+ qualityDto.getQualityId());
 		}
-		quality.setCreatedDate(new Date(System.currentTimeMillis()));
 		qualityDao.save(quality);
 		return 1;
 	}
 
 	@Override
-	public List<QualityWithPartyName> getAllQuality() {
+	public List<GetQualityResponse> getAllQuality() {
 		List<QualityWithPartyName> qualityListobject=qualityDao.findAllWithPartyName();
-		return qualityListobject;
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		List<GetQualityResponse> quality = modelMapper.map(qualityListobject, List.class);
+		return quality;
 	}
 
 
 	@Override
-	public boolean updateQuality(Quality quality) throws Exception {
-		var partyIndex = qualityDao.findById(quality.getId());
+	public boolean updateQuality(UpdateQualityRequest qualityDto) throws Exception {
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		Quality quality = modelMapper.map(qualityDto, Quality.class);
+		var partyIndex = qualityDao.findById(qualityDto.getId());
 		if(!partyIndex.isPresent())
-		return false;
-		else
+			return false;
+		else {
 			qualityDao.save(quality);
-		  return true;	
+			return true;
+		}
 	}
 
 	@Override
@@ -61,9 +78,13 @@ public class QualityServiceImp implements QualityServiceInterface{
 	}
 
 	@Override
-	public Optional<Quality> getQualityByID(Long id) {
-		var quality =qualityDao.findById(id);
-		return quality;
+	public GetQualityResponse getQualityByID(Long id) {
+		Optional<Quality> quality =qualityDao.findById(id);
+		if(!quality.isPresent())
+			return null;
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		GetQualityResponse quality1 = modelMapper.map(quality.get(), GetQualityResponse.class);
+		return quality1;
 	}
 
 	@Override
