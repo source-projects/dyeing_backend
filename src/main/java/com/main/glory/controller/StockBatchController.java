@@ -46,7 +46,7 @@ public class StockBatchController extends ControllerConfig {
                 return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             else{
-                return new GeneralResponse<List<StockMast>>(stockMast, "data fetched successfully", false, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<List<StockMast>>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class StockBatchController extends ControllerConfig {
                 return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             else{
-                return new GeneralResponse<List<BatchData>>(stockMast, "data fetched successfully", false, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<List<BatchData>>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class StockBatchController extends ControllerConfig {
             if(id!=null){
                 Optional<StockMast> stockMast = stockBatchService.getStockBatchById(id);
                 if(stockMast.isPresent()){
-                    return new GeneralResponse<StockMast>(stockMast.get(), "Fetched successfully", false, System.currentTimeMillis(), HttpStatus.OK);
+                    return new GeneralResponse<StockMast>(stockMast.get(), "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                 }else{
                     return new GeneralResponse<StockMast>(null, "no data found for id: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                 }
