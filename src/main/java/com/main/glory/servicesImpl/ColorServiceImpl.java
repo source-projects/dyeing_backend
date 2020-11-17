@@ -120,9 +120,10 @@ public class ColorServiceImpl implements ColorServicesInterface {
 		var getData = colorMastDao.findById(id);
 		if(getData.isPresent())
 			return getData;
-
-
 		return null;
+	}
 
+	public List<ColorBox> getAllBox(Boolean issued){
+		return colorBoxDao.findByIssued(issued);
 	}
 }

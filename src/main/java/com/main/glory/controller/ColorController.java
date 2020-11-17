@@ -3,6 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchMast;
+import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.fabric.FabStockMast;
@@ -88,6 +89,16 @@ public class ColorController extends ControllerConfig {
 		} else
 			return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 
+	}
+
+	@GetMapping(value = "/box/all/{issued}")
+	public GeneralResponse<List<ColorBox>> getColorBox(@PathVariable(value = "issued") Boolean issued){
+		try {
+			List<ColorBox> colorBoxes = colorService.getAllBox(issued);
+			return new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
