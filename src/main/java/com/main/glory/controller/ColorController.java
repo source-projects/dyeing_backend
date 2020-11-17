@@ -5,6 +5,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.fabric.FabStockMast;
 import com.main.glory.servicesImpl.ColorServiceImpl;
@@ -98,6 +99,16 @@ public class ColorController extends ControllerConfig {
 			return new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/box/issue")
+	public GeneralResponse<Boolean> issueBox(@RequestBody IssueBoxRequest issueBoxRequest){
+		try {
+			colorService.issueBox(issueBoxRequest);
+			return new GeneralResponse<>(true, "Box issued successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 	}
 

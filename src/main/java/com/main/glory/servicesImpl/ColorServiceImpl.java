@@ -7,6 +7,7 @@ import com.main.glory.Dao.SupplierDao;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
@@ -125,5 +126,15 @@ public class ColorServiceImpl implements ColorServicesInterface {
 
 	public List<ColorBox> getAllBox(Boolean issued){
 		return colorBoxDao.findByIssued(issued);
+	}
+
+	public void issueBox(IssueBoxRequest issueBoxRequest) throws Exception{
+		Optional<ColorBox> colorBox = colorBoxDao.findById(issueBoxRequest.getBoxId());
+		if(colorBox.isEmpty()){
+			throw new Exception("No such box found");
+		}
+		ColorBox colorBox1 = colorBox.get();
+		colorBox1.setIssued(true);
+		colorBoxDao.save(colorBox1);
 	}
 }
