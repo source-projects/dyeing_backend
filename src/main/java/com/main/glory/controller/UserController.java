@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserRequest;
 import com.main.glory.model.user.response.LoginResponse;
@@ -70,7 +71,7 @@ public class UserController extends ControllerConfig {
     }
 
     @PostMapping("/user")
-    public GeneralResponse<Boolean> createUser(@RequestBody UserData userData) throws Exception{
+    public GeneralResponse<Boolean> createUser(@RequestBody UserAddRequest userData) throws Exception{
 
         try{
             int flag = userService.createUser(userData);
@@ -79,7 +80,7 @@ public class UserController extends ControllerConfig {
             }
             else
             {
-                return new GeneralResponse<>(true,"User not created successfully", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(false,"User not created successfully", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             }
         catch (Exception e){

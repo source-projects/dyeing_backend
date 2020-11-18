@@ -1,20 +1,32 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.designation.Designation;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.UserServiceInterface;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserServiceInterface {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    private DesignationServiceImpl designationService;
+
+    @Autowired
+    ModelMapper modelMapper;
 
 
     public UserData getUserById(Long id) {
@@ -26,17 +38,30 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
-    public int createUser(UserData userData) {
+    public int createUser(UserAddRequest userDataDto) {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        UserData userData =  modelMapper.map(userDataDto, UserData.class);
 
-        if(userData!=null) {System.out.println(userData.toString());
-            userDao.saveAndFlush(userData);
-            return 1;
+        Optional<UserData> data = userDao.findById(userData.getId());
+
+        if(!data.isPresent()) {
+            Optional<Designation> designationData = designationService.getDesignationById(userDataDto.getDesignationId());
+            if(designationData.isPresent())
+            {
+                userData.setDesignationId(designationData.get());
+                //System.out.println(userData.toString());
+                userDao.saveAndFlush(userData);
+                return 1;
+            }
+
+
         }
         else
         {
             return 0;
         }
 
+        return 0;
     }
 
     public UserData checkUser(String userName,String password) {
