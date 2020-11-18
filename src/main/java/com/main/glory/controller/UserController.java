@@ -3,15 +3,12 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserRequest;
 import com.main.glory.model.user.response.LoginResponse;
 import com.main.glory.servicesImpl.UserServiceImpl;
 import com.main.glory.utils.JwtUtil;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +55,7 @@ public class UserController extends ControllerConfig {
             return new GeneralResponse<>(null, "User Head Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/userAllUsers")
     public GeneralResponse<List<UserData>> getAllUser()
     {
@@ -91,7 +89,7 @@ public class UserController extends ControllerConfig {
     }
 
     @PostMapping("/login")
-    public GeneralResponse<LoginResponse> checkUser(@RequestBody UserRequest userData) throws Exception{
+    public GeneralResponse<LoginResponse> login(@RequestBody UserRequest userData) throws Exception{
 
         try{
             var user = userService.checkUser(userData.getUserName(),userData.getPassword());
