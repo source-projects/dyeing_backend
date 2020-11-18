@@ -2,10 +2,12 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.ProgramDao;
+import com.main.glory.Dao.ProgramRecordDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.model.Party;
 import com.main.glory.model.Program;
+import com.main.glory.model.ProgramRecord;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
@@ -24,6 +26,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
     @Autowired
     private ProgramDao programDao;
+
+    @Autowired
+    private ProgramRecordDao programRecordDao;
 
     @Autowired
     private BatchImpl batchService;
@@ -46,19 +51,47 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     public boolean saveProgram(Program program) throws Exception {
         try {
 
-            Optional<Quality> dataQuality = qualityDao.findByQualityId(program.getQuality_id());
-            if (dataQuality.isPresent()) {
+            var pdata = programDao.findById(program.getId());
 
-                Optional<Party> party = partyDao.findById(program.getParty_id());
-                if(party.isPresent()) {
-                    programDao.saveAndFlush(program);
-                    return true;
+            System.out.println("programData:"+pdata.get().getId());
+            if (pdata.isPresent()) {
+                var record =program.getProgram_record();
+
+                //if the program is same but the record is diffrent
+                ProgramRecord programRecord = new ProgramRecord();
+
+                programRecord.setColour_tone(record.get(0).getColour_tone());
+                programRecord.setLot_no(record.get(0).getLot_no());
+                programRecord.setParty_shade_no(record.get(0).getParty_shade_no());
+                programRecord.setProgramControlId(record.get(0).getProgramControlId());
+                programRecord.setQuantity(record.get(0).getQuantity());
+                programRecord.setRemark(record.get(0).getRemark());
+                programRecord.setShade_no(record.get(0).getShade_no());
+                programRecord.setId(null);
+                System.out.println("RecordData:"+programRecord.getColour_tone());
+                programRecordDao.saveAndFlush(programRecord);
+                return true;
+
+
+            } else {
+                Optional<Quality> dataQuality = qualityDao.findByQualityId(program.getQuality_id());
+                if (dataQuality.isPresent()) {
+
+                    Optional<Party> party = partyDao.findById(program.getParty_id());
+                    if (party.isPresent()) {
+                        programDao.saveAndFlush(program);
+                        return true;
+                    } else {
+                        return false;
+                    }
+
                 }
-
+            }} catch(Exception ex){
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
+
+
         return false;
     }
 
@@ -99,19 +132,32 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Override
     public boolean updateProgramByID(Program bm) throws Exception {
 
-        if (bm.getId() != null) {
-            var findProgram = programDao.findById(bm.getId());
-            if (findProgram.isPresent()) {
-                programDao.saveAndFlush(bm);
-                return true;
-            }
-            else
-            {
-                System.out.println("Record not Found");
-                return false;
-            }
+        try {
+            if (bm.getId() != null) {
+                var findProgram = programDao.findById(bm.getId());
+                if (findProgram.isPresent()) {
+                    Optional<Quality> qid = qualityDao.findById(bm.getQuality_entry_id());
+                    Optional<Quality> qualityId = qualityDao.findByQualityId(qid.get().getQualityId());
+                    //System.out.println(qualityId.get().getQualityId());
+                    if (qid.isPresent() && qualityId.isPresent()) {
+                        bm.setQuality_entry_id(qid.get().getId());
+                        bm.setQuality_id(qid.get().getQualityId());
+                        // System.out.println("qid:"+qid.get().getId());
+                        //System.out.println("qid:"+qid.get().getQualityId());
+                        programDao.saveAndFlush(bm);
+                        return true;
+                    } else
+                        return false;
+                } else {
+                    System.out.println("Record not Found");
+                    return false;
+                }
 
 
+            }
+        }catch(Exception e)
+        {
+            return false;
         }
         return false;
     }

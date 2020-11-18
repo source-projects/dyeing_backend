@@ -1,5 +1,6 @@
 package com.main.glory.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.designation.Designation;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class UserData {
     String lastName;
     String email;
     Long contact;
+    @JsonIgnore
     String password;
     String company;
     String department;
