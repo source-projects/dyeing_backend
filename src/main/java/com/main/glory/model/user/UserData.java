@@ -25,7 +25,6 @@ public class UserData {
     Long contact;
     String password;
     String company;
-
     String department;
     Long userHeadId;
     Date createdDate;
@@ -38,7 +37,7 @@ public class UserData {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "designationId", referencedColumnName = "id")
-    private Designation designationData;
+    private Designation designationId;
 
 
     @PrePersist

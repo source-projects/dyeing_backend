@@ -1,8 +1,10 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.ProgramDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
+import com.main.glory.model.Party;
 import com.main.glory.model.Program;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -32,6 +34,8 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Autowired
     private QualityDao qualityDao;
 
+    @Autowired
+    private PartyDao partyDao;
 
 
     @Autowired
@@ -44,8 +48,13 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             Optional<Quality> dataQuality = qualityDao.findByQualityId(program.getQuality_id());
             if (dataQuality.isPresent()) {
-                programDao.saveAndFlush(program);
-                return true;
+
+                Optional<Party> party = partyDao.findById(program.getParty_id());
+                if(party.isPresent()) {
+                    programDao.saveAndFlush(program);
+                    return true;
+                }
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -112,18 +121,18 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         try {
             if (quality.isPresent())
             {
-                System.out.print(quality.get().getId());
+                //System.out.print(quality.get().getId());
                 List<GetAllBatchResponse> allBatch=new ArrayList<>();
                 List<StockMast> stock= stockBatchService.getAllStockBatch(quality.get().getId());
-                System.out.println("stockc:"+stock.toString());
+                //System.out.println("stockc:"+stock.toString());
                 stock.forEach(e->{
-                    System.out.println("e:"+e.getId());
+                  //  System.out.println("e:"+e.getId());
                     List<GetAllBatchResponse> batchDataList = batchDao.findAllQTYControlId(e.getId());
-                    System.out.println("BatchData:"+batchDataList.toString());
+                    //System.out.println("BatchData:"+batchDataList.toString());
                     allBatch.addAll(batchDataList);
                 });
 
-                System.out.print(allBatch);
+                //System.out.print(allBatch);
                 return allBatch;
 
             } else
