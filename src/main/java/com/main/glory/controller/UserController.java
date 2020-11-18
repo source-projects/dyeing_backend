@@ -57,7 +57,7 @@ public class UserController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/userAllUsers")
+    @GetMapping("/user/AllUsers")
     public GeneralResponse<List<UserData>> getAllUser()
     {
 

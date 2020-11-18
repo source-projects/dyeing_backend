@@ -51,7 +51,7 @@ public class ProgramController extends ControllerConfig {
                 return new GeneralResponse<>(programObject,"Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         }
-        return new GeneralResponse<>(null, "Data not found", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value="/program")
@@ -65,7 +65,7 @@ public class ProgramController extends ControllerConfig {
             }
             else
             {
-                return new GeneralResponse<Boolean>(false, "Data not updated !", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<Boolean>(false, "Data is not available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         }
         return new GeneralResponse<Boolean>(false, "Data Not Found by id: !", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

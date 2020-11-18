@@ -25,7 +25,6 @@ public class ProgramRecord {
     private Long shade_no;
     private Long party_shade_no;
     private Long quantity;
-    private Long batch;
     private Long lot_no;
     private String colour_tone;
     private String  remark;
