@@ -132,27 +132,32 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Override
     public boolean updateProgramByID(Program bm) throws Exception {
 
-        if (bm.getId() != null) {
-            var findProgram = programDao.findById(bm.getId());
-            if (findProgram.isPresent()) {
-               Optional<Quality> qdata = qualityDao.findById(findProgram.get().getQuality_entry_id());
-               // System.out.println(qdata.toString());
-               if(qdata.isPresent()){
-                   bm.setQuality_entry_id(qdata.get().getId());
-                   bm.setQuality_id(qdata.get().getQualityId());
-                   programDao.saveAndFlush(bm);
-                   return true;
-               }
-               else
-                   return false;
-            }
-            else
-            {
-                System.out.println("Record not Found");
-                return false;
-            }
+        try {
+            if (bm.getId() != null) {
+                var findProgram = programDao.findById(bm.getId());
+                if (findProgram.isPresent()) {
+                    Optional<Quality> qid = qualityDao.findById(bm.getQuality_entry_id());
+                    Optional<Quality> qualityId = qualityDao.findByQualityId(qid.get().getQualityId());
+                    //System.out.println(qualityId.get().getQualityId());
+                    if (qid.isPresent() && qualityId.isPresent()) {
+                        bm.setQuality_entry_id(qid.get().getId());
+                        bm.setQuality_id(qid.get().getQualityId());
+                        // System.out.println("qid:"+qid.get().getId());
+                        //System.out.println("qid:"+qid.get().getQualityId());
+                        programDao.saveAndFlush(bm);
+                        return true;
+                    } else
+                        return false;
+                } else {
+                    System.out.println("Record not Found");
+                    return false;
+                }
 
 
+            }
+        }catch(Exception e)
+        {
+            return false;
         }
         return false;
     }
