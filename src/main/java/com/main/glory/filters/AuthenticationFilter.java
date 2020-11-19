@@ -1,10 +1,12 @@
 package com.main.glory.filters;
 
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import com.main.glory.servicesImpl.UserServiceImpl;
 import com.main.glory.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,8 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -32,10 +32,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
 	private JwtUtil jwtUtil;
 
+	@SneakyThrows
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
-		System.out.println("-------------"+request.getRequestURI());
+
+		final String path = request.getRequestURI().substring(5);
+		final String method = request.getMethod();
 
 		final String authorizationHeader = request.getHeader("Authorization");
 
@@ -46,11 +49,36 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				jwt = authorizationHeader.substring(7);
 				id = jwtUtil.extractUsername(jwt);
 				Claims claims = jwtUtil.extractAllClaims(jwt);
-				Object userPermissions = claims.get("permissions", Object.class);
-				//All permissions
+				Map userPermissions = (Map) claims.get("permissions", Object.class);
+
+				System.out.println(path+"-"+method);
 				System.out.println(userPermissions);
 
-				//userPermissions.
+				if(path.startsWith("party")){
+					Integer code = (Integer) userPermissions.get("pa");
+					Permissions permissions = new Permissions(code);
+					System.out.println(permissions);
+					if(method.equals("GET")){
+						if(!permissions.getView() && !permissions.getViewAll()){
+							throw new Exception("Unauthorized user");
+						}
+					}
+					if(method.equals("POST")){
+						if(!permissions.getAdd()){
+							throw new Exception("Unauthorized user");
+						}
+					}
+					if(method.equals("PUT")){
+						if(!permissions.getEdit() && !permissions.getEditAll()){
+							throw new Exception("Unauthorized user");
+						}
+					}
+					if(method.equals("DELETE")){
+						if(!permissions.getDelete() && !permissions.getDeleteAll()){
+							throw new Exception("Unauthorized user");
+						}
+					}
+				}
 
 			}
 
@@ -67,11 +95,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 //					response.setHeader("accessToken", jwtUtil.generateToken(userDetails,otp));
 				}
 			}
+			chain.doFilter(request, response);
 		} catch(Exception e){
 			e.printStackTrace();
-			System.out.println("Invalid token received");
+			response.sendError(403,e.getMessage());
 		}
-		chain.doFilter(request, response);
 	}
 
 }
