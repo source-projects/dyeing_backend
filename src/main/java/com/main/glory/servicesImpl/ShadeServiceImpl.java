@@ -49,19 +49,19 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	public void saveShade(AddShadeMast shadeMast) throws Exception{
 
-		Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+		Optional<Quality> quality=qualityDao.findById(shadeMast.getQualityId());
 		if(!quality.isPresent())
 		{
-			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			throw new Exception("Quality Not Found with Id:"+shadeMast.getQualityId());
 		}
-		//System.out.println("QUQUQUQUQUQU:"+quality.get().toString());
+
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		System.out.println("Shade Mast;"+shadeMast.toString());
 		ShadeMast shadeData =  modelMapper.map(shadeMast, ShadeMast.class);
 		System.out.println("\nShadeData"+shadeData.toString());
 		shadeData.setQualityId(quality.get());
-		shadeData.setCuttingId(0l);
-		shadeData.setUserHeadId(0l);
+//		shadeData.setCuttingId(0l);
+//		shadeData.setUserHeadId(0l);
 
 
 /*
@@ -72,12 +72,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		Date dt = new Date(System.currentTimeMillis());
 
 		ShadeMast x = shadeMastDao.save(shadeData);
-		shadeMast.getShadeDataList().forEach(e -> {
-			e.setControlId(x.getId());
-			e.setCreatedDate(dt);
-
-		});
-		shadeDataDao.saveAll(shadeMast.getShadeDataList());
+//		shadeMast.getShadeDataList().forEach(e -> {
+//			e.setControlId(x.getId());
+//			e.setCreatedDate(dt);
+//
+//		});
+//		shadeDataDao.saveAll(shadeMast.getShadeDataList());
 	}
 
 
