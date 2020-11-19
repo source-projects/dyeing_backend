@@ -131,6 +131,8 @@ public class UserController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
     @DeleteMapping(value="/user/{id}")
     public GeneralResponse<Boolean> deleteUserDetailsByID(@PathVariable(value = "id") Long id)
     {
