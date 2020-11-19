@@ -46,7 +46,7 @@ public class UserController extends ControllerConfig {
         return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/userHead")
+    @GetMapping("/user/head")
     public GeneralResponse<List<getAllUserInfo>> getAllHead()
     {
 
@@ -59,7 +59,7 @@ public class UserController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/user/AllUsers")
+    @GetMapping("/user/all")
     public GeneralResponse<List<getAllUserInfo>> getAllUser()
     {
 
