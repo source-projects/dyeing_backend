@@ -74,19 +74,15 @@ public class UserController extends ControllerConfig {
     public GeneralResponse<Boolean> createUser(@RequestBody UserAddRequest userData) throws Exception{
 
         try{
-            int flag = userService.createUser(userData);
-            if(flag==1){
+            userService.createUser(userData);
+
             return new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            else
-            {
-                return new GeneralResponse<>(false,"User not created successfully", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-            }
             }
         catch (Exception e){
             e.printStackTrace();
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @PostMapping("/login")

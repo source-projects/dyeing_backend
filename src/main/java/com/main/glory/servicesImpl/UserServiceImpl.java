@@ -38,30 +38,34 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
-    public int createUser(UserAddRequest userDataDto) {
+    public void createUser(UserAddRequest userDataDto) throws Exception {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         UserData userData =  modelMapper.map(userDataDto, UserData.class);
 
-        Optional<UserData> data = userDao.findById(userData.getId());
+        Optional<UserData> data = userDao.findByUserName(userData.getUserName());
 
         if(!data.isPresent()) {
             Optional<Designation> designationData = designationService.getDesignationById(userDataDto.getDesignationId());
-            if(designationData.isPresent())
+            if(!designationData.isPresent())
             {
-                userData.setDesignationId(designationData.get());
-                //System.out.println(userData.toString());
-                userDao.saveAndFlush(userData);
-                return 1;
+                throw new Exception("No such desgination found:"+userDataDto.getDesignationId());
+
+
             }
+            userData.setDesignationId(designationData.get());
+            //System.out.println(userData.toString());
+
+            userDao.saveAndFlush(userData);
+
 
 
         }
-        else
+       else
         {
-            return 0;
+            throw new Exception("User is already available with username:"+userData.getUserName());
         }
 
-        return 0;
+
     }
 
     public UserData checkUser(String userName,String password) {
