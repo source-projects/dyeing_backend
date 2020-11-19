@@ -65,6 +65,23 @@ public class SupplierController extends ControllerConfig {
             return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/supplier/name/{id}")
+    public GeneralResponse<String> getSupplierName(@PathVariable("id") Long id){
+        try{
+            if(id == null){
+                return new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
+
+          String name =  supplierService.getSupplierName(id);
+            if(name != null){
+                return new GeneralResponse<>(name, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/supplier/rates/all")
     public GeneralResponse<Object> getAllSupplierRates(){
@@ -79,6 +96,7 @@ public class SupplierController extends ControllerConfig {
             return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/supplier/all")
     public GeneralResponse<Object> getAllSupplier(){

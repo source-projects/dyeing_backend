@@ -26,6 +26,7 @@ public class ShadeData {
 	String itemName;
 	@Column(nullable = false)
 	Long supplierId;
+	String supplierName;
 	@Column(nullable = false)
 	Double rate;
 	@Column(nullable = false)

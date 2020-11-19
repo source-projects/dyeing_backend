@@ -22,6 +22,7 @@ public class ShadeMast {
 	String partyShadeNo;
 	//@Column(nullable = false)
 	Long processId;
+
 	//@Column(nullable = false)
 	String qualityId;
 	//@Column(nullable = false)
@@ -42,6 +43,7 @@ public class ShadeMast {
 	String category;
 	//@Column(nullable = false)
 	Long labColorNo;
+	String processName;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")

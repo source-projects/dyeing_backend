@@ -4,9 +4,11 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.user.Request.UserAddRequest;
+import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserRequest;
 import com.main.glory.model.user.response.LoginResponse;
+import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.servicesImpl.UserServiceImpl;
 import com.main.glory.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,7 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/userHead")
-    public GeneralResponse<List<UserData>> getAllHead()
+    public GeneralResponse<List<getAllUserInfo>> getAllHead()
     {
 
         if(userService.getAllHeadUser()!=null) {
@@ -58,15 +60,15 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/user/AllUsers")
-    public GeneralResponse<List<UserData>> getAllUser()
+    public GeneralResponse<List<getAllUserInfo>> getAllUser()
     {
 
         if(userService.getAllHeadUser()!=null) {
-            return new GeneralResponse<>(userService.getAllUser(), "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<>(userService.getAllUser(), "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         else
         {
-            return new GeneralResponse<>(null, "User Head Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            return new GeneralResponse<>(null, "User Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -75,7 +77,6 @@ public class UserController extends ControllerConfig {
 
         try{
             userService.createUser(userData);
-
             return new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         catch (Exception e){
@@ -112,7 +113,7 @@ public class UserController extends ControllerConfig {
 
 
     @PutMapping("/user")
-    public GeneralResponse<Boolean> upddateUser(@RequestBody UserData userData) throws Exception{
+    public GeneralResponse<Boolean> upddateUser(@RequestBody UserUpdateRequest userData) throws Exception{
 
         try{
             int flag = userService.isAvailable(userData);
