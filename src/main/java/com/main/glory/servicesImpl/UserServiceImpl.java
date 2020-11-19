@@ -5,14 +5,18 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.Request.UserAddRequest;
+import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.services.UserServiceInterface;
 
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,27 +76,35 @@ public class UserServiceImpl implements UserServiceInterface {
         return userDao.findByUserNameAndPassword(userName, password);
     }
 
-    public List<UserData> getAllHeadUser() {
+    public List<getAllUserInfo> getAllHeadUser() {
         List<UserData> adminList = userDao.findByUserHeadId(0l);
-        List<UserData> userHeads = new ArrayList<>();
-        adminList.forEach(e -> {
+        List<getAllUserInfo> userHeads = new ArrayList<>();
+
+        for (UserData e : adminList) {
+            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
             List<UserData> users = userDao.findByUserHeadId(e.getId());
-            userHeads.addAll(users);
-        });
+            for (UserData ex : users) {
+                getAllUserInfo userData = modelMapper.map(ex, getAllUserInfo.class);
+                userHeads.add(userData);
+
+            }
+
+        }
+
         return userHeads;
     }
 
-    public int isAvailable(UserData userData) {
+  /*  public int isAvailable(User userData) {
 
         var userData1 = userDao.findById(userData.getId());
         if(!userData1.isPresent())
         {
             return 0;
         }
-        userDao.save(userData);
+        //userDao.save(userData);
         return 1;
 
-    }
+    }*/
 
     public boolean deletePartyById(Long id) {
         var userIndex= userDao.findById(id);
@@ -104,9 +116,40 @@ public class UserServiceImpl implements UserServiceInterface {
 
     }
 
-    public List<UserData> getAllUser() {
+    //for All user
+    public List<getAllUserInfo> getAllUser() {
 
-        return userDao.findAll();
+
+        List<UserData> userDataList = userDao.findAll();
+        List<getAllUserInfo> getAllUserInfoList = new ArrayList<>();
+
+        int i=0;
+        for (UserData e : userDataList) {
+            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
+
+            getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
+            getAllUserInfoList.add(userData);
+
+
+            //getAllUserInfoList.addAll( new getAllUserInfo(e.getId(),e.getUserName(),e.getFirstName(),e.getLastName(),e.getUserHeadId(),e.getCompany(),designation.get().getDesignation()));
+        }
+
+        return getAllUserInfoList;
+
+    }
+
+    public int isAvailable(UserUpdateRequest userData) {
+
+        var userData1 = userDao.findById(userData.getId());
+        if(!userData1.isPresent())
+        {
+            return 0;
+        }
+        UserData userData2 = modelMapper.map(userData, UserData.class);
+        userDao.saveAndFlush(userData2);
+
+        return 1;
+
 
 
     }

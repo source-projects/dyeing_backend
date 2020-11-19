@@ -11,11 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service("SupplierServiceImpl")
@@ -67,10 +64,11 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
-    public Object getSupplier(Long id) {
+    public Optional<Supplier> getSupplier(Long id) {
         try {
-            Supplier s = supplierDao.findById(id).get();
-            return s;
+//            Supplier s = supplierDao.findById(id).get();
+ //           return s;
+            return supplierDao.findById(id);
         } catch (Exception e){
             e.printStackTrace();
             return null;
@@ -146,5 +144,10 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 	        e.printStackTrace();
 	        return false;
         }
+    }
+
+    public String getSupplierName(Long id) {
+        Optional<Supplier> data = supplierDao.findById(id);
+        return data.get().getSupplierName();
     }
 }
