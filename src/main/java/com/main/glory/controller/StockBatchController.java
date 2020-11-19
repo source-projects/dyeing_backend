@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +41,14 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/all")
-    public GeneralResponse<List<StockMast>> getAllStockBatch() throws Exception{
+    public GeneralResponse<List<GetAllStockWithPartyNameResponse>> getAllStockBatch() throws Exception{
         try{
-            List<StockMast> stockMast = stockBatchService.getAllStockBatch();
+            List<GetAllStockWithPartyNameResponse> stockMast = stockBatchService.getAllStockBatch();
             if(stockMast == null){
                 return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             else{
-                return new GeneralResponse<List<StockMast>>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -81,6 +82,7 @@ public class StockBatchController extends ControllerConfig {
             stockBatchService.updateBatch(stockMast);
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }

@@ -42,6 +42,24 @@ public class StockMast {
 
     Long qualityId;
 
+    public StockMast(StockMast sm) {
+        this.id = sm.id;
+        this.stockInType = sm.stockInType;
+        this.createdDate = sm.createdDate;
+        this.updatedDate = sm.updatedDate;
+        this.batchData = sm.batchData;
+        this.partyId = sm.partyId;
+        this.qualityId = sm.qualityId;
+        this.billDate = sm.billDate;
+        this.billNo = sm.billNo;
+        this.chlDate = sm.chlDate;
+        this.chlNo = sm.chlNo;
+        this.unit = sm.unit;
+        this.isProductionPlanned = sm.isProductionPlanned;
+        this.createdBy = sm.createdBy;
+        this.updatedBy = sm.updatedBy;
+    }
+
 
     @PrePersist
     protected void onCreate() {
@@ -52,5 +70,6 @@ public class StockMast {
     protected void onUpdate() {
         this.updatedDate = new Date(System.currentTimeMillis());
     }
+
 
 }

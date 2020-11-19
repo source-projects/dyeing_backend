@@ -3,8 +3,8 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
-import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,12 +65,12 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public List<StockMast> getAllStockBatch(){
-        List<StockMast> data = stockMastDao.findAll();
+    public List<GetAllStockWithPartyNameResponse> getAllStockBatch(){
+        Optional<List<GetAllStockWithPartyNameResponse>> data = stockMastDao.getAllStockWithPartyName();
         if(data.isEmpty())
             return null;
         else
-            return data;
+            return data.get();
     }
 
     @Transactional
@@ -90,6 +90,7 @@ public class StockBatchServiceImpl {
             throw new Exception("No such batch present with id:"+stockMast.getId());
         }
         // Validate, if batch is not given to the production planning then throw the exception
+        System.out.println(original.get());
         if(original.get().getIsProductionPlanned()){
             throw new Exception("BatchData is already sent to production, for id:"+stockMast.getId());
         }
