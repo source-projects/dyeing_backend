@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserDao extends JpaRepository<UserData, Long> {
@@ -18,4 +19,6 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     //@Query("Select new user(b.id, b.qualityId, b.remark, b.createdBy, b.createdDate, b.updatedDate, b.updatedBy, b.userHeadId, b.isProductionPlaned) from BatchMast b")
     //public List<User> findAllByIdWithoutData();
     List<UserData> findByUserHeadId(Long id);
+
+    Optional<UserData> findByUserName(String userName);
 }
