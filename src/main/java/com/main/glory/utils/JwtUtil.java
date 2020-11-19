@@ -55,6 +55,7 @@ public class JwtUtil {
 			exp = timeStamp + 1000 * 60 * 60;
 			claims.put("permissions", user.getUserPermissionData());
 			claims.put("designation", user.getDesignationId().getDesignation());
+			claims.put("userHeadId", user.getUserHeadId());
 		} else if(tokenType.equals("refreshToken")) {
 			exp = timeStamp + 1000 * 60 * 60 * 60;
 			claims.put("passcode", CipherModule.encrypt(user.getPassword()));
