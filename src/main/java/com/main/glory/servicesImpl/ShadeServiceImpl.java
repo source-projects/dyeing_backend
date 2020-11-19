@@ -26,6 +26,9 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	ShadeDataDao shadeDataDao;
 
 	@Autowired
+	SupplierServiceImpl supplierService;
+
+	@Autowired
 	QualityDao qualityDao;
 
 	@Autowired
@@ -35,10 +38,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	public void saveShade(ShadeMast shadeMast){
 		Date dt = new Date(System.currentTimeMillis());
 		shadeMast.setCreatedDate(dt);
+
 		ShadeMast x = shadeMastDao.save(shadeMast);
 		shadeMast.getShadeDataList().forEach(e -> {
 			e.setControlId(x.getId());
 			e.setCreatedDate(dt);
+
 		});
 		shadeDataDao.saveAll(shadeMast.getShadeDataList());
 	}
