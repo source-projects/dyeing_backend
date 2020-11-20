@@ -13,5 +13,6 @@ public class ShadeIdwithPartyShadeNo {
 
     Long id;
     String partyShadeNo;
+    String colorTone;
 
 }

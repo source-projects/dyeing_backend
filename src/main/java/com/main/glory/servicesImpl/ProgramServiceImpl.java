@@ -66,20 +66,47 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             System.out.println("programData:"+pdata.get().getId());
             if (pdata.isPresent()) {
+
                 var record =program.getProgram_record();
 
+                boolean isPartyShadeAvailable=false;
                 //if the program is same but the record is diffrent
                 ProgramRecord programRecord = new ProgramRecord();
 
+
                 programRecord.setColour_tone(record.get(0).getColour_tone());
                 programRecord.setLot_no(record.get(0).getLot_no());
-                programRecord.setParty_shade_no(record.get(0).getParty_shade_no());
                 programRecord.setProgramControlId(record.get(0).getProgramControlId());
                 programRecord.setQuantity(record.get(0).getQuantity());
                 programRecord.setRemark(record.get(0).getRemark());
+                programRecord.setBarchId(record.get(0).getBarchId());
+                List<ShadeMast> shadeMast=shadeService.getAllShadeMast();
+                for (ShadeMast e : shadeMast) {
+
+                    if(e.getPartyShadeNo() == record.get(0).getParty_shade_no())
+                    {
+                        isPartyShadeAvailable=true;
+                        break;
+                    }
+                    else
+                    {
+                        isPartyShadeAvailable=false;
+                    }
+                }
+
+
+                if(isPartyShadeAvailable==true)
+                {
+                    programRecord.setParty_shade_no(record.get(0).getParty_shade_no());
+                }
+                else
+                    throw new Exception("Party shade no is not Availble for partyShadeno:"+record.get(0).getParty_shade_no());
+
                 programRecord.setShade_no(record.get(0).getShade_no());
                 programRecord.setId(null);
+
                 System.out.println("RecordData:"+programRecord.getColour_tone());
+
                 programRecordDao.saveAndFlush(programRecord);
                 return true;
 
@@ -237,6 +264,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             ShadeIdwithPartyShadeNo data=new ShadeIdwithPartyShadeNo();
             data.setId(e.getId());
             data.setPartyShadeNo(e.getPartyShadeNo());
+            data.setColorTone(e.getColorTone());
             shadeIdwithPartyShadeNoList.add(data);
         }
 
