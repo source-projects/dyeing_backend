@@ -37,10 +37,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
-		final String path = request.getRequestURI().substring(5);
-		final String method = request.getMethod();
+		String path = "";
+		String method = "";
+		String authorizationHeader = "";
+		try{
+			path = request.getRequestURI().substring(5);
+			method = request.getMethod();
+			authorizationHeader = request.getHeader("Authorization");
+		} catch (Exception e) {
 
-		final String authorizationHeader = request.getHeader("Authorization");
+		}
+
 
 		String id = null;
 		String jwt = null;

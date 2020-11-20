@@ -1,11 +1,18 @@
 package com.main.glory.model.shade.requestmodals;
 
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeData;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -16,16 +23,18 @@ public class AddShadeMast {
 
     String partyShadeNo;
     Long processId;
-    String processName;
-    String colorTone;
-    String qualityId;
-    String qualityName;
-    String qualityType;
+    Long qualityId;
     Long partyId;
-    String labColorNo;
-    String category;
+    String colorTone;
+    String createdBy;
+    String updatedBy;
+    Long userHeadId;
+    Long cuttingId;
     String remark;
-    List<ShadeData> shadeDataList;
+    String category;
+    String labColorNo;
+    String processName;
 
+    List<ShadeData> shadeDataList;
 
 }

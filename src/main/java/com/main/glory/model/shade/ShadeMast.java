@@ -53,6 +53,10 @@ public class ShadeMast {
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ShadeData> shadeDataList;
 
+	@PrePersist
+	protected void onCreate(){ this.createdDate = new Date(System.currentTimeMillis()); }
+
+
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 }
