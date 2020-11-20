@@ -40,6 +40,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		final String path = request.getRequestURI().substring(5);
 		final String method = request.getMethod();
 
+		if(path.startsWith("user")){
+			chain.doFilter(request, response);
+			return;
+		}
+
 		final String authorizationHeader = request.getHeader("Authorization");
 
 		String id = null;
