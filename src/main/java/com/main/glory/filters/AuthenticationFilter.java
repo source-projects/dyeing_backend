@@ -37,8 +37,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 
-		final String path = request.getRequestURI().substring(5);
-		final String method = request.getMethod();
+
+		String path = "";
+		String method = "";
+
+		try{
+			path = request.getRequestURI().substring(5);
+			method = request.getMethod();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if(path.startsWith("user")){
 			chain.doFilter(request, response);
@@ -59,7 +67,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				System.out.println(path+"-"+method);
 				System.out.println(userPermissions);
 
-				if(path.startsWith("party")){
+				System.out.println(path);
+				if(path.contains("party")){
 					Integer code = (Integer) userPermissions.get("pa");
 					Permissions permissions = new Permissions(code);
 					System.out.println(permissions);
@@ -100,6 +109,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 //					response.setHeader("accessToken", jwtUtil.generateToken(userDetails,otp));
 				}
 			}
+
+			if(id == null){
+				throw new Exception("No JWT found");
+			}
+
 			chain.doFilter(request, response);
 		} catch(Exception e){
 			e.printStackTrace();
