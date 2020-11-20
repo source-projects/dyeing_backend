@@ -6,13 +6,15 @@ import com.main.glory.Dao.ProgramRecordDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.model.Party;
-import com.main.glory.model.Program;
+import com.main.glory.model.program.Program;
 import com.main.glory.model.ProgramRecord;
-import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.user.UserData;
 import com.main.glory.services.ProgramServiceInterface;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Autowired
     private PartyDao partyDao;
 
+
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     BatchDao batchDao;
@@ -95,10 +100,36 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         return false;
     }
 
-    @Override
+
     @Transactional
-    public List<Program> getAllProgram() throws Exception {
-        return programDao.findAll();
+    public List<GetAllProgram> getAllProgram() throws Exception {
+
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+        List<Program> programList = programDao.findAll();
+        List<GetAllProgram> getAllProgramList = new ArrayList<>();
+        for (Program e : programList) {
+
+            GetAllProgram programData =  modelMapper.map(e, GetAllProgram.class);
+            Optional<Quality> quality = qualityDao.findById(e.getQuality_entry_id());
+            Optional<Party> party = partyDao.findById(e.getParty_id());
+            //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
+            if(!quality.isPresent())
+            {
+                throw new Exception("Quality data is not Found:");
+            }
+            if(!party.isPresent())
+            {
+                throw new Exception("Party Data not found");
+            }
+            programData.setQuality_id(quality.get().getQualityId());
+            programData.setQualityName(quality.get().getQualityName());
+            programData.setPartName(party.get().getPartyName());
+
+            getAllProgramList.add(programData);
+        }
+
+        return getAllProgramList;
     }
 
     @Override
