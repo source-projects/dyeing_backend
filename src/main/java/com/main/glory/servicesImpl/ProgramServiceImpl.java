@@ -10,12 +10,15 @@ import com.main.glory.model.program.Program;
 import com.main.glory.model.ProgramRecord;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ProgramServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -50,6 +53,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
     @Autowired
     BatchDao batchDao;
+
+    @Autowired
+    ShadeServiceImpl shadeService;
 
     @Override
 //    @Transactional
@@ -220,5 +226,21 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             System.out.print(e.getMessage());
         }
         return null;
+    }
+
+    public List<ShadeIdwithPartyShadeNo> getShadeDetail() {
+
+        List<ShadeMast> shadeMastList= shadeService.getAllShadeMast();
+        List<ShadeIdwithPartyShadeNo> shadeIdwithPartyShadeNoList = new ArrayList<>();
+
+        for (ShadeMast e : shadeMastList) {
+            ShadeIdwithPartyShadeNo data=new ShadeIdwithPartyShadeNo();
+            data.setId(e.getId());
+            data.setPartyShadeNo(e.getPartyShadeNo());
+            shadeIdwithPartyShadeNoList.add(data);
+        }
+
+
+        return shadeIdwithPartyShadeNoList;
     }
 }

@@ -4,6 +4,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.servicesImpl.ProgramServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,19 @@ public class ProgramController extends ControllerConfig {
         }
         return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
     }
+
+    //get partshade no with respected shadeId
+    @GetMapping(value="/programPartyShadeDetail")
+    public GeneralResponse<List<ShadeIdwithPartyShadeNo>> getShadeDetail() throws Exception {
+
+        List<ShadeIdwithPartyShadeNo> listData=programServiceImpl.getShadeDetail();
+            if(listData!=null)
+            {
+                return new GeneralResponse<>(listData,"Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+    }
+
 
     @PutMapping(value="/program")
     public GeneralResponse<Boolean>  updateProgram(@RequestBody Program program) throws Exception
