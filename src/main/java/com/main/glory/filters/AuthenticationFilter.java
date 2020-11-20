@@ -42,6 +42,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		String method = "";
 
 		try{
+
+			// for swagger turn off the guards
+			if(!request.getRequestURI().startsWith("/api")){
+				chain.doFilter(request, response);
+				return;
+			}
+
 			path = request.getRequestURI().substring(5);
 			method = request.getMethod();
 		} catch (Exception e) {
