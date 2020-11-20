@@ -27,12 +27,17 @@ public class ProgramController extends ControllerConfig {
             return new GeneralResponse<Boolean>(false, "Program id is null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
         boolean flag=programServiceImpl.saveProgram(program);
-        if(!flag)
+        try {
+            if (!flag) {
+                System.out.println("Something went wrong");
+                return new GeneralResponse<Boolean>(false, "Data Not found:", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            } else
+                return new GeneralResponse<Boolean>(true, "Program added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        catch(Exception e)
         {
-            System.out.println("Something went wrong");
-            return new GeneralResponse<Boolean>(false, "Data Not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-        }else
-            return new GeneralResponse<Boolean>(true, "Program added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value="/program/all")

@@ -19,13 +19,13 @@ public class ProgramRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Column(name = "program_control_id")
     private Long  programControlId;
     private Long shade_no;
-    private Long party_shade_no;
+    private String party_shade_no;
     private Long quantity;
     private Long lot_no;
+    String barchId;
     private String colour_tone;
     private String  remark;
 
