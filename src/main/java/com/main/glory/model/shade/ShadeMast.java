@@ -1,5 +1,6 @@
 package com.main.glory.model.shade;
 
+import com.main.glory.model.quality.Quality;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -7,10 +8,10 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "ShadeMast")
 @ToString
@@ -24,7 +25,10 @@ public class ShadeMast {
 	Long processId;
 
 	//@Column(nullable = false)
-	String qualityId;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "quality_entry_Id", referencedColumnName = "id")
+	Quality qualityId;
 	//@Column(nullable = false)
 	Long partyId;
 	String colorTone;
@@ -42,7 +46,7 @@ public class ShadeMast {
 	//@Column(nullable = false)
 	String category;
 	//@Column(nullable = false)
-	Long labColorNo;
+	String labColorNo;
 	String processName;
 
 	@OneToMany(cascade = CascadeType.ALL)

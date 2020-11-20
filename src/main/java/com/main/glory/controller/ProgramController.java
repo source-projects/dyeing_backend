@@ -1,13 +1,12 @@
 package com.main.glory.controller;
 
-import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.Program;
-import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.program.Program;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
+import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.servicesImpl.ProgramServiceImpl;
-import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class ProgramController extends ControllerConfig {
     }
 
     @GetMapping(value="/program/all")
-    public List<Program> getProgramList() throws Exception {
+    public List<GetAllProgram> getProgramList() throws Exception {
         return programServiceImpl.getAllProgram();
     }
 
@@ -53,6 +52,19 @@ public class ProgramController extends ControllerConfig {
         }
         return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
     }
+
+    //get partshade no with respected shadeId
+    @GetMapping(value="/programPartyShadeDetail")
+    public GeneralResponse<List<ShadeIdwithPartyShadeNo>> getShadeDetail() throws Exception {
+
+        List<ShadeIdwithPartyShadeNo> listData=programServiceImpl.getShadeDetail();
+            if(listData!=null)
+            {
+                return new GeneralResponse<>(listData,"Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+    }
+
 
     @PutMapping(value="/program")
     public GeneralResponse<Boolean>  updateProgram(@RequestBody Program program) throws Exception

@@ -29,6 +29,8 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     Optional<Quality> findByQualityId(String qualityId);
 
+    Optional<Quality>findByQualityIdAndQualityName(String qualityId, String qualityName);
+
     //Optional<Quality> findByQualityId(Quality quality_id);
 
 }
