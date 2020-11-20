@@ -24,8 +24,8 @@ public class ProgramRecord {
     private Long shade_no;
     private String party_shade_no;
     private Long quantity;
-    private Long lot_no;
-    String barchId;
+    private Long stockId;
+    String branchId;
     private String colour_tone;
     private String  remark;
 

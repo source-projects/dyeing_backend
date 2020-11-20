@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
@@ -43,6 +44,29 @@ public class ProgramController extends ControllerConfig {
     @GetMapping(value="/program/all")
     public List<GetAllProgram> getProgramList() throws Exception {
         return programServiceImpl.getAllProgram();
+    }
+
+    //getStock Quality wise Stock and it's qty
+    @GetMapping(value="/program/StockQuality/{id}")
+    public GeneralResponse<List<StockQualityWise>> getStockQualityList(@PathVariable(value = "id") Long id) throws Exception {
+
+        try {
+            if (id == null) {
+                throw new Exception("Id can't be null");
+            }
+            else
+            {
+                List<StockQualityWise> stockQualityWiseList =  programServiceImpl.getAllStockByQuality(id);
+                return new GeneralResponse<>(stockQualityWiseList, "Data fetched Succesully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        }
+        catch (Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
+        }
+
+       // return programServiceImpl.getAllProgram();
     }
 
     @GetMapping(value="/program/{id}")
