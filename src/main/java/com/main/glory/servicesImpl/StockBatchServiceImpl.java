@@ -112,4 +112,7 @@ public class StockBatchServiceImpl {
     }
 
 
+    public List<StockMast> findByQualityId(Long id) {
+        return stockMastDao.findByQualityId(id);
+    }
 }

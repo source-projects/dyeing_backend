@@ -6,6 +6,8 @@ import com.main.glory.Dao.ProgramRecordDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.model.Party;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.ProgramRecord;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -64,7 +66,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             var pdata = programDao.findById(program.getId());
 
-            System.out.println("programData:"+pdata.get().getId());
+            //System.out.println("programData:"+pdata.get().getId());
             if (pdata.isPresent()) {
 
                 var record =program.getProgram_record();
@@ -75,11 +77,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
                 programRecord.setColour_tone(record.get(0).getColour_tone());
-                programRecord.setLot_no(record.get(0).getLot_no());
+                programRecord.setStockId(record.get(0).getStockId());
                 programRecord.setProgramControlId(record.get(0).getProgramControlId());
                 programRecord.setQuantity(record.get(0).getQuantity());
                 programRecord.setRemark(record.get(0).getRemark());
-                programRecord.setBarchId(record.get(0).getBarchId());
+                programRecord.setBranchId(record.get(0).getBranchId());
                 List<ShadeMast> shadeMast=shadeService.getAllShadeMast();
                 for (ShadeMast e : shadeMast) {
 
@@ -270,5 +272,29 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
         return shadeIdwithPartyShadeNoList;
+    }
+
+    public List<StockQualityWise> getAllStockByQuality(Long id) throws Exception {
+
+
+        List<StockQualityWise> stockQualityWiseList=new ArrayList<>();
+        List<StockMast> stockMastList = stockBatchService.findByQualityId(id);
+        for(StockMast stockMast : stockMastList)
+        {
+            double qty=0;
+
+            List<BatchData> batchDataList =  batchDao.findByControlId(stockMast.getId());
+            for(BatchData batchData:batchDataList)
+            {
+                qty+=batchData.getWt();
+            }
+            StockQualityWise stockQualityWise = new StockQualityWise();
+            stockQualityWise.setQty(qty);
+            stockQualityWise.setStockId(stockMast.getId());
+            stockQualityWiseList.add(stockQualityWise);
+            qty=0;
+
+        }
+        return stockQualityWiseList;
     }
 }

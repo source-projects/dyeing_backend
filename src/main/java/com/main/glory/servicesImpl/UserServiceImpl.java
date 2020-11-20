@@ -138,14 +138,21 @@ public class UserServiceImpl implements UserServiceInterface {
 
     }
 
-    public int isAvailable(UserUpdateRequest userData) {
+    public int isAvailable(UserUpdateRequest userData) throws Exception {
 
         var userData1 = userDao.findById(userData.getId());
         if(!userData1.isPresent())
         {
             return 0;
         }
+
         UserData userData2 = modelMapper.map(userData, UserData.class);
+        var designation = userData2.getDesignationId();
+        if(designation.getId()!=null)
+        userData2.setDesignationId(designation);
+        else
+        throw new Exception("Wrong designation id"+userData2.getId());
+
         userDao.saveAndFlush(userData2);
 
         return 1;
