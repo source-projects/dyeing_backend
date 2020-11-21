@@ -139,9 +139,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
         return false;*/
-
-
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
             Program programData = modelMapper.map(program, Program.class);
+            System.out.println(programData);
             programDao.save(programData);
             return true;
         }catch (Exception e)
