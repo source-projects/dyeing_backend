@@ -37,7 +37,7 @@ public class Program {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "programControlId", referencedColumnName = "id")
-    private List<ProgramRecord> program_record;
+    private List<ProgramRecord> programRecords;
 
 
    @PrePersist

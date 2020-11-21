@@ -16,8 +16,6 @@ public interface UserDao extends JpaRepository<UserData, Long> {
 
     List<UserData> findByUserHeadIdGreaterThan(Long id);
 
-    //@Query("Select new user(b.id, b.qualityId, b.remark, b.createdBy, b.createdDate, b.updatedDate, b.updatedBy, b.userHeadId, b.isProductionPlaned) from BatchMast b")
-    //public List<User> findAllByIdWithoutData();
     List<UserData> findByUserHeadId(Long id);
 
     Optional<UserData> findByUserName(String userName);

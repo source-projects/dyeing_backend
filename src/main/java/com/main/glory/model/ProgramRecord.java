@@ -24,6 +24,7 @@ public class ProgramRecord {
     private Long quantity;
     private String colourTone;
     private String  remark;
+    private Long programControlId;
 
 //    @ManyToOne(cascade = {CascadeType.ALL},fetch= FetchType.EAGER)
 //    private List<Program> program_record;
