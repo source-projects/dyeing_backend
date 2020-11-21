@@ -143,7 +143,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         List<GetAllProgram> getAllProgramList = new ArrayList<>();
         for (Program e : programList) {
 
-            GetAllProgram programData =  modelMapper.map(e, GetAllProgram.class);
+            GetAllProgram programData =  new GetAllProgram();
+
+            //modelMapper.map(e, GetAllProgram.class);
             Optional<Quality> quality = qualityDao.findById(e.getQuality_entry_id());
             Optional<Party> party = partyDao.findById(e.getParty_id());
             //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
@@ -155,6 +157,12 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             {
                 throw new Exception("Party Data not found");
             }
+
+            programData.setParty_id(party.get().getId());
+            programData.setProgram_given_by(e.getProgram_given_by());
+            programData.setPriority(e.getPriority());
+            programData.setRemark(e.getRemark());
+            programData.setQuality_entry_id(e.getQuality_entry_id());
             programData.setQuality_id(quality.get().getQualityId());
             programData.setQualityName(quality.get().getQualityName());
             programData.setPartName(party.get().getPartyName());
