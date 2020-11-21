@@ -77,11 +77,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
                 programRecord.setColour_tone(record.get(0).getColour_tone());
-                programRecord.setStockId(record.get(0).getStockId());
                 programRecord.setProgramControlId(record.get(0).getProgramControlId());
                 programRecord.setQuantity(record.get(0).getQuantity());
                 programRecord.setRemark(record.get(0).getRemark());
-                programRecord.setBranchId(record.get(0).getBranchId());
                 List<ShadeMast> shadeMast=shadeService.getAllShadeMast();
                 for (ShadeMast e : shadeMast) {
 
