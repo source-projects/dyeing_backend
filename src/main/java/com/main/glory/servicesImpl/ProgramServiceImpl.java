@@ -168,10 +168,10 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Override
     public Program getProgramById(Long id) throws Exception {
         if (id != null) {
-            var findProgram = programDao.findById(id);
-            if (findProgram.isEmpty()) {
+             Optional<Program> findProgram = programDao.findById(id);
+            if (!findProgram.isPresent()) {
                 System.out.println("No Record Found");
-                return null;
+                throw new Exception("Data not found");
             } else
                 return findProgram.get();
         }

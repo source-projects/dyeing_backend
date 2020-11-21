@@ -13,7 +13,6 @@ import lombok.Setter;
 
 public class GetAllProgram {
 
-    Long id;
     Long party_id;
     String partName;
     String program_given_by;
