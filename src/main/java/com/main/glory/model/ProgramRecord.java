@@ -1,5 +1,6 @@
 package com.main.glory.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,14 @@ import java.util.List;
 public class ProgramRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     private Long shadeNo;
     private String partyShadeNo;
     private Long quantity;
     private String colourTone;
-    private String  remark;
+    private String remark;
+    @ApiModelProperty(hidden = true)
     private Long programControlId;
 
 //    @ManyToOne(cascade = {CascadeType.ALL},fetch= FetchType.EAGER)

@@ -21,7 +21,6 @@ public class AddProgramWithProgramRecord {
     private Long qualityEntryId;
     private String programGivenBy;
     private String remark;
-    private Long userHeadId;
     private String priority;
     List<ProgramRecord> programRecords;
 

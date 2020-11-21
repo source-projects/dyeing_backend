@@ -154,10 +154,8 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     }
 
 
-    @Override
-    public boolean saveProgram(Program program) throws Exception {
-        return false;
-    }
+
+
 
     @Transactional
     public List<GetAllProgram> getAllProgram() throws Exception {
@@ -183,12 +181,12 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 throw new Exception("Party Data not found");
             }
 
-            programData.setParty_id(party.get().getId());
-            programData.setProgram_given_by(e.getProgramGivenBy());
+            programData.setPartyId(party.get().getId());
+            programData.setProgramGivenBy(e.getProgramGivenBy());
             programData.setPriority(e.getPriority());
             programData.setRemark(e.getRemark());
-            programData.setQuality_entry_id(e.getQualityEntryId());
-            programData.setQuality_id(quality.get().getQualityId());
+            programData.setQualityEntryId(e.getQualityEntryId());
+            programData.setQualityId(quality.get().getQualityId());
             programData.setQualityName(quality.get().getQualityName());
             programData.setPartName(party.get().getPartyName());
 
