@@ -5,6 +5,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.servicesImpl.ProgramServiceImpl;
@@ -22,7 +23,7 @@ public class ProgramController extends ControllerConfig {
     private ProgramServiceImpl programServiceImpl;
 
     @PostMapping(value="/program")
-    public GeneralResponse<Boolean> saveProgram(@RequestBody Program program) throws Exception {
+    public GeneralResponse<Boolean> saveProgram(@RequestBody AddProgramWithProgramRecord program) throws Exception {
         if(program==null)
         {
             return new GeneralResponse<Boolean>(false, "Program id is null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
