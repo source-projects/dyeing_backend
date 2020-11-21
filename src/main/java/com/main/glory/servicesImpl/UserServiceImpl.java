@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
         int i=0;
         for (UserData e : userDataList) {
-            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
+//            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
 
             getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
             getAllUserInfoList.add(userData);
