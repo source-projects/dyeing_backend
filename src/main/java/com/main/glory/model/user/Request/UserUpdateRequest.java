@@ -22,6 +22,7 @@ public class UserUpdateRequest {
     String department;
     Long designationId;
     Long userHeadId;
+    String updatedBy;
     private UserPermission userPermissionData;
 
 }
