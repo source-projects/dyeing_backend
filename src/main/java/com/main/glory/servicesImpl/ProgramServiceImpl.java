@@ -109,11 +109,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
             if(!quality.isPresent())
             {
-                throw new Exception("Quality data is not Found:");
+                throw new Exception("Quality data is not Found for id:"+e.getQualityEntryId());
             }
             if(!party.isPresent())
             {
-                throw new Exception("Party Data not found");
+                throw new Exception("Party Data not found for id:"+e.getPartyId());
             }
 
             programData.setPartyId(party.get().getId());
@@ -123,6 +123,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             programData.setQualityEntryId(e.getQualityEntryId());
             programData.setQualityId(quality.get().getQualityId());
             programData.setQualityName(quality.get().getQualityName());
+            programData.setQualityType(quality.get().getQualityType());
             programData.setPartName(party.get().getPartyName());
 
             getAllProgramList.add(programData);
@@ -250,6 +251,8 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             double qty=0;
 
             List<BatchData> batchDataList =  batchDao.findByControlId(stockMast.getId());
+
+
             for(BatchData batchData:batchDataList)
             {
                 qty+=batchData.getWt();

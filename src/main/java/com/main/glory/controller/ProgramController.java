@@ -58,7 +58,7 @@ public class ProgramController extends ControllerConfig {
 
     //getStock Quality wise Stock and it's qty
     @GetMapping(value="/program/StockQuality/{id}")
-    public GeneralResponse<List<StockQualityWise>> getStockQualityList(@PathVariable(value = "id") Long id) throws Exception {
+    public GeneralResponse<List<StockQualityWise>> getStockListByQualityId(@PathVariable(value = "id") Long id) throws Exception {
 
         try {
             if (id == null) {
@@ -93,7 +93,7 @@ public class ProgramController extends ControllerConfig {
     }
 
     //get partshade no with respected shadeId
-    @GetMapping(value="/programPartyShadeDetail")
+    @GetMapping(value="/program/PartyShadeDetailPartyWise")
     public GeneralResponse<List<ShadeIdwithPartyShadeNo>> getShadeDetail() throws Exception {
 
         List<ShadeIdwithPartyShadeNo> listData=programServiceImpl.getShadeDetail();
