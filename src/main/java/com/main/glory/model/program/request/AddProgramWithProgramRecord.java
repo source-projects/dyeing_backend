@@ -23,6 +23,6 @@ public class AddProgramWithProgramRecord {
     private String remark;
     private Long userHeadId;
     private String priority;
-    List<ProgramRecord> programRecordList;
+    List<ProgramRecord> programRecords;
 
 }
