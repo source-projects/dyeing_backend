@@ -1,7 +1,7 @@
 package com.main.glory.model.quality;
 
-import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.program.Program;
 import lombok.*;
 
 import java.util.Date;
@@ -37,6 +37,10 @@ public class Quality {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "qualityId", referencedColumnName = "id")
 	List<StockMast> stockMasts;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
+	private List<Program> program;
 
 
 

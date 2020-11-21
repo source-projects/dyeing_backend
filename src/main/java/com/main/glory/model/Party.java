@@ -1,4 +1,5 @@
 package com.main.glory.model;
+import com.main.glory.model.program.Program;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
@@ -43,6 +45,10 @@ public class Party {
     private Double percentageDiscount;
     private Double gstPercentage;
     private Integer userHeadId;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
+    private List<Program> program;
 
     @PrePersist
     protected void onCreate() {

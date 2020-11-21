@@ -1,7 +1,5 @@
 package com.main.glory.model.program;
 
-import com.main.glory.model.ProgramRecord;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +20,6 @@ public class Program {
 // @ApiModelProperty(hidden = true)
     private Long id;
     private Long partyId;
-    private String qualityId;
     private Long qualityEntryId;
     private String programGivenBy;
     private String remark;

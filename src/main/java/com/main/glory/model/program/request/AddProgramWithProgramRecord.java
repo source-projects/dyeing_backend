@@ -1,12 +1,11 @@
 package com.main.glory.model.program.request;
 
-import com.main.glory.model.ProgramRecord;
+import com.main.glory.model.program.ProgramRecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,7 +16,6 @@ public class AddProgramWithProgramRecord {
 
 
     private Long partyId;
-    private String qualityId;
     private Long qualityEntryId;
     private String programGivenBy;
     private String remark;

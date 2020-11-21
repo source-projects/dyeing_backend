@@ -10,5 +10,5 @@ public interface ProgramServiceInterface {
     public List<GetAllProgram> getAllProgram() throws Exception;
     public Program getProgramById(Long id) throws Exception;
     public boolean deleteProgramById(Long id) throws Exception;
-    public boolean updateProgramByID(Program bm) throws Exception;
+
 }
