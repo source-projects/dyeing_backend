@@ -13,11 +13,11 @@ import lombok.Setter;
 
 public class GetAllProgram {
 
-    Long party_id;
+    Long partyId;
     String partName;
-    String program_given_by;
-    Long quality_entry_id;
-    String quality_id;
+    String programGivenBy;
+    Long qualityEntryId;
+    String qualityId;
     String qualityName;
     String qualityType;
     String priority;
