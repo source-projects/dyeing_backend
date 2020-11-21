@@ -37,7 +37,7 @@ public class UserData {
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "designationId", referencedColumnName = "id")
     private Designation designationId;
 
