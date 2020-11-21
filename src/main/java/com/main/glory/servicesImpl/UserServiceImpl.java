@@ -146,18 +146,27 @@ public class UserServiceImpl implements UserServiceInterface {
             return 0;
         }
 
-        UserData userData2 = modelMapper.map(userData, UserData.class);
-        var designation = userData2.getDesignationId();
-        if(designation.getId()!=null)
-        userData2.setDesignationId(designation);
+        UserData userData2 = new UserData();
+        userData2.setId(userData.getId());
+        userData2.setCompany(userData.getCompany());
+        userData2.setContact(userData.getContact());
+        userData2.setDepartment(userData.getDepartment());
+        userData2.setUpdatedBy(userData.getUpdatedBy());
+        userData2.setEmail(userData.getEmail());
+        userData2.setFirstName(userData.getFirstName());
+        userData2.setLastName(userData.getLastName());
+        userData2.setUserHeadId(userData.getUserHeadId());
+        userData2.setPassword(userData.getPassword());
+        userData2.setUserPermissionData(userData.getUserPermissionData());
+        userData2.setUserName(userData.getUserName());
+        Optional<Designation> d = designationService.getDesignationById(userData.getDesignationId());
+        if(d.isPresent())
+            userData2.setDesignationId(d.get());
         else
-        throw new Exception("Wrong designation id"+userData2.getId());
-
+            throw new Exception("Wrong designation id"+userData2.getId());
+        System.out.println(userData2);
         userDao.saveAndFlush(userData2);
 
         return 1;
-
-
-
     }
 }
