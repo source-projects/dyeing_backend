@@ -12,6 +12,7 @@ import com.main.glory.model.program.Program;
 import com.main.glory.model.ProgramRecord;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.model.quality.Quality;
@@ -59,12 +60,12 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     @Autowired
     ShadeServiceImpl shadeService;
 
-    @Override
+
 //    @Transactional
-    public boolean saveProgram(Program program) throws Exception {
+    public boolean saveProgram(AddProgramWithProgramRecord program) throws Exception {
         try {
 
-            var pdata = programDao.findById(program.getId());
+            /*var pdata = programDao.findById(program.getId());
 
             //System.out.println("programData:"+pdata.get().getId());
             if (pdata.isPresent()) {
@@ -112,27 +113,51 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
             } else {
-                Optional<Quality> dataQuality = qualityDao.findByQualityId(program.getQuality_id());
+            //program.setId(0l);
+                Optional<Quality> dataQuality = qualityDao.findById(program.getQuality_entry_id());
                 if (dataQuality.isPresent()) {
 
                     Optional<Party> party = partyDao.findById(program.getParty_id());
                     if (party.isPresent()) {
+                       // program.getProgram_record().get(0).setId(0l);
+                       // program.getProgram_record().get(0).setProgramControlId(program.getId());
+                       // program.setProgram_record(program.getProgram_record());
                         programDao.saveAndFlush(program);
                         return true;
                     } else {
-                        return false;
+                        throw new Exception("party not found");
                     }
 
                 }
-            }} catch(Exception ex){
+                else
+                {
+                    throw new Exception("Quality not found");
+                }
+            } catch(Exception ex){
                 ex.printStackTrace();
             }
 
 
+        return false;*/
 
-        return false;
+
+            Program programData = modelMapper.map(program, Program.class);
+            programDao.save(programData);
+            return true;
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+
+            return false;
     }
 
+
+    @Override
+    public boolean saveProgram(Program program) throws Exception {
+        return false;
+    }
 
     @Transactional
     public List<GetAllProgram> getAllProgram() throws Exception {
@@ -146,8 +171,8 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             GetAllProgram programData =  new GetAllProgram();
 
             //modelMapper.map(e, GetAllProgram.class);
-            Optional<Quality> quality = qualityDao.findById(e.getQuality_entry_id());
-            Optional<Party> party = partyDao.findById(e.getParty_id());
+            Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+            Optional<Party> party = partyDao.findById(e.getPartyId());
             //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
             if(!quality.isPresent())
             {
@@ -159,10 +184,10 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             }
 
             programData.setParty_id(party.get().getId());
-            programData.setProgram_given_by(e.getProgram_given_by());
+            programData.setProgram_given_by(e.getProgramGivenBy());
             programData.setPriority(e.getPriority());
             programData.setRemark(e.getRemark());
-            programData.setQuality_entry_id(e.getQuality_entry_id());
+            programData.setQuality_entry_id(e.getQualityEntryId());
             programData.setQuality_id(quality.get().getQualityId());
             programData.setQualityName(quality.get().getQualityName());
             programData.setPartName(party.get().getPartyName());
@@ -208,12 +233,12 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             if (bm.getId() != null) {
                 var findProgram = programDao.findById(bm.getId());
                 if (findProgram.isPresent()) {
-                    Optional<Quality> qid = qualityDao.findById(bm.getQuality_entry_id());
+                    Optional<Quality> qid = qualityDao.findById(bm.getQualityEntryId());
                     Optional<Quality> qualityId = qualityDao.findByQualityId(qid.get().getQualityId());
                     //System.out.println(qualityId.get().getQualityId());
                     if (qid.isPresent() && qualityId.isPresent()) {
-                        bm.setQuality_entry_id(qid.get().getId());
-                        bm.setQuality_id(qid.get().getQualityId());
+                        bm.setQualityEntryId(qid.get().getId());
+                        bm.setQualityId(qid.get().getQualityId());
                         // System.out.println("qid:"+qid.get().getId());
                         //System.out.println("qid:"+qid.get().getQualityId());
                         programDao.saveAndFlush(bm);
@@ -304,3 +329,4 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         return stockQualityWiseList;
     }
 }
+
