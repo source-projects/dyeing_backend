@@ -138,7 +138,7 @@ public class UserController extends ControllerConfig {
     {
         if(id!=null)
         {
-            boolean flag=userService.deletePartyById(id);
+            boolean flag=userService.deleteUserById(id);
             if(flag)
             {
                 return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);

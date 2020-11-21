@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
     }*/
 
-    public boolean deletePartyById(Long id) {
+    public boolean deleteUserById(Long id) {
         var userIndex= userDao.findById(id);
         if(!userIndex.isPresent())
             return false;
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
         int i=0;
         for (UserData e : userDataList) {
-            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
+//            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
 
             getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
             getAllUserInfoList.add(userData);
@@ -145,19 +145,13 @@ public class UserServiceImpl implements UserServiceInterface {
         {
             return 0;
         }
-
-        UserData userData2 = modelMapper.map(userData, UserData.class);
-        var designation = userData2.getDesignationId();
-        if(designation.getId()!=null)
-        userData2.setDesignationId(designation);
+        UserData userData2 =  modelMapper.map(userData, UserData.class);
+        Optional<Designation> d = designationService.getDesignationById(userData.getDesignationId());
+        if(d.isPresent())
+            userDao.saveAndFlush(userData2);
         else
-        throw new Exception("Wrong designation id"+userData2.getId());
-
-        userDao.saveAndFlush(userData2);
+            throw new Exception("Wrong designation id"+userData2.getId());
 
         return 1;
-
-
-
     }
 }
