@@ -42,8 +42,19 @@ public class ProgramController extends ControllerConfig {
     }
 
     @GetMapping(value="/program/all")
-    public List<GetAllProgram> getProgramList() throws Exception {
-        return programServiceImpl.getAllProgram();
+    public GeneralResponse<List<GetAllProgram>> getProgramList() throws Exception {
+        try {
+            if (programServiceImpl.getAllProgram() != null) {
+
+                return new GeneralResponse<>(programServiceImpl.getAllProgram(), "Data found:", false, System.currentTimeMillis(), HttpStatus.OK);
+
+            }
+            return new GeneralResponse<>(null, "Data not found:", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }catch (Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     //getStock Quality wise Stock and it's qty
