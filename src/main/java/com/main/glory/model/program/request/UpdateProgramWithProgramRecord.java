@@ -20,5 +20,6 @@ public class UpdateProgramWithProgramRecord {
     private String programGivenBy;
     private String remark;
     private String priority;
+    private String updatedBy;
     List<UpdateProgramRecord> updateProgramRecordWithPrograms;
 }

@@ -100,10 +100,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         List<Program> programList = programDao.findAll();
+//        System.out.println(programList);
         List<GetAllProgram> getAllProgramList = new ArrayList<>();
         for (Program e : programList) {
 
-            GetAllProgram programData =  new GetAllProgram();
+            GetAllProgram programData;
 
             //modelMapper.map(e, GetAllProgram.class);
             Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
@@ -111,22 +112,20 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
             if(!quality.isPresent())
             {
-                throw new Exception("Quality data is not Found for id:"+e.getQualityEntryId());
+//                throw new Exception("Quality data is not Found for id:"+e.getQualityEntryId());
+                continue; // just skip the faulty data instead of halting the process
             }
             if(!party.isPresent())
             {
-                throw new Exception("Party Data not found for id:"+e.getPartyId());
+//                throw new Exception("Party Data not found for id:"+e.getPartyId());
+                continue; // just skip the faulty data instead of halting the process
             }
 
-            programData.setPartyId(party.get().getId());
-            programData.setProgramGivenBy(e.getProgramGivenBy());
-            programData.setPriority(e.getPriority());
-            programData.setRemark(e.getRemark());
-            programData.setQualityEntryId(e.getQualityEntryId());
-            programData.setQualityId(quality.get().getQualityId());
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            programData = modelMapper.map(e, GetAllProgram.class);
+            programData.setPartyName(party.get().getPartyName());
             programData.setQualityName(quality.get().getQualityName());
             programData.setQualityType(quality.get().getQualityType());
-            programData.setPartName(party.get().getPartyName());
 
             getAllProgramList.add(programData);
         }
@@ -171,7 +170,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             if (findProgram.isPresent()) {
                 Optional<Quality> qid = qualityDao.findById(bm.getQualityEntryId());
                 Optional<Party> partyId = partyDao.findById(bm.getPartyId());
-                //System.out.println(qualityId.get().getQualityId());
+
                 if (!qid.isPresent())
                     throw new Exception("No such Quality is available with id:"+qid.get().getId());
 

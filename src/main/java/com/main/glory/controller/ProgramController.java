@@ -43,9 +43,10 @@ public class ProgramController extends ControllerConfig {
     @GetMapping(value="/program/all")
     public GeneralResponse<List<GetAllProgram>> getProgramList() throws Exception {
         try {
-            if (programServiceImpl.getAllProgram() != null) {
+            var data = programServiceImpl.getAllProgram();
+            if (data != null) {
 
-                return new GeneralResponse<>(programServiceImpl.getAllProgram(), "Data found:", false, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<>(data, "Data found:", true, System.currentTimeMillis(), HttpStatus.OK);
 
             }
             return new GeneralResponse<>(null, "Data not found:", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);

@@ -1,4 +1,5 @@
 package com.main.glory.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.program.Program;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,8 @@ public class Party {
     private Double gstPercentage;
     private Integer userHeadId;
 
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
     private List<Program> program;

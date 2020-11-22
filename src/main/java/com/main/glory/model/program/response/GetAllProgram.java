@@ -13,8 +13,9 @@ import lombok.Setter;
 
 public class GetAllProgram {
 
+    Long id;
     Long partyId;
-    String partName;
+    String partyName;
     String programGivenBy;
     Long qualityEntryId;
     String qualityId;
