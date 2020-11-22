@@ -12,14 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AddProgramWithProgramRecord {
+public class UpdateProgramWithProgramRecord {
 
-
+    Long id;
     private Long partyId;
     private Long qualityEntryId;
     private String programGivenBy;
     private String remark;
     private String priority;
-    List<ProgramRecord> programRecords;
-
+    List<UpdateProgramRecord> updateProgramRecordWithPrograms;
 }

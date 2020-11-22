@@ -9,22 +9,23 @@ import com.main.glory.model.Party;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.program.Program;
-import com.main.glory.model.ProgramRecord;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.program.ProgramRecord;
 import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
+import com.main.glory.model.program.request.UpdateProgramRecord;
+import com.main.glory.model.program.request.UpdateProgramWithProgramRecord;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.user.UserData;
 import com.main.glory.services.ProgramServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,96 +62,32 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     ShadeServiceImpl shadeService;
 
 
-//    @Transactional
-    public boolean saveProgram(AddProgramWithProgramRecord program) throws Exception {
-        try {
+   @Transactional
+    public void saveProgram(AddProgramWithProgramRecord program) throws Exception {
 
-            /*var pdata = programDao.findById(program.getId());
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-            //System.out.println("programData:"+pdata.get().getId());
-            if (pdata.isPresent()) {
-
-                var record =program.getProgram_record();
-
-                boolean isPartyShadeAvailable=false;
-                //if the program is same but the record is diffrent
-                ProgramRecord programRecord = new ProgramRecord();
-
-
-                programRecord.setColour_tone(record.get(0).getColour_tone());
-                programRecord.setProgramControlId(record.get(0).getProgramControlId());
-                programRecord.setQuantity(record.get(0).getQuantity());
-                programRecord.setRemark(record.get(0).getRemark());
-                List<ShadeMast> shadeMast=shadeService.getAllShadeMast();
-                for (ShadeMast e : shadeMast) {
-
-                    if(e.getPartyShadeNo() == record.get(0).getParty_shade_no())
-                    {
-                        isPartyShadeAvailable=true;
-                        break;
-                    }
-                    else
-                    {
-                        isPartyShadeAvailable=false;
-                    }
-                }
-
-
-                if(isPartyShadeAvailable==true)
-                {
-                    programRecord.setParty_shade_no(record.get(0).getParty_shade_no());
-                }
-                else
-                    throw new Exception("Party shade no is not Availble for partyShadeno:"+record.get(0).getParty_shade_no());
-
-                programRecord.setShade_no(record.get(0).getShade_no());
-                programRecord.setId(null);
-
-                System.out.println("RecordData:"+programRecord.getColour_tone());
-
-                programRecordDao.saveAndFlush(programRecord);
-                return true;
-
-
-            } else {
-            //program.setId(0l);
-                Optional<Quality> dataQuality = qualityDao.findById(program.getQuality_entry_id());
-                if (dataQuality.isPresent()) {
-
-                    Optional<Party> party = partyDao.findById(program.getParty_id());
-                    if (party.isPresent()) {
-                       // program.getProgram_record().get(0).setId(0l);
-                       // program.getProgram_record().get(0).setProgramControlId(program.getId());
-                       // program.setProgram_record(program.getProgram_record());
-                        programDao.saveAndFlush(program);
-                        return true;
-                    } else {
-                        throw new Exception("party not found");
-                    }
-
-                }
-                else
-                {
-                    throw new Exception("Quality not found");
-                }
-            } catch(Exception ex){
-                ex.printStackTrace();
+            Program programData = modelMapper.map(program, Program.class);
+            //System.out.println(programData);
+            Long quality = programData.getQualityEntryId();
+            if(!qualityDao.findById(quality).isPresent())
+            {
+                throw new Exception("No suh a Quality for id:"+quality);
             }
 
+            Long partyId = programData.getPartyId();
 
-        return false;*/
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            Program programData = modelMapper.map(program, Program.class);
-            System.out.println(programData);
+            if(!partyDao.findById(partyId).isPresent())
+            {
+                throw new Exception("No suh party is available with:"+partyId);
+            }
+
             programDao.save(programData);
-            return true;
-        }catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
 
 
-            return false;
+
+
+
     }
 
 
@@ -174,11 +111,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
             if(!quality.isPresent())
             {
-                throw new Exception("Quality data is not Found:");
+                throw new Exception("Quality data is not Found for id:"+e.getQualityEntryId());
             }
             if(!party.isPresent())
             {
-                throw new Exception("Party Data not found");
+                throw new Exception("Party Data not found for id:"+e.getPartyId());
             }
 
             programData.setPartyId(party.get().getId());
@@ -188,6 +125,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             programData.setQualityEntryId(e.getQualityEntryId());
             programData.setQualityId(quality.get().getQualityId());
             programData.setQualityName(quality.get().getQualityName());
+            programData.setQualityType(quality.get().getQualityType());
             programData.setPartName(party.get().getPartyName());
 
             getAllProgramList.add(programData);
@@ -224,48 +162,66 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             return false;
     }
 
-    @Override
-    public boolean updateProgramByID(Program bm) throws Exception {
 
-        try {
-            if (bm.getId() != null) {
-                var findProgram = programDao.findById(bm.getId());
-                if (findProgram.isPresent()) {
-                    Optional<Quality> qid = qualityDao.findById(bm.getQualityEntryId());
-                    Optional<Quality> qualityId = qualityDao.findByQualityId(qid.get().getQualityId());
-                    //System.out.println(qualityId.get().getQualityId());
-                    if (qid.isPresent() && qualityId.isPresent()) {
-                        bm.setQualityEntryId(qid.get().getId());
-                        bm.setQualityId(qid.get().getQualityId());
-                        // System.out.println("qid:"+qid.get().getId());
-                        //System.out.println("qid:"+qid.get().getQualityId());
-                        programDao.saveAndFlush(bm);
-                        return true;
-                    } else
-                        return false;
-                } else {
-                    System.out.println("Record not Found");
-                    return false;
+    public void updateProgramByID(UpdateProgramWithProgramRecord bm) throws Exception {
+
+
+        if (bm.getId() != null) {
+            Optional<Program> findProgram = programDao.findById(bm.getId());
+            if (findProgram.isPresent()) {
+                Optional<Quality> qid = qualityDao.findById(bm.getQualityEntryId());
+                Optional<Party> partyId = partyDao.findById(bm.getPartyId());
+                //System.out.println(qualityId.get().getQualityId());
+                if (!qid.isPresent())
+                    throw new Exception("No such Quality is available with id:"+qid.get().getId());
+
+                if(!partyId.isPresent())
+                    throw new Exception("No such Party is available with id:"+partyId.get().getId());
+
+
+                modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
+                Program programData = modelMapper.map(bm, Program.class);
+                List<ProgramRecord> programRecordList = new ArrayList<>();
+
+                //to set the list of child table in update purpose
+                for(UpdateProgramRecord up:bm.getUpdateProgramRecordWithPrograms())
+                {
+                    //map the chila data one by one bind with list
+                    ProgramRecord programRecordData = modelMapper.map(up, ProgramRecord.class);
+
+                    programRecordData.setProgramControlId(bm.getId());
+                    programRecordList.add(programRecordData);
                 }
 
 
-            }
-        }catch(Exception e)
-        {
-            return false;
-        }
-        return false;
-    }
+                //set the updated child list and bind with parent table object
+                programData.setProgramRecords(programRecordList);
 
-    public List<GetAllBatchResponse> getAllBatchByQuality(String qualityId) {
+                programDao.saveAndFlush(programData);
+                //programRecordDao.saveAndFlush(programRecordData);
+
+
+                }
+            else
+                throw new Exception("No such Program available with id:"+bm.getId());
+
+            }
+            else
+                throw new Exception("id can't be nulll");
+        }
+
+    public List<GetAllBatchResponse> getAllBatchByQuality(String qualityId) throws Exception{
         Optional<Quality> quality = qualityDao.findByQualityId(qualityId);
-        try {
             if (quality.isPresent())
             {
+
                 //System.out.print(quality.get().getId());
                 List<GetAllBatchResponse> allBatch=new ArrayList<>();
                 List<StockMast> stock= stockBatchService.getAllStockBatch(quality.get().getId());
                 //System.out.println("stockc:"+stock.toString());
+                if(stock.isEmpty())
+                    throw new Exception("Batch is not created for quality:"+qualityId);
                 stock.forEach(e->{
                   //  System.out.println("e:"+e.getId());
                     List<GetAllBatchResponse> batchDataList = batchDao.findAllQTYControlId(e.getId());
@@ -278,13 +234,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             } else
                 throw new Exception("Quality not found");
-        }
-        catch (Exception e)
-        {
-            System.out.print(e.getMessage());
-        }
-        return null;
-    }
+
+
+   }
+
+
 
     public List<ShadeIdwithPartyShadeNo> getShadeDetail() {
 
@@ -308,11 +262,21 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
         List<StockQualityWise> stockQualityWiseList=new ArrayList<>();
         List<StockMast> stockMastList = stockBatchService.findByQualityId(id);
+
+        Optional<Quality> quality = qualityDao.findById(id);
+        if(!quality.isPresent())
+            throw new Exception("No such Quality is present with id :"+id);
+
+        if(stockMastList.isEmpty())
+            throw new Exception("Stock is not created for the quality id:"+id);
+
         for(StockMast stockMast : stockMastList)
         {
             double qty=0;
 
             List<BatchData> batchDataList =  batchDao.findByControlId(stockMast.getId());
+
+
             for(BatchData batchData:batchDataList)
             {
                 qty+=batchData.getWt();

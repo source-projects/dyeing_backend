@@ -7,6 +7,7 @@ import com.main.glory.model.program.Program;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
+import com.main.glory.model.program.request.UpdateProgramWithProgramRecord;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.servicesImpl.ProgramServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,9 @@ public class ProgramController extends ControllerConfig {
         {
             return new GeneralResponse<Boolean>(false, "Program id is null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        boolean flag=programServiceImpl.saveProgram(program);
+
         try {
-            if (!flag) {
-                System.out.println("Something went wrong");
-                return new GeneralResponse<Boolean>(false, "Data Not found:", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-            } else
+                programServiceImpl.saveProgram(program);
                 return new GeneralResponse<Boolean>(true, "Program added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch(Exception e)
@@ -60,7 +58,7 @@ public class ProgramController extends ControllerConfig {
 
     //getStock Quality wise Stock and it's qty
     @GetMapping(value="/program/StockQuality/{id}")
-    public GeneralResponse<List<StockQualityWise>> getStockQualityList(@PathVariable(value = "id") Long id) throws Exception {
+    public GeneralResponse<List<StockQualityWise>> getStockListByQualityId(@PathVariable(value = "id") Long id) throws Exception {
 
         try {
             if (id == null) {
@@ -95,7 +93,7 @@ public class ProgramController extends ControllerConfig {
     }
 
     //get partshade no with respected shadeId
-    @GetMapping(value="/programPartyShadeDetail")
+    @GetMapping(value="/program/PartyShadeDetailPartyWise")
     public GeneralResponse<List<ShadeIdwithPartyShadeNo>> getShadeDetail() throws Exception {
 
         List<ShadeIdwithPartyShadeNo> listData=programServiceImpl.getShadeDetail();
@@ -108,20 +106,18 @@ public class ProgramController extends ControllerConfig {
 
 
     @PutMapping(value="/program")
-    public GeneralResponse<Boolean>  updateProgram(@RequestBody Program program) throws Exception
+    public GeneralResponse<Boolean> updateProgram(@RequestBody UpdateProgramWithProgramRecord program) throws Exception
     {
-        if(program!=null)
+        try
         {
-            boolean flag=programServiceImpl.updateProgramByID(program);
-            if(flag) {
-                return new GeneralResponse<Boolean>(true, "Data updated sucessfully !", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            else
-            {
-                return new GeneralResponse<Boolean>(false, "Data is not available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-            }
+            programServiceImpl.updateProgramByID(program);
+            return new GeneralResponse<Boolean>(true, "Data updated sucessfully !", true, System.currentTimeMillis(), HttpStatus.OK);
+
         }
-        return new GeneralResponse<Boolean>(false, "Data Not Found by id: !", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        catch(Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping(value="/program/{id}")
@@ -143,19 +139,28 @@ public class ProgramController extends ControllerConfig {
 
     @GetMapping(value="/program/BatchData/{id}")
     public GeneralResponse<List<GetAllBatchResponse>> getBatchDetailByQualityId(@PathVariable(value = "id") String qualityId) throws Exception {
-        if(qualityId!=null)
-        {
-            List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityId);
-            if(flag!=null)
-            {
-                return new GeneralResponse<>(flag,"Batch Fetched Successfully",true,System.currentTimeMillis(),HttpStatus.OK);
-            }
-            else
-            {
-                return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
-            }
-        }
-        return new GeneralResponse<>(null,"Data not deleted",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+       try
+       {
+           if(qualityId!=null)
+           {
+               List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityId);
+               if(flag!=null)
+               {
+                   return new GeneralResponse<>(flag,"Batch Fetched Successfully",true,System.currentTimeMillis(),HttpStatus.OK);
+               }
+               else
+               {
+                   return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
+               }
+           }
+
+
+       }
+       catch (Exception e)
+       {
+           return new GeneralResponse<>(null,e.getMessage(),false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+       }
+        return null;
     }
 
 

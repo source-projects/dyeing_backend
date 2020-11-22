@@ -1,4 +1,4 @@
-package com.main.glory.model;
+package com.main.glory.model.program;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
