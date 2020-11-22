@@ -139,19 +139,28 @@ public class ProgramController extends ControllerConfig {
 
     @GetMapping(value="/program/BatchData/{id}")
     public GeneralResponse<List<GetAllBatchResponse>> getBatchDetailByQualityId(@PathVariable(value = "id") String qualityId) throws Exception {
-        if(qualityId!=null)
-        {
-            List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityId);
-            if(flag!=null)
-            {
-                return new GeneralResponse<>(flag,"Batch Fetched Successfully",true,System.currentTimeMillis(),HttpStatus.OK);
-            }
-            else
-            {
-                return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
-            }
-        }
-        return new GeneralResponse<>(null,"Data not deleted",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+       try
+       {
+           if(qualityId!=null)
+           {
+               List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityId);
+               if(flag!=null)
+               {
+                   return new GeneralResponse<>(flag,"Batch Fetched Successfully",true,System.currentTimeMillis(),HttpStatus.OK);
+               }
+               else
+               {
+                   return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
+               }
+           }
+
+
+       }
+       catch (Exception e)
+       {
+           return new GeneralResponse<>(null,e.getMessage(),false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+       }
+        return null;
     }
 
 

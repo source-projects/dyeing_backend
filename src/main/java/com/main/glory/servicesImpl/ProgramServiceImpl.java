@@ -14,6 +14,7 @@ import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.program.ProgramRecord;
 import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.model.program.request.ShadeIdwithPartyShadeNo;
+import com.main.glory.model.program.request.UpdateProgramRecord;
 import com.main.glory.model.program.request.UpdateProgramWithProgramRecord;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.model.quality.Quality;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +62,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     ShadeServiceImpl shadeService;
 
 
-//    @Transactional
+   @Transactional
     public void saveProgram(AddProgramWithProgramRecord program) throws Exception {
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -180,7 +182,21 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
                 Program programData = modelMapper.map(bm, Program.class);
-                ProgramRecord programRecordData = modelMapper.map(bm.getUpdateProgramRecordWithPrograms(),ProgramRecord.class);
+                List<ProgramRecord> programRecordList = new ArrayList<>();
+
+                //to set the list of child table in update purpose
+                for(UpdateProgramRecord up:bm.getUpdateProgramRecordWithPrograms())
+                {
+                    //map the chila data one by one bind with list
+                    ProgramRecord programRecordData = modelMapper.map(up, ProgramRecord.class);
+
+                    programRecordData.setProgramControlId(bm.getId());
+                    programRecordList.add(programRecordData);
+                }
+
+
+                //set the updated child list and bind with parent table object
+                programData.setProgramRecords(programRecordList);
 
                 programDao.saveAndFlush(programData);
                 //programRecordDao.saveAndFlush(programRecordData);
@@ -195,15 +211,17 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 throw new Exception("id can't be nulll");
         }
 
-    public List<GetAllBatchResponse> getAllBatchByQuality(String qualityId) {
+    public List<GetAllBatchResponse> getAllBatchByQuality(String qualityId) throws Exception{
         Optional<Quality> quality = qualityDao.findByQualityId(qualityId);
-        try {
             if (quality.isPresent())
             {
+
                 //System.out.print(quality.get().getId());
                 List<GetAllBatchResponse> allBatch=new ArrayList<>();
                 List<StockMast> stock= stockBatchService.getAllStockBatch(quality.get().getId());
                 //System.out.println("stockc:"+stock.toString());
+                if(stock.isEmpty())
+                    throw new Exception("Batch is not created for quality:"+qualityId);
                 stock.forEach(e->{
                   //  System.out.println("e:"+e.getId());
                     List<GetAllBatchResponse> batchDataList = batchDao.findAllQTYControlId(e.getId());
@@ -216,13 +234,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             } else
                 throw new Exception("Quality not found");
-        }
-        catch (Exception e)
-        {
-            System.out.print(e.getMessage());
-        }
-        return null;
-    }
+
+
+   }
+
+
 
     public List<ShadeIdwithPartyShadeNo> getShadeDetail() {
 
@@ -246,6 +262,14 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
         List<StockQualityWise> stockQualityWiseList=new ArrayList<>();
         List<StockMast> stockMastList = stockBatchService.findByQualityId(id);
+
+        Optional<Quality> quality = qualityDao.findById(id);
+        if(!quality.isPresent())
+            throw new Exception("No such Quality is present with id :"+id);
+
+        if(stockMastList.isEmpty())
+            throw new Exception("Stock is not created for the quality id:"+id);
+
         for(StockMast stockMast : stockMastList)
         {
             double qty=0;
