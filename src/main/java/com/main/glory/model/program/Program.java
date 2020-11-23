@@ -15,9 +15,10 @@ import java.util.List;
 @ToString
 public class Program {
 
- @Id
- @GeneratedValue(strategy = GenerationType.AUTO)
-// @ApiModelProperty(hidden = true)
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
+    // @ApiModelProperty(hidden = true)
+     @NonNull
     private Long id;
     private Long partyId;
     private Long qualityEntryId;
