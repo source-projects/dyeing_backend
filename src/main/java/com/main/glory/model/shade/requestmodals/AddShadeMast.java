@@ -22,6 +22,7 @@ public class AddShadeMast {
     String qualityName;
     String qualityType;
     Long partyId;
+    Long cuttingId;
     String labColorNo;
     String category;
     String remark;

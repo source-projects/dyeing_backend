@@ -5,6 +5,7 @@ import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
 import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -55,13 +56,13 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
 		}
 		//System.out.println("QUQUQUQUQUQU:"+quality.get().toString());
-		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		//modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		System.out.println("Shade Mast;"+shadeMast.toString());
-		ShadeMast shadeData =  modelMapper.map(shadeMast, ShadeMast.class);
+		//ShadeMast shadeData =  modelMapper.map(shadeMast, ShadeMast.class);
+		ShadeMast shadeData =  new ShadeMast(shadeMast);
 		System.out.println("\nShadeData"+shadeData.toString());
-		shadeData.setQualityId(quality.get());
-		shadeData.setCuttingId(0l);
-		shadeData.setUserHeadId(0l);
+		shadeData.setQualityEntryId(quality.get().getId());
+
 
 
 /*
@@ -134,17 +135,37 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	}
 
 	public List<GetAllShade> getAllShadesInfo() {
-		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		//modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		List<ShadeMast> shadeMastList = shadeMastDao.findAll();
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
 		for (ShadeMast e : shadeMastList) {
 
-			GetAllShade getShade =  modelMapper.map(e, GetAllShade.class);
-			getShade.setPartyName(partyDao.getPartyNameByPartyId(getShade.getPartyId()));
-			Optional<Quality> qualityName=qualityDao.findByQualityId(getShade.getQualityId());
-			if(qualityName.isPresent()) {
-				getShade.setQualityName(qualityName.get().getQualityName());
+			GetAllShade getShade =  new GetAllShade();//modelMapper.map(e, GetAllShade.class);
+
+			Optional<Party> party = partyDao.findById(e.getPartyId());
+
+			Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+
+			if(!qualityName.isPresent()) {
+				continue;
 			}
+			if(!party.isPresent())
+			{
+				continue;
+			}
+
+			getShade.setPartyName(party.get().getPartyName());
+			getShade.setQualityName(qualityName.get().getQualityName());
+			getShade.setId(e.getId());
+			getShade.setColorTone(e.getColorTone());
+			getShade.setProcessId(e.getProcessId());
+			getShade.setProcessName(e.getProcessName());
+			getShade.setPartyShadeNo(e.getPartyShadeNo());
+			getShade.setQualityId(qualityName.get().getQualityId());
+			getShade.setPartyId(party.get().getId());
+			getShade.setQualityEntryId(qualityName.get().getId());
+
 			getAllShadesList.add(getShade);
 		}
 		return getAllShadesList;

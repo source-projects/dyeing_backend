@@ -208,8 +208,8 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 throw new Exception("id can't be nulll");
         }
 
-    public List<GetAllBatchResponse> getAllBatchByQuality(String qualityId) throws Exception{
-        Optional<Quality> quality = qualityDao.findByQualityId(qualityId);
+    public List<GetAllBatchResponse> getAllBatchByQuality(Long qualityEntryId) throws Exception{
+        Optional<Quality> quality = qualityDao.findById(qualityEntryId);
             if (quality.isPresent())
             {
 
@@ -218,7 +218,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 List<StockMast> stock= stockBatchService.getAllStockBatch(quality.get().getId());
                 //System.out.println("stockc:"+stock.toString());
                 if(stock.isEmpty())
-                    throw new Exception("Batch is not created for quality:"+qualityId);
+                    throw new Exception("Batch is not created for quality:"+qualityEntryId);
                 stock.forEach(e->{
                   //  System.out.println("e:"+e.getId());
                     List<GetAllBatchResponse> batchDataList = batchDao.findAllQTYControlId(e.getId());
@@ -261,6 +261,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         List<StockMast> stockMastList = stockBatchService.findByQualityId(id);
 
         Optional<Quality> quality = qualityDao.findById(id);
+
         if(!quality.isPresent())
             throw new Exception("No such Quality is present with id :"+id);
 

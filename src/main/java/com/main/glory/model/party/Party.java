@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.program.Program;
+import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -58,6 +59,13 @@ public class Party {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
     private List<StockMast> stockMasts;
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
+    private List<ShadeMast> shadeMast;
+
 
     @PrePersist
     protected void onCreate() {

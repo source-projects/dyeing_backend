@@ -139,12 +139,12 @@ public class ProgramController extends ControllerConfig {
     }
 
     @GetMapping(value="/program/BatchData/{id}")
-    public GeneralResponse<List<GetAllBatchResponse>> getBatchDetailByQualityId(@PathVariable(value = "id") String qualityId) throws Exception {
+    public GeneralResponse<List<GetAllBatchResponse>> getBatchDetailByQualityId(@PathVariable(value = "id") Long qualityEntryId) throws Exception {
        try
        {
-           if(qualityId!=null)
+           if(qualityEntryId!=null)
            {
-               List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityId);
+               List<GetAllBatchResponse> flag=programServiceImpl.getAllBatchByQuality(qualityEntryId);
                if(flag!=null)
                {
                    return new GeneralResponse<>(flag,"Batch Fetched Successfully",true,System.currentTimeMillis(),HttpStatus.OK);
