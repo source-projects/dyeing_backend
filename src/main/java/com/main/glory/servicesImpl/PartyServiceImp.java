@@ -2,14 +2,15 @@ package com.main.glory.servicesImpl;
 
 import java.util.List;
 
+import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.quality.Quality;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.model.Party;
+import com.main.glory.model.party.Party;
 import com.main.glory.services.PartyServiceInterface;
-
-import javax.servlet.http.Part;
 
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface{
@@ -17,12 +18,17 @@ public class PartyServiceImp implements PartyServiceInterface{
 	@Autowired
 	private PartyDao partyDao;
 
-	@Override
-	public int saveParty(Party party) {
+	@Autowired
+	ModelMapper modelMapper;
+
+	public int saveParty(AddParty party) {
+
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		
 		if(party!=null)
 		{
-			partyDao.saveAndFlush(party);
+			Party partyData = new Party(party);
+			partyDao.save(partyData);
 			return 1;
 		}else
 			return 0;

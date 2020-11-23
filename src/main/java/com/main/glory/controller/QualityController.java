@@ -7,15 +7,13 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.Party;
-import com.main.glory.model.quality.QualityWithPartyName;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.servicesImpl.QualityServiceImp;
 
 @RestController

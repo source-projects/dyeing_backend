@@ -1,7 +1,9 @@
 package com.main.glory.model.quality;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.program.Program;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.util.Date;
@@ -34,10 +36,14 @@ public class Quality {
 	private Date qualityDate;
 	private Long userHeadId;
 
+	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "qualityId", referencedColumnName = "id")
 	List<StockMast> stockMasts;
 
+	@ApiModelProperty(hidden = true)
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
 	private List<Program> program;
