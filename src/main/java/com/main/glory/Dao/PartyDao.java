@@ -2,7 +2,7 @@ package com.main.glory.Dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.main.glory.model.Party;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

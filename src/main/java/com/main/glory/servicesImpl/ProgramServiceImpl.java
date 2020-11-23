@@ -5,7 +5,7 @@ import com.main.glory.Dao.ProgramDao;
 import com.main.glory.Dao.ProgramRecordDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
-import com.main.glory.model.Party;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.program.Program;
@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +82,6 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             }
 
             programDao.save(programData);
-
 
 
 
@@ -184,7 +182,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 List<ProgramRecord> programRecordList = new ArrayList<>();
 
                 //to set the list of child table in update purpose
-                for(UpdateProgramRecord up:bm.getUpdateProgramRecordWithPrograms())
+                for(ProgramRecord up:bm.getProgramRecords())
                 {
                     //map the chila data one by one bind with list
                     ProgramRecord programRecordData = modelMapper.map(up, ProgramRecord.class);

@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.request.AddParty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sun.istack.NotNull;
-
-import com.main.glory.model.Party;
+import com.main.glory.model.party.Party;
 import com.main.glory.servicesImpl.PartyServiceImp;
 
 @RestController
@@ -29,7 +27,7 @@ public class PartyController  extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 	
 	@PostMapping(value="/party")
-	public GeneralResponse<Boolean> saveParty(@RequestBody Party party)
+	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party)
 	{
 		int flag=partyServiceImp.saveParty(party);
 		if(flag!=1)

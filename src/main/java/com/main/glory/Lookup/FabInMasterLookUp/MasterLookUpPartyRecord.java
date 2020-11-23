@@ -1,9 +1,7 @@
 package com.main.glory.Lookup.FabInMasterLookUp;
 
-import com.main.glory.model.Party;
 import com.main.glory.model.fabric.FabStockData;
 import com.main.glory.model.fabric.FabStockMast;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

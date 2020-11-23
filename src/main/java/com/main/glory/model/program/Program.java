@@ -1,5 +1,7 @@
 package com.main.glory.model.program;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,10 +26,19 @@ public class Program {
     private Long qualityEntryId;
     private String programGivenBy;
     private String remark;
+
+    @ApiModelProperty(hidden = true)
     private Date createdDate;
+
+    @ApiModelProperty(hidden = true)
     private Date updatedDate;
+
+    @ApiModelProperty(hidden = true)
     private String createdBy;
+
+    @ApiModelProperty(hidden = true)
     private String updatedBy;
+
     private Long userHeadId;
     private String priority;
 
