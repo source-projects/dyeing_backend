@@ -1,14 +1,20 @@
 package com.main.glory.servicesImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.main.glory.model.basic.PartyQuality;
+import com.main.glory.model.basic.QualityData;
+import com.main.glory.model.basic.QualityParty;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
@@ -37,13 +43,12 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		System.out.println(quality);
 
-		Optional<Quality> quality1 = qualityDao.findByQualityId(qualityDto.getQualityId());
-		if(quality1.isPresent()){
-			throw new Exception("Entry already exist for Quality Id:"+ qualityDto.getQualityId());
-		}
+
 		qualityDao.save(quality);
 		return 1;
 	}
+
+
 
 	@Override
 	public List<GetQualityResponse> getAllQuality() {
@@ -99,5 +104,76 @@ public class QualityServiceImp implements QualityServiceInterface{
 		return partyName;
 	}
 
+
+	public List<QualityParty> getAllQualityWithParty() {
+
+		List<QualityWithPartyName> qualityLists=qualityDao.findAllWithPartyName();
+		List<QualityParty> qualityParties = new ArrayList<>();
+
+		for(QualityWithPartyName quality : qualityLists)
+		{
+			QualityParty qualityParty=new QualityParty();
+
+			qualityParty.setQualityEntryId(quality.getId());
+			qualityParty.setQualityId(quality.getQualityId());
+			qualityParty.setQualityName(quality.getQualityName());
+			qualityParty.setQualityType(quality.getQualityType());
+			qualityParty.setPartyId(quality.getPartyId());
+
+			qualityParty.setPartyName(quality.getPartyName());
+
+			qualityParties.add(qualityParty);
+		}
+
+
+		return qualityParties;
+
+
+	}
+
+	public PartyQuality getAllPartyWithQuality(Long partyId) throws Exception{
+
+		Optional<List<Quality>> qualityList = qualityDao.findByPartyId(partyId);
+
+		Optional<Party> partName=partyDao.findById(partyId);
+		if(!partName.isPresent())
+			throw new Exception("No such Party id available with id:"+partyId);
+		if(!qualityList.isPresent()) {
+		throw new Exception("Add Quality data for partyId:"+partyId);
+		}
+		PartyQuality partyQualityData =new PartyQuality();
+
+		List<QualityData> qualityDataList = new ArrayList<>();
+			for(Quality quality:qualityList.get())
+			{
+
+				if(qualityList.get().isEmpty())
+					continue;
+
+				QualityData qualityData = new QualityData();
+				qualityData.setQualityEntryId(quality.getId());
+				qualityData.setQualityId(quality.getQualityId());
+				qualityData.setQualityName(quality.getQualityName());
+				qualityData.setQualityType(quality.getQualityType());
+				qualityDataList.add(qualityData);
+
+
+
+			}
+			partyQualityData.setQualityDataList(qualityDataList);
+			partyQualityData.setPartyId(partyId);
+
+
+			partyQualityData.setPartyName(partName.get().getPartyName());
+
+
+
+
+
+		return partyQualityData;
+
+
+
+	}
 
 }
