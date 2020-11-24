@@ -37,12 +37,33 @@ public class PartyController  extends ControllerConfig {
 			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value="/party/all")
-	public GeneralResponse<List<Party>> getPartyList()
+	@GetMapping(value="/party/all/{getBy}/{id}")
+	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy)
 	{
 		try{
-			var x = partyServiceImp.getAllPartyDetails();
-			return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			if(getBy.equals("own")){
+				var x = partyServiceImp.getAllPartyDetails(id,getBy);
+				if(!x.isEmpty())
+					return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				else
+					return new GeneralResponse<List<Party>>(x, "No party added yet with userId: "+id, true, System.currentTimeMillis(), HttpStatus.FOUND);
+			}
+			else if(getBy.equals("group")){
+				var x = partyServiceImp.getAllPartyDetails(id, getBy);
+				if(!x.isEmpty())
+					return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				else
+					return new GeneralResponse<List<Party>>(x, "No party added yet with userHeadId: "+id, true, System.currentTimeMillis(), HttpStatus.FOUND);
+			}
+			else if(getBy.equals("all")){
+				var x = partyServiceImp.getAllPartyDetails(null, null);
+				if(!x.isEmpty())
+					return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				else
+					return new GeneralResponse<List<Party>>(x, "No party added yet", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			}else{
+				return new GeneralResponse<List<Party>>(null, "GetBy string is wrong.", false, System.currentTimeMillis(), HttpStatus.FOUND);
+			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return new GeneralResponse<List<Party>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);

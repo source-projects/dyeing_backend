@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.quality.Quality;
@@ -35,8 +36,17 @@ public class PartyServiceImp implements PartyServiceInterface{
 	}
 
 	@Override
-	public List<Party> getAllPartyDetails() {
-	  List<Party> partyDetailsList=partyDao.findAll();
+	public List<Party> getAllPartyDetails(Long id,String getBy) {
+		List<Party> partyDetailsList = null;
+		if(id == null){
+			partyDetailsList=partyDao.findAll();
+		}
+		else if(getBy.equals("group")){
+			partyDetailsList=partyDao.findByUserHeadId(id);
+		}
+		else if(getBy.equals("own")){
+			partyDetailsList=partyDao.findByUserId(id);
+		}
 		return partyDetailsList;
 	}
 
