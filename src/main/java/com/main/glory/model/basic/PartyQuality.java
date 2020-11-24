@@ -1,19 +1,22 @@
-package com.main.glory.model.program.request;
+package com.main.glory.model.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ShadeIdwithPartyShadeNo {
+public class PartyQuality {
 
-    Long id;
-    String qualityId;
-    String partyShadeNo;
-    String colorTone;
+
+
+    Long partyId;
+    String partyName;
+    List<QualityData> qualityDataList;
 
 }

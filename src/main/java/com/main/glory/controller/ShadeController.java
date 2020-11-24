@@ -38,7 +38,7 @@ public class ShadeController extends ControllerConfig {
 		}
 	}
 
-	@GetMapping("/shade/allShades")
+	/*@GetMapping("/shade/allShades")
 	public GeneralResponse<List<ShadeMast>> getAllShades(){
 		try{
 			List<ShadeMast> shadeMast = shadeService.getAllShadeMast();
@@ -52,7 +52,7 @@ public class ShadeController extends ControllerConfig {
 			e.printStackTrace();
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
+	}*/
 	//GetAll Shade as per format
 	@GetMapping("/shade/all")
 	public GeneralResponse<List<GetAllShade>> getAllShadesInfo(){

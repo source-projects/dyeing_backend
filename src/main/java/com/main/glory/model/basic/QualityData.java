@@ -1,4 +1,5 @@
-package com.main.glory.model.program.request;
+package com.main.glory.model.basic;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ShadeIdwithPartyShadeNo {
+public class QualityData {
 
-    Long id;
+    Long qualityEntryId;
     String qualityId;
-    String partyShadeNo;
-    String colorTone;
-
+    String qualityName;
+    String qualityType;
 }
