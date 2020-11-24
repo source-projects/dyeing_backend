@@ -3,6 +3,8 @@ package com.main.glory.model.quality;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.program.Program;
+import com.main.glory.model.shade.ShadeData;
+import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -49,6 +51,11 @@ public class Quality {
 	private List<Program> program;
 
 
+	@ApiModelProperty(hidden = true)
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
+	private List<ShadeMast> shadeMasts;
 
 	public Quality(Quality other) {
 		this.id = other.id;

@@ -15,6 +15,7 @@ public class GetAllShade {
     String partyShadeNo;
     Long processId;
     String processName;
+    Long qualityEntryId;
     String qualityId;
     String qualityName;
     String partyName;

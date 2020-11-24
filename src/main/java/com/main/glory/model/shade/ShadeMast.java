@@ -1,6 +1,7 @@
 package com.main.glory.model.shade;
 
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -26,13 +27,15 @@ public class ShadeMast {
 
 	//@Column(nullable = false)
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "quality_entry_Id", referencedColumnName = "id")
-	Quality qualityId;
+	Long qualityEntryId;
+
 	//@Column(nullable = false)
+
 	Long partyId;
 	String colorTone;
+	@ApiModelProperty(hidden = true)
 	String createdBy;
+	@ApiModelProperty(hidden = true)
 	String updatedBy;
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
@@ -55,4 +58,21 @@ public class ShadeMast {
 
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
+
+	public ShadeMast(AddShadeMast addShadeMast)
+	{
+		this.id=addShadeMast.getPartyId();
+		this.partyShadeNo=addShadeMast.getPartyShadeNo();
+		this.processId=addShadeMast.getProcessId();
+		this.partyId=addShadeMast.getPartyId();
+		this.colorTone=addShadeMast.getColorTone();
+		this.createdBy=null;
+		this.updatedBy=null;
+		this.cuttingId=addShadeMast.getCuttingId();
+		this.remark=addShadeMast.getRemark();
+		this.category=addShadeMast.getCategory();
+		this.labColorNo=addShadeMast.getLabColorNo();
+		this.processName=addShadeMast.getProcessName();
+
+	}
 }
