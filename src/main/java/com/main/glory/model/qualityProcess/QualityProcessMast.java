@@ -13,6 +13,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table
+@NoArgsConstructor
 public class QualityProcessMast {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,15 +26,21 @@ public class QualityProcessMast {
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
 	Date updatedDate;
-	String createdBy;
-	String updatedBy;
-
+	Long createdBy;
+	Long updatedBy;
+	Long userHeadId;
 	@Transient
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id", name = "controlId")
 	List<QualityProcessData> qualityProcessData;
 
-	public QualityProcessMast() {
+	@PrePersist
+	protected void onCreate() {
 		this.createdDate = new Date(System.currentTimeMillis());
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedDate = new Date(System.currentTimeMillis());
 	}
 }

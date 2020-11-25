@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 	List<ColorBox> findByIssued(Boolean aBoolean);
+	List<ColorBox> findAllByControlId(Long controlId);
 }

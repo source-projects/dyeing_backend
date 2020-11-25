@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ColorServicesInterface {
 	public void addColor(ColorMast colorMast);
-	public List<ColorMastDetails> getAll();
+	public List<ColorMastDetails> getAll(String getBy, Long id);
 }

@@ -21,6 +21,9 @@ public class GetAllProgram {
     String qualityId;
     String qualityName;
     String qualityType;
+    Long userHeadId;
+    Long createdBy;
+    Long updatedBy;
     String priority;
     String remark;
 

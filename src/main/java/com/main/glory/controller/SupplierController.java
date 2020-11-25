@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -98,17 +100,39 @@ public class SupplierController extends ControllerConfig {
     }
 
 
-    @GetMapping("/supplier/all")
-    public GeneralResponse<Object> getAllSupplier(){
+    @GetMapping("/supplier/all/{getBy}/{id}")
+    public GeneralResponse<List> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
         try{
-            Object obj = supplierService.getAllSupplier();
-            if(obj != null){
-                return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            } else {
-                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            switch (getBy) {
+                case "own":
+                    List obj = supplierService.getAllSupplier(getBy, id);
+                    if(!obj.isEmpty()){
+                        return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    } else
+                        return new GeneralResponse<>(null, "No data found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                case "group":
+                    List obj1 = supplierService.getAllSupplier(getBy, id);
+
+                    if(!obj1.isEmpty()){
+                        return new GeneralResponse<>(obj1, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    } else {
+                        return new GeneralResponse<>(null, "No data found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+
+                case "all":
+                    List obj2 = supplierService.getAllSupplier(null, null);
+                    if(!obj2.isEmpty()){
+                        return new GeneralResponse<>(obj2, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    } else {
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+
+                default:
+                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

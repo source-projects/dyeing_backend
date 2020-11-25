@@ -33,10 +33,8 @@ public class ShadeMast {
 
 	Long partyId;
 	String colorTone;
-	@ApiModelProperty(hidden = true)
-	String createdBy;
-	@ApiModelProperty(hidden = true)
-	String updatedBy;
+	Long createdBy;
+	Long updatedBy;
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
@@ -66,13 +64,12 @@ public class ShadeMast {
 		this.processId=addShadeMast.getProcessId();
 		this.partyId=addShadeMast.getPartyId();
 		this.colorTone=addShadeMast.getColorTone();
-		this.createdBy=null;
-		this.updatedBy=null;
+		this.createdBy=addShadeMast.getCreatedBy();
 		this.cuttingId=addShadeMast.getCuttingId();
 		this.remark=addShadeMast.getRemark();
 		this.category=addShadeMast.getCategory();
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
-
+		this.userHeadId=addShadeMast.getUserHeadId();
 	}
 }

@@ -45,7 +45,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 			partyDetailsList=partyDao.findByUserHeadId(id);
 		}
 		else if(getBy.equals("own")){
-			partyDetailsList=partyDao.findByUserId(id);
+			partyDetailsList=partyDao.findByCreatedBy(id);
 		}
 		return partyDetailsList;
 	}

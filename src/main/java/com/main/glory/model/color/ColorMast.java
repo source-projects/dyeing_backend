@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ColorMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,17 +26,43 @@ public class ColorMast {
     String chlNo;
     Date chlDate;
     Double billAmount;
-    Long userId;
+    Long createdBy;
+    Long updatedBy;
+    Long userHeadId;
     String remark;
     @ApiModelProperty(hidden = true)
     Date createdDate;
+    @ApiModelProperty(hidden = true)
+    Date updatedDate;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId",referencedColumnName = "id")
     List<ColorData> colorDataList;
 
-    public ColorMast() {
-       this.createdDate = new Date(System.currentTimeMillis());
+    public ColorMast(Long id, Long supplierId, String billNo, Date billDate, String chlNo, Date chlDate, Double billAmount, Long createdBy, Long updatedBy, Long userHeadId, String remark, List<ColorData> colorDataList) {
+        this.id = id;
+        this.supplierId = supplierId;
+        this.billNo = billNo;
+        this.billDate = billDate;
+        this.chlNo = chlNo;
+        this.chlDate = chlDate;
+        this.billAmount = billAmount;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+        this.userHeadId = userHeadId;
+        this.remark = remark;
+        this.colorDataList = colorDataList;
+    }
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
     }
 
     public ColorMast(ColorMast other) {
@@ -46,7 +73,9 @@ public class ColorMast {
         this.chlNo = other.chlNo;
         this.chlDate = other.chlDate;
         this.billAmount = other.billAmount;
-        this.userId = other.userId;
+        this.createdBy = other.createdBy;
+        this.updatedBy = other.updatedBy;
+        this.userHeadId = other.userHeadId;
         this.remark = other.remark;
         this.createdDate = other.createdDate;
         this.colorDataList = other.colorDataList;

@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
@@ -38,31 +39,36 @@ public class ShadeController extends ControllerConfig {
 		}
 	}
 
-	/*@GetMapping("/shade/allShades")
-	public GeneralResponse<List<ShadeMast>> getAllShades(){
-		try{
-			List<ShadeMast> shadeMast = shadeService.getAllShadeMast();
-			if(shadeMast != null){
-
-				return new GeneralResponse<List<ShadeMast>>(shadeMast, "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
-			}else{
-				return new GeneralResponse<>(null, "No shade data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}*/
 	//GetAll Shade as per format
-	@GetMapping("/shade/all")
-	public GeneralResponse<List<GetAllShade>> getAllShadesInfo(){
+	@GetMapping("/shade/all/{getBy}/{id}")
+	public GeneralResponse<List<GetAllShade>> getAllShadesInfo(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
 		try{
-			List<GetAllShade> shadeMast = shadeService.getAllShadesInfo();
-			if(shadeMast != null){
+			List<GetAllShade> shadeMast = null;
+			switch (getBy) {
+				case "own":
+					shadeMast = shadeService.getAllShadesInfo(getBy, id);
+					if(!shadeMast.isEmpty())
+						return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+					else
+						return new GeneralResponse<>(null, "No data found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
-				return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
-			}else{
-				return new GeneralResponse<>(null, "No shade data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				case "group":
+					shadeMast = shadeService.getAllShadesInfo(getBy, id);
+					if(!shadeMast.isEmpty())
+						return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+					else
+						return new GeneralResponse<>(null, "No data found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				case "all":
+					shadeMast = shadeService.getAllShadesInfo(null, null);
+					System.out.println(shadeMast);
+					if(!shadeMast.isEmpty())
+						return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+					else
+						return new GeneralResponse<>(null, "No shade data found yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				default:
+					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
 		}catch (Exception e){
 			e.printStackTrace();

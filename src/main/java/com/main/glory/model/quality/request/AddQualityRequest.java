@@ -19,7 +19,7 @@ public class AddQualityRequest {
     private Long partyId;
     private Double wtPer100m;
     private String remark;
-    private String createdBy;
+    private Long createdBy;
     private Date qualityDate;
     private Long userHeadId;
 }

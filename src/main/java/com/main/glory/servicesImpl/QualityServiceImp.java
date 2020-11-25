@@ -51,10 +51,25 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 
 	@Override
-	public List<GetQualityResponse> getAllQuality() {
-		List<QualityWithPartyName> qualityListobject=qualityDao.findAllWithPartyName();
-		modelMapper.getConfiguration().setAmbiguityIgnored(true);
-		List<GetQualityResponse> quality = modelMapper.map(qualityListobject, List.class);
+	public List<GetQualityResponse> getAllQuality(Long id, String getBy) {
+		List<QualityWithPartyName> qualityListobject = null;
+		List<GetQualityResponse> quality = null;
+		if(id == null){
+			qualityListobject=qualityDao.findAllWithPartyName();
+			modelMapper.getConfiguration().setAmbiguityIgnored(true);
+			quality = modelMapper.map(qualityListobject, List.class);
+		}
+		else if(getBy.equals("group")){
+			qualityListobject=qualityDao.findAllWithPartyNameByUserHeadId(id);
+			modelMapper.getConfiguration().setAmbiguityIgnored(true);
+			quality = modelMapper.map(qualityListobject, List.class);
+		}
+		else if(getBy.equals("own")){
+			qualityListobject=qualityDao.findAllWithPartyNameByCreatedBy(id);
+			modelMapper.getConfiguration().setAmbiguityIgnored(true);
+			quality = modelMapper.map(qualityListobject, List.class);
+		}
+
 		return quality;
 	}
 

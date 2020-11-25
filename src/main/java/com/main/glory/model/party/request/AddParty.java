@@ -34,8 +34,5 @@ public class AddParty {
     private String paymentTerms;
     private Double percentageDiscount;
     private Double gstPercentage;
-    private Long userId;
     private Long userHeadId;
-
-
 }

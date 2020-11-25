@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PartyDao extends JpaRepository<Party, Long>  {
 
@@ -15,7 +16,7 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query(value = "SELECT party_name FROM party as p WHERE p.entry_id = :party_id", nativeQuery = true)
 	String getPartyNameByPartyId(@Param("party_id") Long party_id);
 
-	List<Party> findByUserId(Long userId);
+	List<Party> findByCreatedBy(Long createdBy);
 
 	List<Party> findByUserHeadId(Long userHeadId);
 

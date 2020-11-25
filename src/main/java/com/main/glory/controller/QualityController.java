@@ -48,11 +48,35 @@ public class QualityController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value = "/quality/all")
-    public GeneralResponse<List<GetQualityResponse>> getQualityList() {
+    @GetMapping(value = "/quality/all/{getBy}/{id}")
+    public GeneralResponse<List<GetQualityResponse>> getQualityList(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) {
         try {
-            List<GetQualityResponse> x = qualityServiceImp.getAllQuality();
-            return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            List<GetQualityResponse> x;
+            switch (getBy){
+                case "own":
+                    x = qualityServiceImp.getAllQuality(id, getBy);
+                    if(!x.isEmpty())
+                        return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    else
+                        return new GeneralResponse<>(x, "No quality added yet with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                case "group":
+                    x = qualityServiceImp.getAllQuality(id, getBy);
+                    if(!x.isEmpty())
+                        return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    else
+                        return new GeneralResponse<>(x, "No quality added yet with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                case "all":
+                    x = qualityServiceImp.getAllQuality(null, null);
+                    if(!x.isEmpty())
+                        return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    else
+                        return new GeneralResponse<>(x, "No quality added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                default:
+                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,15 +85,23 @@ public class QualityController extends ControllerConfig {
 
     @PutMapping(value = "/quality")
     public GeneralResponse<Boolean> updateQualityById(@RequestBody UpdateQualityRequest quality) throws Exception {
-        if (quality.getId() != null) {
-            boolean flag = qualityServiceImp.updateQuality(quality);
-            if (flag) {
-                return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }else{
-                return new GeneralResponse<Boolean>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        try {
+            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            if(party.isEmpty()){
+                throw new Exception("No party present with id:"+quality.getPartyId());
             }
+            if (quality.getId() != null) {
+                boolean flag = qualityServiceImp.updateQuality(quality);
+                if (flag) {
+                    return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                } else {
+                    return new GeneralResponse<Boolean>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+            }
+            return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/quality/{id}")

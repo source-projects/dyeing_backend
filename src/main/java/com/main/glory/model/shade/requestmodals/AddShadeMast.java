@@ -15,6 +15,7 @@ import java.util.List;
 public class AddShadeMast {
 
     String partyShadeNo;
+    Long createdBy;
     Long processId;
     String processName;
     String colorTone;
@@ -26,6 +27,7 @@ public class AddShadeMast {
     String labColorNo;
     String category;
     String remark;
+    Long userHeadId;
     List<ShadeData> shadeDataList;
 
 

@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
 import com.main.glory.model.qualityProcess.response.ListResponse;
 import com.main.glory.servicesImpl.QualityProcessImpl;
@@ -37,15 +38,46 @@ public class QualityProcessController extends ControllerConfig {
 		}
 	}
 
-	@GetMapping("/qualityprocess/all")
-	public GeneralResponse<List<ListResponse>> getQualityProcessList(){
+	@GetMapping("/qualityprocess/all/{getBy}/{id}")
+	public GeneralResponse<List<ListResponse>> getQualityProcessList(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id){
 		try {
-			List<QualityProcessMast> qualityProcessMasts = qualityProcess.qualityProcessMasts();
+			List<QualityProcessMast> qualityProcessMasts = null;
 			List<ListResponse> res = new ArrayList<>();
-			qualityProcessMasts.forEach(e -> {
-				res.add(modelMapper.map(e, ListResponse.class));
-			});
-			return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
+			switch (getBy) {
+				case "own":
+					qualityProcessMasts = qualityProcess.qualityProcessMasts(getBy, id);
+					if(!qualityProcessMasts.isEmpty()){
+						qualityProcessMasts.forEach(e -> {
+							res.add(modelMapper.map(e, ListResponse.class));
+						});
+						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
+					}else
+						return new GeneralResponse<>(null, "No data found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				case "group":
+					qualityProcessMasts = qualityProcess.qualityProcessMasts(getBy, id);
+					if(!qualityProcessMasts.isEmpty()){
+						qualityProcessMasts.forEach(e -> {
+							res.add(modelMapper.map(e, ListResponse.class));
+						});
+						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
+					}else
+						return new GeneralResponse<>(null, "No data found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				case "all":
+					qualityProcessMasts = qualityProcess.qualityProcessMasts(null, null);
+					if(!qualityProcessMasts.isEmpty()){
+						qualityProcessMasts.forEach(e -> {
+							res.add(modelMapper.map(e, ListResponse.class));
+						});
+						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
+					}else
+						return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				default:
+					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			}
+
 		} catch (Exception e) {
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}

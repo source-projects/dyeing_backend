@@ -65,12 +65,21 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public List<GetAllStockWithPartyNameResponse> getAllStockBatch(){
-        Optional<List<GetAllStockWithPartyNameResponse>> data = stockMastDao.getAllStockWithPartyName();
-        if(data.isEmpty())
-            return null;
-        else
-            return data.get();
+    public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id){
+        Optional<List<GetAllStockWithPartyNameResponse>> data = null;
+        Boolean flag = false;
+        if(id ==  null){
+            data = stockMastDao.getAllStockWithPartyName();
+        }
+        else if(getBy.equals("own")){
+            data = stockMastDao.getAllStockWithPartyNameByCreatedBy(id);
+        }
+
+        else if(getBy.equals("group")){
+            data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
+        }
+        if(data.get().isEmpty()) return null;
+        else return data.get();
     }
 
     @Transactional

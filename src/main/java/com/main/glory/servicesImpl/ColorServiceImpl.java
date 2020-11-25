@@ -9,9 +9,6 @@ import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
-import com.main.glory.model.fabric.FabStockData;
-import com.main.glory.model.fabric.FabStockMast;
-import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.services.ColorServicesInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,32 +36,63 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	@Override
 	@Transactional
 	public void addColor(ColorMast colorMast) {
+			List<ColorData> colorData = colorMast.getColorDataList();
+			colorMast.setColorDataList(null);
 			ColorMast colorMast1 = colorMastDao.save(colorMast);
+
+
+			List<ColorData> colord = new ArrayList<>();
+			System.out.println(colorData.get(0).getQuantity());
+			for (int i = 0; i < colorData.get(0).getQuantity(); i++) {
+				ColorData tempColorData = new ColorData();
+				tempColorData.setControlId(colorMast1.getId());
+				tempColorData.setNoOfBox(colorData.get(0).getNoOfBox());
+				tempColorData.setQuantity(colorData.get(0).getQuantity());
+				tempColorData.setQuantityPerBox(colorData.get(0).getQuantityPerBox());
+				tempColorData.setQuantityUnit(colorData.get(0).getQuantityUnit());
+				tempColorData.setRate(colorData.get(0).getRate());
+				tempColorData.setItemId(colorData.get(0).getItemId());
+				colord.add(tempColorData);
+				System.out.println(tempColorData.getId());
+			}
+			colorDataDao.saveAll(colord);
 			List<ColorBox> colorBoxes = new ArrayList<>();
-			colorMast.getColorDataList().forEach(e -> {
-				e.setControlId(colorMast1.getId());
-			});
-			colorDataDao.saveAll(colorMast.getColorDataList());
-
-			colorMast1.getColorDataList().forEach(e -> {
-//				e.setPurchaseId(colorMast1.getId());
-				for (int i = 0; i < e.getNoOfBox(); i++) {
-					ColorBox temp = new ColorBox();
-					temp.setControlId(e.getId());
-					temp.setIssued(false);
-					temp.setFinished(false);
-					temp.setQuantity(e.getQuantityPerBox());
-					colorBoxes.add(temp);
-				}
-			});
-
-			colorBoxDao.saveAll(colorBoxes);
+			List<ColorData> cd = colorDataDao.findAllByControlId(colorMast1.getId());
+			if(!cd.isEmpty()){
+				cd.forEach(e -> {
+					for (int i = 0; i < e.getNoOfBox(); i++) {
+						ColorBox temp = new ColorBox();
+						temp.setControlId(e.getId());
+						temp.setIssued(false);
+						temp.setFinished(false);
+						temp.setQuantity(e.getQuantityPerBox());
+						colorBoxes.add(temp);
+					}
+				});
+				colorBoxDao.saveAll(colorBoxes);
+			}
 	}
 
 	@Override
-	public List<ColorMastDetails> getAll() {
-		List<ColorMast> data = colorMastDao.findAll();
+	public List<ColorMastDetails> getAll(String getBy,Long id) {
 		List<ColorMastDetails> colorMastDetails = new ArrayList<>();
+		if(id == null){
+			List<ColorMast> data = colorMastDao.findAll();
+			data.forEach(e -> {
+				try{
+					ColorMastDetails x = new ColorMastDetails(e);
+					x.setSupplierName(supplierDao.findById(e.getSupplierId()).get().getSupplierName());
+					colorMastDetails.add(x);
+					/*e.getColorDataList().forEach(e1->{
+						e1.setColorBoxes(colorBoxDao.findAllByControlId(e1.getId()));
+					});*/
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			});
+		}
+		else if(getBy.equals("own")){
+			List<ColorMast> data = colorMastDao.getAllByCreatedBy(id);
 			data.forEach(e -> {
 				try{
 					ColorMastDetails x = new ColorMastDetails(e);
@@ -74,6 +102,19 @@ public class ColorServiceImpl implements ColorServicesInterface {
 					ex.printStackTrace();
 				}
 			});
+		}
+		else if(getBy.equals("group")){
+			List<ColorMast> data = colorMastDao.getAllByUserHeadId(id);
+			data.forEach(e -> {
+				try{
+					ColorMastDetails x = new ColorMastDetails(e);
+					x.setSupplierName(supplierDao.findById(e.getSupplierId()).get().getSupplierName());
+					colorMastDetails.add(x);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			});
+		}
 		return colorMastDetails;
 	}
 

@@ -21,23 +21,22 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query(value = "Select * from quality as qa where qa.quality_id=:qid",nativeQuery = true)
     List<Quality> getQualityListById(@Param("qid") String quality_id);
 
-    //@Query(value = "Select * from quality as qa where qa.party_id=:party_id",nativeQuery = true)
-    //List<Quality> getQualityListByPartyId(@Param("party_id") String quality_id);
-
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q")
     List<QualityWithPartyName> findAllWithPartyName();
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where userHeadId = :userHeadId")
+    List<QualityWithPartyName> findAllWithPartyNameByUserHeadId(Long userHeadId);
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where createdBy = :createdBy")
+    List<QualityWithPartyName> findAllWithPartyNameByCreatedBy( Long createdBy);
 
     Optional<Quality> findByQualityId(Long qualityId);
 
     Optional<Quality> findByQualityId(String qualityId);
 
-
     Optional<Quality> findByQualityIdAndQualityName(String qualityId, String qualityName);
 
     Optional<List<Quality>> findByPartyId(Long partyId);
-
-    //Optional<Quality> findByQualityId(Quality quality_id);
-
 }
 
 

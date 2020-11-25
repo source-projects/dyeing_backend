@@ -40,8 +40,17 @@ public class QualityProcessImpl {
 	}
 
 	@Transactional
-	public List<QualityProcessMast> qualityProcessMasts(){
-		return qualityProcessMastDao.findAll();
+	public List<QualityProcessMast> qualityProcessMasts(String getBy, Long id){
+		List<QualityProcessMast> q = null;
+		if(id == null)
+			q = qualityProcessMastDao.findAll();
+		else if(getBy.equals("own")){
+			q = qualityProcessMastDao.findAllByCreatedBy(id);
+		}
+		else if(getBy.equals("group")){
+			q = qualityProcessMastDao.findAllByUserHeadId(id);
+		}
+		return q;
 	}
 
 	@Transactional

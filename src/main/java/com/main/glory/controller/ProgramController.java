@@ -3,6 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.program.request.AddProgramWithProgramRecord;
@@ -40,16 +41,34 @@ public class ProgramController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value="/program/all")
-    public GeneralResponse<List<GetAllProgram>> getProgramList() throws Exception {
+    @GetMapping(value="/program/all/{getBy}/{id}")
+    public GeneralResponse<List<GetAllProgram>> getProgramList(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy) throws Exception {
         try {
-            var data = programServiceImpl.getAllProgram();
-            if (data != null) {
+            switch (getBy) {
+                case "own":
+                    var data = programServiceImpl.getAllProgram(getBy, id);
+                    if (data != null)
+                        return new GeneralResponse<>(data, "Data found:", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    else
+                        return new GeneralResponse<>(null, "Data not found with userId:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
-                return new GeneralResponse<>(data, "Data found:", true, System.currentTimeMillis(), HttpStatus.OK);
+                case "group":
+                    var data1 = programServiceImpl.getAllProgram(getBy, id);
+                    if (data1 != null)
+                        return new GeneralResponse<>(data1, "Data found:", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    else
+                        return new GeneralResponse<>(null, "Data not found with userHeadId:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
+                case "all":
+                    var data2 = programServiceImpl.getAllProgram(null, null);
+                    if (data2 != null)
+                        return new GeneralResponse<>(data2, "Data found:", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    else
+                        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                default:
+                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
-            return new GeneralResponse<>(null, "Data not found:", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }catch (Exception e)
         {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

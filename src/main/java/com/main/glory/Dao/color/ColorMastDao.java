@@ -14,4 +14,7 @@ public interface ColorMastDao extends JpaRepository<ColorMast, Long> {
 	@Query(value = "Select cm.*, (Select cd.* from color_data as cd where cd.purchase_id = cm.id), (Select cb.* from color_box as cb where cb.control_id = cd.id where cb.issued = 0) from color_mast", nativeQuery = true)
 	List<ColorMast> getAllActiveData();
 
+	List<ColorMast> getAllByCreatedBy(Long createdBy);
+	List<ColorMast> getAllByUserHeadId(Long userHeadId);
+
 }

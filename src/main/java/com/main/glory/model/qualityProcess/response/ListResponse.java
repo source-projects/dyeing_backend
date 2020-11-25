@@ -12,4 +12,7 @@ import lombok.Setter;
 public class ListResponse {
 	Long id;
 	String name;
+	Long userHeadId;
+	Long createdBy;
+	Long updatedBy;
 }

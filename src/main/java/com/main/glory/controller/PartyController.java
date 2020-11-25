@@ -41,31 +41,32 @@ public class PartyController  extends ControllerConfig {
 	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy)
 	{
 		try{
-			if(getBy.equals("own")){
-				var x = partyServiceImp.getAllPartyDetails(id,getBy);
-				if(!x.isEmpty())
-					return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
-				else
-					return new GeneralResponse<List<Party>>(x, "No party added yet with userId: "+id, true, System.currentTimeMillis(), HttpStatus.FOUND);
-			}
-			else if(getBy.equals("group")){
-				var x = partyServiceImp.getAllPartyDetails(id, getBy);
-				if(!x.isEmpty())
-					return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
-				else
-					return new GeneralResponse<List<Party>>(x, "No party added yet with userHeadId: "+id, true, System.currentTimeMillis(), HttpStatus.FOUND);
-			}
-			else if(getBy.equals("all")){
-				var x = partyServiceImp.getAllPartyDetails(null, null);
-				if(!x.isEmpty())
-					return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
-				else
-					return new GeneralResponse<List<Party>>(x, "No party added yet", true, System.currentTimeMillis(), HttpStatus.FOUND);
-			}else{
-				return new GeneralResponse<List<Party>>(null, "GetBy string is wrong.", false, System.currentTimeMillis(), HttpStatus.FOUND);
+			switch (getBy) {
+				case "own":
+					var x = partyServiceImp.getAllPartyDetails(id, getBy);
+					if (!x.isEmpty())
+						return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+					else
+						return new GeneralResponse<List<Party>>(x, "No party added yet with userId: " + id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				case "group":
+					var x1 = partyServiceImp.getAllPartyDetails(id, getBy);
+					if (!x1.isEmpty())
+						return new GeneralResponse<List<Party>>(x1, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+					else
+						return new GeneralResponse<List<Party>>(x1, "No party added yet with userHeadId: " + id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				case "all":
+					var x2 = partyServiceImp.getAllPartyDetails(null, null);
+					if (!x2.isEmpty())
+						return new GeneralResponse<List<Party>>(x2, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+					else
+						return new GeneralResponse<List<Party>>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+				default:
+					return new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			return new GeneralResponse<List<Party>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

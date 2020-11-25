@@ -27,8 +27,8 @@ public class QualityTypeData {
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
 	Date UpdatedDate;
-	String createdBy;
-	String updatedBy;
+	Long createdBy;
+	Long updatedBy;
 
 	public QualityTypeData() {
 		this.createdDate = new Date(System.currentTimeMillis());

@@ -28,8 +28,8 @@ public class QualityProcessData {
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
 	Date updatedDate;
-	String createdBy;
-	String updatedBy;
+	Long createdBy;
+	Long updatedBy;
 
 	@Transient
 	@OneToMany(cascade = CascadeType.ALL)

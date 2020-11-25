@@ -28,8 +28,9 @@ public class StockMast {
     Long chlNo;
     Date chlDate;
     String unit;
-    String updatedBy;
-    String createdBy;
+    Long updatedBy;
+    Long createdBy;
+    Long userHeadId;
     Boolean isProductionPlanned;
     @ApiModelProperty(hidden = true)
     Date createdDate;

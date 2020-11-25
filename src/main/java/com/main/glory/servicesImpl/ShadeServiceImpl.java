@@ -62,16 +62,11 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		ShadeMast shadeData =  new ShadeMast(shadeMast);
 		System.out.println("\nShadeData"+shadeData.toString());
 		shadeData.setQualityEntryId(quality.get().getId());
-
-
-
 /*
 		shadeData.setQualityId(quality);
 		shadeData.setCreatedDate(dt);
 */
-
 		Date dt = new Date(System.currentTimeMillis());
-
 		ShadeMast x = shadeMastDao.save(shadeData);
 		shadeMast.getShadeDataList().forEach(e -> {
 			e.setControlId(x.getId());
@@ -80,7 +75,6 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		});
 		shadeDataDao.saveAll(shadeMast.getShadeDataList());
 	}
-
 
 
 	@Override
@@ -134,41 +128,88 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		return true;
 	}
 
-	public List<GetAllShade> getAllShadesInfo() {
-		//modelMapper.getConfiguration().setAmbiguityIgnored(true);
-		List<ShadeMast> shadeMastList = shadeMastDao.findAll();
+	public List<GetAllShade> getAllShadesInfo(String getBy, Long id) {
+		List<ShadeMast> shadeMastList = null;
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
-		for (ShadeMast e : shadeMastList) {
+		if(id == null){
+			shadeMastList = shadeMastDao.findAll();
+			for (ShadeMast e : shadeMastList) {
+				GetAllShade getShade =  new GetAllShade();
+				Optional<Party> party = partyDao.findById(e.getPartyId());
+				Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+				if(!qualityName.isPresent())
+					continue;
+				if(!party.isPresent())
+					continue;
+				getShade.setPartyName(party.get().getPartyName());
+				getShade.setQualityName(qualityName.get().getQualityName());
+				getShade.setId(e.getId());
+				getShade.setColorTone(e.getColorTone());
+				getShade.setProcessId(e.getProcessId());
+				getShade.setProcessName(e.getProcessName());
+				getShade.setPartyShadeNo(e.getPartyShadeNo());
+				getShade.setQualityId(qualityName.get().getQualityId());
+				getShade.setPartyId(party.get().getId());
+				getShade.setUserHeadId(e.getUserHeadId());
+				getShade.setCreatedBy(e.getCreatedBy());
+				getShade.setQualityEntryId(qualityName.get().getId());
 
-			GetAllShade getShade =  new GetAllShade();//modelMapper.map(e, GetAllShade.class);
-
-			Optional<Party> party = partyDao.findById(e.getPartyId());
-
-			Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
-
-
-			if(!qualityName.isPresent()) {
-				continue;
+				getAllShadesList.add(getShade);
 			}
-			if(!party.isPresent())
-			{
-				continue;
-			}
-
-			getShade.setPartyName(party.get().getPartyName());
-			getShade.setQualityName(qualityName.get().getQualityName());
-			getShade.setId(e.getId());
-			getShade.setColorTone(e.getColorTone());
-			getShade.setProcessId(e.getProcessId());
-			getShade.setProcessName(e.getProcessName());
-			getShade.setPartyShadeNo(e.getPartyShadeNo());
-			getShade.setQualityId(qualityName.get().getQualityId());
-			getShade.setPartyId(party.get().getId());
-			getShade.setQualityEntryId(qualityName.get().getId());
-
-			getAllShadesList.add(getShade);
 		}
-		return getAllShadesList;
+		else if(getBy.equals("own")){
+			shadeMastList = shadeMastDao.findAllByCreatedBy(id);
+			for (ShadeMast e : shadeMastList) {
+				GetAllShade getShade =  new GetAllShade();
+				Optional<Party> party = partyDao.findById(e.getPartyId());
+				Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+				if(!qualityName.isPresent())
+					continue;
+				if(!party.isPresent())
+					continue;
+				getShade.setPartyName(party.get().getPartyName());
+				getShade.setQualityName(qualityName.get().getQualityName());
+				getShade.setId(e.getId());
+				getShade.setColorTone(e.getColorTone());
+				getShade.setProcessId(e.getProcessId());
+				getShade.setProcessName(e.getProcessName());
+				getShade.setUserHeadId(e.getUserHeadId());
+				getShade.setCreatedBy(e.getCreatedBy());
+				getShade.setPartyShadeNo(e.getPartyShadeNo());
+				getShade.setQualityId(qualityName.get().getQualityId());
+				getShade.setPartyId(party.get().getId());
+				getShade.setQualityEntryId(qualityName.get().getId());
 
+				getAllShadesList.add(getShade);
+			}
+		}
+		else if(getBy.equals("group")){
+			shadeMastList = shadeMastDao.findAllByUserHeadId(id);
+			for (ShadeMast e : shadeMastList) {
+				GetAllShade getShade =  new GetAllShade();
+				Optional<Party> party = partyDao.findById(e.getPartyId());
+				Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+				if(!qualityName.isPresent())
+					continue;
+				if(!party.isPresent())
+					continue;
+				getShade.setPartyName(party.get().getPartyName());
+				getShade.setQualityName(qualityName.get().getQualityName());
+				getShade.setId(e.getId());
+				getShade.setColorTone(e.getColorTone());
+				getShade.setProcessId(e.getProcessId());
+				getShade.setProcessName(e.getProcessName());
+				getShade.setPartyShadeNo(e.getPartyShadeNo());
+				getShade.setUserHeadId(e.getUserHeadId());
+				getShade.setCreatedBy(e.getCreatedBy());
+				getShade.setQualityId(qualityName.get().getQualityId());
+				getShade.setPartyId(party.get().getId());
+				getShade.setQualityEntryId(qualityName.get().getId());
+
+				getAllShadesList.add(getShade);
+			}
+		}
+
+		return getAllShadesList;
 	}
 }

@@ -71,7 +71,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             Long quality = programData.getQualityEntryId();
             if(!qualityDao.findById(quality).isPresent())
             {
-                throw new Exception("No suh a Quality for id:"+quality);
+                throw new Exception("No such quality found with id:"+quality);
             }
 
             Long partyId = programData.getPartyId();
@@ -93,40 +93,84 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
     @Transactional
-    public List<GetAllProgram> getAllProgram() throws Exception {
-
+    public List<GetAllProgram> getAllProgram(String getBy, Long id) throws Exception {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
-
-        List<Program> programList = programDao.findAll();
-//        System.out.println(programList);
+        List<Program> programList = null;
         List<GetAllProgram> getAllProgramList = new ArrayList<>();
-        for (Program e : programList) {
+        if(id == null){
+            programList = programDao.findAll();
+            for (Program e : programList) {
+                GetAllProgram programData;
+                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                Optional<Party> party = partyDao.findById(e.getPartyId());
+                if(!quality.isPresent())
+                {
+                    continue; // just skip the faulty data instead of halting the process
+                }
+                if(!party.isPresent())
+                {
+                    continue; // just skip the faulty data instead of halting the process
+                }
 
-            GetAllProgram programData;
+                modelMapper.getConfiguration().setAmbiguityIgnored(true);
+                programData = modelMapper.map(e, GetAllProgram.class);
+                programData.setPartyName(party.get().getPartyName());
+                programData.setQualityName(quality.get().getQualityName());
+                programData.setQualityType(quality.get().getQualityType());
 
-            //modelMapper.map(e, GetAllProgram.class);
-            Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-            Optional<Party> party = partyDao.findById(e.getPartyId());
-            //programData.setQuality_id(qualityDao.findById(e.getQuality_entry_id()));
-            if(!quality.isPresent())
-            {
-//                throw new Exception("Quality data is not Found for id:"+e.getQualityEntryId());
-                continue; // just skip the faulty data instead of halting the process
+                getAllProgramList.add(programData);
             }
-            if(!party.isPresent())
-            {
-//                throw new Exception("Party Data not found for id:"+e.getPartyId());
-                continue; // just skip the faulty data instead of halting the process
-            }
-
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            programData = modelMapper.map(e, GetAllProgram.class);
-            programData.setPartyName(party.get().getPartyName());
-            programData.setQualityName(quality.get().getQualityName());
-            programData.setQualityType(quality.get().getQualityType());
-
-            getAllProgramList.add(programData);
         }
+        else if(getBy.equals("own")){
+            programList = programDao.findByCreatedBy(id);
+            for (Program e : programList) {
+                GetAllProgram programData;
+                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                Optional<Party> party = partyDao.findById(e.getPartyId());
+                if(!quality.isPresent())
+                {
+                    continue; // just skip the faulty data instead of halting the process
+                }
+                if(!party.isPresent())
+                {
+                    continue; // just skip the faulty data instead of halting the process
+                }
+
+                modelMapper.getConfiguration().setAmbiguityIgnored(true);
+                programData = modelMapper.map(e, GetAllProgram.class);
+                programData.setPartyName(party.get().getPartyName());
+                programData.setQualityName(quality.get().getQualityName());
+                programData.setQualityType(quality.get().getQualityType());
+
+                getAllProgramList.add(programData);
+            }
+        }
+        else if(getBy.equals("group")){
+            programList = programDao.findByUserHeadId(id);
+            for (Program e : programList) {
+                GetAllProgram programData;
+                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                Optional<Party> party = partyDao.findById(e.getPartyId());
+                if(!quality.isPresent())
+                {
+                    continue; // just skip the faulty data instead of halting the process
+                }
+                if(!party.isPresent())
+                {
+                    continue; // just skip the faulty data instead of halting the process
+                }
+
+                modelMapper.getConfiguration().setAmbiguityIgnored(true);
+                programData = modelMapper.map(e, GetAllProgram.class);
+                programData.setPartyName(party.get().getPartyName());
+                programData.setQualityName(quality.get().getQualityName());
+                programData.setQualityType(quality.get().getQualityType());
+
+                getAllProgramList.add(programData);
+            }
+        }
+
+
 
         return getAllProgramList;
     }

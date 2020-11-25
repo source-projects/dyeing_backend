@@ -19,5 +19,7 @@ public class getAllUserInfo {
     Long userHeadId;
     String company;
     String designation;
+    Long createdBy;
+    Long updatedBy;
 
 }
