@@ -1,6 +1,7 @@
 package com.main.glory.model.supplier;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,33 +28,34 @@ public class Supplier {
     String supplierName;
     Double discountPercentage;
     Double gstPercentage;
-    Long userId;
     String remark;
-    String createdBy;
+    Long createdBy;
     @ApiModelProperty(hidden = true)
     Date createdDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
     Long paymentTerms;
-    String updatedBy;
+    @JsonIgnore
+    Long updatedBy;
+    Long userHeadId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 
-    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, Long userId, String remark, String createdBy, Date createdDate, Date updatedDate, Long paymentTerms, String updatedBy) {
+    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, String remark, Long createdBy, Date createdDate, Date updatedDate, Long paymentTerms, Long updatedBy, Long userHeadId) {
         this.id = id;
         this.supplierName = supplierName;
         this.discountPercentage = discountPercentage;
         this.gstPercentage = gstPercentage;
-        this.userId = userId;
         this.remark = remark;
         this.createdBy = createdBy;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.paymentTerms = paymentTerms;
         this.updatedBy = updatedBy;
+        this.userHeadId = userHeadId;
     }
 
     @PrePersist

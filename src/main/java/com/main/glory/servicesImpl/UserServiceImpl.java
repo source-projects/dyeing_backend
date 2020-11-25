@@ -117,25 +117,34 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
     //for All user
-    public List<getAllUserInfo> getAllUser() {
-
-
-        List<UserData> userDataList = userDao.findAll();
+    public List<getAllUserInfo> getAllUser(String getBy, Long id) {
+        List<UserData> userDataList = null;
         List<getAllUserInfo> getAllUserInfoList = new ArrayList<>();
-
-        int i=0;
-        for (UserData e : userDataList) {
-//            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
-
-            getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
-            getAllUserInfoList.add(userData);
-
-
-            //getAllUserInfoList.addAll( new getAllUserInfo(e.getId(),e.getUserName(),e.getFirstName(),e.getLastName(),e.getUserHeadId(),e.getCompany(),designation.get().getDesignation()));
+        if(id == null){
+            userDataList = userDao.findAll();
+            int i=0;
+            for (UserData e : userDataList) {
+                getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
+                getAllUserInfoList.add(userData);
+            }
         }
-
+        else if(getBy.equals("own")){
+            userDataList = userDao.findAllByCreatedBy(id);
+            int i=0;
+            for (UserData e : userDataList) {
+                getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
+                getAllUserInfoList.add(userData);
+            }
+        }
+        else if(getBy.equals("group")){
+            userDataList = userDao.findAllByUserHeadId(id);
+            int i=0;
+            for (UserData e : userDataList) {
+                getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
+                getAllUserInfoList.add(userData);
+            }
+        }
         return getAllUserInfoList;
-
     }
 
     public int isAvailable(UserUpdateRequest userData) throws Exception {

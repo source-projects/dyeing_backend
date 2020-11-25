@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
@@ -59,16 +60,46 @@ public class UserController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/user/AllUsers")
-    public GeneralResponse<List<getAllUserInfo>> getAllUser()
-    {
+    @GetMapping("/user/AllUsers/{getBy}/{id}")
+    public GeneralResponse<List<getAllUserInfo>> getAllUser(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id)
+    {   List<getAllUserInfo> users = null;
+        try{
+            switch (getBy) {
+                case "own":
+                    if(userService.getAllHeadUser()!=null) {
+                        users = userService.getAllUser(getBy, id);
+                        if(!users.isEmpty())
+                            return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                        else
+                            return new GeneralResponse<>(null, "User Not Available with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+                    else
+                        return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
-        if(userService.getAllHeadUser()!=null) {
-            return new GeneralResponse<>(userService.getAllUser(), "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-        }
-        else
-        {
-            return new GeneralResponse<>(null, "User Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                case "group":
+                    if(userService.getAllHeadUser()!=null) {
+                        users = userService.getAllUser(getBy, id);
+                        if(!users.isEmpty())
+                            return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                        else
+                            return new GeneralResponse<>(null, "User Not Available with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+                    else
+                        return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                case "all":
+                    if(userService.getAllHeadUser()!=null) {
+                        users = userService.getAllUser(null, null);
+                        return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                    }
+                    else
+                        return new GeneralResponse<>(null, "User Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+                default:
+                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

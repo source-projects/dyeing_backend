@@ -23,6 +23,7 @@ public class UserAddRequest {
     String password;
     String company;
     String department;
+    Long createdBy;
     Long designationId;
     Long userHeadId;
     private UserPermission userPermissionData;

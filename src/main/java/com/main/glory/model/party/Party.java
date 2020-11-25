@@ -46,7 +46,6 @@ public class Party {
     private String paymentTerms;
     private Double percentageDiscount;
     private Double gstPercentage;
-    private Long userId;
     private Long userHeadId;
 
     @ApiModelProperty(hidden = true)
@@ -99,7 +98,6 @@ public class Party {
         this.paymentTerms=addParty.getPaymentTerms();
         this.percentageDiscount=addParty.getPercentageDiscount();
         this.userHeadId=addParty.getUserHeadId();
-        this.userId=addParty.getUserId();
     }
 
 }

@@ -7,19 +7,17 @@ import lombok.*;
 import java.util.Date;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 public class ColorMastDetails extends ColorMast {
 	String SupplierName;
 
-	public ColorMastDetails(Long id, Long supplierId, String billNo, Date billDate, String chlNo, Date chlDate, Double billAmount, Long userId, String remark, Date createdDate, List<ColorData> colorDataList) {
-		super(id, supplierId, billNo, billDate, chlNo, chlDate, billAmount, userId, remark, createdDate, colorDataList);
+	public ColorMastDetails(Long id, Long supplierId, String billNo, Date billDate, String chlNo, Date chlDate, Double billAmount, Long createdBy, Long updatedBy, Long userHeadId, String remark, List<ColorData> colorDataList) {
+		super(id, supplierId, billNo, billDate, chlNo, chlDate, billAmount, createdBy, updatedBy, userHeadId, remark, colorDataList);
 	}
 
 	public ColorMastDetails(ColorMast colorMast) {
-		super(colorMast.getId(), colorMast.getSupplierId(), colorMast.getBillNo(), colorMast.getBillDate(), colorMast.getChlNo(), colorMast.getChlDate(), colorMast.getBillAmount(), colorMast.getUserId(), colorMast.getRemark(), colorMast.getCreatedDate(), colorMast.getColorDataList());
+		super(colorMast.getId(), colorMast.getSupplierId(), colorMast.getBillNo(), colorMast.getBillDate(), colorMast.getChlNo(), colorMast.getChlDate(), colorMast.getBillAmount(), colorMast.getCreatedBy(), colorMast.getUpdatedBy(), colorMast.getUserHeadId(), colorMast.getRemark(), colorMast.getColorDataList());
 	}
 }

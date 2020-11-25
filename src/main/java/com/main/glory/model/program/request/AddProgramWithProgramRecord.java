@@ -20,6 +20,8 @@ public class AddProgramWithProgramRecord {
     private String programGivenBy;
     private String remark;
     private String priority;
+    private Long createdBy;
+    private Long userHeadId;
     List<ProgramRecord> programRecords;
 
 }

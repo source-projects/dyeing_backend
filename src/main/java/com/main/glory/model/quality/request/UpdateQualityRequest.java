@@ -20,7 +20,7 @@ public class UpdateQualityRequest {
     private Long partyId;
     private Double wtPer100m;
     private String remark;
-    private String updatedBy;
+    private Long updatedBy;
     private Date qualityDate;
     private Long userHeadId;
 

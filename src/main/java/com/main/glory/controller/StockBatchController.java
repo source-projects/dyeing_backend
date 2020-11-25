@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
+import com.main.glory.model.party.Party;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,40 @@ public class StockBatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/stockBatch/all")
-    public GeneralResponse<List<GetAllStockWithPartyNameResponse>> getAllStockBatch() throws Exception{
+    @GetMapping("/stockBatch/all/{getBy}/{id}")
+    public GeneralResponse<List<GetAllStockWithPartyNameResponse>> getAllStockBatch(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id) throws Exception{
         try{
-            List<GetAllStockWithPartyNameResponse> stockMast = stockBatchService.getAllStockBatch();
-            if(stockMast == null){
-                return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-            }
-            else{
-                return new GeneralResponse<>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            List<GetAllStockWithPartyNameResponse> stockMast = null;
+            switch (getBy) {
+                case "own":
+                    stockMast = stockBatchService.getAllStockBatch(getBy, id);
+                    if(stockMast == null){
+                        return new GeneralResponse<>(null, "No data found with userId:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+                    else{
+                        return new GeneralResponse<>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    }
+
+                case "group":
+                    stockMast = stockBatchService.getAllStockBatch(getBy, id);
+                    if(stockMast == null){
+                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+                    else{
+                        return new GeneralResponse<>(stockMast, "No data found with userHeadId:"+id, true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    }
+
+                case "all":
+                    stockMast = stockBatchService.getAllStockBatch(null, null);
+                    if(stockMast == null){
+                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    }
+                    else{
+                        return new GeneralResponse<>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    }
+
+                default:
+                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e){
             e.printStackTrace();

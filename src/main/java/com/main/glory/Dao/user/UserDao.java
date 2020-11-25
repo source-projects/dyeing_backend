@@ -19,4 +19,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     List<UserData> findByUserHeadId(Long id);
 
     Optional<UserData> findByUserName(String userName);
+
+    List<UserData>findAllByUserHeadId(Long userHeadId);
+    List<UserData>findAllByCreatedBy(Long createdBy);
 }

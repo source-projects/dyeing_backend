@@ -33,11 +33,8 @@ public class Program {
     @ApiModelProperty(hidden = true)
     private Date updatedDate;
 
-    @ApiModelProperty(hidden = true)
-    private String createdBy;
-
-    @ApiModelProperty(hidden = true)
-    private String updatedBy;
+    private Long createdBy;
+    private Long updatedBy;
 
     private Long userHeadId;
     private String priority;

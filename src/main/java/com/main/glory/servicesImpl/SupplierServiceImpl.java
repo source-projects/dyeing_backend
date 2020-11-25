@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service("SupplierServiceImpl")
@@ -128,13 +129,18 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
-    public Object getAllSupplier() {
-        try{
-            return supplierDao.findAllWithoutRates();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    public List getAllSupplier(String getBy, Long id) {
+        List s = null;
+        if(id == null){
+            s = supplierDao.findAllWithoutRates();
         }
+        else if(getBy.equals("own")){
+            s = supplierDao.findAllWithoutRatesByCreatedBy(id);
+        }
+        else if(getBy.equals("group")){
+            s = supplierDao.findAllWithoutRatesByUserHeadId(id);
+        }
+        return s;
     }
 
 	public Object getAllRates() {

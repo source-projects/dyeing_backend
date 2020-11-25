@@ -38,9 +38,9 @@ public class ShadeData {
 	@ApiModelProperty(hidden = true)
 	Date updatedDate;
 	@ApiModelProperty(hidden = true)
-	String createdBy;
+	Long createdBy;
 	@ApiModelProperty(hidden = true)
-	String updatedBy;
+	Long updatedBy;
 	@Column(nullable = false)
 	Long supplierItemId;
 

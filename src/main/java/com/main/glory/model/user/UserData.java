@@ -31,8 +31,8 @@ public class UserData {
     Long userHeadId;
     Date createdDate;
     Date updatedDate;
-    String createdBy;
-    String updatedBy;
+    Long createdBy;
+    Long updatedBy;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;

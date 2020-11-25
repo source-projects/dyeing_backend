@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProgramServiceInterface {
 
-    public List<GetAllProgram> getAllProgram() throws Exception;
+    public List<GetAllProgram> getAllProgram(String getBy, Long id) throws Exception;
     public Program getProgramById(Long id) throws Exception;
     public boolean deleteProgramById(Long id) throws Exception;
 

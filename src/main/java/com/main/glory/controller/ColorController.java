@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.main.glory.Dao.SupplierDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchMast;
@@ -8,16 +9,22 @@ import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.fabric.FabStockMast;
+import com.main.glory.model.party.Party;
+import com.main.glory.model.supplier.Supplier;
 import com.main.glory.servicesImpl.ColorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class ColorController extends ControllerConfig {
+
+	@Autowired
+	SupplierDao supplierDao;
 
 	@Autowired
 	ColorServiceImpl colorService;
@@ -25,36 +32,57 @@ public class ColorController extends ControllerConfig {
 	@PostMapping("/color")
 	public GeneralResponse<Boolean> addColor(@RequestBody ColorMast colorMast){
 		try {
+			Optional<Supplier> supplier = supplierDao.findById(colorMast.getSupplierId());
+			if(supplier.isEmpty())
+				return new GeneralResponse<Boolean>(null, "No supplier found with id: "+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			colorService.addColor(colorMast);
 			return new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
 			String msg = e.getMessage();
 			String cause = e.getCause().getMessage();
 			if(cause.equals("BR") || msg.contains("null"))
 				return new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			return new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		/*try{
-			colorService.addColor(colorMast);
-			return new GeneralResponse<Boolean>(true, "Color data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-		} catch (Exception e) {
-			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}*/
 	}
 
-	@GetMapping("/color/all")
-	public GeneralResponse<List<ColorMastDetails>> getColor(){
+	@GetMapping("/color/all/{getBy}/{id}")
+	public GeneralResponse<List<ColorMastDetails>> getColor(@PathVariable(value="getBy")String getBy, @PathVariable(value="id")Long id){
 		try{
-			List<ColorMastDetails> obj = colorService.getAll();
-			if(obj != null){
-				System.out.println(obj);
-				return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-			} else {
-				return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			List<ColorMastDetails> obj = null;
+			switch (getBy) {
+				case "own":
+					System.out.println(obj);
+					obj = colorService.getAll(getBy,id);
+					if(!obj.isEmpty()){
+						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+					} else {
+						return new GeneralResponse<>(null, "No data Found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					}
+
+				case "group":
+					obj = colorService.getAll(getBy,id);
+					if(!obj.isEmpty()){
+						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+					} else {
+						return new GeneralResponse<>(null, "No data Found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					}
+
+				case "all":
+					obj = colorService.getAll(null,null);
+					if(!obj.isEmpty()){
+						System.out.println(obj);
+						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+					} else {
+						return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					}
+
+				default:
+					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
+
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(null, e.getMessage(), true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

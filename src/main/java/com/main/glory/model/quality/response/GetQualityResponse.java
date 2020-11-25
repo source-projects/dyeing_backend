@@ -21,8 +21,8 @@ public class GetQualityResponse {
     private Double wtPer100m;
     private String remark;
     private  Date createdDate;
-    private String createdBy;
-    private String updatedBy;
+    private Long createdBy;
+    private Long updatedBy;
     private Date updatedDate;
     private Date qualityDate;
     private Long userHeadId;

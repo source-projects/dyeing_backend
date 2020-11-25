@@ -21,6 +21,8 @@ public class GetAllShade {
     String partyName;
     Long partyId;
     String colorTone;
+    Long userHeadId;
+    Long createdBy;
 
 
 }
