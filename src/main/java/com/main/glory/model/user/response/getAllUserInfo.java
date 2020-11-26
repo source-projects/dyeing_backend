@@ -20,6 +20,5 @@ public class getAllUserInfo {
     String company;
     String designation;
     Long createdBy;
-    Long updatedBy;
 
 }

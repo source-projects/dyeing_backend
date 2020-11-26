@@ -36,7 +36,7 @@ public class Party {
     private String GSTIN;
     private String mailId;
     private Date createdDate;
-    private String createdBy;
+    private Long createdBy;
     private Date updatedDate;
     private String updatedBy;
     private Boolean debtor;
@@ -89,8 +89,8 @@ public class Party {
         this.state=addParty.getState();
         this.GSTIN=addParty.getGSTIN();
         this.mailId=addParty.getMailId();
-        this.createdBy=null;
-        this.updatedBy=null;
+        this.createdBy=addParty.getCreatedBy();
+        this.updatedBy=addParty.getUpdatedBy();
         this.debtor=addParty.getDebtor();
         this.creditor=addParty.getCreditor();
         this.internalTransfer=addParty.getInternalTransfer();

@@ -17,7 +17,6 @@ public class UserUpdateRequest {
     String lastName;
     String email;
     Long contact;
-    String password;
     String company;
     String department;
     Long designationId;

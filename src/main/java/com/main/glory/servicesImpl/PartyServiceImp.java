@@ -23,9 +23,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 	ModelMapper modelMapper;
 
 	public int saveParty(AddParty party) {
-
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
-		
 		if(party!=null)
 		{
 			Party partyData = new Party(party);
