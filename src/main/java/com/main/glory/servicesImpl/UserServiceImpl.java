@@ -7,6 +7,7 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.services.UserServiceInterface;
 
@@ -25,6 +26,9 @@ public class UserServiceImpl implements UserServiceInterface {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    DesignationDao designationDao;
 
     @Autowired
     private DesignationServiceImpl designationService;
@@ -81,30 +85,14 @@ public class UserServiceImpl implements UserServiceInterface {
         List<getAllUserInfo> userHeads = new ArrayList<>();
 
         for (UserData e : adminList) {
-            Optional<Designation> designation = designationService.getDesignationById(e.getDesignationId().getId());
             List<UserData> users = userDao.findByUserHeadId(e.getId());
             for (UserData ex : users) {
                 getAllUserInfo userData = modelMapper.map(ex, getAllUserInfo.class);
                 userHeads.add(userData);
-
             }
-
         }
-
         return userHeads;
     }
-
-  /*  public int isAvailable(User userData) {
-
-        var userData1 = userDao.findById(userData.getId());
-        if(!userData1.isPresent())
-        {
-            return 0;
-        }
-        //userDao.save(userData);
-        return 1;
-
-    }*/
 
     public boolean deleteUserById(Long id) {
         var userIndex= userDao.findById(id);
@@ -156,8 +144,24 @@ public class UserServiceImpl implements UserServiceInterface {
         }
         UserData userData2 =  modelMapper.map(userData, UserData.class);
         Optional<Designation> d = designationService.getDesignationById(userData.getDesignationId());
-        if(d.isPresent())
-            userDao.saveAndFlush(userData2);
+        if(d.isPresent()) {
+            Optional<Designation> designation = designationDao.findById(userData.getDesignationId());
+            if(designation.isPresent())
+                userData1.get().setDesignationId(designation.get());
+            else
+                throw new Exception("Wrong designation id"+userData1.get().getDesignationId());
+            userData1.get().setUserName(userData.getUserName());
+            userData1.get().setFirstName(userData.getFirstName());
+            userData1.get().setLastName(userData.getLastName());
+            userData1.get().setEmail(userData.getEmail());
+            userData1.get().setContact(userData.getContact());
+            userData1.get().setCompany(userData.getCompany());
+            userData1.get().setDepartment(userData.getDepartment());
+            userData1.get().setUserHeadId(userData.getUserHeadId());
+            userData1.get().setUpdatedBy(userData.getUpdatedBy());
+            userData1.get().setUserPermissionData(userData.getUserPermissionData());
+            userDao.save(userData1.get());
+        }
         else
             throw new Exception("Wrong designation id"+userData2.getId());
 
