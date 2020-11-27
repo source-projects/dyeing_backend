@@ -25,5 +25,5 @@ public class ColorBox {
 	Double quantityLeft;
 
 	@Column(nullable = false)
-	Integer quantity;
+	Long quantity;
 }

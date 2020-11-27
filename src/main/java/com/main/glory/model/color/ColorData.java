@@ -27,16 +27,13 @@ public class ColorData {
 	Long itemId;
 
 	@Column(nullable = false)
-	Integer quantity;
-
-	@Column(nullable = false)
 	Double rate;
 
 	@Column(nullable = false)
 	String quantityUnit;
 
 	@Column(nullable = false)
-	Integer quantityPerBox;
+	Long quantityPerBox;
 
 	@Column(nullable = false)
 	Integer noOfBox;
