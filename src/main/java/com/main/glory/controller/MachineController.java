@@ -85,7 +85,7 @@ public class MachineController extends ControllerConfig {
     }
 
     @GetMapping(value="/machine/{id}")
-    public GeneralResponse<MachineMast> getMachineById(@PathVariable(name="id") Long id) throws Exception {
+    public GeneralResponse<GetAllMachine> getMachineById(@PathVariable(name="id") Long id) throws Exception {
 
         boolean flag;
         try {
@@ -94,7 +94,7 @@ public class MachineController extends ControllerConfig {
             {
                 return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-            MachineMast machineMasts = machineService.getMachineById(id);
+            GetAllMachine machineMasts = machineService.getMachineById(id);
             if(machineMasts ==null)
             {
                 return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
