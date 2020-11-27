@@ -51,7 +51,6 @@ public class ColorServiceImpl implements ColorServicesInterface {
 						temp.setControlId(e.getId());
 						temp.setIssued(false);
 						temp.setFinished(false);
-						System.out.println(e.getQuantityPerBox());
 						temp.setQuantity(e.getQuantityPerBox());
 						colorBoxes.add(temp);
 					}
