@@ -36,26 +36,12 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	@Override
 	@Transactional
 	public void addColor(ColorMast colorMast) {
-			List<ColorData> colorData = colorMast.getColorDataList();
-			colorMast.setColorDataList(null);
 			ColorMast colorMast1 = colorMastDao.save(colorMast);
+			colorMast1.getColorDataList().forEach(e->{
+				e.setControlId(colorMast1.getId());
+			});
+			colorDataDao.saveAll(colorMast1.getColorDataList());
 
-
-			List<ColorData> colord = new ArrayList<>();
-			System.out.println(colorData.get(0).getQuantity());
-			for (int i = 0; i < colorData.get(0).getQuantity(); i++) {
-				ColorData tempColorData = new ColorData();
-				tempColorData.setControlId(colorMast1.getId());
-				tempColorData.setNoOfBox(colorData.get(0).getNoOfBox());
-				tempColorData.setQuantity(colorData.get(0).getQuantity());
-				tempColorData.setQuantityPerBox(colorData.get(0).getQuantityPerBox());
-				tempColorData.setQuantityUnit(colorData.get(0).getQuantityUnit());
-				tempColorData.setRate(colorData.get(0).getRate());
-				tempColorData.setItemId(colorData.get(0).getItemId());
-				colord.add(tempColorData);
-				System.out.println(tempColorData.getId());
-			}
-			colorDataDao.saveAll(colord);
 			List<ColorBox> colorBoxes = new ArrayList<>();
 			List<ColorData> cd = colorDataDao.findAllByControlId(colorMast1.getId());
 			if(!cd.isEmpty()){
@@ -65,6 +51,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
 						temp.setControlId(e.getId());
 						temp.setIssued(false);
 						temp.setFinished(false);
+						System.out.println(e.getQuantityPerBox());
 						temp.setQuantity(e.getQuantityPerBox());
 						colorBoxes.add(temp);
 					}
