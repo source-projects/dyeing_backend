@@ -7,13 +7,13 @@ import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
 import com.main.glory.model.machine.MachineMast;
 import com.main.glory.model.machine.MachineRecord;
 import com.main.glory.model.machine.response.GetAllMachine;
-import com.main.glory.model.program.Program;
-import org.aspectj.weaver.patterns.ExactAnnotationFieldTypePattern;
+import com.main.glory.model.machine.response.GetAllMachineRecord;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,20 +86,70 @@ public class MachineServiceImpl {
             GetAllMachine getAllMachine=new GetAllMachine();
             getAllMachine.setId(m.getId());
             getAllMachine.setMachineName(m.getMachineName());
+
+
+            List<GetAllMachineRecord> machineRecordList=new ArrayList<>();
+            int i=0;
+            for(MachineRecord mr : m.getMachineRecords())
+            {
+
+                GetAllMachineRecord gr=new GetAllMachineRecord();
+                gr.setId(mr.getId());
+                gr.setControlId(mr.getControlId());
+                gr.setSpeed(mr.getSpeed());
+                gr.setCreatedDate(mr.getCreatedDate());
+                gr.setUpdatedDate(mr.getUpdatedDate());
+
+                Double mtr = mr.getSpeed()/6;
+                gr.setMtr(mtr);
+
+                machineRecordList.add(gr);
+
+
+            }
+
+
+            getAllMachine.setGetAllMachineRecords(machineRecordList);
+
             getAllMachines.add(getAllMachine);
         }
         return getAllMachines;
     }
 
-    public MachineMast getMachineById(Long id) throws Exception {
+    public GetAllMachine getMachineById(Long id) throws Exception {
 
         Optional<MachineMast> machineMast = machineDao.findById(id);
         if(!machineMast.isPresent())
         {
             throw new Exception("No machine found for id:"+id);
         }
+        GetAllMachine machine = new GetAllMachine();
 
-        return machineMast.get();
+        machine.setId(machineMast.get().getId());
+        machine.setMachineName(machineMast.get().getMachineName());
+
+        List<GetAllMachineRecord> getAllMachineRecordList = new ArrayList<>();
+        for(MachineRecord machineRecord : machineMast.get().getMachineRecords())
+        {
+            GetAllMachineRecord getAllMachineRecord=new GetAllMachineRecord();
+            getAllMachineRecord.setId(machineRecord.getId());
+            getAllMachineRecord.setControlId(machineRecord.getControlId());
+            getAllMachineRecord.setSpeed(machineRecord.getSpeed());
+            getAllMachineRecord.setUpdatedDate(machineRecord.getUpdatedDate());
+            getAllMachineRecord.setCreatedDate(machineRecord.getCreatedDate());
+
+            Double mtr = machineRecord.getSpeed()/6;
+            getAllMachineRecord.setMtr(mtr);
+            getAllMachineRecordList.add(getAllMachineRecord);
+
+        }
+
+
+        machine.setGetAllMachineRecords(getAllMachineRecordList);
+
+
+
+        return machine;
 
     }
 
