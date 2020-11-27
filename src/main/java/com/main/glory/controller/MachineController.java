@@ -45,7 +45,7 @@ public class MachineController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value="/machine/machineName={name}&speed={speed}")
+    @GetMapping(value="/machine")
     public GeneralResponse<Boolean> saveMachineRecord(@RequestParam(name="name") String name,@RequestParam(name="speed") Double speed) throws Exception {
         if(name==null && speed == null)
         {
@@ -85,7 +85,7 @@ public class MachineController extends ControllerConfig {
     }
 
     @GetMapping(value="/machine/{id}")
-    public GeneralResponse<MachineMast> getMachineById(@RequestParam Long id) throws Exception {
+    public GeneralResponse<MachineMast> getMachineById(@PathVariable(name="id") Long id) throws Exception {
 
         boolean flag;
         try {
@@ -108,8 +108,8 @@ public class MachineController extends ControllerConfig {
         }
     }
 
-    @DeleteMapping(value="/machine/{id}")
-    public GeneralResponse<Boolean> deleteMachineById(@RequestParam Long id) throws Exception {
+    @DeleteMapping(value="/machine/")
+    public GeneralResponse<Boolean> deleteMachineById(@PathVariable(name="id") Long id) throws Exception {
 
         boolean flag;
         try {
