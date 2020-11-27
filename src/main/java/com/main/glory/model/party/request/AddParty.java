@@ -26,7 +26,7 @@ public class AddParty {
     private String GSTIN;
     private String mailId;
     private Long createdBy;
-    private String updatedBy;
+    private Long updatedBy;
     private Boolean debtor;
     private Boolean creditor;
     private Boolean internalTransfer;

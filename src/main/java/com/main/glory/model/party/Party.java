@@ -38,7 +38,7 @@ public class Party {
     private Date createdDate;
     private Long createdBy;
     private Date updatedDate;
-    private String updatedBy;
+    private Long updatedBy;
     private Boolean debtor;
     private Boolean creditor;
     private Boolean internalTransfer;
