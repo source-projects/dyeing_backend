@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: V2 Java CI with Maven
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
-          java -jar /home/chetali/server/builds/target/*.jar > /home/ubuntu/builds/target/server-logs.txt 2>&1 &
+          java -jar /home/${{ secrets.GFL_SSH_USER }}/server/builds/target/*.jar > /home/${{ secrets.GFL_SSH_USER }}/server/builds/target/server-logs.txt 2>&1 &
           
           
     - name: slack the message for success
