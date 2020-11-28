@@ -25,7 +25,7 @@ jobs:
         username: ${{ secrets.GFL_SSH_USER }}
         password: ${{ secrets.GFL_SSH_PASSWORD }}
         source: "target/*.jar"
-        target: "builds"
+        target: "/server/builds"
         
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.3
