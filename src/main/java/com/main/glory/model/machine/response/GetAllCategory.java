@@ -1,6 +1,5 @@
-package com.main.glory.model.supplier.requestmodals;
+package com.main.glory.model.machine.response;
 
-import com.main.glory.model.supplier.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateSupplierRequest extends Supplier {
+public class GetAllCategory {
     Long id;
-
+    String name;
 }

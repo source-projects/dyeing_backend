@@ -2,11 +2,14 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
+import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
+import com.main.glory.model.supplier.responce.GetAllSupplierRatesResponse;
 import com.main.glory.services.SupplierServiceInterface;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,8 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Autowired
     EntityManager entityManager;
+    @Autowired
+    ModelMapper modelMapper;
 
 
     @Override
@@ -145,7 +150,12 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
 	public Object getAllRates() {
 	    try{
-	        return supplierRateDao.findAll();
+	        List<GetAllSupplierRate> getAllSupplierRateList=null;
+	        List<GetAllSupplierRatesResponse> supplierRatesResponses=null;
+	        getAllSupplierRateList = supplierRateDao.findWithSupplierName();
+            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            supplierRatesResponses = modelMapper.map(getAllSupplierRateList, List.class);
+	        return supplierRatesResponses;
         } catch (Exception e){
 	        e.printStackTrace();
 	        return false;

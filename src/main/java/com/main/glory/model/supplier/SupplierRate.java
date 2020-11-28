@@ -32,15 +32,16 @@ public class SupplierRate {
 
     @ApiModelProperty(hidden = true)
     Double gstRate;
-    Long userId;
+    Long userHeadId;
 
     @ApiModelProperty(hidden = true)
     Date createdDate;
-    String createdBy;
-    String updatedBy;
+    Long createdBy;
+    Long updatedBy;
 
     @ApiModelProperty(hidden = true)
     Date updatedDate;
+
 
     @PrePersist
     protected void onCreate() {
@@ -50,6 +51,21 @@ public class SupplierRate {
     @PreUpdate
     protected void onUpdate() {
         this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
+    public SupplierRate(SupplierRate other) {
+        this.id = other.id;
+        this.supplierId = other.supplierId;
+        this.itemName = other.itemName;
+        this.itemType = other.itemType;
+        this.rate = other.rate;
+        this.discountedRate = other.discountedRate;
+        this.gstRate = other.gstRate;
+        this.userHeadId = other.userHeadId;
+        this.createdDate = other.createdDate;
+        this.createdBy = other.createdBy;
+        this.updatedBy = other.updatedBy;
+        this.updatedDate = other.updatedDate;
     }
 }
 

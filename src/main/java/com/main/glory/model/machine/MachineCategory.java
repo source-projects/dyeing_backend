@@ -1,40 +1,28 @@
 package com.main.glory.model.machine;
 
-import com.main.glory.model.program.ProgramRecord;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
-public class MachineMast {
+public class MachineCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    String machineName;
-    @ApiModelProperty(hidden = true)
-    Date createdDate;
-    Long controlId;
-
-
+    String name;
     @ApiModelProperty(hidden = true)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
-    private List<MachineRecord> machineRecords;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdDate = new Date(System.currentTimeMillis());
-    }
+    private List<MachineMast> machineMast;
 
 
 }
