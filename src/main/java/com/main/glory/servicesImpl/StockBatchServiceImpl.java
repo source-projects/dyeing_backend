@@ -3,6 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.quality.Quality;
@@ -123,5 +124,15 @@ public class StockBatchServiceImpl {
 
     public List<StockMast> findByQualityId(Long id) {
         return stockMastDao.findByQualityId(id);
+    }
+
+    public List<BatchData> getBatchById(String batchId) throws Exception{
+        Optional<List<BatchData>> batchData = batchDao.findByBatchId(batchId);
+        if(!batchData.isPresent())
+            throw new Exception("Batch is not available for id:"+batchId);
+
+
+        return  batchData.get();
+
     }
 }
