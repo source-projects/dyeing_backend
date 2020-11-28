@@ -3,7 +3,10 @@ package com.main.glory.controller;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
+import com.main.glory.model.machine.MachineCategory;
 import com.main.glory.model.machine.MachineMast;
+import com.main.glory.model.machine.category.AddCategory;
+import com.main.glory.model.machine.response.GetAllCategory;
 import com.main.glory.model.machine.response.GetAllMachine;
 import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.servicesImpl.MachineServiceImpl;
@@ -45,6 +48,26 @@ public class MachineController extends ControllerConfig {
         }
     }
 
+    @PostMapping(value="/machine/addCategory")
+    public GeneralResponse<Boolean> saveMachineCategory(@RequestBody AddCategory machine) throws Exception {
+        if(machine==null)
+        {
+            return new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            machineService.saveMachineCategory(machine);
+            return new GeneralResponse<Boolean>(null, "Machine Category added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(value="/machine")
     public GeneralResponse<Boolean> saveMachineRecord(@RequestParam(name="name") String name,@RequestParam(name="speed") Double speed) throws Exception {
         if(name==null && speed == null)
@@ -64,6 +87,38 @@ public class MachineController extends ControllerConfig {
             return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping(value="/machine/allCategory")
+    public GeneralResponse<List<GetAllCategory>> getAllMachineCategory() throws Exception {
+
+        boolean flag;
+        try {
+
+            var x = machineService.getAllCategory();
+            return new GeneralResponse<>(x, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value="/machine/getMachine/ByCategory")
+    public GeneralResponse<List<GetAllMachine>> getAllMachineByCategory(@RequestParam(name="id") Long id) throws Exception {
+
+        boolean flag;
+        try {
+
+            var x = machineService.getAllMachineByCategory(id);
+            return new GeneralResponse<>(x, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(value="/machine/all")
     public GeneralResponse<List<GetAllMachine>> getAllMachine() throws Exception {
 

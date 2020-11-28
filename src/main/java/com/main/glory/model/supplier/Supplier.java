@@ -35,7 +35,6 @@ public class Supplier {
     @ApiModelProperty(hidden = true)
     Date updatedDate;
     Long paymentTerms;
-    @JsonIgnore
     Long updatedBy;
     Long userHeadId;
 

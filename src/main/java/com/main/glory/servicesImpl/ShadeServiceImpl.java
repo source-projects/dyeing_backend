@@ -90,6 +90,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	@Override
 	public Optional<ShadeMast> getShadeMastById(Long id) {
 		Optional<ShadeMast> shadeMastList = shadeMastDao.findById(id);
+
 		if(shadeMastList.isPresent())
 			return shadeMastList;
 		else{

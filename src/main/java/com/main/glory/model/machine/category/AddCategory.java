@@ -1,5 +1,4 @@
-package com.main.glory.model.machine.AddMachineInfo;
-
+package com.main.glory.model.machine.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,9 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddMachineInfo {
-
-    String machineName;
-    Long controlId;
-
+public class AddCategory {
+    String name;
 }

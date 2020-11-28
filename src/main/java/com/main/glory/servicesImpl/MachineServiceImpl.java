@@ -1,11 +1,15 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.machine.MachineCategoryDao;
 import com.main.glory.Dao.machine.MachineDao;
 import com.main.glory.Dao.machine.MachineRecordDao;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
+import com.main.glory.model.machine.MachineCategory;
 import com.main.glory.model.machine.MachineMast;
 import com.main.glory.model.machine.MachineRecord;
+import com.main.glory.model.machine.category.AddCategory;
+import com.main.glory.model.machine.response.GetAllCategory;
 import com.main.glory.model.machine.response.GetAllMachine;
 import com.main.glory.model.machine.response.GetAllMachineRecord;
 import org.modelmapper.ModelMapper;
@@ -22,6 +26,9 @@ public class MachineServiceImpl {
 
     @Autowired
     private MachineDao machineDao;
+
+    @Autowired
+    private MachineCategoryDao machineCategoryDao;
 
     @Autowired
     private MachineRecordDao machineRecordDao;
@@ -44,6 +51,10 @@ public class MachineServiceImpl {
             {
                 throw new Exception("Machine Data is already Exits for machine name:"+machine.getMachineName());
             }
+
+            Optional<MachineCategory> machineCategory = machineCategoryDao.findById(machine.getControlId());
+            if(!machineCategory.isPresent())
+                throw new Exception("Not such category is available with id:"+machine.getControlId());
 
             machineDao.save(machineMast);
 
@@ -162,5 +173,71 @@ public class MachineServiceImpl {
         }
         machineDao.deleteById(machineMast.get().getId());
         return true;
+    }
+
+    public void saveMachineCategory(AddCategory machine) throws Exception{
+
+        MachineCategory machineCategory=new MachineCategory();
+        machineCategory.setName(machine.getName());
+        machineCategoryDao.save(machineCategory);
+    }
+
+    public List<GetAllCategory> getAllCategory() {
+
+        List<GetAllCategory> getAllCategoryList = new ArrayList<>();
+        List<MachineCategory> machineCategories =  machineCategoryDao.findAll();
+        for(MachineCategory m:machineCategories)
+        {
+            GetAllCategory category=new GetAllCategory();
+            category.setId(m.getId());
+            category.setName(m.getName());
+
+            getAllCategoryList.add(category);
+
+        }
+        return getAllCategoryList;
+
+    }
+
+    public List<GetAllMachine> getAllMachineByCategory(Long id) throws Exception{
+
+        Optional<MachineCategory> machineCategory = machineCategoryDao.findById(id);
+        if(!machineCategory.isPresent())
+            throw new Exception("category not found with id:"+id);
+
+        List<GetAllMachine> getAllMachineList = new ArrayList<>();
+        List<MachineMast> machineMast = machineDao.findByControlId(id);
+        for(MachineMast mm:machineMast)
+        {
+            GetAllMachine machine=new GetAllMachine();
+            machine.setId(mm.getId());
+            machine.setMachineName(mm.getMachineName());
+
+            List<GetAllMachineRecord> machineRecordList=new ArrayList<>();
+            int i=0;
+            for(MachineRecord mr : mm.getMachineRecords())
+            {
+
+                GetAllMachineRecord gr=new GetAllMachineRecord();
+                gr.setId(mr.getId());
+                gr.setControlId(mr.getControlId());
+                gr.setSpeed(mr.getSpeed());
+                gr.setCreatedDate(mr.getCreatedDate());
+                gr.setUpdatedDate(mr.getUpdatedDate());
+
+                Double mtr = mr.getSpeed()/6;
+                gr.setMtr(mtr);
+
+                machineRecordList.add(gr);
+
+
+            }
+            machine.setGetAllMachineRecords(machineRecordList);
+            getAllMachineList.add(machine);
+
+        }
+        return getAllMachineList;
+
+
     }
 }
