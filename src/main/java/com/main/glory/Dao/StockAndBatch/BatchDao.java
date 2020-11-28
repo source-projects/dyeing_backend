@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
@@ -16,5 +17,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.wt) as WT, SUM(p.mtr) as MTR, p.batchId as batchId) from BatchData p where p.controlId =:id AND isProductionPlanned = false    GROUP BY p.batchId ")
     List<GetAllBatchResponse> findAllQTYControlId(@Param("id") Long id);
+
+    Optional<List<BatchData>> findByBatchId(String batchId);
 }
 

@@ -102,6 +102,25 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
+    @GetMapping("/stockBatch/batch/{batchId}")
+    public GeneralResponse<List<BatchData>> getBatchById(@PathVariable(value = "batchId") String batchId){
+        try{
+            if(batchId!=null){
+                List<BatchData> batchData = stockBatchService.getBatchById(batchId);
+
+                    return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
     @PutMapping("/stockBatch")
     public GeneralResponse<Boolean> updateStockBatch(@RequestBody StockMast stockMast) {
         try {
