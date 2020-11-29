@@ -50,9 +50,9 @@ public class UserController extends ControllerConfig {
     @GetMapping("/userHead")
     public GeneralResponse<List<getAllUserInfo>> getAllHead()
     {
-
-        if(userService.getAllHeadUser()!=null) {
-            return new GeneralResponse<>(userService.getAllHeadUser(), "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        var data = userService.getAllHeadUser();
+        if(data!=null) {
+            return new GeneralResponse<>(data, "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         else
         {
