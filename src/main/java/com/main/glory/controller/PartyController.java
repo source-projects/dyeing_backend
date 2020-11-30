@@ -45,21 +45,21 @@ public class PartyController  extends ControllerConfig {
 				case "own":
 					var x = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x.isEmpty())
-						return new GeneralResponse<List<Party>>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						return new GeneralResponse<List<Party>>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
-						return new GeneralResponse<List<Party>>(x, "No party added yet with userId: " + id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<List<Party>>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				case "group":
 					var x1 = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x1.isEmpty())
-						return new GeneralResponse<List<Party>>(x1, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						return new GeneralResponse<List<Party>>(x1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
-						return new GeneralResponse<List<Party>>(x1, "No party added yet with userHeadId: " + id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<List<Party>>(x1, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				case "all":
 					var x2 = partyServiceImp.getAllPartyDetails(null, null);
 					if (!x2.isEmpty())
-						return new GeneralResponse<List<Party>>(x2, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						return new GeneralResponse<List<Party>>(x2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
 						return new GeneralResponse<List<Party>>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 

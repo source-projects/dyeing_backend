@@ -52,7 +52,7 @@ public class QualityProcessController extends ControllerConfig {
 						});
 						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
 					}else
-						return new GeneralResponse<>(null, "No data found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				case "group":
 					qualityProcessMasts = qualityProcess.qualityProcessMasts(getBy, id);
@@ -62,7 +62,7 @@ public class QualityProcessController extends ControllerConfig {
 						});
 						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
 					}else
-						return new GeneralResponse<>(null, "No data found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				case "all":
 					qualityProcessMasts = qualityProcess.qualityProcessMasts(null, null);

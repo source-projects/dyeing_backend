@@ -49,19 +49,19 @@ public class StockBatchController extends ControllerConfig {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
                     if(stockMast == null){
-                        return new GeneralResponse<>(null, "No data found with userId:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else{
-                        return new GeneralResponse<>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     }
 
                 case "group":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
                     if(stockMast == null){
-                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else{
-                        return new GeneralResponse<>(stockMast, "No data found with userHeadId:"+id, true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     }
 
                 case "all":
@@ -70,7 +70,7 @@ public class StockBatchController extends ControllerConfig {
                         return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else{
-                        return new GeneralResponse<>(stockMast, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     }
 
                 default:

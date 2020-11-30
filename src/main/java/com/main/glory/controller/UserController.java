@@ -40,7 +40,7 @@ public class UserController extends ControllerConfig {
             var userObj=userService.getUserById(id);
             if(userObj!=null)
             {
-                return new GeneralResponse<UserData>(userObj, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                return new GeneralResponse<UserData>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             }
             return new GeneralResponse<UserData>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
@@ -71,7 +71,7 @@ public class UserController extends ControllerConfig {
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
-                            return new GeneralResponse<>(null, "User Not Available with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else
                         return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
@@ -82,7 +82,7 @@ public class UserController extends ControllerConfig {
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
-                            return new GeneralResponse<>(null, "User Not Available with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else
                         return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
@@ -90,7 +90,10 @@ public class UserController extends ControllerConfig {
                 case "all":
                     if(userService.getAllHeadUser()!=null) {
                         users = userService.getAllUser(null, null);
-                        return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                        if(!users.isEmpty())
+                            return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                        else
+                            return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else
                         return new GeneralResponse<>(null, "User Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);

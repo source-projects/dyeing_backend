@@ -57,7 +57,7 @@ public class ColorController extends ControllerConfig {
 					if(!obj.isEmpty()){
 						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					} else {
-						return new GeneralResponse<>(null, "No data Found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
 				case "group":
@@ -65,13 +65,12 @@ public class ColorController extends ControllerConfig {
 					if(!obj.isEmpty()){
 						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					} else {
-						return new GeneralResponse<>(null, "No data Found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
 				case "all":
 					obj = colorService.getAll(null,null);
 					if(!obj.isEmpty()){
-						System.out.println(obj);
 						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					} else {
 						return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
