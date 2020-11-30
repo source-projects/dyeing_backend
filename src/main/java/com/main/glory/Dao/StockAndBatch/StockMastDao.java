@@ -23,4 +23,6 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByUserHeadId(Long userHeadId);
 
  List<StockMast> findByQualityId(Long qualityId);
+
+ Optional<List<StockMast>> findByQualityIdAndPartyId(Long qualityId,Long partyId);
 }

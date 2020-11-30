@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithId;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.servicesImpl.BatchImpl;
@@ -109,6 +110,23 @@ public class StockBatchController extends ControllerConfig {
                 List<BatchData> batchData = stockBatchService.getBatchById(batchId);
 
                     return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+    @GetMapping("/stockBatch/batch/ByQualityAndParty/{qualityId}/{partyId}")
+    public GeneralResponse<List<GetAllBatchWithId>> getBatchById(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId){
+        try{
+            if(qualityId!=null && partyId !=null){
+                List<GetAllBatchWithId> batchData = stockBatchService.getBatchByPartyAndQuality(qualityId,partyId);
+
+                return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
             }
             else{

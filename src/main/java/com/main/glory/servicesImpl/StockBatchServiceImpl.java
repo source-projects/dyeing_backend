@@ -5,16 +5,14 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithId;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
@@ -134,5 +132,42 @@ public class StockBatchServiceImpl {
 
         return  batchData.get();
 
+    }
+
+    public List<GetAllBatchWithId> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
+
+        Optional<List<StockMast>> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        if(!stockMast.isPresent())
+        {
+            throw new Exception("No such batch is available for partyId:"+partyId+" and QualityId:"+qualityId);
+        }
+
+        List<GetAllBatchWithId> getAllBatchWithIdList=new ArrayList<>();
+
+        for(StockMast stock:stockMast.get())
+        {
+            if(stock == null )
+                continue;
+
+            GetAllBatchWithId getAllBatchWithId = new GetAllBatchWithId();
+
+            List<BatchData> batch = batchDao.findByControlId(stock.getId());
+            for(BatchData batchData : batch)
+            {
+                if(batchData ==null)
+                    continue;
+
+                getAllBatchWithId.setId(batchData.getId());
+                getAllBatchWithId.setBatchId(batchData.getBatchId());
+
+                if(!getAllBatchWithIdList.contains(getAllBatchWithId)) {
+                    getAllBatchWithIdList.add(getAllBatchWithId);
+                }
+
+
+            }
+
+        }
+        return getAllBatchWithIdList;
     }
 }
