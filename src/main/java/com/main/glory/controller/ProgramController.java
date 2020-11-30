@@ -47,24 +47,24 @@ public class ProgramController extends ControllerConfig {
             switch (getBy) {
                 case "own":
                     var data = programServiceImpl.getAllProgram(getBy, id);
-                    if (data != null)
-                        return new GeneralResponse<>(data, "Data found:", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    if (!data.isEmpty())
+                        return new GeneralResponse<>(data, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(null, "Data not found with userId:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "group":
                     var data1 = programServiceImpl.getAllProgram(getBy, id);
-                    if (data1 != null)
-                        return new GeneralResponse<>(data1, "Data found:", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    if (!data1.isEmpty())
+                        return new GeneralResponse<>(data1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(null, "Data not found with userHeadId:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "all":
                     var data2 = programServiceImpl.getAllProgram(null, null);
-                    if (data2 != null)
-                        return new GeneralResponse<>(data2, "Data found:", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                    if (!data2.isEmpty())
+                        return new GeneralResponse<>(data2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 default:
                     return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

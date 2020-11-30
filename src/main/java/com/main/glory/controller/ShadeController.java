@@ -48,24 +48,24 @@ public class ShadeController extends ControllerConfig {
 				case "own":
 					shadeMast = shadeService.getAllShadesInfo(getBy, id);
 					if(!shadeMast.isEmpty())
-						return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						return new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
-						return new GeneralResponse<>(null, "No data found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				case "group":
 					shadeMast = shadeService.getAllShadesInfo(getBy, id);
 					if(!shadeMast.isEmpty())
-						return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						return new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
-						return new GeneralResponse<>(null, "No data found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				case "all":
 					shadeMast = shadeService.getAllShadesInfo(null, null);
 					System.out.println(shadeMast);
 					if(!shadeMast.isEmpty())
-						return new GeneralResponse<List<GetAllShade>>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						return new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
-						return new GeneralResponse<>(null, "No shade data found yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No shade data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 				default:
 					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

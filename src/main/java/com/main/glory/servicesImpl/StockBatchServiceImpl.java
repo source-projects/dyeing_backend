@@ -79,7 +79,7 @@ public class StockBatchServiceImpl {
         else if(getBy.equals("group")){
             data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
         }
-        if(data.get().isEmpty()) return null;
+        if(data.isEmpty()) return null;
         else return data.get();
     }
 

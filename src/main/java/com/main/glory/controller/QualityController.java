@@ -56,21 +56,21 @@ public class QualityController extends ControllerConfig {
                 case "own":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(x, "No quality added yet with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "group":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(x, "No quality added yet with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "all":
                     x = qualityServiceImp.getAllQuality(null, null);
                     if(!x.isEmpty())
-                        return new GeneralResponse<>(x, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
                         return new GeneralResponse<>(x, "No quality added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 

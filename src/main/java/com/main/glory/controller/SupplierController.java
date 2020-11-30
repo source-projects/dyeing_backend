@@ -109,7 +109,7 @@ public class SupplierController extends ControllerConfig {
                     if(!obj.isEmpty()){
                         return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     } else
-                        return new GeneralResponse<>(null, "No data found with userId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "group":
                     List obj1 = supplierService.getAllSupplier(getBy, id);
@@ -117,7 +117,7 @@ public class SupplierController extends ControllerConfig {
                     if(!obj1.isEmpty()){
                         return new GeneralResponse<>(obj1, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     } else {
-                        return new GeneralResponse<>(null, "No data found with userHeadId: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
 
                 case "all":
