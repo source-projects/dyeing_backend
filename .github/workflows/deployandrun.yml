@@ -16,8 +16,11 @@ jobs:
       with:
         java-version: 1.14
     - name: Build with Maven
-      run: mvn clean install
-      
+      run: |
+        mvn clean install
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline started"}' https://hooks.slack.com/services/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
+
+              
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       with:
