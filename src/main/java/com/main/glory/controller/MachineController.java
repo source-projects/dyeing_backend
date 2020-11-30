@@ -8,6 +8,7 @@ import com.main.glory.model.machine.MachineMast;
 import com.main.glory.model.machine.category.AddCategory;
 import com.main.glory.model.machine.response.GetAllCategory;
 import com.main.glory.model.machine.response.GetAllMachine;
+import com.main.glory.model.machine.response.GetMachineByIdWithFilter;
 import com.main.glory.model.program.request.AddProgramWithProgramRecord;
 import com.main.glory.servicesImpl.MachineServiceImpl;
 import org.modelmapper.ModelMapper;
@@ -150,6 +151,30 @@ public class MachineController extends ControllerConfig {
                 return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             GetAllMachine machineMasts = machineService.getMachineById(id);
+            if(machineMasts ==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            return new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value="/machineWithFilter")
+    public GeneralResponse<GetAllMachine> getMachineByIdWithFilter(@RequestBody GetMachineByIdWithFilter getMachine) throws Exception {
+
+        boolean flag;
+        try {
+
+            if(getMachine==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            GetAllMachine machineMasts = machineService.getMachineByIdWithFilter(getMachine);
             if(machineMasts ==null)
             {
                 return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);

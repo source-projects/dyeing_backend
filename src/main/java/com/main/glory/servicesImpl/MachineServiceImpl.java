@@ -12,14 +12,14 @@ import com.main.glory.model.machine.category.AddCategory;
 import com.main.glory.model.machine.response.GetAllCategory;
 import com.main.glory.model.machine.response.GetAllMachine;
 import com.main.glory.model.machine.response.GetAllMachineRecord;
+import com.main.glory.model.machine.response.GetMachineByIdWithFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("machineServiceImpl")
 public class MachineServiceImpl {
@@ -238,6 +238,90 @@ public class MachineServiceImpl {
         }
         return getAllMachineList;
 
+
+    }
+
+    public GetAllMachine getMachineByIdWithFilter(GetMachineByIdWithFilter getMachine) throws Exception{
+
+        SimpleDateFormat formatter ;
+
+        Date d1=null;
+        Date d1Time=null;
+        Date d2Time=null;
+        Date d2=null;
+
+        GetAllMachine getAllMachine;
+        Optional<MachineMast> machineMast = machineDao.findById(getMachine.getId());
+
+        if(!machineMast.isPresent())
+            throw new Exception("Not data found for id:"+getMachine.getId());
+
+
+        if(getMachine.getFromDate()!=null && getMachine.getToDate()!=null)
+        {
+            getAllMachine = new GetAllMachine();
+            getAllMachine.setId(machineMast.get().getId());
+            getAllMachine.setMachineName(machineMast.get().getMachineName());
+
+            List<GetAllMachineRecord> getAllMachineRecordList = new ArrayList<>();
+
+            for(MachineRecord machineRecord : machineMast.get().getMachineRecords())
+            {
+                GetAllMachineRecord getAllMachineRecord=new GetAllMachineRecord(machineRecord);
+
+                //given fromDate
+                formatter =  new SimpleDateFormat("yyyy-MM-dd");
+                d1=formatter.parse(getMachine.getFromDate());
+
+                //given to date
+                d2=formatter.parse(getMachine.getToDate());
+
+                //machine record date
+                Date date = formatter.parse(getAllMachineRecord.getCreatedDate().toString());
+                //compare
+                if(!date.before(d1) && !date.after(d2))
+                {
+                    getAllMachineRecordList.add(getAllMachineRecord);
+
+                }
+                System.out.println("Date to check:"+date);
+                System.out.println("++"+d1);
+                System.out.println("++"+d2);
+
+            }
+            getAllMachine.setGetAllMachineRecords(getAllMachineRecordList);
+
+            return getAllMachine;
+        }
+        /*else if(getMachine.getToTime()!=null && getMachine.getToTime()!=null)
+        {
+            if(getMachine.getFromDate()!=null && getMachine.getToDate()!=null)
+            {
+                getAllMachine = new GetAllMachine();
+                getAllMachine.setId(machineMast.get().getId());
+                getAllMachine.setMachineName(machineMast.get().getMachineName());
+
+                List<GetAllMachineRecord> getAllMachineRecordList = new ArrayList<>();
+
+                for(MachineRecord machineRecord : machineMast.get().getMachineRecords())
+                {
+                    GetAllMachineRecord getAllMachineRecord=new GetAllMachineRecord(machineRecord);
+                    formatter=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    formatter.setTimeZone(TimeZone.getTimeZone("UTC+3"));
+                    System.out.println("Date to check 1 :"+formatter.format(machineRecord.getCreatedDate()));
+
+
+
+                }
+                getAllMachine.setGetAllMachineRecords(getAllMachineRecordList);
+
+                return getAllMachine;
+            }
+
+        }*/
+
+
+        return null;
 
     }
 }
