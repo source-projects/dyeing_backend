@@ -48,6 +48,12 @@ public class StockBatchServiceImpl {
             }
             else
             {
+                Optional<List<BatchData>> batchData = batchDao.findByBatchId(stockMast.getBatchData().get(0).getBatchId());
+                if(batchData.isPresent())
+                {
+                    throw new Exception("Batch already available with id:"+stockMast.getBatchData().get(0).getBatchId());
+                }
+
                 StockMast x = stockMastDao.save(stockMast);
                 x.getBatchData().forEach(e -> {
                     e.setControlId(x.getId());
