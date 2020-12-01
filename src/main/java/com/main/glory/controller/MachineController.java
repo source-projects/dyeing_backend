@@ -184,6 +184,7 @@ public class MachineController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
