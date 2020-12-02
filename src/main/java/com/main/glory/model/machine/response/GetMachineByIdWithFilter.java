@@ -14,5 +14,5 @@ public class GetMachineByIdWithFilter {
     String fromDate;
     String toTime;
     String fromTime;
-    String shift;
+    Long shift;
 }
