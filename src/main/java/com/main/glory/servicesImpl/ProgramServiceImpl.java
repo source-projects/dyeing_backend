@@ -325,10 +325,10 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         {
             double qty=0;
 
-            List<BatchData> batchDataList =  batchDao.findByControlId(stockMast.getId());
+            Optional<List<BatchData>> batchDataList =  batchDao.findByControlId(stockMast.getId());
 
 
-            for(BatchData batchData:batchDataList)
+            for(BatchData batchData:batchDataList.get())
             {
                 qty+=batchData.getWt();
             }
