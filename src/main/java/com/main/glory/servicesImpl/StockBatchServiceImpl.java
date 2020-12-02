@@ -6,9 +6,8 @@ import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithId;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
-import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,51 +128,60 @@ public class StockBatchServiceImpl {
         return stockMastDao.findByQualityId(id);
     }
 
-    public List<BatchData> getBatchById(String batchId) throws Exception{
-        Optional<List<BatchData>> batchData = batchDao.findByBatchId(batchId);
-        if(!batchData.isPresent())
-            throw new Exception("Batch is not available for id:"+batchId);
+    public List<BatchData> getBatchById(String batchId,Long controlId) throws Exception{
 
+        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId,batchId);
 
-        return  batchData.get();
+        if(batchData==null)
+            throw new Exception("Batch is not available for batchId:"+batchId);
+
+        return  batchData;
 
     }
 
-    public List<GetAllBatchWithId> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
+    public List<GetAllBatch> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
 
-        Optional<List<StockMast>> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
-        if(!stockMast.isPresent())
+        List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        if(stockMast==null)
         {
             throw new Exception("No such batch is available for partyId:"+partyId+" and QualityId:"+qualityId);
         }
 
-        List<GetAllBatchWithId> getAllBatchWithIdList=new ArrayList<>();
+        List<GetAllBatch> getAllBatchList =new ArrayList<>();
+        List<String> batchName =new ArrayList<>();
 
-        for(StockMast stock:stockMast.get())
+        GetAllBatch getAllBatch;
+        for(StockMast stock:stockMast)
         {
             if(stock == null )
                 continue;
 
-            GetAllBatchWithId getAllBatchWithId = new GetAllBatchWithId();
+            List<BatchData> batch = batchDao.findByControlId(stock.getId());
 
-            Optional<List<BatchData>> batch = batchDao.findByControlId(stock.getId());
-            for(BatchData batchData : batch.get())
+
+            for(BatchData batchData : batch)
             {
+
                 if(batchData ==null)
                     continue;
 
-                getAllBatchWithId.setId(batchData.getId());
-                getAllBatchWithId.setBatchId(batchData.getBatchId());
-
-                if(!getAllBatchWithIdList.contains(getAllBatchWithId)) {
-                    getAllBatchWithIdList.add(getAllBatchWithId);
+                //Take another arraylist because it is not working with Object arrayList
+                if(!batchName.contains(batchData.getBatchId()))
+                {
+                    batchName.add(batchData.getBatchId());
                 }
-
-
             }
 
         }
-        return getAllBatchWithIdList;
+
+        //storing all the data of batchName to object
+        for(int x=0;x<batchName.size();x++)
+        {
+            getAllBatch=new GetAllBatch();
+            getAllBatch.setBatchId(batchName.get(x));
+            getAllBatchList.add(getAllBatch);
+        }
+        return getAllBatchList;
     }
 
     public void updateBatchForMerge(List<MergeBatch> batchData1) throws Exception{

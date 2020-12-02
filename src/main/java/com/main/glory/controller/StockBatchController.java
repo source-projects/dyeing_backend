@@ -6,9 +6,8 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithId;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
-import com.main.glory.model.party.Party;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,11 +103,11 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
-    @GetMapping("/stockBatch/batch/{batchId}")
-    public GeneralResponse<List<BatchData>> getBatchById(@PathVariable(value = "batchId") String batchId){
+    @GetMapping("/stockBatch/batch/{controlId}/{batchId}")
+    public GeneralResponse<List<BatchData>> getBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") Long controlId){
         try{
             if(batchId!=null){
-                List<BatchData> batchData = stockBatchService.getBatchById(batchId);
+                List<BatchData> batchData = stockBatchService.getBatchById(batchId,controlId);
 
                     return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -122,10 +121,10 @@ public class StockBatchController extends ControllerConfig {
 
     }
     @GetMapping("/stockBatch/batch/ByQualityAndParty/{qualityId}/{partyId}")
-    public GeneralResponse<List<GetAllBatchWithId>> getBatchById(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId){
+    public GeneralResponse<List<GetAllBatch>> getBatchById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
         try{
             if(qualityId!=null && partyId !=null){
-                List<GetAllBatchWithId> batchData = stockBatchService.getBatchByPartyAndQuality(qualityId,partyId);
+                List<GetAllBatch> batchData = stockBatchService.getBatchByPartyAndQuality(qualityId,partyId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 

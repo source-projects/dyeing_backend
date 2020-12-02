@@ -8,8 +8,8 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
-public class GetAllBatchWithId {
-    Long id;
+public class GetAllBatch {
+
     String batchId;
 
 }
