@@ -184,6 +184,7 @@ public class StockBatchServiceImpl {
             for (BatchData batchData : batchData1.get(i).getBatchDataList()) {
                 if(batchData.getIsProductionPlanned()==true)
                     throw new Exception("Production is planned already so Batch can't be updated for id:"+batchData.getId());
+
                 batchData.setBatchId(batchData1.get(i).getBatchId());
                 batchData.setControlId(batchData1.get(i).getControlId());
                 batchDao.save(batchData);
