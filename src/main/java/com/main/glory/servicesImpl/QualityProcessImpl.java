@@ -1,16 +1,21 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.SupplierDao;
+import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessDataDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
-import com.main.glory.Dao.qualityProcess.QualityTypeDataDao;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.request.UpdateQualityRequest;
+import com.main.glory.model.qualityProcess.Chemical;
 import com.main.glory.model.qualityProcess.QualityProcessData;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
-import com.main.glory.model.qualityProcess.QualityTypeData;
+import com.main.glory.model.qualityProcess.request.UpdateRequestQualityProcess;
+import com.main.glory.model.supplier.Supplier;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,22 +26,50 @@ public class QualityProcessImpl {
 	QualityProcessMastDao qualityProcessMastDao;
 
 	@Autowired
+	ModelMapper modelMapper;
+
+	@Autowired
+	SupplierDao supplierDao;
+
+	@Autowired
 	QualityProcessDataDao qualityProcessDataDao;
 
 	@Autowired
-	QualityTypeDataDao qualityTypeDataDao;
+	ChemicalDao chemicalDao;
 
 	@Transactional
-	public void saveQualityProcess(QualityProcessMast qualityProcessMast){
+	public void saveQualityProcess(QualityProcessMast qualityProcessMast) throws Exception{
 		QualityProcessMast m = qualityProcessMastDao.save(qualityProcessMast);
-		qualityProcessMast.getQualityProcessData().forEach(e -> {
+		for (QualityProcessData e : m.getSteps()) {
 			e.setControlId(m.getId());
-			QualityProcessData d = qualityProcessDataDao.save(e);
-			e.getQualityTypeData().forEach(ee -> {
-				ee.setControlId(d.getId());
-				qualityTypeDataDao.save(ee);
-			});
-		});
+			if (e.getIsDosingControl()) {
+				Optional<Chemical> c = chemicalDao.findById(e.getDosingChemical().getId());
+				if (!c.isPresent()) {
+					chemicalDao.deleteById(e.getDosingChemical().getId());
+					qualityProcessDataDao.deleteById(e.getId());
+					qualityProcessMastDao.deleteById(m.getId());
+					throw new Exception("Null chemical data passed");
+				}
+				if (e.getDosingChemical().getSupplierId() == null) {
+					chemicalDao.deleteById(e.getDosingChemical().getId());
+					qualityProcessDataDao.deleteById(e.getId());
+					qualityProcessMastDao.deleteById(m.getId());
+					throw new Exception("Null supplier id passed");
+				} else {
+					Optional<Supplier> s = supplierDao.findById(e.getDosingChemical().getSupplierId());
+					if (s.isPresent())
+						e.getDosingChemical().setQualityProcessControlId(e.getId());
+					else{
+						chemicalDao.deleteById(e.getDosingChemical().getId());
+						qualityProcessDataDao.deleteById(e.getId());
+						qualityProcessMastDao.deleteById(m.getId());
+						throw new Exception("No supplier found with id:" + e.getDosingChemical().getSupplierId());
+					}
+
+				}
+			}
+		}
+		qualityProcessDataDao.saveAll(qualityProcessMast.getSteps());
 	}
 
 	@Transactional
@@ -62,29 +95,31 @@ public class QualityProcessImpl {
 
 		List<QualityProcessData> qualityProcessData = qualityProcessDataDao.findByControlId(qualityProcessMast.get().getId());
 
-		qualityProcessData.forEach(e -> {
-			List<QualityTypeData> qualityTypeData = qualityTypeDataDao.findByControlId(e.getId());
-			e.setQualityTypeData(qualityTypeData);
-		});
-
-		qualityProcessMast.get().setQualityProcessData(qualityProcessData);
+		qualityProcessMast.get().setSteps(qualityProcessData);
 
 		return qualityProcessMast.get();
 	}
 
 	@Transactional
-	public void update(QualityProcessMast qualityProcessMast) throws Exception {
-		Optional<QualityProcessMast> qualityProcessMast1 = qualityProcessMastDao.findById(qualityProcessMast.getId());
-		if(!qualityProcessMast1.isPresent()){
-			throw new Exception("No such process data with id:"+ qualityProcessMast1.get());
-		} else {
-			qualityProcessMastDao.save(qualityProcessMast);
-			qualityProcessDataDao.saveAll(qualityProcessMast.getQualityProcessData());
-			qualityProcessMast.getQualityProcessData().forEach(e -> {
-				qualityTypeDataDao.saveAll(e.getQualityTypeData());
-			});
+	public void update(UpdateRequestQualityProcess qualityProcessMast) throws Exception {
+		Optional<QualityProcessMast> q = qualityProcessMastDao.findById(qualityProcessMast.getId());
+		if(!q.isPresent()){
+			throw new Exception("No process data found with id: "+qualityProcessMast.getId());
+		}
+		for(QualityProcessData e: q.get().getSteps()){
+			if(e.getIsDosingControl()){
+				Optional<Supplier> s = supplierDao.findById(e.getDosingChemical().getSupplierId());
+				if(!s.isPresent())
+					throw new Exception("No supplier found with id: "+e.getDosingChemical().getSupplierId());
+			}
+		}
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		QualityProcessMast qualityProcess = modelMapper.map(qualityProcessMast, QualityProcessMast.class);
+		qualityProcessMastDao.save(qualityProcess);
+		}
+
+		public Boolean deleteQualityProcess(Long id){
+			qualityProcessMastDao.deleteById(id);
+			return true;
 		}
 	}
-
-
-}

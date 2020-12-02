@@ -1,8 +1,11 @@
 package com.main.glory.controller;
 
+import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
+import com.main.glory.model.qualityProcess.request.UpdateRequestQualityProcess;
 import com.main.glory.model.qualityProcess.response.ListResponse;
 import com.main.glory.servicesImpl.QualityProcessImpl;
 import org.modelmapper.ModelMapper;
@@ -13,6 +16,7 @@ import com.main.glory.config.ControllerConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -20,6 +24,9 @@ public class QualityProcessController extends ControllerConfig {
 
 	@Autowired
 	QualityProcessImpl qualityProcess;
+
+	@Autowired
+	QualityProcessMastDao qualityProcessDao;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -30,7 +37,6 @@ public class QualityProcessController extends ControllerConfig {
 			if(qualityProcessMast == null){
 				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
-
 			qualityProcess.saveQualityProcess(qualityProcessMast);
 			return new GeneralResponse<>(true, "Process Added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		}catch (Exception e){
@@ -94,15 +100,31 @@ public class QualityProcessController extends ControllerConfig {
 	}
 
 	@PutMapping("/qualityprocess")
-	public GeneralResponse<Boolean> updateQualityProcess(@RequestBody QualityProcessMast qualityProcessMast){
+	public GeneralResponse<Boolean> updateQualityProcess(@RequestBody UpdateRequestQualityProcess qualityProcessMast){
 		try{
 			if(qualityProcessMast == null){
 				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
+			Optional<QualityProcessMast> q = qualityProcessDao.findById(qualityProcessMast.getId());
+			if(!q.isPresent())
+				return new GeneralResponse<>(false, "No process found with id: "+qualityProcessMast.getId(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			qualityProcess.update(qualityProcessMast);
 			return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@DeleteMapping("qualityProcess/{id}")
+	public GeneralResponse<Boolean> deleteQualityProcessById(@PathVariable("id") Long id){
+		try{
+			Optional<QualityProcessMast> q = qualityProcessDao.findById(id);
+			if(!q.isPresent())
+				return new GeneralResponse<>(false, "No process found with id: "+id, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			qualityProcess.deleteQualityProcess(id);
+			return new GeneralResponse<>(true, "Process deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		}catch(Exception e){
+			return  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
