@@ -13,8 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 
 public class GetSupplierWithRateAndItem {
-    Long id;
-    String name;
 
     List<RateAndItem> rateAndItemList;
 }

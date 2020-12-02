@@ -171,14 +171,10 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         return data.get().getSupplierName();
     }
 
-    public GetSupplierWithRateAndItem getSupplierItemAndRate(Long id) {
+    public List<RateAndItem> getSupplierItemAndRate(Long id) {
         Optional<Supplier> supplier = supplierDao.findById(id);
-        GetSupplierWithRateAndItem getSupplierWithRateAndItem = new GetSupplierWithRateAndItem();
         if(supplier.isPresent())
         {
-            getSupplierWithRateAndItem.setId(supplier.get().getId());
-            getSupplierWithRateAndItem.setName(supplier.get().getSupplierName());
-
             List<RateAndItem> rateAndItemList =new ArrayList<>();
 
             List<SupplierRate> supplierRateList = supplierRateDao.findBySupplierId(id);
@@ -187,8 +183,8 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
                 RateAndItem rateAndItem = new RateAndItem(supplierRate);
                 rateAndItemList.add(rateAndItem);
             }
-            getSupplierWithRateAndItem.setRateAndItemList(rateAndItemList);
-            return getSupplierWithRateAndItem;
+
+            return rateAndItemList;
         }
         return null;
 
