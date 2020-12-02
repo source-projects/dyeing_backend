@@ -37,12 +37,12 @@ public class BasicController extends ControllerConfig {
     @Autowired
     private BasicServiceImpl basicService;
 
-    @GetMapping("/party/ByQuality")
-    public GeneralResponse<List<QualityParty>> ByQuality(){
+    @GetMapping("/party/ByQuality/{id}")
+    public GeneralResponse<QualityParty> ByQuality(@PathVariable(value = "id") Long id){
         try{
 
            // String quality="sndkjabn";
-            List<QualityParty> qualityParties = qualityServiceImp.getAllQualityWithParty();
+            QualityParty qualityParties = qualityServiceImp.getAllQualityWithParty(id);
             if(qualityParties != null){
                 return new GeneralResponse<>(qualityParties, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             }else{

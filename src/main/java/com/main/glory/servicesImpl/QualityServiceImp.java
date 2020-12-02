@@ -120,25 +120,20 @@ public class QualityServiceImp implements QualityServiceInterface{
 	}
 
 
-	public List<QualityParty> getAllQualityWithParty() {
+	public QualityParty getAllQualityWithParty(Long id) throws Exception {
 
-		List<QualityWithPartyName> qualityLists=qualityDao.findAllWithPartyName();
-		List<QualityParty> qualityParties = new ArrayList<>();
+		Optional<Quality> qualityLists=qualityDao.findById(id);
 
-		for(QualityWithPartyName quality : qualityLists)
-		{
-			QualityParty qualityParty=new QualityParty();
 
-			qualityParty.setQualityEntryId(quality.getId());
-			qualityParty.setQualityId(quality.getQualityId());
-			qualityParty.setQualityName(quality.getQualityName());
-			qualityParty.setQualityType(quality.getQualityType());
-			qualityParty.setPartyId(quality.getPartyId());
+		if(!qualityLists.isPresent())
+			throw new Exception("No quality found");
 
-			qualityParty.setPartyName(quality.getPartyName());
 
-			qualityParties.add(qualityParty);
-		}
+		QualityParty qualityParties = new QualityParty(qualityLists.get());
+
+		Optional<Party> party=partyDao.findById(qualityLists.get().getPartyId());
+
+		qualityParties.setPartyName(party.get().getPartyName());
 
 
 		return qualityParties;

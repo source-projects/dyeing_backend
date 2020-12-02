@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.MergeBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithId;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.party.Party;
@@ -143,6 +144,16 @@ public class StockBatchController extends ControllerConfig {
     public GeneralResponse<Boolean> updateStockBatch(@RequestBody StockMast stockMast) {
         try {
             stockBatchService.updateBatch(stockMast);
+            return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PutMapping("/stockBatch/MergeBatch")
+    public GeneralResponse<Boolean> updateBatchMerge(@RequestBody List<MergeBatch> batchData1) {
+        try {
+            stockBatchService.updateBatchForMerge(batchData1);
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

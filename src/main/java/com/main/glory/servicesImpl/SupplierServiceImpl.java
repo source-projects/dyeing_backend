@@ -3,11 +3,14 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.model.supplier.GetAllSupplierRate;
+import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.GetAllSupplierRatesResponse;
+import com.main.glory.model.supplier.responce.GetSupplierWithRateAndItem;
+import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.services.SupplierServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -165,5 +169,24 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public String getSupplierName(Long id) {
         Optional<Supplier> data = supplierDao.findById(id);
         return data.get().getSupplierName();
+    }
+
+    public List<RateAndItem> getSupplierItemAndRate(Long id) {
+        Optional<Supplier> supplier = supplierDao.findById(id);
+        if(supplier.isPresent())
+        {
+            List<RateAndItem> rateAndItemList =new ArrayList<>();
+
+            List<SupplierRate> supplierRateList = supplierRateDao.findBySupplierId(id);
+            for(SupplierRate supplierRate : supplierRateList)
+            {
+                RateAndItem rateAndItem = new RateAndItem(supplierRate);
+                rateAndItemList.add(rateAndItem);
+            }
+
+            return rateAndItemList;
+        }
+        return null;
+
     }
 }

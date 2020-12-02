@@ -7,6 +7,8 @@ import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
+import com.main.glory.model.supplier.responce.GetSupplierWithRateAndItem;
+import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,16 +69,17 @@ public class SupplierController extends ControllerConfig {
             return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/supplier/name/{id}")
-    public GeneralResponse<String> getSupplierName(@PathVariable("id") Long id){
+
+    @GetMapping("/supplier/GetItemWithRateBy/{id}")
+    public GeneralResponse<List<RateAndItem>> getSupplierItemWithRateById(@PathVariable("id") Long id){
         try{
             if(id == null){
                 return new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
 
-          String name =  supplierService.getSupplierName(id);
-            if(name != null){
-                return new GeneralResponse<>(name, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            List<RateAndItem> item =  supplierService.getSupplierItemAndRate(id);
+            if(item != null){
+                return new GeneralResponse<>(item, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
                 return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
