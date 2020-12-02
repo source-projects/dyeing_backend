@@ -165,6 +165,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 				qualityData.setQualityId(quality.getQualityId());
 				qualityData.setQualityName(quality.getQualityName());
 				qualityData.setQualityType(quality.getQualityType());
+				qualityData.setUnit(quality.getUnit());
 				qualityDataList.add(qualityData);
 
 
