@@ -1,6 +1,7 @@
 package com.main.glory.Dao;
 
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +15,8 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
-    @Query("select new com.main.glory.model.supplier.Supplier(s.id, s.supplierName, s.discountPercentage, s.gstPercentage, s.remark, s.createdBy, s.createdDate, s.updatedDate, s.paymentTerms, s.updatedBy, s.userHeadId) from Supplier s")
-    List<Supplier> findAllWithoutRates();
+    @Query("select new com.main.glory.model.supplier.responce.GetAllSupplierWithName(s.id, s.supplierName) from Supplier s")
+    List<GetAllSupplierWithName> findAllWithoutRates();
 
     @Query("select new com.main.glory.model.supplier.Supplier(s.id, s.supplierName, s.discountPercentage, s.gstPercentage, s.remark, s.createdBy, s.createdDate, s.updatedDate, s.paymentTerms, s.updatedBy, s.userHeadId) from Supplier s where s.userHeadId = :userHeadId")
     List<Supplier> findAllWithoutRatesByUserHeadId(Long userHeadId);
