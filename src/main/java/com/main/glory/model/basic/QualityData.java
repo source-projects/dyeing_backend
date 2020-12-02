@@ -16,4 +16,5 @@ public class QualityData {
     String qualityId;
     String qualityName;
     String qualityType;
+    String unit;
 }
