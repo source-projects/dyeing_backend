@@ -106,20 +106,12 @@ public class QualityProcessImpl {
 		if(!q.isPresent()){
 			throw new Exception("No process data found with id: "+qualityProcessMast.getId());
 		}
-		int i = 0;
 		for(QualityProcessData e: q.get().getSteps()){
-			qualityProcessMast.getSteps().get(i).setId(e.getId());
-			qualityProcessMast.getSteps().get(i).setControlId(qualityProcessMast.getId());
 			if(e.getIsDosingControl()){
 				Optional<Supplier> s = supplierDao.findById(e.getDosingChemical().getSupplierId());
 				if(!s.isPresent())
 					throw new Exception("No supplier found with id: "+e.getDosingChemical().getSupplierId());
-				else{
-					qualityProcessMast.getSteps().get(i).getDosingChemical().setId(e.getDosingChemical().getId());
-					qualityProcessMast.getSteps().get(i).getDosingChemical().setQualityProcessControlId(e.getId());
-				}
 			}
-			i++;
 		}
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		QualityProcessMast qualityProcess = modelMapper.map(qualityProcessMast, QualityProcessMast.class);
