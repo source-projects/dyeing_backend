@@ -5,6 +5,7 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.MergeBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithId;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.quality.Quality;
@@ -175,5 +176,23 @@ public class StockBatchServiceImpl {
 
         }
         return getAllBatchWithIdList;
+    }
+
+    public void updateBatchForMerge(List<MergeBatch> batchData1) throws Exception{
+        int k=0,i=0,n=batchData1.size();
+
+        while(i<n) {
+            k=0;
+            for (BatchData batchData : batchData1.get(i).getBatchDataList()) {
+                if(batchData.getIsProductionPlanned()==true)
+                    throw new Exception("Production is planned so Batch can't be updated for id:"+batchData.getId());
+                batchData.setBatchId(batchData1.get(i).getBatchId());
+                batchData.setControlId(batchData1.get(i).getControlId());
+                batchDao.save(batchData);
+                k++;
+            }
+            i++;
+        }
+
     }
 }

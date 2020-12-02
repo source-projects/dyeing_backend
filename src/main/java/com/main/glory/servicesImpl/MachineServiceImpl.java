@@ -267,10 +267,10 @@ public class MachineServiceImpl {
 
 
         //Ready for date filter
-        if(getMachine.getFromDate()!=null && getMachine.getToDate()!=null)
+        if(getMachine.getFromDate()!="" && getMachine.getToDate()!="")
         {
-            if(getMachine.getToTime()!=null && getMachine.getToTime()!=null) {
-                if (getMachine.getFromDate() != "" && getMachine.getToDate() != "") {
+            if(getMachine.getToTime()!="" && getMachine.getToTime()!="") {
+
                     getAllMachine = new GetAllMachine();
                     getAllMachine.setId(machineMast.get().getId());
                     getAllMachine.setMachineName(machineMast.get().getMachineName());
@@ -303,9 +303,9 @@ public class MachineServiceImpl {
 
                             System.out.println(localTime + "-" + fromTime + "-" + toTime);
                             int value = localTime.compareTo(fromTime);
-                            if (value >= 0) {
+                            if (value > 0) {
                                 value = localTime.compareTo(toTime);
-                                if (value <= 0) {
+                                if (value < 0) {
                                     getAllMachineRecordList.add(getAllMachineRecord);
                                 }
                             }
@@ -320,7 +320,7 @@ public class MachineServiceImpl {
                     getAllMachine.setGetAllMachineRecords(getAllMachineRecordList);
 
                     return getAllMachine;
-                }
+
             }
             else{
 
@@ -346,7 +346,7 @@ public class MachineServiceImpl {
                 //compare
                 if(!date.before(d1) && !date.after(d2))
                 {
-                   if(getMachine.getShift()=="1")
+                   if(getMachine.getShift()==1)
                     {
                         date = formatter.parse(machineRecord.getCreatedDate().toString());//formatter.parse(getMachine.getFromDate());
                         date.setHours(date.getHours() - 11);
@@ -367,7 +367,7 @@ public class MachineServiceImpl {
 
 
                     }
-                    else if(getMachine.getShift()=="2")
+                    else if(getMachine.getShift()==2)
                     {
                         date = formatter.parse(machineRecord.getCreatedDate().toString());
                         date2= formatter.parse(machineRecord.getCreatedDate().toString());
@@ -392,9 +392,6 @@ public class MachineServiceImpl {
                             }
                         }
 
-
-
-
                     }
                     else {
                         getAllMachineRecordList.add(getAllMachineRecord);
@@ -416,7 +413,7 @@ public class MachineServiceImpl {
 
         }
 
-        if(getMachine.getToTime()!=null && getMachine.getToTime()!=null) {
+        if(getMachine.getFromTime()!="" && getMachine.getToTime()!="") {
             if (getMachine.getFromDate() != ""  && getMachine.getToDate() != "") {
                 getAllMachine = new GetAllMachine();
                 getAllMachine.setId(machineMast.get().getId());
@@ -479,30 +476,34 @@ public class MachineServiceImpl {
                 for (MachineRecord machineRecord : machineMast.get().getMachineRecords()) {
                     GetAllMachineRecord getAllMachineRecord = new GetAllMachineRecord(machineRecord);
 
+                    formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    d1 = new java.sql.Date(System.currentTimeMillis());
 
-                        formatter = new SimpleDateFormat("yyyy-MM-dd ");
+                    //given to date
+                    d2 = new java.sql.Date(System.currentTimeMillis());
 
-                        Date date = new java.sql.Date(System.currentTimeMillis());
-                        //date.setHours(date.getHours() - 11);
+                    Date date = formatter.parse(getAllMachineRecord.getCreatedDate().toString());
+                    //compare
+                    if (!date.before(d1) && !date.after(d2)) {
 
-
-                    //LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalTime();
+                        //LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalTime();
                         LocalTime localTime = LocalTime.parse(getMachine.getFromTime());
                         LocalTime fromTime = LocalTime.parse(getMachine.getFromTime());
                         LocalTime toTime = LocalTime.parse(getMachine.getToTime());
 
                         System.out.println(localTime + "-" + fromTime + "-" + toTime);
                         int value = localTime.compareTo(fromTime);
-                        if ((value > 0) | (value==0)) {
+                        if ((value > 0) | (value == 0)) {
                             value = localTime.compareTo(toTime);
-                            if ((value < 0) | (value==0)) {
+                            if ((value < 0) | (value == 0)) {
                                 getAllMachineRecordList.add(getAllMachineRecord);
                             }
                         }
+                    }
 
 
                   //  }
-                    System.out.println("Date to check:" + date);
+                    System.out.println("Date to check12:" + date);
 
 
                 }
