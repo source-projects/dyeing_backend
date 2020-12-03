@@ -35,7 +35,7 @@ public class StockBatchServiceImpl {
         Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
-        Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId().getId());
+        Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
         try {
             if (!quality.isPresent()) {
                 throw new Exception("Insert Quality first");
@@ -43,7 +43,7 @@ public class StockBatchServiceImpl {
             else
             {
                 StockMast x = stockMastDao.save(stockMast);
-                x.getBatch().forEach(e -> {
+                x.getBatchData().forEach(e -> {
                     e.setControlId(x.getId());
                 });
                 return true;
