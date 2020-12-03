@@ -78,13 +78,20 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 	@Override
 	public boolean updateQuality(UpdateQualityRequest qualityDto) throws Exception {
-		modelMapper.getConfiguration().setAmbiguityIgnored(true);
-		Quality quality = modelMapper.map(qualityDto, Quality.class);
-		var partyIndex = qualityDao.findById(qualityDto.getId());
-		if(!partyIndex.isPresent())
+		var qualityData = qualityDao.findById(qualityDto.getId());
+		if(!qualityData.isPresent())
 			return false;
 		else {
-			qualityDao.save(quality);
+			qualityData.get().setPartyId(qualityDto.getPartyId());
+			qualityData.get().setQualityId(qualityDto.getQualityId());
+			qualityData.get().setQualityName(qualityDto.getQualityName());
+			qualityData.get().setQualityType(qualityDto.getQualityType());
+			qualityData.get().setUnit(qualityDto.getUnit());
+			qualityData.get().setWtPer100m(qualityDto.getWtPer100m());
+			qualityData.get().setRemark(qualityDto.getRemark());
+			qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
+			qualityData.get().setQualityDate(qualityDto.getQualityDate());
+			qualityDao.save(qualityData.get());
 			return true;
 		}
 	}

@@ -1,10 +1,10 @@
 package com.main.glory.model.qualityProcess;
 
+import com.main.glory.model.user.UserPermission;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -13,30 +13,56 @@ import java.util.List;
 @ToString
 @Entity
 @Table
+@NoArgsConstructor
 public class QualityProcessData {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@ApiModelProperty(hidden = true)
-	Long id;
-	Long controlId;
-	String processType;
-	Double temperature;
-	Long holdTime;
-	Long plcProgramNo;
-	Double rateTemperature;
-	@ApiModelProperty(hidden = true)
-	Date createdDate;
-	@ApiModelProperty(hidden = true)
-	Date updatedDate;
-	Long createdBy;
-	Long updatedBy;
 
-	@Transient
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(referencedColumnName = "id", name = "controlId")
-	List<QualityTypeData> qualityTypeData;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @ApiModelProperty(hidden = true)
+    Long id;
+    @ApiModelProperty(hidden = true)
+    Long controlId;
+    String stepName;
+    Long stepPosotion;
+    String functionName;
+    String functionValue;
+    Long functionPosotion;
 
-	public QualityProcessData() {
-		this.createdDate = new Date(System.currentTimeMillis());
-	}
+    //WaterControlFunction..
+    Boolean isWaterControl;
+    String waterType;
+    String drainType;
+    String fabricRatio;
+    Boolean jetLevel;
+
+    //PumpControlFunction..
+    Boolean isPumpControl;
+    Long pumpSpeed;
+
+    //TempControlFunction..
+    Boolean isTempControl;
+    String setValue;
+    String rateOfRise;
+    String holdTime;
+    String pressure;
+
+    //DoasingControlFunction..
+    Boolean isDosingControl;
+    Boolean haveDose;
+    String doseAtTemp;
+    String fillType;
+    String dosingPercentage;
+    String doseWhileHeating;
+    String doseType;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "qualityProcessControlId", referencedColumnName = "id")
+    private Chemical dosingChemical;
+
+    //OperatorMessageFunction..
+    Boolean isOperatorMessage;
+    String operatorCode;
+    String operatorMessage;
+    String startAtTemp;
+
+
 }

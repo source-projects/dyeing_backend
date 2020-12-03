@@ -19,9 +19,8 @@ public class QualityProcessMast {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@ApiModelProperty(hidden = true)
 	Long id;
-	String name;
-	Long noOfDyeingBath;
-	Double DCMultiplyingFactor;
+	String processName;
+	Long time;
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
@@ -29,10 +28,10 @@ public class QualityProcessMast {
 	Long createdBy;
 	Long updatedBy;
 	Long userHeadId;
-	@Transient
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id", name = "controlId")
-	List<QualityProcessData> qualityProcessData;
+	List<QualityProcessData> steps;
 
 	@PrePersist
 	protected void onCreate() {
