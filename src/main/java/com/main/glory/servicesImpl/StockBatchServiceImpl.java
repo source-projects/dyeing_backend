@@ -149,6 +149,7 @@ public class StockBatchServiceImpl {
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
         List<String> batchName =new ArrayList<>();
+        List<Long> controlId =new ArrayList<>();
 
         GetAllBatch getAllBatch;
         for(StockMast stock:stockMast)
@@ -169,6 +170,7 @@ public class StockBatchServiceImpl {
                 if(!batchName.contains(batchData.getBatchId()))
                 {
                     batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
                 }
             }
 
@@ -179,6 +181,8 @@ public class StockBatchServiceImpl {
         {
             getAllBatch=new GetAllBatch();
             getAllBatch.setBatchId(batchName.get(x));
+
+            getAllBatch.setControlId(controlId.get(x));
             getAllBatchList.add(getAllBatch);
         }
         return getAllBatchList;

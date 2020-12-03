@@ -10,6 +10,7 @@ import lombok.*;
 @ToString
 public class GetAllBatch {
 
+    Long controlId;
     String batchId;
 
 }

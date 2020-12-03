@@ -9,6 +9,7 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.GetAllSupplierRatesResponse;
+import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
 import com.main.glory.model.supplier.responce.GetSupplierWithRateAndItem;
 import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.services.SupplierServiceInterface;
@@ -188,5 +189,11 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         }
         return null;
 
+    }
+
+    public List<GetAllSupplierWithName> getAllSupplierName() {
+        List<GetAllSupplierWithName> s = supplierDao.findAllName();
+
+       return s;
     }
 }
