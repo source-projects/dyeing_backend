@@ -23,5 +23,4 @@ public class UpdateQualityRequest {
     private Long updatedBy;
     private Date qualityDate;
     private Long userHeadId;
-
 }
