@@ -8,6 +8,7 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
+import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,13 +51,32 @@ public class StockBatchServiceImpl {
             }
             else
             {
-                Optional<List<BatchData>> batchData = batchDao.findByBatchId(stockMast.getBatchData().get(0).getBatchId());
+                List<StockMast> stock = stockMastDao.findByQualityIdAndPartyId(stockMast.getQualityId(),stockMast.getPartyId());
+                if(!stock.isEmpty()) {
 
-                StockMast x = stockMastDao.save(stockMast);
-                x.getBatchData().forEach(e -> {
-                    e.setControlId(x.getId());
-                });
-                return true;
+                    Optional<List<BatchData>> batchData = batchDao.findByBatchId(stockMast.getBatchData().get(0).getBatchId());
+
+                    StockMast x = stockMastDao.save(stockMast);
+                    x.getBatchData().forEach(e -> {
+                        e.setControlId(x.getId());
+                    });
+                    return true;
+                }
+                else {
+                    List<BatchData> batchData = batchDao.findByControlId(stock.get(0).getId());
+
+                    int i=0;
+                    for(BatchData batch : stock.get(i).getBatchData())
+                    {
+                        batch.setControlId(stock.get(i).getId());
+                        batchDao.save(batch);
+                        //batchData.add(batch);
+                        i++;
+                    }
+                    return true;
+
+
+                }
 
             }
         }

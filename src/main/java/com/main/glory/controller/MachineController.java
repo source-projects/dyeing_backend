@@ -177,7 +177,7 @@ public class MachineController extends ControllerConfig {
             GetAllMachine machineMasts = machineService.getMachineByIdWithFilter(getMachine);
             if(machineMasts ==null)
             {
-                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "Machine Data not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             return new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
