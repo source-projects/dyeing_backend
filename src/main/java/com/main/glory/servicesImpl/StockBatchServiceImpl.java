@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
@@ -9,6 +10,7 @@ import com.main.glory.model.StockDataBatchData.request.MergeBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +29,13 @@ public class StockBatchServiceImpl {
 
     @Autowired
     BatchDao batchDao;
+    @Autowired
+    PartyDao partyDao;
 
 
     public List<StockMast> getAllStockBatch(Long qualityId) {
 
-        List<StockMast> stock=stockMastDao.findByQualityId(qualityId);
+        List<StockMast> stock = stockMastDao.findByQualityId(qualityId);
         System.out.println(stock);
         return stock;
 
@@ -39,47 +43,30 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public Boolean saveStockBatch(StockMast stockMast) throws Exception{
+    public Boolean saveStockBatch(StockMast stockMast) throws Exception {
         Date dt = new Date(System.currentTimeMillis());
-        stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
-        Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
+        Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
 
+        Optional<Party> party=partyDao.findById(stockMast.getPartyId());
         try {
             if (!quality.isPresent()) {
                 throw new Exception("Insert Quality first");
             }
-            else
-            {
-                StockMast stock = stockMastDao.findByQualityIdAndPartyId(stockMast.getQualityId(),stockMast.getPartyId());
-                if(stock==null) {
+            if(!party.isPresent())
+                throw new Exception("Insert party first");
 
-                    StockMast x = stockMastDao.save(stockMast);
-                    return true;
-                }
-                else {
+            StockMast x = stockMastDao.save(stockMast);
 
-                    for(BatchData batch : stockMast.getBatchData())
-                    {
-                        batch.setControlId(stock.getId());
-                        batchDao.saveAndFlush(batch);
-                        //batchData.add(batch);
-
-                    }
-                    return true;
-
-
-                }
-
-            }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+        return null;
 
     }
+
+
 
     @Transactional
     public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id){
@@ -155,7 +142,7 @@ public class StockBatchServiceImpl {
 
     public List<GetAllBatch> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
 
-        StockMast stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
         if(stockMast==null)
         {
             throw new Exception("No such batch is available for partyId:"+partyId+" and QualityId:"+qualityId);
@@ -167,9 +154,9 @@ public class StockBatchServiceImpl {
 
         GetAllBatch getAllBatch;
 
-
-            List<BatchData> batch = batchDao.findByControlId(stockMast.getId());
-
+        for(StockMast stockMast1:stockMast)
+        {
+            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
 
             for(BatchData batchData : batch)
             {
@@ -182,10 +169,19 @@ public class StockBatchServiceImpl {
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
+
                 }
+                else if(!controlId.contains(batchData.getControlId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+
+                }
+
             }
 
 
+        }
 
         //storing all the data of batchName to object
         for(int x=0;x<batchName.size();x++)
