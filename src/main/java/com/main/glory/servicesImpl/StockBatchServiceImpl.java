@@ -53,16 +53,22 @@ public class StockBatchServiceImpl {
             if (!quality.isPresent()) {
                 throw new Exception("Insert Quality first");
             }
-            if(!party.isPresent())
+            if (!party.isPresent())
                 throw new Exception("Insert party first");
 
             StockMast x = stockMastDao.save(stockMast);
+            x.getBatchData().forEach(e -> {
+                e.setControlId(x.getId());
+            });
 
-        } catch (Exception e) {
+            return true;
+        }
+
+         catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return null;
+
 
     }
 
