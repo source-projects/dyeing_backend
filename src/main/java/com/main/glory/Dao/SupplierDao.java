@@ -27,4 +27,6 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     Optional<Supplier> findById(Long id);
 
+    @Query("select new com.main.glory.model.supplier.responce.GetAllSupplierWithName(s.id, s.supplierName) from Supplier s")
+    List<GetAllSupplierWithName> findAllName();
 }

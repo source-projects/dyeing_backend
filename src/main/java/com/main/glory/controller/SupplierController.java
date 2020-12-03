@@ -7,6 +7,7 @@ import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
+import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
 import com.main.glory.model.supplier.responce.GetSupplierWithRateAndItem;
 import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
@@ -134,6 +135,18 @@ public class SupplierController extends ControllerConfig {
                 default:
                     return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
+        } catch (Exception e) {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/supplier/all")
+    public GeneralResponse<List<GetAllSupplierWithName>> getAllSupplierName(){
+        try{
+
+            List<GetAllSupplierWithName> object =supplierService.getAllSupplierName();
+
+            return new GeneralResponse<>(object, "Data found", true, System.currentTimeMillis(), HttpStatus.OK);
+
         } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
