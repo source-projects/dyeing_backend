@@ -51,27 +51,20 @@ public class StockBatchServiceImpl {
             }
             else
             {
-                List<StockMast> stock = stockMastDao.findByQualityIdAndPartyId(stockMast.getQualityId(),stockMast.getPartyId());
-                if(!stock.isEmpty()) {
-
-                    Optional<List<BatchData>> batchData = batchDao.findByBatchId(stockMast.getBatchData().get(0).getBatchId());
+                StockMast stock = stockMastDao.findByQualityIdAndPartyId(stockMast.getQualityId(),stockMast.getPartyId());
+                if(stock==null) {
 
                     StockMast x = stockMastDao.save(stockMast);
-                    x.getBatchData().forEach(e -> {
-                        e.setControlId(x.getId());
-                    });
                     return true;
                 }
                 else {
-                    List<BatchData> batchData = batchDao.findByControlId(stock.get(0).getId());
 
-                    int i=0;
-                    for(BatchData batch : stock.get(i).getBatchData())
+                    for(BatchData batch : stockMast.getBatchData())
                     {
-                        batch.setControlId(stock.get(i).getId());
-                        batchDao.save(batch);
+                        batch.setControlId(stock.getId());
+                        batchDao.saveAndFlush(batch);
                         //batchData.add(batch);
-                        i++;
+
                     }
                     return true;
 
@@ -82,6 +75,7 @@ public class StockBatchServiceImpl {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return false;
         }
 
@@ -161,7 +155,7 @@ public class StockBatchServiceImpl {
 
     public List<GetAllBatch> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
 
-        List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        StockMast stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
         if(stockMast==null)
         {
             throw new Exception("No such batch is available for partyId:"+partyId+" and QualityId:"+qualityId);
@@ -172,12 +166,9 @@ public class StockBatchServiceImpl {
         List<Long> controlId =new ArrayList<>();
 
         GetAllBatch getAllBatch;
-        for(StockMast stock:stockMast)
-        {
-            if(stock == null )
-                continue;
 
-            List<BatchData> batch = batchDao.findByControlId(stock.getId());
+
+            List<BatchData> batch = batchDao.findByControlId(stockMast.getId());
 
 
             for(BatchData batchData : batch)
@@ -194,7 +185,7 @@ public class StockBatchServiceImpl {
                 }
             }
 
-        }
+
 
         //storing all the data of batchName to object
         for(int x=0;x<batchName.size();x++)
