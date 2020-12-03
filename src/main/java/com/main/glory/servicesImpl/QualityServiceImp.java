@@ -7,10 +7,12 @@ import java.util.Optional;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
+import com.main.glory.model.machine.response.GetAllMachine;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
+import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,4 +196,14 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 	}
 
+    public List<GetAllQualtiy> getAllQualityData() {
+		List<Quality> qualities = qualityDao.findAll();
+		List<GetAllQualtiy> getAllQualtiyList =new ArrayList<>();
+		for(Quality quality:qualities)
+		{
+			GetAllQualtiy getAllQualtiy=new GetAllQualtiy(quality);
+			getAllQualtiyList.add(getAllQualtiy);
+		}
+		return getAllQualtiyList;
+    }
 }

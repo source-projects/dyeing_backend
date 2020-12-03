@@ -1,5 +1,6 @@
 package com.main.glory.Dao;
 
+import com.main.glory.model.party.request.PartyWithName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.main.glory.model.party.Party;
@@ -16,8 +17,12 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query(value = "SELECT party_name FROM party as p WHERE p.entry_id = :party_id", nativeQuery = true)
 	String getPartyNameByPartyId(@Param("party_id") Long party_id);
 
+	@Query(value = "SELECT p.entry_id,p.party_name FROM party as p ", nativeQuery = true)
+	List<PartyWithName> getAllPartiesWithName();
+
 	List<Party> findByCreatedBy(Long createdBy);
 
 	List<Party> findByUserHeadId(Long userHeadId);
+
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.party.request.PartyWithName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -84,6 +85,17 @@ public class PartyController  extends ControllerConfig {
 			   return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		   }
            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+	}
+	@GetMapping(value="/party/allPartyWithName")
+	public GeneralResponse<List<PartyWithName>> getAllPartyName()
+	{
+		List<PartyWithName> partyObject=partyServiceImp.getAllPartyNameWithId();
+		if(!partyObject.isEmpty())
+		{
+			return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+		}
+
+		return new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 	}
 
 	@PutMapping(value="/party")

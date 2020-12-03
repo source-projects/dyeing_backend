@@ -10,6 +10,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
+import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -114,6 +115,17 @@ public class QualityController extends ControllerConfig {
                 return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } else
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
+    @GetMapping(value = "/quality/allQuality")
+    public GeneralResponse<List<GetAllQualtiy>> getAllQualityData() {
+
+        List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityData();
+            if (qualityData == null) {
+                return new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+
+            return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+
     }
 
 
