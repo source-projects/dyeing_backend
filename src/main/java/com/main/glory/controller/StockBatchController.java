@@ -36,7 +36,7 @@ public class StockBatchController extends ControllerConfig {
            if(flag==true)
             return new GeneralResponse<>(true,"Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
            else
-               return new GeneralResponse<>(false,"Stock batch not created because quality in not availble", true, System.currentTimeMillis(), HttpStatus.OK);
+               return new GeneralResponse<>(false,"Stock batch not created because quality in not availble", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
