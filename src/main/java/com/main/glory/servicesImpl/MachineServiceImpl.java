@@ -292,9 +292,9 @@ public class MachineServiceImpl {
                         //compare
                         if (!date.before(d1) && !date.after(d2)) {
                             formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
                             date = formatter.parse(machineRecord.getCreatedDate().toString());//formatter.parse(getMachine.getFromDate());
-                            date.setHours(date.getHours() - 11);
+
 
 
                             LocalTime localTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalTime();
@@ -308,15 +308,20 @@ public class MachineServiceImpl {
                                 if (value < 0) {
                                     getAllMachineRecordList.add(getAllMachineRecord);
                                 }
+
+
                             }
 
 
                         }
-                        System.out.println("Date to check:" + date);
+                        System.out.println("Date to check date:" + date);
                         System.out.println("++" + d1);
                         System.out.println("++" + d2);
 
                     }
+                    if(getAllMachineRecordList.isEmpty())
+                        throw new Exception("No record found for given time or date");
+
                     getAllMachine.setGetAllMachineRecords(getAllMachineRecordList);
 
                     return getAllMachine;
@@ -349,12 +354,10 @@ public class MachineServiceImpl {
                    if(getMachine.getShift()==1)
                     {
                         date = formatter.parse(machineRecord.getCreatedDate().toString());//formatter.parse(getMachine.getFromDate());
-                        date.setHours(date.getHours() - 11);
-
 
                         LocalTime localTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalTime();
-                        LocalTime fromTime = LocalTime.of(9,0,0,0);
-                        LocalTime toTime = LocalTime.of(18,0,0,0);
+                        LocalTime fromTime = LocalTime.of(00,00,00,0);
+                        LocalTime toTime = LocalTime.of(12,00,00,0);
 
                         System.out.println(localTime + "-" + fromTime + "-" + toTime);
                         int value = localTime.compareTo(fromTime);
@@ -373,14 +376,14 @@ public class MachineServiceImpl {
                         date2= formatter.parse(machineRecord.getCreatedDate().toString());
                         date2.setDate(date2.getDate());
                         //formatter.parse(getMachine.getFromDate());
-                        date.setHours(date.getHours() - 11);
+
 
 
                         LocalTime localTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalTime();
                         LocalTime fromTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalTime();
                         fromTime.isAfter(LocalTime.of(18,0,0,0));
                         LocalTime toTime = LocalDateTime.ofInstant(date2.toInstant(), ZoneId.systemDefault()).toLocalTime();
-                        toTime.isBefore(LocalTime.of(9,0,0,0));
+                        toTime.isBefore(LocalTime.of(22,0,0,0));
 
 
                         System.out.println(localTime + "-" + fromTime + "-" + toTime);
@@ -393,11 +396,11 @@ public class MachineServiceImpl {
                         }
 
                     }
-                    else {
-                        getAllMachineRecordList.add(getAllMachineRecord);
-                    }
+
 
                 }
+                else throw new Exception("No record found");
+
                 System.out.println("Date to check:"+date);
                 System.out.println("++"+date2);
                 System.out.println("++"+d2);
@@ -405,6 +408,8 @@ public class MachineServiceImpl {
             }
             getAllMachine.setGetAllMachineRecords(getAllMachineRecordList);
 
+            if(getAllMachine.getGetAllMachineRecords()==null)
+                throw new Exception("no record found");
             return getAllMachine;}
 
 
