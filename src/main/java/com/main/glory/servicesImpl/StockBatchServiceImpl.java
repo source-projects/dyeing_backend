@@ -44,26 +44,28 @@ public class StockBatchServiceImpl {
 
     @Transactional
     public Boolean saveStockBatch(StockMast stockMast) throws Exception {
-        Date dt = new Date(System.currentTimeMillis());
+       Date dt = new Date(System.currentTimeMillis());
+        stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
-        Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
-
-        Optional<Party> party=partyDao.findById(stockMast.getPartyId());
+        Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
         try {
             if (!quality.isPresent()) {
                 throw new Exception("Insert Quality first");
             }
-            if(!party.isPresent())
-                throw new Exception("Insert party first");
+            else
+            {
+                StockMast x = stockMastDao.save(stockMast);
+                x.getBatchData().forEach(e -> {
+                    e.setControlId(x.getId());
+                });
+                return true;
 
-            StockMast x = stockMastDao.save(stockMast);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            }
+        }
+        catch(Exception e)
+        {
             return false;
         }
-        return null;
-
     }
 
 
