@@ -1,9 +1,11 @@
 package com.main.glory.servicesImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.quality.Quality;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,4 +85,26 @@ public class PartyServiceImp implements PartyServiceInterface{
 		String partyName=partyDao.getPartyNameByPartyId(partyId);
 		return partyName;
 	}
+
+    public List<PartyWithName> getAllPartyNameWithId() {
+		try {
+			List<Party> partyAll = partyDao.findAll();
+
+			List<PartyWithName> partyWithNameList = new ArrayList<>();
+			if(!partyAll.isEmpty()) {
+				partyAll.forEach(e ->
+				{
+					PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName());
+					System.out.println(partyWithName.getId());
+					partyWithNameList.add(partyWithName);
+				});
+			}
+			return partyWithNameList;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+    }
 }
