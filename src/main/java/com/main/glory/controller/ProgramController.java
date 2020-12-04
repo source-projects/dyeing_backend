@@ -50,14 +50,14 @@ public class ProgramController extends ControllerConfig {
                     if (!data.isEmpty())
                         return new GeneralResponse<>(data, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "group":
                     var data1 = programServiceImpl.getAllProgram(getBy, id);
                     if (!data1.isEmpty())
                         return new GeneralResponse<>(data1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     else
-                        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "all":
                     var data2 = programServiceImpl.getAllProgram(null, null);

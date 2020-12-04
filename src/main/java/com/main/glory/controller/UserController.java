@@ -71,7 +71,7 @@ public class UserController extends ControllerConfig {
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
-                            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                            return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else
                         return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
@@ -82,7 +82,7 @@ public class UserController extends ControllerConfig {
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
-                            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                            return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
                     else
                         return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
