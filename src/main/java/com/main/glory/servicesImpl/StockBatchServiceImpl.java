@@ -127,7 +127,11 @@ public class StockBatchServiceImpl {
         if(original.get().getIsProductionPlanned()){
             throw new Exception("BatchData is already sent to production, for id:"+stockMast.getId());
         }
-        stockMastDao.save(stockMast);
+
+        StockMast x = stockMastDao.save(stockMast);
+        Boolean result = jobMast.updateJobCardBatchData(x);
+
+
     }
 
     @Transactional
