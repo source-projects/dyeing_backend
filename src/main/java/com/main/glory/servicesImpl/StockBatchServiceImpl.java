@@ -4,6 +4,8 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.Dao.jobcard.JobDataDao;
+import com.main.glory.Dao.jobcard.JobMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
@@ -29,6 +31,13 @@ public class StockBatchServiceImpl {
 
     @Autowired
     BatchDao batchDao;
+
+    @Autowired
+    JobMastImpl jobMast;
+
+    @Autowired
+    JobDataImpl jobData;
+
     @Autowired
     PartyDao partyDao;
 
@@ -58,6 +67,15 @@ public class StockBatchServiceImpl {
                 x.getBatchData().forEach(e -> {
                     e.setControlId(x.getId());
                 });
+
+
+                //Save the job Card detail as well
+
+               Boolean result =  jobMast.createJobCard(x);
+               if(result==false)
+                   throw new Exception("Unable to create the job card for the given batch");
+
+
                 return true;
 
             }

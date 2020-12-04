@@ -1,5 +1,6 @@
 package com.main.glory.Dao;
 
+import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.main.glory.model.quality.Quality;
@@ -37,6 +38,8 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     Optional<Quality> findByQualityIdAndQualityName(String qualityId, String qualityName);
 
     Optional<List<Quality>> findByPartyId(Long partyId);
+
+    Optional<List<Quality>> findByUserHeadId(Long userHeadId);
 }
 
 
