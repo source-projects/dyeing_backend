@@ -1,6 +1,7 @@
 package com.main.glory.model.party;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.jobcard.JobMast;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.shade.ShadeMast;
@@ -23,7 +24,7 @@ import javax.persistence.*;
 public class Party {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "entry_id", updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false)
     private Long id;
     private String partyName;
     private String partyAddress1;
@@ -51,20 +52,26 @@ public class Party {
     @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<Program> program;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<StockMast> stockMasts;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "entry_id")
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<ShadeMast> shadeMast;
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
+    private List<JobMast> jobMast;
 
 
     @PrePersist

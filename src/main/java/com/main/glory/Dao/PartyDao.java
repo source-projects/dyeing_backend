@@ -14,10 +14,10 @@ import java.util.Optional;
 public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	void save(Quality quality);
-	@Query(value = "SELECT party_name FROM party as p WHERE p.entry_id = :party_id", nativeQuery = true)
+	@Query(value = "SELECT party_name FROM party as p WHERE p.id = :party_id", nativeQuery = true)
 	String getPartyNameByPartyId(@Param("party_id") Long party_id);
 
-	@Query(value = "SELECT p.entry_id,p.party_name FROM party as p ", nativeQuery = true)
+	@Query(value = "SELECT p.id,p.party_name FROM party as p ", nativeQuery = true)
 	List<PartyWithName> getAllPartiesWithName();
 
 	List<Party> findByCreatedBy(Long createdBy);

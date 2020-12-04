@@ -46,7 +46,7 @@ public class BasicController extends ControllerConfig {
             if(qualityParties != null){
                 return new GeneralResponse<>(qualityParties, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             }else{
-                return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "No data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -61,6 +61,23 @@ public class BasicController extends ControllerConfig {
 
             // String quality="sndkjabn";
             PartyQuality partyQualities = qualityServiceImp.getAllPartyWithQuality(partyId);
+            if(partyQualities != null){
+                return new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            }else{
+                return new GeneralResponse<>(null, "No data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    @GetMapping("/QualityAndParty/ByMaster/{userHeadId}")
+    public GeneralResponse<List<PartyQuality>> ByMaster(@PathVariable(value = "userHeadId") Long userHeadId){
+        try{
+
+
+            List<PartyQuality> partyQualities = qualityServiceImp.getAllPartyWithQualityByMaster(userHeadId);
             if(partyQualities != null){
                 return new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             }else{

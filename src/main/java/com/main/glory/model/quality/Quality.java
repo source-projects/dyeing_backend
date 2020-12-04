@@ -2,6 +2,7 @@ package com.main.glory.model.quality;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.jobcard.JobMast;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -50,12 +51,17 @@ public class Quality {
 	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
 	private List<Program> program;
 
-
 	@ApiModelProperty(hidden = true)
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
 	private List<ShadeMast> shadeMasts;
+
+	@ApiModelProperty(hidden = true)
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
+	private List<JobMast> jobMast;
 
 	public Quality(Quality other) {
 		this.id = other.id;

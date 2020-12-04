@@ -13,8 +13,6 @@ import java.util.List;
 @Setter
 public class PartyQuality {
 
-
-
     Long partyId;
     String partyName;
     List<QualityData> qualityDataList;
