@@ -23,7 +23,7 @@ public class JobCardController extends ControllerConfig {
     JobDataImpl jobData;
 
     @GetMapping("/jobCard/{id}")
-    public GeneralResponse<JobMast> getStockMastById(@PathVariable(value = "id") Long id){
+    public GeneralResponse<JobMast> getJobCardId(@PathVariable(value = "id") Long id){
         try{
             if(id!=null){
                 Optional<JobMast> jobMastData = jobMast.getJobMastById(id);
@@ -41,4 +41,16 @@ public class JobCardController extends ControllerConfig {
         }
 
     }
+
+    @PutMapping("/jobCard")
+    public GeneralResponse<Boolean> updateJobCard(@RequestBody JobMast jobMastData) {
+        try {
+            jobMast.updateJobCard(jobMastData);
+            return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

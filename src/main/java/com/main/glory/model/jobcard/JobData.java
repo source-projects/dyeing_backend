@@ -25,7 +25,6 @@ public class JobData {
     String batchId;
     Long batchEntryId;
     Double mtr;
-    Double wt;
     Double finishMtr;
     Long controlId;
     Long finishSeqId;
@@ -34,10 +33,9 @@ public class JobData {
         this.stockId=batchData.getControlId();
         this.batchEntryId=batchData.getId();
         this.batchId=batchData.getBatchId();
-        this.mtr=batchData.getMtr();
-        this.wt=batchData.getWt();
         this.finishMtr=00.0;
         this.finishSeqId=0l;
+        this.mtr=batchData.getMtr();
 
     }
 }
