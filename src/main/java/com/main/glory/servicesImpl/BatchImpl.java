@@ -7,7 +7,9 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("batchImpl")
 public class BatchImpl {
@@ -25,4 +27,38 @@ public class BatchImpl {
     }
 
 
+    public void updateFinishMtrBatch(List<BatchData> batchDataList) throws Exception{
+
+            for (BatchData batch : batchDataList) {
+                Optional<BatchData> batchData = batchDao.findById(batch.getId());
+
+                if (batchData.isPresent()) {
+                    batchData.get().setId(batch.getId());
+                    batchData.get().setIsExtra(false);
+                    batchData.get().setSequenceId(batch.getId());
+                    batchData.get().setFinishMtr(batch.getFinishMtr());
+                    batchData.get().setIsBillGenrated(false);
+                    batchData.get().setIsProductionPlanned(true);
+                    batchData.get().setBatchId(batch.getBatchId());
+                    batchData.get().setControlId(batch.getControlId());
+                    batchDao.save(batchData.get());
+                } else if(batch.getId()==0){
+                    batchDao.save(batch);
+                }
+            }
+
+    }
+
+    public List<BatchData> getBatchById(String batchId, Long controlId) throws Exception{
+        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId,batchId);
+
+        if(batchData.isEmpty())
+            throw new Exception("Batch is not available for batchId:"+batchId);
+
+        return  batchData;
+    }
+
+    public List<BatchData> getBatchByDocId(String batchId, Long controlId) {
+        return null;
+    }
 }

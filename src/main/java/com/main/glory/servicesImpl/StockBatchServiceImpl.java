@@ -4,8 +4,6 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
-import com.main.glory.Dao.jobcard.JobDataDao;
-import com.main.glory.Dao.jobcard.JobMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
@@ -14,6 +12,7 @@ import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyName
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,11 +31,6 @@ public class StockBatchServiceImpl {
     @Autowired
     BatchDao batchDao;
 
-    @Autowired
-    JobMastImpl jobMast;
-
-    @Autowired
-    JobDataImpl jobData;
 
     @Autowired
     PartyDao partyDao;
@@ -64,17 +58,6 @@ public class StockBatchServiceImpl {
             else
             {
                 StockMast x = stockMastDao.save(stockMast);
-                x.getBatchData().forEach(e -> {
-                    e.setControlId(x.getId());
-                });
-
-
-                //Save the job Card detail as well
-
-               Boolean result =  jobMast.createJobCard(x);
-               if(result==false)
-                   throw new Exception("Unable to create the job card for the given batch");
-
 
                 return true;
 
@@ -94,9 +77,11 @@ public class StockBatchServiceImpl {
         Boolean flag = false;
         if(id ==  null){
             data = stockMastDao.getAllStockWithPartyName();
+
         }
         else if(getBy.equals("own")){
             data = stockMastDao.getAllStockWithPartyNameByCreatedBy(id);
+
         }
 
         else if(getBy.equals("group")){
@@ -122,15 +107,14 @@ public class StockBatchServiceImpl {
         if(original.isEmpty()){
             throw new Exception("No such batch present with id:"+stockMast.getId());
         }
+
         // Validate, if batch is not given to the production planning then throw the exception
-        System.out.println(original.get());
         if(original.get().getIsProductionPlanned()){
             throw new Exception("BatchData is already sent to production, for id:"+stockMast.getId());
         }
 
-        StockMast x = stockMastDao.save(stockMast);
-        Boolean result = jobMast.updateJobCardBatchData(x);
 
+        stockMastDao.save(stockMast);
 
     }
 
@@ -155,10 +139,12 @@ public class StockBatchServiceImpl {
 
     public List<BatchData> getBatchById(String batchId,Long controlId) throws Exception{
 
-        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId,batchId);
+        List<BatchData> batchData = batchDao.findByControlIdAndBatchIdAndIsExtra(controlId,batchId,false);
 
-        if(batchData==null)
+
+        if(batchData.isEmpty())
             throw new Exception("Batch is not available for batchId:"+batchId);
+
 
         return  batchData;
 
@@ -185,8 +171,6 @@ public class StockBatchServiceImpl {
             for(BatchData batchData : batch)
             {
 
-                if(batchData ==null)
-                    continue;
 
                 //Take another arraylist because it is not working with Object arrayList
                 if(!batchName.contains(batchData.getBatchId()))
@@ -226,7 +210,7 @@ public class StockBatchServiceImpl {
             k=0;
             for (BatchData batchData : batchData1.get(i).getBatchDataList()) {
                 if(batchData.getIsProductionPlanned()==true)
-                    throw new Exception("Production is planned already so Batch can't be updated for id:"+batchData.getId());
+                    throw new Exception("Production is planned already so Batch can't be updated for id:"+batchData.getBatchId());
 
                 batchData.setBatchId(batchData1.get(i).getBatchId());
                 batchData.setControlId(batchData1.get(i).getControlId());
@@ -235,6 +219,65 @@ public class StockBatchServiceImpl {
             }
             i++;
         }
+
+    }
+
+
+    public List<GetAllBatch> getBatchWithoutProductionPlanByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
+
+        List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        if(stockMast==null)
+        {
+            throw new Exception("No such batch is available for partyId:"+partyId+" and QualityId:"+qualityId);
+        }
+
+        List<GetAllBatch> getAllBatchList =new ArrayList<>();
+        List<String> batchName =new ArrayList<>();
+        List<Long> controlId =new ArrayList<>();
+
+        GetAllBatch getAllBatch;
+
+        for(StockMast stockMast1:stockMast)
+        {
+            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
+
+            for(BatchData batchData : batch)
+            {
+                if(batchData.getIsProductionPlanned()==true)
+                    continue;
+
+
+                //Take another arraylist because it is not working with Object arrayList
+                if(!batchName.contains(batchData.getBatchId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+
+                }
+                else if(!controlId.contains(batchData.getControlId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+
+                }
+
+            }
+
+
+        }
+
+        //storing all the data of batchName to object
+        for(int x=0;x<batchName.size();x++)
+        {
+            getAllBatch=new GetAllBatch();
+            getAllBatch.setBatchId(batchName.get(x));
+
+            getAllBatch.setControlId(controlId.get(x));
+            getAllBatchList.add(getAllBatch);
+        }
+        if(getAllBatchList.isEmpty())
+            throw new Exception("May all batches planned or not available ");
+        return getAllBatchList;
 
     }
 }

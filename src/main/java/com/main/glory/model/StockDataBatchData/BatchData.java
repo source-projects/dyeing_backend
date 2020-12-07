@@ -1,11 +1,6 @@
 package com.main.glory.model.StockDataBatchData;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.main.glory.model.jobcard.JobData;
-import com.main.glory.model.jobcard.JobMast;
-import com.main.glory.model.shade.ShadeData;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,16 +27,23 @@ public class BatchData {
     String batchId;
     Long controlId;
     Boolean isProductionPlanned;
+    Boolean isExtra;
+    Long sequenceId;
+    Double finishMtr;
+    Boolean isBillGenrated;
 
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "batchEntryId", referencedColumnName = "id")
-    private List<JobData> jobData;
+    public BatchData(BatchData other) {
+        this.id=other.id;
+        this.mtr=other.mtr;
+        this.wt=other.wt;
+        this.batchId=other.batchId;
+        this.controlId=other.controlId;
+        this.isExtra=other.isExtra;
+        this.sequenceId=other.sequenceId;
+        this.finishMtr=other.finishMtr;
+        this.isBillGenrated=other.isBillGenrated;
 
-
-    @PrePersist
-    protected void onCreate() {
-        this.isProductionPlanned = false;
     }
+
+
 }

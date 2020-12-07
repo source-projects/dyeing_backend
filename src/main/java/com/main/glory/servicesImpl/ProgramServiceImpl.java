@@ -330,6 +330,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             for(BatchData batchData:batchDataList)
             {
+                if(batchData.getIsProductionPlanned()!=true)
                 qty+=batchData.getWt();
             }
             StockQualityWise stockQualityWise = new StockQualityWise();

@@ -1,7 +1,6 @@
 package com.main.glory.model.party;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.jobcard.JobMast;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.shade.ShadeMast;
@@ -67,11 +66,6 @@ public class Party {
     @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<ShadeMast> shadeMast;
 
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<JobMast> jobMast;
 
 
     @PrePersist
