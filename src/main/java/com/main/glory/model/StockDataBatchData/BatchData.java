@@ -30,3 +30,20 @@ public class BatchData {
     Boolean isExtra=false;
     Long sequenceId=0l;
     Double finishMtr=0.0;
+    Boolean isBillGenrated=false;
+
+    public BatchData(BatchData other) {
+        this.id=other.id;
+        this.mtr=other.mtr;
+        this.wt=other.wt;
+        this.batchId=other.batchId;
+        this.controlId=other.controlId;
+        this.isExtra=other.isExtra;
+        this.sequenceId=other.sequenceId;
+        this.finishMtr=other.finishMtr;
+        this.isBillGenrated=other.isBillGenrated;
+
+    }
+
+
+}
