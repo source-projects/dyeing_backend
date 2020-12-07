@@ -1,5 +1,6 @@
 package com.main.glory.Dao.StockAndBatch;
 
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
@@ -25,4 +26,6 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  List<StockMast> findByQualityId(Long qualityId);
 
  List<StockMast> findByQualityIdAndPartyId(Long qualityId,Long partyId);
+ @Query("select sm from StockMast sm where userHeadId =:userHeadId OR createdBy =:userHeadId")
+ List<StockMast> findByUserHeadId(Long userHeadId);
 }

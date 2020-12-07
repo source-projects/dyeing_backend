@@ -202,6 +202,8 @@ public class QualityServiceImp implements QualityServiceInterface{
 		for(Quality quality:qualities)
 		{
 			GetAllQualtiy getAllQualtiy=new GetAllQualtiy(quality);
+			Optional<Party> partyName=partyDao.findById(getAllQualtiy.getPartyId());
+			getAllQualtiy.setPartyName(partyName.get().getPartyName());
 			getAllQualtiyList.add(getAllQualtiy);
 		}
 		return getAllQualtiyList;
