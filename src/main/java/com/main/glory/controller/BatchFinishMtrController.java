@@ -56,6 +56,9 @@ public class BatchFinishMtrController extends ControllerConfig {
             if(batchId!=null){
                 GetCompleteFinishMtrDetail batchData = batchImpl.getAllDetailBy(batchId,controlId);
 
+                if(batchData==null)
+                    return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
             }

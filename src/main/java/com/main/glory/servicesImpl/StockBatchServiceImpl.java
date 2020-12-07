@@ -153,9 +153,9 @@ public class StockBatchServiceImpl {
     public List<GetAllBatch> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception{
 
         List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
-        if(stockMast==null)
+        if(stockMast.isEmpty())
         {
-            throw new Exception("No such batch is available for partyId:"+partyId+" and QualityId:"+qualityId);
+            throw new Exception("No batch found");
         }
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();

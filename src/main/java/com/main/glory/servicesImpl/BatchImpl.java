@@ -73,11 +73,17 @@ public class BatchImpl {
         return null;
     }
 
-    public GetCompleteFinishMtrDetail getAllDetailBy(String batchId, Long controlId) {
+    public GetCompleteFinishMtrDetail getAllDetailBy(String batchId, Long controlId) throws Exception{
         GetCompleteFinishMtrDetail data=new GetCompleteFinishMtrDetail();
 
         Optional<StockMast> stockMast  = stockMastDao.findById(controlId);
+        if(!stockMast.isPresent())
+            throw new Exception("No batch found");
+
         List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(controlId,batchId);
+        if(batchDataList.isEmpty())
+            throw new Exception("No batch found");
+
         UserData userData = userService.getUserById(stockMast.get().getUserHeadId());
         String partyName=partyServiceImp.getPartyNameByPartyId(stockMast.get().getPartyId());
         GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.get().getQualityId());
@@ -105,6 +111,8 @@ public class BatchImpl {
         data.setDate(stockMast.get().getCreatedDate());
         data.setTotalWt(wt);
         data.setTotalMtr(mtr);
+
+
         return data;
     }
 }
