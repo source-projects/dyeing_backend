@@ -26,11 +26,11 @@ public class BatchData {
     Double wt;
     String batchId;
     Long controlId;
-    Boolean isProductionPlanned;
-    Boolean isExtra;
+    Boolean isProductionPlanned=false;
+    Boolean isExtra=false;
     Long sequenceId;
     Double finishMtr;
-    Boolean isBillGenrated;
+    Boolean isBillGenrated=false;
 
     public BatchData(BatchData other) {
         this.id=other.id;
