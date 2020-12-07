@@ -4,6 +4,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.GetCompleteFinishMtrDetail;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,23 @@ public class BatchFinishMtrController extends ControllerConfig {
         try{
             if(batchId!=null){
                 List<BatchData> batchData = batchImpl.getBatchById(batchId,controlId);
+
+                return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+    @GetMapping("/batch/allDetails/{controlId}/{batchId}")
+    public GeneralResponse<GetCompleteFinishMtrDetail> getFinishMtrWithAllDataBatchById(@PathVariable(value = "batchId") String batchId, @PathVariable(value = "controlId") Long controlId){
+        try{
+            if(batchId!=null){
+                GetCompleteFinishMtrDetail batchData = batchImpl.getAllDetailBy(batchId,controlId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
