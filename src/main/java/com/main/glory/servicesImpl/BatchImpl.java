@@ -4,6 +4,11 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.GetCompleteFinishMtrDetail;
+import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +24,12 @@ public class BatchImpl {
 
     @Autowired
     StockMastDao stockMastDao;
+    @Autowired
+    UserServiceImpl userService;
+    @Autowired
+    PartyServiceImp partyServiceImp;
+    @Autowired
+    QualityServiceImp qualityServiceImp;
 
 
     public void saveBatch(BatchData batchData) {
@@ -60,5 +71,40 @@ public class BatchImpl {
 
     public List<BatchData> getBatchByDocId(String batchId, Long controlId) {
         return null;
+    }
+
+    public GetCompleteFinishMtrDetail getAllDetailBy(String batchId, Long controlId) {
+        GetCompleteFinishMtrDetail data=new GetCompleteFinishMtrDetail();
+
+        Optional<StockMast> stockMast  = stockMastDao.findById(controlId);
+        List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(controlId,batchId);
+        UserData userData = userService.getUserById(stockMast.get().getUserHeadId());
+        String partyName=partyServiceImp.getPartyNameByPartyId(stockMast.get().getPartyId());
+        GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.get().getQualityId());
+        Double mtr=0.0;
+        Double wt=0.0;
+        for(BatchData batchData:batchDataList)
+        {
+            mtr+=batchData.getMtr();
+            wt+=batchData.getWt();
+        }
+
+
+        //set the data
+        data.setUserHeadId(userData.getId());
+        data.setMasterName(userData.getFirstName());
+        data.setBatchData(batchDataList);
+        data.setPcs(batchDataList.size());
+        data.setBatchId(batchId);
+        data.setControlId(controlId);
+        data.setPartyId(stockMast.get().getPartyId());
+        data.setPartyName(partyName);
+        data.setQualityEntryId(quality.getId());
+        data.setQualityName(quality.getQualityName());
+        data.setQualityId(quality.getQualityId());
+        data.setDate(stockMast.get().getCreatedDate());
+        data.setTotalWt(wt);
+        data.setTotalMtr(mtr);
+        return data;
     }
 }
