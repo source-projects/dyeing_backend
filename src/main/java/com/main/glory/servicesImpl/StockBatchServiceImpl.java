@@ -298,11 +298,12 @@ public class StockBatchServiceImpl {
 
         for(StockMast stockMast1:stockMast)
         {
+
             List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
 
             for(BatchData batchData : batch)
             {
-                if(batchData.getIsProductionPlanned()==true)
+                if(batchData.getIsBillGenrated()==true)
                     continue;
 
                 //Take another arraylist because it is not working with Object arrayList

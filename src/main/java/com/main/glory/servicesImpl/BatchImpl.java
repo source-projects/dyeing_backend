@@ -34,11 +34,11 @@ public class BatchImpl {
 
                 if (batchData.isPresent()) {
                     batchData.get().setId(batch.getId());
-                    batchData.get().setIsExtra(false);
+                    batchData.get().setIsExtra(batch.getIsExtra());
                     batchData.get().setSequenceId(batch.getId());
                     batchData.get().setFinishMtr(batch.getFinishMtr());
-                    batchData.get().setIsBillGenrated(false);
-                    batchData.get().setIsProductionPlanned(true);
+                    batchData.get().setIsBillGenrated(batch.getIsBillGenrated());
+                    batchData.get().setIsProductionPlanned(batch.getIsProductionPlanned());
                     batchData.get().setBatchId(batch.getBatchId());
                     batchData.get().setControlId(batch.getControlId());
                     batchDao.save(batchData.get());
