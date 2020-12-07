@@ -29,4 +29,4 @@ public class BatchData {
     Boolean isProductionPlanned=false;
     Boolean isExtra=false;
     Long sequenceId=0l;
-    Double finishMtr=0.0;Dea
+    Double finishMtr=0.0;
