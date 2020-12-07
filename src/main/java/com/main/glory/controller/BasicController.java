@@ -4,12 +4,15 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityParty;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.servicesImpl.BasicServiceImpl;
 import com.main.glory.servicesImpl.QualityServiceImp;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,9 @@ public class BasicController extends ControllerConfig {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    StockBatchServiceImpl stockBatchService;
 
     @Autowired
     private QualityServiceImp qualityServiceImp;
@@ -80,6 +86,24 @@ public class BasicController extends ControllerConfig {
             List<PartyQuality> partyQualities = qualityServiceImp.getAllPartyWithQualityByMaster(userHeadId);
             if(partyQualities != null){
                 return new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            }else{
+                return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("/batch/ByMaster/{userHeadId}")
+    public GeneralResponse<List<GetAllBatch>> GetBatchByMaster(@PathVariable(value = "userHeadId") Long userHeadId){
+        try{
+
+
+            List<GetAllBatch> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
+            if(batchDataList != null){
+                return new GeneralResponse<>(batchDataList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             }else{
                 return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }

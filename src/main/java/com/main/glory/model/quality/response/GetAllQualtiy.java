@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 public class GetAllQualtiy {
     private Long id;
+    private Long  partyId;
+    private String partyName;
     private String  qualityId;
     private String  qualityName;
     private String qualityType;
@@ -24,6 +26,7 @@ public class GetAllQualtiy {
         this.qualityName=quality.getQualityName();
         this.qualityType=quality.getQualityType();
         this.unit=quality.getUnit();
+        this.partyId=quality.getPartyId();
         this.wtPer100m=quality.getWtPer100m();
     }
 }
