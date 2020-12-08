@@ -1,6 +1,10 @@
 package com.main.glory.model.StockDataBatchData;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.DispatchMast;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +35,13 @@ public class BatchData {
     Long sequenceId=0l;
     Double finishMtr=0.0;
     Boolean isBillGenrated=false;
+
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "batchEntryId", referencedColumnName = "id")
+    List<DispatchData> dispatchData;
 
     public BatchData(BatchData other) {
         this.id=other.id;

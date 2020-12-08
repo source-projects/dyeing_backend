@@ -12,9 +12,7 @@ import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("batchImpl")
 public class BatchImpl {
@@ -57,6 +55,8 @@ public class BatchImpl {
                     batchDao.save(batch);
                 }
             }
+
+
 
     }
 
@@ -114,5 +114,13 @@ public class BatchImpl {
 
 
         return data;
+    }
+
+    public Optional<BatchData> getBatchByEntryId(Long batchEntryId) throws Exception{
+        Optional<BatchData> batchData = batchDao.findById(batchEntryId);
+        if(!batchData.isPresent())
+            throw new Exception("batch gr is not found");
+
+        return batchData;
     }
 }
