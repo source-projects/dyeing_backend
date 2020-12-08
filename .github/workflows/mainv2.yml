@@ -17,7 +17,7 @@ jobs:
         java-version: 1.14
     - name: Build with Maven
       run: |
-        curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline started"}' https://hooks.slack.com/services/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
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline started"}' https://hooks.slack.com/services/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
         mvn clean install
         
     - name: copy file via ssh key
@@ -46,9 +46,9 @@ jobs:
     - name: slack the message for success
       if: success()
       run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline succeeded"}' https://hooks.slack.com/services/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
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline succeeded"}' https://hooks.slack.com/services/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
       
     - name: slack the message for faliure
       if: failure()
       run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline failed"}' https://hooks.slack.com/services/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
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline failed"}' https://hooks.slack.com/services/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
