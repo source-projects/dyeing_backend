@@ -98,7 +98,7 @@ public class StockBatchServiceImpl {
                 return data;
             }
             else
-                throw new Exception ("no data found for id: "+id);
+                throw new Exception ("no data found for StockId: "+id);
     }
 
     @Transactional

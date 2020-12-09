@@ -13,14 +13,15 @@ import java.util.List;
 @Setter
 @Getter
 public class GetDispatchCompleteDetail {
-    Long partyName;
-    Long partyAddress;
+    String partyName;
+    String partyAddress;
     String GSTIN;
     String qualityId;
     String qualityName;
     Long chlNo;
-    Long pcs;
+    Integer pcs;
     Double amt;
+    Double totalMtr;
     Double totalFinishMtr;
     String batchId;
     List<BatchData> batchDataList;
