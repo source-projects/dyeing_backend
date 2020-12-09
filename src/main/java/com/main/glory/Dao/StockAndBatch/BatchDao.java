@@ -26,8 +26,5 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
 
-    @Query("select p from BatchData p where isProductionPlanned=false GROUP BY p.batchId,p.controlId")
-    List<BatchData> getAllBatchWithControlId();
-
 }
 
