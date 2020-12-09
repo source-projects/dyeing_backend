@@ -344,7 +344,7 @@ public class StockBatchServiceImpl {
         }
 
         //storing all the data of batchName to object
-        for(int x=0;x<controlId.size();x++)
+        for(int x=0;x<batchName.size();x++)
         {
             getAllBatch=new GetAllBatch();
             getAllBatch.setBatchId(batchName.get(x));
@@ -374,25 +374,53 @@ public class StockBatchServiceImpl {
 
     public List<GetAllBatchWithPartyAndQuality> getAllBatchDetail() {
         List<GetAllBatchWithPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
-        List<BatchData> batchData = batchDao.getAllBatchWithControlId();
-        for(BatchData batch:batchData)
+        List<BatchData> batchData = batchDao.findAll();
+        int i=0;
+
+        List<String> batchId=new ArrayList<>();
+        List<Long> controlId=new ArrayList<>();
+
+
+        for(BatchData batch : batchData)
+        {
+            if(batch.getIsProductionPlanned()==true)
+                continue;
+
+            //Take another arraylist because it is not working with Object arrayList
+            if(!batchId.contains(batch.getBatchId()))
+            {
+                batchId.add(batch.getBatchId());
+                controlId.add(batch.getControlId());
+            }
+            else if(!controlId.contains(batch.getControlId()))
+            {
+                batchId.add(batch.getBatchId());
+                controlId.add(batch.getControlId());
+
+            }
+
+        }
+        for(int x=0;x<batchId.size();x++)
         {
             GetAllBatchWithPartyAndQuality getAllBatchWithPartyAndQuality=new GetAllBatchWithPartyAndQuality();
-            getAllBatchWithPartyAndQuality.setBatchId(batch.getBatchId());
-            getAllBatchWithPartyAndQuality.setControlId(batch.getControlId());
+            getAllBatchWithPartyAndQuality.setBatchId(batchId.get(x));
+                    getAllBatchWithPartyAndQuality.setControlId(controlId.get(x));
 
-            Optional<StockMast> stockMast = stockMastDao.findById(batch.getControlId());
-            Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
-            Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+                    Optional<StockMast> stockMast = stockMastDao.findById(controlId.get(x));
+                    Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
 
-            getAllBatchWithPartyAndQuality.setQualityEntryId(quality.get().getId());
-            getAllBatchWithPartyAndQuality.setQualityId(quality.get().getQualityId());
-            getAllBatchWithPartyAndQuality.setQualityName(quality.get().getQualityName());
-            getAllBatchWithPartyAndQuality.setQualityType(quality.get().getQualityType());
-            getAllBatchWithPartyAndQuality.setPartyId(party.get().getId());
-            getAllBatchWithPartyAndQuality.setPartyName(party.get().getPartyName());
-            getAllBatchWithPartyAndQualities.add(getAllBatchWithPartyAndQuality);
+                    getAllBatchWithPartyAndQuality.setQualityEntryId(quality.get().getId());
+                    getAllBatchWithPartyAndQuality.setQualityId(quality.get().getQualityId());
+                    getAllBatchWithPartyAndQuality.setQualityName(quality.get().getQualityName());
+                    getAllBatchWithPartyAndQuality.setQualityType(quality.get().getQualityType());
+                    getAllBatchWithPartyAndQuality.setPartyId(party.get().getId());
+                    getAllBatchWithPartyAndQuality.setPartyName(party.get().getPartyName());
+                    getAllBatchWithPartyAndQualities.add(getAllBatchWithPartyAndQuality);
+
         }
+
+
 
 
         return getAllBatchWithPartyAndQualities;
