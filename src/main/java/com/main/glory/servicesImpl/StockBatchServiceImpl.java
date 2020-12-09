@@ -292,6 +292,7 @@ public class StockBatchServiceImpl {
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
         List<String> batchName =new ArrayList<>();
+        List<Boolean> productionPlanned =new ArrayList<>();
         List<Long> controlId =new ArrayList<>();
 
         GetAllBatch getAllBatch;
@@ -311,13 +312,13 @@ public class StockBatchServiceImpl {
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
-
+                    productionPlanned.add(batchData.getIsProductionPlanned());
                 }
                 else if(!controlId.contains(batchData.getControlId()))
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
-
+                    productionPlanned.add(batchData.getIsProductionPlanned());
                 }
 
             }
@@ -331,8 +332,8 @@ public class StockBatchServiceImpl {
         {
             getAllBatch=new GetAllBatch();
             getAllBatch.setBatchId(batchName.get(x));
-
             getAllBatch.setControlId(controlId.get(x));
+            getAllBatch.setProdctionPlanned(productionPlanned.get(x));
             getAllBatchList.add(getAllBatch);
         }
 
