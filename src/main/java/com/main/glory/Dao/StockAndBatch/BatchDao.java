@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
 
-   List<BatchData> findByControlId(Long controlId);
+    List<BatchData> findByControlId(Long controlId);
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.wt) as WT, SUM(p.mtr) as MTR, p.batchId as batchId) from BatchData p where p.controlId =:id AND isProductionPlanned = false    GROUP BY p.batchId ")
     List<GetAllBatchResponse> findAllQTYControlId(@Param("id") Long id);
@@ -24,6 +24,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     List<BatchData> findByControlIdAndBatchIdAndIsProductionPlanned(Long controlId, String batchId, Boolean b);
 
- List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
+    List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
+
+    @Query("select p from BatchData p where isProductionPlanned=false GROUP BY p.batchId,p.controlId")
+    List<BatchData> getAllBatchWithControlId();
 }
 

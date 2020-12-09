@@ -7,11 +7,15 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
-public class GetAllBatchResponse {
-    Double totalMtr;
-    Double totalWt;
+@Getter
+public class GetAllBatchWithPartyAndQuality {
     String batchId;
-
+    Long controlId;
+    Long qualityEntryId;
+    String qualityId;
+    String qualityName;
+    String qualityType;
+    Long partyId;
+    String partyName;
 }
