@@ -33,7 +33,7 @@ public class BatchFinishMtrController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
-    @DeleteMapping("/batch/{id}")
+    @DeleteMapping("/batchDelete/{id}")
     public GeneralResponse<Boolean> deleteBatch(@PathVariable("id") Long id){
         try{
             System.out.println("deleting batch with id:"+id);
