@@ -57,7 +57,7 @@ public class DispatchMastImpl {
             if(!batch.isPresent())
                 throw new Exception("batch gr not found");
 
-            if(batch.get().getFinishMtr()==0)
+            if(batch.get().getIsFinishMtrSave()==false)
                 throw new Exception("The finish meter is not stored so invoice can't created");
 
         }

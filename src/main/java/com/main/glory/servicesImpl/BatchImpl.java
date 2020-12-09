@@ -50,8 +50,10 @@ public class BatchImpl {
                     batchData.get().setIsProductionPlanned(batch.getIsProductionPlanned());
                     batchData.get().setBatchId(batch.getBatchId());
                     batchData.get().setControlId(batch.getControlId());
+                    batchData.get().setIsFinishMtrSave(true);
                     batchDao.save(batchData.get());
                 } else if(batch.getId()==0){
+                    batch.setIsFinishMtrSave(true);
                     batchDao.save(batch);
                 }
             }
@@ -122,5 +124,13 @@ public class BatchImpl {
             throw new Exception("batch gr is not found");
 
         return batchData;
+    }
+
+    public void deleteBatch(Long id) throws Exception {
+        Optional<BatchData> batchData = batchDao.findById(id);
+        if(!batchData.isPresent())
+            throw new Exception("Batch not found");
+
+        batchDao.deleteById(id);
     }
 }

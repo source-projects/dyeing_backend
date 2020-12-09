@@ -158,49 +158,60 @@ public class StockBatchServiceImpl {
             throw new Exception("No batch found");
         }
 
+
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
         List<String> batchName =new ArrayList<>();
+        List<Boolean> productionPlanned =new ArrayList<>();
         List<Long> controlId =new ArrayList<>();
 
         GetAllBatch getAllBatch;
 
         for(StockMast stockMast1:stockMast)
         {
+
             List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
 
             for(BatchData batchData : batch)
             {
-
+                if(batchData.getIsBillGenrated()==true)
+                    continue;
 
                 //Take another arraylist because it is not working with Object arrayList
                 if(!batchName.contains(batchData.getBatchId()))
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
-
+                    productionPlanned.add(batchData.getIsProductionPlanned());
                 }
                 else if(!controlId.contains(batchData.getControlId()))
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
-
+                    productionPlanned.add(batchData.getIsProductionPlanned());
                 }
 
             }
 
 
+
         }
 
         //storing all the data of batchName to object
-        for(int x=0;x<batchName.size();x++)
+        for(int x=0;x<controlId.size();x++)
         {
             getAllBatch=new GetAllBatch();
             getAllBatch.setBatchId(batchName.get(x));
-
             getAllBatch.setControlId(controlId.get(x));
+            getAllBatch.setProdctionPlanned(productionPlanned.get(x));
             getAllBatchList.add(getAllBatch);
         }
+
+
+        if(getAllBatchList.isEmpty())
+            throw new Exception("May all batches planned or not available ");
         return getAllBatchList;
+
+
     }
 
     public void updateBatchForMerge(List<MergeBatch> batchData1) throws Exception{
@@ -233,65 +244,7 @@ public class StockBatchServiceImpl {
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
         List<String> batchName =new ArrayList<>();
-        List<Long> controlId =new ArrayList<>();
-
-        GetAllBatch getAllBatch;
-
-        for(StockMast stockMast1:stockMast)
-        {
-            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
-
-            for(BatchData batchData : batch)
-            {
-                if(batchData.getIsProductionPlanned()==true)
-                    continue;
-
-
-                //Take another arraylist because it is not working with Object arrayList
-                if(!batchName.contains(batchData.getBatchId()))
-                {
-                    batchName.add(batchData.getBatchId());
-                    controlId.add(batchData.getControlId());
-
-                }
-                else if(!controlId.contains(batchData.getControlId()))
-                {
-                    batchName.add(batchData.getBatchId());
-                    controlId.add(batchData.getControlId());
-
-                }
-
-            }
-
-
-        }
-
-        //storing all the data of batchName to object
-        for(int x=0;x<batchName.size();x++)
-        {
-            getAllBatch=new GetAllBatch();
-            getAllBatch.setBatchId(batchName.get(x));
-
-            getAllBatch.setControlId(controlId.get(x));
-            getAllBatchList.add(getAllBatch);
-        }
-        if(getAllBatchList.isEmpty())
-            throw new Exception("May all batches planned or not available ");
-        return getAllBatchList;
-
-    }
-
-    public List<GetAllBatch> getAllBatchByMaster(Long userHeadId) throws Exception{
-
-
-        List<StockMast> stockMast = stockMastDao.findByUserHeadId(userHeadId);
-        if(stockMast==null)
-        {
-            throw new Exception("No such batch is available for master:"+userHeadId);
-        }
-
-        List<GetAllBatch> getAllBatchList =new ArrayList<>();
-        List<String> batchName =new ArrayList<>();
+        List<Boolean> productionPlanned =new ArrayList<>();
         List<Long> controlId =new ArrayList<>();
 
         GetAllBatch getAllBatch;
@@ -311,13 +264,13 @@ public class StockBatchServiceImpl {
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
-
+                    productionPlanned.add(batchData.getIsProductionPlanned());
                 }
                 else if(!controlId.contains(batchData.getControlId()))
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
-
+                    productionPlanned.add(batchData.getIsProductionPlanned());
                 }
 
             }
@@ -331,8 +284,74 @@ public class StockBatchServiceImpl {
         {
             getAllBatch=new GetAllBatch();
             getAllBatch.setBatchId(batchName.get(x));
-
             getAllBatch.setControlId(controlId.get(x));
+            getAllBatch.setProdctionPlanned(productionPlanned.get(x));
+            getAllBatchList.add(getAllBatch);
+        }
+
+
+        if(getAllBatchList.isEmpty())
+            throw new Exception("May all batches planned or not available ");
+        return getAllBatchList;
+
+
+
+
+    }
+
+    public List<GetAllBatch> getAllBatchByMaster(Long userHeadId) throws Exception{
+
+
+        List<StockMast> stockMast = stockMastDao.findByUserHeadId(userHeadId);
+        if(stockMast==null)
+        {
+            throw new Exception("No such batch is available for master:"+userHeadId);
+        }
+
+        List<GetAllBatch> getAllBatchList =new ArrayList<>();
+        List<String> batchName =new ArrayList<>();
+        List<Boolean> productionPlanned =new ArrayList<>();
+        List<Long> controlId =new ArrayList<>();
+
+        GetAllBatch getAllBatch;
+
+        for(StockMast stockMast1:stockMast)
+        {
+
+            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
+
+            for(BatchData batchData : batch)
+            {
+                if(batchData.getIsBillGenrated()==true)
+                    continue;
+
+                //Take another arraylist because it is not working with Object arrayList
+                if(!batchName.contains(batchData.getBatchId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+                    productionPlanned.add(batchData.getIsProductionPlanned());
+                }
+                else if(!controlId.contains(batchData.getControlId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+                    productionPlanned.add(batchData.getIsProductionPlanned());
+                }
+
+            }
+
+
+
+        }
+
+        //storing all the data of batchName to object
+        for(int x=0;x<controlId.size();x++)
+        {
+            getAllBatch=new GetAllBatch();
+            getAllBatch.setBatchId(batchName.get(x));
+            getAllBatch.setControlId(controlId.get(x));
+            getAllBatch.setProdctionPlanned(productionPlanned.get(x));
             getAllBatchList.add(getAllBatch);
         }
 

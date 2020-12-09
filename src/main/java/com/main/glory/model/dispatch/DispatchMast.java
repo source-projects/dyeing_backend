@@ -21,7 +21,7 @@ public class DispatchMast {
     Long createdBy;
     String batchId;
     Long stockId;
-
+    Boolean isSendToParty=false;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")

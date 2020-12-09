@@ -33,6 +33,19 @@ public class BatchFinishMtrController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @DeleteMapping("/batchDelete/{id}")
+    public GeneralResponse<Boolean> deleteBatch(@PathVariable("id") Long id){
+        try{
+            System.out.println("deleting batch with id:"+id);
+            batchImpl.deleteBatch(id);
+            return new GeneralResponse<>(true,"batch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @GetMapping("/batch/{controlId}/{batchId}")
     public GeneralResponse<List<BatchData>> getFinishMtrBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") Long controlId){
         try{
