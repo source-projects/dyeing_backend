@@ -7,9 +7,7 @@ import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
-import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
+import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
@@ -361,5 +359,31 @@ public class StockBatchServiceImpl {
         return getAllBatchList;
 
 
+    }
+
+    public List<GetAllBatchWithPartyAndQuality> getAllBatchDetail() {
+        List<GetAllBatchWithPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
+        List<BatchData> batchData = batchDao.getAllBatchWithControlId();
+        for(BatchData batch:batchData)
+        {
+            GetAllBatchWithPartyAndQuality getAllBatchWithPartyAndQuality=new GetAllBatchWithPartyAndQuality();
+            getAllBatchWithPartyAndQuality.setBatchId(batch.getBatchId());
+            getAllBatchWithPartyAndQuality.setControlId(batch.getControlId());
+
+            Optional<StockMast> stockMast = stockMastDao.findById(batch.getControlId());
+            Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+            Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+
+            getAllBatchWithPartyAndQuality.setQualityEntryId(quality.get().getId());
+            getAllBatchWithPartyAndQuality.setQualityId(quality.get().getQualityId());
+            getAllBatchWithPartyAndQuality.setQualityName(quality.get().getQualityName());
+            getAllBatchWithPartyAndQuality.setQualityType(quality.get().getQualityType());
+            getAllBatchWithPartyAndQuality.setPartyId(party.get().getId());
+            getAllBatchWithPartyAndQuality.setPartyName(party.get().getPartyName());
+            getAllBatchWithPartyAndQualities.add(getAllBatchWithPartyAndQuality);
+        }
+
+
+        return getAllBatchWithPartyAndQualities;
     }
 }

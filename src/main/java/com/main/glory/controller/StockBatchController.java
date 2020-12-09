@@ -7,6 +7,8 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithPartyAndQuality;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -136,6 +138,22 @@ public class StockBatchController extends ControllerConfig {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping("/stockBatch/batch/all")
+    public GeneralResponse<List<GetAllBatchWithPartyAndQuality>> getAllBatch(){
+        try{
+
+                List<GetAllBatchWithPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
+
+                return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        }catch(Exception e){
+            e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
