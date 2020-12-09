@@ -350,6 +350,17 @@ public class StockBatchServiceImpl {
             getAllBatch.setBatchId(batchName.get(x));
             getAllBatch.setControlId(controlId.get(x));
             getAllBatch.setProdctionPlanned(productionPlanned.get(x));
+
+            Optional<StockMast> stockMast1 = stockMastDao.findById(controlId.get(x));
+            Optional<Party> party = partyDao.findById(stockMast1.get().getPartyId());
+            Optional<Quality> quality = qualityDao.findById(stockMast1.get().getQualityId());
+
+            getAllBatch.setPartyId(party.get().getId());
+            getAllBatch.setPartyName(party.get().getPartyName());
+            getAllBatch.setQualityEntryId(quality.get().getId());
+            getAllBatch.setQualityId(quality.get().getQualityId());
+            getAllBatch.setQualityName(quality.get().getQualityName());
+            getAllBatch.setQualityType(quality.get().getQualityType());
             getAllBatchList.add(getAllBatch);
         }
 
