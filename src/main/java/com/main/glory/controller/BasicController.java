@@ -99,8 +99,6 @@ public class BasicController extends ControllerConfig {
     @GetMapping("/batch/ByMaster/{userHeadId}")
     public GeneralResponse<List<GetAllBatch>> GetBatchByMaster(@PathVariable(value = "userHeadId") Long userHeadId){
         try{
-
-
             List<GetAllBatch> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
             if(batchDataList != null){
                 return new GeneralResponse<>(batchDataList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
