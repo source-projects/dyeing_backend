@@ -8,6 +8,7 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
+import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.supplier.responce.GetSupplierWithRateAndItem;
 import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
@@ -93,6 +94,19 @@ public class SupplierController extends ControllerConfig {
     public GeneralResponse<Object> getAllSupplierRates(){
         try{
             Object obj = supplierService.getAllRates();
+            if(obj != null){
+                return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/supplier/getItemWithSupplierName/all")
+    public GeneralResponse<List<GetItemWithSupplier>> getAllItemWithSupplierName(){
+        try{
+            List<GetItemWithSupplier> obj = supplierService.getAllItemWithSupplierName();
             if(obj != null){
                 return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {

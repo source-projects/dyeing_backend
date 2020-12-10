@@ -38,6 +38,9 @@ public class Quality {
 	private Date updatedDate;
 	private Date qualityDate;
 	private Long userHeadId;
+	private Double rate;
+	private String HSN="9988";
+
 
 	@ApiModelProperty(hidden = true)
 	@JsonIgnore
