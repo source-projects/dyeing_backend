@@ -8,10 +8,7 @@ import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
-import com.main.glory.model.supplier.responce.GetAllSupplierRatesResponse;
-import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
-import com.main.glory.model.supplier.responce.GetSupplierWithRateAndItem;
-import com.main.glory.model.supplier.responce.RateAndItem;
+import com.main.glory.model.supplier.responce.*;
 import com.main.glory.services.SupplierServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,5 +192,26 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         List<GetAllSupplierWithName> s = supplierDao.findAllName();
 
        return s;
+    }
+
+    public List<GetItemWithSupplier> getAllItemWithSupplierName() throws Exception {
+        List<GetItemWithSupplier> getItemWithSupplierList=new ArrayList<>();
+
+        List<ItemWithSupplier> itemWithSupplier = supplierRateDao.findAllSupplierItem();
+
+        for(ItemWithSupplier item:itemWithSupplier)
+        {
+
+            Optional<Supplier> supplier = supplierDao.findById(item.getSupplierId());
+            GetItemWithSupplier getItemWithSupplier=new GetItemWithSupplier(supplier.get(),item);
+            getItemWithSupplierList.add(getItemWithSupplier);
+        }
+
+        if(getItemWithSupplierList.isEmpty())
+            throw new Exception("No data found");
+
+        return getItemWithSupplierList;
+
+
     }
 }

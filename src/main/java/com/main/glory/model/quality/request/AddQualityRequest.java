@@ -22,4 +22,5 @@ public class AddQualityRequest {
     private Long createdBy;
     private Date qualityDate;
     private Long userHeadId;
+    private Double rate;
 }
