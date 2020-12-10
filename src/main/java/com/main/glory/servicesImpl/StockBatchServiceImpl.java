@@ -115,6 +115,14 @@ public class StockBatchServiceImpl {
 
         stockMastDao.save(stockMast);
 
+        List<BatchData> batchData = batchDao.findAll();
+        batchData.forEach(e->{
+            if(e.getControlId()==null)
+            {
+                batchDao.deleteById(e.getId());
+            }
+        });
+
     }
 
     @Transactional

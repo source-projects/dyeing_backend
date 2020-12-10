@@ -18,6 +18,8 @@ public class QualityData {
     String qualityName;
     String qualityType;
     String unit;
+    private Double wtPer100m;
+
 
     public QualityData(Quality quality1) {
         this.qualityEntryId=quality1.getId();
@@ -25,5 +27,6 @@ public class QualityData {
         this.qualityName=quality1.getQualityName();
         this.qualityType=quality1.getQualityType();
         this.unit=quality1.getUnit();
+        this.wtPer100m=quality1.getWtPer100m();
     }
 }
