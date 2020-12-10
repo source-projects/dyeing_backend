@@ -107,7 +107,7 @@ public class DispatchMastImpl {
         invoiceData.setQualityName(quality.get().getQualityName());
         invoiceData.setChlNo(stockMast.get().getChlNo());
         invoiceData.setPcs(dispatchData.size());
-        invoiceData.setAmt(0.0);
+        invoiceData.setAmt(totalFinishMtr*quality.get().getRate());
         invoiceData.setTotalFinishMtr(totalFinishMtr);
         invoiceData.setTotalMtr(totalMtr);
         invoiceData.setBatchId(dispatchMast.get().getBatchId());

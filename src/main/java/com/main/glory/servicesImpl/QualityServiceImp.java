@@ -169,12 +169,8 @@ public class QualityServiceImp implements QualityServiceInterface{
 				if(qualityList.get().isEmpty())
 					continue;
 
-				QualityData qualityData = new QualityData();
-				qualityData.setQualityEntryId(quality.getId());
-				qualityData.setQualityId(quality.getQualityId());
-				qualityData.setQualityName(quality.getQualityName());
-				qualityData.setQualityType(quality.getQualityType());
-				qualityData.setUnit(quality.getUnit());
+				QualityData qualityData = new QualityData(quality);
+
 				qualityDataList.add(qualityData);
 
 
