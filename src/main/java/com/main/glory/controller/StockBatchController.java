@@ -222,4 +222,32 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @DeleteMapping("/batchGr/delete/{id}")
+    public GeneralResponse<Boolean> deleteBatchGr(@PathVariable(value = "id") Long id){
+        try{
+            stockBatchService.deleteBatchGr(id);
+            return new GeneralResponse<>(true,"Batch gr deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/stockBatch/delete/{controlId}/{batchId}")
+    public GeneralResponse<Boolean> deleteBatchByControlIdAndBatchID(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
+        try{
+            Boolean flag = stockBatchService.deleteStockBatchWithControlAndBatchID(controlId,batchId);
+
+            if(flag==true)
+            return new GeneralResponse<>(true, "Batch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "Batch not deleted", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 }

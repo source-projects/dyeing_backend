@@ -416,4 +416,27 @@ public class StockBatchServiceImpl {
         batchToPartyAndQuality.setQualityName(quality.get().getQualityName());
         return batchToPartyAndQuality;
     }
+
+    public Boolean deleteStockBatchWithControlAndBatchID(Long controlId, String batchId) throws Exception {
+
+        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId,batchId);
+        if(batchData.isEmpty())
+            throw new Exception("Batch not found for id:"+batchId);
+        for(BatchData batch:batchData)
+        {
+            batchDao.deleteById(batch.getId());
+        }
+        return true;
+
+    }
+
+
+    public void deleteBatchGr(Long id) throws Exception{
+        Optional<BatchData> batchData = batchDao.findById(id);
+        if(!batchData.isPresent())
+            throw new Exception("batch gr not found");
+
+        batchDao.deleteById(batchData.get().getId());
+
+    }
 }
