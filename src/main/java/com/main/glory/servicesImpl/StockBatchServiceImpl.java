@@ -373,12 +373,24 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<GetBatchWithControlId> getAllBatchDetail() {
-       // List<GetBatchWithControlId> getAllBatchWithPartyAndQualities=new ArrayList<>();
+    public List<BatchToPartyAndQuality> getAllBatchDetail() {
+        List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
         List<GetBatchWithControlId> batchData = batchDao.findAllBasedOnControlIdAndBatchId();
-        int i=0;
+        for(GetBatchWithControlId batch : batchData)
+        {
+            Optional<StockMast> stockMast=stockMastDao.findById(batch.getControlId());
+            Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+            Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
-        return  batchData;
+            BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
+
+            getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+
+
+        }
+
+        return  getAllBatchWithPartyAndQualities;
     }
 
     public BatchToPartyAndQuality getPartAndQualityByBatch(Long controlId,String batchId) throws Exception{

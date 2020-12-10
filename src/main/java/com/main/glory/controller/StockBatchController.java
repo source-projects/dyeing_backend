@@ -141,10 +141,10 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/all")
-    public GeneralResponse<List<GetBatchWithControlId>> getAllBatch(){
+    public GeneralResponse<List<BatchToPartyAndQuality>> getAllBatch(){
         try{
 
-                List<GetBatchWithControlId> batchData = stockBatchService.getAllBatchDetail();
+                List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
