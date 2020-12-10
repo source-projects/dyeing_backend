@@ -6,10 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithPartyAndQuality;
-import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
+import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,12 +141,28 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/all")
-    public GeneralResponse<List<GetAllBatchWithPartyAndQuality>> getAllBatch(){
+    public GeneralResponse<List<GetBatchWithControlId>> getAllBatch(){
         try{
 
-                List<GetAllBatchWithPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
+                List<GetBatchWithControlId> batchData = stockBatchService.getAllBatchDetail();
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @GetMapping("/stockBatch/BatchToPartyAndQuality/{controlId}/{batchId}")
+    public GeneralResponse<BatchToPartyAndQuality> getPartAndQualityByBatch(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
+        try{
+
+            BatchToPartyAndQuality batchData = stockBatchService.getPartAndQualityByBatch(controlId,batchId);
+
+            return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
 
         }catch(Exception e){

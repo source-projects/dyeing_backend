@@ -3,6 +3,7 @@ package com.main.glory.Dao.StockAndBatch;
 
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
+import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +16,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     List<BatchData> findByControlId(Long controlId);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.wt) as WT, SUM(p.mtr) as MTR, p.batchId as batchId) from BatchData p where p.controlId =:id AND isProductionPlanned = false    GROUP BY p.batchId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.mtr) as MTR, SUM(p.wt) as WT, p.batchId as batchId) from BatchData p where p.controlId =:id AND isProductionPlanned = false    GROUP BY p.batchId ")
     List<GetAllBatchResponse> findAllQTYControlId(@Param("id") Long id);
 
     Optional<List<BatchData>> findByBatchId(String batchId);
@@ -26,5 +27,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
 
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false  GROUP BY p.batchId,p.controlId ")
+    List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchId();
 }
 
