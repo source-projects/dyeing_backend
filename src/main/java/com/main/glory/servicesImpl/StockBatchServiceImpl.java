@@ -12,6 +12,7 @@ import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -372,57 +373,35 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<GetAllBatchWithPartyAndQuality> getAllBatchDetail() {
-        List<GetAllBatchWithPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
-        List<BatchData> batchData = batchDao.findAll();
+    public List<GetBatchWithControlId> getAllBatchDetail() {
+       // List<GetBatchWithControlId> getAllBatchWithPartyAndQualities=new ArrayList<>();
+        List<GetBatchWithControlId> batchData = batchDao.findAllBasedOnControlIdAndBatchId();
         int i=0;
 
-        List<String> batchId=new ArrayList<>();
-        List<Long> controlId=new ArrayList<>();
+        return  batchData;
+    }
 
+    public BatchToPartyAndQuality getPartAndQualityByBatch(Long controlId,String batchId) throws Exception{
+        Optional<StockMast> stockMast = stockMastDao.findById(controlId);
 
-        for(BatchData batch : batchData)
-        {
-            if(batch.getIsProductionPlanned()==true)
-                continue;
+        if(!stockMast.isPresent())
+            throw new Exception("Stock is not found for batchId:"+batchId);
 
-            //Take another arraylist because it is not working with Object arrayList
-            if(!batchId.contains(batch.getBatchId()))
-            {
-                batchId.add(batch.getBatchId());
-                controlId.add(batch.getControlId());
-            }
-            else if(!controlId.contains(batch.getControlId()))
-            {
-                batchId.add(batch.getBatchId());
-                controlId.add(batch.getControlId());
+        Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
+        if(!party.isPresent())
+            throw new Exception("Party not found for batchId:"+batchId);
 
-            }
+        Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
 
-        }
-        for(int x=0;x<batchId.size();x++)
-        {
-            GetAllBatchWithPartyAndQuality getAllBatchWithPartyAndQuality=new GetAllBatchWithPartyAndQuality();
-            getAllBatchWithPartyAndQuality.setBatchId(batchId.get(x));
-                    getAllBatchWithPartyAndQuality.setControlId(controlId.get(x));
+        if(!quality.isPresent())
+            throw new Exception("Quality not found for batchId:"+batchId);
 
-                    Optional<StockMast> stockMast = stockMastDao.findById(controlId.get(x));
-                    Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
-                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
-
-                    getAllBatchWithPartyAndQuality.setQualityEntryId(quality.get().getId());
-                    getAllBatchWithPartyAndQuality.setQualityId(quality.get().getQualityId());
-                    getAllBatchWithPartyAndQuality.setQualityName(quality.get().getQualityName());
-                    getAllBatchWithPartyAndQuality.setQualityType(quality.get().getQualityType());
-                    getAllBatchWithPartyAndQuality.setPartyId(party.get().getId());
-                    getAllBatchWithPartyAndQuality.setPartyName(party.get().getPartyName());
-                    getAllBatchWithPartyAndQualities.add(getAllBatchWithPartyAndQuality);
-
-        }
-
-
-
-
-        return getAllBatchWithPartyAndQualities;
+        BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+        batchToPartyAndQuality.setPartyId(party.get().getId());
+        batchToPartyAndQuality.setPartyName(party.get().getPartyName());
+        batchToPartyAndQuality.setQualityEntryId(quality.get().getId());
+        batchToPartyAndQuality.setQualityId(quality.get().getQualityId());
+        batchToPartyAndQuality.setQualityName(quality.get().getQualityName());
+        return batchToPartyAndQuality;
     }
 }
