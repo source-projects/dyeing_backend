@@ -113,15 +113,41 @@ public class StockBatchServiceImpl {
         }
 
 
+
+        //for delete the batch gr if not coming from FR
+
+        //##Get the data first from the list
+        Map<Long,Boolean> batchGr=new HashMap<>();
+        List<BatchData> batchData = batchDao.findByControlId(stockMast.getId());
+        for(BatchData batch: batchData)
+        {
+            batchGr.put(batch.getId(),false);
+            //System.out.println(batch.getId());
+        }
+
+        //change the as per the data is coming from FE
+        for(BatchData batch:stockMast.getBatchData())
+        {
+            //System.out.println("coming:"+batch.getId());
+            if(batchGr.containsKey(batch.getId()))
+            {
+                batchGr.replace(batch.getId(),true);
+            }
+        }
+
+        //##Iterate the loop and delete the record who flag is false
+        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+        {
+            System.out.println(entry.getKey()+":"+entry.getValue());
+            if(entry.getValue()==false)
+            {
+                batchDao.deleteById(entry.getKey());
+            }
+        }
+
+        //update record
         stockMastDao.save(stockMast);
 
-        List<BatchData> batchData = batchDao.findAll();
-        batchData.forEach(e->{
-            if(e.getControlId()==null)
-            {
-                batchDao.deleteById(e.getId());
-            }
-        });
 
     }
 

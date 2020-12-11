@@ -78,10 +78,10 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 
 	@Override
-	public List<ShadeMast> getAllShadeMast() {
+	public List<ShadeMast> getAllShadeMast() throws Exception{
 		List<ShadeMast> shadeMastList = shadeMastDao.findAll();
 		if(shadeMastList.isEmpty())
-			return null;
+			throw new Exception("no party shade found");
 		else{
 			return shadeMastList;
 		}
