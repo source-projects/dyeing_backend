@@ -54,9 +54,9 @@ public class QualityProcessData {
     String dosingPercentage;
     String doseWhileHeating;
     String doseType;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "qualityProcessControlId", referencedColumnName = "id")
-    private Chemical dosingChemical;
+    private List<Chemical> dosingChemical;
 
     //OperatorMessageFunction..
     Boolean isOperatorMessage;
