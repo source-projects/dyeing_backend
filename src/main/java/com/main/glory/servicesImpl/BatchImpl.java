@@ -38,27 +38,38 @@ public class BatchImpl {
 
     public void updateFinishMtrBatch(List<BatchData> batchDataList) throws Exception{
 
-            for (BatchData batch : batchDataList) {
-                Optional<BatchData> batchData = batchDao.findById(batch.getId());
+        //##Get the data first from the list
+        Map<Long,Boolean> batchGr=new HashMap<>();
+        List<BatchData> batchData = batchDao.findByControlId(batchDataList.get(0).getControlId());
+        for(BatchData batch: batchData)
+        {
+            batchGr.put(batch.getId(),false);
+            //System.out.println(batch.getId());
+        }
 
-                if (batchData.isPresent()) {
-                    batchData.get().setId(batch.getId());
-                    batchData.get().setIsExtra(batch.getIsExtra());
-                    batchData.get().setSequenceId(batch.getSequenceId());
-                    batchData.get().setFinishMtr(batch.getFinishMtr());
-                    batchData.get().setIsBillGenrated(batch.getIsBillGenrated());
-                    batchData.get().setIsProductionPlanned(batch.getIsProductionPlanned());
-                    batchData.get().setBatchId(batch.getBatchId());
-                    batchData.get().setControlId(batch.getControlId());
-                    batchData.get().setIsFinishMtrSave(true);
-                    batchDao.save(batchData.get());
-                } else if(batch.getId()==0){
-                    batch.setIsFinishMtrSave(true);
-                    batchDao.save(batch);
-                }
+        for(BatchData batch: batchDataList)
+        {
+            if(batchGr.containsKey(batch.getId()))
+            {
+                batchGr.replace(batch.getId(),true);
             }
 
+        }
 
+        //##Iterate the loop and delete the record who flag is false
+        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+        {
+            System.out.println(entry.getKey()+":"+entry.getValue());
+            if(entry.getValue()==false)
+            {
+                batchDao.deleteById(entry.getKey());
+            }
+        }
+
+        for(BatchData batch:batchDataList)
+        {
+            batchDao.save(batch);
+        }
 
     }
 

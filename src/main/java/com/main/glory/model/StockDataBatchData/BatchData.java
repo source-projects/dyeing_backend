@@ -34,7 +34,6 @@ public class BatchData {
     Boolean isExtra=false;
     Long sequenceId=0l;
     Double finishMtr=0.0;
-    Boolean isFinishMtrSave=false;
     Boolean isBillGenrated=false;
 
 
@@ -54,6 +53,7 @@ public class BatchData {
         this.sequenceId=other.sequenceId;
         this.finishMtr=other.finishMtr;
         this.isBillGenrated=other.isBillGenrated;
+
 
     }
 

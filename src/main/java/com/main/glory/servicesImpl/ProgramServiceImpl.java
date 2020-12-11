@@ -228,7 +228,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 //to set the list of child table in update purpose
                 for(ProgramRecord up:bm.getProgramRecords())
                 {
-                    //map the chila data one by one bind with list
+                    //map the child data one by one bind with list
                     ProgramRecord programRecordData = modelMapper.map(up, ProgramRecord.class);
 
                     programRecordData.setProgramControlId(bm.getId());
@@ -249,7 +249,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             }
             else
-                throw new Exception("id can't be nulll");
+                throw new Exception("id can't be null");
         }
 
     public List<GetAllBatchResponse> getAllBatchByQuality(Long qualityEntryId) throws Exception{
@@ -281,9 +281,12 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
 
-    public List<ShadeIdwithPartyShadeNo> getShadeDetail() {
+    public List<ShadeIdwithPartyShadeNo> getShadeDetail() throws Exception {
 
         List<ShadeMast> shadeMastList= shadeService.getAllShadeMast();
+        if(shadeMastList.isEmpty() || shadeMastList == null)
+            throw new Exception("no party shade found");
+
         List<ShadeIdwithPartyShadeNo> shadeIdwithPartyShadeNoList = new ArrayList<>();
 
         for (ShadeMast e : shadeMastList) {
@@ -303,6 +306,9 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             shadeIdwithPartyShadeNoList.add(data);
         }
 
+
+        if(shadeIdwithPartyShadeNoList.isEmpty())
+            throw new Exception("no party shade found");
 
         return shadeIdwithPartyShadeNoList;
     }

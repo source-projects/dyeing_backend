@@ -115,13 +115,16 @@ public class ProgramController extends ControllerConfig {
     //get partshade no with respected shadeId
     @GetMapping(value="/program/PartyShadeDetailPartyWise")
     public GeneralResponse<List<ShadeIdwithPartyShadeNo>> getShadeDetail() throws Exception {
-
-        List<ShadeIdwithPartyShadeNo> listData=programServiceImpl.getShadeDetail();
-            if(listData!=null)
-            {
-                return new GeneralResponse<>(listData,"Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        try {
+            List<ShadeIdwithPartyShadeNo> listData = programServiceImpl.getShadeDetail();
+            if (listData != null) {
+                return new GeneralResponse<>(listData, "Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }catch (Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 
