@@ -6,6 +6,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
+import com.main.glory.model.SendEmail;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.party.Party;
 import org.hibernate.Session;
@@ -55,10 +56,10 @@ public class DocumentImpl {
         if(documentModel.getToRow()>party.size())
            throw new Exception("Party size is :"+party.size());
 
-        for (int i =0 ; i <= (documentModel.getToRow() - documentModel.getFromRow()); i++) {
+        for (int i =documentModel.getFromRow().intValue()-1 ; i < (documentModel.getToRow()); i++) {
 
 
-             System.out.println(party.get(i).getPartyName());
+             //System.out.println(party.get(i).getPartyName());
              table.addCell(party.get(i).getPartyName());
              table.addCell(party.get(i).getPartyAddress1());
              table.addCell(party.get(i).getContactNo());
@@ -70,7 +71,10 @@ public class DocumentImpl {
         document.add(table);
 
         document.close();
+
         //______Document created successfully
 
+        SendEmail email=new SendEmail(documentModel.getToEmail(), fileName,documentModel.getSubjectEmail());
+        email.sendMail();
     }
 }

@@ -43,30 +43,35 @@ public class QualityProcessImpl {
 		for (QualityProcessData e : m.getSteps()) {
 			e.setControlId(m.getId());
 			if (e.getIsDosingControl()) {
-				Optional<Chemical> c = chemicalDao.findById(e.getDosingChemical().getId());
-				if (!c.isPresent()) {
-					chemicalDao.deleteById(e.getDosingChemical().getId());
-					qualityProcessDataDao.deleteById(e.getId());
-					qualityProcessMastDao.deleteById(m.getId());
-					throw new Exception("Null chemical data passed");
-				}
-				if (e.getDosingChemical().getSupplierId() == null) {
-					chemicalDao.deleteById(e.getDosingChemical().getId());
-					qualityProcessDataDao.deleteById(e.getId());
-					qualityProcessMastDao.deleteById(m.getId());
-					throw new Exception("Null supplier id passed");
-				} else {
-					Optional<Supplier> s = supplierDao.findById(e.getDosingChemical().getSupplierId());
-					if (s.isPresent())
-						e.getDosingChemical().setQualityProcessControlId(e.getId());
-					else{
-						chemicalDao.deleteById(e.getDosingChemical().getId());
+				for(Chemical chemical:e.getDosingChemical())
+				{
+					Optional<Chemical> c = chemicalDao.findById(chemical.getId());
+					if (!c.isPresent()) {
+						chemicalDao.deleteById(chemical.getId());
 						qualityProcessDataDao.deleteById(e.getId());
 						qualityProcessMastDao.deleteById(m.getId());
-						throw new Exception("No supplier found with id:" + e.getDosingChemical().getSupplierId());
+						throw new Exception("Null chemical data passed");
+					}
+					if (chemical.getSupplierId() == null) {
+						chemicalDao.deleteById(chemical.getId());
+						qualityProcessDataDao.deleteById(e.getId());
+						qualityProcessMastDao.deleteById(m.getId());
+						throw new Exception("Null supplier id passed");
+					} else {
+						Optional<Supplier> s = supplierDao.findById(chemical.getSupplierId());
+						if (s.isPresent())
+							chemical.setQualityProcessControlId(e.getId());
+						else{
+							chemicalDao.deleteById(chemical.getId());
+							qualityProcessDataDao.deleteById(e.getId());
+							qualityProcessMastDao.deleteById(m.getId());
+							throw new Exception("No supplier found with id:" + chemical.getSupplierId());
+						}
+
 					}
 
 				}
+
 			}
 		}
 		qualityProcessDataDao.saveAll(qualityProcessMast.getSteps());
@@ -108,9 +113,15 @@ public class QualityProcessImpl {
 		}
 		for(QualityProcessData e: q.get().getSteps()){
 			if(e.getIsDosingControl()){
-				Optional<Supplier> s = supplierDao.findById(e.getDosingChemical().getSupplierId());
-				if(!s.isPresent())
-					throw new Exception("No supplier found with id: "+e.getDosingChemical().getSupplierId());
+
+				for(Chemical chemical:e.getDosingChemical())
+				{
+					Optional<Supplier> s = supplierDao.findById(chemical.getSupplierId());
+					if(!s.isPresent())
+						throw new Exception("No supplier found with id: "+chemical.getSupplierId());
+
+				}
+
 			}
 		}
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
