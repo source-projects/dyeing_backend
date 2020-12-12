@@ -43,8 +43,9 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		Quality quality = modelMapper.map(qualityDto, Quality.class);
 
-		System.out.println(quality);
-
+		Optional<Quality> quality1 = qualityDao.findByQualityId(qualityDto.getQualityId());
+		if(quality1.isPresent())
+			throw new Exception("Quality id is already exist");
 
 		qualityDao.save(quality);
 		return 1;
@@ -197,8 +198,11 @@ public class QualityServiceImp implements QualityServiceInterface{
 		List<GetAllQualtiy> getAllQualtiyList =new ArrayList<>();
 		for(Quality quality:qualities)
 		{
+			Optional<Party> partyName=partyDao.findById(quality.getPartyId());
+			if(!partyName.isPresent())
+				continue;
+
 			GetAllQualtiy getAllQualtiy=new GetAllQualtiy(quality);
-			Optional<Party> partyName=partyDao.findById(getAllQualtiy.getPartyId());
 			getAllQualtiy.setPartyName(partyName.get().getPartyName());
 			getAllQualtiyList.add(getAllQualtiy);
 		}

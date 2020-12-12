@@ -94,7 +94,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
     @Transactional
     public List<GetAllProgram> getAllProgram(String getBy, Long id) throws Exception {
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+
         List<Program> programList = null;
         List<GetAllProgram> getAllProgramList = new ArrayList<>();
         if(id == null){
@@ -112,11 +112,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                     continue; // just skip the faulty data instead of halting the process
                 }
 
-                modelMapper.getConfiguration().setAmbiguityIgnored(true);
-                programData = modelMapper.map(e, GetAllProgram.class);
-                programData.setPartyName(party.get().getPartyName());
-                programData.setQualityName(quality.get().getQualityName());
-                programData.setQualityType(quality.get().getQualityType());
+                programData=new GetAllProgram(e,party.get(),quality.get());
 
                 getAllProgramList.add(programData);
             }
@@ -136,13 +132,10 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                     continue; // just skip the faulty data instead of halting the process
                 }
 
-                modelMapper.getConfiguration().setAmbiguityIgnored(true);
-                programData = modelMapper.map(e, GetAllProgram.class);
-                programData.setPartyName(party.get().getPartyName());
-                programData.setQualityName(quality.get().getQualityName());
-                programData.setQualityType(quality.get().getQualityType());
+                programData=new GetAllProgram(e,party.get(),quality.get());
 
                 getAllProgramList.add(programData);
+
             }
         }
         else if(getBy.equals("group")){
@@ -160,11 +153,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                     continue; // just skip the faulty data instead of halting the process
                 }
 
-                modelMapper.getConfiguration().setAmbiguityIgnored(true);
-                programData = modelMapper.map(e, GetAllProgram.class);
-                programData.setPartyName(party.get().getPartyName());
-                programData.setQualityName(quality.get().getQualityName());
-                programData.setQualityType(quality.get().getQualityType());
+                programData=new GetAllProgram(e,party.get(),quality.get());
 
                 getAllProgramList.add(programData);
             }
@@ -172,6 +161,8 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
 
+        if(getAllProgramList.isEmpty())
+            throw new Exception("no data found");
         return getAllProgramList;
     }
 
