@@ -88,6 +88,7 @@ public class QualityProcessImpl {
 		else if(getBy.equals("group")){
 			q = qualityProcessMastDao.findAllByUserHeadId(id);
 		}
+		System.out.println(q.get(0).getProcessName());
 		return q;
 	}
 
