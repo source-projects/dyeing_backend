@@ -26,7 +26,7 @@ public class SendEmail {
     String to;
     String fileName;
     String subject;
-    String username ="mohan.gloryautotech@gmail.com";
+    String username ="mohan.glorygfl@gmail.com";
     String password = "Mohan_123";
 
 
