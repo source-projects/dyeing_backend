@@ -44,7 +44,7 @@ public class DocumentImpl {
         //Add the data
         PdfPTable table = new PdfPTable(5);
         PdfPCell partyName = new PdfPCell(new Phrase("Party Name"));
-        partyName.setBackgroundColor(BaseColor.BLUE);
+       // partyName.setBackgroundColor(BaseColor.BLUE);
         table.addCell(partyName);
         PdfPCell partyAddress = new PdfPCell(new Phrase("Address"));
         table.addCell(partyAddress);
