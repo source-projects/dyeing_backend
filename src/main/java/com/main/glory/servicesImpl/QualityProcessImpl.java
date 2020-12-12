@@ -78,7 +78,7 @@ public class QualityProcessImpl {
 	}
 
 	@Transactional
-	public List<QualityProcessMast> qualityProcessMasts(String getBy, Long id){
+	public List<QualityProcessMast> qualityProcessMasts(String getBy, Long id) throws Exception{
 		List<QualityProcessMast> q = null;
 		if(id == null)
 			q = qualityProcessMastDao.findAll();
@@ -88,7 +88,9 @@ public class QualityProcessImpl {
 		else if(getBy.equals("group")){
 			q = qualityProcessMastDao.findAllByUserHeadId(id);
 		}
-		System.out.println(q.get(0).getProcessName());
+
+		if(q.isEmpty())
+			throw new Exception("No data added yet");
 		return q;
 	}
 

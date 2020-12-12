@@ -85,6 +85,7 @@ public class QualityProcessController extends ControllerConfig {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
