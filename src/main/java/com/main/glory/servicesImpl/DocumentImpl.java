@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -38,9 +40,11 @@ public class DocumentImpl {
         PdfWriter.getInstance(document, new FileOutputStream(fileName));//file is created, where the project filder is
         document.open();
 
+
         //Add the data
         PdfPTable table = new PdfPTable(5);
         PdfPCell partyName = new PdfPCell(new Phrase("Party Name"));
+        partyName.setBackgroundColor(BaseColor.BLUE);
         table.addCell(partyName);
         PdfPCell partyAddress = new PdfPCell(new Phrase("Address"));
         table.addCell(partyAddress);
@@ -51,13 +55,13 @@ public class DocumentImpl {
         PdfPCell partyState = new PdfPCell(new Phrase("State"));
         table.addCell(partyState);
         table.setHeaderRows(1);
+
         List<Party> party = partyDao.findAll();
 
         if(documentModel.getToRow()>party.size())
            throw new Exception("Party size is :"+party.size());
 
         for (int i =documentModel.getFromRow().intValue()-1 ; i < (documentModel.getToRow()); i++) {
-
 
              //System.out.println(party.get(i).getPartyName());
              table.addCell(party.get(i).getPartyName());
@@ -74,6 +78,8 @@ public class DocumentImpl {
 
         //______Document created successfully
 
+
+        //Send mail
         SendEmail email=new SendEmail(documentModel.getToEmail(), fileName,documentModel.getSubjectEmail());
         email.sendMail();
     }

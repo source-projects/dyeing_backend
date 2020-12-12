@@ -16,7 +16,7 @@ public class DocumentController extends ControllerConfig {
     DocumentImpl documentService;
 
     @PostMapping("/partyDocument/")
-    public GeneralResponse<Boolean> GetBatchByMaster(@RequestBody GetDocumentModel documentModel){
+    public GeneralResponse<Boolean> GetParty(@RequestBody GetDocumentModel documentModel){
         try{
             documentService.getParty(documentModel);
 

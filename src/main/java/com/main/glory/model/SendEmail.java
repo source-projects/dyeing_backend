@@ -26,7 +26,8 @@ public class SendEmail {
     String to;
     String fileName;
     String subject;
-    String from="mohan.gloryautotech@gmail.com";
+    String username ="mohan.gloryautotech@gmail.com";
+    String password = "Mohan_123";
 
 
     public SendEmail(String to, String fileName, String subject) {
@@ -38,57 +39,48 @@ public class SendEmail {
     public void sendMail()
     {
 
-        //configure the mail
-        // Get system properties
-        Properties properties = System.getProperties();
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
 
-        // Setup mail server
-        properties.setProperty("mail.smtp.host", "localhost");
-
-        // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
 
         try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
-
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
-
-            // Set Subject: header field
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(this.to)
+            );
             message.setSubject(this.subject);
 
-            // Create the message part
-            BodyPart messageBodyPart = new MimeBodyPart();
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
 
-            // Fill the message
-            messageBodyPart.setText("This is message body");
-
-            // Create a multipar message
             Multipart multipart = new MimeMultipart();
 
-            // Set text message part
-            multipart.addBodyPart(messageBodyPart);
-
-            // Part two is attachment
-            messageBodyPart = new MimeBodyPart();
-            String filename = this.fileName;
-            DataSource source = new FileDataSource(filename);
+            DataSource source = new FileDataSource(this.fileName);
             messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(filename);
+            messageBodyPart.setFileName(this.fileName);
             multipart.addBodyPart(messageBodyPart);
 
-            // Send the complete message parts
-            message.setContent(multipart );
+            message.setContent(multipart);
 
-            // Send message
             Transport.send(message);
-            System.out.println("Sent message successfully....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+
+            System.out.println("Done");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
+
+
     }
 }
