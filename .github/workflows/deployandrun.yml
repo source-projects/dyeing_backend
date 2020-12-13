@@ -46,7 +46,7 @@ jobs:
           fuser -k -n tcp 9090
           fuser -k -n tcp 9090
           fuser -k -n tcp 9090
-          deno run -A /home/ubuntu/logger/logger-lite/server.ts > /home/ubuntu/logger/logger-lite/serverlog.txt 2>&1 &
+          nohup deno run -A /home/ubuntu/logger/logger-lite/server.ts > /home/ubuntu/logger/logger-lite/serverlog.txt 2>&1 &
           
     - name: slack the message for success
       if: success()
