@@ -31,11 +31,8 @@ public class PartyController  extends ControllerConfig {
 	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party)
 	{
 		try {
-			int flag = partyServiceImp.saveParty(party);
-			if (flag != 1) {
-				return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-			} else
-				return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+		    partyServiceImp.saveParty(party);
+			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 		}
 		catch (Exception e)
 		{
