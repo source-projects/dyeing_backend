@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserServiceInterface {
         List<getAllUserInfo> userHeads = new ArrayList<>();
 
         for (UserData e : adminList) {
-            userHeads.add(modelMapper.map(e, getAllUserInfo.class));
+            //userHeads.add(modelMapper.map(e, getAllUserInfo.class));
             List<UserData> users = userDao.findByUserHeadId(e.getId());
             for (UserData ex : users) {
                 getAllUserInfo userData = modelMapper.map(ex, getAllUserInfo.class);
@@ -152,6 +152,7 @@ public class UserServiceImpl implements UserServiceInterface {
                 userData1.get().setDesignationId(designation.get());
             else
                 throw new Exception("Wrong designation id"+userData1.get().getDesignationId());
+
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
             userData1.get().setLastName(userData.getLastName());
