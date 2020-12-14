@@ -30,12 +30,18 @@ public class PartyController  extends ControllerConfig {
 	@PostMapping(value="/party")
 	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party)
 	{
-		int flag=partyServiceImp.saveParty(party);
-		if(flag!=1)
+		try {
+			int flag = partyServiceImp.saveParty(party);
+			if (flag != 1) {
+				return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			} else
+				return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+		}
+		catch (Exception e)
 		{
-			return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-		}else
-			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+			e.printStackTrace();
+			return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@GetMapping(value="/party/all/{getBy}/{id}")

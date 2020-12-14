@@ -35,7 +35,7 @@ public class BatchData {
     Long sequenceId=0l;
     Double finishMtr=0.0;
     Boolean isBillGenrated=false;
-
+    Boolean isFinishMtrSave=false;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore

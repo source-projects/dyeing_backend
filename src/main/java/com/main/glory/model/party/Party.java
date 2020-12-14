@@ -98,6 +98,7 @@ public class Party {
         this.partyType=addParty.getPartyType();
         this.paymentTerms=addParty.getPaymentTerms();
         this.percentageDiscount=addParty.getPercentageDiscount();
+        this.gstPercentage=addParty.getGstPercentage();
         this.userHeadId=addParty.getUserHeadId();
     }
 
