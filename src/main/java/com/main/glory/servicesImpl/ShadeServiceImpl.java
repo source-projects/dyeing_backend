@@ -55,17 +55,14 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		{
 			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
 		}
-		//System.out.println("QUQUQUQUQUQU:"+quality.get().toString());
-		//modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		Optional<Party> party = partyDao.findById(shadeMast.getPartyId());
+		if(party.get().getIsDelete()==true)
+			throw new Exception("Party is not available");
 		System.out.println("Shade Mast;"+shadeMast.toString());
-		//ShadeMast shadeData =  modelMapper.map(shadeMast, ShadeMast.class);
 		ShadeMast shadeData =  new ShadeMast(shadeMast);
 		System.out.println("\nShadeData"+shadeData.toString());
 		shadeData.setQualityEntryId(quality.get().getId());
-/*
-		shadeData.setQualityId(quality);
-		shadeData.setCreatedDate(dt);
-*/
+
 		Date dt = new Date(System.currentTimeMillis());
 		ShadeMast x = shadeMastDao.save(shadeData);
 		shadeMast.getShadeDataList().forEach(e -> {
