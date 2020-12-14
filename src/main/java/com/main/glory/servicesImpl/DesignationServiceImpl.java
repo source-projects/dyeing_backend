@@ -38,6 +38,7 @@ public class DesignationServiceImpl implements DesignationServiceInterface
     }
 
     public List<Designation> getDesignation() {
-        return designationDao.findAll();
+
+        return designationDao.findAllExceptAdmin();
     }
 }

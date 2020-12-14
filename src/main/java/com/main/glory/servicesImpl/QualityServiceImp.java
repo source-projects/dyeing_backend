@@ -171,7 +171,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 					continue;
 
 				QualityData qualityData = new QualityData(quality);
-
+				qualityData.setPartyName(partName.get().getPartyName());
 				qualityDataList.add(qualityData);
 
 
