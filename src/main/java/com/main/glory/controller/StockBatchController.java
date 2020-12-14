@@ -196,6 +196,7 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
+
     @GetMapping("/stockBatch/batchWithoutExtra/ByQualityAndParty/{qualityId}/{partyId}")
     public GeneralResponse<List<GetAllBatch>> getBatchWithoutProductionPlanById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
         try{

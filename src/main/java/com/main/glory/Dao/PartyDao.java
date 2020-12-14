@@ -25,4 +25,5 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	List<Party> findByUserHeadId(Long userHeadId);
 
 
+    Optional<Party> findByGSTIN(String gstin);
 }

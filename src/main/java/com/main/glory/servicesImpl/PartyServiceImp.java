@@ -24,11 +24,15 @@ public class PartyServiceImp implements PartyServiceInterface{
 	@Autowired
 	ModelMapper modelMapper;
 
-	public int saveParty(AddParty party) {
+	public int saveParty(AddParty party) throws Exception {
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		if(party!=null)
 		{
 			Party partyData = new Party(party);
+			Optional<Party> gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
+			if(gstAvailable.isPresent())
+				throw new Exception("GST No."+party.getGSTIN()+" is already exist");
+
 			partyDao.save(partyData);
 			return 1;
 		}else

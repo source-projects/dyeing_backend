@@ -380,7 +380,7 @@ public class StockBatchServiceImpl {
         for(int x=0;x<batchName.size();x++)
         {
             getAllBatch=new GetAllBatch();
-            getAllBatch.setBatchId(batchName.get(x));
+               getAllBatch.setBatchId(batchName.get(x));
             getAllBatch.setControlId(controlId.get(x));
             getAllBatch.setProdctionPlanned(productionPlanned.get(x));
 
@@ -394,6 +394,7 @@ public class StockBatchServiceImpl {
             getAllBatch.setQualityId(quality.get().getQualityId());
             getAllBatch.setQualityName(quality.get().getQualityName());
             getAllBatch.setQualityType(quality.get().getQualityType());
+
             getAllBatchList.add(getAllBatch);
         }
 
@@ -418,8 +419,6 @@ public class StockBatchServiceImpl {
 
             getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
 
-
-
         }
 
         return  getAllBatchWithPartyAndQualities;
@@ -440,12 +439,15 @@ public class StockBatchServiceImpl {
         if(!quality.isPresent())
             throw new Exception("Quality not found for batchId:"+batchId);
 
+
         BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
         batchToPartyAndQuality.setPartyId(party.get().getId());
         batchToPartyAndQuality.setPartyName(party.get().getPartyName());
         batchToPartyAndQuality.setQualityEntryId(quality.get().getId());
         batchToPartyAndQuality.setQualityId(quality.get().getQualityId());
         batchToPartyAndQuality.setQualityName(quality.get().getQualityName());
+        batchToPartyAndQuality.setBatchId(batchId);
+        batchToPartyAndQuality.setControlId(controlId);
         return batchToPartyAndQuality;
     }
 

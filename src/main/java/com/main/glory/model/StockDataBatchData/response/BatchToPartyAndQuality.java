@@ -33,5 +33,8 @@ public class BatchToPartyAndQuality {
         this.batchId=batch.batchId;
         this.totalMtr=batch.MTR;
         this.totalWt=batch.WT;
+
     }
+
+
 }
