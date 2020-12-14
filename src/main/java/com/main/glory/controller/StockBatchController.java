@@ -5,7 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.request.MergeBatch;
+import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -171,6 +171,30 @@ public class StockBatchController extends ControllerConfig {
         }
 
     }
+    @GetMapping("/stockBatch/IsBatchAvailableWithId/{controlId}/{batchId}")
+    public GeneralResponse<Boolean> IsBatchAvailable(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
+        try{
+
+            Boolean batchDataFlag = stockBatchService.IsBatchAvailable(controlId,batchId);
+
+            if(batchDataFlag==true)
+            {
+                return new GeneralResponse<>(true, "Batch Id is available", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                return new GeneralResponse<>(false, "Batch Id is already exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
+
+            }
+
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
     @GetMapping("/stockBatch/batchWithoutExtra/ByQualityAndParty/{qualityId}/{partyId}")
     public GeneralResponse<List<GetAllBatch>> getBatchWithoutProductionPlanById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
@@ -202,7 +226,7 @@ public class StockBatchController extends ControllerConfig {
         }
     }
     @PutMapping("/stockBatch/MergeBatch")
-    public GeneralResponse<Boolean> updateBatchMerge(@RequestBody List<MergeBatch> batchData1) {
+    public GeneralResponse<Boolean> updateBatchMerge(@RequestBody List<MergeSplitBatch> batchData1) {
         try {
             stockBatchService.updateBatchForMerge(batchData1);
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -211,6 +235,17 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PutMapping("/stockBatch/SplitBatch")
+    public GeneralResponse<Boolean> updateBatchSplit(@RequestBody List<MergeSplitBatch> batchData1) {
+        try {
+            stockBatchService.updateBatchSplit(batchData1);
+            return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @DeleteMapping("/stockBatch/{id}")
     public GeneralResponse<Boolean> deleteStockBatch(@PathVariable(value = "id") Long id){

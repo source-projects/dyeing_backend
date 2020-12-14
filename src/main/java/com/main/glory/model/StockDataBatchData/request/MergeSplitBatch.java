@@ -14,8 +14,9 @@ import java.util.List;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class MergeBatch {
+public class MergeSplitBatch {
     String batchId;
     Long controlId;
+    Boolean isSplit;
     List<BatchData> batchDataList;
 }

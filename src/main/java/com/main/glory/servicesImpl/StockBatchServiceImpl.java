@@ -6,13 +6,11 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.request.MergeBatch;
+import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -247,7 +245,7 @@ public class StockBatchServiceImpl {
 
     }
 
-    public void updateBatchForMerge(List<MergeBatch> batchData1) throws Exception{
+    public void updateBatchForMerge(List<MergeSplitBatch> batchData1) throws Exception{
         int k=0,i=0,n=batchData1.size();
 
         while(i<n) {
@@ -471,6 +469,44 @@ public class StockBatchServiceImpl {
             throw new Exception("batch gr not found");
 
         batchDao.deleteById(batchData.get().getId());
+
+    }
+
+    public void updateBatchSplit(List<MergeSplitBatch> batchData1)throws Exception {
+
+        int k=0,i=0,n=batchData1.size();
+
+        while(i<n) {
+            k=0;
+            if(batchData1.get(i).getIsSplit()==true)
+            {
+                List<BatchData> checkBatchIsAvailable = batchDao.findByControlIdAndBatchId(batchData1.get(i).getControlId(),batchData1.get(i).getBatchId());
+                if(!checkBatchIsAvailable.isEmpty())
+                {
+                    throw new Exception("Batch id is already exist");
+                }
+            }
+            for (BatchData batchData : batchData1.get(i).getBatchDataList()) {
+
+                batchData.setBatchId(batchData1.get(i).getBatchId());
+                batchData.setControlId(batchData1.get(i).getControlId());
+                batchDao.save(batchData);
+                k++;
+            }
+            i++;
+        }
+
+
+    }
+
+    public Boolean IsBatchAvailable(Long controlId, String batchId) {
+        List<BatchData> checkBatchIsAvaialble =  batchDao.findByControlIdAndBatchId(controlId,batchId);
+        if(checkBatchIsAvaialble.isEmpty())
+        {
+            return true;
+        }
+
+        return false;
 
     }
 }
