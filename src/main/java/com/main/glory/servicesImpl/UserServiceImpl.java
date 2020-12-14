@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserServiceInterface {
             List<UserData> users = userDao.findByUserHeadId(e.getId());
             for (UserData ex : users) {
                 getAllUserInfo userData = modelMapper.map(ex, getAllUserInfo.class);
+                System.out.println(userData.getUserHeadId());
                 userHeads.add(userData);
             }
         }
