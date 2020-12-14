@@ -22,21 +22,23 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query(value = "Select * from quality as qa where qa.quality_id=:qid",nativeQuery = true)
     List<Quality> getQualityListById(@Param("qid") String quality_id);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId AND p.isDelete=false)) from Quality q")
     List<QualityWithPartyName> findAllWithPartyName();
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where userHeadId = :userHeadId")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId AND p.isDelete=false)) from Quality q where userHeadId = :userHeadId")
     List<QualityWithPartyName> findAllWithPartyNameByUserHeadId(Long userHeadId);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where createdBy = :createdBy")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId AND p.isDelete=false)) from Quality q where createdBy = :createdBy")
     List<QualityWithPartyName> findAllWithPartyNameByCreatedBy( Long createdBy);
 
-    Optional<Quality> findByQualityId(Long qualityId);
+    @Query("Select q from Quality q where q.id = :qualityId")
+    Optional<Quality> findByQualityEntryId(Long qualityId);
 
-    Optional<Quality> findByQualityId(String qualityId);
+    Optional<Quality> findByQualityEntryId(String qualityId);
 
     Optional<Quality> findByQualityIdAndQualityName(String qualityId, String qualityName);
 
+    @Query("Select q from Quality q where q.partyId = :partyId AND q.isDelete=false")
     Optional<List<Quality>> findByPartyId(Long partyId);
 
     Optional<List<Quality>> findByUserHeadId(Long userHeadId);

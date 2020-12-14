@@ -9,8 +9,10 @@ import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springfox.documentation.schema.Entry;
 
 import java.util.*;
 
@@ -68,6 +70,10 @@ public class BatchImpl {
 
         for(BatchData batch:batchDataList)
         {
+            if(batch.getId()!=batch.getSequenceId())
+                batch.setIsExtra(true);
+
+            batch.setIsFinishMtrSave(true);
             batchDao.save(batch);
         }
 
@@ -109,7 +115,7 @@ public class BatchImpl {
         }
 
 
-        //set the data
+        //set value to the data
         data.setUserHeadId(userData.getId());
         data.setMasterName(userData.getFirstName());
         data.setBatchData(batchDataList);
@@ -145,3 +151,4 @@ public class BatchImpl {
         batchDao.deleteById(id);
     }
 }
+

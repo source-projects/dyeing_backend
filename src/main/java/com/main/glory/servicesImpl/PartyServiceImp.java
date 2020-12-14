@@ -61,12 +61,20 @@ public class PartyServiceImp implements PartyServiceInterface{
 	}
 
 	@Override
-	public Party getPartyDetailById(Long id) {
+	public Party getPartyDetailById(Long id) throws Exception {
 		var partyData=partyDao.findById(id);
 		if(partyData.isEmpty())
 			return null;
 		else
-			return partyData.get();
+		{
+			if(partyData.get().getIsDelete()==true)
+			{
+				throw new Exception("Data is not available for use because data is softly deleted");
+			}
+			else
+				return partyData.get();
+		}
+
 	}
 
 	@Override
@@ -82,12 +90,17 @@ public class PartyServiceImp implements PartyServiceInterface{
 	@Override
 	public boolean deletePartyById(Long id) {
 
-  		var partyIndex= partyDao.findById(id);
+  		Optional<Party> partyIndex= partyDao.findById(id);
 		if(!partyIndex.isPresent())
 		return false;
 		else
-		partyDao.deleteById(id);
-		 return true;	
+		{
+			partyIndex.get().setIsDelete(false);
+			partyDao.save(partyIndex.get());
+			return true;
+		}
+
+
 	}
 
 	@Override
@@ -104,9 +117,14 @@ public class PartyServiceImp implements PartyServiceInterface{
 			if(!partyAll.isEmpty()) {
 				partyAll.forEach(e ->
 				{
-					PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName());
-					System.out.println(partyWithName.getId());
-					partyWithNameList.add(partyWithName);
+					if(e.getIsDelete()==false)
+					{
+						PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName());
+						System.out.println(partyWithName.getId());
+						partyWithNameList.add(partyWithName);
+
+					}
+
 				});
 			}
 			return partyWithNameList;

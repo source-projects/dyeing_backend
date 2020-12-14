@@ -47,6 +47,7 @@ public class Party {
     private Double percentageDiscount;
     private Double gstPercentage;
     private Long userHeadId;
+    private Boolean isDelete=false;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore
@@ -100,6 +101,7 @@ public class Party {
         this.percentageDiscount=addParty.getPercentageDiscount();
         this.gstPercentage=addParty.getGstPercentage();
         this.userHeadId=addParty.getUserHeadId();
+        this.isDelete=false;
     }
 
 }

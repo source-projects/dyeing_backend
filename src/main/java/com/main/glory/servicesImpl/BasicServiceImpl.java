@@ -21,7 +21,7 @@ public class BasicServiceImpl {
 
     public void getPartyByQualityId(Long qualityEntryId)
     {
-        Optional<Quality> quality = qualityDao.findByQualityId(qualityEntryId);
+        Optional<Quality> quality = qualityDao.findByQualityEntryId(qualityEntryId);
 
         if(quality.isPresent())
         {

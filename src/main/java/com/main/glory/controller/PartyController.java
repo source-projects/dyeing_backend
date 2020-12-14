@@ -78,16 +78,20 @@ public class PartyController  extends ControllerConfig {
 	@GetMapping(value="/party/{id}")
 	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id)
 	{
-           if(id!=null)
-		   {
-			   Party partyObject=partyServiceImp.getPartyDetailById(id);
-			   if(partyObject!=null)
-			   {
-			   	    return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
-			   }
-			   return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-		   }
-           return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		try {
+			if (id != null) {
+				Party partyObject = partyServiceImp.getPartyDetailById(id);
+				if (partyObject != null) {
+					return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				}
+				return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+			return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
+		catch (Exception e)
+		{
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	@GetMapping(value="/party/allPartyWithName")
 	public GeneralResponse<List<PartyWithName>> getAllPartyName()

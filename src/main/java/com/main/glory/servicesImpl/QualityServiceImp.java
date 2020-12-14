@@ -7,7 +7,6 @@ import java.util.Optional;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
-import com.main.glory.model.machine.response.GetAllMachine;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
@@ -16,7 +15,6 @@ import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
@@ -43,7 +41,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		Quality quality = modelMapper.map(qualityDto, Quality.class);
 
-		Optional<Quality> quality1 = qualityDao.findByQualityId(qualityDto.getQualityId());
+		Optional<Quality> quality1 = qualityDao.findByQualityEntryId(qualityDto.getQualityId());
 		if(quality1.isPresent())
 			throw new Exception("Quality id is already exist");
 

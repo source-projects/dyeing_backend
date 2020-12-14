@@ -76,9 +76,10 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
             Long partyId = programData.getPartyId();
 
-            if(!partyDao.findById(partyId).isPresent())
+            Optional<Party> party = partyDao.findById(partyId);
+            if(!party.isPresent() || party.get().getIsDelete()==true)
             {
-                throw new Exception("No suh party is available with:"+partyId);
+                throw new Exception("No such party is available with:"+partyId);
             }
 
             programDao.save(programData);
@@ -107,7 +108,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 {
                     continue; // just skip the faulty data instead of halting the process
                 }
-                if(!party.isPresent())
+                if(!party.isPresent() || party.get().getIsDelete()==true)
                 {
                     continue; // just skip the faulty data instead of halting the process
                 }
@@ -127,7 +128,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 {
                     continue; // just skip the faulty data instead of halting the process
                 }
-                if(!party.isPresent())
+                if(!party.isPresent() || party.get().getIsDelete()==true)
                 {
                     continue; // just skip the faulty data instead of halting the process
                 }
@@ -148,7 +149,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 {
                     continue; // just skip the faulty data instead of halting the process
                 }
-                if(!party.isPresent())
+                if(!party.isPresent()||party.get().getIsDelete()==true)
                 {
                     continue; // just skip the faulty data instead of halting the process
                 }
@@ -207,7 +208,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 if (!qid.isPresent())
                     throw new Exception("No such Quality is available with id:"+qid.get().getId());
 
-                if(!partyId.isPresent())
+                if(!partyId.isPresent() || partyId.get().getIsDelete()==true)
                     throw new Exception("No such Party is available with id:"+partyId.get().getId());
 
 
@@ -288,6 +289,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             }
             if(e.getId()==null)
                 continue;
+
 
             ShadeIdwithPartyShadeNo data=new ShadeIdwithPartyShadeNo();
             data.setId(e.getId());
