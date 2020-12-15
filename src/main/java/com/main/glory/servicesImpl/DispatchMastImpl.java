@@ -57,13 +57,11 @@ public class DispatchMastImpl {
             if(!batch.isPresent())
                 throw new Exception("batch gr not found");
 
-
-
         }
 
         dispatchMast.getDispatchData().forEach(e->{
             Optional<BatchData> batchData1 = batchDao.findById(e.getBatchEntryId());
-            if(batchData1.isPresent())
+            if(batchData1.isPresent() && batchData1.get().getIsFinishMtrSave()==true)
                 batchData1.get().setIsBillGenrated(true);
         });
 

@@ -35,4 +35,5 @@ public class AddParty {
     private Double percentageDiscount;
     private Double gstPercentage;
     private Long userHeadId;
+    private String partyCode;
 }

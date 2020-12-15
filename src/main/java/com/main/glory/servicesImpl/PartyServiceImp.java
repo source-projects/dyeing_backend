@@ -36,9 +36,18 @@ public class PartyServiceImp implements PartyServiceInterface{
 				return;
 			}
 
+
+			if(party.getPartyCode().length()>4)
+				throw new Exception("Party code should not be greater than 4 digit");
+
 			Optional<Party> gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
+			Optional<Party> partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
+
 			if(gstAvailable.isPresent())
 				throw new Exception("GST No."+party.getGSTIN()+" is already exist");
+
+			if(partyCodeAvailable.isPresent())
+				throw new Exception("Party is availble with code:"+party.getPartyCode());
 
 			partyDao.save(partyData);
 

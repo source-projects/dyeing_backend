@@ -9,6 +9,7 @@ import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,37 +39,54 @@ public class BatchImpl {
 
     public void updateFinishMtrBatch(List<BatchData> batchDataList) throws Exception{
 
-        //##Get the data first from the list
-        Map<Long,Boolean> batchGr=new HashMap<>();
-        List<BatchData> batchData = batchDao.findByControlId(batchDataList.get(0).getControlId());
-        for(BatchData batch: batchData)
+
+        Map<Long,Boolean> extraBatch = new HashMap<>();
+
+        Long controlId = batchDataList.get(0).getControlId();
+        String batchId = batchDataList.get(0).getBatchId();
+
+
+        //getting the extra batch who's invoice is not created
+        List<BatchData> extraBatchList = batchDao.findByControlIdAndBatchIdWithExtraBatch(controlId,batchId);
+
+        for(BatchData batchData: extraBatchList)
         {
-            batchGr.put(batch.getId(),false);
-            //System.out.println(batch.getId());
+            extraBatch.put(batchData.getId(),false);
         }
 
-        for(BatchData batch: batchDataList)
+        for(BatchData batchData:batchDataList)
         {
-            if(batchGr.containsKey(batch.getId()))
+            //if it extra batch then create it
+            if(batchData.getId()==0)
             {
-                batchGr.replace(batch.getId(),true);
+                batchData.setIsExtra(true);
+                batchData.setIsFinishMtrSave(true);
+                batchData.setIsProductionPlanned(true);
+                batchDao.save(batchData);
+            }
+            else
+            {
+                //if it is already available then replace the flag from the hash map
+                if(batchData.getIsExtra()==true)
+                {
+                    extraBatch.replace(batchData.getId(),true);
+                }
+                //save the extra batch
+                batchDao.save(batchData);
             }
 
+
         }
 
-        //##Iterate the loop and delete the record who flag is false
-        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+        //##Iterate the loop and delete the record who flag is false in extra batch
+        for(Map.Entry<Long,Boolean> entry:extraBatch.entrySet())
         {
             System.out.println(entry.getKey()+":"+entry.getValue());
             if(entry.getValue()==false)
             {
+                //delete the extra batch gr who's the invoice is not created
                 batchDao.deleteById(entry.getKey());
             }
-        }
-
-        for(BatchData batch:batchDataList)
-        {
-            batchDao.save(batch);
         }
 
     }
