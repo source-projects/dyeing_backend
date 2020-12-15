@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.main.glory.config.ControllerConfig;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -45,6 +46,22 @@ public class MachineController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value="/machine/addRecord/{name}/{datetime}")
+    public GeneralResponse<Boolean> saveMachineRecord(@PathVariable(name="datetime") long date, @PathVariable(name="name") String name) throws Exception {
+        boolean flag;
+        try {
+
+            machineService.addTempMachineRecord(name,date);
+            return new GeneralResponse<Boolean>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
             return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
