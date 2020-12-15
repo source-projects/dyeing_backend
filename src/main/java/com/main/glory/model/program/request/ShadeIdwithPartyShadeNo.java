@@ -13,6 +13,7 @@ public class ShadeIdwithPartyShadeNo {
 
     Long id;
     String qualityId;
+    Long partyId;
     String partyShadeNo;
     String colorTone;
 
