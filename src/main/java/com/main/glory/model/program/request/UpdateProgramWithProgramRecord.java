@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,5 +23,6 @@ public class UpdateProgramWithProgramRecord {
     private String priority;
     private Long updatedBy;
     private Long createdBy;
+    private Date createdDate;
     List<ProgramRecord> programRecords;
 }

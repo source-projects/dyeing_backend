@@ -136,7 +136,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
-    public List getAllSupplier(String getBy, Long id) {
+    public List getAllSupplier(String getBy, Long id) throws Exception {
         List s = null;
         if(id == null){
             s = supplierDao.findAllWithoutRates();
@@ -147,6 +147,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         else if(getBy.equals("group")){
             s = supplierDao.findAllWithoutRatesByUserHeadId(id);
         }
+
+        if(s.isEmpty())
+            throw new Exception("data not added yet");
         return s;
     }
 
@@ -202,9 +205,16 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         for(ItemWithSupplier item:itemWithSupplier)
         {
 
-            Optional<Supplier> supplier = supplierDao.findById(item.getSupplierId());
-            GetItemWithSupplier getItemWithSupplier=new GetItemWithSupplier(supplier.get(),item);
-            getItemWithSupplierList.add(getItemWithSupplier);
+            if(item.getSupplierId()!=null)
+            {
+                Optional<Supplier> supplier = supplierDao.findById(item.getSupplierId());
+                if(supplier.isEmpty())
+                    continue;
+
+                GetItemWithSupplier getItemWithSupplier=new GetItemWithSupplier(supplier.get(),item);
+                getItemWithSupplierList.add(getItemWithSupplier);
+            }
+
         }
 
         if(getItemWithSupplierList.isEmpty())
