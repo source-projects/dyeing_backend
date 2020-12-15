@@ -18,7 +18,9 @@ public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+    Long supplierId;
     String supplierName;
+    Long itemId;
     String itemName;
     Long userHeadId;
     Long createdBy;
