@@ -21,7 +21,6 @@ public class PurchaseOrderImpl {
         {
             purchaseOrderDao.save(purchaseOrder);
             return true;
-
         }
         return false;
     }
