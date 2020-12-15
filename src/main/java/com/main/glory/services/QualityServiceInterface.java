@@ -8,7 +8,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 
 public interface QualityServiceInterface {
 
-	public List<GetQualityResponse> getAllQuality(Long id, String getBy);
+	public List<GetQualityResponse> getAllQuality(Long id, String getBy) throws Exception;
 	public int saveQuality(AddQualityRequest obj) throws Exception;
 	public boolean updateQuality(UpdateQualityRequest obj) throws Exception;
 	public boolean deleteQualityById(Long id);

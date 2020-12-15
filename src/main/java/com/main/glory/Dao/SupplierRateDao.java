@@ -15,10 +15,10 @@ import java.util.List;
 
 public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
     List<SupplierRate> findBySupplierId(Long aLong);
-    @Query("Select new com.main.glory.model.supplier.GetAllSupplierRate(q, (Select p.supplierName from Supplier p where p.id = q.supplierId)) from SupplierRate q")
+    @Query("Select new com.main.glory.model.supplier.GetAllSupplierRate(q, (Select p.supplierName from Supplier p where p.id = q.supplierId)) from SupplierRate q where supplierId IS NOT NULL")
     List<GetAllSupplierRate> findWithSupplierName();
 
 
-    @Query("Select new com.main.glory.model.supplier.responce.ItemWithSupplier(q.id as id,q.itemName as itemName,q.supplierId as supplierId,SUM(q.rate) as RATE) from SupplierRate q GROUP BY  id,supplierId")
+    @Query("Select new com.main.glory.model.supplier.responce.ItemWithSupplier(q.id as id,q.itemName as itemName,q.supplierId as supplierId,SUM(q.rate) as RATE) from SupplierRate q where supplierId IS NOT NULL GROUP BY  id,supplierId")
     List<ItemWithSupplier> findAllSupplierItem();
 }

@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface ShadeServicesInterface {
 	public void saveShade(AddShadeMast shadeMast)throws Exception;
 	public List<ShadeMast> getAllShadeMast() throws Exception;
-	public Optional<ShadeMast> getShadeMastById(Long id);
+	public Optional<ShadeMast> getShadeMastById(Long id) throws Exception;
 	public Boolean updateShade(ShadeMast shadeMast);
 }

@@ -54,7 +54,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 
 	@Override
-	public List<GetQualityResponse> getAllQuality(Long id, String getBy) {
+	public List<GetQualityResponse> getAllQuality(Long id, String getBy) throws Exception{
 		List<QualityWithPartyName> qualityListobject = null;
 		List<GetQualityResponse> quality = null;
 		if(id == null){
@@ -73,6 +73,8 @@ public class QualityServiceImp implements QualityServiceInterface{
 			quality = modelMapper.map(qualityListobject, List.class);
 		}
 
+		if(quality.isEmpty())
+				throw new Exception("quality not added yet");
 		return quality;
 	}
 

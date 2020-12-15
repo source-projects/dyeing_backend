@@ -259,6 +259,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         List<ShadeIdwithPartyShadeNo> shadeIdwithPartyShadeNoList = new ArrayList<>();
 
         for (ShadeMast e : shadeMastList) {
+
             Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
 
             if(!quality.isPresent()){
