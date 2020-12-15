@@ -200,7 +200,6 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                 {
                     //map the child data one by one bind with list
                     ProgramRecord programRecordData = modelMapper.map(up, ProgramRecord.class);
-
                     programRecordData.setProgramControlId(bm.getId());
                     programRecordList.add(programRecordData);
                 }
