@@ -415,6 +415,9 @@ public class StockBatchServiceImpl {
             Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
             Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
+            if(!stockMast.isPresent() || !party.isPresent() || !quality.isPresent())
+                continue;
+
             BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
 
             getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
