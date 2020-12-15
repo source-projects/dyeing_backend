@@ -11,6 +11,7 @@ import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.support.NullValue;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -406,23 +407,37 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<BatchToPartyAndQuality> getAllBatchDetail() {
+    public List<BatchToPartyAndQuality> getAllBatchDetail()  throws Exception{
         List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
         List<GetBatchWithControlId> batchData = batchDao.findAllBasedOnControlIdAndBatchId();
+
         for(GetBatchWithControlId batch : batchData)
         {
+
+
             Optional<StockMast> stockMast=stockMastDao.findById(batch.getControlId());
-            Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
-            Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
-            if(!stockMast.isPresent() || !party.isPresent() || !quality.isPresent())
-                continue;
+            if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
+            {
+                Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
 
-            BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
+                Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
-            getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+                BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
+
+                getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+
+
+            }
+
+
+
+
 
         }
+        if(getAllBatchWithPartyAndQualities.isEmpty())
+            throw new Exception("No data found");
 
         return  getAllBatchWithPartyAndQualities;
     }
