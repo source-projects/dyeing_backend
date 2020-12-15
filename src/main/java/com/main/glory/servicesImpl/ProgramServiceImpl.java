@@ -101,61 +101,40 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             programList = programDao.findAll();
             for (Program e : programList) {
                 GetAllProgram programData;
-                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                Optional<Party> party = partyDao.findById(e.getPartyId());
-                if(!quality.isPresent())
+                if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
                 {
-                    continue; // just skip the faulty data instead of halting the process
+                    Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                    Optional<Party> party = partyDao.findById(e.getPartyId());
+                    programData=new GetAllProgram(e,party.get(),quality.get());
+                    getAllProgramList.add(programData);
                 }
-                if(!party.isPresent())
-                {
-                    continue; // just skip the faulty data instead of halting the process
-                }
-
-                programData=new GetAllProgram(e,party.get(),quality.get());
-
-                getAllProgramList.add(programData);
             }
         }
         else if(getBy.equals("own")){
             programList = programDao.findByCreatedBy(id);
             for (Program e : programList) {
                 GetAllProgram programData;
-                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                Optional<Party> party = partyDao.findById(e.getPartyId());
-                if(!quality.isPresent())
+
+                if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
                 {
-                    continue; // just skip the faulty data instead of halting the process
+                    Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                    Optional<Party> party = partyDao.findById(e.getPartyId());
+                    programData=new GetAllProgram(e,party.get(),quality.get());
+                    getAllProgramList.add(programData);
                 }
-                if(!party.isPresent())
-                {
-                    continue; // just skip the faulty data instead of halting the process
-                }
-
-                programData=new GetAllProgram(e,party.get(),quality.get());
-
-                getAllProgramList.add(programData);
-
             }
         }
         else if(getBy.equals("group")){
             programList = programDao.findByUserHeadId(id);
             for (Program e : programList) {
                 GetAllProgram programData;
-                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                Optional<Party> party = partyDao.findById(e.getPartyId());
-                if(!quality.isPresent())
+                if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
                 {
-                    continue; // just skip the faulty data instead of halting the process
+                    Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                    Optional<Party> party = partyDao.findById(e.getPartyId());
+                    programData=new GetAllProgram(e,party.get(),quality.get());
+                    getAllProgramList.add(programData);
                 }
-                if(!party.isPresent())
-                {
-                    continue; // just skip the faulty data instead of halting the process
-                }
-
-                programData=new GetAllProgram(e,party.get(),quality.get());
-
-                getAllProgramList.add(programData);
             }
         }
 
