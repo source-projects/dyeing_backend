@@ -18,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +47,7 @@ public class MachineServiceImpl {
 
     @Autowired
     ModelMapper modelMapper;
+
 
 
 
@@ -520,6 +524,39 @@ public class MachineServiceImpl {
 
 
         return null;
+
+    }
+//for store the temp data
+    public void addTempMachineRecord(String name, long date) {
+
+        try {
+            Optional<MachineMast> machineMast = machineDao.findByMachineName(name);
+            long retryDate = date;
+            int sec = 600;
+            Double speed = 90.0;
+            for (int i = 0; i < 10; i++) {
+
+                Timestamp original = new Timestamp(retryDate);
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(original.getTime());
+                cal.add(Calendar.SECOND, sec);
+                Timestamp later = new Timestamp(cal.getTime().getTime());
+
+
+                MachineRecord machineRecord = new MachineRecord();
+                machineRecord.setControlId(machineMast.get().getId());
+                machineRecord.setSpeed(speed);
+                speed += 10;
+                machineRecord.setCreatedDate(later);
+                machineRecordDao.save(machineRecord);
+                retryDate = later.getTime();
+                //System.out.println(later);
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
 
     }
 }
