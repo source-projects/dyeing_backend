@@ -20,6 +20,7 @@ public class UpdateProgramWithProgramRecord {
     private String programGivenBy;
     private String remark;
     private String priority;
-    private String updatedBy;
+    private Long updatedBy;
+    private Long createdBy;
     List<ProgramRecord> programRecords;
 }
