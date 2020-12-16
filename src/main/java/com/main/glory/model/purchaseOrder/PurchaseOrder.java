@@ -26,5 +26,14 @@ public class PurchaseOrder {
     Long createdBy;
     Long status;
 
-
+    public PurchaseOrder(PurchaseOrder p){
+        this.id = p.id;
+        this.supplierId = p.supplierId;
+        this.status = p.status;
+        this.supplierName = p.supplierName;
+        this.itemId = p.itemId;
+        this.itemName = p.itemName;
+        this.userHeadId = p.userHeadId;
+        this.createdBy = p.createdBy;
+    }
 }
