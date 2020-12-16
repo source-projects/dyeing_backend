@@ -17,7 +17,7 @@ jobs:
         java-version: 1.14
     - name: Build with Maven
       run: |
-        ./setenv.sh application.prod
+        sudo bash ./setenv.sh application.prod
         curl -X POST -H 'Content-type: application/json' --data '{"text":"V2 Back end pipeline started"}' https://hooks.slack.com/services/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
         mvn clean install
         
