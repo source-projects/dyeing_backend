@@ -224,4 +224,8 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
 
     }
+
+    public Optional<SupplierRate> getItemById(Long itemId) {
+        return supplierRateDao.findById(itemId);
+    }
 }

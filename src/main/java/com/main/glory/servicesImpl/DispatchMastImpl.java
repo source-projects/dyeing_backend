@@ -115,4 +115,14 @@ public class DispatchMastImpl {
 
 
     }
+
+    public List<BatchData> getFinishMtrListBasedOnBatchIdAndControlId(String batchId, Long controlId) throws Exception{
+        List<BatchData> batchDataList = batchDao.findByControlIdAndBatchIdWithFinishMtr(batchId,controlId);
+
+        if(batchDataList.isEmpty())
+            throw new Exception("Data not found");
+
+        return batchDataList;
+
+    }
 }
