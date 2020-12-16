@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.purchaseOrder.PurchaseOrder;
+import com.main.glory.model.purchaseOrder.ResponsePurchase;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.servicesImpl.PurchaseOrderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,14 @@ public class PurchaseOrderController extends ControllerConfig {
         }
     }
     @GetMapping("/purchaseOrder/all")
-    public GeneralResponse<List<PurchaseOrder>> getAllPurchaseOrder(){
+    public GeneralResponse<List<ResponsePurchase>> getAllPurchaseOrder(){
         try{
-            List<PurchaseOrder> purchaseOrderList = purchaseOrderService.getAllPurchaseOrder();
+            List<ResponsePurchase> purchaseOrderList = purchaseOrderService.getAllPurchaseOrder();
             if(purchaseOrderList.isEmpty())
             {
-                return new GeneralResponse<List<PurchaseOrder>>(null, "Order not added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "Order not added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-            return new GeneralResponse<List<PurchaseOrder>>(purchaseOrderList, "Order fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<>(purchaseOrderList, "Order fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
