@@ -526,7 +526,7 @@ public class MachineServiceImpl {
         return null;
 
     }
-//for store the temp data
+//for store the temp data of machine record not recommedated
     public void addTempMachineRecord(String name, long date) {
 
         try {

@@ -88,6 +88,13 @@ public class PartyServiceImp implements PartyServiceInterface{
   		if(party1.isPresent())
   			throw new Exception("Party code should be unique");
 
+  		if(party.getGSTIN().isEmpty())
+		{
+			partyDao.save(party);
+			return true;
+		}
+
+
   		party1=partyDao.findByGSTIN(party.getGSTIN());
 
   		if(party1.isPresent())
