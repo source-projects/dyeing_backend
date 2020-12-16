@@ -6,9 +6,12 @@ import java.util.Optional;
 
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
+import com.main.glory.model.party.request.PartyWithPartyCode;
 import com.main.glory.model.quality.Quality;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
@@ -81,6 +84,15 @@ public class PartyServiceImp implements PartyServiceInterface{
 	@Override
 	public boolean editPartyDetails(Party party) throws Exception {
   		var partyIndex= partyDao.findById(party.getId());
+  		Optional<Party> party1 = partyDao.findByPartyCode(party.getPartyCode());
+  		if(party1.isPresent())
+  			throw new Exception("Party code should be unique");
+
+  		party1=partyDao.findByGSTIN(party.getGSTIN());
+
+  		if(party1.isPresent())
+  			throw new Exception("GST is already availble");
+
 		if(!partyIndex.isPresent())
 		return false;
 		else
@@ -125,5 +137,23 @@ public class PartyServiceImp implements PartyServiceInterface{
 			e.printStackTrace();
 		}
 		return null;
+    }
+
+    public List<PartyWithPartyCode> getAllPartyNameWithPartyCode() throws Exception{
+		List<PartyWithPartyCode> partyWithPartyCodesList =new ArrayList<>();
+		List<Party> partyList = partyDao.findAll();
+		for(Party party:partyList)
+		{
+			if(party.getPartyCode()!=null)
+			{
+				PartyWithPartyCode partyWithPartyCode = new PartyWithPartyCode(party);
+				partyWithPartyCodesList.add(partyWithPartyCode);
+
+			}
+		}
+		if(partyWithPartyCodesList.isEmpty())
+			throw new Exception("Data not added yet");
+
+		return partyWithPartyCodesList;
     }
 }
