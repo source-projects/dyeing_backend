@@ -92,12 +92,17 @@ public class BatchImpl {
     }
 
     public List<BatchData> getBatchById(String batchId, Long controlId) throws Exception{
-        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId,batchId);
+        try {
+            List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId, batchId);
+            if (batchData.isEmpty())
+                throw new Exception("Batch is not available for batchId:" + batchId);
 
-        if(batchData.isEmpty())
-            throw new Exception("Batch is not available for batchId:"+batchId);
-
-        return  batchData;
+            return batchData;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<BatchData> getBatchByDocId(String batchId, Long controlId) {
