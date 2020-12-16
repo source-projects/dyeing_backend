@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.purchaseOrder.PurchaseOrderDao;
 import com.main.glory.model.purchaseOrder.PurchaseOrder;
+import com.main.glory.model.purchaseOrder.ResponsePurchase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,8 @@ public class PurchaseOrderImpl {
         return false;
     }
 
-    public List<PurchaseOrder> getAllPurchaseOrder() {
-        return purchaseOrderDao.findAll();
+    public List<ResponsePurchase> getAllPurchaseOrder() {
+        return purchaseOrderDao.getAllWithUserName();
     }
 
     public void updatePurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
