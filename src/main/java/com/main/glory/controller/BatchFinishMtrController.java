@@ -59,11 +59,12 @@ public class BatchFinishMtrController extends ControllerConfig {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         }catch(Exception e){
+            e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
-    @GetMapping("/batch/allDetails/{controlId}/{batchId}")
+    @GetMapping("/batch/jobCardDetails/{controlId}/{batchId}")
     public GeneralResponse<GetCompleteFinishMtrDetail> getFinishMtrWithAllDataBatchById(@PathVariable(value = "batchId") String batchId, @PathVariable(value = "controlId") Long controlId){
         try{
             if(batchId!=null){

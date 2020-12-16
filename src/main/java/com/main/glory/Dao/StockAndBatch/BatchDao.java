@@ -21,6 +21,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     Optional<List<BatchData>> findByBatchId(String batchId);
 
+
     List<BatchData> findByControlIdAndBatchId(Long controlId,String batchId);
 
     List<BatchData> findByControlIdAndBatchIdAndIsProductionPlanned(Long controlId, String batchId, Boolean b);

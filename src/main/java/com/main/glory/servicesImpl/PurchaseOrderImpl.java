@@ -9,7 +9,9 @@ import com.main.glory.model.supplier.responce.RateAndItem;
 
 import com.main.glory.model.purchaseOrder.ResponsePurchase;
 
+import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ public class PurchaseOrderImpl {
 
     @Autowired
     SupplierServiceImpl supplierService;
+    @Autowired
+    UserServiceImpl userService;
 
 
 
@@ -47,22 +51,26 @@ public class PurchaseOrderImpl {
     }
 
 
-    public List<PurchaseOrder> getAllPurchaseOrder() {
-        List<PurchaseOrder> purchaseOrderList=new ArrayList<>();
+    public List<ResponsePurchase> getAllPurchaseOrder() {
+        List<ResponsePurchase> responsePurchasesList=new ArrayList<>();
+
+        List<PurchaseOrder> purchaseOrderList = purchaseOrderDao.findAll();
         for(PurchaseOrder purchaseOrder:purchaseOrderList)
         {
             if(purchaseOrder.getItemId()!=null && purchaseOrder.getSupplierId()!=null)
             {
                 Optional<Supplier> supplierExist=supplierService.getSupplier(purchaseOrder.getSupplierId());
                 Optional<SupplierRate> supplierItemExist = supplierService.getItemById(purchaseOrder.getItemId());
+                UserData user = userService.getUserById(purchaseOrder.getUserHeadId());
 
-                if(!supplierExist.isPresent() && !supplierItemExist.isPresent())
+                if(!supplierExist.isPresent() && !supplierItemExist.isPresent() && user==null )
                     continue;
 
-                purchaseOrderList.add(purchaseOrder);
+                ResponsePurchase responsePurchase = new ResponsePurchase(purchaseOrder,user.getUserName());
+                responsePurchasesList.add(responsePurchase);
             }
         }
-        return purchaseOrderList;
+        return responsePurchasesList;
     }
 
     public void updatePurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
