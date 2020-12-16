@@ -6,6 +6,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
+import com.main.glory.model.party.request.PartyWithPartyCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -89,6 +90,20 @@ public class PartyController  extends ControllerConfig {
 		   }
            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
+
+	@GetMapping(value="/party/allWithPartyCode")
+	public GeneralResponse<List<PartyWithPartyCode>> getPartyDetailsWithPartyCode()
+	{
+		try {
+			List<PartyWithPartyCode> partyObject = partyServiceImp.getAllPartyNameWithPartyCode();
+			return new GeneralResponse<>(partyObject, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+
+		}catch (Exception e)
+		{
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	@GetMapping(value="/party/allPartyWithName")
 	public GeneralResponse<List<PartyWithName>> getAllPartyName()
 	{
@@ -104,16 +119,21 @@ public class PartyController  extends ControllerConfig {
 	@PutMapping(value="/party")
 	public GeneralResponse<Boolean> updateParty(@RequestBody Party party) throws Exception
 	{
-		if(party!=null)
+		try {
+			if (party != null) {
+				boolean flag = partyServiceImp.editPartyDetails(party);
+				if (flag) {
+					return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+				} else {
+					return new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				}
+			}
+
+		}catch(Exception e)
 		{
-			 boolean flag=partyServiceImp.editPartyDetails(party);
-			 if(flag) {
-				 return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-			 }else{
-				 return new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-			 }
+			return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
-		return new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		return null;
 	}
 	
 	@DeleteMapping(value="/party/{id}")
