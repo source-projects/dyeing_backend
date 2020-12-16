@@ -27,7 +27,7 @@ public class MachineRecord {
 
     @PrePersist
     protected void onCreate() {
-        this.createdDate = new Date(System.currentTimeMillis());
+        this.createdDate = new Date(System.currentTimeMillis()+19800000);
     }
 
     @PreUpdate
