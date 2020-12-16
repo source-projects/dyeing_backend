@@ -163,4 +163,14 @@ public class PartyServiceImp implements PartyServiceInterface{
 
 		return partyWithPartyCodesList;
     }
+
+    public Boolean partyCodeExistOrNot(String partyCode) {
+
+		Optional<Party> party = partyDao.findByPartyCode(partyCode);
+
+		if(!party.isPresent())
+			return true;
+
+		return false;
+    }
 }
