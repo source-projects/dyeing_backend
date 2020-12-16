@@ -116,6 +116,21 @@ public class PartyController  extends ControllerConfig {
 		return new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 	}
 
+	@GetMapping(value="/party/partyCodeExist/{partyCode}")
+	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode)
+	{
+		if(partyCode==null)
+		{
+			return new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
+
+		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode);
+		if(partyCodeExistOrNot==true)
+			return new GeneralResponse<>(true, "Party code is available to use ", true, System.currentTimeMillis(), HttpStatus.OK);
+		else
+		return new GeneralResponse<>(false, "Party code is already exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
+	}
+
 	@PutMapping(value="/party")
 	public GeneralResponse<Boolean> updateParty(@RequestBody Party party) throws Exception
 	{
