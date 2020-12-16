@@ -37,9 +37,10 @@ public class QualityProcessController extends ControllerConfig {
 			if(qualityProcessMast == null){
 				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
-			qualityProcess.saveQualityProcess(qualityProcessMast);
+			qualityProcess.saveQualityProcessMast(qualityProcessMast);
 			return new GeneralResponse<>(true, "Process Added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		}catch (Exception e){
+			e.printStackTrace();
 			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

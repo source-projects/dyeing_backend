@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.purchaseOrder.PurchaseOrderDao;
 import com.main.glory.model.purchaseOrder.PurchaseOrder;
 
@@ -26,6 +27,9 @@ public class PurchaseOrderImpl {
 
     @Autowired
     SupplierServiceImpl supplierService;
+
+    @Autowired
+    SupplierRateDao supplierRateDao;
     @Autowired
     UserServiceImpl userService;
 
@@ -36,12 +40,12 @@ public class PurchaseOrderImpl {
         if(purchaseOrder.getStatus()==1 || purchaseOrder.getStatus()==2 || purchaseOrder.getStatus()==0)
         {
             Optional<Supplier> supplierExist=supplierService.getSupplier(purchaseOrder.getSupplierId());
-            Optional<SupplierRate> supplierItemExist=supplierService.getItemById(purchaseOrder.getItemId());
+            Optional<SupplierRate> supplierItemExist=supplierRateDao.findByIdAndSupplierId(purchaseOrder.getItemId(),purchaseOrder.getSupplierId());
 
             if(!supplierExist.isPresent())
-                throw new Exception("Supllier is not available with name:"+purchaseOrder.getSupplierName());
+                throw new Exception("Supplier is not available with name:"+purchaseOrder.getSupplierName());
 
-            if(!supplierItemExist.isPresent())
+            if(supplierItemExist.isEmpty())
                 throw new Exception("Item is not availble for supplier:"+ purchaseOrder.getSupplierName());
 
             purchaseOrderDao.save(purchaseOrder);

@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.SupplierDao;
+import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessDataDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
@@ -11,6 +12,7 @@ import com.main.glory.model.qualityProcess.QualityProcessData;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
 import com.main.glory.model.qualityProcess.request.UpdateRequestQualityProcess;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class QualityProcessImpl {
 
 	@Autowired
 	SupplierDao supplierDao;
+
+	@Autowired
+	SupplierRateDao supplierRateDao;
 
 	@Autowired
 	QualityProcessDataDao qualityProcessDataDao;
@@ -136,4 +141,25 @@ public class QualityProcessImpl {
 			qualityProcessMastDao.deleteById(id);
 			return true;
 		}
+
+	public void saveQualityProcessMast(QualityProcessMast qualityProcessMast) throws Exception {
+		int x=0;
+		if(qualityProcessMast.getSteps().get(x).getDosingChemical()!=null)
+		{
+			for(Chemical qualityChemicalData:qualityProcessMast.getSteps().get(x).getDosingChemical())
+			{
+				Optional<Supplier> supplierExist=supplierDao.findById(qualityChemicalData.getSupplierId());
+				Optional<SupplierRate> supplierItemExist  = supplierRateDao.findByIdAndSupplierId(qualityChemicalData.getItemId(),qualityChemicalData.getSupplierId());
+
+
+				if(supplierExist.isEmpty() || supplierItemExist.isEmpty())
+					throw new Exception("Supplier item is not available");
+
+
+				x++;
+			}
+		}
+
+		qualityProcessMastDao.save(qualityProcessMast);
 	}
+}

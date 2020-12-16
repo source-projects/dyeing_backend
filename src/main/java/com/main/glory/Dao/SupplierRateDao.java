@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
@@ -21,4 +22,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
 
     @Query("Select new com.main.glory.model.supplier.responce.ItemWithSupplier(q.id as id,q.itemName as itemName,q.supplierId as supplierId,SUM(q.rate) as RATE) from SupplierRate q where supplierId IS NOT NULL GROUP BY  id,supplierId")
     List<ItemWithSupplier> findAllSupplierItem();
+
+
+    Optional<SupplierRate> findByIdAndSupplierId(Long id,Long supplierId);
 }
