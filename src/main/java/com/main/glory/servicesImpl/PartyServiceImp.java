@@ -85,7 +85,10 @@ public class PartyServiceImp implements PartyServiceInterface{
 	public boolean editPartyDetails(Party party) throws Exception {
   		var partyIndex= partyDao.findById(party.getId());
   		Optional<Party> party1 = partyDao.findByPartyCode(party.getPartyCode());
-  		if(party1.isPresent())
+  		if(!partyIndex.isPresent())
+  			throw new Exception("Party data not found for id:"+party.getId());
+
+  		if(party1.isPresent() && party1.get().getId()!=party.getId())
   			throw new Exception("Party code should be unique");
 
   		if(party.getGSTIN().isEmpty())
@@ -97,7 +100,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 
   		party1=partyDao.findByGSTIN(party.getGSTIN());
 
-  		if(party1.isPresent())
+  		if(party1.isPresent() && party1.get().getId()!=party.getId())
   			throw new Exception("GST is already availble");
 
 		if(!partyIndex.isPresent())
