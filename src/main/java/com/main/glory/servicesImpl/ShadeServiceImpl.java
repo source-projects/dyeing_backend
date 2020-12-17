@@ -55,9 +55,9 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		{
 			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
 		}
-		System.out.println("Shade Mast;"+shadeMast.toString());
+
 		ShadeMast shadeData =  new ShadeMast(shadeMast);
-		System.out.println("\nShadeData"+shadeData.toString());
+
 		shadeData.setQualityEntryId(quality.get().getId());
 
 		Date dt = new Date(System.currentTimeMillis());
@@ -88,7 +88,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(shadeMastList.isPresent() && shadeMastList.get().getPartyId()!=null && shadeMastList.get().getQualityEntryId()!=null)
 			return shadeMastList;
 		else{
-			throw new Exception("May be the party or quality is not available");
+			throw new Exception("shade data not found for given id:"+id);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		List<ShadeMast> shadeMastList = null;
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
 		if(id == null){
-			shadeMastList = shadeMastDao.findAll();
+			shadeMastList = shadeMastDao.findAllShade();
 			for (ShadeMast e : shadeMastList) {
 				GetAllShade getShade =  new GetAllShade();
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)

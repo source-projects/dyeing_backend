@@ -263,7 +263,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
             {
                 Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                Optional<Party> party=partyDao.findById(e.getPartyId());
+                Optional<Party> party=partyDao.findByPartyId(e.getPartyId());
                 if(!quality.isPresent() || !party.isPresent()){
                     continue;
                 }

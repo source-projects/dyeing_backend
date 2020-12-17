@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.ShadeMastDao;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.ShadeMast;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.Part;
@@ -22,7 +25,16 @@ import com.main.glory.services.PartyServiceInterface;
 public class PartyServiceImp implements PartyServiceInterface{
 
 	@Autowired
+	QualityServiceImp qualityServiceImp;
+
+	@Autowired
 	private PartyDao partyDao;
+
+	@Autowired
+	ShadeMastDao shadeMastDao;
+
+	@Autowired
+	QualityDao qualityDao;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -61,7 +73,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 	public List<Party> getAllPartyDetails(Long id,String getBy) {
 		List<Party> partyDetailsList = null;
 		if(id == null){
-			partyDetailsList=partyDao.findAll();
+			partyDetailsList=partyDao.findAllParty();
 		}
 		else if(getBy.equals("group")){
 			partyDetailsList=partyDao.findByUserHeadId(id);
@@ -74,7 +86,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 
 	@Override
 	public Party getPartyDetailById(Long id) {
-		var partyData=partyDao.findById(id);
+		var partyData=partyDao.findByPartyId(id);
 		if(partyData.isEmpty())
 			return null;
 		else
@@ -83,10 +95,13 @@ public class PartyServiceImp implements PartyServiceInterface{
 
 	@Override
 	public boolean editPartyDetails(Party party) throws Exception {
-  		var partyIndex= partyDao.findById(party.getId());
+  		var partyIndex= partyDao.findByPartyId(party.getId());
   		Optional<Party> party1 = partyDao.findByPartyCode(party.getPartyCode());
   		if(party1.isPresent())
   			throw new Exception("Party code should be unique");
+  		party1=partyDao.findByGSTIN(party.getGSTIN());
+  		if(!party1.isEmpty())
+  			throw new Exception("GST No."+party1.get().getGSTIN()+" is already available");
 
   		if(party.getGSTIN().isEmpty())
 		{
@@ -108,14 +123,41 @@ public class PartyServiceImp implements PartyServiceInterface{
 	}
 
 	@Override
-	public boolean deletePartyById(Long id) {
+	public boolean deletePartyById(Long id) throws Exception {
 
-  		var partyIndex= partyDao.findById(id);
+  		var partyIndex= partyDao.findByPartyId(id);
 		if(!partyIndex.isPresent())
 		return false;
 		else
-		partyDao.deleteById(id);
-		 return true;	
+		{
+			partyIndex.get().setPartyIsDeleted(true);
+
+			//soft delete of quality
+			Optional<List<Quality>> qualityList =qualityServiceImp.getAllQualityByPartyId(partyIndex.get().getId());
+			if(qualityList.isPresent()) {
+				for (Quality quality : qualityList.get()) {
+					quality.setQualityIsDeleted(true);
+
+				}
+			}
+
+			//soft delete for shade
+			Optional<List<ShadeMast>> shadeMastList=shadeMastDao.findByPartyId(id);
+			if(shadeMastList.isPresent())
+			{
+				for(ShadeMast shadeMast:shadeMastList.get())
+				{
+					shadeMast.setShadeIsDeleted(true);
+				}
+
+			}
+
+
+			partyDao.save(partyIndex.get());
+			return true;
+		}
+
+
 	}
 
 	@Override
@@ -126,7 +168,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 
     public List<PartyWithName> getAllPartyNameWithId() {
 		try {
-			List<Party> partyAll = partyDao.findAll();
+			List<Party> partyAll = partyDao.findAllParty();
 
 			List<PartyWithName> partyWithNameList = new ArrayList<>();
 			if(!partyAll.isEmpty()) {
@@ -144,24 +186,6 @@ public class PartyServiceImp implements PartyServiceInterface{
 			e.printStackTrace();
 		}
 		return null;
-    }
-
-    public List<PartyWithPartyCode> getAllPartyNameWithPartyCode() throws Exception{
-		List<PartyWithPartyCode> partyWithPartyCodesList =new ArrayList<>();
-		List<Party> partyList = partyDao.findAll();
-		for(Party party:partyList)
-		{
-			if(party.getPartyCode()!=null)
-			{
-				PartyWithPartyCode partyWithPartyCode = new PartyWithPartyCode(party);
-				partyWithPartyCodesList.add(partyWithPartyCode);
-
-			}
-		}
-		if(partyWithPartyCodesList.isEmpty())
-			throw new Exception("Data not added yet");
-
-		return partyWithPartyCodesList;
     }
 
     public Boolean partyCodeExistOrNot(String partyCode) {

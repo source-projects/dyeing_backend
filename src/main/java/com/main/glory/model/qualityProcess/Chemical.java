@@ -17,7 +17,6 @@ public class Chemical {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(hidden = true)
     Long id;
-    @ApiModelProperty(hidden = true)
     Long qualityProcessControlId;
     String DynamicProcessRecordId;
     Long itemId;

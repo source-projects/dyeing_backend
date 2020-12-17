@@ -49,6 +49,7 @@ public class ShadeMast {
 	//@Column(nullable = false)
 	String labColorNo;
 	String processName;
+	private Boolean shadeIsDeleted=false;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")

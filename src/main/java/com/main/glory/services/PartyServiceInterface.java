@@ -8,7 +8,7 @@ public interface PartyServiceInterface {
 
 	public List<Party> getAllPartyDetails(Long id, String getBy);
 	public boolean editPartyDetails(Party pary) throws Exception;
-	public boolean deletePartyById(Long id);
+	public boolean deletePartyById(Long id) throws Exception;
 	public Party getPartyDetailById(Long id);
 	public String getPartyNameByPartyId(Long partyId);
 }

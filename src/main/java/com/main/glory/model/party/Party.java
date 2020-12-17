@@ -48,6 +48,7 @@ public class Party {
     private Double gstPercentage;
     private Long userHeadId;
     private String partyCode;
+    private Boolean partyIsDeleted=false;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore

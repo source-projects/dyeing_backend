@@ -81,10 +81,15 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 	@Override
 	public boolean updateQuality(UpdateQualityRequest qualityDto) throws Exception {
-		var qualityData = qualityDao.findById(qualityDto.getId());
+		var qualityData = qualityDao.findByQualityId(qualityDto.getId());
 		if(!qualityData.isPresent())
 			return false;
 		else {
+
+			Optional<Quality> quality1 = qualityDao.findByQualityId(qualityDto.getQualityId());
+			if(quality1.isPresent())
+				throw new Exception("Quality id is already exist");
+
 			qualityData.get().setPartyId(qualityDto.getPartyId());
 			qualityData.get().setQualityId(qualityDto.getQualityId());
 			qualityData.get().setQualityName(qualityDto.getQualityName());
@@ -111,7 +116,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 	@Override
 	public GetQualityResponse getQualityByID(Long id) {
-		Optional<Quality> quality =qualityDao.findById(id);
+		Optional<Quality> quality =qualityDao.findByQualityId(id);
 		if(!quality.isPresent())
 			return null;
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -134,7 +139,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 	public QualityParty getAllQualityWithParty(Long id) throws Exception {
 
-		Optional<Quality> qualityLists=qualityDao.findById(id);
+		Optional<Quality> qualityLists=qualityDao.findByQualityId(id);
 
 
 		if(!qualityLists.isPresent())
@@ -143,7 +148,10 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		QualityParty qualityParties = new QualityParty(qualityLists.get());
 
-		Optional<Party> party=partyDao.findById(qualityLists.get().getPartyId());
+		Optional<Party> party=partyDao.findByPartyId(qualityLists.get().getPartyId());
+
+		if(!party.isPresent())
+			throw new Exception("Quality or party is not availble");
 
 		qualityParties.setPartyName(party.get().getPartyName());
 
@@ -157,7 +165,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		Optional<List<Quality>> qualityList = qualityDao.findByPartyId(partyId);
 
-		Optional<Party> partName=partyDao.findById(partyId);
+		Optional<Party> partName=partyDao.findByPartyId(partyId);
 		if(!partName.isPresent())
 			throw new Exception("No such Party id available with id:"+partyId);
 		if(!qualityList.isPresent()) {
@@ -204,6 +212,9 @@ public class QualityServiceImp implements QualityServiceInterface{
 			if(!partyName.isPresent())
 				continue;
 
+			if(quality.getQualityIsDeleted()==true)
+				continue;
+
 			GetAllQualtiy getAllQualtiy=new GetAllQualtiy(quality);
 			getAllQualtiy.setPartyName(partyName.get().getPartyName());
 			getAllQualtiyList.add(getAllQualtiy);
@@ -222,7 +233,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 		List<Party> partyList = partyDao.findByUserHeadId(userHeadId);
 		if(partyList.isEmpty())
 		{
-			throw new Exception("No party found for master:"+userHeadId);
+			throw new Exception("No party data found for userHead:"+userHeadId);
 		}
 
 		List<PartyQuality> partyQualityList=new ArrayList<>();
@@ -238,6 +249,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 				for(Quality quality1:quality.get())
 				{
 					QualityData qualityData=new QualityData(quality1);
+					qualityData.setPartyName(party.getPartyName());
 					qualityDataList.add(qualityData);
 
 				}
@@ -248,5 +260,11 @@ public class QualityServiceImp implements QualityServiceInterface{
 		}
 
 		return partyQualityList;
+	}
+
+	public Optional<List<Quality>> getAllQualityByPartyId(Long id) throws Exception {
+
+		Optional<List<Quality>> qualityList = qualityDao.findByPartyId(id);
+		return qualityList;
 	}
 }

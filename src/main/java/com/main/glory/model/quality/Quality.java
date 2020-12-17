@@ -40,6 +40,7 @@ public class Quality {
 	private Long userHeadId;
 	private Double rate;
 	private String HSN="9988";
+	private Boolean qualityIsDeleted=false;
 
 
 	@ApiModelProperty(hidden = true)

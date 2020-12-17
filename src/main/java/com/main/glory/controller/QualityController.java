@@ -8,6 +8,7 @@ import com.main.glory.Dao.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
@@ -34,7 +35,7 @@ public class QualityController extends ControllerConfig {
     public GeneralResponse<Boolean> saveQuality(@RequestBody AddQualityRequest quality) {
         try{
 
-            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            Optional<Party> party = partyDao.findByPartyId(quality.getPartyId());
             if(party.isEmpty()){
                 throw new Exception("No party present with id:"+quality.getPartyId());
             }
@@ -87,7 +88,7 @@ public class QualityController extends ControllerConfig {
     @PutMapping(value = "/quality")
     public GeneralResponse<Boolean> updateQualityById(@RequestBody UpdateQualityRequest quality) throws Exception {
         try {
-            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            Optional<Party> party = partyDao.findByPartyId(quality.getPartyId());
             if(party.isEmpty()){
                 throw new Exception("No party present with id:"+quality.getPartyId());
             }
@@ -110,7 +111,7 @@ public class QualityController extends ControllerConfig {
         if (id != null) {
             var qualityData = qualityServiceImp.getQualityByID(id);
             if (qualityData == null) {
-                return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "No data found for id:"+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             } else
                 return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
         } else

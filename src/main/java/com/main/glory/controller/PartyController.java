@@ -25,27 +25,23 @@ import com.main.glory.servicesImpl.PartyServiceImp;
 @RequestMapping("/api")
 public class PartyController  extends ControllerConfig {
 
-	@Autowired 
+	@Autowired
 	private PartyServiceImp partyServiceImp;
-	
-	@PostMapping(value="/party")
-	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party)
-	{
+
+	@PostMapping(value = "/party")
+	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party) {
 		try {
-		    partyServiceImp.saveParty(party);
+			partyServiceImp.saveParty(party);
 			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	@GetMapping(value="/party/all/{getBy}/{id}")
-	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy)
-	{
-		try{
+
+	@GetMapping(value = "/party/all/{getBy}/{id}")
+	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id, @PathVariable(value = "getBy") String getBy) {
+		try {
 			switch (getBy) {
 				case "own":
 					var x = partyServiceImp.getAllPartyDetails(id, getBy);
@@ -76,64 +72,44 @@ public class PartyController  extends ControllerConfig {
 		}
 	}
 
-	@GetMapping(value="/party/{id}")
-	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id)
-	{
-           if(id!=null)
-		   {
-			   Party partyObject=partyServiceImp.getPartyDetailById(id);
-			   if(partyObject!=null)
-			   {
-			   	    return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
-			   }
-			   return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-		   }
-           return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-	}
-
-	@GetMapping(value="/party/allWithPartyCode")
-	public GeneralResponse<List<PartyWithPartyCode>> getPartyDetailsWithPartyCode()
-	{
-		try {
-			List<PartyWithPartyCode> partyObject = partyServiceImp.getAllPartyNameWithPartyCode();
-			return new GeneralResponse<>(partyObject, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
-
-		}catch (Exception e)
-		{
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+	@GetMapping(value = "/party/{id}")
+	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id) {
+		if (id != null) {
+			Party partyObject = partyServiceImp.getPartyDetailById(id);
+			if (partyObject != null) {
+				return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			}
+			return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		}
+		return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 
-	@GetMapping(value="/party/allPartyWithName")
-	public GeneralResponse<List<PartyWithName>> getAllPartyName()
-	{
-		List<PartyWithName> partyObject=partyServiceImp.getAllPartyNameWithId();
-		if(!partyObject.isEmpty())
-		{
+
+	@GetMapping(value = "/party/allPartyWithName")
+	public GeneralResponse<List<PartyWithName>> getAllPartyName() {
+		List<PartyWithName> partyObject = partyServiceImp.getAllPartyNameWithId();
+		if (!partyObject.isEmpty()) {
 			return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
 		}
 
 		return new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 	}
 
-	@GetMapping(value="/party/partyCodeExist/{partyCode}")
-	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode)
-	{
-		if(partyCode==null)
-		{
+	@GetMapping(value = "/party/partyCodeExist/{partyCode}")
+	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name = "partyCode") String partyCode) {
+		if (partyCode == null) {
 			return new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 
 		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode);
-		if(partyCodeExistOrNot==true)
+		if (partyCodeExistOrNot == true)
 			return new GeneralResponse<>(true, "Party code is available to use ", true, System.currentTimeMillis(), HttpStatus.OK);
 		else
-		return new GeneralResponse<>(false, "Party code is already exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
+			return new GeneralResponse<>(false, "Party code is already exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
 	}
 
-	@PutMapping(value="/party")
-	public GeneralResponse<Boolean> updateParty(@RequestBody Party party) throws Exception
-	{
+	@PutMapping(value = "/party")
+	public GeneralResponse<Boolean> updateParty(@RequestBody Party party) throws Exception {
 		try {
 			if (party != null) {
 				boolean flag = partyServiceImp.editPartyDetails(party);
@@ -144,26 +120,29 @@ public class PartyController  extends ControllerConfig {
 				}
 			}
 
-		}catch(Exception e)
-		{
+		} catch (Exception e) {
 			return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 		return null;
 	}
-	
-	@DeleteMapping(value="/party/{id}")
-	public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id)
-	{
-		if(id!=null)
-		{
-			boolean flag=partyServiceImp.deletePartyById(id);
-			if(flag)
-			{
-				return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-			}else{
-				return new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+	@DeleteMapping(value = "/party/{id}")
+	public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) {
+		try {
+			if (id != null) {
+				boolean flag = partyServiceImp.deletePartyById(id);
+				if (flag) {
+					return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+				} else {
+					return new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				}
 			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
-		return new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		return null;
+
 	}
 }
