@@ -91,18 +91,7 @@ public class PartyController  extends ControllerConfig {
            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}
 
-	@GetMapping(value="/party/allWithPartyCode")
-	public GeneralResponse<List<PartyWithPartyCode>> getPartyDetailsWithPartyCode()
-	{
-		try {
-			List<PartyWithPartyCode> partyObject = partyServiceImp.getAllPartyNameWithPartyCode();
-			return new GeneralResponse<>(partyObject, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 
-		}catch (Exception e)
-		{
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-		}
-	}
 
 	@GetMapping(value="/party/allPartyWithName")
 	public GeneralResponse<List<PartyWithName>> getAllPartyName()
