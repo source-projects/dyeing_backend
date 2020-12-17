@@ -28,6 +28,8 @@ public class DocumentImpl {
     @Autowired
     PartyDao partyDao;
 
+    @Autowired
+    PartyServiceImp partyServiceImp;
 
 
     public void getParty(GetDocumentModel documentModel) throws Exception {
@@ -79,7 +81,20 @@ public class DocumentImpl {
 
 
         //Send mail
-        SendEmail email=new SendEmail(documentModel.getToEmail(), fileName,documentModel.getSubjectEmail());
-        email.sendMail();
+        //SendEmail email=new SendEmail(documentModel.getToEmail(), fileName,documentModel.getSubjectEmail());
+        //email.sendMail();
+    }
+
+    //check the which module request is
+    public void getDocument(GetDocumentModel documentModel) throws Exception {
+
+        switch(documentModel.getModuleName())
+        {
+            case "party":
+                partyServiceImp.sendPdfForParty(documentModel);
+            break;
+            default:throw new Exception("Module not found");
+        }
+
     }
 }

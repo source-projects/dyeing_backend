@@ -16,6 +16,7 @@ public class GetDocumentModel {
     String toEmail;
     String fromEmail;
     String subjectEmail;
+    String sendText;
 
 
 }

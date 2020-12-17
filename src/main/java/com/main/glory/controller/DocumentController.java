@@ -15,12 +15,12 @@ public class DocumentController extends ControllerConfig {
     @Autowired
     DocumentImpl documentService;
 
-    @PostMapping("/partyDocument/")
-    public GeneralResponse<Boolean> GetParty(@RequestBody GetDocumentModel documentModel){
+    @PostMapping("/Document/")
+    public GeneralResponse<Boolean> GetDocument(@RequestBody GetDocumentModel documentModel){
         try{
-            documentService.getParty(documentModel);
+            documentService.getDocument(documentModel);
 
-            return new GeneralResponse<>(true, "PDF created successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            return new GeneralResponse<>(true, "PDF send successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 
         }catch (Exception e){
             e.printStackTrace();

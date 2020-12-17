@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.util.Properties;
 
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -26,14 +27,16 @@ public class SendEmail {
     String to;
     String fileName;
     String subject;
+    String text;
     String username ="mohan.glorygfl@gmail.com";
     String password = "Mohan_123";
 
 
-    public SendEmail(String to, String fileName, String subject) {
+    public SendEmail(String to, String fileName, String subject,String text) {
         this.to = to;
         this.fileName = fileName;
         this.subject = subject;
+        this.text=text;
     }
 
     public void sendMail()
@@ -72,7 +75,7 @@ public class SendEmail {
             multipart.addBodyPart(messageBodyPart);
 
             message.setContent(multipart);
-
+            message.setText(this.text);
             Transport.send(message);
 
             System.out.println("Done");
