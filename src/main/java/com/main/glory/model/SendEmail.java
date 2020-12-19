@@ -25,7 +25,7 @@ import java.util.Properties;
 public class SendEmail {
 
     String to;
-    String fileName;
+    String  fileName;
     String subject;
     String text;
     String username ="mohan.glorygfl@gmail.com";
@@ -65,20 +65,30 @@ public class SendEmail {
             );
             message.setSubject(this.subject);
 
+            //message.setText(this.text);
+
+
             MimeBodyPart messageBodyPart = new MimeBodyPart();
 
             Multipart multipart = new MimeMultipart();
 
+            //set file
             DataSource source = new FileDataSource(this.fileName);
+            messageBodyPart.setText(this.getText());
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(this.fileName);
             multipart.addBodyPart(messageBodyPart);
 
+            //set text
+            messageBodyPart=new MimeBodyPart();
+            messageBodyPart.setText(this.getText());
+            multipart.addBodyPart(messageBodyPart);
+
             message.setContent(multipart);
-            message.setText(this.text);
+
             Transport.send(message);
 
-            System.out.println("Done");
+            System.out.println("Done:"+this.getTo());
 
         } catch (MessagingException e) {
             e.printStackTrace();

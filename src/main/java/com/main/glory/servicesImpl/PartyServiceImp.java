@@ -13,6 +13,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.document.request.GetDocumentModel;
+import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
@@ -227,14 +228,22 @@ public class PartyServiceImp implements PartyServiceInterface{
 		}
 
 		document.add(table);
-
 		document.close();
+
 
 		//______Document created successfully
 
 
+
 		//Send mail
-		SendEmail email=new SendEmail(documentModel.getToEmail(), fileName,documentModel.getSubjectEmail(),documentModel.getSendText());
-		email.sendMail();
+
+		for(ToEmailList toEmailList:documentModel.getToEmailList())
+		{
+			System.out.println("To:"+toEmailList.getToEmail());
+			SendEmail email=new SendEmail(toEmailList.getToEmail(), fileName,documentModel.getSubjectEmail(),documentModel.getSendText());
+			email.sendMail();
+
+		}
+
 	}
 }
