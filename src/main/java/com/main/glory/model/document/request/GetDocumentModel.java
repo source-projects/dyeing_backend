@@ -2,6 +2,8 @@ package com.main.glory.model.document.request;
 
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @ToString
@@ -13,10 +15,10 @@ public class GetDocumentModel {
     Long toRow;
     String exportType;
     String moduleName;
-    String toEmail;
     String fromEmail;
     String subjectEmail;
     String sendText;
+    List<ToEmailList> toEmailList;
 
 
 }
