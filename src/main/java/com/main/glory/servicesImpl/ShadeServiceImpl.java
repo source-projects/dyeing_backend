@@ -11,6 +11,7 @@ import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import com.main.glory.model.shade.requestmodals.GetAllShade;
+import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
@@ -221,5 +222,22 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		}
 
 		return getAllShadesList;
+	}
+
+    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId) throws Exception{
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+		if(shadeByPartyAndQualities.isEmpty())
+			throw new Exception("shade data not found");
+
+		return shadeByPartyAndQualities;
+
+    }
+
+	public ShadeMast getShadesByShadeAndQualityAndPartyId(Long shadeId, Long qualityEntryId, Long partyId) throws Exception{
+		Optional<ShadeMast> shadeMast = shadeMastDao.findById(shadeId);
+		if(shadeMast.isEmpty())
+			throw new Exception("Shade not found for quality or party");
+
+		return shadeMast.get();
 	}
 }

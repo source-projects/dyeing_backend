@@ -2,6 +2,7 @@ package com.main.glory.model.StockDataBatchData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
@@ -44,6 +45,12 @@ public class StockMast {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchData> batchData;
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "stockId", referencedColumnName = "id")
+    List<ProductionPlan> productionPlans;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore

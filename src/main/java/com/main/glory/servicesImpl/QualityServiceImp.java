@@ -249,4 +249,14 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		return partyQualityList;
 	}
+
+    public Optional<Quality> getQualityByIDAndPartyId(Long qualityEntryId, Long partyId) throws Exception{
+		Optional<Quality> quality = qualityDao.findByPartyIdAndQualityId(qualityEntryId,partyId);
+
+		if(!quality.isPresent())
+			throw new Exception("Quality data not found for party");
+
+		return quality;
+
+    }
 }

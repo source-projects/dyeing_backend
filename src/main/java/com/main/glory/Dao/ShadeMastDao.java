@@ -1,7 +1,9 @@
 package com.main.glory.Dao;
 
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +21,9 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 	List<ShadeMast> findAllByCreatedBy(Long createdBy);
 	List<ShadeMast> findAllByUserHeadId(Long userHeadId);
 	Optional<ShadeMast> findById(Long aLong);
+
+	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(s.id, s.partyShadeNo, s.colorTone) from ShadeMast s where s.partyId = :partyId AND s.qualityEntryId=:qualityId AND s.partyId IS NOT NULL AND s.qualityEntryId IS NOT NULL")
+    List<GetShadeByPartyAndQuality> findByQualityEntryIdAndPartyId(Long qualityId, Long partyId);
+
+
 }

@@ -1,5 +1,8 @@
 package com.main.glory.model.shade;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import io.swagger.annotations.ApiModelProperty;
@@ -53,6 +56,12 @@ public class ShadeMast {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ShadeData> shadeDataList;
+
+	@ApiModelProperty(hidden = true)
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "shadeId", referencedColumnName = "id")
+	private List<ProductionPlan> productionPlans;
 
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }

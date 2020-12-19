@@ -125,4 +125,34 @@ public class DispatchMastImpl {
         return batchDataList;
 
     }
+
+    public List<BatchData> getBatchByParty(Long partyId)throws Exception {
+        List<BatchData> batchDataListByParty=new ArrayList<>();
+        List<StockMast> stockMastList = stockBatchService.getBatchByPartyId(partyId);
+
+        if(stockMastList.isEmpty())
+            throw new Exception("stock not found for party:"+partyId);
+
+
+        for(StockMast stockMast:stockMastList)
+        {
+            //System.out.println(stockMast.getId());
+            List<BatchData> batchDataList = batchDao.findByControlId(stockMast.getId());
+
+            for(BatchData batchData:batchDataList)
+            {
+                if(batchData==null)
+                    continue;
+
+                if(batchData.getIsFinishMtrSave()==true && batchData.getIsProductionPlanned()==true)
+                {
+                    batchDataListByParty.add(batchData);
+                }
+            }
+        }
+
+        if(batchDataListByParty.isEmpty())
+            throw new Exception("data not found for party:"+partyId);
+        return  batchDataListByParty;
+    }
 }
