@@ -40,6 +40,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     Optional<List<Quality>> findByPartyId(Long partyId);
 
     Optional<List<Quality>> findByUserHeadId(Long userHeadId);
+
+    @Query("Select q from Quality q where id = :qualityEntryId AND q.partyId =:partyId")
+    Optional<Quality> findByPartyIdAndQualityId(Long qualityEntryId, Long partyId);
 }
 
 

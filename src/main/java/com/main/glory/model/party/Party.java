@@ -9,6 +9,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
@@ -76,6 +77,12 @@ public class Party {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<ShadeMast> shadeMast;
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
+    private List<ProductionPlan> productionPlans;
 
 
 

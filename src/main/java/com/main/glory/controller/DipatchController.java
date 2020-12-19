@@ -51,6 +51,21 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
+    @GetMapping("/dipatch/getBatchByParty/{partyId}")
+    public GeneralResponse<List<BatchData>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+        try{
+            if(partyId!=null) {
+                List<BatchData> x =dispatchMastService.getBatchByParty(partyId);
+                return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                return new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/dipatch/getFinishMtrList/{batchId}/{controlId}")
     public GeneralResponse<List<BatchData>> getFinishMtrList(@PathVariable(name="batchId") String batchId,@PathVariable(name="controlId") Long controlId) throws Exception{
         try{

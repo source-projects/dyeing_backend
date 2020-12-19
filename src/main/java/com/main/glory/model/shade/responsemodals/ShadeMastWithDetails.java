@@ -1,5 +1,6 @@
 package com.main.glory.model.shade.responsemodals;
 
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -22,12 +23,12 @@ public class ShadeMastWithDetails extends ShadeMast {
 	String qualityName;
 	String qualityType;
 
-	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, Long qualityId, Long partyId, String colorTone, Long createdBy, Long updatedBy, Date createdDate, Date updatedDate, Long userHeadId, Long cuttingId, String remark, String category, String labColorNo, String processName, List<ShadeData> shadeDataList) {
-		super(id, partyShadeNo, processId,  qualityId, partyId, colorTone, createdBy, updatedBy, createdDate, updatedDate, userHeadId, cuttingId, remark, category, labColorNo,processName, shadeDataList);
+	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, Long qualityId, Long partyId, String colorTone, Long createdBy, Long updatedBy, Date createdDate, Date updatedDate, Long userHeadId, Long cuttingId, String remark, String category, String labColorNo, String processName, List<ShadeData> shadeDataList, List<ProductionPlan> productionPlans) {
+		super(id, partyShadeNo, processId,  qualityId, partyId, colorTone, createdBy, updatedBy, createdDate, updatedDate, userHeadId, cuttingId, remark, category, labColorNo,processName, shadeDataList,productionPlans);
 	}
 
 	public ShadeMastWithDetails(ShadeMast shadeMast) {
-		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getShadeDataList());
+		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getShadeDataList(),shadeMast.getProductionPlans());
 
 	}
 }

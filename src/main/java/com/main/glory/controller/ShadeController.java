@@ -7,6 +7,7 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import com.main.glory.model.shade.requestmodals.GetAllShade;
+import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
 import com.main.glory.services.ShadeServicesInterface;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
@@ -82,6 +83,21 @@ public class ShadeController extends ControllerConfig {
 			Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(id);
 			if(shadeMast != null){
 				return new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
+			}else{
+				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/shade/{qualityId}/{partyId}")
+	public GeneralResponse<List<GetShadeByPartyAndQuality>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId){
+		try{
+			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId);
+			if(shadeMastList != null){
+				return new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
 			}else{
 				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 			}
