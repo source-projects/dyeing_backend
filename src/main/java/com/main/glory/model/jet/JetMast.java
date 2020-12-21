@@ -1,6 +1,5 @@
-package com.main.glory.model.productionPlan;
+package com.main.glory.model.jet;
 
-import com.main.glory.model.jet.JetData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,20 +9,23 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table
+@Getter
+@Setter
 @Entity
-public class ProductionPlan {
+@Table
+public class JetMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    String batchId;
-    Long stockId;
-    Long partyId;
-    Long qualityEntryId;
-    Long shadeId;
+    String name;
+    Double capacity;
+
+    @ApiModelProperty(hidden = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
+    private List<JetData> jetDataList;
+
 
 }
