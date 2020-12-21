@@ -1,13 +1,16 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service("productionPlanServiceImpl")
@@ -25,15 +28,38 @@ public class ProductionPlanImpl {
     @Autowired
     ShadeServiceImpl shadeService;
 
+    @Autowired
+    StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    BatchImpl batchService;
+
+    @Autowired
+    BatchDao batchDao;
+
     public void saveProductionPlan(ProductionPlan productionPlan) throws Exception {
 
         Optional<Quality> qualityIsExist= qualityServiceImp.getQualityByIDAndPartyId(productionPlan.getQualityEntryId(),productionPlan.getPartyId());
 
         Optional<ShadeMast> shadeMastExist=shadeService.getShadeMastById(productionPlan.getShadeId());
         if(qualityIsExist.isPresent() && shadeMastExist.isPresent())
-        productionPlanDao.save(productionPlan);
+        {
+            List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
+            if(batchDataList.isEmpty())
+                throw new Exception("No batch data found");
+            for(BatchData batchData:batchDataList)
+            {
+                if(batchData.getIsProductionPlanned()==false)
+                    batchData.setIsProductionPlanned(true);
+                batchDao.save(batchData);
+            }
+            productionPlanDao.save(productionPlan);
+
+        }
+
         else
             throw new Exception("unable to insert the record");
+
     }
 
     public ProductionPlan getProductionData(Long id) throws Exception{

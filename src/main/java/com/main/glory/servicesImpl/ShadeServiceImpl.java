@@ -89,7 +89,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(shadeMastList.isPresent() && shadeMastList.get().getPartyId()!=null && shadeMastList.get().getQualityEntryId()!=null)
 			return shadeMastList;
 		else{
-			throw new Exception("May be the party or quality is not available");
+			throw new Exception("shade data not found");
 		}
 	}
 
