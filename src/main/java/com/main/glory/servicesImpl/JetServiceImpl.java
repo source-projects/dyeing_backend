@@ -42,15 +42,22 @@ public class JetServiceImpl {
             if(jetData.getProductionId()==null)
                 throw new Exception("prudction id can't be null ");
 
+
+
             Optional<JetMast> jetMastExist = jetMastDao.findById(jetData.getControlId());
 
             ProductionPlan productionPlanExist=productionPlanService.getProductionData(jetData.getProductionId());
+
+            Optional<JetData> jetDataExistWithProducton=jetDataDao.findByControlIdAndProductionId(jetData.getControlId(),jetData.getProductionId());
 
             if(jetMastExist.isEmpty())
                 throw new Exception("Jet Mast is not found");
 
             if(productionPlanExist==null)
                 throw new Exception("production data not found");
+
+            if(jetDataExistWithProducton.isEmpty())
+                throw new Exception("Production is already exist with jet");
 
             JetData saveJetData=new JetData(jetData,productionPlanExist);
             jetDataDao.save(saveJetData);
@@ -63,7 +70,7 @@ public class JetServiceImpl {
     public List<GetJetData> getJetData(Long id) throws Exception{
 
         List<GetJetData> getJetDataList=new ArrayList<>();
-        List<JetData> jetDataList = jetDataDao.findbyControlId(id);
+        List<JetData> jetDataList = jetDataDao.findByControlId(id);
         if(jetDataList.isEmpty())
             throw new Exception("No data found");
 
@@ -81,10 +88,11 @@ public class JetServiceImpl {
         for(JetStatus jetStatus:JetStatus.values())
         {
             getStatusList.add(new GetStatus(jetStatus));
-
         }
+
         if(getStatusList.isEmpty())
             throw new Exception("No status found");
+
         return getStatusList;
 
 
@@ -92,7 +100,27 @@ public class JetServiceImpl {
 
     public void updateJetData(List<UpdateJetData> jetDataToUpdate) throws Exception {
 
+
         return;
     }
 
+    public List<GetJetData> getJetDataWithInQueueProdution(Long id) throws Exception{
+
+        List<GetJetData> getJetDataList=new ArrayList<>();
+        List<JetData> jetDataList = jetDataDao.findByControlId(id);
+        if(jetDataList.isEmpty())
+            throw new Exception("No data found");
+
+        //fetch the data which are in Queue
+        for(JetData jetData:jetDataList)
+        {
+            if(jetData.getStatus()==JetStatus.inQueue) {
+                getJetDataList.add(new GetJetData(jetData));
+            }
+        }
+
+        if(getJetDataList.isEmpty())
+            throw new Exception("no data found");
+        return getJetDataList;
+    }
 }

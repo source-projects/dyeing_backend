@@ -10,5 +10,9 @@ import java.util.Optional;
 
 public interface JetDataDao extends JpaRepository<JetData,Long> {
     @Query("SELECT j from JetData j where j.controlId=:id")
-    List<JetData> findbyControlId(Long id);
+    List<JetData> findByControlId(Long id);
+
+
+    @Query("SELECT j from JetData j where j.controlId=:controlId AND j.productionPlan=:productionId ")
+    Optional<JetData> findByControlIdAndProductionId(Long controlId, Long productionId);
 }
