@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class ProductionPlanController extends ControllerConfig {
@@ -44,6 +46,24 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(value="/productionPlan/all")
+    public GeneralResponse<List<ProductionPlan>> getAllProductionPlan()
+    {
+        try {
+            List<ProductionPlan> productionPlanRecord = productionPlanService.getAllProductionData();
+            if(productionPlanRecord.isEmpty())
+                throw new Exception("no data faund");
+
+            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @DeleteMapping(value="/productionPlan/deleteBy/{id}")
     public GeneralResponse<Boolean> deleteById(@PathVariable(name="id")Long id)
     {

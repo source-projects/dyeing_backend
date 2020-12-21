@@ -105,6 +105,28 @@ public class JetController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(value="/getJetDataWithInQueueProdution/byJetId/{id}")
+    public GeneralResponse<List<GetJetData>> getJetDataWithInQueueProdution(@PathVariable(name = "id") Long id) throws Exception {
+        if(id==null)
+        {
+            return new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            List<GetJetData> jetDataList = jetService.getJetDataWithInQueueProdution(id);
+            return new GeneralResponse<>(jetDataList, "Jet Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(value="/getJet/allStatusList")
     public GeneralResponse<List<GetStatus>> getJetStatusList() throws Exception {
 

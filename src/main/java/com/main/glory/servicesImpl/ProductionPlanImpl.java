@@ -47,6 +47,8 @@ public class ProductionPlanImpl {
             List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
             if(batchDataList.isEmpty())
                 throw new Exception("No batch data found");
+
+
             for(BatchData batchData:batchDataList)
             {
                 if(batchData.getIsProductionPlanned()==false)
@@ -80,5 +82,9 @@ public class ProductionPlanImpl {
         productionPlanDao.deleteById(id);
         return true;
 
+    }
+
+    public List<ProductionPlan> getAllProductionData() {
+        return productionPlanDao.findAll();
     }
 }
