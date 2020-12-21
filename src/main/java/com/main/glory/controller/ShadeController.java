@@ -97,7 +97,7 @@ public class ShadeController extends ControllerConfig {
 		try{
 			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId);
 			if(shadeMastList != null){
-				return new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
+				return new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			}else{
 				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 			}
