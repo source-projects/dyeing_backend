@@ -26,4 +26,13 @@ public class ProductionPlan {
     Long qualityEntryId;
     Long shadeId;
 
+    public ProductionPlan(ProductionPlan productionPlan) {
+        this.shadeId=productionPlan.getShadeId();
+        this.qualityEntryId=productionPlan.getQualityEntryId();
+        this.partyId=productionPlan.getPartyId();
+        this.batchId=productionPlan.getBatchId();
+        this.stockId=productionPlan.getStockId();
+        this.id=productionPlan.getId();
+
+    }
 }

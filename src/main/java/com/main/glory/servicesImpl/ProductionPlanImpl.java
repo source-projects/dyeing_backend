@@ -1,9 +1,9 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.productionPlan.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -86,8 +86,16 @@ public class ProductionPlanImpl {
 
     }
 
-    public List<ProductionPlan> getAllProductionData() {
-        return productionPlanDao.findAll();
+    public List<GetAllProductionWithShadeData> getAllProductionData() throws Exception{
+
+        Optional<List<GetAllProductionWithShadeData>> productionWithShadeData = productionPlanDao.getAllProductionWithColorTone();
+        if(productionWithShadeData.isEmpty())
+            throw new Exception("no data found");
+
+        return productionWithShadeData.get();
+
+
+
     }
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
