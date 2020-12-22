@@ -55,7 +55,7 @@ public class PurchaseOrderImpl {
     }
 
 
-    public List<ResponsePurchase> getAllPurchaseOrder() {
+    public List<ResponsePurchase> getAllPurchaseOrder() throws Exception {
         List<ResponsePurchase> responsePurchasesList=new ArrayList<>();
 
         List<PurchaseOrder> purchaseOrderList = purchaseOrderDao.findAll();
@@ -74,6 +74,8 @@ public class PurchaseOrderImpl {
                 responsePurchasesList.add(responsePurchase);
             }
         }
+        if(responsePurchasesList.isEmpty())
+            throw new Exception("no data found");
         return responsePurchasesList;
     }
 

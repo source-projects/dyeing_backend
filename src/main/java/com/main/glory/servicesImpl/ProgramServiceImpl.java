@@ -241,7 +241,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
                 //System.out.print(allBatch);
                 if(allBatch.isEmpty())
-                    throw new Exception("No data found");
+                    throw new Exception("no data found");
                 return allBatch;
 
             } else

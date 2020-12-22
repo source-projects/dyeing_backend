@@ -99,7 +99,8 @@ public class MachineServiceImpl {
 
     }
 
-    public List<GetAllMachine> getAllMachine() {
+    public List<GetAllMachine> getAllMachine() throws Exception
+    {
 
         List<GetAllMachine> getAllMachines=new ArrayList<>();
         List<MachineMast> machineMasts=machineDao.findAll();
@@ -136,6 +137,10 @@ public class MachineServiceImpl {
 
             getAllMachines.add(getAllMachine);
         }
+
+        if(getAllMachines.isEmpty())
+            throw new Exception("no data found");
+
         return getAllMachines;
     }
 

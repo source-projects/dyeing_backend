@@ -77,8 +77,7 @@ public class PartyController  extends ControllerConfig {
 	}
 
 	@GetMapping(value="/party/{id}")
-	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id)
-	{
+	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
            if(id!=null)
 		   {
 			   Party partyObject=partyServiceImp.getPartyDetailById(id);

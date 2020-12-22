@@ -22,7 +22,7 @@ public class WaterJetServiceImpl {
 
         Optional<WaterJet> waterJet = waterJetDao.findById(id);
         if(!waterJet.isPresent())
-            throw new Exception("Data not found");
+            throw new Exception("no data found");
 
         return waterJet.get();
     }
@@ -44,7 +44,12 @@ public class WaterJetServiceImpl {
         waterJetDao.saveAndFlush(waterJet);
     }
 
-    public List<WaterJet> getAllWaterJet() {
-        return waterJetDao.findAll();
+    public List<WaterJet> getAllWaterJet() throws Exception{
+        List<WaterJet> waterJetList = waterJetDao.findAll();
+        if(waterJetList.isEmpty())
+            throw new Exception("no data found");
+
+        return waterJetList;
+
     }
 }

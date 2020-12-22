@@ -148,6 +148,8 @@ public class BatchImpl {
         data.setTotalWt(wt);
         data.setTotalMtr(mtr);
 
+        if(data.getPartyId()==null && data.getQualityEntryId()==null && data.getUserHeadId()==null)
+            throw new Exception("no data found");
 
         return data;
     }

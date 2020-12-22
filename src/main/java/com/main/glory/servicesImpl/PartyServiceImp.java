@@ -68,7 +68,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 	}
 
 	@Override
-	public List<Party> getAllPartyDetails(Long id,String getBy) {
+	public List<Party> getAllPartyDetails(Long id,String getBy) throws Exception{
 		List<Party> partyDetailsList = null;
 		if(id == null){
 			partyDetailsList=partyDao.findAll();
@@ -79,14 +79,16 @@ public class PartyServiceImp implements PartyServiceInterface{
 		else if(getBy.equals("own")){
 			partyDetailsList=partyDao.findByCreatedBy(id);
 		}
+		if (partyDetailsList.isEmpty())
+			throw new Exception("no data found");
 		return partyDetailsList;
 	}
 
 	@Override
-	public Party getPartyDetailById(Long id) {
+	public Party getPartyDetailById(Long id) throws Exception{
 		var partyData=partyDao.findById(id);
 		if(partyData.isEmpty())
-			return null;
+			throw new Exception("no data found");
 		else
 			return partyData.get();
 	}

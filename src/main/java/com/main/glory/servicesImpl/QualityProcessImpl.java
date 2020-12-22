@@ -100,10 +100,10 @@ public class QualityProcessImpl {
 	}
 
 	@Transactional
-	public QualityProcessMast findById(Long id){
+	public QualityProcessMast findById(Long id) throws Exception{
 		Optional<QualityProcessMast> qualityProcessMast = qualityProcessMastDao.findById(id);
 		if(!qualityProcessMast.isPresent()) {
-			return null;
+			throw new Exception("no data found");
 		}
 
 		List<QualityProcessData> qualityProcessData = qualityProcessDataDao.findByControlId(qualityProcessMast.get().getId());

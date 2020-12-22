@@ -110,6 +110,9 @@ public class DispatchMastImpl {
         invoiceData.setBatchId(dispatchMast.get().getBatchId());
         invoiceData.setBatchDataList(batchDataList);
 
+        if(invoiceData.getPartyName()==null && invoiceData.getQualityId()==null)
+            throw new Exception("no data found");
+
         return  invoiceData;
 
 
