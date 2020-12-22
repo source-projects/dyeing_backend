@@ -9,6 +9,7 @@ import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
+import com.main.glory.model.jet.request.ChangeStatus;
 import com.main.glory.model.jet.request.UpdateJetData;
 import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
@@ -141,6 +142,7 @@ public class JetServiceImpl {
             Double availableJetCapacity = 0.0;
 
             Double totalBatchCapacity = 0.0;
+
             //first check the capacity and production detail is available or not
             for (AddJetData jetData : jetDataToUpdate.get(k).getAddJetDataList()) {
 
@@ -150,11 +152,10 @@ public class JetServiceImpl {
                 if (jetData.getProductionId() == null)
                     throw new Exception("prudction id can't be null ");
 
-                Optional<JetMast> jetMastExist = jetMastDao.findById(jetData.getControlId());
+                Optional<JetMast> jetMastExist = jetMastDao.findById(jetDataToUpdate.get(k).getControlId());
 
                 ProductionPlan productionPlanExist = productionPlanService.getProductionData(jetData.getProductionId());
 
-                Optional<JetData> jetDataExistWithProducton = jetDataDao.findByControlIdAndProductionId(jetData.getControlId(), jetData.getProductionId());
 
                 if (jetMastExist.isEmpty())
                     throw new Exception("Jet Mast is not found");
@@ -162,8 +163,6 @@ public class JetServiceImpl {
                 if (productionPlanExist == null)
                     throw new Exception("production data not found");
 
-                if (jetDataExistWithProducton.isEmpty())
-                    throw new Exception("Production is not available");
 
 
                 availableJetCapacity = jetMastExist.get().getCapacity();
@@ -182,12 +181,11 @@ public class JetServiceImpl {
                 }
                 k++;
             }
-
-
             i++;
         }
-            //insert the record if batch is fulfilling the requiremet
+
        k=0;
+        //insert the record if batch is fulfilling the requiremet
             for(AddJetData jetData:jetDataToUpdate.get(k).getAddJetDataList()){
 
                 if(jetData.getProductionId()==null)
@@ -196,6 +194,7 @@ public class JetServiceImpl {
                 ProductionPlan productionPlanExist=productionPlanService.getProductionData(jetData.getProductionId());
 
                 JetData saveJetData=new JetData(jetData,productionPlanExist);
+               // System.out.println(saveJetData.getControlId()+":"+jetDataToUpdate.get(k).getControlId());
                 saveJetData.setControlId(jetDataToUpdate.get(k).getControlId());
                 jetDataDao.save(saveJetData);
 
@@ -243,6 +242,31 @@ public class JetServiceImpl {
         }
 
         return getAllJetMast;
+
+    }
+
+    public void updateProductionStatus(ChangeStatus jetDataToUpdate) throws Exception{
+        Optional<JetData> jetDataExist= jetDataDao.findByControlIdAndProductionId(jetDataToUpdate.getControlId(),jetDataToUpdate.getProdcutionId());
+
+        if(jetDataExist.isEmpty())
+            throw new Exception("No data found");
+
+        if(jetDataExist.get().getStatus() == JetStatus.success)
+            throw new Exception("data can't update because it is already done");
+
+        List<String> getStatusList=new ArrayList<>();
+
+        for(JetStatus jetStatus:JetStatus.values())
+        {
+            getStatusList.add(jetStatus.toString());
+        }
+
+        if(!getStatusList.contains(jetDataToUpdate.getStatus()))
+            throw new Exception("no status found");
+
+        jetDataExist.get().setStatus(JetStatus.valueOf(jetDataToUpdate.getStatus()));
+        System.out.println(jetDataExist.get().getStatus());
+        jetDataDao.save(jetDataExist.get());
 
     }
 }
