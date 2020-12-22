@@ -5,5 +5,5 @@ import lombok.Setter;
 
 @Getter
 public enum JetStatus {
-    success,onProcess,inQueue,planned;
+    success,onProcess,inQueue,planned,pause,emergencyStop;
 }

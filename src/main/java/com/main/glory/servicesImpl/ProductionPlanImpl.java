@@ -42,12 +42,14 @@ public class ProductionPlanImpl {
         Optional<Quality> qualityIsExist= qualityServiceImp.getQualityByIDAndPartyId(productionPlan.getQualityEntryId(),productionPlan.getPartyId());
 
         Optional<ShadeMast> shadeMastExist=shadeService.getShadeMastById(productionPlan.getShadeId());
+
         if(qualityIsExist.isPresent() && shadeMastExist.isPresent())
         {
             List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
             if(batchDataList.isEmpty())
                 throw new Exception("No batch data found");
 
+            //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
             for(BatchData batchData:batchDataList)
             {
@@ -87,4 +89,8 @@ public class ProductionPlanImpl {
     public List<ProductionPlan> getAllProductionData() {
         return productionPlanDao.findAll();
     }
+/*
+    public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
+
+    }*/
 }

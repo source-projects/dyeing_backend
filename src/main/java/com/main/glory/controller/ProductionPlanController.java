@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
@@ -63,6 +64,24 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    //get all batch based on text
+    /*@GetMapping(value="/getAllBatchBy/{partyId}/{qualityEntryId}/{batchId}")
+    public GeneralResponse<List<BatchData>> getAllBatchByPartyIdAndQualityIdAndBatchId(@PathVariable(name ="partyId" ) Long partyId,@PathVariable(name="qualityEntryId") Long qualityEntryId,String batchId)
+    {
+        try {
+            List<BatchData> batchDataList = productionPlanService.getAllBatch(partyId,qualityEntryId,batchId);
+            if(batchDataList.isEmpty())
+                throw new Exception("no data faund");
+
+            return new GeneralResponse<>(batchDataList, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }*/
 
     @DeleteMapping(value="/productionPlan/deleteBy/{id}")
     public GeneralResponse<Boolean> deleteById(@PathVariable(name="id")Long id)
