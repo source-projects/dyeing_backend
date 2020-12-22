@@ -116,6 +116,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 			return null;
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 		GetQualityResponse quality1 = modelMapper.map(quality.get(), GetQualityResponse.class);
+
 		return quality1;
 	}
 
@@ -147,6 +148,8 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		qualityParties.setPartyName(party.get().getPartyName());
 
+		if(qualityParties==null)
+			throw new Exception("no data faund");
 
 		return qualityParties;
 
@@ -188,6 +191,8 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 
 
+			if(partyQualityData==null)
+				throw new Exception("no data faund");
 
 		return partyQualityData;
 
@@ -195,7 +200,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 	}
 
-    public List<GetAllQualtiy> getAllQualityData() {
+    public List<GetAllQualtiy> getAllQualityData() throws Exception {
 		List<Quality> qualities = qualityDao.findAll();
 		List<GetAllQualtiy> getAllQualtiyList =new ArrayList<>();
 		for(Quality quality:qualities)
@@ -208,6 +213,8 @@ public class QualityServiceImp implements QualityServiceInterface{
 			getAllQualtiy.setPartyName(partyName.get().getPartyName());
 			getAllQualtiyList.add(getAllQualtiy);
 		}
+		if(getAllQualtiyList.isEmpty())
+			throw new Exception("no data found");
 		return getAllQualtiyList;
     }
 
@@ -246,6 +253,9 @@ public class QualityServiceImp implements QualityServiceInterface{
 			}
 
 		}
+
+		if(partyQualityList.isEmpty())
+			throw new Exception("no data found");
 
 		return partyQualityList;
 	}

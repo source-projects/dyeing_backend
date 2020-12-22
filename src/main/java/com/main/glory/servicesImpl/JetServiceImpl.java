@@ -213,7 +213,7 @@ public class JetServiceImpl {
         List<GetJetData> getJetDataList=new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
         if(jetDataList.isEmpty())
-            throw new Exception("No data found");
+            throw new Exception("no data found");
 
         //fetch the data which are in Queue
         for(JetData jetData:jetDataList)

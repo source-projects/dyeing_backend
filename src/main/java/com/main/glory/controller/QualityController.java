@@ -117,14 +117,21 @@ public class QualityController extends ControllerConfig {
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
     @GetMapping(value = "/quality/allQuality")
-    public GeneralResponse<List<GetAllQualtiy>> getAllQualityData() {
+    public GeneralResponse<List<GetAllQualtiy>> getAllQualityData() throws Exception{
 
-        List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityData();
+        try {
+
+
+            List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityData();
             if (qualityData == null) {
                 return new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
 
             return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        }catch (Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
 
     }
 

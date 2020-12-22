@@ -70,7 +70,7 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id){
+    public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
         Boolean flag = false;
         if(id ==  null){
@@ -85,7 +85,7 @@ public class StockBatchServiceImpl {
         else if(getBy.equals("group")){
             data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
         }
-        if(data.isEmpty()) return null;
+        if(data.isEmpty()) throw new Exception("no data found");
         else return data.get();
     }
 

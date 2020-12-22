@@ -27,18 +27,24 @@ public class DesignationServiceImpl implements DesignationServiceInterface
         return 0;
     }
 
-    public Optional<Designation> getDesignationById(Long id) {
+    public Optional<Designation> getDesignationById(Long id) throws Exception{
         if(id!=null)
         {
             Optional<Designation> designation = designationDao.findById(id);
+            if(designation.isEmpty())
+                throw new Exception("no data found");
             return designation;
         }
 
         return null;
     }
 
-    public List<Designation> getDesignation() {
+    public List<Designation> getDesignation() throws Exception {
 
-        return designationDao.findAllExceptAdmin();
+        List<Designation> designationList=designationDao.findAllExceptAdmin();
+        if (designationList.isEmpty())
+            throw new Exception("no data found");
+
+        return designationList;
     }
 }

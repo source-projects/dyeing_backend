@@ -160,6 +160,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 	        getAllSupplierRateList = supplierRateDao.findWithSupplierName();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             supplierRatesResponses = modelMapper.map(getAllSupplierRateList, List.class);
+            if(supplierRatesResponses.isEmpty())
+                throw new Exception("no data found");
+
 	        return supplierRatesResponses;
         } catch (Exception e){
 	        e.printStackTrace();
@@ -172,7 +175,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         return data.get().getSupplierName();
     }
 
-    public List<RateAndItem> getSupplierItemAndRate(Long id) {
+    public List<RateAndItem> getSupplierItemAndRate(Long id) throws Exception {
         Optional<Supplier> supplier = supplierDao.findById(id);
         if(supplier.isPresent())
         {
@@ -184,6 +187,8 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
                 RateAndItem rateAndItem = new RateAndItem(supplierRate);
                 rateAndItemList.add(rateAndItem);
             }
+            if(rateAndItemList.isEmpty())
+                throw new Exception("no data found");
 
             return rateAndItemList;
         }
@@ -191,9 +196,11 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     }
 
-    public List<GetAllSupplierWithName> getAllSupplierName() {
+    public List<GetAllSupplierWithName> getAllSupplierName() throws Exception {
         List<GetAllSupplierWithName> s = supplierDao.findAllName();
 
+        if(s.isEmpty())
+            throw new Exception("no data found");
        return s;
     }
 
@@ -218,7 +225,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         }
 
         if(getItemWithSupplierList.isEmpty())
-            throw new Exception("No data found");
+            throw new Exception("no data found");
 
         return getItemWithSupplierList;
 

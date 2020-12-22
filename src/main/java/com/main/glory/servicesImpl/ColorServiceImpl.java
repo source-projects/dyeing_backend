@@ -60,7 +60,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	}
 
 	@Override
-	public List<ColorMastDetails> getAll(String getBy,Long id) {
+	public List<ColorMastDetails> getAll(String getBy,Long id)throws Exception {
 		List<ColorMastDetails> colorMastDetails = new ArrayList<>();
 		if(id == null){
 			List<ColorMast> data = colorMastDao.findAll();
@@ -101,6 +101,9 @@ public class ColorServiceImpl implements ColorServicesInterface {
 				}
 			});
 		}
+		if(colorMastDetails.isEmpty())
+			throw new Exception("no data found");
+
 		return colorMastDetails;
 	}
 
@@ -151,8 +154,11 @@ public class ColorServiceImpl implements ColorServicesInterface {
 		return null;
 	}
 
-	public List<ColorBox> getAllBox(Boolean issued){
-		return colorBoxDao.findByIssued(issued);
+	public List<ColorBox> getAllBox(Boolean issued) throws Exception{
+		List<ColorBox> colorBoxes =colorBoxDao.findByIssued(issued);
+		if(colorBoxes.isEmpty())
+			throw new Exception("no data found");
+		return colorBoxes;
 	}
 
 	public void issueBox(IssueBoxRequest issueBoxRequest) throws Exception{

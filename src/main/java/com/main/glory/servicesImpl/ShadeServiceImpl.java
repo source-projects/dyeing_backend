@@ -4,6 +4,7 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
+import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
@@ -16,6 +17,7 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -124,7 +126,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		return true;
 	}
 
-	public List<GetAllShade> getAllShadesInfo(String getBy, Long id) {
+	public List<GetAllShade> getAllShadesInfo(String getBy, Long id) throws Exception {
 		List<ShadeMast> shadeMastList = null;
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
 		if(id == null){
@@ -221,6 +223,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			}
 		}
 
+		if(getAllShadesList.isEmpty())
+			throw new Exception("no data found");
 		return getAllShadesList;
 	}
 
