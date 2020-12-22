@@ -2,6 +2,8 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.Jet.JetDataDao;
 import com.main.glory.Dao.Jet.JetMastDao;
+import com.main.glory.Dao.StockAndBatch.BatchDao;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.BatchToPartyAndQuality;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.AddJetData;
@@ -39,7 +41,6 @@ public class JetServiceImpl {
     }
 
     public void saveJetData( List<AddJetData> jetDataList) throws Exception{
-
         Double availableJetCapacity=0.0;
 
         Double totalBatchCapacity = 0.0;
@@ -64,23 +65,25 @@ public class JetServiceImpl {
             if(productionPlanExist==null)
                 throw new Exception("production data not found");
 
-            if(jetDataExistWithProducton.isEmpty())
+            if(jetDataExistWithProducton.isPresent())
                 throw new Exception("Production is already exist with jet");
 
 
             availableJetCapacity = jetMastExist.get().getCapacity();
 
-            BatchToPartyAndQuality batchCapacity = stockBatchService.getPartyAndQualityByBatch(productionPlanExist.getStockId(),productionPlanExist.getBatchId());
-
-            totalBatchCapacity += batchCapacity.getTotalWt();
-
+            List<BatchData> batchCapacity = stockBatchService.getBatchById(productionPlanExist.getBatchId(),productionPlanExist.getStockId());
+            for(BatchData batchData:batchCapacity)
+            {
+                if(batchData.getIsProductionPlanned()==true)
+                    totalBatchCapacity+=batchData.getWt();
+            }
 
         }
-
         //check the capacity
-        if(availableJetCapacity>totalBatchCapacity)
+        System.out.println(availableJetCapacity+":"+totalBatchCapacity);
+        if(totalBatchCapacity>availableJetCapacity)
         {
-            throw new Exception("Batch WT is greather than Jet capacity please reduce the Batch size");
+            throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
         }
 
         //insert the record if batch is fulfilling the requiremet
@@ -131,10 +134,80 @@ public class JetServiceImpl {
     }
 
     public void updateJetData(List<UpdateJetData> jetDataToUpdate) throws Exception {
+        int i=0,n=jetDataToUpdate.size();
+        int k = 0;
+        while(i<n) {
+            k=0;
+            Double availableJetCapacity = 0.0;
+
+            Double totalBatchCapacity = 0.0;
+            //first check the capacity and production detail is available or not
+            for (AddJetData jetData : jetDataToUpdate.get(k).getAddJetDataList()) {
+
+                if (jetData.getControlId() == null)
+                    throw new Exception("control id can't be null ");
+
+                if (jetData.getProductionId() == null)
+                    throw new Exception("prudction id can't be null ");
+
+                Optional<JetMast> jetMastExist = jetMastDao.findById(jetData.getControlId());
+
+                ProductionPlan productionPlanExist = productionPlanService.getProductionData(jetData.getProductionId());
+
+                Optional<JetData> jetDataExistWithProducton = jetDataDao.findByControlIdAndProductionId(jetData.getControlId(), jetData.getProductionId());
+
+                if (jetMastExist.isEmpty())
+                    throw new Exception("Jet Mast is not found");
+
+                if (productionPlanExist == null)
+                    throw new Exception("production data not found");
+
+                if (jetDataExistWithProducton.isEmpty())
+                    throw new Exception("Production is not available");
 
 
-        return;
-    }
+                availableJetCapacity = jetMastExist.get().getCapacity();
+
+                List<BatchData> batchCapacity = stockBatchService.getBatchById(productionPlanExist.getBatchId(), productionPlanExist.getStockId());
+                for (BatchData batchData : batchCapacity) {
+                    if (batchData.getIsProductionPlanned() == true)
+                        totalBatchCapacity += batchData.getWt();
+                }
+
+
+                //check the capacity
+                System.out.println(availableJetCapacity + ":" + totalBatchCapacity);
+                if (totalBatchCapacity > availableJetCapacity) {
+                    throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
+                }
+                k++;
+            }
+
+
+            i++;
+        }
+            //insert the record if batch is fulfilling the requiremet
+       k=0;
+            for(AddJetData jetData:jetDataToUpdate.get(k).getAddJetDataList()){
+
+                if(jetData.getProductionId()==null)
+                    throw new Exception("prudction id can't be null ");
+
+                ProductionPlan productionPlanExist=productionPlanService.getProductionData(jetData.getProductionId());
+
+                JetData saveJetData=new JetData(jetData,productionPlanExist);
+                saveJetData.setControlId(jetDataToUpdate.get(k).getControlId());
+                jetDataDao.save(saveJetData);
+
+                k++;
+            }
+
+        }
+
+
+
+
+
 
     public List<GetJetData> getJetDataWithInQueueProdution(Long id) throws Exception{
 

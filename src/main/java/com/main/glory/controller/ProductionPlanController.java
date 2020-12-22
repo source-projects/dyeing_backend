@@ -3,13 +3,11 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.StockDataBatchData.BatchData;
-import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.productionPlan.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,10 +47,10 @@ public class ProductionPlanController extends ControllerConfig {
     }
 
     @GetMapping(value="/productionPlan/all")
-    public GeneralResponse<List<ProductionPlan>> getAllProductionPlan()
+    public GeneralResponse<List<GetAllProductionWithShadeData>> getAllProductionPlan()
     {
         try {
-            List<ProductionPlan> productionPlanRecord = productionPlanService.getAllProductionData();
+            List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData();
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
