@@ -157,10 +157,10 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/BatchToPartyAndQuality/{controlId}/{batchId}")
-    public GeneralResponse<BatchToPartyAndQuality> getPartAndQualityByBatch(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
+    public GeneralResponse<BatchToPartyAndQuality> getPartyAndQualityByBatch(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
         try{
 
-            BatchToPartyAndQuality batchData = stockBatchService.getPartAndQualityByBatch(controlId,batchId);
+            BatchToPartyAndQuality batchData = stockBatchService.getPartyAndQualityByBatch(controlId,batchId);
 
             return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 

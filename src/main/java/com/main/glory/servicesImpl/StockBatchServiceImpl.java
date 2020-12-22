@@ -452,7 +452,7 @@ public class StockBatchServiceImpl {
         return  getAllBatchWithPartyAndQualities;
     }
 
-    public BatchToPartyAndQuality getPartAndQualityByBatch(Long controlId,String batchId) throws Exception{
+    public BatchToPartyAndQuality getPartyAndQualityByBatch(Long controlId, String batchId) throws Exception{
         Optional<StockMast> stockMast = stockMastDao.findById(controlId);
 
         if(!stockMast.isPresent())

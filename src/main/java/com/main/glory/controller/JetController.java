@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.UpdateJetData;
+import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.jet.responce.GetStatus;
 import com.main.glory.servicesImpl.JetServiceImpl;
@@ -97,6 +98,23 @@ public class JetController extends ControllerConfig {
 
             List<GetJetData> jetDataList = jetService.getJetData(id);
             return new GeneralResponse<>(jetDataList, "Jet Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value="/getAllJetDetail")
+    public GeneralResponse<List<GetAllJetMast>> getAllJetData()  throws Exception {
+
+        boolean flag;
+        try {
+
+            List<GetAllJetMast> jetMastList = jetService.getAllJetData();
+            return new GeneralResponse<>(jetMastList, "Jet Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }
         catch(Exception e)
