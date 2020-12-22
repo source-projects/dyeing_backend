@@ -95,7 +95,6 @@ public class ProductionPlanImpl {
         return productionWithShadeData.get();
 
 
-
     }
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {

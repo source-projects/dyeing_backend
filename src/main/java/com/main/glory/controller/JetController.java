@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.JetMast;
+import com.main.glory.model.jet.request.ChangeStatus;
 import com.main.glory.model.jet.request.UpdateJetData;
 import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
@@ -75,6 +76,27 @@ public class JetController extends ControllerConfig {
         try {
 
             jetService.updateJetData(jetDataToUpdate);
+            return new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping(value="/updateJetData/productionStatus/")
+    public GeneralResponse<Boolean> updateJetData(@RequestBody ChangeStatus jetDataToUpdate) throws Exception {
+        if(jetDataToUpdate==null)
+        {
+            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            jetService.updateProductionStatus(jetDataToUpdate);
             return new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }
