@@ -95,6 +95,11 @@ public class JetServiceImpl {
 
             ProductionPlan productionPlanExist=productionPlanService.getProductionData(jetData.getProductionId());
 
+            //change the status
+            productionPlanExist.setStatus(true);
+            productionPlanService.saveProductionPlan(productionPlanExist);
+
+            //save jet with production
             JetData saveJetData=new JetData(jetData,productionPlanExist);
             jetDataDao.save(saveJetData);
 
