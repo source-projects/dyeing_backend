@@ -7,7 +7,6 @@ import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithPartyAndQuality;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
@@ -15,13 +14,10 @@ import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
@@ -37,6 +33,8 @@ public class DispatchMastImpl {
 
     @Autowired
     BatchDao batchDao;
+    @Autowired
+    BatchServiceImpl batchService;
 
     @Autowired
     PartyDao partyDao;
@@ -72,7 +70,7 @@ public class DispatchMastImpl {
         return true;
     }
 
-    public GetDispatchCompleteDetail getInvoiceById(Long id) throws Exception{
+    public GetDispatchCompleteDetail getDispatchCompleteDetail(Long id) throws Exception{
 
         Double totalMtr=0.0;
         Double totalFinishMtr=0.0;
@@ -170,5 +168,59 @@ public class DispatchMastImpl {
         if(getAllDispatchesList.isEmpty())
             throw new Exception("no data found");
         return  getAllDispatchesList;
+    }
+
+    public Boolean updateDispatchData(DispatchMast dispatchMastToUpdate) throws Exception{
+        Optional<DispatchMast> dispatchMastExist=dispatchMastDao.findById(dispatchMastToUpdate.getId());
+        if(dispatchMastExist.isEmpty())
+            throw new Exception("no data found");
+
+        if(dispatchMastExist.get().getIsSendToParty()==true)
+        throw new Exception("Data can't be update because invoice already send to party");
+
+
+        //for delete the batch gr if not coming from FE
+
+        //##Get the data first from the list
+        Map<Long,Boolean> batchGr=new HashMap<>();
+        List<DispatchData> dispatchDataList = dispatchDataDao.findByControlId(dispatchMastToUpdate.getId());
+        for(DispatchData dispatchData: dispatchDataList)
+        {
+            batchGr.put(dispatchData.getBatchEntryId(),false);
+            //System.out.println(batch.getId());
+        }
+
+        //change the as per the data is coming from FE
+        for(DispatchData dispatchData:dispatchMastToUpdate.getDispatchData())
+        {
+            //System.out.println("coming:"+batch.getId());
+            if(batchGr.containsKey(dispatchData.getBatchEntryId()))
+            {
+                batchGr.replace(dispatchData.getBatchEntryId(),true);
+            }
+
+        }
+        //##Iterate the loop and delete the record who flag is false
+        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+        {
+            System.out.println(entry.getKey()+":"+entry.getValue());
+            if(entry.getValue()==false)
+            {
+                batchDao.updateBillStatus(entry.getKey());
+                dispatchDataDao.deleteByBatchEntryId(entry.getKey());
+            }
+        }
+        dispatchMastDao.save(dispatchMastToUpdate);
+        return true;
+
+    }
+
+    public DispatchMast getInvoiceById(Long id) throws Exception{
+        Optional<DispatchMast> dispatchMastExist = dispatchMastDao.findById(id);
+        if(dispatchMastExist.isEmpty())
+            throw new Exception("no data found");
+
+        return dispatchMastExist.get();
+
     }
 }
