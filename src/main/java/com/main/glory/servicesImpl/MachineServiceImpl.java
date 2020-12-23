@@ -564,4 +564,11 @@ public class MachineServiceImpl {
 
 
     }
+
+    public MachineMast getMachineByMachineId(Long controlId)throws Exception {
+        Optional<MachineMast> machineMast = machineDao.findById(controlId);
+        if(machineMast.isEmpty())
+            throw new Exception("no data found");
+        return machineMast.get();
+    }
 }

@@ -31,6 +31,16 @@ public class MachineMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<MachineRecord> machineRecords;
 
+    @ApiModelProperty(hidden = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
+    private List<BoilerMachineRecord> boilerMachineRecord;
+
+    @ApiModelProperty(hidden = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
+    private List<Thermopack> thermopackRecord;
+
     @PrePersist
     protected void onCreate() {
         this.createdDate = new Date(System.currentTimeMillis());

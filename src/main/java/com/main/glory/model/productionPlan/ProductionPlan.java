@@ -25,6 +25,8 @@ public class ProductionPlan {
     Long partyId;
     Long qualityEntryId;
     Long shadeId;
+    Boolean status=false;
+
 
     public ProductionPlan(ProductionPlan productionPlan) {
         this.shadeId=productionPlan.getShadeId();
