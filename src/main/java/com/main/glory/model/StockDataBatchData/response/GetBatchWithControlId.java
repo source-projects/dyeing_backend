@@ -15,4 +15,10 @@ public class GetBatchWithControlId {
     Double WT;
     Double MTR;
 
+    public GetBatchWithControlId(GetBatchWithControlId getBatchWithControlIdData) {
+        this.batchId=getBatchWithControlIdData.batchId;
+        this.controlId=getBatchWithControlIdData.controlId;
+        this.WT=getBatchWithControlIdData.WT;
+        this.MTR=getBatchWithControlIdData.MTR;
+    }
 }

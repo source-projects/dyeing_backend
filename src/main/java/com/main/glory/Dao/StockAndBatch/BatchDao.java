@@ -38,5 +38,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select p from BatchData p where p.batchId =:batchId AND p.controlId =:controlId AND isFinishMtrSave = true AND isBillGenrated = false ")
     List<BatchData> findByControlIdAndBatchIdWithFinishMtr(String batchId, Long controlId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId=:id AND p.isProductionPlanned = true AND p.isFinishMtrSave=true GROUP BY p.batchId ")
+    List<GetBatchWithControlId> getAllQtyByStockAndParty(Long id);
 }
 

@@ -5,8 +5,10 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
+import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,10 +54,10 @@ public class DipatchController extends ControllerConfig {
     }
 
     @GetMapping("/dipatch/getBatchByParty/{partyId}")
-    public GeneralResponse<List<BatchData>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+    public GeneralResponse<List<GetBatchWithControlId>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
         try{
             if(partyId!=null) {
-                List<BatchData> x =dispatchMastService.getBatchByParty(partyId);
+                List<GetBatchWithControlId> x =dispatchMastService.getBatchByParty(partyId);
                 return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
@@ -78,6 +80,21 @@ public class DipatchController extends ControllerConfig {
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/dipatch/getAll")
+    public GeneralResponse<List<GetAllDispatch>> getAllDispatch() throws Exception{
+        try{
+
+            List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
+            return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
 
 }

@@ -541,7 +541,9 @@ public class StockBatchServiceImpl {
     }
 
     public List<StockMast> getBatchByPartyId(Long partyId) {
+
         Optional<List<StockMast>> stockMasts = stockMastDao.findByPartyId(partyId);
+
 
         return stockMasts.get();
     }

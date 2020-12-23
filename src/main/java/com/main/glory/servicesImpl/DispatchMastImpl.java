@@ -7,9 +7,12 @@ import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithPartyAndQuality;
+import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
+import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
@@ -129,8 +132,8 @@ public class DispatchMastImpl {
 
     }
 
-    public List<BatchData> getBatchByParty(Long partyId)throws Exception {
-        List<BatchData> batchDataListByParty=new ArrayList<>();
+    public List<GetBatchWithControlId> getBatchByParty(Long partyId)throws Exception {
+        List<GetBatchWithControlId> batchDataListByParty=new ArrayList<>();
         List<StockMast> stockMastList = stockBatchService.getBatchByPartyId(partyId);
 
         if(stockMastList.isEmpty())
@@ -140,22 +143,32 @@ public class DispatchMastImpl {
         for(StockMast stockMast:stockMastList)
         {
             //System.out.println(stockMast.getId());
-            List<BatchData> batchDataList = batchDao.findByControlId(stockMast.getId());
-
-            for(BatchData batchData:batchDataList)
+            List<GetBatchWithControlId> batchDataList = batchDao.getAllQtyByStockAndParty(stockMast.getId());
+            for(GetBatchWithControlId getBatchWithControlIdData:batchDataList)
             {
-                if(batchData==null)
-                    continue;
-
-                if(batchData.getIsFinishMtrSave()==true && batchData.getIsProductionPlanned()==true)
-                {
-                    batchDataListByParty.add(batchData);
-                }
+                GetBatchWithControlId getBatchWithControlId = new GetBatchWithControlId(getBatchWithControlIdData);
+                batchDataListByParty.add(getBatchWithControlId);
             }
+
         }
 
         if(batchDataListByParty.isEmpty())
             throw new Exception("data not found for party:"+partyId);
         return  batchDataListByParty;
+    }
+
+    public List<GetAllDispatch> getAllDisptach() throws Exception {
+        List<GetAllDispatch> getAllDispatchesList=new ArrayList<>();
+        List<DispatchMast> dispatchMastList = dispatchMastDao.findAll();
+        for(DispatchMast dispatchMast:dispatchMastList)
+        {
+
+            if(dispatchMast!=null)
+            getAllDispatchesList.add(new GetAllDispatch(dispatchMast));
+
+        }
+        if(getAllDispatchesList.isEmpty())
+            throw new Exception("no data found");
+        return  getAllDispatchesList;
     }
 }
