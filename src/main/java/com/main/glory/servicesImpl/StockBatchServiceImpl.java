@@ -113,7 +113,7 @@ public class StockBatchServiceImpl {
 
 
 
-        //for delete the batch gr if not coming from FR
+        //for delete the batch gr if not coming from FE
 
         //##Get the data first from the list
         Map<Long,Boolean> batchGr=new HashMap<>();

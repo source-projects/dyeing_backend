@@ -4,7 +4,6 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
-import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
@@ -38,12 +37,27 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/dipatch/{id}")
-    public GeneralResponse<GetDispatchCompleteDetail> getDispatch(@PathVariable(name="id") Long id) throws Exception{
+    @GetMapping("/getCompleteDipatchBy/{id}")
+    public GeneralResponse<GetDispatchCompleteDetail> getCompleteDipatchBy(@PathVariable(name="id") Long id) throws Exception{
         try{
             if(id!=null) {
-                GetDispatchCompleteDetail x =dispatchMastService.getInvoiceById(id);
-                return new GeneralResponse<>(x, "Invoice created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                GetDispatchCompleteDetail x =dispatchMastService.getDispatchCompleteDetail(id);
+                return new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                return new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/dipatch/{id}")
+    public GeneralResponse<DispatchMast> getDispatch(@PathVariable(name="id") Long id) throws Exception{
+        try{
+            if(id!=null) {
+                DispatchMast x =dispatchMastService.getInvoiceById(id);
+                return new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
                 return new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
@@ -87,6 +101,22 @@ public class DipatchController extends ControllerConfig {
 
             List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
             return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/dipatch/updateDispatch")
+    public GeneralResponse<Boolean> updateDispatchData(@RequestBody DispatchMast dispatchMastToUpdate){
+        try{
+
+            Boolean x =dispatchMastService.updateDispatchData(dispatchMastToUpdate);
+            if(x==true)
+            return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+            return new GeneralResponse<>(false, "Data can't updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
         } catch (Exception e){
             e.printStackTrace();
