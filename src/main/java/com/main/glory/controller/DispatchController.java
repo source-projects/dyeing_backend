@@ -17,13 +17,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class DipatchController extends ControllerConfig {
+public class DispatchController extends ControllerConfig {
 
 
     @Autowired
     DispatchMastImpl dispatchMastService;
 
-    @PostMapping("/dipatch")
+    @PostMapping("/dispatch")
     public GeneralResponse<Boolean> createDispatch(@RequestBody DispatchMast dispatchMast) throws Exception{
         try{
             Boolean flag = dispatchMastService.saveDispatch(dispatchMast);
@@ -37,7 +37,7 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/getCompleteDipatchBy/{id}")
+    @GetMapping("/getCompleteDispatchBy/{id}")
     public GeneralResponse<GetDispatchCompleteDetail> getCompleteDipatchBy(@PathVariable(name="id") Long id) throws Exception{
         try{
             if(id!=null) {
@@ -52,7 +52,7 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/dipatch/{id}")
+    @GetMapping("/dispatch/{id}")
     public GeneralResponse<DispatchMast> getDispatch(@PathVariable(name="id") Long id) throws Exception{
         try{
             if(id!=null) {
@@ -67,7 +67,7 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/dipatch/getBatchByParty/{partyId}")
+    @GetMapping("/dispatch/getBatchByParty/{partyId}")
     public GeneralResponse<List<GetBatchWithControlId>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
         try{
             if(partyId!=null) {
@@ -82,7 +82,7 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/dipatch/getFinishMtrList/{batchId}/{controlId}")
+    @GetMapping("/dispatch/getFinishMtrList/{batchId}/{controlId}")
     public GeneralResponse<List<BatchData>> getFinishMtrList(@PathVariable(name="batchId") String batchId,@PathVariable(name="controlId") Long controlId) throws Exception{
         try{
 
@@ -95,7 +95,7 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/dipatch/getAll")
+    @GetMapping("/dispatch/getAll")
     public GeneralResponse<List<GetAllDispatch>> getAllDispatch() throws Exception{
         try{
 
@@ -108,7 +108,7 @@ public class DipatchController extends ControllerConfig {
         }
     }
 
-    @PutMapping("/dipatch/updateDispatch")
+    @PutMapping("/dispatch/updateDispatch")
     public GeneralResponse<Boolean> updateDispatchData(@RequestBody DispatchMast dispatchMastToUpdate){
         try{
 
