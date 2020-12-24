@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.support.NullValue;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -552,5 +553,14 @@ public class StockBatchServiceImpl {
 
 
         return stockMasts.get();
+    }
+
+    public GetBatchWithControlId getBatchQTYById(String batchId, Long stockId) {
+        GetBatchWithControlId getAllBatchResponse = batchDao.findByBatchIdAndControId(batchId,stockId);
+
+        if(getAllBatchResponse!=null)
+            return getAllBatchResponse;
+
+        return null;
     }
 }
