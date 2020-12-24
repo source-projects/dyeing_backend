@@ -22,7 +22,7 @@ public class JetMast {
     String name;
     Double capacity;
 
-    @ApiModelProperty(hidden = true)
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<JetData> jetDataList;
