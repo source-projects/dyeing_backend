@@ -96,6 +96,16 @@ public class ProductionPlanImpl {
 
 
     }
+
+    public void updateProductionPlan(ProductionPlan productionPlan) throws Exception{
+
+        Optional<ProductionPlan> productionPlanExist = productionPlanDao.findById(productionPlan.getId());
+        if(productionPlanExist.isEmpty())
+            throw new Exception("no data found");
+
+        productionPlanDao.save(productionPlan);
+
+    }
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 

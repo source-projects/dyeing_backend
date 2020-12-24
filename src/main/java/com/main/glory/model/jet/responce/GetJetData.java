@@ -20,6 +20,7 @@ public class GetJetData {
     String status;
     Long sequence;
     Long productionId;
+    String batchId;
 
     public GetJetData(JetData jetData) {
         this.id=jetData.getId();

@@ -18,12 +18,11 @@ public class GetAllJetMast {
     Long id;
     String name;
     Double capacity;
-    List<JetData> jetDataList;
+    List<GetJetData> jetDataList;
 
     public GetAllJetMast(JetMast jetMast) {
         this.id=jetMast.getId();
         this.name=jetMast.getName();
         this.capacity=jetMast.getCapacity();
-        this.jetDataList=jetMast.getJetDataList();
     }
 }

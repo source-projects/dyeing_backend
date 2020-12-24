@@ -55,6 +55,12 @@ public class StockBatchServiceImpl {
             }
             else
             {
+
+                for(BatchData batchData:stockMast.getBatchData())
+                {
+                    if(batchData.getBatchId()==null)
+                        throw new Exception("batch id can't be null");
+                }
                 StockMast x = stockMastDao.save(stockMast);
 
                 return true;
@@ -447,7 +453,7 @@ public class StockBatchServiceImpl {
 
         }
         if(getAllBatchWithPartyAndQualities.isEmpty())
-            throw new Exception("No data found");
+            throw new Exception("no data found");
 
         return  getAllBatchWithPartyAndQualities;
     }
