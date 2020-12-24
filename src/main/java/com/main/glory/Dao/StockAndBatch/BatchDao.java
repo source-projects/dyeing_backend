@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +51,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Modifying
     @Query("update BatchData b set b.isBillGenrated=false where b.id=:key")
     void updateBillStatus(Long key);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId=:stockId AND p.batchId = :batchId AND p.isProductionPlanned = true AND p.isFinishMtrSave=true GROUP BY p.batchId ")
+    GetBatchWithControlId findByBatchIdAndControId(String batchId, Long stockId);
 }
 
