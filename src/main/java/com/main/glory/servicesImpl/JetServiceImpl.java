@@ -244,13 +244,24 @@ public class JetServiceImpl {
         int i=0;
         for(JetMast jetMast:jetMastList)
         {
-            if(jetMast.getJetDataList().get(i).getStatus()==JetStatus.inQueue)
+            List<JetData> jetDataList = new ArrayList<>();
+            List<JetData> existJetDataList =  jetDataDao.findByControlId(jetMast.getId());
+
+            for(JetData jetData:existJetDataList)
             {
-                getAllJetMast.add(new GetAllJetMast(jetMast));
-                i++;
+                if(jetData.getStatus()==JetStatus.inQueue)
+                    jetDataList.add(jetData);
             }
 
+            GetAllJetMast allJetMast = new GetAllJetMast();
+            allJetMast.setId(jetMast.getId());
+            allJetMast.setCapacity(jetMast.getCapacity());
+            allJetMast.setName(jetMast.getName());
 
+            if(!jetDataList.isEmpty())
+                allJetMast.setJetDataList(jetDataList);
+
+            getAllJetMast.add(allJetMast);
         }
 
         return getAllJetMast;

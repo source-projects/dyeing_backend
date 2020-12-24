@@ -4,20 +4,15 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
-import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
-import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import com.main.glory.model.shade.requestmodals.GetAllShade;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
-import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -243,5 +238,16 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			throw new Exception("Shade not found for quality or party");
 
 		return shadeMast.get();
+	}
+
+    public List<GetShadeByPartyAndQuality> getAllShadeByPartyAndQuality(Long partyId, Long qualityId) throws Exception{
+
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+		if(shadeByPartyAndQualities.isEmpty())
+			throw new Exception("shade data not found");
+
+		return shadeByPartyAndQualities;
+
+
 	}
 }
