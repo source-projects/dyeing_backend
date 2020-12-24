@@ -244,13 +244,19 @@ public class JetServiceImpl {
         int i=0;
         for(JetMast jetMast:jetMastList)
         {
-            List<JetData> jetDataList = new ArrayList<>();
+            List<GetJetData> jetDataList = new ArrayList<>();
             List<JetData> existJetDataList =  jetDataDao.findByControlId(jetMast.getId());
 
             for(JetData jetData:existJetDataList)
             {
                 if(jetData.getStatus()==JetStatus.inQueue)
-                    jetDataList.add(jetData);
+                {
+                    GetJetData getJetData=new GetJetData(jetData);
+                    ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
+                    getJetData.setBatchId(productionPlan.getBatchId());
+                    jetDataList.add(getJetData);
+                }
+
             }
 
             GetAllJetMast allJetMast = new GetAllJetMast();

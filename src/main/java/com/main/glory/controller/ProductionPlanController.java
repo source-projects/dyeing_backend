@@ -32,6 +32,21 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping(value="/updateProductionPlan/")
+    public GeneralResponse<Boolean> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
+    {
+        try {
+            productionPlanService.updateProductionPlan(productionPlan);
+            return new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(value="/productionPlan/{id}")
     public GeneralResponse<ProductionPlan> getProductionPlan(@PathVariable(name="id")Long id)
     {
