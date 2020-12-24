@@ -23,6 +23,7 @@ public class JetMast {
     Double capacity;
 
 
+    
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<JetData> jetDataList;
