@@ -26,6 +26,6 @@ public class GetJetData {
         this.controlId=jetData.getControlId();
         this.status=jetData.getStatus().toString();
         this.sequence=jetData.getSequence();
-        this.productionId=jetData.getProductionPlan().getId();
+        this.productionId=jetData.getProductionId();
     }
 }

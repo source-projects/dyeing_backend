@@ -1,5 +1,6 @@
 package com.main.glory.model.productionPlan;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.jet.JetData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,13 @@ public class ProductionPlan {
     Long qualityEntryId;
     Long shadeId;
     Boolean status=false;
+
+    @JsonIgnore
+    @ApiModelProperty(hidden = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "productionId", referencedColumnName = "id")
+    JetData jetData;
+
 
 
     public ProductionPlan(ProductionPlan productionPlan) {

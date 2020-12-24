@@ -241,9 +241,16 @@ public class JetServiceImpl {
         if(jetMastList.isEmpty())
             throw new Exception("not data found");
 
+        int i=0;
         for(JetMast jetMast:jetMastList)
         {
-            getAllJetMast.add(new GetAllJetMast(jetMast));
+            if(jetMast.getJetDataList().get(i).getStatus()==JetStatus.inQueue)
+            {
+                getAllJetMast.add(new GetAllJetMast(jetMast));
+                i++;
+            }
+
+
         }
 
         return getAllJetMast;

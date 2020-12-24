@@ -23,17 +23,15 @@ public class JetData {
     @Enumerated(EnumType.STRING)
     JetStatus status=JetStatus.inQueue;
     Long sequence;
+    Long productionId;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "productionId", referencedColumnName = "id")
-    ProductionPlan productionPlan;
 
 
     public JetData(AddJetData jetData, ProductionPlan productionPlanExist) {
         this.id=jetData.getId();
         this.controlId=jetData.getControlId();
         this.sequence=jetData.getSequence();
-        this.productionPlan=productionPlanExist;
+        this.productionId=productionPlanExist.getId();
     }
 }

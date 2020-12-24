@@ -13,6 +13,6 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
     List<JetData> findByControlId(Long id);
 
 
-    @Query("SELECT j from JetData j where j.controlId=:controlId AND j.productionPlan.id=:productionId ")
+    @Query("SELECT j from JetData j where j.controlId=:controlId AND j.productionId=:productionId ")
     Optional<JetData> findByControlIdAndProductionId(Long controlId, Long productionId);
 }
