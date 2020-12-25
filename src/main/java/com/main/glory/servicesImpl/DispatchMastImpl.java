@@ -185,6 +185,7 @@ public class DispatchMastImpl {
 
             if(!invoiceNumber.contains(dispatchData.getInvoiceNo()))
             {
+                invoiceNumber.add(dispatchData.getInvoiceNo());
                 GetAllDispatch getAllDispatch=new GetAllDispatch(dispatchData);
                 dispatchDataList.add(getAllDispatch);
             }
