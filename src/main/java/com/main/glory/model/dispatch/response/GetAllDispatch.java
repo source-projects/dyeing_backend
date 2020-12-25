@@ -1,6 +1,6 @@
 package com.main.glory.model.dispatch.response;
 
-import com.main.glory.model.dispatch.DispatchMast;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +10,13 @@ import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-
+@Setter
 public class GetAllDispatch {
-    Long id;
-    Date createdDate;
-    Boolean isSendToParty;
 
-    public GetAllDispatch(DispatchMast dispatchMast) {
-        this.id=dispatchMast.getId();
-        this.createdDate=dispatchMast.getCreatedDate();
-        this.isSendToParty=dispatchMast.getIsSendToParty();
-    }
+    @JsonIgnore
+    Long stockId;
+    String invoiceNo;
+    Boolean isSendToParty;
+    Date date;
 }

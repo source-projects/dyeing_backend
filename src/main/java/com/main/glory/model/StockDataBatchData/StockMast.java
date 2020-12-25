@@ -1,6 +1,7 @@
 package com.main.glory.model.StockDataBatchData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
@@ -56,7 +57,7 @@ public class StockMast {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "stockId", referencedColumnName = "id")
-    List<DispatchMast> dispatchMasts;
+    List<DispatchData> dispatchData;
 
     Long qualityId;
 

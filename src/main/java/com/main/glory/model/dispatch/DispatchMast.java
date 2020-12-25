@@ -19,13 +19,11 @@ public class DispatchMast {
     Long id;
     Date createdDate;
     Long createdBy;
-    String batchId;
-    Long stockId;
-    Boolean isSendToParty=false;
+    String prefix;
+    Long postfix;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "controlId", referencedColumnName = "id")
-    List<DispatchData> dispatchData;
+
+
 
 
     @PrePersist
