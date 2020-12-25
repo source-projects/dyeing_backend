@@ -72,6 +72,8 @@ public class BatchImpl {
                     extraBatch.replace(batchData.getId(),true);
                 }
                 //save the extra batch
+                batchData.setIsFinishMtrSave(true);
+                batchData.setIsProductionPlanned(true);
                 batchDao.save(batchData);
             }
 
@@ -88,6 +90,10 @@ public class BatchImpl {
                 batchDao.deleteById(entry.getKey());
             }
         }
+
+        //update the flag
+
+
 
     }
 
