@@ -20,6 +20,7 @@ public class Thermopack {
     Long id;
     Long forwardTemp;
     Long returnTemp;
+    Long stackTemp;
     Long furnaceTemp;
     Long pumpData;
     Long idFan;
