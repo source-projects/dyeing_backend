@@ -20,7 +20,7 @@ public class ThermopackController extends ControllerConfig {
     ThermopackImpl thermopackService;
 
     @PostMapping(value="/thermoPackRecord")
-    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody Thermopack thermopackRecord) throws Exception {
+    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody List<Thermopack> thermopackRecord) throws Exception {
         if(thermopackRecord==null)
         {
             return new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

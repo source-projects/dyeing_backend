@@ -23,6 +23,7 @@ public class Thermopack {
     Long furnaceTemp;
     Long pumpData;
     Long idFan;
+    String dateToEnter;
     Long fdFan;
     Long screwFeeder;
     Long userHeadId;
