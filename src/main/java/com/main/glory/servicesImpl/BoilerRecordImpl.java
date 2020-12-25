@@ -6,6 +6,7 @@ import com.main.glory.model.machine.MachineMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("boilerServiceImpl")
@@ -18,10 +19,20 @@ public class BoilerRecordImpl {
     @Autowired
     BoilerMachineRecordDao boilerMachineRecordDao;
 
-    public void saveMachine(BoilerMachineRecord boilerMachineRecord) throws Exception {
+    public void saveMachine(List<BoilerMachineRecord> boilerMachineRecordList) throws Exception {
 
-        MachineMast machineMastExist = machineService.getMachineByMachineId(boilerMachineRecord.getControlId());
-        boilerMachineRecordDao.save(boilerMachineRecord);
+
+        List<BoilerMachineRecord> list=new ArrayList<>();
+        for(BoilerMachineRecord boilerMachineRecord:boilerMachineRecordList)
+        {
+            //check the machine is exist or not
+            MachineMast machineMastExist = machineService.getMachineByMachineId(boilerMachineRecord.getControlId());
+
+            list.add(boilerMachineRecord);
+
+        }
+
+        boilerMachineRecordDao.saveAll(list);
 
     }
 

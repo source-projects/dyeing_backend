@@ -22,7 +22,7 @@ public class BoilerController extends ControllerConfig {
 
 
     @PostMapping(value="/boilerRecord")
-    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody BoilerMachineRecord boilerMachineRecord) throws Exception {
+    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody List<BoilerMachineRecord> boilerMachineRecord) throws Exception {
         if(boilerMachineRecord==null)
         {
             return new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

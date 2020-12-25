@@ -32,6 +32,7 @@ public class BoilerMachineRecord {
     Long loadData;
     Long jetRunning;
     String timeOf;
+    String dateToEnter;
     Date createdDate;
     Long controlId;
     Long userHeadId;
