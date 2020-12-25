@@ -7,13 +7,11 @@ import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
-import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
+import com.main.glory.model.dispatch.request.CreateDispatch;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
-import com.main.glory.model.party.Party;
-import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +31,7 @@ public class DispatchMastImpl {
 
     @Autowired
     BatchDao batchDao;
+
     @Autowired
     BatchServiceImpl batchService;
 
@@ -42,6 +41,145 @@ public class DispatchMastImpl {
     @Autowired
     QualityDao qualityDao;
 
+    public Boolean saveDispatch(List<CreateDispatch> dispatchList) throws Exception {
+
+        List<DispatchMast> list = dispatchMastDao.findAll();
+
+        List<DispatchData> saveTheList=new ArrayList<>();
+        //if the sequence is there or not
+        if(!list.isEmpty())
+        {
+            Long invoiceNumber = dispatchMastDao.getInvoiceNumber("inv");
+
+            invoiceNumber+=1;
+           //get the invoice and merge with "inv" and then create the invoice for multiple batch
+
+            for(CreateDispatch createDispatch:dispatchList)
+            {
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),createDispatch.getBatchId());
+
+                for(BatchData batchData:batchDataList)
+                {
+
+                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
+                    {
+                        DispatchData dispatchData=new DispatchData(batchData);
+
+                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
+
+                        saveTheList.add(dispatchData);
+                        batchData.setIsBillGenrated(true);
+                        batchDao.save(batchData);
+                    }
+                }
+            }
+
+
+            if(saveTheList.isEmpty())
+                throw new Exception("no data found");
+            //save the complete batch with gr list to the dispatch data with same invoice number
+            dispatchDataDao.saveAll(saveTheList);
+
+
+            //increament the the invoice number to dispatch mast
+            DispatchMast dispatchMast =new DispatchMast();
+            dispatchMast.setPrefix("inv");
+            dispatchMast.setPostfix(invoiceNumber);
+            dispatchMastDao.save(dispatchMast);
+            return true;
+
+        }
+        else
+        {
+            //if there is not sequence then  create it
+            DispatchMast createDipatch=new DispatchMast();
+            createDipatch.setPostfix(0l);
+            createDipatch.setPrefix("inv");
+
+
+            //System.out.println(createDipatch.getPostfix()+":"+createDipatch.getPrefix());
+            dispatchMastDao.save(createDipatch);
+            Long invoiceNumber = dispatchMastDao.getInvoiceNumber("inv");
+
+            //do the same above thing if the invoice data is emty
+            invoiceNumber+=1;
+            //get the invoice and merge with "inv" and then create the invoice for multiple batch
+
+            for(CreateDispatch createDispatch:dispatchList)
+            {
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),createDispatch.getBatchId());
+
+                for(BatchData batchData:batchDataList)
+                {
+
+                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
+                    {
+                        DispatchData dispatchData=new DispatchData(batchData);
+
+                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
+
+                        saveTheList.add(dispatchData);
+                        batchData.setIsBillGenrated(true);
+                        batchDao.save(batchData);
+                    }
+                }
+            }
+
+
+
+            if(saveTheList.isEmpty())
+                throw new Exception("no data found");
+            //save the complete batch with gr list to the dispatch data with same invoice number
+            dispatchDataDao.saveAll(saveTheList);
+
+            //increament the the invoice number to dispatch mast
+            DispatchMast dispatchMast =new DispatchMast();
+            dispatchMast.setPrefix("inv");
+            dispatchMast.setPostfix(invoiceNumber);
+            dispatchMastDao.save(dispatchMast);
+
+            return true;
+
+        }
+
+
+    }
+
+
+    public List<BatchWithTotalMTRandFinishMTR> getBatchByParty(Long partyId)throws Exception {
+        List<BatchWithTotalMTRandFinishMTR> batchDataListByParty=new ArrayList<>();
+        List<StockMast> stockMastList = stockBatchService.getBatchByPartyId(partyId);
+
+        if(stockMastList.isEmpty())
+            throw new Exception("stock not found for party:"+partyId);
+
+
+        for(StockMast stockMast:stockMastList)
+        {
+            //System.out.println(stockMast.getId());
+            List<BatchWithTotalMTRandFinishMTR> batchDataList = batchDao.getAllBatchByStockIdWithTotalFinishMtr(stockMast.getId());
+            for(BatchWithTotalMTRandFinishMTR getBatchWithControlIdData:batchDataList)
+            {
+                BatchWithTotalMTRandFinishMTR getBatchWithControlId = new BatchWithTotalMTRandFinishMTR(getBatchWithControlIdData);
+                batchDataListByParty.add(getBatchWithControlId);
+            }
+
+        }
+
+        if(batchDataListByParty.isEmpty())
+            throw new Exception("data not found for party:"+partyId);
+        return  batchDataListByParty;
+    }
+
+    public List<GetAllDispatch> getAllDisptach() throws Exception{
+        //List<GetAllDispatch> dispatchDataList=new ArrayList<>();
+        List<GetAllDispatch> dispatchList =dispatchDataDao.getAllDispatch();
+        if (dispatchList.isEmpty())
+            throw new Exception("no data found");
+        return dispatchList;
+    }
+
+/*
     public Boolean saveDispatch(DispatchMast dispatchMast) throws Exception {
 
         //Added the check to check the given info is available or not
@@ -130,30 +268,6 @@ public class DispatchMastImpl {
 
     }
 
-    public List<GetBatchWithControlId> getBatchByParty(Long partyId)throws Exception {
-        List<GetBatchWithControlId> batchDataListByParty=new ArrayList<>();
-        List<StockMast> stockMastList = stockBatchService.getBatchByPartyId(partyId);
-
-        if(stockMastList.isEmpty())
-            throw new Exception("stock not found for party:"+partyId);
-
-
-        for(StockMast stockMast:stockMastList)
-        {
-            //System.out.println(stockMast.getId());
-            List<GetBatchWithControlId> batchDataList = batchDao.getAllQtyByStockAndParty(stockMast.getId());
-            for(GetBatchWithControlId getBatchWithControlIdData:batchDataList)
-            {
-                GetBatchWithControlId getBatchWithControlId = new GetBatchWithControlId(getBatchWithControlIdData);
-                batchDataListByParty.add(getBatchWithControlId);
-            }
-
-        }
-
-        if(batchDataListByParty.isEmpty())
-            throw new Exception("data not found for party:"+partyId);
-        return  batchDataListByParty;
-    }
 
     public List<GetAllDispatch> getAllDisptach() throws Exception {
         List<GetAllDispatch> getAllDispatchesList=new ArrayList<>();
@@ -222,5 +336,5 @@ public class DispatchMastImpl {
 
         return dispatchMastExist.get();
 
-    }
+    }*/
 }

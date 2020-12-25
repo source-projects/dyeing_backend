@@ -1,11 +1,10 @@
 package com.main.glory.model.dispatch;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +17,23 @@ public class DispatchData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     Long batchEntryId;
-    Long controlId;
+    String batchId;
+    Long stockId;
+    String invoiceNo;
+    Boolean isSendToParty=false;
+    Date createdDate;
+    Long createdBy;
+
+    public DispatchData(BatchData batchData) {
+        this.batchEntryId=batchData.getId();
+        this.batchId=batchData.getBatchId();
+        this.stockId=batchData.getControlId();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
 
 }
