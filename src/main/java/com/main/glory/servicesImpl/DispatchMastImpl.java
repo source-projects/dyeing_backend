@@ -172,11 +172,26 @@ public class DispatchMastImpl {
     }
 
     public List<GetAllDispatch> getAllDisptach() throws Exception{
-        //List<GetAllDispatch> dispatchDataList=new ArrayList<>();
-        List<GetAllDispatch> dispatchList =dispatchDataDao.getAllDispatch();
+        List<GetAllDispatch> dispatchDataList=new ArrayList<>();
+        List<DispatchData> dispatchList =dispatchDataDao.findAll();
+
+
+        List<String> invoiceNumber=new ArrayList<>();
+
         if (dispatchList.isEmpty())
             throw new Exception("no data found");
-        return dispatchList;
+        for(DispatchData dispatchData:dispatchList)
+        {
+
+            if(!invoiceNumber.contains(dispatchData.getInvoiceNo()))
+            {
+                GetAllDispatch getAllDispatch=new GetAllDispatch(dispatchData);
+                dispatchDataList.add(getAllDispatch);
+            }
+
+
+        }
+        return dispatchDataList;
     }
 
 /*
