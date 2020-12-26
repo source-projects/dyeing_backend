@@ -11,6 +11,7 @@ import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFini
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.CreateDispatch;
+import com.main.glory.model.dispatch.request.UpdateInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,6 +208,14 @@ public class DispatchMastImpl {
 
         return list;
 
+    }
+
+    public Boolean updateDispatch(UpdateInvoice updateInvoice) {
+
+        //update invoice
+        Map<String,Long> availbleBatchInInvoice = new HashMap<>();
+
+        return false;
     }
 
 /*

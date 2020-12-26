@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.request.CreateDispatch;
+import com.main.glory.model.dispatch.request.UpdateInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.servicesImpl.DispatchMastImpl;
@@ -76,6 +77,21 @@ public class DispatchController extends ControllerConfig {
             List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
             return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/updateDispatch/")
+    public GeneralResponse<Boolean> updateDispatch(@RequestBody UpdateInvoice updateInvoice) throws Exception{
+        try{
+
+            Boolean flag = dispatchMastService.updateDispatch(updateInvoice);
+            if(flag==true)
+            return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
