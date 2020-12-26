@@ -8,6 +8,7 @@ import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserRequest;
+import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.LoginResponse;
 import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.servicesImpl.UserServiceImpl;
@@ -44,6 +45,17 @@ public class UserController extends ControllerConfig {
             }
             return new GeneralResponse<UserData>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
+        return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
+    @GetMapping("/user/getAllOperator/all")
+    public GeneralResponse<List<GetAllOperator>> getAllOperator() throws Exception {
+
+        List<GetAllOperator> userObj=userService.getAllOperator();
+            if(userObj!=null)
+            {
+                return new GeneralResponse<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            }
+
         return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 

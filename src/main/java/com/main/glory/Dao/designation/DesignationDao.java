@@ -10,4 +10,7 @@ public interface DesignationDao extends JpaRepository<Designation,Long> {
 
     @Query("Select d from Designation d where d.designation != 'Admin'")
     List<Designation> findAllExceptAdmin();
+
+    @Query("select d from Designation d where d.designation='Operator'")
+    Designation findDesignationOperator();
 }

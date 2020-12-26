@@ -34,7 +34,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
 
     //get the data for batch without extra batches
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false GROUP BY p.batchId,p.controlId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IS NOT NULL GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchId();
 
 

@@ -8,6 +8,7 @@ import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.services.UserServiceInterface;
 
@@ -169,5 +170,30 @@ public class UserServiceImpl implements UserServiceInterface {
             throw new Exception("Wrong designation id"+userData2.getId());
 
         return 1;
+    }
+
+    public List<GetAllOperator> getAllOperator() throws Exception {
+
+        List<GetAllOperator> getAllOperatorList=new ArrayList<>();
+        Designation operatoDesoignation = designationDao.findDesignationOperator();
+
+        if(operatoDesoignation==null)
+            throw new Exception("no operator designation found");
+
+       List<UserData> operatorList =  userDao.findByDesignationId(operatoDesoignation.getId());
+
+       if(operatorList.isEmpty())
+           throw new Exception("no user found");
+
+
+       for(UserData operator:operatorList)
+       {
+           GetAllOperator getAllOperator=new GetAllOperator(operator);
+           getAllOperatorList.add(getAllOperator);
+       }
+
+
+       return getAllOperatorList;
+
     }
 }
