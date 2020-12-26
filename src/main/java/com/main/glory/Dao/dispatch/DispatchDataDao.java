@@ -12,6 +12,6 @@ import java.util.List;
 public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId),dd.batchId,dd.stockId) from DispatchData dd where dd.invoiceNo=:invoiceNo GROUP BY dd.batchId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.batchId,dd.stockId) from DispatchData dd where dd.invoiceNo=:invoiceNo AND isSendToParty = false GROUP BY dd.batchId,dd.stockId")
     List<GetBatchByInvoice> findBatchAndStockByInvoice(String invoiceNo);
 }
