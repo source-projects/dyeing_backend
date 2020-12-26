@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.request.CreateDispatch;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
+import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,22 @@ public class DispatchController extends ControllerConfig {
         }
     }
 
+    //Get dispatch by invoice number
+    @GetMapping("/getDispatch/byInvoiceNumber/{invoiceNo}")
+    public GeneralResponse<List<GetBatchByInvoice>> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+        try{
+            if(invoiceNo!=null) {
+                List<GetBatchByInvoice> x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
+                return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                return new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @GetMapping("/dispatch/getAll")
     public GeneralResponse<List<GetAllDispatch>> getAllDispatch() throws Exception{
@@ -64,6 +81,7 @@ public class DispatchController extends ControllerConfig {
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
 /*
     @PostMapping("/dispatch")
     public GeneralResponse<Boolean> createDispatch(@RequestBody DispatchMast dispatchMast) throws Exception{

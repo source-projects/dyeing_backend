@@ -12,6 +12,7 @@ import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.CreateDispatch;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
+import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -193,6 +194,19 @@ public class DispatchMastImpl {
 
         }
         return dispatchDataList;
+    }
+
+    public List<GetBatchByInvoice> getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
+
+
+        List<GetBatchByInvoice> list = dispatchDataDao.findBatchAndStockByInvoice(invoiceNo);
+
+        if(list.isEmpty())
+            throw new Exception("no data found");
+
+
+        return list;
+
     }
 
 /*
