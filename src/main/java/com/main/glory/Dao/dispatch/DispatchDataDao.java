@@ -6,6 +6,7 @@ import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,4 +26,13 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Transactional
     @Query("delete from DispatchData dd where dd.batchEntryId=:id")
     void deleteByBatchEntryId(Long id);
+
+    @Query(value = "select dd.invoice_no from dispatch_data as dd where dd.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
+    String findByInvoiceNo(@Param("invoiceNo") String invoiceNo);
+
+
+    @Modifying
+    @Transactional
+    @Query("update DispatchData dd set dd.isSendToParty=true where dd.invoiceNo=:invoiceNumberExist")
+    void updateStatus(String invoiceNumberExist);
 }

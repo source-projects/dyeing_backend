@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.BoilerMachineRecord;
 import com.main.glory.model.machine.Thermopack;
@@ -22,7 +23,7 @@ public class BoilerController extends ControllerConfig {
 
 
     @PostMapping(value="/boilerRecord")
-    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody List<BoilerMachineRecord> boilerMachineRecord) throws Exception {
+    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
         if(boilerMachineRecord==null)
         {
             return new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

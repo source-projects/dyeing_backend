@@ -315,6 +315,16 @@ public class DispatchMastImpl {
 
     }
 
+    public Boolean updateDispatchStatus(String invoiceNo) throws Exception{
+
+        String invoiceNumberExist =  dispatchDataDao.findByInvoiceNo(invoiceNo);
+        if(invoiceNumberExist==null)
+            throw new Exception("no invoice number found");
+
+        dispatchDataDao.updateStatus(invoiceNumberExist);
+        return true;
+    }
+
 /*
     public Boolean saveDispatch(DispatchMast dispatchMast) throws Exception {
 
