@@ -12,7 +12,9 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateInvoice {
+    Long createdBy;
+    Long updatedBy;
     String invoiceNo;
-    List<CreateDispatch> createDispatchList;
+    List<BatchAndStockId> batchAndStockIdList;
 
 }

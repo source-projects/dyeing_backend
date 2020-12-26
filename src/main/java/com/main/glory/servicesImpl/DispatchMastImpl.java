@@ -10,6 +10,7 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.dispatch.request.BatchAndStockId;
 import com.main.glory.model.dispatch.request.CreateDispatch;
 import com.main.glory.model.dispatch.request.UpdateInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
@@ -43,7 +44,7 @@ public class DispatchMastImpl {
     @Autowired
     QualityDao qualityDao;
 
-    public Boolean saveDispatch(List<CreateDispatch> dispatchList) throws Exception {
+    public Boolean saveDispatch(CreateDispatch dispatchList) throws Exception {
 
         List<DispatchMast> list = dispatchMastDao.findAll();
 
@@ -56,7 +57,7 @@ public class DispatchMastImpl {
             invoiceNumber+=1;
            //get the invoice and merge with "inv" and then create the invoice for multiple batch
 
-            for(CreateDispatch createDispatch:dispatchList)
+            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList())
             {
                 List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),createDispatch.getBatchId());
 
@@ -68,8 +69,10 @@ public class DispatchMastImpl {
                         DispatchData dispatchData=new DispatchData(batchData);
 
                         dispatchData.setInvoiceNo("inv"+invoiceNumber);
+                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
 
                         saveTheList.add(dispatchData);
+
                         batchData.setIsBillGenrated(true);
                         batchDao.save(batchData);
                     }
@@ -107,7 +110,7 @@ public class DispatchMastImpl {
             invoiceNumber+=1;
             //get the invoice and merge with "inv" and then create the invoice for multiple batch
 
-            for(CreateDispatch createDispatch:dispatchList)
+            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList())
             {
                 List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),createDispatch.getBatchId());
 
@@ -120,6 +123,7 @@ public class DispatchMastImpl {
 
                         dispatchData.setInvoiceNo("inv"+invoiceNumber);
 
+                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
                         saveTheList.add(dispatchData);
                         batchData.setIsBillGenrated(true);
                         batchDao.save(batchData);
@@ -210,12 +214,105 @@ public class DispatchMastImpl {
 
     }
 
-    public Boolean updateDispatch(UpdateInvoice updateInvoice) {
+    public Boolean updateDispatch(UpdateInvoice updateInvoice) throws Exception{
+
+
+        //for the new data
+        List<DispatchData> saveTheList=new ArrayList<>();
 
         //update invoice
         Map<String,Long> availbleBatchInInvoice = new HashMap<>();
 
-        return false;
+        Map<String,Long> comingBatches = new HashMap<>();
+
+        List<GetBatchByInvoice> availableBatches = dispatchDataDao.findBatchAndStockByInvoice(updateInvoice.getInvoiceNo());
+
+        if(availableBatches.isEmpty())
+            throw new Exception("this invoice is empty create new one");
+
+        //coming batch list
+        for(BatchAndStockId createDispatch:updateInvoice.getBatchAndStockIdList())
+        {
+            comingBatches.put(createDispatch.getBatchId(),createDispatch.getStockId());
+        }
+
+        //available batch list
+        for(GetBatchByInvoice getBatchByInvoice:availableBatches)
+        {
+            availbleBatchInInvoice.put(getBatchByInvoice.getBatchId(),getBatchByInvoice.getStockId());
+        }
+
+        //Update functionality if coming batch is not in avaialable in the avaialable batch list
+        for (Map.Entry<String,Long> entry : comingBatches.entrySet())
+        {
+
+
+            //System.out.println(entry.getKey());
+            if(!availbleBatchInInvoice.isEmpty())
+            {
+
+
+                //if the data is found then remove from the available batch list to delete the batch later
+                if(availbleBatchInInvoice.get(entry.getKey()).equals(entry.getValue()) && availbleBatchInInvoice.containsKey(entry.getKey()))
+                {
+
+                    availbleBatchInInvoice.remove(entry.getKey(),entry.getValue());
+                }
+
+
+            }
+            else//if it is not availale then insert the new entry
+            {
+                //get the batch data
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
+
+                for(BatchData batchData:batchDataList)
+                {
+
+                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
+                    {
+                        DispatchData dispatchData=new DispatchData(batchData);
+
+                        dispatchData.setInvoiceNo(updateInvoice.getInvoiceNo());
+
+                        dispatchData.setCreatedBy(dispatchData.getCreatedBy());
+
+                        dispatchData.setUpdatedBy(dispatchData.getUpdatedBy());
+
+                        saveTheList.add(dispatchData);
+                        batchData.setIsBillGenrated(true);
+                        batchDao.save(batchData);
+                    }
+                }
+                dispatchDataDao.saveAll(saveTheList);
+            }
+
+
+        }
+
+
+
+        //now remove the batch which is not coming from the FE and remain it in available batch list of invoice
+        if(!availbleBatchInInvoice.isEmpty())
+        {
+            for (Map.Entry<String,Long> entry : availbleBatchInInvoice.entrySet())
+            {
+                List<BatchData> batchDataList=batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
+                for(BatchData batchData:batchDataList)
+                {
+                    batchData.setIsBillGenrated(false);
+                    batchDao.save(batchData);
+                    dispatchDataDao.deleteByBatchEntryId(batchData.getId());
+                }
+
+            }
+            return true;
+
+        }
+        else
+            return true;
+
+
     }
 
 /*
