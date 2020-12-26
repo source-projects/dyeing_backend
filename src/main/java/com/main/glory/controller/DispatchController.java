@@ -97,6 +97,20 @@ public class DispatchController extends ControllerConfig {
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PutMapping("/updateDispatchStatus/{invoiceNo}")
+    public GeneralResponse<Boolean> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+        try{
+
+            Boolean flag = dispatchMastService.updateDispatchStatus(invoiceNo);
+            if(flag==true)
+                return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 /*
     @PostMapping("/dispatch")

@@ -24,13 +24,13 @@ public class BoilerMachineRecord {
     Long bedTemp;
     Double draftPressure;
     Long idFan;
+    Long jetRunning;
     Long daOne;
     Long daTwo;
     Long daThree;
     Long screwFeeder;
     Long waterMeter;
     Long loadData;
-    Long jetRunning;
     String timeOf;
     String dateToEnter;
     Date createdDate;
