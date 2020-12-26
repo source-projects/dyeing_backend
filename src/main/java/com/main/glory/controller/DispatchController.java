@@ -24,7 +24,7 @@ public class DispatchController extends ControllerConfig {
     DispatchMastImpl dispatchMastService;
 
     @PostMapping("/dispatch")
-    public GeneralResponse<Boolean> createDispatch(@RequestBody List<CreateDispatch> dispatchMast) throws Exception{
+    public GeneralResponse<Boolean> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
         try{
             Boolean flag = dispatchMastService.saveDispatch(dispatchMast);
             if(flag==true)

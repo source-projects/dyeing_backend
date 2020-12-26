@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateDispatch {
-    Long createdBy;
-    Long updatedBy;
-    List<BatchAndStockId> batchAndStockIdList;
+public class BatchAndStockId {
+    String batchId;
+    Long stockId;
 }

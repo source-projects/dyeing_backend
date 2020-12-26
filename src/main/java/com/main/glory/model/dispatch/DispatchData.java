@@ -23,6 +23,7 @@ public class DispatchData {
     Boolean isSendToParty=false;
     Date createdDate;
     Long createdBy;
+    Long updatedBy;
 
     public DispatchData(BatchData batchData) {
         this.batchEntryId=batchData.getId();
