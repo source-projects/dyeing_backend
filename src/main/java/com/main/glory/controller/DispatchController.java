@@ -5,6 +5,8 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.request.CreateDispatch;
+import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
+import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
 import com.main.glory.model.dispatch.request.UpdateInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
@@ -111,6 +113,22 @@ public class DispatchController extends ControllerConfig {
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/getPartyWithQualityDispatchBy/{id}")
+    public GeneralResponse<PartyDataByInvoiceNumber> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
+        try{
+            if(id!=null) {
+                PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchBy(id);
+                return new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                return new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 /*
     @PostMapping("/dispatch")

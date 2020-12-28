@@ -10,12 +10,13 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
-import com.main.glory.model.dispatch.request.BatchAndStockId;
-import com.main.glory.model.dispatch.request.CreateDispatch;
-import com.main.glory.model.dispatch.request.UpdateInvoice;
+import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
+import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -325,162 +326,111 @@ public class DispatchMastImpl {
         return true;
     }
 
-/*
-    public Boolean saveDispatch(DispatchMast dispatchMast) throws Exception {
+    public PartyDataByInvoiceNumber getPartyWithQualityDispatchBy(String invoiceNo) throws Exception {
 
-        //Added the check to check the given info is available or not
-        //throwing the serializable error that's why surround the code with try-catch block
+        List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList= new ArrayList<>();
 
-        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(dispatchMast.getStockId(),dispatchMast.getBatchId());
-        if(batchData.isEmpty())
-            throw new Exception("batch not found");
 
-        for(DispatchData dispatchData: dispatchMast.getDispatchData())
-        {
-            Optional<BatchData> batch = batchDao.findById(dispatchData.getBatchEntryId());
 
-            if(!batch.isPresent())
-                throw new Exception("batch gr not found");
-
-        }
-
-        dispatchMast.getDispatchData().forEach(e->{
-            Optional<BatchData> batchData1 = batchDao.findById(e.getBatchEntryId());
-            if(batchData1.isPresent() && batchData1.get().getIsFinishMtrSave()==true)
-                batchData1.get().setIsBillGenrated(true);
-        });
-
-        dispatchMastDao.save(dispatchMast);
-        return true;
-    }
-
-    public GetDispatchCompleteDetail getDispatchCompleteDetail(Long id) throws Exception{
-
-        Double totalMtr=0.0;
-        Double totalFinishMtr=0.0;
-        GetDispatchCompleteDetail invoiceData=new GetDispatchCompleteDetail();
-
-        Optional<DispatchMast> dispatchMast = dispatchMastDao.findById(id);
-
-        if(!dispatchMast.isPresent())
-            throw new Exception("Invoice not found for id:"+id);
-
-        List<DispatchData> dispatchData = dispatchDataDao.findByControlId(id);
-
-        Optional<StockMast> stockMast = stockBatchService.getStockBatchById(dispatchMast.get().getStockId());
-
-        Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
-
-        Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
-
-        List<BatchData> batchDataList=new ArrayList<>();
-        for(DispatchData batchData:dispatchData)
-        {
-            Optional<BatchData> batch = batchDao.findById(batchData.getBatchEntryId());
-            totalMtr+=batch.get().getMtr();
-            totalFinishMtr+=batch.get().getFinishMtr();
-            batchDataList.add(batch.get());
-        }
-
-        invoiceData.setPartyName(party.get().getPartyName());
-        invoiceData.setPartyAddress(party.get().getPartyAddress1());
-        invoiceData.setGSTIN(party.get().getGSTIN());
-        invoiceData.setQualityId(quality.get().getQualityId());
-        invoiceData.setQualityName(quality.get().getQualityName());
-        invoiceData.setChlNo(stockMast.get().getChlNo());
-        invoiceData.setPcs(dispatchData.size());
-        invoiceData.setAmt(totalFinishMtr*quality.get().getRate());
-        invoiceData.setTotalFinishMtr(totalFinishMtr);
-        invoiceData.setTotalMtr(totalMtr);
-        invoiceData.setBatchId(dispatchMast.get().getBatchId());
-        invoiceData.setBatchDataList(batchDataList);
-
-        if(invoiceData.getPartyName()==null && invoiceData.getQualityId()==null)
+        String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
+        if(invoiceExist == null || invoiceExist=="")
             throw new Exception("no data found");
 
-        return  invoiceData;
 
+        //quality list
 
-
-    }
-
-    public List<BatchData> getFinishMtrListBasedOnBatchIdAndControlId(String batchId, Long controlId) throws Exception{
-        List<BatchData> batchDataList = batchDao.findByControlIdAndBatchIdWithFinishMtr(batchId,controlId);
-
-        if(batchDataList.isEmpty())
-            throw new Exception("Data not found");
-
-        return batchDataList;
-
-    }
-
-
-    public List<GetAllDispatch> getAllDisptach() throws Exception {
-        List<GetAllDispatch> getAllDispatchesList=new ArrayList<>();
-        List<DispatchMast> dispatchMastList = dispatchMastDao.findAll();
-        for(DispatchMast dispatchMast:dispatchMastList)
+        List<GetBatchByInvoice> batchList = dispatchDataDao.findBatchAndStockByInvoiceWithoutStatus(invoiceExist);
+        for(GetBatchByInvoice batch:batchList)
         {
 
-            if(dispatchMast!=null)
-            getAllDispatchesList.add(new GetAllDispatch(dispatchMast));
+            Double totalMtr=0.0;
+            Double finishMtr=0.0;
+            Long pcs=0l;
+            Double amt=0.0;
 
-        }
-        if(getAllDispatchesList.isEmpty())
-            throw new Exception("no data found");
-        return  getAllDispatchesList;
-    }
+            System.out.println(batch.getStockId());
+            StockMast stockMast=stockBatchService.getStockById(batch.getStockId());
+            Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
 
-    public Boolean updateDispatchData(DispatchMast dispatchMastToUpdate) throws Exception{
-        Optional<DispatchMast> dispatchMastExist=dispatchMastDao.findById(dispatchMastToUpdate.getId());
-        if(dispatchMastExist.isEmpty())
-            throw new Exception("no data found");
+            QualityBillByInvoiceNumber qualityBillByInvoiceNumber=new QualityBillByInvoiceNumber(quality.get());
 
-        if(dispatchMastExist.get().getIsSendToParty()==true)
-        throw new Exception("Data can't be update because invoice already send to party");
+            List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
 
-
-        //for delete the batch gr if not coming from FE
-
-        //##Get the data first from the list
-        Map<Long,Boolean> batchGr=new HashMap<>();
-        List<DispatchData> dispatchDataList = dispatchDataDao.findByControlId(dispatchMastToUpdate.getId());
-        for(DispatchData dispatchData: dispatchDataList)
-        {
-            batchGr.put(dispatchData.getBatchEntryId(),false);
-            //System.out.println(batch.getId());
-        }
-
-        //change the as per the data is coming from FE
-        for(DispatchData dispatchData:dispatchMastToUpdate.getDispatchData())
-        {
-            //System.out.println("coming:"+batch.getId());
-            if(batchGr.containsKey(dispatchData.getBatchEntryId()))
+            for(DispatchData invoiceBatch:dispatchDataList)
             {
-                batchGr.replace(dispatchData.getBatchEntryId(),true);
+
+                Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
+                totalMtr+=batchData.get().getMtr();
+                finishMtr+=batchData.get().getFinishMtr();
+                pcs++;
+
             }
 
+            //Count the total amt based on quality rate and total finish mtr
+            amt=quality.get().getRate()*finishMtr;
+
+
+            //set the quality with batch data
+            qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
+            qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
+            qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
+            qualityBillByInvoiceNumber.setPcs(pcs);
+            qualityBillByInvoiceNumber.setAmt(amt);
+
+
+            qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
         }
-        //##Iterate the loop and delete the record who flag is false
-        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+
+
+
+        //for batch list
+
+
+        List<GetBatchByInvoice> batchList2 = dispatchDataDao.findBatchAndStockByInvoiceWithoutStatus(invoiceExist);
+
+        List<BatchWithGr> batchWithGrList =new ArrayList<>();
+        for(GetBatchByInvoice batch:batchList2)
         {
-            System.out.println(entry.getKey()+":"+entry.getValue());
-            if(entry.getValue()==false)
+
+            BatchWithGr batchWithGr=new BatchWithGr(batch);
+            List<BatchData> batchDataList=new ArrayList<>();
+
+
+            //batches data
+
+            List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
+
+            for(DispatchData invoiceBatch:dispatchDataList)
             {
-                batchDao.updateBillStatus(entry.getKey());
-                dispatchDataDao.deleteByBatchEntryId(entry.getKey());
+
+                Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
+                batchDataList.add(batchData.get());
             }
+            batchWithGr.setBatchDataList(batchDataList);
+            batchWithGrList.add(batchWithGr);
+
+
         }
-        dispatchMastDao.save(dispatchMastToUpdate);
-        return true;
+
+
+
+
+
+
+        //for party data
+        StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
+        Optional<Party> party=partyDao.findById(stockMast.getPartyId());
+
+        PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party.get(),qualityBillByInvoiceNumberList,batchWithGrList);
+
+
+        if(partyDataByInvoiceNumber==null)
+            throw new Exception("no data found");
+
+        return partyDataByInvoiceNumber;
+
 
     }
 
-    public DispatchMast getInvoiceById(Long id) throws Exception{
-        Optional<DispatchMast> dispatchMastExist = dispatchMastDao.findById(id);
-        if(dispatchMastExist.isEmpty())
-            throw new Exception("no data found");
 
-        return dispatchMastExist.get();
-
-    }*/
 }

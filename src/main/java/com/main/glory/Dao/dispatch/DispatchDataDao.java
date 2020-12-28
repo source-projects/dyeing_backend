@@ -35,4 +35,14 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Transactional
     @Query("update DispatchData dd set dd.isSendToParty=true where dd.invoiceNo=:invoiceNumberExist")
     void updateStatus(String invoiceNumberExist);
+
+
+    //for bill with or without bill send to party
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.batchId,dd.stockId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.stockId")
+    List<GetBatchByInvoice> findBatchAndStockByInvoiceWithoutStatus(String invoiceExist);
+
+
+    //get the invoice batch by the invoice no and batch id and stock id
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.batchId=:batchId AND dd.invoiceNo=:invoiceNo AND dd.batchId IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
+    List<DispatchData> findByBatchIdAndStockIdAndInviceNo(Long stockId, String batchId, String invoiceNo);
 }
