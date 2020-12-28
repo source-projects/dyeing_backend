@@ -563,4 +563,12 @@ public class StockBatchServiceImpl {
 
         return null;
     }
+
+    //get stock data
+    public StockMast getStockById(Long stockId) throws Exception {
+        Optional<StockMast> stockMast  = stockMastDao.findById(stockId);
+        if(stockMast.isEmpty())
+            throw new Exception("no data found");
+        return stockMast.get();
+    }
 }
