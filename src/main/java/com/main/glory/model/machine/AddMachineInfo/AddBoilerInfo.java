@@ -16,5 +16,5 @@ import java.util.List;
 
 public class AddBoilerInfo {
     Long jetRunning;
-    List<BoilerMachineRecord> boilerMachineRecord;
+    List<AddBoilerMachineRecord> boilerMachineRecord;
 }
