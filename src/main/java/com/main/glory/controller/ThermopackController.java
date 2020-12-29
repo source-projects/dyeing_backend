@@ -2,9 +2,11 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.machine.BoilerMachineRecord;
+import com.main.glory.model.machine.AddMachineInfo.AddThermopackInfo;
 import com.main.glory.model.machine.Thermopack;
-import com.main.glory.model.machine.response.GetAllMachine;
+import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
+import com.main.glory.model.machine.response.BoilerFilter;
+import com.main.glory.model.machine.response.ThermopackFilterRecord;
 import com.main.glory.servicesImpl.ThermopackImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ public class ThermopackController extends ControllerConfig {
     ThermopackImpl thermopackService;
 
     @PostMapping(value="/thermoPackRecord")
-    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody List<Thermopack> thermopackRecord) throws Exception {
+    public GeneralResponse<Boolean> saveThermopackRecord(@RequestBody List<AddThermopackInfo> thermopackRecord) throws Exception {
         if(thermopackRecord==null)
         {
             return new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
@@ -51,6 +53,26 @@ public class ThermopackController extends ControllerConfig {
                 return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             return new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value="/thermopack/filter/")
+    public GeneralResponse<List<ThermopackFilterRecord>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
+
+        boolean flag;
+        try {
+
+            List<ThermopackFilterRecord> machineRecord = thermopackService.getDataBasedOnFilter(record);
+            if(machineRecord.isEmpty())
+            {
+                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            return new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)

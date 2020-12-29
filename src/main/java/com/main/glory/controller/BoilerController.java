@@ -3,11 +3,10 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
-import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.BoilerMachineRecord;
-import com.main.glory.model.machine.Thermopack;
+import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
+import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.servicesImpl.BoilerRecordImpl;
-import com.main.glory.servicesImpl.MachineServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +53,26 @@ public class BoilerController extends ControllerConfig {
                 return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             return new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value="/boiler/filter/")
+    public GeneralResponse<List<BoilerFilter>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
+
+        boolean flag;
+        try {
+
+            List<BoilerFilter> machineRecord = boilerRecordService.getDataBasedOnFilter(record);
+            if(machineRecord.isEmpty())
+            {
+                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            return new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
