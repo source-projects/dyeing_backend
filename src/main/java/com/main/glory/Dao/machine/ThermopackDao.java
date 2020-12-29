@@ -12,5 +12,5 @@ import java.util.List;
 @EnableJpaRepositories
 public interface ThermopackDao extends JpaRepository<Thermopack,Long> {
     @Query("select s from Thermopack s where s.controlId=:controlId AND s.dateToEnter <= :toDate AND s.dateToEnter>=:fromDate AND s.timeOf>=:fromTime AND s.timeOf<=:toTime AND s.controlId IS NOT NULL AND s.dateToEnter IS NOT NULL AND s.timeOf IS NOT NULL")
-    List<Thermopack> findByControlIdAndTime(Long controlId, Long toTime, Long time, Date fromDate, Date toDate);
+    List<Thermopack> findByControlIdAndTime(Long controlId, Long toTime, Long fromTime, Date fromDate, Date toDate);
 }
