@@ -62,7 +62,7 @@ public class Thermopack {
 
     @PrePersist
     protected void onCreate() {
-        this.createdDate = new Date(System.currentTimeMillis()+19800000);
+        this.createdDate = new Date(System.currentTimeMillis());
     }
 
 
