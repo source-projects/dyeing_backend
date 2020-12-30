@@ -84,8 +84,12 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getForwardTemp());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getForwardTemp()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getForwardTemp());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -99,8 +103,12 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getReturnTemp());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getReturnTemp()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getReturnTemp());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -114,8 +122,13 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getStackTemp());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getStackTemp()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getStackTemp());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -130,8 +143,11 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getFurnaceTemp());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getFurnaceTemp()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getFurnaceTemp());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -145,8 +161,12 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getPumpData());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getPumpData()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getPumpData());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -160,8 +180,13 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getIdFan());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getIdFan()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getIdFan());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -175,8 +200,12 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getFdFan());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getFdFan()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getFdFan());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+                    }
 
                 }
                 return thermopackFilterRecordList;
@@ -191,8 +220,13 @@ public class ThermopackImpl {
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
-                    ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getScrewFeeder());
-                    thermopackFilterRecordList.add(thermopackFilterRecord);
+                    if(thermopack.getScrewFeeder()!=null)
+                    {
+                        ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getScrewFeeder());
+                        thermopackFilterRecordList.add(thermopackFilterRecord);
+
+
+                    }
 
                 }
                 return thermopackFilterRecordList;

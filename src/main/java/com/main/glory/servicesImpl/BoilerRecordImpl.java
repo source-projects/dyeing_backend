@@ -85,8 +85,13 @@ public class BoilerRecordImpl {
 
                     for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                     {
-                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getStreamPressusre());
-                        boilerDataList.add(boilerFilter);
+                        if(boilerMachineRecord1.getStreamPressusre()!=null)
+                        {
+
+                            BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getStreamPressusre());
+                            boilerDataList.add(boilerFilter);
+                        }
+
                     }
 
                     return boilerDataList;
@@ -101,8 +106,12 @@ public class BoilerRecordImpl {
 
                     for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                     {
-                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDrumWaterLevel());
-                        boilerDataList.add(boilerFilter);
+                        if(boilerMachineRecord1.getDrumWaterLevel()!=null)
+                        {
+                            BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDrumWaterLevel());
+                            boilerDataList.add(boilerFilter);
+                        }
+
                     }
 
                     return boilerDataList;
@@ -117,8 +126,13 @@ public class BoilerRecordImpl {
 
                     for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                     {
-                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getFeedPump());
-                        boilerDataList.add(boilerFilter);
+                        if(boilerMachineRecord1.getFeedPump()!=null)
+                        {
+                            BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getFeedPump());
+                            boilerDataList.add(boilerFilter);
+
+                        }
+
                     }
 
                     return boilerDataList;
@@ -133,8 +147,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getFlueGasTemp());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getFlueGasTemp()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getFlueGasTemp());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -149,8 +167,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getBedTemp());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getBedTemp()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getBedTemp());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -165,8 +187,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDraftPressure());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getDraftPressure()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDraftPressure());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -181,8 +207,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDaOne());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getIdFan()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDaOne());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -197,8 +227,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getJetRunning());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getJetRunning()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getJetRunning());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -213,8 +247,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getJetRunning());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getDaOne()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getJetRunning());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -230,8 +268,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDaTwo());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getDaTwo()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDaTwo());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -246,8 +288,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDaThree());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getDaThree()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getDaThree());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -263,8 +309,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getScrewFeeder());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getScrewFeeder()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getScrewFeeder());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -279,8 +329,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getWaterMeter());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getWaterMeter()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getWaterMeter());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
@@ -295,8 +349,12 @@ public class BoilerRecordImpl {
 
                 for(BoilerMachineRecord boilerMachineRecord1:boilerMachineRecord)
                 {
-                    BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getLoadData());
-                    boilerDataList.add(boilerFilter);
+                    if(boilerMachineRecord1.getLoadData()!=null)
+                    {
+                        BoilerFilter boilerFilter=new BoilerFilter(boilerMachineRecord1,boilerMachineRecord1.getLoadData());
+                        boilerDataList.add(boilerFilter);
+                    }
+
                 }
 
                 return boilerDataList;
