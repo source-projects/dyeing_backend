@@ -202,16 +202,49 @@ public class DispatchMastImpl {
         return dispatchDataList;
     }
 
-    public List<GetBatchByInvoice> getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
+    public List<BatchWithTotalMTRandFinishMTR> getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
 
+        List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList=new ArrayList<>();
 
         List<GetBatchByInvoice> list = dispatchDataDao.findBatchAndStockByInvoice(invoiceNo);
 
         if(list.isEmpty())
             throw new Exception("no data found");
 
+        for(GetBatchByInvoice batch:list)
+        {
+            BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR=new BatchWithTotalMTRandFinishMTR();
+            batchWithTotalMTRandFinishMTR.setBatchId(batch.getBatchId());
+            batchWithTotalMTRandFinishMTR.setControlId(batch.getStockId());
 
-        return list;
+            List<DispatchData> dispatchDataList = dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(),invoiceNo);
+            Double WT=0.0;
+            Double MTR=0.0;
+            Double totalFinishMtr=0.0;
+            Long totalPcs=0l;
+
+            for(DispatchData dispatchData:dispatchDataList)
+            {
+                Optional<BatchData> batchData=batchDao.findById(dispatchData.getBatchEntryId());
+                if(batchData.isPresent())
+                {
+                    WT+=batchData.get().getWt();
+                    MTR+=batchData.get().getMtr();
+                    totalFinishMtr=batchData.get().getFinishMtr();
+                    totalPcs++;
+
+                }
+            }
+            batchWithTotalMTRandFinishMTR.setTotalFinishMtr(totalFinishMtr);
+            batchWithTotalMTRandFinishMTR.setTotalPcs(totalPcs);
+            batchWithTotalMTRandFinishMTR.setWT(WT);
+            batchWithTotalMTRandFinishMTR.setMTR(MTR);
+            batchWithTotalMTRandFinishMTRList.add(batchWithTotalMTRandFinishMTR);
+        }
+
+
+
+        return batchWithTotalMTRandFinishMTRList;
 
     }
 
