@@ -57,10 +57,10 @@ public class DispatchController extends ControllerConfig {
 
     //Get dispatch by invoice number
     @GetMapping("/getDispatch/byInvoiceNumber/{invoiceNo}")
-    public GeneralResponse<List<GetBatchByInvoice>> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+    public GeneralResponse<List<BatchWithTotalMTRandFinishMTR>> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         try{
             if(invoiceNo!=null) {
-                List<GetBatchByInvoice> x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
+                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
                 return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else

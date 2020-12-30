@@ -167,7 +167,7 @@ public class JetServiceImpl {
         int k = 0;
         while(i<n) {
             k=0;
-           /* Double availableJetCapacity = 0.0;
+            Double availableJetCapacity = 0.0;
 
             Double totalBatchCapacity = 0.0;
 
@@ -226,7 +226,7 @@ public class JetServiceImpl {
                 saveJetData.setControlId(jetDataToUpdate.get(k).getControlId());
                 jetDataDao.save(saveJetData);
 
-                k++;*/
+                k++;
 
             }
 
