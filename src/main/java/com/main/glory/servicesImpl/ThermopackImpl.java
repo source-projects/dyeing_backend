@@ -76,14 +76,15 @@ public class ThermopackImpl {
         {
             case "forwardTemp":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getForwardTemp()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getForwardTemp());
@@ -95,14 +96,15 @@ public class ThermopackImpl {
                 return thermopackFilterRecordList;
             case "returnTemp":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getReturnTemp()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getReturnTemp());
@@ -114,14 +116,15 @@ public class ThermopackImpl {
                 return thermopackFilterRecordList;
             case "stackTemp":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getStackTemp()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getStackTemp());
@@ -135,14 +138,15 @@ public class ThermopackImpl {
 
             case "furnaceTemp":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getFurnaceTemp()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getFurnaceTemp());
@@ -153,14 +157,15 @@ public class ThermopackImpl {
                 return thermopackFilterRecordList;
             case "pumpData":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getPumpData()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getPumpData());
@@ -172,14 +177,15 @@ public class ThermopackImpl {
                 return thermopackFilterRecordList;
             case "idFan":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getIdFan()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getIdFan());
@@ -192,14 +198,15 @@ public class ThermopackImpl {
                 return thermopackFilterRecordList;
             case "fdFan":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getFdFan()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getFdFan());
@@ -212,14 +219,15 @@ public class ThermopackImpl {
 
             case "screwFeeder":
 
-                thermopackFilterRecords=thermopackDao.findByControlIdAndTimeThermopack(record.getControlId(),record.getToTime(),record.getToTime(),fromDate,toDate);
+                thermopackFilterRecords=thermopackDao.findByControlId(record.getControlId());
 
                 if(thermopackFilterRecords.isEmpty())
-                    throw new Exception("no data found");
+                    throw new Exception("no data found ");
 
 
                 for(Thermopack thermopack:thermopackFilterRecords)
                 {
+                    if(thermopack.getDateToEnter().getTime()<=toDate.getTime() && thermopack.getDateToEnter().getTime()>=fromDate.getTime() && thermopack.getTimeOf()<=record.getToTime() && thermopack.getTimeOf()>=record.getFromTime())
                     if(thermopack.getScrewFeeder()!=null)
                     {
                         ThermopackFilterRecord thermopackFilterRecord=new ThermopackFilterRecord(thermopack,thermopack.getScrewFeeder());
