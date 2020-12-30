@@ -15,6 +15,6 @@ public interface BoilerMachineRecordDao extends JpaRepository<BoilerMachineRecor
 
     List<BoilerMachineRecord> findByControlId(Long controlId);
 
-    @Query("select s from BoilerMachineRecord s where s.controlId=:controlId AND s.dateToEnter <= :toDate AND s.dateToEnter>=:fromDate AND s.timeOf>=:fromTime AND s.timeOf<=:toTime AND s.controlId IS NOT NULL AND s.dateToEnter IS NOT NULL AND s.timeOf IS NOT NULL")
+    @Query("select s from BoilerMachineRecord s where s.controlId=:controlId AND s.dateToEnter <= :toDate AND s.dateToEnter>=:fromDate AND s.timeOf>=:fromTime AND s.timeOf<=:toTime AND s.controlId IS NOT NULL AND s.dateToEnter IS NOT NULL AND s.timeOf IS NOT NULL ORDER BY s.timeOf ASC")
     List<BoilerMachineRecord> findByControlIdAndDate(Long controlId, Long fromTime, Long toTime, Date toDate, Date fromDate);
 }
