@@ -563,6 +563,14 @@ public class StockBatchServiceImpl {
 
         return null;
     }
+    public GetBatchWithControlId getBatchWithoutFinishMtrQTYById(String batchId, Long stockId) {
+        GetBatchWithControlId getAllBatchResponse = batchDao.findByBatchIdAndControIdWithoutFinishMtr(batchId,stockId);
+
+        if(getAllBatchResponse!=null)
+            return getAllBatchResponse;
+
+        return null;
+    }
 
     //get stock data
     public StockMast getStockById(Long stockId) throws Exception {

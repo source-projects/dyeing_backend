@@ -202,7 +202,7 @@ public class DispatchMastImpl {
         return dispatchDataList;
     }
 
-    public List<BatchWithTotalMTRandFinishMTR> getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
+    public PartyWithBatchByInvoice getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
 
         List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList=new ArrayList<>();
 
@@ -239,12 +239,27 @@ public class DispatchMastImpl {
             batchWithTotalMTRandFinishMTR.setTotalPcs(totalPcs);
             batchWithTotalMTRandFinishMTR.setWT(WT);
             batchWithTotalMTRandFinishMTR.setMTR(MTR);
+//            Optional<Party> party=partyDao.findById(dispatchDataList.get(0).getStockId());
+//            if(party.isPresent())
+//                throw new Exception("no party data found");
+//            batchWithTotalMTRandFinishMTR.setPartyId(party.get().getId());
+//            batchWithTotalMTRandFinishMTR.setPartyName(party.get().getPartyName());
             batchWithTotalMTRandFinishMTRList.add(batchWithTotalMTRandFinishMTR);
         }
 
 
 
-        return batchWithTotalMTRandFinishMTRList;
+        StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
+        Optional<Party> party=partyDao.findById(stockMast.getPartyId());
+
+        if(!party.isPresent())
+            throw new Exception("no data found");
+
+
+
+        PartyWithBatchByInvoice partyWithBatchByInvoice =new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList,party.get());
+
+        return partyWithBatchByInvoice;
 
     }
 

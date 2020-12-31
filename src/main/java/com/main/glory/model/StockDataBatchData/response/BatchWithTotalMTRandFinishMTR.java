@@ -17,6 +17,7 @@ public class BatchWithTotalMTRandFinishMTR {
     Double totalFinishMtr;
     Long totalPcs;
 
+
     public BatchWithTotalMTRandFinishMTR(BatchWithTotalMTRandFinishMTR getBatchWithControlIdData) {
         this.batchId=getBatchWithControlIdData.batchId;
         this.controlId=getBatchWithControlIdData.controlId;

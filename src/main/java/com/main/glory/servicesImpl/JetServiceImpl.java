@@ -86,7 +86,7 @@ public class JetServiceImpl {
                 ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
                 if (productionPlan!=null)
                 {
-                    GetBatchWithControlId batchDataQTY = stockBatchService.getBatchQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
+                    GetBatchWithControlId batchDataQTY = stockBatchService.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
                     availableBatchInJetCapacity+=batchDataQTY.getWT();
 
                 }
@@ -98,7 +98,11 @@ public class JetServiceImpl {
             ProductionPlan productionPlan = productionPlanService.getProductionData(addJetData.getProductionId());
             if (productionPlan!=null)
             {
-                GetBatchWithControlId batchDataQTY = stockBatchService.getBatchQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
+                GetBatchWithControlId batchDataQTY = stockBatchService.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
+                if(batchDataQTY.getWT()==null)
+                {
+                    throw new Exception("batch wt can't be null");
+                }
                 newBatchCapacity+=batchDataQTY.getWT();
 
             }
