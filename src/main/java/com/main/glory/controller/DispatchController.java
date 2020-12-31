@@ -4,10 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
-import com.main.glory.model.dispatch.request.CreateDispatch;
-import com.main.glory.model.dispatch.request.GetDispatchCompleteDetail;
-import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
-import com.main.glory.model.dispatch.request.UpdateInvoice;
+import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.servicesImpl.DispatchMastImpl;
@@ -57,10 +54,10 @@ public class DispatchController extends ControllerConfig {
 
     //Get dispatch by invoice number
     @GetMapping("/getDispatch/byInvoiceNumber/{invoiceNo}")
-    public GeneralResponse<List<BatchWithTotalMTRandFinishMTR>> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+    public GeneralResponse<PartyWithBatchByInvoice> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         try{
             if(invoiceNo!=null) {
-                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
+                PartyWithBatchByInvoice x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
                 return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
