@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddJetData {
-    Long id;
+
     Long controlId;
     Long sequence;
     Long productionId;
