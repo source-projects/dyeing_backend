@@ -29,9 +29,11 @@ public class JetData {
 
 
     public JetData(AddJetData jetData, ProductionPlan productionPlanExist) {
-        this.id=jetData.getId();
+
         this.controlId=jetData.getControlId();
         this.sequence=jetData.getSequence();
         this.productionId=productionPlanExist.getId();
+        this.status=JetStatus.inQueue;
+
     }
 }
