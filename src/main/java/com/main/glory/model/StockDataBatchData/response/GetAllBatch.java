@@ -14,7 +14,8 @@ public class GetAllBatch {
 
     Long controlId;
     String batchId;
-    Boolean prodctionPlanned;
+    Boolean productionPlanned;
+    Boolean isBillGenerated;
     Long partyId;
     String partyName;
     Long qualityEntryId;

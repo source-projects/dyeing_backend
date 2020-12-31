@@ -11,10 +11,8 @@ import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.support.NullValue;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -201,6 +199,7 @@ public class StockBatchServiceImpl {
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
         List<String> batchName =new ArrayList<>();
         List<Boolean> productionPlanned =new ArrayList<>();
+        List<Boolean> isBillGenerated =new ArrayList<>();
         List<Long> controlId =new ArrayList<>();
 
         GetAllBatch getAllBatch;
@@ -221,12 +220,14 @@ public class StockBatchServiceImpl {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
                     productionPlanned.add(batchData.getIsProductionPlanned());
+                    isBillGenerated.add(batchData.getIsBillGenrated());
                 }
                 else if(!controlId.contains(batchData.getControlId()))
                 {
                     batchName.add(batchData.getBatchId());
                     controlId.add(batchData.getControlId());
                     productionPlanned.add(batchData.getIsProductionPlanned());
+                    isBillGenerated.add(batchData.getIsBillGenrated());
                 }
 
             }
@@ -248,7 +249,8 @@ public class StockBatchServiceImpl {
                 getAllBatch=new GetAllBatch(party.get(),quality.get());
                 getAllBatch.setBatchId(batchName.get(x));
                 getAllBatch.setControlId(controlId.get(x));
-                getAllBatch.setProdctionPlanned(productionPlanned.get(x));
+                getAllBatch.setProductionPlanned(productionPlanned.get(x));
+                getAllBatch.setIsBillGenerated(isBillGenerated.get(x));
                 getAllBatchList.add(getAllBatch);
 
             }
@@ -334,7 +336,7 @@ public class StockBatchServiceImpl {
             getAllBatch=new GetAllBatch();
             getAllBatch.setBatchId(batchName.get(x));
             getAllBatch.setControlId(controlId.get(x));
-            getAllBatch.setProdctionPlanned(productionPlanned.get(x));
+            getAllBatch.setProductionPlanned(productionPlanned.get(x));
             getAllBatchList.add(getAllBatch);
         }
 
@@ -400,7 +402,7 @@ public class StockBatchServiceImpl {
             getAllBatch=new GetAllBatch();
                getAllBatch.setBatchId(batchName.get(x));
             getAllBatch.setControlId(controlId.get(x));
-            getAllBatch.setProdctionPlanned(productionPlanned.get(x));
+            getAllBatch.setProductionPlanned(productionPlanned.get(x));
 
             Optional<StockMast> stockMast1 = stockMastDao.findById(controlId.get(x));
             Optional<Party> party = partyDao.findById(stockMast1.get().getPartyId());
