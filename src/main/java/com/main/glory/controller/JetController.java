@@ -66,7 +66,7 @@ public class JetController extends ControllerConfig {
     }
 
     @PutMapping(value="/updateJetData")
-    public GeneralResponse<Boolean> updateJetData(@RequestBody List<UpdateJetData> jetDataToUpdate) throws Exception {
+    public GeneralResponse<Boolean> updateJetData(@RequestBody UpdateJetData jetDataToUpdate) throws Exception {
         if(jetDataToUpdate==null)
         {
             return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
@@ -184,5 +184,27 @@ public class JetController extends ControllerConfig {
         }
     }
 
+    @DeleteMapping(value="/deleteJetDataByProductionId/{id}")
+    public GeneralResponse<Boolean> deleteJetDataByProductionId(@PathVariable(name = "id") Long id) throws Exception {
+        if(id==null)
+        {
+            return new GeneralResponse<>(null, "production info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+
+
+            Boolean flag = jetService.deleteJetDataByProductionId(id);
+            if(flag==true)
+            return new GeneralResponse<>(true, "Jet Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "unable to delete the prouduction", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
