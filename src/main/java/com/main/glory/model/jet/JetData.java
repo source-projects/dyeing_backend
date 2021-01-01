@@ -1,6 +1,7 @@
 package com.main.glory.model.jet;
 
 import com.main.glory.model.jet.request.AddJetData;
+import com.main.glory.model.jet.request.ToJet;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,5 +36,12 @@ public class JetData {
         this.productionId=productionPlanExist.getId();
         this.status=JetStatus.inQueue;
 
+    }
+
+    public JetData(ToJet to) {
+        this.controlId=to.getJetId();
+        this.sequence= to.getSequence();
+        this.productionId=to.getProductionId();
+        this.status=JetStatus.inQueue;
     }
 }

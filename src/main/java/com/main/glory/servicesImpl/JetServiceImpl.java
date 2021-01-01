@@ -8,11 +8,9 @@ import com.main.glory.model.StockDataBatchData.response.BatchToPartyAndQuality;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.jet.JetStatus;
-import com.main.glory.model.jet.request.AddJetData;
+import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
-import com.main.glory.model.jet.request.ChangeStatus;
-import com.main.glory.model.jet.request.UpdateJetData;
 import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.jet.responce.GetStatus;
@@ -37,6 +35,9 @@ public class JetServiceImpl {
 
     @Autowired
     ProductionPlanImpl productionPlanService;
+
+    @Autowired
+    BatchDao batchDao;
 
     public void saveJet(JetMast jetMast) {
 
@@ -87,6 +88,7 @@ public class JetServiceImpl {
                 if (productionPlan!=null)
                 {
                     GetBatchWithControlId batchDataQTY = stockBatchService.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
+                //    System.out.println(batchDataQTY.getWT());
                     availableBatchInJetCapacity+=batchDataQTY.getWT();
 
                 }
@@ -99,10 +101,7 @@ public class JetServiceImpl {
             if (productionPlan!=null)
             {
                 GetBatchWithControlId batchDataQTY = stockBatchService.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
-                if(batchDataQTY.getWT()==null)
-                {
-                    throw new Exception("batch wt can't be null");
-                }
+         //       System.out.println(batchDataQTY.getWT());
                 newBatchCapacity+=batchDataQTY.getWT();
 
             }
@@ -121,10 +120,34 @@ public class JetServiceImpl {
             productionPlanExist.setStatus(true);
             productionPlanService.saveProductionPlan(productionPlanExist);
 
-            //save jet with production
-            JetData saveJetData=new JetData(addJetData,productionPlanExist);
-            jetDataDao.save(saveJetData);
 
+            long count=0;
+
+
+            //get the count of production in existing jet
+            List<JetData> existingJetData=jetDataDao.findByControlId(jetDataList.get(0).getControlId());
+            if(existingJetData.isEmpty())
+            {
+                //save the jet data
+                JetData saveJetData=new JetData(addJetData,productionPlanExist);
+                saveJetData.setSequence(1l);
+                jetDataDao.save(saveJetData);
+            }
+            else
+            {
+                for(JetData jetData:existingJetData)
+                {
+                    count++;
+                }
+                //save jet with production
+                count=count+1;
+                JetData saveJetData=new JetData(addJetData,productionPlanExist);
+
+                saveJetData.setSequence(count);
+                jetDataDao.save(saveJetData);
+
+
+            }
 
 
         }
@@ -166,75 +189,133 @@ public class JetServiceImpl {
 
     }
 
-    public void updateJetData(List<UpdateJetData> jetDataToUpdate) throws Exception {
-        int i=0,n=jetDataToUpdate.size();
-        int k = 0;
-        while(i<n) {
-            k=0;
-            Double availableJetCapacity = 0.0;
+    public void updateJetData(UpdateJetData jetDataToUpdate) throws Exception {
 
-            Double totalBatchCapacity = 0.0;
+        //change the production sequnce in same jet
 
-            //first check the capacity and production detail is available or not
-            for (AddJetData jetData : jetDataToUpdate.get(k).getAddJetDataList()) {
+        if(jetDataToUpdate.getTo().getJetId()==jetDataToUpdate.getFrom().getJetId())
+        {
+            //check the production is avaialbe or not
+            ProductionPlan productionExist=productionPlanService.getProductionData(jetDataToUpdate.getFrom().getProductionId());
 
-                if (jetData.getControlId() == null)
-                    throw new Exception("control id can't be null ");
+            if(productionExist==null)
+                throw new Exception("no production data found");
+            productionExist=productionPlanService.getProductionData(jetDataToUpdate.getTo().getProductionId());
 
-                if (jetData.getProductionId() == null)
-                    throw new Exception("prudction id can't be null ");
+            if(productionExist==null)
+                throw new Exception("no prodcution data found");
 
-                Optional<JetMast> jetMastExist = jetMastDao.findById(jetDataToUpdate.get(k).getControlId());
+            //update the sequence of production as per the requirement
+            //if the batch is able to fit into the new jet then update the data from the jet
+            List<JetData> fromJetDataList = jetDataDao.findByControlIdWithExistingProduction(jetDataToUpdate.getFrom().getJetId());
+            for (JetData jetData : fromJetDataList) {
+                if (jetData.getSequence() > jetDataToUpdate.getFrom().getSequence()) {
+                    long number = jetData.getSequence();
+                    number--;
+                    jetData.setSequence(number);
+                    jetDataDao.save(jetData);
 
-                ProductionPlan productionPlanExist = productionPlanService.getProductionData(jetData.getProductionId());
-
-
-                if (jetMastExist.isEmpty())
-                    throw new Exception("Jet Mast is not found");
-
-                if (productionPlanExist == null)
-                    throw new Exception("production data not found");
-
-
-
-                availableJetCapacity = jetMastExist.get().getCapacity();
-
-                List<BatchData> batchCapacity = stockBatchService.getBatchById(productionPlanExist.getBatchId(), productionPlanExist.getStockId());
-                for (BatchData batchData : batchCapacity) {
-                    if (batchData.getIsProductionPlanned() == true)
-                        totalBatchCapacity += batchData.getWt();
                 }
-
-
-                //check the capacity
-                System.out.println(availableJetCapacity + ":" + totalBatchCapacity);
-                if (totalBatchCapacity > availableJetCapacity) {
-                    throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
-                }
-                k++;
-            }
-            i++;
-        }
-
-       k=0;
-        //insert the record if batch is fulfilling the requiremet
-            for(AddJetData jetData:jetDataToUpdate.get(k).getAddJetDataList()){
-
-                if(jetData.getProductionId()==null)
-                    throw new Exception("prudction id can't be null ");
-
-                ProductionPlan productionPlanExist=productionPlanService.getProductionData(jetData.getProductionId());
-
-                JetData saveJetData=new JetData(jetData,productionPlanExist);
-               // System.out.println(saveJetData.getControlId()+":"+jetDataToUpdate.get(k).getControlId());
-                saveJetData.setControlId(jetDataToUpdate.get(k).getControlId());
-                jetDataDao.save(saveJetData);
-
-                k++;
-
             }
 
+            jetDataDao.deleteByProductionId(jetDataToUpdate.getFrom().getProductionId());
+
+            //now update the jet data from to jet list
+            List<JetData> toJetDataList = jetDataDao.findByControlIdWithExistingProduction(jetDataToUpdate.getTo().getJetId());
+            for (JetData jetData : toJetDataList) {
+                if (jetData.getSequence() >= jetDataToUpdate.getTo().getSequence()) {
+                    long number = jetData.getSequence();
+                    number++;
+                    jetData.setSequence(number);
+                    jetDataDao.save(jetData);
+                }
+            }
+            JetData newJetData = new JetData(jetDataToUpdate.getTo());
+            jetDataDao.save(newJetData);
+
+
+
         }
+        else {
+            //change the production sequnce in between two jet
+
+
+            Double newBatchCapacity = 0.0;
+            Double jetExistingCapacity = 0.0;
+            Double jetCapacity = 0.0;
+            Optional<JetMast> jetMast = jetMastDao.findById(jetDataToUpdate.getTo().getJetId());
+            if (jetMast.isEmpty())
+                throw new Exception("no jet data found");
+
+            jetCapacity = jetMast.get().getCapacity();
+
+            List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(jetMast.get().getId());
+
+            //get the existing jet capacity
+            if (!jetDataList.isEmpty()) {
+                for (JetData jetData : jetDataList) {
+                    ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
+                    List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(productionPlan.getStockId(), productionPlan.getBatchId());
+
+                    if (batchDataList.isEmpty())
+                        throw new Exception("no batch or production data found");
+
+                    for (BatchData batchData : batchDataList) {
+                        if (batchData.getWt() != null)
+                            jetExistingCapacity += batchData.getWt();
+                    }
+
+                }
+            }
+
+            //get the new batch capacity
+            ProductionPlan productionPlan = productionPlanService.getProductionData(jetDataToUpdate.getFrom().getProductionId());
+            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(productionPlan.getStockId(), productionPlan.getBatchId());
+            for (BatchData batchData : batchDataList) {
+                newBatchCapacity += batchData.getWt();
+            }
+
+
+            //check existing batch capacity in jet with new batch capacity
+            if ((newBatchCapacity + jetExistingCapacity) >= jetCapacity)
+                throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
+
+
+            //find production is with jet or not
+            Optional<JetData> jetExistWithProduction = jetDataDao.findByControlIdAndProductionId(jetDataToUpdate.getFrom().getJetId(), jetDataToUpdate.getFrom().getProductionId());
+            if (jetExistWithProduction.isEmpty())
+                throw new Exception("no production data found with given jet");
+
+
+            //if the batch is able to fit into the new jet then update the data from the jet
+            List<JetData> fromJetDataList = jetDataDao.findByControlIdWithExistingProduction(jetDataToUpdate.getFrom().getJetId());
+            for (JetData jetData : fromJetDataList) {
+                if (jetData.getSequence() > jetDataToUpdate.getFrom().getSequence()) {
+                    long number = jetData.getSequence();
+                    number--;
+                    jetData.setSequence(number);
+                    jetDataDao.save(jetData);
+
+                }
+            }
+
+            jetDataDao.deleteByProductionId(jetDataToUpdate.getFrom().getProductionId());
+
+            //now update the jet data from to jet list
+            List<JetData> toJetDataList = jetDataDao.findByControlIdWithExistingProduction(jetDataToUpdate.getTo().getJetId());
+            for (JetData jetData : toJetDataList) {
+                if (jetData.getSequence() >= jetDataToUpdate.getTo().getSequence()) {
+                    long number = jetData.getSequence();
+                    number++;
+                    jetData.setSequence(number);
+                    jetDataDao.save(jetData);
+                }
+            }
+            JetData newJetData = new JetData(jetDataToUpdate.getTo());
+            jetDataDao.save(newJetData);
+        }
+
+    }
 
 
 
@@ -324,6 +405,39 @@ public class JetServiceImpl {
         jetDataExist.get().setStatus(JetStatus.valueOf(jetDataToUpdate.getStatus()));
         System.out.println(jetDataExist.get().getStatus());
         jetDataDao.save(jetDataExist.get());
+
+    }
+
+    public Boolean deleteJetDataByProductionId(Long id) throws Exception {
+        JetData jetData=jetDataDao.findByProductionId(id);
+        if(jetData==null) {
+            throw new Exception("production can't be deleted");
+        }
+
+        //update the existing production from jet because the production is going to be deleted
+        List<JetData> jetDataList=jetDataDao.findByControlIdWithExistingProduction(jetData.getControlId());
+        for(JetData jetData1:jetDataList)
+        {
+            if(jetData1.getSequence()>jetData.getSequence())
+            {
+                long number=jetData1.getSequence();
+                number--;
+                jetData1.setSequence(number);
+                jetDataDao.save(jetData1);
+            }
+        }
+
+        //update the status from production table
+        ProductionPlan productionPlan=productionPlanService.getProductionData(id);
+        productionPlan.setStatus(false);
+        productionPlanService.saveProductionPlan(productionPlan);
+
+
+        jetDataDao.deleteByProductionId(id);
+        return true;
+
+
+
 
     }
 }

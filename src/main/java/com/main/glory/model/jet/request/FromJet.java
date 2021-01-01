@@ -11,7 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UpdateJetData {
-  FromJet from;
-  ToJet to;
+public class FromJet {
+    Long jetId;
+    Long productionId;
+    Long sequence;
 }
