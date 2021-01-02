@@ -161,7 +161,7 @@ public class JetServiceImpl {
     public List<GetJetData> getJetData(Long id) throws Exception{
 
         List<GetJetData> getJetDataList=new ArrayList<>();
-        List<JetData> jetDataList = jetDataDao.findByControlId(id);
+        List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
         if(jetDataList.isEmpty())
             throw new Exception("No data found");
 
@@ -343,7 +343,7 @@ public class JetServiceImpl {
     }
 
     public List<GetAllJetMast> getAllJetData() throws Exception{
-        List<JetMast> jetMastList = jetMastDao.findAll();
+        List<JetMast> jetMastList = jetMastDao.getAll();
 
         List<GetAllJetMast> getAllJetMast=new ArrayList<>();
 
@@ -390,7 +390,7 @@ public class JetServiceImpl {
             throw new Exception("No data found");
 
         if(jetDataExist.get().getStatus() == JetStatus.success)
-            throw new Exception("data can't update because it is already done");
+            throw new Exception("data can't update because production is already completed");
 
         List<String> getStatusList=new ArrayList<>();
 
@@ -402,9 +402,48 @@ public class JetServiceImpl {
         if(!getStatusList.contains(jetDataToUpdate.getStatus()))
             throw new Exception("no status found");
 
-        jetDataExist.get().setStatus(JetStatus.valueOf(jetDataToUpdate.getStatus()));
-        System.out.println(jetDataExist.get().getStatus());
-        jetDataDao.save(jetDataExist.get());
+        //if the status is success then update the sequence of respected jet
+        if(jetDataToUpdate.getStatus().equals("success"))
+        {
+            //check the sequence of production is first or not
+
+
+            if(jetDataExist.get().getSequence()!=1)
+                throw new Exception("unable to update the production");
+
+            //System.out.println(jetDataExist.get().getStatus());
+            List<JetData> jetDataList = jetDataDao.findByControlId(jetDataToUpdate.getControlId());
+            for(JetData jetData:jetDataList)
+            {
+                if(jetData.getProductionId()==jetDataExist.get().getProductionId())
+                {
+                    //update the status of production
+                    jetDataExist.get().setStatus(JetStatus.success);
+                    jetDataDao.save(jetDataExist.get());
+
+                }
+                else
+                {
+                    //update the sequence of production by +1 from the jet
+                    long number=jetData.getSequence();
+                    number--;
+                    jetData.setSequence(number);
+                    jetDataDao.save(jetData);
+                }
+            }
+
+        }
+        else
+        {
+            //update the any other status except success update that on
+            if(!getStatusList.contains(jetDataToUpdate.getStatus()))
+                throw new Exception("Wrong status found");
+
+            jetDataExist.get().setStatus(JetStatus.valueOf(jetDataToUpdate.getStatus()));
+            //System.out.println(jetDataExist.get().getStatus());
+            jetDataDao.save(jetDataExist.get());
+        }
+
 
     }
 
