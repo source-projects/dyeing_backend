@@ -42,6 +42,7 @@ public class ProductionPlan {
         this.partyId=productionPlan.getPartyId();
         this.batchId=productionPlan.getBatchId();
         this.stockId=productionPlan.getStockId();
+        this.status=productionPlan.getStatus();
         this.id=productionPlan.getId();
 
     }

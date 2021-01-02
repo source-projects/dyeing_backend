@@ -69,5 +69,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     //get the totat grey mtr based on stock id and batchId
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId=:stockId AND p.batchId = :batchId AND p.isProductionPlanned = true AND p.isFinishMtrSave=false GROUP BY p.batchId ")
     GetBatchWithControlId findByBatchIdAndControIdWithoutFinishMtr(String batchId, Long stockId);
+
+    //get all batche without production plan
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false GROUP BY p.batchId,p.controlId ")
+    List<GetBatchWithControlId> findAllBatcheWithoutProductionPlan();
 }
 

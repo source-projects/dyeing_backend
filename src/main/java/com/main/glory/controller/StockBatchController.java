@@ -103,6 +103,42 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
+    //get batches without production plan
+    @GetMapping("/stockBatch/batch/withoutProductionPlan/all")
+    public GeneralResponse<List<GetBatchWithControlId>> getAllBatchWithoutProductionPlan(){
+        try{
+
+            List<GetBatchWithControlId> stockMast = stockBatchService.getAllBatchWithoutProductionPlan();
+            if(!stockMast.isEmpty()){
+                    return new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                }else{
+                    return new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    //get stock without batches
+    @GetMapping("/stockBatch/batch/stockWithoutBatches/all")
+    public GeneralResponse<List<GetAllStockWithoutBatches>> stockWithoutBatches(){
+        try{
+
+            List<GetAllStockWithoutBatches> stockMast = stockBatchService.getStockListWithoutBatches();
+            if(!stockMast.isEmpty()){
+                return new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }else{
+                return new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @GetMapping("/stockBatch/batch/{controlId}/{batchId}")
     public GeneralResponse<List<BatchData>> getBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") Long controlId){
         try{

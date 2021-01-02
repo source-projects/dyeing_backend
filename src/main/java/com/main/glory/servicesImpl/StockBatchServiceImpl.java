@@ -581,4 +581,36 @@ public class StockBatchServiceImpl {
             throw new Exception("no data found");
         return stockMast.get();
     }
+
+    //get all batches without production plan
+    public List<GetBatchWithControlId> getAllBatchWithoutProductionPlan() throws Exception {
+
+        List<GetBatchWithControlId> batchWithControlIdList=batchDao.findAllBatcheWithoutProductionPlan();
+        if(batchWithControlIdList.isEmpty())
+            throw new Exception("no batch found without production plan");
+
+        return  batchWithControlIdList;
+
+    }
+
+    //get stock which are without batches
+    public List<GetAllStockWithoutBatches> getStockListWithoutBatches() throws Exception {
+        List<GetAllStockWithoutBatches> getAllStockWithoutBatchesList =new ArrayList<>();
+
+        List<StockMast> stockMastList=stockMastDao.getAllStock();
+        for(StockMast stockMast:stockMastList)
+        {
+            List<BatchData> batchDataList = batchDao.findByControlId(stockMast.getId());
+            if(batchDataList.isEmpty())
+            {
+                GetAllStockWithoutBatches getAllStockWithoutBatches=new GetAllStockWithoutBatches(stockMast);
+                getAllStockWithoutBatchesList.add(getAllStockWithoutBatches);
+            }
+
+        }
+        if(getAllStockWithoutBatchesList.isEmpty())
+            throw new Exception("no stock is available with empty batch");
+
+        return getAllStockWithoutBatchesList;
+    }
 }
