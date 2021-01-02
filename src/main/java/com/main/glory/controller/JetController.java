@@ -10,6 +10,7 @@ import com.main.glory.model.jet.request.UpdateJetData;
 import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.jet.responce.GetStatus;
+import com.main.glory.model.productionPlan.GetAllProductionWithShadeData;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -145,7 +146,7 @@ public class JetController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    
     @GetMapping(value="/getJetDataWithInQueueProdution/byJetId/{id}")
     public GeneralResponse<List<GetJetData>> getJetDataWithInQueueProdution(@PathVariable(name = "id") Long id) throws Exception {
         if(id==null)

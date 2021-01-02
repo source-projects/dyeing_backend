@@ -62,7 +62,7 @@ public class ProductionPlanController extends ControllerConfig {
     }
 
     @GetMapping(value="/productionPlan/all")
-    public GeneralResponse<List<GetAllProductionWithShadeData>> getAllProductionPlan()
+    public GeneralResponse<List<GetAllProductionWithShadeData>> getAllProductionWithoutJetPlan()
     {
         try {
             List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData();
@@ -77,6 +77,25 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(value="/productionPlan/withAndWithoutPlan/all")
+    public GeneralResponse<List<GetAllProductionWithShadeData>> getAllProduction()
+    {
+        try {
+            List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionDataWithAndWithoutPlan();
+            if(productionPlanRecord.isEmpty())
+                throw new Exception("no data faund");
+
+            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
     //get all batch based on text
     /*@GetMapping(value="/getAllBatchBy/{partyId}/{qualityEntryId}/{batchId}")

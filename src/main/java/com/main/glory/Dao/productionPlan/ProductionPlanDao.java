@@ -13,4 +13,6 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
     @Query("select new com.main.glory.model.productionPlan.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p where p.status=false")
     Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone();
 
+    @Query("select new com.main.glory.model.productionPlan.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p ")
+    Optional<List<GetAllProductionWithShadeData>> getAllProduction();
 }

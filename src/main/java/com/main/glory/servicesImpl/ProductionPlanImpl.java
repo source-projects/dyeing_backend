@@ -106,6 +106,18 @@ public class ProductionPlanImpl {
         productionPlanDao.save(productionPlan);
 
     }
+
+    public List<GetAllProductionWithShadeData> getAllProductionDataWithAndWithoutPlan() throws Exception {
+        Optional<List<GetAllProductionWithShadeData>> productionWithShadeData = productionPlanDao.getAllProduction();
+        if(productionWithShadeData.isEmpty())
+            throw new Exception("no data found");
+
+
+        return productionWithShadeData.get();
+
+
+    }
+
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 

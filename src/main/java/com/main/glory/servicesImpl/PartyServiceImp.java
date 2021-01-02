@@ -148,7 +148,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 				partyAll.forEach(e ->
 				{
 					PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName());
-					System.out.println(partyWithName.getId());
+					//System.out.println(partyWithName.getId());
 					partyWithNameList.add(partyWithName);
 				});
 			}
