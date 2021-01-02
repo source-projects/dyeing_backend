@@ -5,7 +5,9 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
+import com.main.glory.model.StockDataBatchData.request.StockFilter;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -151,6 +153,21 @@ public class StockBatchController extends ControllerConfig {
             else{
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+    @PostMapping("/stockBatch/getStockBasedOnFilter")
+    public GeneralResponse<List<StockMast>> getStockBasedOnFilter(@RequestBody GetStockBasedOnFilter filter){
+        try{
+
+            List<StockMast> stockFiltersData = stockBatchService.getStockBasedOnFilter(filter);
+            if(!stockFiltersData.isEmpty())
+                return new GeneralResponse<>(stockFiltersData, "data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            else
+                return new GeneralResponse<>(null, "no data found", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
         }catch(Exception e){
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }

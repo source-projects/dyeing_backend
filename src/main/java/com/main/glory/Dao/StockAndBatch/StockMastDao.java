@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,4 +37,10 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  //Get all stock list
  @Query("select s from StockMast s")
  List<StockMast> getAllStock();
+
+
+ //filter api's
+
+ @Query("select s from StockMast s where s.partyId=:partyId AND s.qualityId=:qualityEntryId AND s.createdDate<=:toDate OR s.updatedDate<=:toDate AND s.createdDate>=:fromDate OR s.updatedDate>=:fromDate")
+ List<StockMast> findByQualityIdAndPartyIdAndDateFilter(Long partyId, Long qualityEntryId, Date toDate, Date fromDate);
 }
