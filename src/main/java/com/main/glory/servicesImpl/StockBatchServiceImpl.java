@@ -11,12 +11,10 @@ import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
-import javassist.Loader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -619,39 +617,67 @@ public class StockBatchServiceImpl {
     }
 
     public List<StockMast> getStockBasedOnFilter(GetStockBasedOnFilter filter) throws Exception {
+        try {
+            Date fromDate = null;
+            Date toDate = null;
+            if(filter.getToDate().isEmpty() && filter.getFromDate().isEmpty() && filter.getStock().getPartyCode().isEmpty() && filter.getStock().getPartyId()==null && filter.getStock().getQualityEntryId()==null && filter.getStock().getBillNo().isEmpty())
+            {
+                throw new Exception("please enter valid data");
+            }
+            SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                    "yyyy-MM-dd");
 
-        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
-                "yyyy-MM-dd");
+            if (filter.getFromDate()!="")
+                fromDate = datetimeFormatter1.parse(filter.getFromDate());
 
-        Date fromDate = datetimeFormatter1.parse(filter.getFromDate());
+            if (filter.getToDate()!="")
+                toDate = datetimeFormatter1.parse(filter.getToDate());
 
-        Date toDate = datetimeFormatter1.parse(filter.getToDate());
+            List<StockMast> stockMastList = null;
 
-        List<StockMast> stockMastList=null;
-        if(filter.getStock().getPartyCode()!=null && filter.getStock().getPartyId()!=null && filter.getStock().getQualityEntryId()!=null)
-        {
-            //check first the respected party code & id with quality
-            Optional<Quality> quality=qualityDao.findByPartyIdAndQualityId(filter.getStock().getQualityEntryId(), filter.getStock().getPartyId());
-            if(quality.isEmpty())
-                throw new Exception("no quality found for party");
+            if(filter.getStock().getPartyCode()!="")
+            {
+                Optional<Party> party = partyDao.findByPartyCode(filter.getStock().getPartyCode());
+                if(party.isEmpty())
+                    throw new Exception("no party found");
 
-            Optional<Party> party = partyDao.findById(filter.getStock().getPartyId());
+                if (filter.getStock().getPartyId()!=null)
+                {
 
-            if(party.isEmpty())
-                throw new Exception("no party found");
+                    if(!party.get().getId().equals(filter.getStock().getPartyId()))
+                        throw new Exception("party no found for party code:"+filter.getStock().getPartyCode());
 
-            if(!party.get().getPartyCode().equals(filter.getStock().getPartyCode()))
-                throw new Exception("no party code found");
+                    stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(party.get().getId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
+                    if (stockMastList.isEmpty())
+                        throw new Exception("no stock data found");
+                    return stockMastList;
 
 
-            stockMastList=stockMastDao.findByQualityIdAndPartyIdAndDateFilter(filter.getStock().getPartyId(),filter.getStock().getQualityEntryId(),toDate,fromDate);
+                }
+                else
+                {
+                    stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(party.get().getId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
+                    if (stockMastList.isEmpty())
+                        throw new Exception("no stock data found");
+                    return stockMastList;
 
+                }
+
+            }
+            else
+            {
+
+                stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(filter.getStock().getPartyId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
+                if (stockMastList.isEmpty())
+                    throw new Exception("no stock data found");
+                return stockMastList;
+            }
 
         }
-
-        if(stockMastList.isEmpty())
-            throw new Exception("no stock data found");
-        return  stockMastList;
-
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
