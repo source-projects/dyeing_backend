@@ -11,6 +11,7 @@ import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFini
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.*;
+import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.party.Party;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service("dispatchMastImpl")
@@ -481,4 +483,43 @@ public class DispatchMastImpl {
     }
 
 
+    public List<InvoiceWithBatch> getInvoiceListBasedOnFilter(GetInvoiceBasedOnFilter filter) throws Exception {
+
+        try {
+            if (filter.getPartyId() == null && filter.getFromDate().isEmpty() && filter.getToDate().isEmpty())
+                throw new Exception("please enter valid data");
+
+
+            Date fromDate = null;
+            Date toDate = null;
+
+            SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                    "yyyy-MM-dd");
+
+            if (filter.getFromDate() != "")
+                fromDate = datetimeFormatter1.parse(filter.getFromDate());
+
+            if (filter.getToDate() != "")
+                toDate = datetimeFormatter1.parse(filter.getToDate());
+
+            List<InvoiceWithBatch> invoiceWithBatchList = null;
+
+
+            List<BatchListWithInvoice> dispatchDataList = dispatchDataDao.getAllDispatchList(toDate, fromDate);
+
+            if(dispatchDataList.isEmpty())
+                throw new Exception("no invoice found");
+
+            for (BatchListWithInvoice batchListWithInvoice : dispatchDataList) {
+                System.out.println(batchListWithInvoice.getBatchId());
+                System.out.println(batchListWithInvoice.getInvoicNo());
+            }
+
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
