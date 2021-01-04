@@ -13,4 +13,5 @@ public class StockFilter {
     String partyCode;
     Long partyId;
     Long qualityEntryId;
+    String billNo;
 }

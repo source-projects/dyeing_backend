@@ -1,13 +1,9 @@
 package com.main.glory.Dao.StockAndBatch;
 
-import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
-import com.main.glory.model.quality.Quality;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -41,6 +37,9 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
  //filter api's
 
- @Query("select s from StockMast s where s.partyId=:partyId AND s.qualityId=:qualityEntryId AND s.createdDate<=:toDate OR s.updatedDate<=:toDate AND s.createdDate>=:fromDate OR s.updatedDate>=:fromDate")
- List<StockMast> findByQualityIdAndPartyIdAndDateFilter(Long partyId, Long qualityEntryId, Date toDate, Date fromDate);
+ @Query("select s from StockMast s where (:partyId IS NULL OR s.partyId=:partyId) AND (:qualityEntryId IS NULL OR s.qualityId=:qualityEntryId) AND (:billNo IS NULL OR s.billNo<=:billNo) AND (:toDate IS NULL OR s.createdDate<=:toDate) AND (:fromDate IS NULL OR s.createdDate>=:fromDate)")
+ List<StockMast> findByQualityIdAndPartyIdAndDateFilter(Long partyId, Long qualityEntryId, String billNo, Date toDate, Date fromDate);
+
+ @Query("select s from StockMast s where s.partyId=:partyId AND s.createdDate<=:toDate AND s.createdDate>=:fromDate")
+ List<StockMast> findStockPartyId(Long partyId, Date toDate, Date fromDate);
 }
