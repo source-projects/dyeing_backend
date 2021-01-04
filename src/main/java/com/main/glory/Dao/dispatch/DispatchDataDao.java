@@ -1,6 +1,7 @@
 package com.main.glory.Dao.dispatch;
 
 import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
@@ -45,4 +47,8 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     //get the invoice batch by the invoice no and batch id and stock id
     @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.batchId=:batchId AND dd.invoiceNo=:invoiceNo AND dd.batchId IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
     List<DispatchData> findByBatchIdAndStockIdAndInviceNo(Long stockId, String batchId, String invoiceNo);
+
+    //get All Distapatch list
+    @Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
+    List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);
 }

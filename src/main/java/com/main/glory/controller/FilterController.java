@@ -6,7 +6,10 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithoutBatches;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.dispatch.request.GetInvoiceBasedOnFilter;
+import com.main.glory.model.dispatch.request.InvoiceWithBatch;
 import com.main.glory.servicesImpl.BatchImpl;
+import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,9 @@ public class FilterController extends ControllerConfig {
 
     @Autowired
     private BatchImpl batchService;
+
+    @Autowired
+    DispatchMastImpl dispatchMastService;
 
     @Autowired
     private StockBatchServiceImpl stockBatchService;
@@ -61,7 +67,7 @@ public class FilterController extends ControllerConfig {
 
     }
 
-    //get sock based on filter
+    //get stock based on filter
     @PostMapping("/stockBatch/getStockBasedOnFilter")
     public GeneralResponse<List<StockMast>> getStockBasedOnFilter(@RequestBody GetStockBasedOnFilter filter){
         try{
@@ -70,7 +76,7 @@ public class FilterController extends ControllerConfig {
             if(!stockFiltersData.isEmpty())
                 return new GeneralResponse<>(stockFiltersData, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             else
-                return new GeneralResponse<>(null, "no data found", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
         }catch(Exception e){
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
@@ -78,6 +84,22 @@ public class FilterController extends ControllerConfig {
 
     }
 
+    //get invoice number based on filter
+    @PostMapping("/dispatch/getInvoiceListBasedOnFilter")
+    public GeneralResponse<List<InvoiceWithBatch>> getInvoiceListBasedOnFilter(@RequestBody GetInvoiceBasedOnFilter filter){
+        try{
+
+            List<InvoiceWithBatch> filterData = dispatchMastService.getInvoiceListBasedOnFilter(filter);
+            if(!filterData.isEmpty())
+                return new GeneralResponse<>(filterData, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            else
+                return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 
 

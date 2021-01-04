@@ -9,6 +9,8 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
+import com.main.glory.model.dispatch.request.GetInvoiceBasedOnFilter;
+import com.main.glory.model.dispatch.request.InvoiceWithBatch;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -679,5 +681,14 @@ public class StockBatchServiceImpl {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<StockMast> getStockByPartyId(Long partyId) throws Exception {
+        Optional<List<StockMast>> stockMastList = stockMastDao.findByPartyId(partyId);
+        if(stockMastList.isEmpty())
+            throw new Exception("no record found");
+
+        return stockMastList.get();
+
     }
 }
