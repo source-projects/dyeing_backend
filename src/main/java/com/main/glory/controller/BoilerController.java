@@ -4,6 +4,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.BoilerMachineRecord;
+import com.main.glory.model.machine.request.BoilerRecordBasedOnFilter;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
 import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.servicesImpl.BoilerRecordImpl;
@@ -41,6 +42,30 @@ public class BoilerController extends ControllerConfig {
         }
     }
 
+    //get boiler record as per the requirement
+    @PostMapping(value="/boilerRecord/basedOnFilter/")
+    public GeneralResponse<List<BoilerMachineRecord>> getBoilerRecordByFilter(@RequestBody BoilerRecordBasedOnFilter filter) throws Exception {
+        if(filter==null)
+        {
+            return new GeneralResponse<>(null, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            List<BoilerMachineRecord> list = boilerRecordService.getBoilerRecordBasedOnFilter(filter);
+            if(list!=null)
+            return new GeneralResponse<>(list, "Machine fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(null, "data not found", false
+                        , System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @GetMapping(value="/boiler/allMachineRecord")
     public GeneralResponse<List<BoilerMachineRecord>> getAllMachine() throws Exception {
 
