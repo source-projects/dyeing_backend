@@ -1,6 +1,8 @@
 package com.main.glory.model.machine;
 
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerMachineRecord;
+import com.main.glory.model.machine.UpdateMachineInfo.UpdateBoilerRecord;
+import com.main.glory.model.machine.UpdateMachineInfo.UpdateBoilerRecordList;
 import lombok.*;
 
 import javax.persistence.*;
@@ -49,6 +51,7 @@ public class BoilerMachineRecord {
         this.bedTemp=boilerMachineRecord.getBedTemp();
         this.draftPressure=boilerMachineRecord.getDraftPressure();
         this.idFan=boilerMachineRecord.getIdFan();
+        this.drumWaterLevel=boilerMachineRecord.getDrumWaterLevel();
         this.jetRunning=boilerMachineRecord.getJetRunning();
         this.daOne=boilerMachineRecord.getDaOne();
         this.daThree=boilerMachineRecord.getDaThree();
@@ -73,6 +76,40 @@ public class BoilerMachineRecord {
 
 
     }
+
+    public BoilerMachineRecord(UpdateBoilerRecordList updateBoilerRecordList, Long jetRunning) throws ParseException {
+        this.id=updateBoilerRecordList.getId();
+        this.drumWaterLevel=updateBoilerRecordList.getDrumWaterLevel();
+        this.streamPressusre=updateBoilerRecordList.getStreamPressusre();
+        this.draftPressure=updateBoilerRecordList.getDraftPressure();
+        this.feedPump=updateBoilerRecordList.getFeedPump();
+        this.flueGasTemp= updateBoilerRecordList.getBedTemp();
+        this.bedTemp=updateBoilerRecordList.getBedTemp();
+        this.draftPressure=updateBoilerRecordList.getDraftPressure();
+        this.idFan=updateBoilerRecordList.getIdFan();
+        this.jetRunning=jetRunning;
+        this.daOne=updateBoilerRecordList.getDaOne();
+        this.daThree=updateBoilerRecordList.getDaThree();
+        this.daTwo=updateBoilerRecordList.getDaTwo();
+        this.screwFeeder=updateBoilerRecordList.getScrewFeeder();
+        this.waterMeter=updateBoilerRecordList.getWaterMeter();
+        this.loadData=updateBoilerRecordList.getLoadData();
+        this.controlId=updateBoilerRecordList.getControlId();
+        this.userHeadId=updateBoilerRecordList.getUserHeadId();
+        this.timeOf=updateBoilerRecordList.getTimeOf();
+
+
+        //date to time
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                "yyyy-MM-dd");
+        Date lFromDate2 = datetimeFormatter1.parse(updateBoilerRecordList.getDateToEnter());
+
+        Timestamp fromTS2 = new Timestamp(lFromDate2.getTime());
+
+        this.dateToEnter=fromTS2;
+
+    }
+
 
     @PrePersist
     protected void onCreate() {

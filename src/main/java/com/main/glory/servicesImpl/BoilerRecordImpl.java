@@ -5,6 +5,8 @@ import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerMachineRecord;
 import com.main.glory.model.machine.BoilerMachineRecord;
 import com.main.glory.model.machine.MachineMast;
+import com.main.glory.model.machine.UpdateMachineInfo.UpdateBoilerRecord;
+import com.main.glory.model.machine.UpdateMachineInfo.UpdateBoilerRecordList;
 import com.main.glory.model.machine.request.BoilerRecordBasedOnFilter;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
 import com.main.glory.model.machine.response.BoilerFilter;
@@ -15,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service("boilerServiceImpl")
 public class BoilerRecordImpl {
@@ -393,8 +397,8 @@ public class BoilerRecordImpl {
                     break;
                 case "night":
 
-                    fromTime = 10l;
-                    toTime = 20l;
+                    fromTime = 22l;
+                    toTime = 8l;
                     list = boilerMachineRecordDao.findRecordBasedOnFilter(filter.getBoilerId(), fromDate, fromTime, toTime);
                     break;
                 default:
@@ -415,6 +419,49 @@ public class BoilerRecordImpl {
 
 
         return null;
+    }
+
+    public boolean updateRecord(UpdateBoilerRecord record) throws Exception {
+
+        List<BoilerMachineRecord> listToUpdate=new ArrayList<>();
+
+
+        int i=0;
+        for(UpdateBoilerRecordList updateBoilerRecord:record.getRecordList())
+        {
+            Optional<BoilerMachineRecord> recordExist = boilerMachineRecordDao.findById(updateBoilerRecord.getId());
+
+            if(recordExist.isEmpty())
+                throw new Exception("no record find with id:"+updateBoilerRecord.getId());
+
+            if(new Date(System.currentTimeMillis()).getDate()==recordExist.get().getDateToEnter().getDate() && new Date(System.currentTimeMillis()).getMonth()==recordExist.get().getDateToEnter().getMonth())
+            {
+                //date + time + 30 minutes
+                Long timeToCheck=recordExist.get().getDateToEnter().getTime()+TimeUnit.HOURS.toMillis(recordExist.get().getTimeOf())+TimeUnit.MINUTES.toMillis(30);
+
+                //check the time with current time
+                if(timeToCheck>System.currentTimeMillis())
+                    throw new Exception("data can't updated because of time exceed");
+
+                BoilerMachineRecord boilerMachineRecord=new BoilerMachineRecord(updateBoilerRecord,record.getJetRunning());
+                boilerMachineRecord.setCreatedDate(recordExist.get().getCreatedDate());
+                listToUpdate.add(boilerMachineRecord);
+                i++;
+            }
+            else throw new Exception("data can't updated because of date exceed");
+
+
+        }
+        if(listToUpdate.isEmpty())
+        {
+            return false;
+        }
+        else
+        {
+            boilerMachineRecordDao.saveAll(listToUpdate);
+            return true;
+        }
+
     }
 }
 

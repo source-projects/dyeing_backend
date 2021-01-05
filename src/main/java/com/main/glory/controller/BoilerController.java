@@ -4,6 +4,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.BoilerMachineRecord;
+import com.main.glory.model.machine.UpdateMachineInfo.UpdateBoilerRecord;
 import com.main.glory.model.machine.request.BoilerRecordBasedOnFilter;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
 import com.main.glory.model.machine.response.BoilerFilter;
@@ -20,7 +21,6 @@ public class BoilerController extends ControllerConfig {
 
     @Autowired
     BoilerRecordImpl boilerRecordService;
-
 
     @PostMapping(value="/boilerRecord")
     public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
@@ -66,7 +66,8 @@ public class BoilerController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping(value="/boiler/allMachineRecord")
+
+    @GetMapping(value="/boilerRecord/allMachineRecord")
     public GeneralResponse<List<BoilerMachineRecord>> getAllMachine() throws Exception {
 
         boolean flag;
@@ -86,7 +87,7 @@ public class BoilerController extends ControllerConfig {
         }
     }
 
-    @PostMapping(value="/boiler/filter/")
+    @PostMapping(value="/boilerRecord/filter/")
     public GeneralResponse<List<BoilerFilter>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
 
         boolean flag;
@@ -105,6 +106,29 @@ public class BoilerController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
+
+    @PutMapping(value="/boilerRecord/update/")
+    public GeneralResponse<Boolean> updateBoilerRecord(@RequestBody UpdateBoilerRecord record) throws Exception {
+
+        boolean flag;
+        try {
+
+            flag = boilerRecordService.updateRecord(record);
+            if(flag==true)
+            {
+                return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            return new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 }
