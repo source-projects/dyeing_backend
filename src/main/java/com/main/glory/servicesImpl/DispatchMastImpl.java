@@ -482,7 +482,7 @@ public class DispatchMastImpl {
 
     }
 
-
+/*
     public List<InvoiceWithBatch> getInvoiceListBasedOnFilter(GetInvoiceBasedOnFilter filter) throws Exception {
 
         try {
@@ -521,5 +521,5 @@ public class DispatchMastImpl {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 }
