@@ -85,7 +85,7 @@ public class FilterController extends ControllerConfig {
     }
 
     //get invoice number based on filter
-    @PostMapping("/dispatch/getInvoiceListBasedOnFilter")
+    /*@PostMapping("/dispatch/getInvoiceListBasedOnFilter")
     public GeneralResponse<List<InvoiceWithBatch>> getInvoiceListBasedOnFilter(@RequestBody GetInvoiceBasedOnFilter filter){
         try{
 
@@ -99,7 +99,7 @@ public class FilterController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
-    }
+    }*/
 
 
 
