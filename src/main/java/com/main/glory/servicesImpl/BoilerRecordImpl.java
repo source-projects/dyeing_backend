@@ -5,6 +5,7 @@ import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerMachineRecord;
 import com.main.glory.model.machine.BoilerMachineRecord;
 import com.main.glory.model.machine.MachineMast;
+import com.main.glory.model.machine.request.BoilerRecordBasedOnFilter;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
 import com.main.glory.model.machine.response.BoilerFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -367,6 +368,54 @@ public class BoilerRecordImpl {
 
         }
 
+    public List<BoilerMachineRecord> getBoilerRecordBasedOnFilter(BoilerRecordBasedOnFilter filter) throws Exception {
+
+        try {
+            List<BoilerMachineRecord> list = new ArrayList<>();
+            SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                    "yyyy-MM-dd");
+
+            Date fromDate = datetimeFormatter1.parse(filter.getDate());
+            String shift = filter.getShift();
+            if (shift.isEmpty())
+                throw new Exception("shift can't be empty");
+
+            MachineMast boilerExist = machineService.getMachineByMachineId(filter.getBoilerId());
+
+            Long fromTime;
+            Long toTime;
+
+            switch (shift) {
+                case "day":
+                    fromTime = 10l;
+                    toTime = 20l;
+                    list = boilerMachineRecordDao.findRecordBasedOnFilter(filter.getBoilerId(), fromDate, fromTime, toTime);
+                    break;
+                case "night":
+
+                    fromTime = 10l;
+                    toTime = 20l;
+                    list = boilerMachineRecordDao.findRecordBasedOnFilter(filter.getBoilerId(), fromDate, fromTime, toTime);
+                    break;
+                default:
+                    throw new Exception("no data found");
+
+
+            }
+            if(list.isEmpty())
+                throw new Exception("no data found");
+
+            return list;
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+        return null;
     }
+}
 
 
