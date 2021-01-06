@@ -102,6 +102,7 @@ public class JetServiceImpl {
             {
                 GetBatchWithControlId batchDataQTY = stockBatchService.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId(),productionPlan.getStockId());
          //       System.out.println(batchDataQTY.getWT());
+                if(batchDataQTY.getWT()!=null)
                 newBatchCapacity+=batchDataQTY.getWT();
 
             }
