@@ -34,7 +34,8 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  @Query("select s from StockMast s")
  List<StockMast> getAllStock();
 
-
+ @Query("select s from StockMast s where s.partyId=:partyId AND s.qualityId=:qualityId ")
+ List<StockMast> findByPartyIdAndQualityId(Long partyId, Long qualityId);
  //filter api's
 
  @Query("select s from StockMast s where (:partyId IS NULL OR s.partyId=:partyId) AND (:qualityEntryId IS NULL OR s.qualityId=:qualityEntryId) AND (:billNo IS NULL OR s.billNo<=:billNo) AND (:toDate IS NULL OR s.createdDate<=:toDate) AND (:fromDate IS NULL OR s.createdDate>=:fromDate)")
@@ -42,4 +43,6 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
  @Query("select s from StockMast s where s.partyId=:partyId AND s.createdDate<=:toDate AND s.createdDate>=:fromDate")
  List<StockMast> findStockPartyId(Long partyId, Date toDate, Date fromDate);
+
+
 }
