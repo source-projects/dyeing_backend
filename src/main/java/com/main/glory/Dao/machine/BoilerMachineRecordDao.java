@@ -20,6 +20,6 @@ public interface BoilerMachineRecordDao extends JpaRepository<BoilerMachineRecor
 
 
     //get record based on date and shift
-    @Query("select br from BoilerMachineRecord br where br.controlId=:boilerId AND br.dateToEnter = :fromDate AND br.timeOf >= :fromTime AND br.timeOf <= :toTime")
+    @Query("select br from BoilerMachineRecord br where br.controlId=:boilerId AND br.dateToEnter = :fromDate AND br.timeOf >= :fromTime OR br.timeOf <= :toTime")
     List<BoilerMachineRecord> findRecordBasedOnFilter(Long boilerId, Date fromDate, Long fromTime, Long toTime);
 }
