@@ -569,6 +569,7 @@ public class StockBatchServiceImpl {
     public GetBatchWithControlId getBatchWithoutFinishMtrQTYById(String batchId, Long stockId) {
         GetBatchWithControlId getAllBatchResponse = batchDao.findByBatchIdAndControIdWithoutFinishMtr(batchId,stockId);
 
+        System.out.println("w:"+getAllBatchResponse.getWT());
         if(getAllBatchResponse!=null)
             return getAllBatchResponse;
 
