@@ -49,7 +49,7 @@ public class DispatchMastImpl {
 
     public Boolean saveDispatch(CreateDispatch dispatchList) throws Exception {
 
-        List<DispatchMast> list = dispatchMastDao.findAll();
+        List<DispatchMast> list = dispatchMastDao.getAllInvoiceList();
 
         List<DispatchData> saveTheList=new ArrayList<>();
         //if the sequence is there or not

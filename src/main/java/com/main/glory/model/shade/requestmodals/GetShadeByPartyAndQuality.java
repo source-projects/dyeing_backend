@@ -18,10 +18,5 @@ public class GetShadeByPartyAndQuality {
     Long qualityEntryId;
     String qualityId;
 
-    public GetShadeByPartyAndQuality(Long id, String partyShadeNo, String colorTone) {
 
-        this.id = id;
-        this.partyShadeNo = partyShadeNo;
-        this.colorTone = colorTone;
-    }
 }

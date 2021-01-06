@@ -253,15 +253,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(shadeByPartyAndQualities.isEmpty())
 			throw new Exception("shade data not found");
 
-		for(GetShadeByPartyAndQuality getShadeByPartyAndQuality:shadeByPartyAndQualities)
-		{
-			getShadeByPartyAndQuality.setPartyId(partyId);
-			getShadeByPartyAndQuality.setQualityEntryId(qualityId);
-			getShadeByPartyAndQuality.setQualityId(quality.get().getQualityId());
-			list.add(getShadeByPartyAndQuality);
-		}
-
-		return list;
+		return shadeByPartyAndQualities;
 
 
 	}
