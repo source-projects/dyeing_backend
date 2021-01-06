@@ -18,6 +18,7 @@ public class GetQualityResponse {
     private String qualityType;
     private String unit;
     private Long  partyId;
+    private Double rate;
     private Double wtPer100m;
     private String remark;
     private  Date createdDate;
