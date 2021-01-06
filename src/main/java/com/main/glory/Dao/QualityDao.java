@@ -31,9 +31,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where createdBy = :createdBy AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyNameByCreatedBy( Long createdBy);
 
-    Optional<Quality> findByQualityId(Long qualityId);
+    Optional<Quality> findById(Long qualityId);
 
-    Optional<Quality> findByQualityId(String qualityId);
+    Optional<Quality> findById(String qualityId);
 
     Optional<Quality> findByQualityIdAndQualityName(String qualityId, String qualityName);
 

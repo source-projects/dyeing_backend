@@ -9,8 +9,6 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
-import com.main.glory.model.dispatch.request.GetInvoiceBasedOnFilter;
-import com.main.glory.model.dispatch.request.InvoiceWithBatch;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -688,6 +686,38 @@ public class StockBatchServiceImpl {
             throw new Exception("no record found");
 
         return stockMastList.get();
+
+    }
+
+    //batches by quality
+    public List<BatchData> getAllBatchByQualityId(Long qualityId) throws Exception {
+        List<BatchData> batchDataList=new ArrayList<>();
+
+        Optional<Quality> qualityExist=qualityDao.findById(qualityId);
+        if(qualityExist.isEmpty())
+            throw new Exception("no quality found for id:"+qualityId);
+        List<StockMast> stockMastList=stockMastDao.findByQualityId(qualityId);
+
+        for(StockMast stockMast:stockMastList)
+        {
+            List<BatchData> batchData=batchDao.findByControlId(stockMast.getId());
+            if(!batchData.isEmpty())
+            {
+                for(BatchData batch:batchData)
+                {
+                    batchDataList.add(batch);
+                }
+
+            }
+
+
+        }
+
+        if(batchDataList.isEmpty())
+            throw new Exception("no batch found for quality:"+qualityId);
+
+        return batchDataList;
+
 
     }
 }
