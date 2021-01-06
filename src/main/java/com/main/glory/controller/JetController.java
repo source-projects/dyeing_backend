@@ -25,7 +25,7 @@ public class JetController extends ControllerConfig {
     @Autowired
     JetServiceImpl jetService;
 
-    @PostMapping(value="/addJet")
+    @PostMapping(value="/jet/addJet")
     public GeneralResponse<Boolean> saveJet(@RequestBody JetMast jetMast) throws Exception {
         if(jetMast==null)
         {
@@ -45,7 +45,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
-    @PostMapping(value="/addJetData")
+    @PostMapping(value="/jet/addJetData")
     public GeneralResponse<Boolean> saveJetData(@RequestBody List<AddJetData> jetData) throws Exception {
         if(jetData==null)
         {
@@ -66,7 +66,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
-    @PutMapping(value="/updateJetData")
+    @PutMapping(value="/jet/updateJetData")
     public GeneralResponse<Boolean> updateJetData(@RequestBody UpdateJetData jetDataToUpdate) throws Exception {
         if(jetDataToUpdate==null)
         {
@@ -87,7 +87,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
-    @PutMapping(value="/updateJetData/productionStatus/")
+    @PutMapping(value="/jet/updateJetData/productionStatus/")
     public GeneralResponse<Boolean> updateJetData(@RequestBody ChangeStatus jetDataToUpdate) throws Exception {
         if(jetDataToUpdate==null)
         {
@@ -109,7 +109,7 @@ public class JetController extends ControllerConfig {
     }
 
 
-    @GetMapping(value="/getJetData/{id}")
+    @GetMapping(value="/jet/getJetData/{id}")
     public GeneralResponse<List<GetJetData>> getJetData(@PathVariable(name = "id") Long id) throws Exception {
         if(id==null)
         {
@@ -130,7 +130,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value="/getAllJetDetail")
+    @GetMapping(value="/jet/getAllJetDetail")
     public GeneralResponse<List<GetAllJetMast>> getAllJetData()  throws Exception {
 
         boolean flag;
@@ -147,7 +147,7 @@ public class JetController extends ControllerConfig {
         }
     }
     
-    @GetMapping(value="/getJetDataWithInQueueProdution/byJetId/{id}")
+    @GetMapping(value="/jet/getJetDataWithInQueueProdution/byJetId/{id}")
     public GeneralResponse<List<GetJetData>> getJetDataWithInQueueProdution(@PathVariable(name = "id") Long id) throws Exception {
         if(id==null)
         {
@@ -168,7 +168,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value="/getJet/allStatusList")
+    @GetMapping(value="/jet/getJet/allStatusList")
     public GeneralResponse<List<GetStatus>> getJetStatusList() throws Exception {
 
         boolean flag;
@@ -185,7 +185,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
-    @DeleteMapping(value="/deleteJetDataByProductionId/{id}")
+    @DeleteMapping(value="/jet/deleteJetDataByProductionId/{id}")
     public GeneralResponse<Boolean> deleteJetDataByProductionId(@PathVariable(name = "id") Long id) throws Exception {
         if(id==null)
         {
