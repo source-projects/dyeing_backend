@@ -155,6 +155,22 @@ public class StockBatchController extends ControllerConfig {
         }
 
     }
+    //batch by quality
+    @GetMapping("/stockBatch/batch/byQualityId/{id}")
+    public GeneralResponse<List<BatchData>> getAllBatchByQualityId(@PathVariable(name = "id") Long qualityId){
+        try{
+
+            List<BatchData> batchData = stockBatchService.getAllBatchByQualityId(qualityId);
+
+            return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
     @GetMapping("/stockBatch/BatchToPartyAndQuality/{controlId}/{batchId}")
     public GeneralResponse<BatchToPartyAndQuality> getPartyAndQualityByBatch(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){

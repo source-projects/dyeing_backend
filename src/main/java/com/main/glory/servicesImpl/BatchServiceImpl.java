@@ -51,7 +51,7 @@ public class BatchServiceImpl implements BatchServicesInterface {
         * phase 4: Mtr and Wt Validation based on Quality (wt per 100 mtr).
         */
 
-        Optional<Quality> quality = qualityDao.findByQualityId(batchMast.getQualityId().toString());
+        Optional<Quality> quality = qualityDao.findById(batchMast.getQualityId().toString());
         if(quality.isEmpty()){
             throw new Exception("This quality does not exist");
         }
