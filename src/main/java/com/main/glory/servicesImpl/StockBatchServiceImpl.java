@@ -720,4 +720,19 @@ public class StockBatchServiceImpl {
 
 
     }
+
+    //get complete stock batch detail of batch based on party and quality
+    public List<StockMast> getStockBatchListById(Long qualityId, Long partyId) throws Exception {
+
+
+
+        List<StockMast> stockMasts=stockMastDao.findByPartyIdAndQualityId(partyId,qualityId);
+        if(stockMasts.isEmpty()) {
+            throw new Exception("no data found");
+        }
+
+        return stockMasts;
+
+
+    }
 }

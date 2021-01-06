@@ -140,6 +140,25 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
+    //get complete stock and batch based on party id and qualityid
+    @GetMapping("/stockBatch/stockBatchDataList/ByQualityAndParty/{qualityId}/{partyId}")
+    public GeneralResponse<List<StockMast>> getStockBatchListById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
+        try{
+            if(qualityId!=null && partyId !=null){
+                List<StockMast> batchData = stockBatchService.getStockBatchListById(qualityId,partyId);
+
+                return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @GetMapping("/stockBatch/batch/all")
     public GeneralResponse<List<BatchToPartyAndQuality>> getAllBatch(){
         try{

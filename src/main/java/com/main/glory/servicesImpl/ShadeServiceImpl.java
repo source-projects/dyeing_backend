@@ -13,6 +13,7 @@ import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -242,11 +243,25 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
     public List<GetShadeByPartyAndQuality> getAllShadeByPartyAndQuality(Long partyId, Long qualityId) throws Exception{
 
+		Optional<Quality> quality=qualityDao.findById(qualityId);
+		if(quality.isEmpty())
+			throw new Exception("no quality is found");
+
+		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
+
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
 		if(shadeByPartyAndQualities.isEmpty())
 			throw new Exception("shade data not found");
 
-		return shadeByPartyAndQualities;
+		for(GetShadeByPartyAndQuality getShadeByPartyAndQuality:shadeByPartyAndQualities)
+		{
+			getShadeByPartyAndQuality.setPartyId(partyId);
+			getShadeByPartyAndQuality.setQualityEntryId(qualityId);
+			getShadeByPartyAndQuality.setQualityId(quality.get().getQualityId());
+			list.add(getShadeByPartyAndQuality);
+		}
+
+		return list;
 
 
 	}

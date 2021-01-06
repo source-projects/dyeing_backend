@@ -193,7 +193,7 @@ public class JetServiceImpl {
 
         //change the production sequnce in same jet
 
-        if(jetDataToUpdate.getTo().getJetId()==jetDataToUpdate.getFrom().getJetId())
+        if(jetDataToUpdate.getTo().getJetId().equals(jetDataToUpdate.getFrom().getJetId()))
         {
             //check the production is avaialbe or not
             ProductionPlan productionExist=productionPlanService.getProductionData(jetDataToUpdate.getFrom().getProductionId());
@@ -203,7 +203,7 @@ public class JetServiceImpl {
             productionExist=productionPlanService.getProductionData(jetDataToUpdate.getTo().getProductionId());
 
             if(productionExist==null)
-                throw new Exception("no prodcution data found");
+                throw new Exception("no production data found");
 
             //update the sequence of production as per the requirement
             //if the batch is able to fit into the new jet then update the data from the jet
