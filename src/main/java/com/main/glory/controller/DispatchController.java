@@ -22,7 +22,7 @@ public class DispatchController extends ControllerConfig {
     @Autowired
     DispatchMastImpl dispatchMastService;
 
-    @PostMapping("/dispatch")
+    @PostMapping("/dispatch/")
     public GeneralResponse<Boolean> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
         try{
             Boolean flag = dispatchMastService.saveDispatch(dispatchMast);
@@ -53,7 +53,7 @@ public class DispatchController extends ControllerConfig {
     }
 
     //Get dispatch by invoice number
-    @GetMapping("/getDispatch/byInvoiceNumber/{invoiceNo}")
+    @GetMapping("/dispatch/getDispatch/byInvoiceNumber/{invoiceNo}")
     public GeneralResponse<PartyWithBatchByInvoice> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         try{
             if(invoiceNo!=null) {
@@ -82,7 +82,7 @@ public class DispatchController extends ControllerConfig {
         }
     }
 
-    @PutMapping("/updateDispatch/")
+    @PutMapping("/dispatch/updateDispatch/")
     public GeneralResponse<Boolean> updateDispatch(@RequestBody UpdateInvoice updateInvoice) throws Exception{
         try{
 
@@ -96,7 +96,7 @@ public class DispatchController extends ControllerConfig {
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PutMapping("/updateDispatchStatus/{invoiceNo}")
+    @PutMapping("/dispatch/updateDispatchStatus/{invoiceNo}")
     public GeneralResponse<Boolean> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         try{
 
@@ -111,7 +111,7 @@ public class DispatchController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/getPartyWithQualityDispatchBy/{id}")
+    @GetMapping("/dispatch/getPartyWithQualityDispatchBy/{id}")
     public GeneralResponse<PartyDataByInvoiceNumber> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
         try{
             if(id!=null) {
