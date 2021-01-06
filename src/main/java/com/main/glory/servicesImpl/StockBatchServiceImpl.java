@@ -437,7 +437,6 @@ public class StockBatchServiceImpl {
         for(GetBatchWithControlId batch : batchData)
         {
 
-
             Optional<StockMast> stockMast=stockMastDao.findById(batch.getControlId());
 
             if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)

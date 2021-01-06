@@ -302,17 +302,15 @@ public class DispatchMastImpl {
             if(!availbleBatchInInvoice.isEmpty())
             {
 
-
                 //if the data is found then remove from the available batch list to delete the batch later
                 if(availbleBatchInInvoice.get(entry.getKey()).equals(entry.getValue()) && availbleBatchInInvoice.containsKey(entry.getKey()))
                 {
-
                     availbleBatchInInvoice.remove(entry.getKey(),entry.getValue());
                 }
 
 
             }
-            else//if it is not availale then insert the new entry
+            else//if batch is not availale then insert the new entry
             {
                 //get the batch data
                 List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
