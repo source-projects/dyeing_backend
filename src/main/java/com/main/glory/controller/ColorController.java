@@ -52,7 +52,7 @@ public class ColorController extends ControllerConfig {
 			List<ColorMastDetails> obj = null;
 			switch (getBy) {
 				case "own":
-					System.out.println(obj);
+					//System.out.println(obj);
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
 						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
