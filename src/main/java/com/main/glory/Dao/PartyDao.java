@@ -28,4 +28,7 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
     Optional<Party> findByGSTIN(String gstin);
 
 	Optional<Party>findByPartyCode(String partyCode);
+
+	@Query("select p from Party p")
+    List<Party> getAllParty();
 }

@@ -57,7 +57,7 @@ public class DocumentImpl {
         table.addCell(partyState);
         table.setHeaderRows(1);
 
-        List<Party> party = partyDao.findAll();
+        List<Party> party = partyDao.getAllParty();
 
         if(documentModel.getToRow()>party.size())
            throw new Exception("Party size is :"+party.size());

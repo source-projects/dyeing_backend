@@ -19,4 +19,7 @@ public interface FabricsDao extends JpaRepository<Fabric, Long> {
 
     @Query(value = ("Delete  from fabstock as fs inner join fabric_master as fm on fm.id=fs.control_id "), nativeQuery = true)
     Fabric deleteFabMasterById(@Param("mid") Long id);
+
+    @Query("select f from Fabric f")
+    List<Fabric> getAllFabric();
 }

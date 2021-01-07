@@ -49,7 +49,7 @@ public class ThermopackImpl {
 
     public List<Thermopack> getAllMachineRecord() throws Exception{
 
-        List<Thermopack> thermopackList = thermopackDao.findAll();
+        List<Thermopack> thermopackList = thermopackDao.getAllThermopack();
         if(thermopackList.isEmpty())
             throw new Exception("no data found");
 

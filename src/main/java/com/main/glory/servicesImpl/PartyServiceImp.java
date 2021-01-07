@@ -71,7 +71,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 	public List<Party> getAllPartyDetails(Long id,String getBy) throws Exception{
 		List<Party> partyDetailsList = null;
 		if(id == null){
-			partyDetailsList=partyDao.findAll();
+			partyDetailsList=partyDao.getAllParty();
 		}
 		else if(getBy.equals("group")){
 			partyDetailsList=partyDao.findByUserHeadId(id);
@@ -141,7 +141,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 
     public List<PartyWithName> getAllPartyNameWithId() {
 		try {
-			List<Party> partyAll = partyDao.findAll();
+			List<Party> partyAll = partyDao.getAllParty();
 
 			List<PartyWithName> partyWithNameList = new ArrayList<>();
 			if(!partyAll.isEmpty()) {
@@ -163,7 +163,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 
     public List<PartyWithPartyCode> getAllPartyNameWithPartyCode() throws Exception{
 		List<PartyWithPartyCode> partyWithPartyCodesList =new ArrayList<>();
-		List<Party> partyList = partyDao.findAll();
+		List<Party> partyList = partyDao.getAllParty();
 		for(Party party:partyList)
 		{
 			if(party.getPartyCode()!=null)
@@ -213,7 +213,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 		table.addCell(partyState);
 		table.setHeaderRows(1);
 
-		List<Party> party = partyDao.findAll();
+		List<Party> party = partyDao.getAllParty();
 
 		if(documentModel.getToRow()>party.size())
 			throw new Exception("Party size is :"+party.size());

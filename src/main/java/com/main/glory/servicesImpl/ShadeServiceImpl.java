@@ -72,7 +72,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Override
 	public List<ShadeMast> getAllShadeMast() throws Exception{
-		List<ShadeMast> shadeMastList = shadeMastDao.findAll();
+		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeMast();
 		if(shadeMastList.isEmpty())
 			throw new Exception("no party shade found");
 		else{
@@ -126,7 +126,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		List<ShadeMast> shadeMastList = null;
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
 		if(id == null){
-			shadeMastList = shadeMastDao.findAll();
+			shadeMastList = shadeMastDao.getAllShadeMast();
 			for (ShadeMast e : shadeMastList) {
 				GetAllShade getShade =  new GetAllShade();
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)

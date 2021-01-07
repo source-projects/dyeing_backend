@@ -199,7 +199,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 	}
 
     public List<GetAllQualtiy> getAllQualityData() throws Exception {
-		List<Quality> qualities = qualityDao.findAll();
+		List<Quality> qualities = qualityDao.getAllQuality();
 		List<GetAllQualtiy> getAllQualtiyList =new ArrayList<>();
 		for(Quality quality:qualities)
 		{

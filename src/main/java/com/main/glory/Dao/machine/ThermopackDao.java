@@ -16,4 +16,7 @@ public interface ThermopackDao extends JpaRepository<Thermopack,Long> {
 
     @Query("select t from Thermopack t where t.controlId=:controlId")
     List<Thermopack> findByControlId(Long controlId);
+
+    @Query("select t from Thermopack t")
+    List<Thermopack> getAllThermopack();
 }

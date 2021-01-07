@@ -157,7 +157,7 @@ public class QualityController extends ControllerConfig {
             if (flag!=null) {
                 return new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<Boolean>(false, "quality id not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
         return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }

@@ -14,4 +14,7 @@ public interface PurchaseOrderDao extends JpaRepository<PurchaseOrder,Long> {
 
     @Query("select new com.main.glory.model.purchaseOrder.ResponsePurchase(p, (select u.userName as uName from UserData u where u.id = p.createdBy)) from PurchaseOrder p")
     List<ResponsePurchase> getAllWithUserName();
+
+    @Query("select p from PurchaseOrder p")
+    List<PurchaseOrder> getAllPurchaseOrder();
 }

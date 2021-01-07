@@ -63,7 +63,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	public List<ColorMastDetails> getAll(String getBy,Long id)throws Exception {
 		List<ColorMastDetails> colorMastDetails = new ArrayList<>();
 		if(id == null){
-			List<ColorMast> data = colorMastDao.findAll();
+			List<ColorMast> data = colorMastDao.getAllColorList();
 			data.forEach(e -> {
 				try{
 					ColorMastDetails x = new ColorMastDetails(e);
@@ -108,7 +108,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	}
 
 	public List<ColorMastDetails> getOne(Long id) {
-		List<ColorMast> data = colorMastDao.findAll();
+		List<ColorMast> data = colorMastDao.getAllColorList();
 		List<ColorMastDetails> colorMastDetails = new ArrayList<>();
 			data.forEach(e -> {
 				try{

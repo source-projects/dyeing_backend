@@ -86,7 +86,7 @@ public class QualityProcessImpl {
 	public List<QualityProcessMast> qualityProcessMasts(String getBy, Long id) throws Exception{
 		List<QualityProcessMast> q = null;
 		if(id == null)
-			q = qualityProcessMastDao.findAll();
+			q = qualityProcessMastDao.getAllQualityProcess();
 		else if(getBy.equals("own")){
 			q = qualityProcessMastDao.findAllByCreatedBy(id);
 		}
