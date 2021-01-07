@@ -399,7 +399,7 @@ public class BoilerRecordImpl {
 
                     fromTime = 22l;
                     toTime = 8l;
-                    list = boilerMachineRecordDao.findRecordBasedOnFilter(filter.getBoilerId(), fromDate, fromTime, toTime);
+                    list = boilerMachineRecordDao.findRecordBasedOnFilterForNight(filter.getBoilerId(), fromDate, fromTime, toTime);
                     break;
                 default:
                     throw new Exception("no data found");
