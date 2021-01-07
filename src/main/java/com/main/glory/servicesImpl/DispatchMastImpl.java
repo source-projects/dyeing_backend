@@ -261,6 +261,16 @@ public class DispatchMastImpl {
 
         PartyWithBatchByInvoice partyWithBatchByInvoice =new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList,party.get());
 
+        //status
+        Boolean isSendToParty=dispatchDataDao.getSendToPartyFlag(invoiceNo);
+        if(isSendToParty==true)
+        {
+            partyWithBatchByInvoice.setIsSendToParty(isSendToParty);
+        }
+        else
+        {
+            partyWithBatchByInvoice.setIsSendToParty(isSendToParty);
+        }
         return partyWithBatchByInvoice;
 
     }

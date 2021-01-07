@@ -18,6 +18,7 @@ public class PartyWithBatchByInvoice {
 
     Long partyId;
     String partyName;
+    Boolean isSendToParty;
     List<BatchWithTotalMTRandFinishMTR> batchWithControlIdList;
 
     public PartyWithBatchByInvoice(List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList, Party party) {

@@ -16,7 +16,7 @@ import java.util.List;
 public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.batchId,dd.stockId) from DispatchData dd where dd.invoiceNo=:invoiceNo AND isSendToParty = false GROUP BY dd.batchId,dd.stockId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.batchId,dd.stockId) from DispatchData dd where dd.invoiceNo=:invoiceNo GROUP BY dd.batchId,dd.stockId")
     List<GetBatchByInvoice> findBatchAndStockByInvoice(String invoiceNo);
 
     @Modifying
@@ -50,6 +50,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Query("select d from DispatchData d")
     List<DispatchData> getAllDispatch();
+
+    @Query(value = "select d.is_send_to_party from dispatch_data as d where d.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
+    Boolean getSendToPartyFlag(@Param("invoiceNo") String invoiceNo);
 
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
