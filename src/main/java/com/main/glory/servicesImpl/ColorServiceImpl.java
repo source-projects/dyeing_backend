@@ -62,13 +62,19 @@ public class ColorServiceImpl implements ColorServicesInterface {
 	@Override
 	public List<ColorMastDetails> getAll(String getBy,Long id)throws Exception {
 		List<ColorMastDetails> colorMastDetails = new ArrayList<>();
+
 		if(id == null){
 			List<ColorMast> data = colorMastDao.getAllColorList();
 			data.forEach(e -> {
 				try{
 					ColorMastDetails x = new ColorMastDetails(e);
-					x.setSupplierName(supplierDao.findById(e.getSupplierId()).get().getSupplierName());
-					colorMastDetails.add(x);
+					String name=supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+					if(!name.isEmpty())
+					{
+						x.setSupplierName(name);
+						colorMastDetails.add(x);
+					}
+
 					/*e.getColorDataList().forEach(e1->{
 						e1.setColorBoxes(colorBoxDao.findAllByControlId(e1.getId()));
 					});*/
@@ -82,8 +88,12 @@ public class ColorServiceImpl implements ColorServicesInterface {
 			data.forEach(e -> {
 				try{
 					ColorMastDetails x = new ColorMastDetails(e);
-					x.setSupplierName(supplierDao.findById(e.getSupplierId()).get().getSupplierName());
-					colorMastDetails.add(x);
+					String name=supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+					if(!name.isEmpty())
+					{
+						x.setSupplierName(name);
+						colorMastDetails.add(x);
+					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -94,8 +104,12 @@ public class ColorServiceImpl implements ColorServicesInterface {
 			data.forEach(e -> {
 				try{
 					ColorMastDetails x = new ColorMastDetails(e);
-					x.setSupplierName(supplierDao.findById(e.getSupplierId()).get().getSupplierName());
-					colorMastDetails.add(x);
+					String name=supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+					if(!name.isEmpty())
+					{
+						x.setSupplierName(name);
+						colorMastDetails.add(x);
+					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
