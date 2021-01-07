@@ -39,10 +39,10 @@ public class QualityServiceImp implements QualityServiceInterface{
 
 		modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-		Quality quality = modelMapper.map(qualityDto, Quality.class);
+		Quality quality = new Quality(qualityDto);
 
-		Optional<Quality> quality1 = qualityDao.findById(qualityDto.getQualityId());
-		if(quality1.isPresent())
+		String quality1 = qualityDao.isQualityNameExist(qualityDto.getQualityId());
+		if(quality1!=null)
 			throw new Exception("Quality id is already exist");
 
 		qualityDao.save(quality);

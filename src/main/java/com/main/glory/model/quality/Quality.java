@@ -5,6 +5,7 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
+import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
@@ -83,6 +84,22 @@ public class Quality {
 		this.updatedDate = other.updatedDate;
 //		this.qualityDate = other.qualityDate;
 		this.userHeadId = other.userHeadId;
+	}
+
+	//for adding the quality
+	public Quality(AddQualityRequest qualityDto) {
+		this.qualityId=qualityDto.getQualityId();
+		this.qualityName=qualityDto.getQualityName();
+		this.qualityType=qualityDto.getQualityType();
+		this.unit=qualityDto.getUnit();
+		this.partyId=qualityDto.getPartyId();
+		this.wtPer100m=qualityDto.getWtPer100m();
+		this.remark=qualityDto.getRemark();
+		this.createdBy=qualityDto.getCreatedBy();
+		this.updatedBy=qualityDto.getUpdatedBy();
+		this.userHeadId=qualityDto.getUserHeadId();
+		this.rate=qualityDto.getRate();
+
 	}
 
 	@PrePersist
