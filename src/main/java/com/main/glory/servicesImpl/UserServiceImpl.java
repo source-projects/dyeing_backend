@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserServiceInterface {
         List<UserData> userDataList = null;
         List<getAllUserInfo> getAllUserInfoList = new ArrayList<>();
         if(id == null){
-            userDataList = userDao.findAll();
+            userDataList = userDao.getAllUser();
             int i=0;
             for (UserData e : userDataList) {
                 getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);

@@ -26,4 +26,6 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
     List<GetShadeByPartyAndQuality> findByQualityEntryIdAndPartyId(Long qualityId, Long partyId);
 
 
+	@Query("select s from ShadeMast s")
+    List<ShadeMast> getAllShadeMast();
 }

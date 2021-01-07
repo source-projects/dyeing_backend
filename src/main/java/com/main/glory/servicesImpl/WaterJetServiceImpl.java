@@ -45,7 +45,7 @@ public class WaterJetServiceImpl {
     }
 
     public List<WaterJet> getAllWaterJet() throws Exception{
-        List<WaterJet> waterJetList = waterJetDao.findAll();
+        List<WaterJet> waterJetList = waterJetDao.getAllWaterJet();
         if(waterJetList.isEmpty())
             throw new Exception("no data found");
 

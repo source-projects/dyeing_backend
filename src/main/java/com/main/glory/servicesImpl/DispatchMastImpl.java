@@ -182,7 +182,7 @@ public class DispatchMastImpl {
 
     public List<GetAllDispatch> getAllDisptach() throws Exception{
         List<GetAllDispatch> dispatchDataList=new ArrayList<>();
-        List<DispatchData> dispatchList =dispatchDataDao.findAll();
+        List<DispatchData> dispatchList =dispatchDataDao.getAllDispatch();
 
 
         List<String> invoiceNumber=new ArrayList<>();

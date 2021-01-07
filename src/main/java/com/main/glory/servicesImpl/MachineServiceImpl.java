@@ -103,7 +103,7 @@ public class MachineServiceImpl {
     {
 
         List<GetAllMachine> getAllMachines=new ArrayList<>();
-        List<MachineMast> machineMasts=machineDao.findAll();
+        List<MachineMast> machineMasts=machineDao.getAllMachineMast();
 
         for(MachineMast m:machineMasts)
         {
@@ -202,7 +202,7 @@ public class MachineServiceImpl {
     public List<GetAllCategory> getAllCategory() {
 
         List<GetAllCategory> getAllCategoryList = new ArrayList<>();
-        List<MachineCategory> machineCategories =  machineCategoryDao.findAll();
+        List<MachineCategory> machineCategories =  machineCategoryDao.getAllMahineCategory();
         for(MachineCategory m:machineCategories)
         {
             GetAllCategory category=new GetAllCategory();

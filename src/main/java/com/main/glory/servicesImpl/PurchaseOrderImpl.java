@@ -58,7 +58,7 @@ public class PurchaseOrderImpl {
     public List<ResponsePurchase> getAllPurchaseOrder() throws Exception {
         List<ResponsePurchase> responsePurchasesList=new ArrayList<>();
 
-        List<PurchaseOrder> purchaseOrderList = purchaseOrderDao.findAll();
+        List<PurchaseOrder> purchaseOrderList = purchaseOrderDao.getAllPurchaseOrder();
         for(PurchaseOrder purchaseOrder:purchaseOrderList)
         {
             if(purchaseOrder.getItemId()!=null && purchaseOrder.getSupplierId()!=null)

@@ -50,7 +50,7 @@ public class FabricsServiceImpl implements FabricsServicesInterface {
     }
 
     public List<Fabric> getAllFabricsDetails() {
-        var getFabMasterData = fabricsDao.findAll();
+        List<Fabric> getFabMasterData = fabricsDao.getAllFabric();
 
         return getFabMasterData;
 

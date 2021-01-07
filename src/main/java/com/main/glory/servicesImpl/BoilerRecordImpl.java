@@ -58,7 +58,7 @@ public class BoilerRecordImpl {
 
     public List<BoilerMachineRecord> getAllMachineRecord() throws Exception{
 
-        List<BoilerMachineRecord> boilerMachineRecords = boilerMachineRecordDao.findAll();
+        List<BoilerMachineRecord> boilerMachineRecords = boilerMachineRecordDao.getAllBoilerRecord();
         if(boilerMachineRecords.isEmpty())
             throw new Exception("no data found");
 
