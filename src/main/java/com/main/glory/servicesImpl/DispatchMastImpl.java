@@ -228,7 +228,7 @@ public class DispatchMastImpl {
             for(DispatchData dispatchData:dispatchDataList)
             {
                 BatchData batchData=batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
-                if(batchData!=null)
+                if(batchData.getWt()!=null)
                 {
                     WT+=batchData.getWt();
                     MTR+=batchData.getMtr();
