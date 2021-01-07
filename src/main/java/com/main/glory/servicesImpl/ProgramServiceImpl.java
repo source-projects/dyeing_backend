@@ -98,7 +98,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         List<Program> programList = null;
         List<GetAllProgram> getAllProgramList = new ArrayList<>();
         if(id == null){
-            programList = programDao.findAll();
+            programList = programDao.getAllProgramList();
             for (Program e : programList) {
                 GetAllProgram programData;
                 if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
