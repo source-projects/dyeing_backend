@@ -73,5 +73,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     //get all batche without production plan
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> findAllBatcheWithoutProductionPlan();
+
+    @Query("select b from BatchData b where b.id=:batchEntryId AND b.isFinishMtrSave=true")
+    BatchData findByBatchEntryId(Long batchEntryId);
 }
 

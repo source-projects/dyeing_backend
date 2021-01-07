@@ -227,12 +227,12 @@ public class DispatchMastImpl {
 
             for(DispatchData dispatchData:dispatchDataList)
             {
-                Optional<BatchData> batchData=batchDao.findById(dispatchData.getBatchEntryId());
-                if(batchData.isPresent())
+                BatchData batchData=batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
+                if(batchData!=null)
                 {
-                    WT+=batchData.get().getWt();
-                    MTR+=batchData.get().getMtr();
-                    totalFinishMtr=batchData.get().getFinishMtr();
+                    WT+=batchData.getWt();
+                    MTR+=batchData.getMtr();
+                    totalFinishMtr=batchData.getFinishMtr();
                     totalPcs++;
 
                 }
