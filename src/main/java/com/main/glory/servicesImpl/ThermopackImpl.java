@@ -6,6 +6,7 @@ import com.main.glory.model.machine.BoilerMachineRecord;
 import com.main.glory.model.machine.MachineMast;
 import com.main.glory.model.machine.Thermopack;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
+import com.main.glory.model.machine.request.ThermopackRecordBasedOnShift;
 import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.model.machine.response.ThermopackFilterRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,6 +244,48 @@ public class ThermopackImpl {
 
             default:throw new Exception("no data found for iven attribute");
         }
+
+    }
+
+    public List<Thermopack> getRecordBasedOnShift(ThermopackRecordBasedOnShift record) throws Exception  {
+
+
+            List<Thermopack> list = new ArrayList<>();
+            SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                    "yyyy-MM-dd");
+
+            Date fromDate = datetimeFormatter1.parse(record.getDate());
+            String shift = record.getShift();
+            if (shift.isEmpty())
+                throw new Exception("shift can't be empty");
+
+            MachineMast thermopackExist = machineService.getMachineByMachineId(record.getThermopackId());
+
+            Long fromTime;
+            Long toTime;
+
+            switch (shift) {
+                case "day":
+                    fromTime = 10l;
+                    toTime = 20l;
+                    list = thermopackDao.findRecordBasedOnFilter(record.getThermopackId(), fromDate, fromTime, toTime);
+                    break;
+                case "night":
+
+                    fromTime = 22l;
+                    toTime = 8l;
+                    list = thermopackDao.findRecordBasedOnFilterNight(record.getThermopackId(), fromDate, fromTime, toTime);
+                    break;
+                default:
+                    throw new Exception("no data found");
+
+
+            }
+            if(list.isEmpty())
+                throw new Exception("no data found");
+
+            return list;
+
 
     }
 }

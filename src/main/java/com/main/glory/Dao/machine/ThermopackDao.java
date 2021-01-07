@@ -19,4 +19,12 @@ public interface ThermopackDao extends JpaRepository<Thermopack,Long> {
 
     @Query("select t from Thermopack t")
     List<Thermopack> getAllThermopack();
+
+    //get record based on morning and shift
+    @Query("select br from Thermopack br where br.controlId=:thermopackId AND br.dateToEnter = :fromDate AND br.timeOf >= :fromTime AND br.timeOf <= :toTime")
+    List<Thermopack> findRecordBasedOnFilter(Long thermopackId, Date fromDate, Long fromTime, Long toTime);
+
+    //record for night
+    @Query("select br from Thermopack br where br.controlId=:thermopackId AND br.dateToEnter = :fromDate AND br.timeOf >= :fromTime OR br.timeOf <= :toTime")
+    List<Thermopack> findRecordBasedOnFilterNight(Long thermopackId, Date fromDate, Long fromTime, Long toTime);
 }

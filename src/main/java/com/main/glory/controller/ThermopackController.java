@@ -5,6 +5,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddThermopackInfo;
 import com.main.glory.model.machine.Thermopack;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
+import com.main.glory.model.machine.request.ThermopackRecordBasedOnShift;
 import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.model.machine.response.ThermopackFilterRecord;
 import com.main.glory.servicesImpl.ThermopackImpl;
@@ -21,7 +22,7 @@ public class ThermopackController extends ControllerConfig {
     @Autowired
     ThermopackImpl thermopackService;
 
-    @PostMapping(value="/thermoPackRecord")
+    @PostMapping(value="/thermopack/")
     public GeneralResponse<Boolean> saveThermopackRecord(@RequestBody List<AddThermopackInfo> thermopackRecord) throws Exception {
         if(thermopackRecord==null)
         {
@@ -70,7 +71,7 @@ public class ThermopackController extends ControllerConfig {
             List<ThermopackFilterRecord> machineRecord = thermopackService.getDataBasedOnFilter(record);
             if(machineRecord.isEmpty())
             {
-                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "Machine Data not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
             return new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -81,4 +82,25 @@ public class ThermopackController extends ControllerConfig {
         }
     }
 
+
+//record based on shift
+    @PostMapping(value="/thermopack/filter/basedOnShift/")
+    public GeneralResponse<List<Thermopack>> getDataBasedOnFilter(@RequestBody ThermopackRecordBasedOnShift record) throws Exception {
+
+        boolean flag;
+        try {
+
+            List<Thermopack> machineRecord = thermopackService.getRecordBasedOnShift(record);
+            if(machineRecord.isEmpty())
+            {
+                return new GeneralResponse<>(null, "Machine Data not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            return new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
