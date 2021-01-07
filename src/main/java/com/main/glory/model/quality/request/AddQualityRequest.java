@@ -20,7 +20,7 @@ public class AddQualityRequest {
     private Double wtPer100m;
     private String remark;
     private Long createdBy;
-    private Date qualityDate;
+    private  Long updatedBy;
     private Long userHeadId;
     private Double rate;
 }
