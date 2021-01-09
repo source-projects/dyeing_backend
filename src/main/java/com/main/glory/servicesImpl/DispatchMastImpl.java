@@ -406,7 +406,7 @@ public class DispatchMastImpl {
             Long pcs=0l;
             Double amt=0.0;
 
-            System.out.println(batch.getStockId());
+            //System.out.println(batch.getStockId());
             StockMast stockMast=stockBatchService.getStockById(batch.getStockId());
             Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
 
@@ -435,7 +435,7 @@ public class DispatchMastImpl {
             qualityBillByInvoiceNumber.setPcs(pcs);
             qualityBillByInvoiceNumber.setAmt(amt);
 
-
+            qualityBillByInvoiceNumber.setPChalNo(stockMast.getChlNo());
             qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
         }
 
