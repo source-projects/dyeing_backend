@@ -313,9 +313,37 @@ public class DispatchMastImpl {
             {
 
                 //if the data is found then remove from the available batch list to delete the batch later
-                if(availbleBatchInInvoice.get(entry.getKey()).equals(entry.getValue()) && availbleBatchInInvoice.containsKey(entry.getKey()))
+                if(availbleBatchInInvoice.containsKey(entry.getKey()))
                 {
+                    if(availbleBatchInInvoice.get(entry.getKey()).equals(entry.getValue()))
                     availbleBatchInInvoice.remove(entry.getKey(),entry.getValue());
+                }
+                else
+                {
+                    //if the batch is not availbale in existing list
+                    //get the batch data
+                    List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
+
+                    for(BatchData batchData:batchDataList)
+                    {
+
+                        if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
+                        {
+                            DispatchData dispatchData=new DispatchData(batchData);
+
+                            dispatchData.setInvoiceNo(updateInvoice.getInvoiceNo());
+
+                            dispatchData.setCreatedBy(dispatchData.getCreatedBy());
+
+                            dispatchData.setUpdatedBy(dispatchData.getUpdatedBy());
+
+                            saveTheList.add(dispatchData);
+                            batchData.setIsBillGenrated(true);
+                            batchDao.save(batchData);
+                        }
+                    }
+                    dispatchDataDao.saveAll(saveTheList);
+
                 }
 
 

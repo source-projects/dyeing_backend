@@ -3,6 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityParty;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -130,4 +132,26 @@ public class BasicController extends ControllerConfig {
 
 
 
+    //batch by party id
+    @GetMapping("/stockBatch/batchListByPartyWithoutProductionPlan/{partyId}")
+    public GeneralResponse<List<GetAllBatch>> getBatchListByPartyWithoutProductionPlan(@PathVariable(value = "partyId") Long partyId){
+        try{
+            if(partyId!=null){
+                List<GetAllBatch> stockMast = stockBatchService.getBatchListByPartyWithoutProductionPlan(partyId);
+                if(stockMast!=null){
+                    return new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                }else{
+                    return new GeneralResponse<>(null, "no data found for id: "+partyId, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
+
+
