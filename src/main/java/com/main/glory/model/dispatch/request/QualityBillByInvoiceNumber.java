@@ -21,6 +21,7 @@ public class QualityBillByInvoiceNumber {
     Double totalMtr;
     Double finishMtr;
     Long pcs;
+    Long pChalNo;
     Double amt;
 
 
