@@ -141,7 +141,28 @@ public class BasicController extends ControllerConfig {
                 if(stockMast!=null){
                     return new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                 }else{
-                    return new GeneralResponse<>(null, "no data found for id: "+partyId, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    return new GeneralResponse<>(null, "no data found for party: "+partyId, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    //batch by qualityId id
+    @GetMapping("/stockBatch/batchListByQualityWithoutProductionPlan/{qualityId}")
+    public GeneralResponse<List<GetAllBatch>> getBatchListByQualityWithoutProductionPlan(@PathVariable(value = "qualityId") Long qualityId){
+        try{
+            if(qualityId!=null){
+                List<GetAllBatch> stockMast = stockBatchService.getBatchListByQualityWithoutProductionPlan(qualityId);
+                if(stockMast!=null){
+                    return new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                }else{
+                    return new GeneralResponse<>(null, "no data found for quality id: "+qualityId, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                 }
             }
             else{
