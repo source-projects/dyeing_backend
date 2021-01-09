@@ -23,6 +23,7 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  List<StockMast> findByQualityId(Long qualityId);
 
  List<StockMast> findByQualityIdAndPartyId(Long qualityId,Long partyId);
+
  @Query("select sm from StockMast sm where userHeadId =:userHeadId OR createdBy =:userHeadId")
  List<StockMast> findByUserHeadId(Long userHeadId);
 

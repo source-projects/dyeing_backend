@@ -780,4 +780,46 @@ public class StockBatchServiceImpl {
             throw new Exception("no data found for party:"+partyId);
         return list;
     }
+
+    public List<GetAllBatch> getBatchListByQualityWithoutProductionPlan(Long qualityId) throws Exception {
+        List<GetAllBatch> list=new ArrayList<>();
+
+        Optional<Quality> qualityExist=qualityDao.findById(qualityId);
+
+        if(qualityExist.isEmpty())
+            throw new Exception("no quality found for id:"+qualityId);
+
+
+        Optional<Party> party=partyDao.findById(qualityExist.get().getPartyId());
+        if(party.isEmpty())
+            throw new Exception("party not found for quality:"+qualityId);
+
+        List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(qualityId,qualityExist.get().getPartyId());
+
+
+
+        //batch list based on stock id
+        for(StockMast stockMast:stockMastList)
+        {
+            List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockId(stockMast.getId());
+            for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
+            {
+                GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get());
+                getAllBatch.setProductionPlanned(false);
+                getAllBatch.setIsBillGenerated(false);
+                getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
+                getAllBatch.setControlId(getBatchWithControlId.getControlId());
+
+                list.add(getAllBatch);
+            }
+
+        }
+
+
+        if(list.isEmpty()) {
+            throw new Exception("no batch found for quality:"+qualityId);
+        }
+
+        return list;
+    }
 }
