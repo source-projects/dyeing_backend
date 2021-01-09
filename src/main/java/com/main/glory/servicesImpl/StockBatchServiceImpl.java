@@ -894,4 +894,82 @@ public class StockBatchServiceImpl {
 
 
     }
+
+    public List<GetAllBatch> getBatchByPartyAndQuality(Long qualityId, Long partyId) throws Exception {
+        List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        if(stockMast.isEmpty())
+        {
+            throw new Exception("No batch found");
+        }
+
+
+        List<GetAllBatch> getAllBatchList =new ArrayList<>();
+        List<String> batchName =new ArrayList<>();
+        List<Boolean> productionPlanned =new ArrayList<>();
+        List<Boolean> isBillGenerated =new ArrayList<>();
+        List<Long> controlId =new ArrayList<>();
+
+        GetAllBatch getAllBatch;
+
+        for(StockMast stockMast1:stockMast)
+        {
+
+            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
+
+            for(BatchData batchData : batch)
+            {
+                if(batchData.getIsBillGenrated()==true)
+                    continue;
+
+                //Take another arraylist because it is not working with Object arrayList
+                if(!batchName.contains(batchData.getBatchId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+                    productionPlanned.add(batchData.getIsProductionPlanned());
+                    isBillGenerated.add(batchData.getIsBillGenrated());
+                }
+                else if(!controlId.contains(batchData.getControlId()))
+                {
+                    batchName.add(batchData.getBatchId());
+                    controlId.add(batchData.getControlId());
+                    productionPlanned.add(batchData.getIsProductionPlanned());
+                    isBillGenerated.add(batchData.getIsBillGenrated());
+                }
+
+            }
+
+
+
+        }
+        Optional<Party> party=partyDao.findById(partyId);
+        Optional<Quality> quality =qualityDao.findById(qualityId);
+
+        //storing all the data of batchName to object
+        for(int x=0;x<controlId.size();x++)
+        {
+            if(quality.get()!=null&&party.get()!=null)
+            {
+                if(!quality.isPresent() && !party.isPresent())
+                    continue;
+
+                getAllBatch=new GetAllBatch(party.get(),quality.get());
+                getAllBatch.setBatchId(batchName.get(x));
+                getAllBatch.setControlId(controlId.get(x));
+                getAllBatch.setProductionPlanned(productionPlanned.get(x));
+                getAllBatch.setIsBillGenerated(isBillGenerated.get(x));
+                getAllBatchList.add(getAllBatch);
+
+            }
+
+        }
+
+
+        if(getAllBatchList.isEmpty())
+            throw new Exception("May all batches planned or not available ");
+        return getAllBatchList;
+
+
+    }
+
 }
