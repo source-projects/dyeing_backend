@@ -30,7 +30,7 @@ public class DbScheduler {
     @Value("${spring.datasource.dbname}")
     private String dbname;
 
-    @Scheduled(cron="* * 12 * ?")//at every night at 12am
+    @Scheduled(cron="0 0 0 * * ?")//at every night at 12am
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
         //get the system os first
 
