@@ -27,6 +27,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     Optional<List<BatchData>> findByBatchId(String batchId);
 
 
+    @Query("select b from BatchData b where b.controlId=:controlId AND b.batchId=:batchId AND b.batchId IS NOT NULL AND b.controlId IS NOT NULL")
     List<BatchData> findByControlIdAndBatchId(Long controlId,String batchId);
 
     List<BatchData> findByControlIdAndBatchIdAndIsProductionPlanned(Long controlId, String batchId, Boolean b);

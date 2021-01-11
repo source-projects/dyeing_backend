@@ -514,7 +514,7 @@ public class StockBatchServiceImpl {
 
         while(i<n) {
             k=0;
-            if(batchData1.get(i).getIsSplit()==true)
+            if(batchData1.get(i).getIsSplit())
             {
                 List<BatchData> checkBatchIsAvailable = batchDao.findByControlIdAndBatchId(batchData1.get(i).getControlId(),batchData1.get(i).getBatchId());
                 if(!checkBatchIsAvailable.isEmpty())
