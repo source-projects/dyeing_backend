@@ -12,4 +12,5 @@ public class GCScheduler {
 	public void cleanGarbage(){
 		System.gc();
 	}
+
 }

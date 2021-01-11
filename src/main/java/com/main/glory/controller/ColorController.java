@@ -81,7 +81,7 @@ public class ColorController extends ControllerConfig {
 			}
 
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, e.getMessage(), true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

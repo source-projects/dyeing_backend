@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan({"com.main.glory.controller","com.main.glory.servicesImpl","com.main.glory.config","com.main.glory.filters","com.main.glory.utils","com.main.glory.*"})
 @EnableJpaRepositories({"com.main.glory.Dao"})
 @SpringBootApplication
-@EnableScheduling
 public class GloryautofabApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(GloryautofabApplication.class, args);
