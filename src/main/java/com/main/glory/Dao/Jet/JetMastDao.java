@@ -14,4 +14,7 @@ public interface JetMastDao  extends JpaRepository<JetMast,Long> {
 
     @Query("select j from JetMast j")
     List<JetMast> getAll();
+
+    @Query("select j from JetMast j where j.name=:name")
+    Optional<JetMast> findByName(String name);
 }
