@@ -26,7 +26,7 @@ public class RestoreDbImpl {
 
     private Runtime runtime;
     private Process process;
-    public Boolean restoreDb() throws IOException, InterruptedException {
+    public Boolean restoreDb(String name) throws IOException, InterruptedException {
 
     //restore db
         try {
@@ -37,11 +37,11 @@ public class RestoreDbImpl {
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            File backupFile = new File(parent+"/"+simpleDateFormat.format(new Date())+".sql");
+            File backupFile = new File(parent+"/"+name);
 
 
             if(!backupFile.exists())
-                backupFile.createNewFile();
+                throw new Exception("no file found");
 
 
             //String command = "mysql --user="+user+" --password="+password+"  "+dbname+" < " + backupFile;
@@ -50,8 +50,7 @@ public class RestoreDbImpl {
 
             String[] command = new String[]{"mysql", "--user=" + user, "--password=" + password, "-e", "source " + backupFile};
 
-            //System.out.println(command);
-            //runtime = Runtime.getRuntime();
+
             process = Runtime.getRuntime().exec(command);
             int exitValue = process.waitFor();
             //System.out.println("exit value: " + exitValue);

@@ -7,10 +7,7 @@ import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.servicesImpl.RestoreDbImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -21,12 +18,12 @@ public class RestoreDbController extends ControllerConfig {
     @Autowired
     RestoreDbImpl restoreDb;
 
-    @GetMapping("/db/restore")
-    public GeneralResponse<Boolean> restoreDb() {
+    @GetMapping("/db/restore/{name}")
+    public GeneralResponse<Boolean> restoreDb(@PathVariable(name = "name") String name) {
         try{
 
 
-            Boolean flag = restoreDb.restoreDb();
+            Boolean flag = restoreDb.restoreDb(name);
             if(flag)
             {
                 return new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
