@@ -15,8 +15,12 @@ public class GetShadeByPartyAndQuality {
     String partyShadeNo;
     String colorTone;
     Long partyId;
+    String partyCode;
+    String partyName;
     Long qualityEntryId;
     String qualityId;
+    String qualityName;
+
 
 
 }
