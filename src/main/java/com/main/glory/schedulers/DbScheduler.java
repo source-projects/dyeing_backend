@@ -12,9 +12,11 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Properties;
 
 @Service
@@ -32,9 +34,18 @@ public class DbScheduler {
 
     @Scheduled(cron="0 0 0 * * ?")//at every night at 12am
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
-        //get the system os first
+        File parent =new File("backup");
 
-        File backupFile = new File("backup\\backup.sql");
+        if(!parent.exists())
+            parent.mkdir();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        File backupFile = new File(parent+"/"+simpleDateFormat.format(new Date())+".sql");
+
+
+        if(!backupFile.exists())
+            backupFile.createNewFile();
 
         String cmd="mysqldump --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
 
