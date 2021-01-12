@@ -39,9 +39,15 @@ public class JetServiceImpl {
     @Autowired
     BatchDao batchDao;
 
-    public void saveJet(JetMast jetMast) {
+    public void saveJet(AddJet jetMast) throws Exception {
 
-        jetMastDao.save(jetMast);
+
+        Optional<JetMast> jetExist = jetMastDao.findByName(jetMast.getName());
+        if(jetExist.isPresent()) {
+            throw new Exception("jet is avaialble with name");
+        }
+        JetMast newJet=new JetMast(jetMast);
+        jetMastDao.save(newJet);
 
     }
 

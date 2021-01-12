@@ -1,5 +1,6 @@
 package com.main.glory.model.jet;
 
+import com.main.glory.model.jet.request.AddJet;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,4 +30,8 @@ public class JetMast {
     private List<JetData> jetDataList;
 
 
+    public JetMast(AddJet jetMast) {
+        this.capacity=jetMast.getCapacity();
+        this.name=jetMast.getName();
+    }
 }

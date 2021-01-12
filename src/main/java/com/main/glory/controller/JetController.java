@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.ChangeStatus;
@@ -26,7 +27,7 @@ public class JetController extends ControllerConfig {
     JetServiceImpl jetService;
 
     @PostMapping(value="/jet/addJet")
-    public GeneralResponse<Boolean> saveJet(@RequestBody JetMast jetMast) throws Exception {
+    public GeneralResponse<Boolean> saveJet(@RequestBody AddJet jetMast) throws Exception {
         if(jetMast==null)
         {
             return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
