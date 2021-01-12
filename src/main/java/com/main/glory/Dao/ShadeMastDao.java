@@ -22,7 +22,7 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 	List<ShadeMast> findAllByUserHeadId(Long userHeadId);
 	Optional<ShadeMast> findById(Long aLong);
 
-	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(s.id, s.partyShadeNo, s.colorTone,s.partyId,s.qualityEntryId,(select q.qualityId from Quality q where q.id=:qualityId) as qualityIdString) from ShadeMast s where s.partyId = :partyId AND s.qualityEntryId=:qualityId AND s.partyId IS NOT NULL AND s.qualityEntryId IS NOT NULL")
+	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(s.id, s.partyShadeNo, s.colorTone,s.partyId,(select pp.partyCode from Party pp where pp.id=:partyId),(select pp.partyName from Party pp where pp.id=:partyId),s.qualityEntryId,(select q.qualityId from Quality q where q.id=:qualityId) as qualityIdString,(select q.qualityName from Quality q where q.id=:qualityId)) from ShadeMast s where s.partyId = :partyId AND s.qualityEntryId=:qualityId AND s.partyId IS NOT NULL AND s.qualityEntryId IS NOT NULL")
     List<GetShadeByPartyAndQuality> findByQualityEntryIdAndPartyId(Long qualityId, Long partyId);
 
 
