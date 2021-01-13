@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 public class CreateDispatch {
     Long createdBy;
+    Long userHeadId;
     Long updatedBy;
     List<BatchAndStockId> batchAndStockIdList;
 }

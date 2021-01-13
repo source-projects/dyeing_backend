@@ -18,12 +18,14 @@ public class DispatchMast {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     Date createdDate;
+    Date updatedDate;
     Long createdBy;
     String prefix;
     Long postfix;
-
-
-
+    Long paymentBunchId;
+    Long userHeadId;
+    Long updatedBy;
+    Long partyId;
 
 
     @PrePersist
@@ -31,5 +33,10 @@ public class DispatchMast {
         this.createdDate = new Date(System.currentTimeMillis());
     }
 
+    @PreUpdate
+    protected void onUpdate()
+    {
+        this.updatedDate=new Date(System.currentTimeMillis());
+    }
 
 }

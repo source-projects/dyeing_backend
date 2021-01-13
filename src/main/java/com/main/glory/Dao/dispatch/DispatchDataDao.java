@@ -54,6 +54,14 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query(value = "select d.is_send_to_party from dispatch_data as d where d.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
     Boolean getSendToPartyFlag(@Param("invoiceNo") String invoiceNo);
 
+    @Modifying
+    @Transactional
+    @Query("delete from DispatchData dd where dd.invoiceNo=:invoiceNo AND dd.invoiceNo IS NOT NULL")
+    void deleteByInvoiceNo(String invoiceNo);
+
+    @Query("select d from DispatchData d where d.invoiceNo=:invoiceNo")
+    List<DispatchData> getBatchByInvoiceNo(String invoiceNo);
+
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);

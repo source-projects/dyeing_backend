@@ -1,0 +1,102 @@
+package com.main.glory.controller;
+
+import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.GeneralResponse;
+
+import com.main.glory.model.paymentTerm.AdvancePayment;
+import com.main.glory.model.paymentTerm.request.AddPaymentMast;
+import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
+import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
+import com.main.glory.servicesImpl.PaymentTermImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class PaymentTermController extends ControllerConfig {
+
+    @Autowired
+    PaymentTermImpl paymentTermService;
+
+
+    @PostMapping(value="/paymentTerm/")
+    public GeneralResponse<Boolean> savePayment(@RequestBody AddPaymentMast paymentMast) {
+        GeneralResponse<Boolean> result;
+        try {
+            Boolean flag = paymentTermService.savePayment(paymentMast);
+            if (flag) {
+                result = new GeneralResponse<Boolean>(true, "Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            } else {
+                result = new GeneralResponse<Boolean>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @PostMapping(value="/paymentTerm/addAdvancePayment")
+    public GeneralResponse<Boolean> addAdvancePayment(@RequestBody AdvancePayment paymentMast) {
+        try {
+            Boolean flag = paymentTermService.addAdvancePayment(paymentMast);
+            if (flag) {
+                return new GeneralResponse<Boolean>(true, "Advance Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            } else {
+                return new GeneralResponse<Boolean>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
+    //get the pending bill list
+    @GetMapping(value="/paymentTerm/getPendingBillByPartyId/{partyId}")
+    public GeneralResponse<List<GetPendingDispatch>> getPendingBillByPartyId(@PathVariable(name = "partyId") Long partyId)
+    {
+        try {
+            if(partyId==null)
+                throw new Exception("id can't be null");
+
+            List<GetPendingDispatch> list = paymentTermService.getPendingBillByPartyId(partyId);
+            if(!list.isEmpty())
+                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //get the advance payment list
+    @GetMapping(value="/paymentTerm/getAdvancePayment/{partyId}")
+    public GeneralResponse<List<GetAdvancePayment>> getAdvancePayment(@PathVariable(name = "partyId") Long partyId)
+    {
+        try {
+            if(partyId==null)
+                throw new Exception("id can't be null");
+
+            List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
+            if(!list.isEmpty())
+                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
+
+}
