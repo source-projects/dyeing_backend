@@ -8,7 +8,9 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.shade.ShadeMast;
@@ -70,6 +72,12 @@ public class Party {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "partyId", referencedColumnName = "id")
+    private List<DispatchMast> dispatchMastList;
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<StockMast> stockMasts;
 
     @ApiModelProperty(hidden = true)
@@ -84,6 +92,12 @@ public class Party {
     @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<ProductionPlan> productionPlans;
 
+
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
+    private List<AdvancePayment> advancePayments;
 
 
     @PrePersist

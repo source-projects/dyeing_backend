@@ -33,7 +33,7 @@ public class PartyController  extends ControllerConfig {
 	{
 		try {
 		    partyServiceImp.saveParty(party);
-			return new GeneralResponse<Boolean>(null, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+			return new GeneralResponse<Boolean>(true, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 		}
 		catch (Exception e)
 		{

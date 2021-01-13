@@ -25,10 +25,12 @@ public class DispatchData {
     Long createdBy;
     Long updatedBy;
 
+
     public DispatchData(BatchData batchData) {
         this.batchEntryId=batchData.getId();
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
+
     }
 
     @PrePersist
