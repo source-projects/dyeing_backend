@@ -106,16 +106,20 @@ public class DispatchMastImpl {
 
 
             //check the user are exist or not
-            UserData createdUserExist =userService.getUserById(dispatchList.getCreatedBy());
+            if(dispatchList.getCreatedBy()!=null && dispatchList.getUserHeadId()!= null) {
 
-            if(createdUserExist==null)
-                throw new Exception("no user found for id:"+dispatchList.getCreatedBy());
+                UserData createdUserExist = userService.getUserById(dispatchList.getCreatedBy());
+
+                if (createdUserExist == null)
+                    throw new Exception("no user found for id:" + dispatchList.getCreatedBy());
 
 
-            UserData headUserExist=userService.getUserById(dispatchList.getUserHeadId());
-            if(headUserExist==null)
-                throw new Exception("no user found for id:"+dispatchList.getUserHeadId());
-
+                UserData headUserExist = userService.getUserById(dispatchList.getUserHeadId());
+                if (headUserExist == null)
+                    throw new Exception("no user found for id:" + dispatchList.getUserHeadId());
+            }
+            else
+                throw new Exception("user head id or createdBy id can't be null");
 
 
             //increament the invoice number to dispatch mast
