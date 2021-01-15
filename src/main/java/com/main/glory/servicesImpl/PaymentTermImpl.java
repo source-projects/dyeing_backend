@@ -148,4 +148,14 @@ public class PaymentTermImpl {
         return list;
 
     }
+
+    public PaymentMast getPaymentDetailById(Long paymentBunchId) throws Exception {
+
+
+        PaymentMast paymentMastExist=paymentMastDao.findByPaymentBunchId(paymentBunchId);
+        if(paymentMastExist==null)
+            throw new Exception("no data found for bunch id:"+paymentBunchId);
+
+        return  paymentMastExist;
+    }
 }
