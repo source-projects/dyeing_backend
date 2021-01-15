@@ -549,6 +549,9 @@ public class DispatchMastImpl {
             StockMast stockMast=stockBatchService.getStockById(batch.getStockId());
             Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
 
+            if(quality.isEmpty())
+                throw new Exception("no quality found");
+
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber=new QualityBillByInvoiceNumber(quality.get());
 
             List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
@@ -564,6 +567,7 @@ public class DispatchMastImpl {
             }
 
             //Count the total amt based on quality rate and total finish mtr
+            if(quality.get().getRate()!=null && finishMtr>0.0)
             amt=quality.get().getRate()*finishMtr;
 
 
