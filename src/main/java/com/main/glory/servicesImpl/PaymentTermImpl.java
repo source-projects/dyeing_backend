@@ -90,7 +90,6 @@ public class PaymentTermImpl {
         List<DispatchMast> dispatchMastList = dispatchMastService.getPendingDispatchByPartyId(partyId);
 
 
-
         for(DispatchMast dispatchMast:dispatchMastList)
         {
             Double amt=0.0;
@@ -150,7 +149,6 @@ public class PaymentTermImpl {
     }
 
     public PaymentMast getPaymentDetailById(Long paymentBunchId) throws Exception {
-
 
         PaymentMast paymentMastExist=paymentMastDao.findByPaymentBunchId(paymentBunchId);
         if(paymentMastExist==null)

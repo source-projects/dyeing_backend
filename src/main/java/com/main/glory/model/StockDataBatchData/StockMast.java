@@ -42,6 +42,7 @@ public class StockMast {
     Date createdDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
+    String remark;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
