@@ -196,4 +196,12 @@ public class UserServiceImpl implements UserServiceInterface {
        return getAllOperatorList;
 
     }
+
+    public UserData getUserByUserHeadIdAndId(Long userHeadId, Long createdBy) throws Exception {
+        UserData userData=userDao.findByUserHeadIdAndUserId(userHeadId,createdBy);
+        if(userData==null)
+            throw new Exception("no user found with head id");
+
+        return userData;
+    }
 }

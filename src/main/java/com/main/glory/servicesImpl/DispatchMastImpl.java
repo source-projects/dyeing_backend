@@ -11,18 +11,14 @@ import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFini
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.*;
-import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.UserData;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service("dispatchMastImpl")
@@ -65,34 +61,6 @@ public class DispatchMastImpl {
             invoiceNumber+=1;
            //get the invoice and merge with "inv" and then create the invoice for multiple batch
 
-            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList())
-            {
-                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),createDispatch.getBatchId());
-
-                for(BatchData batchData:batchDataList)
-                {
-
-                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
-                    {
-                        DispatchData dispatchData=new DispatchData(batchData);
-
-                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
-                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
-
-                        saveTheList.add(dispatchData);
-
-                        batchData.setIsBillGenrated(true);
-                        batchDao.save(batchData);
-                    }
-                }
-            }
-
-
-            if(saveTheList.isEmpty())
-                throw new Exception("no data found");
-
-            //save the complete batch with gr list to the dispatch data with same invoice number
-            dispatchDataDao.saveAll(saveTheList);
 
 
             //party detail by stock
@@ -114,12 +82,57 @@ public class DispatchMastImpl {
                     throw new Exception("no user found for id:" + dispatchList.getCreatedBy());
 
 
-                UserData headUserExist = userService.getUserById(dispatchList.getUserHeadId());
+                UserData headUserExist = userService.getUserByUserHeadIdAndId(dispatchList.getUserHeadId(),dispatchList.getCreatedBy());
                 if (headUserExist == null)
-                    throw new Exception("no user found for id:" + dispatchList.getUserHeadId());
+                    throw new Exception("no user found with head");
             }
             else
                 throw new Exception("user head id or createdBy id can't be null");
+
+
+
+
+
+            //check first the data is available or not
+
+            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
+
+                if (batchDataList.isEmpty())
+                    throw new Exception("no batch data found");
+            }
+
+
+            //iterate and change the status
+            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
+
+                if (batchDataList.isEmpty())
+                    throw new Exception("no batch data found");
+
+                for(BatchData batchData:batchDataList)
+                {
+
+                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
+                    {
+                        DispatchData dispatchData=new DispatchData(batchData);
+
+                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
+
+                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
+                        //saveTheList.add(dispatchData);
+                        //save the complete batch with gr list to the dispatch data with same invoice number
+                        dispatchDataDao.save(dispatchData);
+
+                        batchData.setIsBillGenrated(true);
+                        batchDao.save(batchData);
+                    }
+                }
+            }
+
+
+
+
 
 
             //increament the invoice number to dispatch mast
@@ -138,50 +151,6 @@ public class DispatchMastImpl {
         }
         else
         {
-            //if there is not sequence then  create it
-            DispatchMast createDipatch=new DispatchMast();
-            createDipatch.setPostfix(0l);
-            createDipatch.setPrefix("inv");
-
-            //System.out.println(createDipatch.getPostfix()+":"+createDipatch.getPrefix());
-            dispatchMastDao.save(createDipatch);
-
-
-
-            Long invoiceNumber = dispatchMastDao.getInvoiceNumber("inv");
-
-            //do the same above thing if the invoice data is emty
-            invoiceNumber+=1;
-            //get the invoice and merge with "inv" and then create the invoice for multiple batch
-
-            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList())
-            {
-                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),createDispatch.getBatchId());
-
-                for(BatchData batchData:batchDataList)
-                {
-
-                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
-                    {
-                        DispatchData dispatchData=new DispatchData(batchData);
-
-                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
-
-                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
-                        saveTheList.add(dispatchData);
-                        batchData.setIsBillGenrated(true);
-                        batchDao.save(batchData);
-                    }
-                }
-            }
-
-
-
-            if(saveTheList.isEmpty())
-                throw new Exception("no data found");
-            //save the complete batch with gr list to the dispatch data with same invoice number
-            dispatchDataDao.saveAll(saveTheList);
-
             //party detail by stock
 
             StockMast stockMast=stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).getStockId());
@@ -199,9 +168,64 @@ public class DispatchMastImpl {
                 throw new Exception("no user found for id:"+dispatchList.getCreatedBy());
 
 
-            UserData headUserExist=userService.getUserById(dispatchList.getUserHeadId());
-            if(headUserExist==null)
-                throw new Exception("no user found for id:"+dispatchList.getUserHeadId());
+            UserData headUserExist = userService.getUserByUserHeadIdAndId(dispatchList.getUserHeadId(),dispatchList.getCreatedBy());
+            if (headUserExist == null)
+                throw new Exception("no user found with head");
+
+
+            //if there is not sequence then  create it
+            DispatchMast createDipatch=new DispatchMast();
+            createDipatch.setPostfix(0l);
+            createDipatch.setPrefix("inv");
+
+            //System.out.println(createDipatch.getPostfix()+":"+createDipatch.getPrefix());
+            dispatchMastDao.save(createDipatch);
+
+
+
+            Long invoiceNumber = dispatchMastDao.getInvoiceNumber("inv");
+
+            //do the same above thing if the invoice data is emty
+            invoiceNumber+=1;
+            //get the invoice and merge with "inv" and then create the invoice for multiple batch
+
+            //check first the data is available or not
+
+            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
+
+                if (batchDataList.isEmpty())
+                    throw new Exception("no batch data found");
+            }
+
+
+                //iterate and change the status
+            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
+                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
+
+                if (batchDataList.isEmpty())
+                    throw new Exception("no batch data found");
+
+                for(BatchData batchData:batchDataList)
+                {
+
+                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
+                    {
+                        DispatchData dispatchData=new DispatchData(batchData);
+
+                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
+
+                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
+                        //saveTheList.add(dispatchData);
+                        //save the complete batch with gr list to the dispatch data with same invoice number
+                        dispatchDataDao.save(dispatchData);
+
+                        batchData.setIsBillGenrated(true);
+                        batchDao.save(batchData);
+                    }
+                }
+            }
+
 
 
 
@@ -523,10 +547,122 @@ public class DispatchMastImpl {
         return true;
     }
 
-    public PartyDataByInvoiceNumber getPartyWithQualityDispatchBy(String invoiceNo) throws Exception {
+    public PartyDataByInvoiceNumber checkInvoiceDataIsAvailable(String invoiceNo) throws Exception {
 
         List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList= new ArrayList<>();
 
+
+        String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
+
+        //quality list
+
+        List<GetBatchByInvoice> batchList = dispatchDataDao.findBatchAndStockByInvoiceWithoutStatus(invoiceExist);
+
+        for(GetBatchByInvoice batch:batchList)
+        {
+            if(batchList.isEmpty())
+                continue;
+
+            Double totalMtr=0.0;
+            Double finishMtr=0.0;
+            Long pcs=0l;
+            Double amt=0.0;
+
+            //System.out.println(batch.getStockId());
+            StockMast stockMast=stockBatchService.getStockById(batch.getStockId());
+            Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
+
+            if(quality.isEmpty())
+                throw new Exception("no quality found");
+
+            QualityBillByInvoiceNumber qualityBillByInvoiceNumber=new QualityBillByInvoiceNumber(quality.get());
+
+            List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
+
+            for(DispatchData invoiceBatch:dispatchDataList)
+            {
+
+                Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
+                totalMtr+=batchData.get().getMtr();
+                finishMtr+=batchData.get().getFinishMtr();
+                pcs++;
+
+            }
+
+            //Count the total amt based on quality rate and total finish mtr
+            if(quality.get().getRate()!=null && finishMtr>0.0)
+                amt=quality.get().getRate()*finishMtr;
+
+
+            //set the quality with batch data
+            qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
+            qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
+            qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
+            qualityBillByInvoiceNumber.setPcs(pcs);
+            qualityBillByInvoiceNumber.setAmt(amt);
+
+            qualityBillByInvoiceNumber.setPChalNo(stockMast.getChlNo());
+            qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
+        }
+
+
+
+        //for batch list
+
+
+        List<GetBatchByInvoice> batchList2 = dispatchDataDao.findBatchAndStockByInvoiceWithoutStatus(invoiceExist);
+
+        List<BatchWithGr> batchWithGrList =new ArrayList<>();
+        for(GetBatchByInvoice batch:batchList2)
+        {
+
+            BatchWithGr batchWithGr=new BatchWithGr(batch);
+            List<BatchData> batchDataList=new ArrayList<>();
+
+
+            //batches data
+
+            List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
+
+            for(DispatchData invoiceBatch:dispatchDataList)
+            {
+
+                Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
+                batchDataList.add(batchData.get());
+            }
+            batchWithGr.setBatchDataList(batchDataList);
+            batchWithGrList.add(batchWithGr);
+
+
+        }
+
+
+
+
+
+
+        //for party data
+        if(!batchList.isEmpty())
+        {
+            StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
+            Optional<Party> party=partyDao.findById(stockMast.getPartyId());
+
+            PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party.get(),qualityBillByInvoiceNumberList,batchWithGrList);
+
+
+            if(partyDataByInvoiceNumber==null)
+                throw new Exception("no data found");
+            return partyDataByInvoiceNumber;
+        }
+
+
+        return null;
+
+
+    }
+    public PartyDataByInvoiceNumber getPartyWithQualityDispatchBy(String invoiceNo) throws Exception {
+
+        List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList= new ArrayList<>();
 
 
         String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
@@ -537,8 +673,11 @@ public class DispatchMastImpl {
         //quality list
 
         List<GetBatchByInvoice> batchList = dispatchDataDao.findBatchAndStockByInvoiceWithoutStatus(invoiceExist);
+
         for(GetBatchByInvoice batch:batchList)
         {
+            if(batchList.isEmpty())
+                continue;
 
             Double totalMtr=0.0;
             Double finishMtr=0.0;

@@ -8,7 +8,6 @@ import com.main.glory.Dao.paymentTerm.PaymentMastDao;
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
-import com.main.glory.model.dispatch.request.PartyWithBatchByInvoice;
 import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.AdvancePayment;
@@ -92,9 +91,12 @@ public class PaymentTermImpl {
 
         for(DispatchMast dispatchMast:dispatchMastList)
         {
+
             Double amt=0.0;
 
-            PartyDataByInvoiceNumber data = dispatchMastService.getPartyWithQualityDispatchBy(dispatchMast.getPrefix()+dispatchMast.getPostfix());
+            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPrefix()+dispatchMast.getPostfix());
+            if(data==null)
+                continue;
             for(QualityBillByInvoiceNumber p:data.getQualityList())
             {
                 amt+=p.getAmt();
