@@ -3,6 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 
+import com.main.glory.model.PaymentMast;
 import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
@@ -86,6 +87,26 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
             if(!list.isEmpty())
+                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //get the payment detail by paymentBunchId
+    @GetMapping(value="/paymentTerm/getPaymentDetailById/{paymentBunchId}")
+    public GeneralResponse<PaymentMast> getPaymentDetailById(@PathVariable(name = "paymentBunchId") Long paymentBunchId)
+    {
+        try {
+            if(paymentBunchId==null)
+                throw new Exception("id can't be null");
+
+            PaymentMast list = paymentTermService.getPaymentDetailById(paymentBunchId);
+            if(list!=null)
                 return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
         }
