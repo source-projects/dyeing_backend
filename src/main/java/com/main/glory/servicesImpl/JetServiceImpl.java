@@ -3,10 +3,14 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.Jet.JetDataDao;
 import com.main.glory.Dao.Jet.JetMastDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
+import com.main.glory.Dao.color.ColorDataDao;
+import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.BatchToPartyAndQuality;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.color.ColorBox;
+import com.main.glory.model.color.ColorData;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
@@ -15,6 +19,10 @@ import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.jet.responce.GetStatus;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.qualityProcess.Chemical;
+import com.main.glory.model.qualityProcess.QualityProcessData;
+import com.main.glory.model.qualityProcess.QualityProcessMast;
+import com.main.glory.model.shade.ShadeMast;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +33,19 @@ import java.util.*;
 public class JetServiceImpl {
 
     @Autowired
+    QualityProcessImpl qualityProcessServiceImp;
+
+    @Autowired
     JetMastDao jetMastDao;
+
+    @Autowired
+    ColorServiceImpl colorService;
+
+    @Autowired
+    ColorDataDao colorDataDao;
+
+    @Autowired
+    ChemicalDao chemicalDao;
 
     @Autowired
     JetDataDao jetDataDao;
@@ -35,6 +55,9 @@ public class JetServiceImpl {
 
     @Autowired
     ProductionPlanImpl productionPlanService;
+
+    @Autowired
+    ShadeServiceImpl shadeService;
 
     @Autowired
     BatchDao batchDao;
@@ -52,6 +75,134 @@ public class JetServiceImpl {
     }
 
     public void saveJetData( List<AddJetData> jetDataList) throws Exception{
+
+        /*
+
+        update the color stock as well as per the process which is mention while adding,
+
+        the shade
+
+         */
+
+        //get the shade detail
+        //because at a time only one production going to be added in to the jet
+
+        Long productionId = jetDataList.get(0).getProductionId();
+
+        //check the production is available or not
+
+        ProductionPlan productionPlanExits=productionPlanService.getProductionData(productionId);
+        if(productionPlanExits.getStatus())
+            throw new Exception("production is already added into jet");
+
+        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
+
+        if(shadeMast.isEmpty())
+        {
+            throw new Exception("no shade found with id:"+productionPlanExits.getShadeId());
+        }
+
+        //find the process
+        QualityProcessMast qualityProcessMast = qualityProcessServiceImp.findById(shadeMast.get().getProcessId());
+
+        //Quality process data
+        List<QualityProcessData> chemicalDoseTypeList = qualityProcessServiceImp.getQualityProcessDataDoseTypeChemical(qualityProcessMast.getId());
+
+        //quality process chemical data
+        List<Chemical> chemicalList =new ArrayList<>();
+
+        for(QualityProcessData q:chemicalDoseTypeList){
+            for(Chemical c:q.getDosingChemical())
+            {
+                chemicalList.add(c);
+            }
+        }
+
+
+        //which is issued and not finished for the process
+        List<ColorBox> listOfColorItem = new ArrayList<>();
+
+
+        //get the color box by item id and qualitys process item id
+        for(QualityProcessData qualityProcessData:chemicalDoseTypeList)
+        {
+            List<Chemical> chemicalList2 = chemicalDao.findByControlId(qualityProcessData.getId());
+            for(Chemical c :chemicalList2)
+            {
+                List<ColorData> colorDataList=colorService.getColorByItemId(c.getItemId());
+                for(ColorData colorData:colorDataList)
+                {
+                    List<ColorBox> colorBox = colorService.getIssuedColorBoxByColorId(colorData.getId());
+
+                    for(ColorBox cb :colorBox) {
+                        listOfColorItem.add(cb);
+                    }
+                }
+
+            }
+        }
+
+
+
+        if(listOfColorItem.isEmpty())
+            throw new Exception("issue new color box");
+
+        //get the batch wt
+        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
+        Double totalWt=0.0;
+
+        for(BatchData b:batchData)
+        {
+            if(b.getWt()!=null)
+            totalWt+=b.getWt();
+        }
+
+
+
+
+        //calculate the concentration of batch
+        Boolean flag=false;
+       for(Chemical c :chemicalList)
+       {
+           Double data = (Long.parseLong(c.getConcentration())*totalWt)/Long.parseLong(c.getLrOrFabricWt());
+           for(ColorBox colorBox:listOfColorItem)
+           {
+                if(colorBox.getQuantityLeft()>=data)
+                {
+                    flag=true;
+
+                    colorBox.setQuantityLeft(colorBox.getQuantityLeft()-data);
+                    if(colorBox.getQuantityLeft()==0)
+                        colorBox.setFinished(true);
+
+                }
+           }
+
+       }
+       if(flag==false)
+           throw new Exception("please issue big color box");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //save to jet data
         Double availableJetCapacity=0.0;
 
         Double availableBatchInJetCapacity=0.0;

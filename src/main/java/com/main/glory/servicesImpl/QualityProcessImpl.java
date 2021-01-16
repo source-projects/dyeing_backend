@@ -5,6 +5,8 @@ import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessDataDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
+import com.main.glory.model.color.ColorBox;
+import com.main.glory.model.color.ColorData;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.qualityProcess.Chemical;
@@ -16,13 +18,20 @@ import com.main.glory.model.supplier.SupplierRate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AutoPopulatingList;
 
 import javax.transaction.Transactional;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.CheckedInputStream;
 
 @Service
 public class QualityProcessImpl {
+
+	@Autowired
+	ColorServiceImpl colorService;
 
 	@Autowired
 	QualityProcessMastDao qualityProcessMastDao;
@@ -103,7 +112,7 @@ public class QualityProcessImpl {
 	public QualityProcessMast findById(Long id) throws Exception{
 		Optional<QualityProcessMast> qualityProcessMast = qualityProcessMastDao.findById(id);
 		if(!qualityProcessMast.isPresent()) {
-			throw new Exception("no data found");
+			throw new Exception("no data found for process"+id);
 		}
 
 		List<QualityProcessData> qualityProcessData = qualityProcessDataDao.findByControlId(qualityProcessMast.get().getId());
@@ -162,4 +171,22 @@ public class QualityProcessImpl {
 
 		qualityProcessMastDao.save(qualityProcessMast);
 	}
+
+    public List<QualityProcessData> getQualityProcessDataDoseTypeChemical(Long id) throws Exception {
+
+		Optional<QualityProcessMast> qualityProcessMast=qualityProcessMastDao.findById(id);
+
+		if(qualityProcessMast.isEmpty())
+			throw new Exception("no quality process found for id:"+id);
+
+
+		List<QualityProcessData> chemicalProcessList=qualityProcessDataDao.findByControlIdAndDoseTypeChemical(qualityProcessMast.get().getId(),"chemical");
+
+		if(chemicalProcessList.isEmpty())
+			throw new Exception("no quality data found");
+
+		return chemicalProcessList;
+
+
+    }
 }

@@ -49,7 +49,7 @@ public class PaymentTermImpl {
     public Boolean savePayment(AddPaymentMast paymentMast) throws Exception {
 
         //paymentMastDao.save(paymentMast);
-        if(!paymentMast.getAmtToPay().equals(paymentMast.getAmtPaid()))
+        if(!paymentMast.getAmtToPay().equals(paymentMast.getAmtPaid()+paymentMast.getOtherDiff()+paymentMast.getCdAmt()))
             throw new Exception("please enter right amount");
 
 
@@ -75,6 +75,7 @@ public class PaymentTermImpl {
             {
                 dispatchMast.setPaymentBunchId(paymentMastToSave.getId());
                 dispatchMastDao.save(dispatchMast);
+
             }
         }
 

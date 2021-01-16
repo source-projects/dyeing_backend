@@ -26,4 +26,10 @@ public class ColorBox {
 
 	@Column(nullable = false)
 	Long quantity;
+	Date createdDate;
+
+	@PrePersist protected void onCreate()
+	{
+		this.createdDate=new Date(System.currentTimeMillis());
+	}
 }
