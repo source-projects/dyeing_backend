@@ -67,7 +67,7 @@ public class ProductionPlanImpl {
     }
 
     public ProductionPlan getProductionData(Long id) throws Exception{
-        Optional<ProductionPlan> productionPlan = productionPlanDao.findById(id);
+        Optional<ProductionPlan> productionPlan = productionPlanDao.getByProductionId(id);
 
         if(!productionPlan.isPresent())
             throw new Exception("data not found for production:");

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
 						temp.setIssued(false);
 						temp.setFinished(false);
 						temp.setQuantity(e.getQuantityPerBox());
+						temp.setQuantityLeft((double)e.getQuantityPerBox());
 						colorBoxes.add(temp);
 					}
 				});
@@ -180,8 +182,37 @@ public class ColorServiceImpl implements ColorServicesInterface {
 		if(colorBox.isEmpty()){
 			throw new Exception("No such box found");
 		}
+
+
+		if(colorBox.get().getIssued()==true)
+			throw new Exception("Box issued already at:"+colorBox.get().getIssuedDate());
+
 		ColorBox colorBox1 = colorBox.get();
 		colorBox1.setIssued(true);
+		colorBox1.setIssuedDate(new Date(System.currentTimeMillis()));
 		colorBoxDao.save(colorBox1);
+	}
+
+    public List<ColorData> getColorByItemId(Long itemId) throws Exception {
+		List<ColorData> list= colorDataDao.findByItemId(itemId);
+		if(list.isEmpty())
+			throw new Exception("no color data found for item id:"+itemId);
+
+		return list;
+
+    }
+
+	public List<ColorBox> getIssuedColorBoxByColorId(Long id) throws Exception {
+		//id is control id
+
+		Optional<ColorData> colorDataExist=colorDataDao.findByColorDataId(id);
+		if(colorDataExist.isEmpty())
+			throw new Exception("no color data found");
+
+		List<ColorBox> listOfColorBoxIssued=colorBoxDao.findAllByControlIdAndIssused(colorDataExist.get().getId());
+
+		if(listOfColorBoxIssued.isEmpty())
+			throw new Exception("may the color box is not available or issued");
+		return listOfColorBoxIssued;
 	}
 }
