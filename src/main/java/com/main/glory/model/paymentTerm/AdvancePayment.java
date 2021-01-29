@@ -27,6 +27,8 @@ public class AdvancePayment {
     Long paymentBunchId;
     String remark;
     Long payTypeId;
+    String bank;
+    Long no;
 
     @PrePersist
     protected void onCreate(){ this.createdDate=new Date(System.currentTimeMillis());}
