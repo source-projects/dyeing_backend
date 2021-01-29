@@ -20,7 +20,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
     @Query("delete from DispatchMast d where d.postfix=:substring")
     void deleteByInvoicePostFix(Long substring);
 
-    @Query("select q from DispatchMast q where q.postfix!=0 AND q.paymentBunchId IS NULL")
+    @Query("select q from DispatchMast q where q.partyId=:partyId AND q.postfix!=0 AND q.paymentBunchId IS NULL")
     List<DispatchMast> getPendingBillByPartyId(Long partyId);
 
     @Query("select d from DispatchMast d where d.postfix=:substring")

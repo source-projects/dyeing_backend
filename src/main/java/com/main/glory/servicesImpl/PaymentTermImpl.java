@@ -75,7 +75,7 @@ public class PaymentTermImpl {
         paymentDataDao.saveAll(paymentDataList);
 
 
-        //change the status of invoice and assign the bunchid to the
+        //change the status of invoice and assign the paymentBunchId to the
         for(PendingInvoice pendingInvoice:paymentMast.getInvoices())
         {
             DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(pendingInvoice.getInvoiceNo().substring(3)));
@@ -172,6 +172,7 @@ public class PaymentTermImpl {
         if(paymentMastExist==null)
             throw new Exception("no data found for bunch id:"+paymentBunchId);
 
+
         return  paymentMastExist;
     }
 
@@ -185,11 +186,18 @@ public class PaymentTermImpl {
         return true;
     }
 
-    public List<PaymentType> getAllPayemntType() throws Exception {
+    public List<PaymentType> getAllPayementType() throws Exception {
         List<PaymentType> paymentTypeList = paymentTypeDao.getAllPaymentType();
         if(paymentTypeList.isEmpty())
             throw new Exception("no data found");
         else
             return paymentTypeList;
+    }
+
+    public List<PaymentMast> getAllPaymentMast(Long partyId) throws Exception {
+        List<PaymentMast> list = paymentMastDao.findByPartyId(partyId);
+        if(list.isEmpty())
+            throw new Exception("no data found");
+        return list;
     }
 }

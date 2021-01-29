@@ -58,7 +58,7 @@ public class PaymentTermController extends ControllerConfig {
     @GetMapping(value="/paymentTerm/getAllPaymentType")
     public GeneralResponse<List<PaymentType>> getAllPaymentType() {
         try {
-            List<PaymentType> flag = paymentTermService.getAllPayemntType();
+            List<PaymentType> flag = paymentTermService.getAllPayementType();
             return new GeneralResponse<>(flag, "Payment Type Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,6 +113,26 @@ public class PaymentTermController extends ControllerConfig {
                 throw new Exception("id can't be null");
 
             List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
+            if(!list.isEmpty())
+                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //get payment mast list by party
+    @GetMapping(value="/paymentTerm/getPaymentBunchListByPartyId/{partyId}")
+    public GeneralResponse<List<PaymentMast>> getPaymentMastByPartyId(@PathVariable(name = "partyId") Long partyId)
+    {
+        try {
+            if(partyId==null)
+                throw new Exception("id can't be null");
+
+            List<PaymentMast> list = paymentTermService.getAllPaymentMast(partyId);
             if(!list.isEmpty())
                 return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
