@@ -25,6 +25,8 @@ public class PaymentData {
     String chequeDate;
     Boolean chequeStatus;
     Long payTypeId;
+    String bank;
+    String remark;
 
 
     @PrePersist
