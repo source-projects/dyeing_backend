@@ -767,6 +767,8 @@ public class DispatchMastImpl {
         if(partyDataByInvoiceNumber==null)
             throw new Exception("no data found");
 
+        partyDataByInvoiceNumber.setInvoiceNuber(invoiceNo);
+
         return partyDataByInvoiceNumber;
 
 

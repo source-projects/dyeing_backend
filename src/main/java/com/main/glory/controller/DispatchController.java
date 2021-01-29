@@ -116,6 +116,7 @@ public class DispatchController extends ControllerConfig {
         try{
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchBy(id);
+
                 return new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else

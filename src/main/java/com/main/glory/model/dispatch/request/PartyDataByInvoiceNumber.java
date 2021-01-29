@@ -17,6 +17,7 @@ public class PartyDataByInvoiceNumber {
     String partyName;
     String address;
     String GST;
+    String invoiceNuber;
     List<QualityBillByInvoiceNumber> qualityList;
     List<BatchWithGr> batchWithGrList;
 
