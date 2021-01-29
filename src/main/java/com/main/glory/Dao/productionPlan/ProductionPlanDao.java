@@ -18,4 +18,7 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select p from ProductionPlan p where p.id=:id")
     Optional<ProductionPlan> getByProductionId(Long id);
+
+    @Query("select p from ProductionPlan p where p.partyId=:partyId AND p.qualityEntryId=:qualityEntryId AND p.status=false")
+    List<ProductionPlan> getProductionByPartyAndQuality(Long partyId, Long qualityEntryId);
 }

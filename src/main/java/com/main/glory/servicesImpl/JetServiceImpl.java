@@ -183,25 +183,6 @@ public class JetServiceImpl {
            throw new Exception("please issue big color box");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //save to jet data
         Double availableJetCapacity=0.0;
 
