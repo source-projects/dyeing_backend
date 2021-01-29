@@ -15,13 +15,13 @@ public class GeneralResponse<T> {
 	private String msg;
 	private Boolean success;
 	private Long timeStamp;
-	private HttpStatus statusCode;
+	private Integer statusCode;
 
 	public GeneralResponse(T data, String msg, Boolean success, Long timeStamp, HttpStatus statusCode) {
 		this.data = data;
 		this.msg = msg;
 		this.success = success;
 		this.timeStamp = timeStamp;
-		this.statusCode = statusCode;
+		this.statusCode = statusCode.value();
 	}
 }

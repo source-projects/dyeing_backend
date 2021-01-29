@@ -38,7 +38,7 @@ public class ProductionPlanController extends ControllerConfig {
     {
         try {
             productionPlanService.updateProductionPlan(productionPlan);
-            return new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {

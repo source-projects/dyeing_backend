@@ -78,7 +78,7 @@ public class JetController extends ControllerConfig {
         try {
 
             jetService.updateJetData(jetDataToUpdate);
-            return new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -99,7 +99,7 @@ public class JetController extends ControllerConfig {
         try {
 
             jetService.updateProductionStatus(jetDataToUpdate);
-            return new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)

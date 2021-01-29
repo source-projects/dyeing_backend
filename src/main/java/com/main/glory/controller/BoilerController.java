@@ -118,9 +118,9 @@ public class BoilerController extends ControllerConfig {
             flag = boilerRecordService.updateRecord(record);
             if(flag==true)
             {
-                return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            return new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
         }
         catch(Exception e)

@@ -292,7 +292,7 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
     @PutMapping("/stockBatch/MergeBatch")
@@ -302,7 +302,7 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
     @PutMapping("/stockBatch/SplitBatch")
@@ -312,7 +312,7 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
 

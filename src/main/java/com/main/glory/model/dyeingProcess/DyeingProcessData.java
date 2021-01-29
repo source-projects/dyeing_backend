@@ -1,6 +1,7 @@
-package com.main.glory.model.jet;
+package com.main.glory.model.dyeingProcess;
 
-import com.main.glory.model.jet.request.AddJet;
+
+import com.main.glory.model.jet.JetData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,31 +9,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Getter
 @Setter
+@Getter
+@NoArgsConstructor
 @Entity
-@Table
-public class JetMast {
+public class DyeingProcessData {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    String name;
-    Double capacity;
-    Double liquerRation;
+    Long controlId;
+    String processType;
+    Double temp;
+    Double holdTime;
+    Long sequence;
 
 
-    
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
-    private List<JetData> jetDataList;
+    private List<DyeingChemicalData> dyeingChemicalData;
 
 
-    public JetMast(AddJet jetMast) {
-        this.capacity=jetMast.getCapacity();
-        this.name=jetMast.getName();
-    }
+
 }
