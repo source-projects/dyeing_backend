@@ -90,7 +90,7 @@ public class DispatchController extends ControllerConfig {
             if(flag==true)
             return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             e.printStackTrace();
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
@@ -104,7 +104,7 @@ public class DispatchController extends ControllerConfig {
             if(flag==true)
                 return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             e.printStackTrace();
             return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

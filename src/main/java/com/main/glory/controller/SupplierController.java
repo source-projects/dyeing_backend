@@ -169,7 +169,6 @@ public class SupplierController extends ControllerConfig {
     @PutMapping("/supplier")
     public GeneralResponse<Boolean> updateSupplier(@RequestBody UpdateSupplierRequest updateSupplierRequest){
         try{
-            System.out.println("___________-"+updateSupplierRequest.getSupplierName());
             Boolean flag = supplierService.updateSupplier(updateSupplierRequest);
             if (flag) {
                 return new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);

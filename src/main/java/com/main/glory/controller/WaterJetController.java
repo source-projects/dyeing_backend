@@ -58,7 +58,7 @@ public class WaterJetController extends ControllerConfig {
         }
 
     }
-    @PutMapping("/waterJet/delete/{id}")
+    @PutMapping("/waterJet/update/{id}")
     public GeneralResponse<Boolean> updateWaterJet(@RequestBody WaterJet waterJet) throws Exception{
 
         try{
@@ -67,7 +67,7 @@ public class WaterJetController extends ControllerConfig {
         }
         catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
 
     }

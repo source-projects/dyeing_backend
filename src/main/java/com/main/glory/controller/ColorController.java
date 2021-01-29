@@ -91,7 +91,7 @@ public class ColorController extends ControllerConfig {
 			colorService.updateColor(colorMast);
 			return new GeneralResponse<>(true, "color updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
 		}
 	}

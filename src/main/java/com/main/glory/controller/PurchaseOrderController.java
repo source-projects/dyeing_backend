@@ -52,10 +52,10 @@ public class PurchaseOrderController extends ControllerConfig {
     public GeneralResponse<Boolean> updatePurchaseOrder(@RequestBody PurchaseOrder purchaseOrder){
         try{
             purchaseOrderService.updatePurchaseOrder(purchaseOrder);
-            return new GeneralResponse<>(true, "Order updated successfully", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            return new GeneralResponse<>(true, "Order updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
 
