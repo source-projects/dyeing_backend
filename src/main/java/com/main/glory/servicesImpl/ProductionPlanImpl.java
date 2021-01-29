@@ -118,6 +118,13 @@ public class ProductionPlanImpl {
 
     }
 
+    //list of production who are not added yet into the jet
+    public List<ProductionPlan> getAllProductionListByPartyAndQuality(Long partyId, Long qualityEntryId) {
+        List<ProductionPlan> list = productionPlanDao.getProductionByPartyAndQuality(partyId,qualityEntryId);
+        return list;
+
+    }
+
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 
