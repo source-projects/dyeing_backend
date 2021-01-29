@@ -5,6 +5,7 @@ import com.main.glory.model.GeneralResponse;
 
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.paymentTerm.AdvancePayment;
+import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
 import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
@@ -40,8 +41,34 @@ public class PaymentTermController extends ControllerConfig {
         return result;
     }
 
+    //add payment type api
+    @PostMapping(value="/paymentTerm/addPaymentType/{type}")
+    public GeneralResponse<Boolean> savePaymentType(@PathVariable(name = "type") String type) {
+        GeneralResponse<Boolean> result;
+        try {
+            Boolean flag = paymentTermService.savePaymentType(type);
+            result = new GeneralResponse<Boolean>(true, "Payment Type Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    //add payment type api
+    @GetMapping(value="/paymentTerm/getAllPaymentType")
+    public GeneralResponse<List<PaymentType>> getAllPaymentType() {
+        try {
+            List<PaymentType> flag = paymentTermService.getAllPayemntType();
+            return new GeneralResponse<>(flag, "Payment Type Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     @PostMapping(value="/paymentTerm/addAdvancePayment")
-    public GeneralResponse<Boolean> addAdvancePayment(@RequestBody AdvancePayment paymentMast) {
+    public GeneralResponse<Boolean> addAdvancePayment(@RequestBody List<AdvancePayment> paymentMast) {
         try {
             Boolean flag = paymentTermService.addAdvancePayment(paymentMast);
             if (flag) {

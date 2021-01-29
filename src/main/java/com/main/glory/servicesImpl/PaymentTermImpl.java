@@ -5,6 +5,7 @@ import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.Dao.paymentTerm.AdvancePaymentDao;
 import com.main.glory.Dao.paymentTerm.PaymentDataDao;
 import com.main.glory.Dao.paymentTerm.PaymentMastDao;
+import com.main.glory.Dao.paymentTerm.PaymentTypeDao;
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
@@ -12,6 +13,7 @@ import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.paymentTerm.PaymentData;
+import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
 import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
@@ -34,6 +36,8 @@ public class PaymentTermImpl {
     @Autowired
     DispatchMastDao dispatchMastDao;
 
+    @Autowired
+    PaymentTypeDao paymentTypeDao;
     @Autowired
     DispatchMastImpl dispatchMastService;
 
@@ -60,6 +64,10 @@ public class PaymentTermImpl {
         List<PaymentData> paymentDataList=new ArrayList<>();
         for(PaymentData paymentData:paymentMast.getPaymentData())
         {
+            PaymentType typeExist=paymentTypeDao.getPaymentTypeById(paymentData.getPayTypeId());
+            if(typeExist==null)
+                throw new Exception("no payment type found");
+
             paymentData.setControlId(paymentMastToSave.getId());
             paymentDataList.add(paymentData);
         }
@@ -115,14 +123,18 @@ public class PaymentTermImpl {
         return list;
     }
 
-    public Boolean addAdvancePayment(AdvancePayment paymentMast) throws Exception {
+    public Boolean addAdvancePayment(List<AdvancePayment> list) throws Exception {
 
+        for (AdvancePayment paymentMast : list)
+        {
         Party partyExist = partyServiceImp.getPartyDetailById(paymentMast.getPartyId());
         if(partyExist==null)
             throw new Exception("no data found for party:"+paymentMast.getPartyId());
 
 
         advancePaymentDao.save(paymentMast);
+
+        }
         return true;
     }
 
@@ -143,7 +155,10 @@ public class PaymentTermImpl {
 
         for(AdvancePayment advancePayment:advancePaymentList)
         {
-            list.add(new GetAdvancePayment(advancePayment,partyExist));
+            PaymentType paymentType = paymentTypeDao.getPaymentTypeById(advancePayment.getPayTypeId());
+            if(paymentType==null)
+                continue;
+            list.add(new GetAdvancePayment(advancePayment,partyExist,paymentType));
         }
 
 
@@ -158,5 +173,23 @@ public class PaymentTermImpl {
             throw new Exception("no data found for bunch id:"+paymentBunchId);
 
         return  paymentMastExist;
+    }
+
+    public Boolean savePaymentType(String type) throws Exception {
+
+        PaymentType paymentTypeExist=paymentTypeDao.getPaymentTypeByName(type);
+        if(paymentTypeExist!=null)
+            throw new Exception("payment type is already exist");
+        PaymentType paymentType=new PaymentType(type);
+        paymentTypeDao.save(paymentType);
+        return true;
+    }
+
+    public List<PaymentType> getAllPayemntType() throws Exception {
+        List<PaymentType> paymentTypeList = paymentTypeDao.getAllPaymentType();
+        if(paymentTypeList.isEmpty())
+            throw new Exception("no data found");
+        else
+            return paymentTypeList;
     }
 }
