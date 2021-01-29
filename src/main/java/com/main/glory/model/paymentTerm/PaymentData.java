@@ -21,10 +21,12 @@ public class PaymentData {
     Long controlId;
     Double payAmt;
     Date createdDate;
-    Long chequeNo;
-    String chequeDate;
-    Boolean chequeStatus;
+    Long no;
+    String paymentDate;
+    Boolean status;
     Long payTypeId;
+    String bank;
+    String remark;
 
 
     @PrePersist
