@@ -19,12 +19,13 @@ public class PaymentData {
     @Column(updatable = false, nullable = false)
     Long id;
     Long controlId;
-    String payType;
     Double payAmt;
     Date createdDate;
     Long chequeNo;
     String chequeDate;
     Boolean chequeStatus;
+    Long payTypeId;
+
 
     @PrePersist
     protected void onCreate(){  this.createdDate=new Date(System.currentTimeMillis());  }
