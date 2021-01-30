@@ -1,4 +1,4 @@
-package com.main.glory.model.productionPlan;
+package com.main.glory.model.productionPlan.request;
 
 import com.main.glory.model.productionPlan.ProductionPlan;
 import lombok.AllArgsConstructor;

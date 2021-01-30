@@ -215,4 +215,9 @@ public class ColorServiceImpl implements ColorServicesInterface {
 			throw new Exception("may the color box is not available or issued");
 		return listOfColorBoxIssued;
 	}
+
+    public List<ColorBox> getColorBoxListByItemId(Long itemId) {
+		List<ColorBox> list = colorDataDao.findAllIssuedBoxByItemId(itemId);
+		return list;
+    }
 }

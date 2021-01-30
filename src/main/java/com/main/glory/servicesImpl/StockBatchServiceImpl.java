@@ -43,6 +43,16 @@ public class StockBatchServiceImpl {
 
     }
 
+    public Double getWtByControlAndBatchId(Long controlId,String batchId) throws Exception {
+        //get total wt of batch who's production plan is done
+        Double data = batchDao.getTotalWtByControlIdAndBatchId(controlId,batchId);
+        if(data==null)
+            throw new Exception("no batch wt found");
+
+        return data;
+
+    }
+
 
     @Transactional
     public Boolean saveStockBatch(StockMast stockMast) throws Exception {
@@ -239,7 +249,7 @@ public class StockBatchServiceImpl {
         //storing all the data of batchName to object
         for(int x=0;x<controlId.size();x++)
         {
-            if(quality.get()!=null&&party.get()!=null)
+            if(quality.get()!=null&&party.get()!=null )
             {
                 if(!quality.isPresent() && !party.isPresent())
                     continue;
@@ -321,6 +331,7 @@ public class StockBatchServiceImpl {
                     controlId.add(batchData.getControlId());
                     productionPlanned.add(batchData.getIsProductionPlanned());
                 }
+
 
             }
 
@@ -430,9 +441,7 @@ public class StockBatchServiceImpl {
 
         for(GetBatchWithControlId batch : batchData)
         {
-
             Optional<StockMast> stockMast=stockMastDao.findById(batch.getControlId());
-
             if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
             {
                 Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
@@ -442,15 +451,7 @@ public class StockBatchServiceImpl {
                 BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
 
                 getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
-
-
-
             }
-
-
-
-
-
         }
         if(getAllBatchWithPartyAndQualities.isEmpty())
             throw new Exception("no data found");
@@ -472,7 +473,6 @@ public class StockBatchServiceImpl {
 
         if(!quality.isPresent())
             throw new Exception("Quality not found for batchId:"+batchId);
-
 
         BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
         batchToPartyAndQuality.setPartyId(party.get().getId());

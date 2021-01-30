@@ -60,7 +60,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 		//check the dyeing process for the shade is available or not
 
-		//DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
 		ShadeMast shadeData =  new ShadeMast(shadeMast);
 
@@ -105,7 +105,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			return false;
 		else{
 			try{
-				System.out.println(shadeMast);
+				//System.out.println(shadeMast);
 				shadeMastDao.save(shadeMast);
 				//shadeDataDao.saveAll(shadeMast.getShadeDataList());
 			}catch(Exception e){

@@ -20,7 +20,7 @@ public class DyeingProcessController extends ControllerConfig{
     @Autowired
     DyeingProcessServiceImpl dyeingProcessService;
 
-    @PostMapping("/dyeingProcess/")
+    @PostMapping("/dyeingProcess")
     public GeneralResponse<Boolean> addDyeingProcess(@RequestBody DyeingProcessMast data){
         try {
             if(data == null){

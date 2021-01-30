@@ -1,5 +1,6 @@
 package com.main.glory.Dao.color;
 
+import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +16,8 @@ public interface ColorDataDao extends JpaRepository<ColorData, Long> {
 
     @Query("select c from ColorData c where c.id=:id")
     Optional<ColorData> findByColorDataId(Long id);
+
+    @Query("select cb from ColorBox cb where cb.controlId IN (select c.id from ColorData c where c.itemId=:itemId) AND cb.issued=true AND cb.finished = false AND cb.quantityLeft > 0 ")
+    List<ColorBox> findAllIssuedBoxByItemId(Long itemId);
 }
 
