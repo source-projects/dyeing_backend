@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service("jetServiceImpl")
+@Transactional
 public class JetServiceImpl {
 
     @Autowired
@@ -100,14 +101,33 @@ public class JetServiceImpl {
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
 
+        //check the capacity first
+        for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+        {
+            Double data=0.0;
+            colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
+            List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
+
+            if(colorBoxList.isEmpty())
+                throw new Exception("please issue the box");
+
+            for(ColorBox c:colorBoxList)
+            {
+                data += c.getQuantityLeft();
+
+            }
+            if(colorAmtToDeduct > data)
+                throw new Exception("issue the box first");
+
+
+        }
+
         //deduct the color amt as per the shade concentration
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
             colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
             List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
 
-            if(colorBoxList.isEmpty())
-                throw new Exception("please issue the box");
             for(ColorBox colorBox:colorBoxList)
             {
                 if((colorAmtToDeduct - colorBox.getQuantityLeft()) > 0 )
@@ -123,12 +143,10 @@ public class JetServiceImpl {
                 }
 
             }
-            colorAmtToDeduct=0.0;
 
 
         }
-        if(colorAmtToDeduct!=0.0)
-            throw new Exception("please issue the box");
+
 
 
         //save to jet data
