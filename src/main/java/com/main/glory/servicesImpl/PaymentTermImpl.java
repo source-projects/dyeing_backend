@@ -53,7 +53,7 @@ public class PaymentTermImpl {
     public Boolean savePayment(AddPaymentMast paymentMast) throws Exception {
 
         //paymentMastDao.save(paymentMast);
-        if(!paymentMast.getAmtToPay().equals(paymentMast.getAmtPaid()+paymentMast.getOtherDiff()+paymentMast.getCdAmt()))
+        if(!paymentMast.getAmtToPay().equals(paymentMast.getAmtPaid()))
             throw new Exception("please enter right amount");
 
 
