@@ -1,6 +1,6 @@
 package com.main.glory.Dao.productionPlan;
 
-import com.main.glory.model.productionPlan.GetAllProductionWithShadeData;
+import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
-    @Query("select new com.main.glory.model.productionPlan.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p where p.status=false")
+    @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p where p.status=false")
     Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone();
 
-    @Query("select new com.main.glory.model.productionPlan.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p ")
+    @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p ")
     Optional<List<GetAllProductionWithShadeData>> getAllProduction();
 
     @Query("select p from ProductionPlan p where p.id=:id")

@@ -5,16 +5,15 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.jet.request.AddJetData;
-import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.ChangeStatus;
 import com.main.glory.model.jet.request.UpdateJetData;
 import com.main.glory.model.jet.responce.GetAllJetMast;
 import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.jet.responce.GetStatus;
-import com.main.glory.model.productionPlan.GetAllProductionWithShadeData;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +45,7 @@ public class JetController extends ControllerConfig {
         }
     }
 
+    @Transactional
     @PostMapping(value="/jet/addJetData")
     public GeneralResponse<Boolean> saveJetData(@RequestBody List<AddJetData> jetData) throws Exception {
         if(jetData==null)

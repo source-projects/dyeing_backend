@@ -56,28 +56,20 @@ public class BatchImpl {
 
         for(BatchData batchData:batchDataList)
         {
+
             //if it extra batch then create it
             if(batchData.getId()==0)
-            {
                 batchData.setIsExtra(true);
-                batchData.setIsFinishMtrSave(true);
-                batchData.setIsProductionPlanned(true);
-                batchDao.save(batchData);
-            }
             else
             {
                 //if it is already available then replace the flag from the hash map
                 if(batchData.getIsExtra()==true)
-                {
                     extraBatch.replace(batchData.getId(),true);
-                }
                 //save the extra batch
-                batchData.setIsFinishMtrSave(true);
-                batchData.setIsProductionPlanned(true);
-                batchDao.save(batchData);
             }
-
-
+            batchData.setIsFinishMtrSave(true);
+            batchData.setIsProductionPlanned(true);
+            batchDao.save(batchData);
         }
 
         //##Iterate the loop and delete the record who flag is false in extra batch

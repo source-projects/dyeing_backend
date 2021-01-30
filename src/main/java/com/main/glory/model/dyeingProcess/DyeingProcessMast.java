@@ -1,6 +1,7 @@
 package com.main.glory.model.dyeingProcess;
 
 import com.main.glory.model.jet.JetData;
+import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,11 @@ public class DyeingProcessMast {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingProcessData> dyeingProcessData;
+
+    @ApiModelProperty(hidden = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "processId", referencedColumnName = "id")
+    private List<ShadeMast> shadeMastList;
 
     @PrePersist
     void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
