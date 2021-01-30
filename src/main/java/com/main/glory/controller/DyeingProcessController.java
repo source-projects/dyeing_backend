@@ -35,7 +35,7 @@ public class DyeingProcessController extends ControllerConfig{
         }
     }
 
-    @PutMapping("/dyeingProcess/update")
+    @PutMapping("/dyeingProcess")
     public GeneralResponse<Boolean> updateDyeingProcess(@RequestBody DyeingProcessMast data){
         try {
             if(data == null){
@@ -81,7 +81,7 @@ public class DyeingProcessController extends ControllerConfig{
         return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @DeleteMapping("/dyeingProcess/deleteProcessById/{id}")
+    @DeleteMapping("/dyeingProcess/{id}")
     public GeneralResponse<Boolean> deleteProcessById(@PathVariable(name = "id") Long id){
         try{
             if(id==null)
