@@ -68,4 +68,31 @@ public class DyeingProcessServiceImpl {
         List<DyeingChemicalData> list = dyeingChemicalDataDao.getChemicalListByControlId(id);
         return list;
     }
+
+    public void updateDyeingProcess(DyeingProcessMast data) throws Exception {
+
+        DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
+
+        if(dyeingProcessMastExist==null)
+        {
+            throw new Exception("no proces found for id:"+data.getId());
+        }
+        dyeingProcessMastDao.save(data);
+
+    }
+
+    public Boolean deleteByProcessId(Long id) throws Exception {
+        Boolean flag=false;
+        DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(id);
+
+        if(dyeingProcessMastExist!=null)
+        {
+            flag=true;
+            dyeingProcessMastDao.deleteByProcessId(id);
+        }
+        else
+            flag = false;
+        return flag;
+
+    }
 }

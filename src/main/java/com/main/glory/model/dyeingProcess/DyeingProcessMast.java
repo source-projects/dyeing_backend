@@ -1,5 +1,6 @@
 package com.main.glory.model.dyeingProcess;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,6 +35,7 @@ public class DyeingProcessMast {
     private List<DyeingProcessData> dyeingProcessData;
 
     @ApiModelProperty(hidden = true)
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "processId", referencedColumnName = "id")
     private List<ShadeMast> shadeMastList;
