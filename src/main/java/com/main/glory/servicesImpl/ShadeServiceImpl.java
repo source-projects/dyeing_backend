@@ -4,6 +4,7 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.ShadeDataDao;
 import com.main.glory.Dao.ShadeMastDao;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -40,6 +41,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	@Autowired
 	PartyDao partyDao;
 
+	@Autowired
+	DyeingProcessServiceImpl dyeingProcessService;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -54,9 +57,13 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		{
 			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
 		}
-		System.out.println("Shade Mast;"+shadeMast.toString());
+
+		//check the dyeing process for the shade is available or not
+
+		//DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+
 		ShadeMast shadeData =  new ShadeMast(shadeMast);
-		System.out.println("\nShadeData"+shadeData.toString());
+
 		shadeData.setQualityEntryId(quality.get().getId());
 
 		Date dt = new Date(System.currentTimeMillis());
