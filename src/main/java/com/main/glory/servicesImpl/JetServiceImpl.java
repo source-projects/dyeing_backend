@@ -6,6 +6,7 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
@@ -15,12 +16,13 @@ import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
-import com.main.glory.model.jet.responce.GetAllJetMast;
-import com.main.glory.model.jet.responce.GetJetData;
-import com.main.glory.model.jet.responce.GetStatus;
+import com.main.glory.model.jet.responce.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,13 @@ import java.util.*;
 public class JetServiceImpl {
 
     @Autowired
+    QualityServiceImp qualityServiceImp;
+
+    @Autowired
     QualityProcessImpl qualityProcessServiceImp;
+
+    @Autowired
+    SupplierServiceImpl supplierService;
 
     @Autowired
     JetMastDao jetMastDao;
@@ -583,6 +591,82 @@ public class JetServiceImpl {
 
 
 
+
+    }
+
+    public GetJetSlip getJetSlipData(Long jetId, Long productionId) throws Exception {
+        GetJetSlip data = new GetJetSlip();
+
+        ProductionPlan productionPlanExist = productionPlanService.getProductionData(productionId);
+        Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetId);
+
+        if(jetMastExist.isEmpty())
+            throw new Exception("no jet found");
+
+        Optional<JetData> jetExistWithProduction = jetDataDao.findByControlIdAndProductionId(jetId,productionId);
+
+        if(jetExistWithProduction.isEmpty())
+            throw new Exception("no production found with jet");
+
+        Double wt = batchDao.getTotalWtByControlIdAndBatchId(productionPlanExist.getStockId(),productionPlanExist.getBatchId());
+
+        //get the party and quality and shade data
+        StockMast stockMast = stockBatchService.getStockById(productionPlanExist.getStockId());
+        GetQualityResponse quality =qualityServiceImp.getQualityByID(stockMast.getQualityId());
+        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExist.getShadeId());
+        if (shadeMast.isEmpty())
+            throw new Exception("no shade data found ");
+
+        //basic data
+        data.setColorTone(shadeMast.get().getColorTone());
+        data.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+        data.setQualityId(quality.getQualityId());
+        data.setQualityEntryId(stockMast.getQualityId());
+        data.setBatchWt(wt);
+        data.setStockId(productionPlanExist.getStockId());
+        data.setBatchId(productionPlanExist.getBatchId());
+        data.setJetId(jetId);
+        data.setProductionId(productionId);
+
+        //process with item data
+        List<GetJetSlipData> getJetSlipData =new ArrayList<>();
+
+
+        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+        for(DyeingProcessData dyeingProcessData : dyeingProcessMast.getDyeingProcessData())
+        {
+            List<SlipItemList> itemLists = new ArrayList<>();
+            for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
+            {
+                SlipItemList item =new SlipItemList();
+                item.setItemName(dyeingChemicalData.getItemName());
+                String supplier = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
+                item.setSupplierName(supplier);
+                //count the qty by liquerration * processConcentration * batchWt
+
+                //get the jet mast data
+
+                if(jetMastExist.get().getLiquerRation()==null || jetMastExist.get().getLiquerRation().equals(""))
+                    throw new Exception("jet liquer ration can't be null");
+
+                Double qty = jetMastExist.get().getLiquerRation() * dyeingChemicalData.getConcentration() * wt;
+                item.setQty(qty);
+                itemLists.add(item);
+
+            }
+
+            //add to the list
+            getJetSlipData.add(new GetJetSlipData(dyeingProcessData,itemLists));
+
+        }
+        if(getJetSlipData.isEmpty())
+            throw new Exception("no process data found ");
+
+        data.setSlipDataList(getJetSlipData);
+
+
+        return data;
 
     }
 }

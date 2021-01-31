@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("dyeingProcessServiceImpl")
 public class DyeingProcessServiceImpl {
@@ -49,11 +50,11 @@ public class DyeingProcessServiceImpl {
 
     public DyeingProcessMast getDyeingProcessById(Long processId) throws Exception {
 
-        DyeingProcessMast x = dyeingProcessMastDao.getDyeingProcessById(processId);
+        Optional<DyeingProcessMast> x = dyeingProcessMastDao.getDyeingProcessById(processId);
         if(x==null)
             throw new Exception("no process data found");
 
-        return x;
+        return x.get();
     }
 
     public List<DyeingProcessData> getDyeingProcessDataById(Long id) throws Exception {
@@ -71,9 +72,9 @@ public class DyeingProcessServiceImpl {
 
     public void updateDyeingProcess(DyeingProcessMast data) throws Exception {
 
-        DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
+        Optional<DyeingProcessMast> dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
 
-        if(dyeingProcessMastExist==null)
+        if(dyeingProcessMastExist.isEmpty())
         {
             throw new Exception("no proces found for id:"+data.getId());
         }
@@ -83,9 +84,9 @@ public class DyeingProcessServiceImpl {
 
     public Boolean deleteByProcessId(Long id) throws Exception {
         Boolean flag=false;
-        DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(id);
+        Optional<DyeingProcessMast> dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(id);
 
-        if(dyeingProcessMastExist!=null)
+        if(dyeingProcessMastExist.isPresent())
         {
             flag=true;
             dyeingProcessMastDao.deleteByProcessId(id);

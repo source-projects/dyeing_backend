@@ -7,9 +7,7 @@ import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.request.ChangeStatus;
 import com.main.glory.model.jet.request.UpdateJetData;
-import com.main.glory.model.jet.responce.GetAllJetMast;
-import com.main.glory.model.jet.responce.GetJetData;
-import com.main.glory.model.jet.responce.GetStatus;
+import com.main.glory.model.jet.responce.*;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -147,7 +145,26 @@ public class JetController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
-    
+
+    //get the jet slip
+    @GetMapping(value="/jet/getJetSlipData/{jetId}/{productionId}")
+    public GeneralResponse<GetJetSlip> getJetSlipData(@PathVariable(name = "jetId") Long jetId , @PathVariable(name = "productionId") Long productionId)  throws Exception {
+        GeneralResponse<GetJetSlip> result;
+        boolean flag;
+        try {
+            GetJetSlip slipData = jetService.getJetSlipData(jetId,productionId);
+            result = new GeneralResponse<>(slipData, "Jet Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+
     @GetMapping(value="/jet/getJetDataWithInQueueProdution/byJetId/{id}")
     public GeneralResponse<List<GetJetData>> getJetDataWithInQueueProdution(@PathVariable(name = "id") Long id) throws Exception {
         if(id==null)

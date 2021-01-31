@@ -25,4 +25,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
 
 
     Optional<SupplierRate> findByIdAndSupplierId(Long id,Long supplierId);
+
+    @Query("select s.supplierName from Supplier s where s.id = (select r.supplierId from SupplierRate r where r.id=:itemId)")
+    String getSupplierNameByItemId(Long itemId);
 }
