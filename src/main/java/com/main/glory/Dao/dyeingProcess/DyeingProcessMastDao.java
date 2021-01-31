@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @EnableJpaRepositories
 public interface DyeingProcessMastDao extends JpaRepository<DyeingProcessMast,Long> {
@@ -15,7 +16,7 @@ public interface DyeingProcessMastDao extends JpaRepository<DyeingProcessMast,Lo
     List<DyeingProcessMast> getAllProcess();
 
     @Query("select x from DyeingProcessMast x where x.id=:processId")
-    DyeingProcessMast getDyeingProcessById(Long processId);
+    Optional<DyeingProcessMast> getDyeingProcessById(Long processId);
 
 
     @Modifying

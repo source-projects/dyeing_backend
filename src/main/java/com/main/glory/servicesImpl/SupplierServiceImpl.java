@@ -235,4 +235,12 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public Optional<SupplierRate> getItemById(Long itemId) {
         return supplierRateDao.findById(itemId);
     }
+
+    public String getSupplierNameByItemId(Long itemId) throws Exception {
+        String name ;
+        name = supplierRateDao.getSupplierNameByItemId(itemId);
+        if(name.isEmpty())
+            throw new Exception("no supplier name found for given item");
+        return name;
+    }
 }
