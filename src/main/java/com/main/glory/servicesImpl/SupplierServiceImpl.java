@@ -243,4 +243,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             throw new Exception("no supplier name found for given item");
         return name;
     }
+
+    public Supplier getSupplierByItemId(Long itemId) {
+        Supplier supplier = supplierRateDao.getSupplierByItemId(itemId);
+        return supplier;
+    }
 }
