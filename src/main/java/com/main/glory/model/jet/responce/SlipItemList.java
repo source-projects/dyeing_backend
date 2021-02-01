@@ -15,6 +15,6 @@ public class SlipItemList {
     String itemName;
     Double qty;
     String supplierName;
-
+    String itemId;
 
 }

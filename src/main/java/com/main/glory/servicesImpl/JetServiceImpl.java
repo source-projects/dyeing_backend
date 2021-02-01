@@ -12,6 +12,9 @@ import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
@@ -23,6 +26,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +37,8 @@ import java.util.*;
 @Transactional
 public class JetServiceImpl {
 
+    @Autowired
+    DyeingSlipServiceImpl dyeingSlipService;
     @Autowired
     QualityServiceImp qualityServiceImp;
 
@@ -109,11 +115,11 @@ public class JetServiceImpl {
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
 
-        //check the capacity first
+        //check the capacity first for the color box issue had that much capcity to fill the batch or not
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
             Double data=0.0;
-            colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
+            colorAmtToDeduct = (shadeData.getConcentration()*totalBatchWt)/100;
             List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
 
             if(colorBoxList.isEmpty())
@@ -130,34 +136,9 @@ public class JetServiceImpl {
 
         }
 
-        //deduct the color amt as per the shade concentration
-        for(ShadeData shadeData:shadeMast.get().getShadeDataList())
-        {
-            colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
-            List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
-
-            for(ColorBox colorBox:colorBoxList)
-            {
-                if((colorAmtToDeduct - colorBox.getQuantityLeft()) > 0 )
-                {
-                    colorBox.setFinished(true);
-                    colorAmtToDeduct=colorAmtToDeduct-colorBox.getQuantityLeft();
-                    colorBox.setQuantityLeft(0.0);
-                }
-                else
-                {
-                    colorBox.setQuantityLeft(colorBox.getQuantityLeft() - colorAmtToDeduct);
-                    break;
-                }
-
-            }
 
 
-        }
-
-
-
-        //save to jet data
+        //save to jet data first check the capacity
         Double availableJetCapacity=0.0;
 
         Double availableBatchInJetCapacity=0.0;
@@ -221,7 +202,7 @@ public class JetServiceImpl {
             }
 
 
-            //add the capacity with new batch capacirt
+            //add the capacity with new batch capacity
             newBatchCapacity+=availableBatchInJetCapacity;
 
             //check the capacity is fullfill the requirement
@@ -230,7 +211,86 @@ public class JetServiceImpl {
 
 
 
-            //change the status
+            /*
+
+            *********************** If all the condition is return true then perform 3 task *************
+
+             1.Shade color box deduct
+             2.insert the data into the slip as per the process
+             3.store the jet with production
+
+             */
+
+            // 1. deduct the color amt as per the shade concentration
+            for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+            {
+                colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
+                List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
+
+                for(ColorBox colorBox:colorBoxList)
+                {
+                    if((colorAmtToDeduct - colorBox.getQuantityLeft()) > 0 )
+                    {
+                        colorBox.setFinished(true);
+                        colorAmtToDeduct=colorAmtToDeduct-colorBox.getQuantityLeft();
+                        colorBox.setQuantityLeft(0.0);
+                    }
+                    else
+                    {
+                        colorBox.setQuantityLeft(colorBox.getQuantityLeft() - colorAmtToDeduct);
+                        break;
+                    }
+
+                }
+
+
+            }
+
+            // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
+            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+            DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
+            List<DyeingSlipData> dyeingSlipDataList =new ArrayList<>();
+
+
+            //set the dyeing slip master table first
+            dyeingSlipMast.setJetId(jetMastExist.get().getId());
+            dyeingSlipMast.setProductionId(productionPlanExist.getId());
+            dyeingSlipMast.setBatchId(productionPlanExits.getBatchId());
+            dyeingSlipMast.setStockId(productionPlanExist.getStockId());
+
+            for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
+            {
+                DyeingSlipData dyeingSlipData = new DyeingSlipData(dyeingProcessData);
+                List<DyeingSlipItemData> slipItemLists = new ArrayList<>();
+                for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
+                {
+                    DyeingSlipItemData slipItemList =new DyeingSlipItemData();
+                    slipItemList.setItemId(dyeingChemicalData.getItemId());
+                    slipItemList.setItemName(dyeingChemicalData.getItemName());
+
+                    String name = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
+                    slipItemList.setSupplierName(name);
+
+                    Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
+                    slipItemList.setSupplierId(supplier.getId());
+
+                    Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
+                    if(supplierRate.get().getIsColor())
+                    slipItemList.setQty((dyeingChemicalData.getConcentration()*totalBatchWt)/100);
+                    else slipItemList.setQty((dyeingChemicalData.getConcentration()*totalBatchWt*dyeingProcessData.getLiquerRation())/1000);
+
+                    slipItemLists.add(slipItemList);
+                }
+                dyeingSlipData.setDyeingSlipItemData(slipItemLists);
+                dyeingSlipDataList.add(dyeingSlipData);
+
+
+            }
+            dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
+            dyeingSlipService.saveDyeingSlipMast(dyeingSlipMast);
+
+
+            // 3. change the status of production
             productionPlanExist.setStatus(true);
             productionPlanService.saveProductionPlan(productionPlanExist);
 
@@ -265,7 +325,6 @@ public class JetServiceImpl {
 
 
         }
-
 
 
 
@@ -650,7 +709,7 @@ public class JetServiceImpl {
                 if(jetMastExist.get().getLiquerRation()==null || jetMastExist.get().getLiquerRation().equals(""))
                     throw new Exception("jet liquer ration can't be null");
 
-                Double qty = jetMastExist.get().getLiquerRation() * dyeingChemicalData.getConcentration() * wt;
+                Double qty = (jetMastExist.get().getLiquerRation() * dyeingChemicalData.getConcentration() * wt) /1000;
                 item.setQty(qty);
                 itemLists.add(item);
 
@@ -669,4 +728,6 @@ public class JetServiceImpl {
         return data;
 
     }
+
+
 }

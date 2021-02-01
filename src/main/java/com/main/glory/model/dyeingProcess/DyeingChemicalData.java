@@ -22,4 +22,5 @@ public class DyeingChemicalData {
     String byChemical;
     Double concentration;
 
+
 }

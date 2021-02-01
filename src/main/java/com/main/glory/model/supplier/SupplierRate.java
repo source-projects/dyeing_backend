@@ -38,6 +38,7 @@ public class SupplierRate {
     Date createdDate;
     Long createdBy;
     Long updatedBy;
+    Boolean isColor;
 
     @ApiModelProperty(hidden = true)
     Date updatedDate;

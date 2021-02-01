@@ -1,6 +1,7 @@
 package com.main.glory.Dao;
 
 import com.main.glory.model.supplier.GetAllSupplierRate;
+import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.supplier.responce.ItemWithSupplier;
@@ -28,4 +29,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
 
     @Query("select s.supplierName from Supplier s where s.id = (select r.supplierId from SupplierRate r where r.id=:itemId)")
     String getSupplierNameByItemId(Long itemId);
+
+    @Query("select s from Supplier s where s.id = (select r.supplierId from SupplierRate r where r.id=:itemId )")
+    Supplier getSupplierByItemId(Long itemId);
 }

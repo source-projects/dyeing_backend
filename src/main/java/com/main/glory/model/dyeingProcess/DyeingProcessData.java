@@ -27,6 +27,8 @@ public class DyeingProcessData {
     Double temp;
     Double holdTime;
     Long sequence;
+    Boolean isColor;
+    Double liquerRation;
 
 
     @OneToMany(cascade = CascadeType.ALL)
