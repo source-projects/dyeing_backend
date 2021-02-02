@@ -27,8 +27,8 @@ public class DyeingSlipServiceImpl {
 
     }
 
-    public DyeingSlipMast getDyeingSlipByBatchStockId(String batchId, Long stockId) {
-        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndStockId(batchId, stockId);
+    public DyeingSlipMast getDyeingSlipByBatchStockId(String batchId, Long productionId) {
+        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
         return  dyeingSlipMastExist;
     }
 
