@@ -26,7 +26,7 @@ jobs:
       with:
         host: 103.137.194.167
         username: gloryauto
-        key: ${{ secrets.GFL_P_PASSWORD }}
+        password: ${{ secrets.GFL_P_PASSWORD }}
         source: "target/*.jar"
         target: "builds"
         
