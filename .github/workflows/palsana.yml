@@ -41,4 +41,4 @@ jobs:
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
-          java -jar /home/ubuntu/builds/target/*.jar > /home/ubuntu/builds/target/se
+          java -jar /home/gloryauto/builds/target/*.jar > /home/gloryauto/builds/target/se
