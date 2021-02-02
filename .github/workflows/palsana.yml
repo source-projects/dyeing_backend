@@ -35,7 +35,7 @@ jobs:
       with:
         host: 103.137.194.167
         username: gloryauto
-        key: ${{ secrets.GFL_P_PASSWORD }}
+        password: ${{ secrets.GFL_P_PASSWORD }}
         script: |
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
