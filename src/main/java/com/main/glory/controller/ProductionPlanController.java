@@ -23,8 +23,8 @@ public class ProductionPlanController extends ControllerConfig {
     public GeneralResponse<Boolean> saveProductionPlan(@RequestBody ProductionPlan productionPlan)
     {
         try {
-            productionPlanService.saveProductionPlan(productionPlan);
-            return new GeneralResponse<Boolean>(null, "Production Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            Long id = productionPlanService.saveProductionPlan(productionPlan);
+            return new GeneralResponse<Boolean>(null, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {

@@ -38,7 +38,7 @@ public class ProductionPlanImpl {
     @Autowired
     BatchDao batchDao;
 
-    public void saveProductionPlan(ProductionPlan productionPlan) throws Exception {
+    public Long saveProductionPlan(ProductionPlan productionPlan) throws Exception {
 
         Optional<Quality> qualityIsExist= qualityServiceImp.getQualityByIDAndPartyId(productionPlan.getQualityEntryId(),productionPlan.getPartyId());
 
@@ -59,6 +59,7 @@ public class ProductionPlanImpl {
                 batchDao.save(batchData);
             }
             productionPlanDao.save(productionPlan);
+            return productionPlan.getId();
 
         }
 
