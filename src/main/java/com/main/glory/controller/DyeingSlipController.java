@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,13 +39,13 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
     @GetMapping("/dyeingSlip/{batchId}/{productionId}")
-    public GeneralResponse<DyeingSlipMast> getDyeingSlipByBatchIdProductionId(@PathVariable(name = "batchId") String batchId, @PathVariable(name = "productionId") Long productionId){
-        GeneralResponse<DyeingSlipMast> result;
+    public GeneralResponse<SlipFormatData> getDyeingSlipByBatchIdProductionId(@PathVariable(name = "batchId") String batchId, @PathVariable(name = "productionId") Long productionId){
+        GeneralResponse<SlipFormatData> result;
         try {
             if(batchId == null || productionId == null){
                 result = new GeneralResponse<>(null, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }else {
-                DyeingSlipMast data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
+                SlipFormatData data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
                 if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                 else

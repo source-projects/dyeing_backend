@@ -38,6 +38,19 @@ public class DyeingSlipMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingSlipData> dyeingSlipDataList;
 
+    public DyeingSlipMast(DyeingSlipMast dyeingSlipMastExist) {
+        this.id=dyeingSlipMastExist.id;
+        this.userHeadId=dyeingSlipMastExist.userHeadId;
+        this.createdBy=dyeingSlipMastExist.createdBy;
+        this.updatedBy=dyeingSlipMastExist.updatedBy;
+        this.createdDate=dyeingSlipMastExist.createdDate;
+        this.updatedDate=dyeingSlipMastExist.updatedDate;
+        this.stockId=dyeingSlipMastExist.stockId;
+        this.jetId=dyeingSlipMastExist.jetId;
+        this.productionId=dyeingSlipMastExist.productionId;
+        this.batchId=dyeingSlipMastExist.batchId;
+    }
+
 
     @PrePersist
     void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
