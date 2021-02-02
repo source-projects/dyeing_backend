@@ -37,18 +37,18 @@ public class DyeingSlipController extends ControllerConfig {
         return result;
     }
 
-    @GetMapping("/dyeingSlip/{id}")
-    public GeneralResponse<DyeingSlipMast> getDyeingSlipById(@PathVariable(name = "id") Long id){
+    @GetMapping("/dyeingSlip/{id}/{id}")
+    public GeneralResponse<DyeingSlipMast> getDyeingSlipByBatchIdStockId(@PathVariable(name = "id") String batchId, @PathVariable(name = "id") Long stockId){
         GeneralResponse<DyeingSlipMast> result;
         try {
-            if(id == null){
+            if(batchId == null || stockId == null){
                 result = new GeneralResponse<>(null, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }else {
-                DyeingSlipMast data = dyeingSlipService.getDyeingSlipById(id);
+                DyeingSlipMast data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, stockId);
                 if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                 else
-                    result = new GeneralResponse<>(null, "data not found for id:"+id, false, System.currentTimeMillis(), HttpStatus.OK);
+                    result = new GeneralResponse<>(null, "data not found for given id", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
