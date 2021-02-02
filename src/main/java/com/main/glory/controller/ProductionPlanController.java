@@ -20,16 +20,16 @@ public class ProductionPlanController extends ControllerConfig {
     ProductionPlanImpl productionPlanService;
 
     @PostMapping(value="/productionPlan/")
-    public GeneralResponse<Boolean> saveProductionPlan(@RequestBody ProductionPlan productionPlan)
+    public GeneralResponse<Long> saveProductionPlan(@RequestBody ProductionPlan productionPlan)
     {
         try {
             Long id = productionPlanService.saveProductionPlan(productionPlan);
-            return new GeneralResponse<Boolean>(null, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
 
