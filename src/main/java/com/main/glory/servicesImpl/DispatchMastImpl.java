@@ -10,19 +10,29 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
+import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
+
+    @Autowired
+    PartyServiceImp partyServiceImp;
+    @Autowired
+    QualityServiceImp qualityServiceImp;
 
     @Autowired
     DispatchMastDao dispatchMastDao;
@@ -788,4 +798,76 @@ public class DispatchMastImpl {
 
     }
 
+    public List<GetConsolidatedBill> getDispatchByFilter(Filter filter) throws Exception {
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                "yyyy-MM-dd");
+        Date from = datetimeFormatter1.parse(filter.getFrom());
+        Date to = datetimeFormatter1.parse(filter.getTo());
+        Double amt=0.0;
+        Double totalFinishMtr=0.0;
+        Double batchFinishMtr=0.0;
+        List<GetConsolidatedBill> list = new ArrayList<>();
+
+        System.out.println(from+":"+to);
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from,to,filter.getPartyId(),filter.getUserHeadId());
+        for(DispatchMast dispatchMast:dispatchMastList)
+        {
+            String invoiceNumber=dispatchMast.getPrefix()+dispatchMast.getPostfix();
+            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
+            for(GetBatchByInvoice getBatchByInvoice:stockWithBatchList)
+            {
+                if(getBatchByInvoice.getBatchId()==null)
+                    continue;
+
+                List<BatchData> batchDataList = stockBatchService.getBatchWithControlIdAndBatchId(getBatchByInvoice.getBatchId(),getBatchByInvoice.getStockId());
+                if(batchDataList.isEmpty())
+                    continue;
+
+                StockMast stockMast = stockBatchService.getStockByStockId(getBatchByInvoice.getStockId());
+                if(stockMast==null)
+                    continue;
+
+                GetQualityResponse quality= qualityServiceImp.getQualityByID(stockMast.getQualityId());
+                if(quality==null)
+                    continue;
+
+                for(BatchData batchData:batchDataList)
+                {
+                    batchFinishMtr +=batchData.getFinishMtr();
+                    totalFinishMtr +=batchFinishMtr;
+                }
+                amt+=batchFinishMtr*quality.getRate();
+                batchFinishMtr = 0.0;
+
+
+
+            }
+            Party party =partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if(party==null)
+                continue;
+
+
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            if(userData==null)
+                continue;
+
+            if(amt>0.0) {
+                GetConsolidatedBill getConsolidatedBill = new GetConsolidatedBill();
+                getConsolidatedBill.setAmt(amt);
+                getConsolidatedBill.setTotalFinishMtr(totalFinishMtr);
+                getConsolidatedBill.setPartyName(party.getPartyName());
+                getConsolidatedBill.setPartyId(party.getId());
+                getConsolidatedBill.setHeadName(userData.getUserName());
+                getConsolidatedBill.setUserHeadId(userData.getId());
+                getConsolidatedBill.setInvoiceNo(invoiceNumber);
+                list.add(getConsolidatedBill);
+            }
+
+
+        }
+        if (list.isEmpty())
+            throw new Exception("no invoice data found");
+        return list;
+
+    }
 }

@@ -4,9 +4,11 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
+import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
+import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,20 @@ public class DispatchController extends ControllerConfig {
             return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/dispatch/filter")
+    public GeneralResponse<List<GetConsolidatedBill>> getDispatchByFilter(@RequestBody Filter filter) throws Exception{
+        try{
+            List<GetConsolidatedBill> list = dispatchMastService.getDispatchByFilter(filter);
+            if(!list.isEmpty())
+                return new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     //Get batches by the party id
     @GetMapping("/dispatch/getBatchByParty/{partyId}")

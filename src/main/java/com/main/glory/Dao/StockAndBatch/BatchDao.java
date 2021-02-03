@@ -84,5 +84,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select SUM(b.wt) from BatchData b where b.isProductionPlanned = true AND b.controlId=:controlId AND b.batchId=:batchId GROUP BY b.batchId,b.controlId")
     Double getTotalWtByControlIdAndBatchId(Long controlId, String batchId);
+
+    @Query("select b from BatchData b where b.batchId=:batchId AND b.controlId=:stockId AND b.isBillGenrated=true")
+    List<BatchData> findBatchWithBillGenerated(String batchId, Long stockId);
 }
 

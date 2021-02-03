@@ -14,8 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class GetAllDispatch {
-
-
+    
     String invoiceNo;
     Boolean isSendToParty;
     Date date;
