@@ -37,8 +37,8 @@ jobs:
         username: gloryauto
         password: ${{ secrets.GFL_P_PASSWORD }}
         script: |
-          fuser -k -n tcp 8080
-          fuser -k -n tcp 8080
+          fuser -n tcp -k 8080 
+          fuser -n tcp -k 8080 
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           java -jar /home/gloryauto/builds/target/*.jar > /home/gloryauto/builds/target/server-logs.txt 2>&1 &
