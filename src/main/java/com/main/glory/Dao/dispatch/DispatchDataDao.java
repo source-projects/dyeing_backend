@@ -1,6 +1,7 @@
 package com.main.glory.Dao.dispatch;
 
 import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.request.BatchAndStockId;
 import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
@@ -61,6 +62,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Query("select d from DispatchData d where d.invoiceNo=:invoiceNo")
     List<DispatchData> getBatchByInvoiceNo(String invoiceNo);
+
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(d.batchEntryId) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
+    List<GetBatchByInvoice> getAllStockByInvoiceNumber(String invoiceNumber);
 
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")

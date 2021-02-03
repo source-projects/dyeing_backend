@@ -31,4 +31,7 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	@Query("select p from Party p")
     List<Party> getAllParty();
+
+	@Query("select p from Party p where p.id=:id")
+    Party findByPartyId(Long id);
 }

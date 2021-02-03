@@ -248,4 +248,10 @@ public class PartyServiceImp implements PartyServiceInterface{
 		}
 
 	}
+
+    public Party getPartyById(Long id) {
+		Party party = partyDao.findByPartyId(id);
+		return party;
+
+    }
 }

@@ -4,6 +4,9 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import lombok.*;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class DispatchMast {
 
 
     @PrePersist
-    protected void onCreate() {
+    protected void onCreate() throws ParseException {
         this.createdDate = new Date(System.currentTimeMillis());
     }
 
