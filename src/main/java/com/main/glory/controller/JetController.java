@@ -229,4 +229,25 @@ public class JetController extends ControllerConfig {
         }
     }
 
+    @DeleteMapping(value="/jet/deleteJetMastByJetId/{id}")
+    public GeneralResponse<Boolean> deleteJetMastByJetId(@PathVariable(name = "id") Long id) throws Exception {
+        if(id==null)
+        {
+            return new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+
+            Boolean flag = jetService.deleteJetMastByJetId(id);
+            if(flag==true)
+                return new GeneralResponse<>(true, "Jet Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "unable to delete the prouduction", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

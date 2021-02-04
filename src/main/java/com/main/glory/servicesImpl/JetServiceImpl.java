@@ -103,7 +103,7 @@ public class JetServiceImpl {
         ProductionPlan productionPlanExits=productionPlanService.getProductionData(productionId);
         if(productionPlanExits.getStatus())
             throw new Exception("production is already added into jet");
-
+/*
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
 
         if(shadeMast.isEmpty())
@@ -137,7 +137,7 @@ public class JetServiceImpl {
         }
 
 
-
+*/
         //save to jet data first check the capacity
         Double availableJetCapacity=0.0;
 
@@ -211,6 +211,7 @@ public class JetServiceImpl {
 
 
 
+
             /*
 
             *********************** If all the condition is return true then perform 3 task *************
@@ -222,7 +223,7 @@ public class JetServiceImpl {
              */
 
             // 1. deduct the color amt as per the shade concentration
-            for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+/*            for(ShadeData shadeData:shadeMast.get().getShadeDataList())
             {
                 colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
                 List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
@@ -289,7 +290,7 @@ public class JetServiceImpl {
             dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
             dyeingSlipService.saveDyeingSlipMast(dyeingSlipMast);
 
-
+*/
             // 3. change the status of production
             productionPlanExist.setStatus(true);
             productionPlanService.saveProductionPlan(productionPlanExist);
@@ -730,4 +731,8 @@ public class JetServiceImpl {
     }
 
 
+    public Boolean deleteJetMastByJetId(Long id) {
+        jetMastDao.deleteByJetId(id);
+        return true;
+    }
 }
