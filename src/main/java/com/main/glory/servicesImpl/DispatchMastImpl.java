@@ -711,11 +711,11 @@ public class DispatchMastImpl {
             for(DispatchData invoiceBatch:dispatchDataList)
             {
 
-                Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
-                if(batchData.isEmpty())
+                BatchData batchData=batchDao.findByBatchEntryId(invoiceBatch.getBatchEntryId());
+                if(batchData==null)
                     continue;
-                totalMtr+=batchData.get().getMtr();
-                finishMtr+=batchData.get().getFinishMtr();
+                totalMtr+=batchData.getMtr();
+                finishMtr+=batchData.getFinishMtr();
                 pcs++;
 
             }
