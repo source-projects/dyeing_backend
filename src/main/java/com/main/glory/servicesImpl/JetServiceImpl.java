@@ -103,7 +103,7 @@ public class JetServiceImpl {
         ProductionPlan productionPlanExits=productionPlanService.getProductionData(productionId);
         if(productionPlanExits.getStatus())
             throw new Exception("production is already added into jet");
-/*
+
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
 
         if(shadeMast.isEmpty())
@@ -114,7 +114,7 @@ public class JetServiceImpl {
         //count the color amt to deduct
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
-
+/*
         //check the capacity first for the color box issue had that much capcity to fill the batch or not
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
@@ -212,6 +212,7 @@ public class JetServiceImpl {
 
 
 
+            Optional<JetMast> jetMastExistJetMast = jetMastDao.findById(addJetData.getControlId());
             /*
 
             *********************** If all the condition is return true then perform 3 task *************
@@ -245,7 +246,8 @@ public class JetServiceImpl {
                 }
 
 
-            }
+            }*/
+
 
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
             DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
@@ -276,9 +278,12 @@ public class JetServiceImpl {
                     slipItemList.setSupplierId(supplier.getId());
 
                     Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
-                    if(supplierRate.get().getIsColor())
-                    slipItemList.setQty((dyeingChemicalData.getConcentration()*totalBatchWt)/100);
-                    else slipItemList.setQty((dyeingChemicalData.getConcentration()*totalBatchWt*dyeingProcessData.getLiquerRation())/1000);
+                    if(supplierRate.isPresent()) {
+                        if (supplierRate.get().getItemType().equals("Color"))
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
+                        else
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt*jetMastExistJetMast.get().getLiquerRation()) / 1000);
+                    }
 
                     slipItemLists.add(slipItemList);
                 }
@@ -290,7 +295,7 @@ public class JetServiceImpl {
             dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
             dyeingSlipService.saveDyeingSlipMast(dyeingSlipMast);
 
-*/
+
             // 3. change the status of production
             productionPlanExist.setStatus(true);
             productionPlanService.saveProductionPlan(productionPlanExist);
