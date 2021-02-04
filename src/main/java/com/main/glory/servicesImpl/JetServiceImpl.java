@@ -730,4 +730,8 @@ public class JetServiceImpl {
     }
 
 
+    public Boolean deleteJetMastByJetId(Long id) {
+        jetMastDao.deleteByJetId(id);
+        return true;
+    }
 }
