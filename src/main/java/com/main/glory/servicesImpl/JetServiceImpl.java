@@ -212,6 +212,7 @@ public class JetServiceImpl {
 
 
 
+            Optional<JetMast> jetMastExistJetMast = jetMastDao.findById(addJetData.getControlId());
             /*
 
             *********************** If all the condition is return true then perform 3 task *************
@@ -247,6 +248,7 @@ public class JetServiceImpl {
 
             }*/
 
+
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
             DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
             DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
@@ -280,7 +282,7 @@ public class JetServiceImpl {
                         if (supplierRate.get().getItemType().equals("Color"))
                             slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
                         else
-                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000);
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt*jetMastExistJetMast.get().getLiquerRation()) / 1000);
                     }
 
                     slipItemLists.add(slipItemList);
