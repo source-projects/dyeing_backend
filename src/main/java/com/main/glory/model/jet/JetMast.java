@@ -34,5 +34,6 @@ public class JetMast {
     public JetMast(AddJet jetMast) {
         this.capacity=jetMast.getCapacity();
         this.name=jetMast.getName();
+        this.liquerRation=jetMast.getLiquerRation();
     }
 }
