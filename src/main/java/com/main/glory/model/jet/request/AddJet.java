@@ -13,5 +13,7 @@ public class AddJet {
 
     String name;
     Double capacity;
+    Double liquerRation;
+
 
 }
