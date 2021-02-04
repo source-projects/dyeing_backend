@@ -11,6 +11,8 @@ import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFini
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.Filter;
+import com.main.glory.model.dispatch.bill.GetBill;
+import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
@@ -23,6 +25,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -799,19 +802,44 @@ public class DispatchMastImpl {
     }
 
     public List<GetConsolidatedBill> getDispatchByFilter(Filter filter) throws Exception {
+        Date from=null;
+        Date to=null;
+        //add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
                 "yyyy-MM-dd");
-        Date from = datetimeFormatter1.parse(filter.getFrom());
-        Date to = datetimeFormatter1.parse(filter.getTo());
+
+
+        if(!filter.getFrom().isEmpty())
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if(!filter.getTo().isEmpty()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date
+            to=c.getTime();
+        }
+
         Double amt=0.0;
         Double totalFinishMtr=0.0;
         Double batchFinishMtr=0.0;
+        Double totalBatchMtr=0.0;
         List<GetConsolidatedBill> list = new ArrayList<>();
 
-        System.out.println(from+":"+to);
+        //System.out.println(from+":"+to);
         List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from,to,filter.getPartyId(),filter.getUserHeadId());
         for(DispatchMast dispatchMast:dispatchMastList)
         {
+            Party party =partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if(party==null)
+                continue;
+
+
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            if(userData==null)
+                continue;
+
+
             String invoiceNumber=dispatchMast.getPrefix()+dispatchMast.getPostfix();
             List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
             for(GetBatchByInvoice getBatchByInvoice:stockWithBatchList)
@@ -833,6 +861,7 @@ public class DispatchMastImpl {
 
                 for(BatchData batchData:batchDataList)
                 {
+                    totalBatchMtr+=batchData.getMtr();
                     batchFinishMtr +=batchData.getFinishMtr();
                     totalFinishMtr +=batchFinishMtr;
                 }
@@ -842,14 +871,7 @@ public class DispatchMastImpl {
 
 
             }
-            Party party =partyServiceImp.getPartyById(dispatchMast.getPartyId());
-            if(party==null)
-                continue;
 
-
-            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
-            if(userData==null)
-                continue;
 
             if(amt>0.0) {
                 GetConsolidatedBill getConsolidatedBill = new GetConsolidatedBill();
@@ -860,13 +882,121 @@ public class DispatchMastImpl {
                 getConsolidatedBill.setHeadName(userData.getUserName());
                 getConsolidatedBill.setUserHeadId(userData.getId());
                 getConsolidatedBill.setInvoiceNo(invoiceNumber);
+                getConsolidatedBill.setTotalBatchMtr(totalBatchMtr);
                 list.add(getConsolidatedBill);
+
             }
 
 
         }
         if (list.isEmpty())
             throw new Exception("no invoice data found");
+        return list;
+
+    }
+
+    public List<GetBill> getDispatchBillByFilter(Filter filter) throws Exception {
+
+        Date from=null;
+        Date to=null;
+        List<GetBill> list = new ArrayList<>();
+
+
+        //add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                "yyyy-MM-dd");
+
+
+        if(!filter.getFrom().isEmpty())
+         from = datetimeFormatter1.parse(filter.getFrom());
+        if(!filter.getTo().isEmpty()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date
+            to=c.getTime();
+        }
+
+
+
+        Double amt=0.0;
+        Double totalFinishMtr=0.0;
+        Double batchFinishMtr=0.0;
+        Double totalBatchMtr=0.0;
+
+
+        //System.out.println(from+":"+to);
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from,to,filter.getPartyId(),filter.getUserHeadId());
+        for(DispatchMast dispatchMast:dispatchMastList)
+        {
+            List<QualityList> qualityLists =new ArrayList<>();
+
+            Party party =partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if(party==null)
+                continue;
+
+
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            if(userData==null)
+                continue;
+
+            String invoiceNumber=dispatchMast.getPrefix()+dispatchMast.getPostfix();
+            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
+            for(GetBatchByInvoice getBatchByInvoice:stockWithBatchList)
+            {
+                if(getBatchByInvoice.getBatchId()==null)
+                    continue;
+
+                List<BatchData> batchDataList = stockBatchService.getBatchWithControlIdAndBatchId(getBatchByInvoice.getBatchId(),getBatchByInvoice.getStockId());
+                if(batchDataList.isEmpty())
+                    continue;
+
+                StockMast stockMast = stockBatchService.getStockByStockId(getBatchByInvoice.getStockId());
+                if(stockMast==null)
+                    continue;
+
+                GetQualityResponse quality= qualityServiceImp.getQualityByID(stockMast.getQualityId());
+                if(quality==null)
+                    continue;
+
+                for(BatchData batchData: batchDataList)
+                {
+                    totalBatchMtr+=batchData.getMtr();
+                    totalFinishMtr+=batchData.getFinishMtr();
+                }
+
+                QualityList qualityData= new QualityList();
+                qualityData.setTotalMtr(totalBatchMtr);
+                qualityData.setTotalFinishMtr(totalFinishMtr);
+                qualityData.setQualityEntryId(quality.getId());
+                qualityData.setQulityId(quality.getQualityId());
+                qualityData.setAmt(quality.getRate()*totalFinishMtr);
+                qualityData.setBatchId(getBatchByInvoice.getBatchId());
+                qualityData.setRate(quality.getRate());
+
+                qualityLists.add(qualityData);
+
+
+
+            }
+
+            if(!qualityLists.isEmpty()) {
+                GetBill getBill = new GetBill();
+                getBill.setHeadName(userData.getUserName());
+                getBill.setPartyId(party.getId());
+                getBill.setPartyName(party.getPartyName());
+                getBill.setInvoiceNo(invoiceNumber);
+                getBill.setUserHeadId(userData.getId());
+                getBill.setQualityList(qualityLists);
+                list.add(getBill);
+
+            }
+        }
+        if(list.isEmpty())
+            throw new Exception("no data found ");
+
+
         return list;
 
     }

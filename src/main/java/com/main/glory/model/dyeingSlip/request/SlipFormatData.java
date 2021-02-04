@@ -22,6 +22,5 @@ public class SlipFormatData extends DyeingSlipMast{
 
     public SlipFormatData(DyeingSlipMast dyeingSlipMastExist) {
         super(dyeingSlipMastExist);
-
     }
 }
