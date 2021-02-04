@@ -13,4 +13,4 @@ jobs:
         
       - name: message to slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"backend: ${{ github.actor }} made a pr to master"}' https://hooks.slack.com/services/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
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"backend: ${{ github.actor }} made a pr to development"}' https://hooks.slack.com/services/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
