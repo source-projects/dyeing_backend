@@ -276,9 +276,12 @@ public class JetServiceImpl {
                     slipItemList.setSupplierId(supplier.getId());
 
                     Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
-                    if(supplierRate.get().getIsColor())
-                    slipItemList.setQty((dyeingChemicalData.getConcentration()*totalBatchWt)/100);
-                    else slipItemList.setQty((dyeingChemicalData.getConcentration()*totalBatchWt*dyeingProcessData.getLiquerRation())/1000);
+                    if(supplierRate.isPresent()) {
+                        if (supplierRate.get().getItemType().equals("Color"))
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
+                        else
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000);
+                    }
 
                     slipItemLists.add(slipItemList);
                 }
