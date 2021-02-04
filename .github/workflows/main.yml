@@ -2,7 +2,7 @@ name: PR to master notification
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ development ]
 
 jobs:
   message-to-slack-about-pr:
