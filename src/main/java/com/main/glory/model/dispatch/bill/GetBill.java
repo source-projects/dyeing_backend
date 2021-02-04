@@ -1,22 +1,21 @@
-package com.main.glory.model.dispatch.response;
+package com.main.glory.model.dispatch.bill;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GetConsolidatedBill {
+public class GetBill {
     String invoiceNo;
     String partyName;
     Long partyId;
     String headName;
     Long userHeadId;
-    Double amt;
-    Double totalFinishMtr;
-    Double totalBatchMtr;
-
+    List<QualityList> qualityList;
 }
