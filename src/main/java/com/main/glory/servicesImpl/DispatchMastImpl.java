@@ -712,6 +712,8 @@ public class DispatchMastImpl {
             {
 
                 Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
+                if(batchData.isEmpty())
+                    continue;
                 totalMtr+=batchData.get().getMtr();
                 finishMtr+=batchData.get().getFinishMtr();
                 pcs++;
