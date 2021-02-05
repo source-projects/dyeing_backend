@@ -119,7 +119,7 @@ public class ColorController extends ControllerConfig {
 
 	}
 
-	@GetMapping(value = "/box/all/{issued}")
+	@GetMapping(value = "/color/box/all/{issued}")
 	public GeneralResponse<List<ColorBox>> getColorBox(@PathVariable(value = "issued") Boolean issued){
 		try {
 			List<ColorBox> colorBoxes = colorService.getAllBox(issued);
@@ -129,7 +129,17 @@ public class ColorController extends ControllerConfig {
 		}
 	}
 
-	@PostMapping("/box/issue")
+	@GetMapping(value = "/color/box/notIssued/{itemId}")
+	public GeneralResponse<List<ColorBox>> getColorBox(@PathVariable(value = "itemId") Long itemId){
+		try {
+			List<ColorBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId);
+			return new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/color/box/issue")
 	public GeneralResponse<Boolean> issueBox(@RequestBody IssueBoxRequest issueBoxRequest){
 		try {
 			colorService.issueBox(issueBoxRequest);
