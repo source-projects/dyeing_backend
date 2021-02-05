@@ -108,7 +108,7 @@ public class StockBatchServiceImpl {
             UserData userData = userDao.findUserById(id);
             if(userData.getUserHeadId().equals(0l)) {
                 //master
-                data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadId(userData.getId());
             }
             else
             {
