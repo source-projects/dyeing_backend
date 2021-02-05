@@ -105,17 +105,8 @@ public class StockBatchServiceImpl {
         }
 
         else if(getBy.equals("group")){
-            UserData userData = userDao.findUserById(id);
-            if(userData.getUserHeadId().equals(0l)) {
-                //master
-                data = stockMastDao.getAllStockWithPartyNameByUserHeadId(userData.getId());
-            }
-            else
-            {
-                //operator
-                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(userData.getId(),userData.getUserHeadId());
 
-            }
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
 
         }
         if(data.isEmpty()) throw new Exception("no data found");
