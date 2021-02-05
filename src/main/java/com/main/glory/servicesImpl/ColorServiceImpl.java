@@ -4,11 +4,13 @@ import com.main.glory.Dao.color.ColorBoxDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
 import com.main.glory.Dao.SupplierDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
+import com.main.glory.model.user.UserData;
 import com.main.glory.services.ColorServicesInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.Optional;
 @Service
 public class ColorServiceImpl implements ColorServicesInterface {
 
+	@Autowired
+	UserDao userDao;
 	@Autowired
 	ColorMastDao colorMastDao;
 
@@ -102,20 +106,45 @@ public class ColorServiceImpl implements ColorServicesInterface {
 			});
 		}
 		else if(getBy.equals("group")){
-			List<ColorMast> data = colorMastDao.getAllByUserHeadId(id);
-			data.forEach(e -> {
-				try{
-					ColorMastDetails x = new ColorMastDetails(e);
-					String name=supplierDao.findById(e.getSupplierId()).get().getSupplierName();
-					if(!name.isEmpty())
-					{
-						x.setSupplierName(name);
-						colorMastDetails.add(x);
+			UserData userData = userDao.findUserById(id);
+			if(userData.getUserHeadId()==0)
+			{
+				//master
+				List<ColorMast> data = colorMastDao.getAllByUserHeadId(id);
+				data.forEach(e -> {
+					try{
+						ColorMastDetails x = new ColorMastDetails(e);
+						String name=supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+						if(!name.isEmpty())
+						{
+							x.setSupplierName(name);
+							colorMastDetails.add(x);
+						}
+					} catch (Exception ex) {
+						ex.printStackTrace();
 					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			});
+				});
+
+			}
+			else
+			{
+				//operator
+				List<ColorMast> data = colorMastDao.getAllByCreatedByAndHeadId(userData.getId(),userData.getUserHeadId());
+				data.forEach(e -> {
+					try{
+						ColorMastDetails x = new ColorMastDetails(e);
+						String name=supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+						if(!name.isEmpty())
+						{
+							x.setSupplierName(name);
+							colorMastDetails.add(x);
+						}
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				});
+			}
+
 		}
 		if(colorMastDetails.isEmpty())
 			throw new Exception("no data found");

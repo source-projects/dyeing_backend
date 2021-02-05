@@ -15,8 +15,13 @@ public interface ColorMastDao extends JpaRepository<ColorMast, Long> {
 	List<ColorMast> getAllActiveData();
 
 	List<ColorMast> getAllByCreatedBy(Long createdBy);
+
+	@Query("select c from ColorMast c where c.createdBy=:userHeadId OR c.userHeadId=:userHeadId")
 	List<ColorMast> getAllByUserHeadId(Long userHeadId);
 
 	@Query("select c from ColorMast c")
     List<ColorMast> getAllColorList();
+
+	@Query("select s from ColorMast s where s.createdBy=:id OR s.userHeadId=:userHeadId")
+	List<ColorMast> getAllByCreatedByAndHeadId(Long id, Long userHeadId);
 }

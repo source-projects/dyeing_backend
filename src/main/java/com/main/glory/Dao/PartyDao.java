@@ -22,6 +22,7 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	List<Party> findByCreatedBy(Long createdBy);
 
+	@Query("select p from Party p where p.createdBy=:userHeadId OR p.userHeadId=:userHeadId")
 	List<Party> findByUserHeadId(Long userHeadId);
 
 
@@ -34,4 +35,7 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	@Query("select p from Party p where p.id=:id")
     Party findByPartyId(Long id);
+
+	@Query("select p from Party p where p.createdBy=:id OR p.userHeadId=:userHeadId")
+	List<Party> findByCreatedByAndUserHeadId(Long id, Long userHeadId);
 }

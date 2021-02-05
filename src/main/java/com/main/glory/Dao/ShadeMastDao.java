@@ -19,6 +19,8 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 //	@Query(value = "Select sm.*, (Select party_name from party where entry_id = sm.party_id) as party_name, (Select quality_name from quality where id = sm.quality_id) as quality_name,(Select quality_type from quality where id = sm.quality_id) as quality_type from shade_mast as sm where sm.is_active = :Active", nativeQuery = true)
 //	List<ShadeMastWithDetails> findDetailsByIsActive(@Param("Active") Boolean aBoolean);
 	List<ShadeMast> findAllByCreatedBy(Long createdBy);
+
+	@Query("select s from ShadeMast s where s.createdBy=:userHeadId OR s.userHeadId=:userHeadId")
 	List<ShadeMast> findAllByUserHeadId(Long userHeadId);
 	Optional<ShadeMast> findById(Long aLong);
 
@@ -28,4 +30,7 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 
 	@Query("select s from ShadeMast s")
     List<ShadeMast> getAllShadeMast();
+
+	@Query("select s from ShadeMast s where s.createdBy=:id OR s.userHeadId=:userHeadId")
+	List<ShadeMast> findAllByCreatedByAndHeadId(Long id, Long userHeadId);
 }
