@@ -27,148 +27,159 @@ public class StockBatchController extends ControllerConfig {
     private StockBatchServiceImpl stockBatchService;
 
 
-
     @PostMapping("/stockBatch")
-    public GeneralResponse<Boolean> createBatch(@RequestBody StockMast stockMast) throws Exception{
-        try{
-           Boolean flag = stockBatchService.saveStockBatch(stockMast);
-           if(flag==true)
-            return new GeneralResponse<>(true,"Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-           else
-               return new GeneralResponse<>(false,"Stock batch not created because quality in not availble", false, System.currentTimeMillis(), HttpStatus.OK);
-        } catch (Exception e){
+    public GeneralResponse<Boolean> createBatch(@RequestBody StockMast stockMast) throws Exception {
+        try {
+            Boolean flag = stockBatchService.saveStockBatch(stockMast);
+            if (flag == true)
+                return new GeneralResponse<>(true, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "Stock batch not created because quality in not availble", false, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/stockBatch/batch/ByQualityAndParty/{qualityId}/{partyId}")
-    public GeneralResponse<List<GetAllBatch>> getBatchById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
-        try{
-            if(qualityId!=null && partyId !=null){
-                List<GetAllBatch> batchData = stockBatchService.getBatchByPartyAndQuality(qualityId,partyId);
+    public GeneralResponse<List<GetAllBatch>> getBatchById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+        try {
+            if (qualityId != null && partyId != null) {
+                List<GetAllBatch> batchData = stockBatchService.getBatchByPartyAndQuality(qualityId, partyId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @GetMapping("/stockBatch/all/{getBy}/{id}")
-    public GeneralResponse<List<GetAllStockWithPartyNameResponse>> getAllStockBatch(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id) throws Exception{
-        try{
+    public GeneralResponse<List<GetAllStockWithPartyNameResponse>> getAllStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) throws Exception {
+        try {
             List<GetAllStockWithPartyNameResponse> stockMast = null;
             switch (getBy) {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
-                    if(stockMast == null){
+                    if (stockMast == null) {
                         return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                    }
-                    else{
+                    } else {
                         return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     }
 
                 case "group":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
-                    if(stockMast == null){
+                    if (stockMast == null) {
                         return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                    }
-                    else{
+                    } else {
                         return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     }
 
                 case "all":
                     stockMast = stockBatchService.getAllStockBatch(null, null);
-                    if(stockMast == null){
+                    if (stockMast == null) {
                         return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                    }
-                    else{
+                    } else {
                         return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     }
 
                 default:
                     return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/stockBatch/{id}")
-    public GeneralResponse<StockMast> getStockMastById(@PathVariable(value = "id") Long id){
-        try{
-            if(id!=null){
+    public GeneralResponse<StockMast> getStockMastById(@PathVariable(value = "id") Long id) {
+        try {
+            if (id != null) {
                 Optional<StockMast> stockMast = stockBatchService.getStockBatchById(id);
-                if(stockMast.isPresent()){
+                if (stockMast.isPresent()) {
                     return new GeneralResponse<StockMast>(stockMast.get(), "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-                }else{
-                    return new GeneralResponse<StockMast>(null, "no data found for id: "+id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                } else {
+                    return new GeneralResponse<StockMast>(null, "no data found for id: " + id, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                 }
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+
+    }
+
+    @GetMapping("/stockBatch/getAllBatchWithoutFilter")
+    public GeneralResponse<List<GetAllBatch>> getAllBatchWithoutFilter() {
+        GeneralResponse<List<GetAllBatch>> result;
+        try {
+
+            List<GetAllBatch> stockMast = stockBatchService.getAllBatchWithoutFilter();
+            if (!stockMast.isEmpty()) {
+                result= new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                result= new GeneralResponse<>(null, "no data found  "  , false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
 
     }
 
     @GetMapping("/stockBatch/batch/{controlId}/{batchId}")
-    public GeneralResponse<List<BatchData>> getBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") Long controlId){
-        try{
-            if(batchId!=null){
-                List<BatchData> batchData = stockBatchService.getBatchById(batchId,controlId);
+    public GeneralResponse<List<BatchData>> getBatchById(@PathVariable(value = "batchId") String batchId, @PathVariable(value = "controlId") Long controlId) {
+        try {
+            if (batchId != null) {
+                List<BatchData> batchData = stockBatchService.getBatchById(batchId, controlId);
 
-                    return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
+
     @GetMapping("/stockBatch/batch/ByQualityAndPartyWithoutProductionPlan/{qualityId}/{partyId}")
-    public GeneralResponse<List<GetAllBatch>> ByQualityAndPartyWithoutProducctionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
-        try{
-            if(qualityId!=null && partyId !=null){
-                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId,partyId);
+    public GeneralResponse<List<GetAllBatch>> ByQualityAndPartyWithoutProducctionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+        try {
+            if (qualityId != null && partyId != null) {
+                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @GetMapping("/stockBatch/batch/ByQualityAndPartyWithProductionPlan/{qualityId}/{partyId}")
-    public GeneralResponse<List<GetAllBatch>> ByQualityAndPartyWithProducctionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
-        try{
-            if(qualityId!=null && partyId !=null){
-                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithProductionPlan(qualityId,partyId);
+    public GeneralResponse<List<GetAllBatch>> ByQualityAndPartyWithProducctionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+        try {
+            if (qualityId != null && partyId != null) {
+                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithProductionPlan(qualityId, partyId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
@@ -176,49 +187,49 @@ public class StockBatchController extends ControllerConfig {
 
     //get complete stock and batch based on party id and qualityid
     @GetMapping("/stockBatch/stockBatchDataList/ByQualityAndParty/{qualityId}/{partyId}")
-    public GeneralResponse<List<StockMast>> getStockBatchListById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
-        try{
-            if(qualityId!=null && partyId !=null){
-                List<StockMast> batchData = stockBatchService.getStockBatchListById(qualityId,partyId);
+    public GeneralResponse<List<StockMast>> getStockBatchListById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+        try {
+            if (qualityId != null && partyId != null) {
+                List<StockMast> batchData = stockBatchService.getStockBatchListById(qualityId, partyId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @GetMapping("/stockBatch/batch/all")
-    public GeneralResponse<List<BatchToPartyAndQuality>> getAllBatch(){
-        try{
+    public GeneralResponse<List<BatchToPartyAndQuality>> getAllBatch() {
+        try {
 
-                List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
+            List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
 
-                return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
+
     //batch by quality
     @GetMapping("/stockBatch/batch/byQualityId/{id}")
-    public GeneralResponse<List<BatchData>> getAllBatchByQualityId(@PathVariable(name = "id") Long qualityId){
-        try{
+    public GeneralResponse<List<BatchData>> getAllBatchByQualityId(@PathVariable(name = "id") Long qualityId) {
+        try {
 
             List<BatchData> batchData = stockBatchService.getAllBatchByQualityId(qualityId);
 
             return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
@@ -226,39 +237,36 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/BatchToPartyAndQuality/{controlId}/{batchId}")
-    public GeneralResponse<BatchToPartyAndQuality> getPartyAndQualityByBatch(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
-        try{
+    public GeneralResponse<BatchToPartyAndQuality> getPartyAndQualityByBatch(@PathVariable(name = "controlId") Long controlId, @PathVariable(name = "batchId") String batchId) {
+        try {
 
-            BatchToPartyAndQuality batchData = stockBatchService.getPartyAndQualityByBatch(controlId,batchId);
+            BatchToPartyAndQuality batchData = stockBatchService.getPartyAndQualityByBatch(controlId, batchId);
 
             return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
     }
+
     @GetMapping("/stockBatch/IsBatchAvailableWithId/{controlId}/{batchId}")
-    public GeneralResponse<Boolean> IsBatchAvailable(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
-        try{
+    public GeneralResponse<Boolean> IsBatchAvailable(@PathVariable(name = "controlId") Long controlId, @PathVariable(name = "batchId") String batchId) {
+        try {
 
-            Boolean batchDataFlag = stockBatchService.IsBatchAvailable(controlId,batchId);
+            Boolean batchDataFlag = stockBatchService.IsBatchAvailable(controlId, batchId);
 
-            if(batchDataFlag==true)
-            {
+            if (batchDataFlag == true) {
                 return new GeneralResponse<>(true, "Batch Id is available", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            else
-            {
+            } else {
                 return new GeneralResponse<>(false, "Batch Id is already exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
 
             }
 
 
-
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
@@ -267,18 +275,17 @@ public class StockBatchController extends ControllerConfig {
 
 
     @GetMapping("/stockBatch/batchWithoutExtra/ByQualityAndParty/{qualityId}/{partyId}")
-    public GeneralResponse<List<GetAllBatch>> getBatchWithoutProductionPlanById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId){
-        try{
-            if(qualityId!=null && partyId !=null){
-                List<GetAllBatch> batchData = stockBatchService.getBatchWithoutProductionPlanByPartyAndQuality(qualityId,partyId);
+    public GeneralResponse<List<GetAllBatch>> getBatchWithoutProductionPlanById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+        try {
+            if (qualityId != null && partyId != null) {
+                List<GetAllBatch> batchData = stockBatchService.getBatchWithoutProductionPlanByPartyAndQuality(qualityId, partyId);
 
                 return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
-            }
-            else{
+            } else {
                 return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
@@ -295,6 +302,7 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/stockBatch/MergeBatch")
     public GeneralResponse<Boolean> updateBatchMerge(@RequestBody List<MergeSplitBatch> batchData1) {
         try {
@@ -305,6 +313,7 @@ public class StockBatchController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/stockBatch/SplitBatch")
     public GeneralResponse<Boolean> updateBatchSplit(@RequestBody List<MergeSplitBatch> batchData1) {
         try {
@@ -318,37 +327,38 @@ public class StockBatchController extends ControllerConfig {
 
 
     @DeleteMapping("/stockBatch/{id}")
-    public GeneralResponse<Boolean> deleteStockBatch(@PathVariable(value = "id") Long id){
-        try{
+    public GeneralResponse<Boolean> deleteStockBatch(@PathVariable(value = "id") Long id) {
+        try {
             stockBatchService.deleteStockBatch(id);
-            return new GeneralResponse<>(true,"stockBatch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<>(true, "stockBatch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("/batchGr/delete/{id}")
-    public GeneralResponse<Boolean> deleteBatchGr(@PathVariable(value = "id") Long id){
-        try{
+    public GeneralResponse<Boolean> deleteBatchGr(@PathVariable(value = "id") Long id) {
+        try {
             stockBatchService.deleteBatchGr(id);
-            return new GeneralResponse<>(true,"Batch gr deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            return new GeneralResponse<>(true, "Batch gr deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/stockBatch/delete/{controlId}/{batchId}")
-    public GeneralResponse<Boolean> deleteBatchByControlIdAndBatchID(@PathVariable(name="controlId") Long controlId,@PathVariable(name="batchId") String batchId){
-        try{
-            Boolean flag = stockBatchService.deleteStockBatchWithControlAndBatchID(controlId,batchId);
+    public GeneralResponse<Boolean> deleteBatchByControlIdAndBatchID(@PathVariable(name = "controlId") Long controlId, @PathVariable(name = "batchId") String batchId) {
+        try {
+            Boolean flag = stockBatchService.deleteStockBatchWithControlAndBatchID(controlId, batchId);
 
-            if(flag==true)
-            return new GeneralResponse<>(true, "Batch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            if (flag == true)
+                return new GeneralResponse<>(true, "Batch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 return new GeneralResponse<>(false, "Batch not deleted", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }

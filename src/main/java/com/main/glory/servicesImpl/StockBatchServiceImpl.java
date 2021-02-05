@@ -4,6 +4,7 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
@@ -11,6 +12,8 @@ import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +28,17 @@ public class StockBatchServiceImpl {
     StockMastDao stockMastDao;
 
     @Autowired
+    UserDao userDao;
+
+    @Autowired
     private QualityDao qualityDao;
 
     @Autowired
     BatchDao batchDao;
 
 
+    @Autowired
+    QualityServiceImp qualityServiceImp;
     @Autowired
     PartyDao partyDao;
 
@@ -100,7 +108,9 @@ public class StockBatchServiceImpl {
         }
 
         else if(getBy.equals("group")){
-            data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
+
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
+
         }
         if(data.isEmpty()) throw new Exception("no data found");
         else return data.get();
@@ -118,6 +128,8 @@ public class StockBatchServiceImpl {
 
     @Transactional
     public void updateBatch(StockMast stockMast) throws Exception {
+        //first check the batch id is null or not
+
         Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
         if(original.isEmpty()){
             throw new Exception("No such batch present with id:"+stockMast.getId());
@@ -144,6 +156,8 @@ public class StockBatchServiceImpl {
         //change the as per the data is coming from FE
         for(BatchData batch:stockMast.getBatchData())
         {
+            if(batch.getBatchId()==null || batch.getBatchId().isEmpty())
+                throw new Exception("batch id can't be null");
             //System.out.println("coming:"+batch.getId());
             if(batchGr.containsKey(batch.getId()))
             {
@@ -981,5 +995,32 @@ public class StockBatchServiceImpl {
         StockMast stockMast = stockMastDao.findByStockId(stockId);
 
         return stockMast;
+    }
+
+    public List<GetAllBatch> getAllBatchWithoutFilter() throws Exception {
+        List<GetAllBatch> list =new ArrayList<>();
+        List<GetBatchWithControlId> data = batchDao.getAllBatchQty();//get all batches without any filter
+
+        for(GetBatchWithControlId batch : data)
+        {
+            StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
+            if(stockMast==null)
+                continue;
+
+            GetQualityResponse quality=qualityServiceImp.getQualityByID(stockMast.getQualityId());
+            if (quality==null)
+                continue;
+
+            Party party = partyDao.findByPartyId(stockMast.getQualityId());
+            if(party==null)
+                continue;
+
+            GetAllBatch getAllBatch=new GetAllBatch(party,quality,batch);
+            list.add(getAllBatch);
+
+        }
+        if(list.isEmpty())
+            throw new Exception("no data found");
+        return list;
     }
 }

@@ -25,7 +25,7 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyName();
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where userHeadId = :userHeadId AND q.partyId IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where q.userHeadId = :userHeadId OR q.createdBy=:userHeadId AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyNameByUserHeadId(Long userHeadId);
 
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where createdBy = :createdBy AND q.partyId IS NOT NULL")
@@ -46,6 +46,11 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     @Query("select q from Quality q")
     List<Quality> getAllQuality();
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where q.userHeadId = :userHeadId OR q.createdBy=:id AND q.partyId IS NOT NULL")
+    List<QualityWithPartyName> findAllWithPartyByCreatedAndHeadId(Long id, Long userHeadId);
+
+
 }
 
 
