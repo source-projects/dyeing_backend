@@ -1003,6 +1003,7 @@ public class StockBatchServiceImpl {
 
         for(GetBatchWithControlId batch : data)
         {
+            System.out.println("batchwt:"+batch.getWT());
             StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
             if(stockMast==null)
                 continue;
