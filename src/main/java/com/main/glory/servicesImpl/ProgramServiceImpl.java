@@ -129,6 +129,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             }
         }
         else if(getBy.equals("group")){
+
             //receiving user head always
             programList = programDao.findByUserHeadId(id);
             for (Program e : programList) {
@@ -138,6 +139,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
                     Optional<Party> party = partyDao.findById(e.getPartyId());
                     programData = new GetAllProgram(e, party.get(), quality.get());
                     getAllProgramList.add(programData);
+
                 }
             }
 
