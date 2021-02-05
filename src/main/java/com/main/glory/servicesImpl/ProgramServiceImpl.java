@@ -5,6 +5,7 @@ import com.main.glory.Dao.ProgramDao;
 import com.main.glory.Dao.ProgramRecordDao;
 import com.main.glory.Dao.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.StockQualityWise;
@@ -19,6 +20,7 @@ import com.main.glory.model.program.request.UpdateProgramWithProgramRecord;
 import com.main.glory.model.program.response.GetAllProgram;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.UserData;
 import com.main.glory.services.ProgramServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ import java.util.Optional;
 @Service("programServiceImpl")
 public class ProgramServiceImpl implements ProgramServiceInterface {
 
+    @Autowired
+    UserDao userDao;
     @Autowired
     private ProgramDao programDao;
 
@@ -125,17 +129,39 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             }
         }
         else if(getBy.equals("group")){
-            programList = programDao.findByUserHeadId(id);
-            for (Program e : programList) {
-                GetAllProgram programData;
-                if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
-                {
-                    Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                    Optional<Party> party = partyDao.findById(e.getPartyId());
-                    programData=new GetAllProgram(e,party.get(),quality.get());
-                    getAllProgramList.add(programData);
+            UserData userData = userDao.findUserById(id);
+            if(userData.getUserHeadId().equals(0l)) {
+                //master
+                programList = programDao.findByUserHeadId(id);
+                for (Program e : programList) {
+                    GetAllProgram programData;
+                    if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
+                    {
+                        Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                        Optional<Party> party = partyDao.findById(e.getPartyId());
+                        programData=new GetAllProgram(e,party.get(),quality.get());
+                        getAllProgramList.add(programData);
+                    }
                 }
             }
+            else
+            {
+                //operator
+                programList = programDao.findByUserHeadIdAndCreatedId(userData.getId(),userData.getUserHeadId());
+                for (Program e : programList) {
+                    GetAllProgram programData;
+                    if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
+                    {
+                        Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                        Optional<Party> party = partyDao.findById(e.getPartyId());
+                        programData=new GetAllProgram(e,party.get(),quality.get());
+                        getAllProgramList.add(programData);
+                    }
+                }
+
+            }
+
+
         }
 
 

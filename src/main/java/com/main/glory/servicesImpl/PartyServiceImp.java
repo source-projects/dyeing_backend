@@ -81,7 +81,7 @@ public class PartyServiceImp implements PartyServiceInterface{
 		else if(getBy.equals("group")){
 			//identify is the user first is master or operator
 			UserData userData = userDao.findUserById(id);
-			if(userData.getUserHeadId()==0) {
+			if(userData.getUserHeadId().equals(0l)) {
 				//master
 				partyDetailsList=partyDao.findByUserHeadId(id);
 			}
