@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
@@ -13,6 +14,7 @@ import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.user.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ import com.main.glory.services.QualityServiceInterface;
 
 @Service("qualityServiceImp")
 public class QualityServiceImp implements QualityServiceInterface{
+
+	@Autowired
+	UserDao userDao;
 
 	@Autowired
 	private QualityDao qualityDao;
@@ -61,9 +66,22 @@ public class QualityServiceImp implements QualityServiceInterface{
 			quality = modelMapper.map(qualityListobject, List.class);
 		}
 		else if(getBy.equals("group")){
-			qualityListobject=qualityDao.findAllWithPartyNameByUserHeadId(id);
-			modelMapper.getConfiguration().setAmbiguityIgnored(true);
-			quality = modelMapper.map(qualityListobject, List.class);
+			UserData userData = userDao.findUserById(id);
+			if(userData.getUserHeadId()==0) {
+				//master
+				qualityListobject=qualityDao.findAllWithPartyNameByUserHeadId(id);
+				modelMapper.getConfiguration().setAmbiguityIgnored(true);
+				quality = modelMapper.map(qualityListobject, List.class);
+			}
+			else
+			{
+				//operator
+				qualityListobject=qualityDao.findAllWithPartyByCreatedAndHeadId(userData.getId(),userData.getUserHeadId());
+				modelMapper.getConfiguration().setAmbiguityIgnored(true);
+				quality = modelMapper.map(qualityListobject, List.class);
+
+			}
+
 		}
 		else if(getBy.equals("own")){
 			qualityListobject=qualityDao.findAllWithPartyNameByCreatedBy(id);

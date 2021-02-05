@@ -11,6 +11,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.document.request.ToEmailList;
@@ -18,6 +19,7 @@ import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.user.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.Part;
@@ -33,6 +35,9 @@ public class PartyServiceImp implements PartyServiceInterface{
 
 	@Autowired
 	private PartyDao partyDao;
+
+	@Autowired
+	UserDao userDao;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -74,7 +79,19 @@ public class PartyServiceImp implements PartyServiceInterface{
 			partyDetailsList=partyDao.getAllParty();
 		}
 		else if(getBy.equals("group")){
-			partyDetailsList=partyDao.findByUserHeadId(id);
+			//identify is the user first is master or operator
+			UserData userData = userDao.findUserById(id);
+			if(userData.getUserHeadId()==0) {
+				//master
+				partyDetailsList=partyDao.findByUserHeadId(id);
+			}
+			else
+			{
+				//operator
+				partyDetailsList=partyDao.findByCreatedByAndUserHeadId(userData.getId(),userData.getUserHeadId());
+			}
+
+
 		}
 		else if(getBy.equals("own")){
 			partyDetailsList=partyDao.findByCreatedBy(id);

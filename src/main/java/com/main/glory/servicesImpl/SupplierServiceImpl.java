@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
@@ -9,6 +10,7 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
+import com.main.glory.model.user.UserData;
 import com.main.glory.services.SupplierServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     EntityManager entityManager;
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    UserDao userDao;
 
 
     @Override
@@ -145,7 +150,17 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             s = supplierDao.findAllWithoutRatesByCreatedBy(id);
         }
         else if(getBy.equals("group")){
-            s = supplierDao.findAllWithoutRatesByUserHeadId(id);
+            UserData userData = userDao.findUserById(id);
+            if(userData.getUserHeadId()==0) {
+                //master
+                s = supplierDao.findAllWithoutRatesByUserHeadId(id);
+            }
+            else
+            {
+                //operator
+                s = supplierDao.findAllWithoutRatesByUserHeadIdAndCreatedBy(userData.getId(),userData.getUserHeadId());
+            }
+
         }
 
         if(s.isEmpty())
