@@ -12,6 +12,7 @@ import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,8 @@ public class StockBatchServiceImpl {
     BatchDao batchDao;
 
 
+    @Autowired
+    QualityServiceImp qualityServiceImp;
     @Autowired
     PartyDao partyDao;
 
@@ -992,5 +995,32 @@ public class StockBatchServiceImpl {
         StockMast stockMast = stockMastDao.findByStockId(stockId);
 
         return stockMast;
+    }
+
+    public List<GetAllBatch> getAllBatchWithoutFilter() throws Exception {
+        List<GetAllBatch> list =new ArrayList<>();
+        List<GetBatchWithControlId> data = batchDao.getAllBatchQty();//get all batches without any filter
+
+        for(GetBatchWithControlId batch : data)
+        {
+            StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
+            if(stockMast==null)
+                continue;
+
+            GetQualityResponse quality=qualityServiceImp.getQualityByID(stockMast.getQualityId());
+            if (quality==null)
+                continue;
+
+            Party party = partyDao.findByPartyId(stockMast.getQualityId());
+            if(party==null)
+                continue;
+
+            GetAllBatch getAllBatch=new GetAllBatch(party,quality,batch);
+            list.add(getAllBatch);
+
+        }
+        if(list.isEmpty())
+            throw new Exception("no data found");
+        return list;
     }
 }
