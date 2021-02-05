@@ -202,7 +202,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		}
 		else if(getBy.equals("group")){
 			UserData userData = userDao.findUserById(id);
-			if(userData.getUserHeadId()==0) {
+			if(userData.getUserHeadId().equals(0l)) {
 				//master
 				shadeMastList = shadeMastDao.findAllByUserHeadId(id);
 				for (ShadeMast e : shadeMastList) {

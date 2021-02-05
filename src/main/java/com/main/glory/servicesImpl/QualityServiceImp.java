@@ -67,7 +67,7 @@ public class QualityServiceImp implements QualityServiceInterface{
 		}
 		else if(getBy.equals("group")){
 			UserData userData = userDao.findUserById(id);
-			if(userData.getUserHeadId()==0) {
+			if(userData.getUserHeadId().equals(0l)) {
 				//master
 				qualityListobject=qualityDao.findAllWithPartyNameByUserHeadId(id);
 				modelMapper.getConfiguration().setAmbiguityIgnored(true);
