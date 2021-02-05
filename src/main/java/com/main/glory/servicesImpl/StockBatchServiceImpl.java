@@ -1003,7 +1003,9 @@ public class StockBatchServiceImpl {
 
         for(GetBatchWithControlId batch : data)
         {
-            System.out.println("batchwt:"+batch.getWT());
+
+            //System.out.println("batchwt:"+batch.getWT());
+
             StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
             if(stockMast==null)
                 continue;
@@ -1012,7 +1014,7 @@ public class StockBatchServiceImpl {
             if (quality==null)
                 continue;
 
-            Party party = partyDao.findByPartyId(stockMast.getQualityId());
+            Party party = partyDao.findByPartyId(stockMast.getPartyId());
             if(party==null)
                 continue;
 
