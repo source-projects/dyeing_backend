@@ -201,9 +201,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			}
 		}
 		else if(getBy.equals("group")){
-			UserData userData = userDao.findUserById(id);
-			if(userData.getUserHeadId().equals(0l)) {
-				//master
+			//always receing user head from fe
 				shadeMastList = shadeMastDao.findAllByUserHeadId(id);
 				for (ShadeMast e : shadeMastList) {
 					GetAllShade getShade =  new GetAllShade();
@@ -230,39 +228,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 						getAllShadesList.add(getShade);
 
-					}
-				}
-			}
-			else
-			{
-				//operator
-				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(userData.getId(),userData.getUserHeadId());
-				for (ShadeMast e : shadeMastList) {
-					GetAllShade getShade =  new GetAllShade();
-					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
-					{
-						Optional<Party> party = partyDao.findById(e.getPartyId());
-						Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
-						if(!qualityName.isPresent())
-							continue;
-						if(!party.isPresent())
-							continue;
-						getShade.setPartyName(party.get().getPartyName());
-						getShade.setQualityName(qualityName.get().getQualityName());
-						getShade.setId(e.getId());
-						getShade.setColorTone(e.getColorTone());
-						getShade.setProcessId(e.getProcessId());
-						getShade.setProcessName(e.getProcessName());
-						getShade.setPartyShadeNo(e.getPartyShadeNo());
-						getShade.setQualityId(qualityName.get().getQualityId());
-						getShade.setPartyId(party.get().getId());
-						getShade.setUserHeadId(e.getUserHeadId());
-						getShade.setCreatedBy(e.getCreatedBy());
-						getShade.setQualityEntryId(qualityName.get().getId());
 
-						getAllShadesList.add(getShade);
-
-					}
 				}
 			}
 

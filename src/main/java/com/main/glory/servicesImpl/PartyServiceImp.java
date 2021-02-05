@@ -31,244 +31,224 @@ import com.main.glory.model.party.Party;
 import com.main.glory.services.PartyServiceInterface;
 
 @Service("partyServiceImp")
-public class PartyServiceImp implements PartyServiceInterface{
+public class PartyServiceImp implements PartyServiceInterface {
 
-	@Autowired
-	private PartyDao partyDao;
+    @Autowired
+    private PartyDao partyDao;
 
-	@Autowired
-	UserDao userDao;
+    @Autowired
+    UserDao userDao;
 
-	@Autowired
-	ModelMapper modelMapper;
+    @Autowired
+    ModelMapper modelMapper;
 
-	public void saveParty(AddParty party) throws Exception {
-		modelMapper.getConfiguration().setAmbiguityIgnored(true);
-		if(party!=null)
-		{
-			Party partyData = new Party(party);
+    public void saveParty(AddParty party) throws Exception {
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        if (party != null) {
+            Party partyData = new Party(party);
 
-			if(party.getGSTIN().isEmpty())
-			{
-				partyDao.save(partyData);
-				return;
-			}
+            if (party.getGSTIN().isEmpty()) {
+                partyDao.save(partyData);
+                return;
+            }
 
 
-			if(party.getPartyCode().length()>4)
-				throw new Exception("Party code should not be greater than 4 digit");
+            if (party.getPartyCode().length() > 4)
+                throw new Exception("Party code should not be greater than 4 digit");
 
-			Optional<Party> gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
-			Optional<Party> partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
+            Optional<Party> gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
+            Optional<Party> partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
 
-			if(gstAvailable.isPresent())
-				throw new Exception("GST No."+party.getGSTIN()+" is already exist");
+            if (gstAvailable.isPresent())
+                throw new Exception("GST No." + party.getGSTIN() + " is already exist");
 
-			if(partyCodeAvailable.isPresent())
-				throw new Exception("Party is availble with code:"+party.getPartyCode());
+            if (partyCodeAvailable.isPresent())
+                throw new Exception("Party is availble with code:" + party.getPartyCode());
 
-			partyDao.save(partyData);
+            partyDao.save(partyData);
 
-		}
-	}
-
-	@Override
-	public List<Party> getAllPartyDetails(Long id,String getBy) throws Exception{
-		List<Party> partyDetailsList = null;
-		if(id == null){
-			partyDetailsList=partyDao.getAllParty();
-		}
-		else if(getBy.equals("group")){
-			//identify is the user first is master or operator
-			UserData userData = userDao.findUserById(id);
-			if(userData.getUserHeadId().equals(0l)) {
-				//master
-				partyDetailsList=partyDao.findByUserHeadId(id);
-			}
-			else
-			{
-				//operator
-				partyDetailsList=partyDao.findByCreatedByAndUserHeadId(userData.getId(),userData.getUserHeadId());
-			}
-
-
-		}
-		else if(getBy.equals("own")){
-			partyDetailsList=partyDao.findByCreatedBy(id);
-		}
-		if (partyDetailsList.isEmpty())
-			throw new Exception("no data found");
-		return partyDetailsList;
-	}
-
-	@Override
-	public Party getPartyDetailById(Long id) throws Exception{
-		var partyData=partyDao.findById(id);
-		if(partyData.isEmpty())
-			throw new Exception("no data found");
-		else
-			return partyData.get();
-	}
-
-	@Override
-	public boolean editPartyDetails(Party party) throws Exception {
-  		var partyIndex= partyDao.findById(party.getId());
-  		Optional<Party> party1 = partyDao.findByPartyCode(party.getPartyCode());
-  		if(!partyIndex.isPresent())
-  			throw new Exception("Party data not found for id:"+party.getId());
-
-  		if(party1.isPresent() && party1.get().getId()!=party.getId())
-  			throw new Exception("Party code should be unique");
-
-  		if(party.getGSTIN().isEmpty())
-		{
-			partyDao.save(party);
-			return true;
-		}
-
-
-  		party1=partyDao.findByGSTIN(party.getGSTIN());
-
-  		if(party1.isPresent() && party1.get().getId()!=party.getId())
-  			throw new Exception("GST is already availble");
-
-		if(!partyIndex.isPresent())
-		return false;
-		else
-		partyDao.save(party);
-		  return true;	
-	}
-
-	@Override
-	public boolean deletePartyById(Long id) {
-
-  		var partyIndex= partyDao.findById(id);
-		if(!partyIndex.isPresent())
-		return false;
-		else
-		partyDao.deleteById(id);
-		 return true;	
-	}
-
-	@Override
-	public String getPartyNameByPartyId(Long partyId) {
-		String partyName=partyDao.getPartyNameByPartyId(partyId);
-		return partyName;
-	}
-
-    public List<PartyWithName> getAllPartyNameWithId() {
-		try {
-			List<Party> partyAll = partyDao.getAllParty();
-
-			List<PartyWithName> partyWithNameList = new ArrayList<>();
-			if(!partyAll.isEmpty()) {
-				partyAll.forEach(e ->
-				{
-					PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName());
-					//System.out.println(partyWithName.getId());
-					partyWithNameList.add(partyWithName);
-				});
-			}
-			return partyWithNameList;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+        }
     }
 
-    public List<PartyWithPartyCode> getAllPartyNameWithPartyCode() throws Exception{
-		List<PartyWithPartyCode> partyWithPartyCodesList =new ArrayList<>();
-		List<Party> partyList = partyDao.getAllParty();
-		for(Party party:partyList)
-		{
-			if(party.getPartyCode()!=null)
-			{
-				PartyWithPartyCode partyWithPartyCode = new PartyWithPartyCode(party);
-				partyWithPartyCodesList.add(partyWithPartyCode);
+    @Override
+    public List<Party> getAllPartyDetails(Long id, String getBy) throws Exception {
+        List<Party> partyDetailsList = null;
+        if (id == null) {
+            partyDetailsList = partyDao.getAllParty();
+        } else if (getBy.equals("group")) {
+            //always user head receivinf fromm fe
 
-			}
-		}
-		if(partyWithPartyCodesList.isEmpty())
-			throw new Exception("Data not added yet");
+            partyDetailsList = partyDao.findByUserHeadId(id);
 
-		return partyWithPartyCodesList;
+        } else if (getBy.equals("own")) {
+            partyDetailsList = partyDao.findByCreatedBy(id);
+        }
+        if (partyDetailsList.isEmpty())
+            throw new Exception("no data found");
+        return partyDetailsList;
+    }
+
+    @Override
+    public Party getPartyDetailById(Long id) throws Exception {
+        var partyData = partyDao.findById(id);
+        if (partyData.isEmpty())
+            throw new Exception("no data found");
+        else
+            return partyData.get();
+    }
+
+    @Override
+    public boolean editPartyDetails(Party party) throws Exception {
+        var partyIndex = partyDao.findById(party.getId());
+        Optional<Party> party1 = partyDao.findByPartyCode(party.getPartyCode());
+        if (!partyIndex.isPresent())
+            throw new Exception("Party data not found for id:" + party.getId());
+
+        if (party1.isPresent() && party1.get().getId() != party.getId())
+            throw new Exception("Party code should be unique");
+
+        if (party.getGSTIN().isEmpty()) {
+            partyDao.save(party);
+            return true;
+        }
+
+
+        party1 = partyDao.findByGSTIN(party.getGSTIN());
+
+        if (party1.isPresent() && party1.get().getId() != party.getId())
+            throw new Exception("GST is already availble");
+
+        if (!partyIndex.isPresent())
+            return false;
+        else
+            partyDao.save(party);
+        return true;
+    }
+
+    @Override
+    public boolean deletePartyById(Long id) {
+
+        var partyIndex = partyDao.findById(id);
+        if (!partyIndex.isPresent())
+            return false;
+        else
+            partyDao.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public String getPartyNameByPartyId(Long partyId) {
+        String partyName = partyDao.getPartyNameByPartyId(partyId);
+        return partyName;
+    }
+
+    public List<PartyWithName> getAllPartyNameWithId() {
+        try {
+            List<Party> partyAll = partyDao.getAllParty();
+
+            List<PartyWithName> partyWithNameList = new ArrayList<>();
+            if (!partyAll.isEmpty()) {
+                partyAll.forEach(e ->
+                {
+                    PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName());
+                    //System.out.println(partyWithName.getId());
+                    partyWithNameList.add(partyWithName);
+                });
+            }
+            return partyWithNameList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<PartyWithPartyCode> getAllPartyNameWithPartyCode() throws Exception {
+        List<PartyWithPartyCode> partyWithPartyCodesList = new ArrayList<>();
+        List<Party> partyList = partyDao.getAllParty();
+        for (Party party : partyList) {
+            if (party.getPartyCode() != null) {
+                PartyWithPartyCode partyWithPartyCode = new PartyWithPartyCode(party);
+                partyWithPartyCodesList.add(partyWithPartyCode);
+
+            }
+        }
+        if (partyWithPartyCodesList.isEmpty())
+            throw new Exception("Data not added yet");
+
+        return partyWithPartyCodesList;
     }
 
     public Boolean partyCodeExistOrNot(String partyCode) {
 
-		Optional<Party> party = partyDao.findByPartyCode(partyCode);
+        Optional<Party> party = partyDao.findByPartyCode(partyCode);
 
-		if(!party.isPresent())
-			return true;
+        if (!party.isPresent())
+            return true;
 
-		return false;
+        return false;
     }
 
     //send pdf for mail
-	public void sendPdfForParty(GetDocumentModel documentModel) throws Exception {
-		String fileName = "party.pdf";
-		File f=new File(fileName);
-		f.createNewFile();
-		Document document = new Document();
-		PdfWriter.getInstance(document, new FileOutputStream(fileName));//file is created, where the project filder is
-		document.open();
+    public void sendPdfForParty(GetDocumentModel documentModel) throws Exception {
+        String fileName = "party.pdf";
+        File f = new File(fileName);
+        f.createNewFile();
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(fileName));//file is created, where the project filder is
+        document.open();
 
 
-		//Add the data
-		PdfPTable table = new PdfPTable(5);
-		PdfPCell partyName = new PdfPCell(new Phrase("Party Name"));
-		table.addCell(partyName);
-		PdfPCell partyAddress = new PdfPCell(new Phrase("Address"));
-		table.addCell(partyAddress);
-		PdfPCell partyContact = new PdfPCell(new Phrase("Contact no"));
-		table.addCell(partyContact);
-		PdfPCell partyCity = new PdfPCell(new Phrase("City"));
-		table.addCell(partyCity);
-		PdfPCell partyState = new PdfPCell(new Phrase("State"));
-		table.addCell(partyState);
-		table.setHeaderRows(1);
+        //Add the data
+        PdfPTable table = new PdfPTable(5);
+        PdfPCell partyName = new PdfPCell(new Phrase("Party Name"));
+        table.addCell(partyName);
+        PdfPCell partyAddress = new PdfPCell(new Phrase("Address"));
+        table.addCell(partyAddress);
+        PdfPCell partyContact = new PdfPCell(new Phrase("Contact no"));
+        table.addCell(partyContact);
+        PdfPCell partyCity = new PdfPCell(new Phrase("City"));
+        table.addCell(partyCity);
+        PdfPCell partyState = new PdfPCell(new Phrase("State"));
+        table.addCell(partyState);
+        table.setHeaderRows(1);
 
-		List<Party> party = partyDao.getAllParty();
+        List<Party> party = partyDao.getAllParty();
 
-		if(documentModel.getToRow()>party.size())
-			throw new Exception("Party size is :"+party.size());
+        if (documentModel.getToRow() > party.size())
+            throw new Exception("Party size is :" + party.size());
 
-		for (int i =documentModel.getFromRow().intValue()-1 ; i < (documentModel.getToRow()); i++) {
+        for (int i = documentModel.getFromRow().intValue() - 1; i < (documentModel.getToRow()); i++) {
 
-			//System.out.println(party.get(i).getPartyName());
-			table.addCell(party.get(i).getPartyName());
-			table.addCell(party.get(i).getPartyAddress1());
-			table.addCell(party.get(i).getContactNo());
-			table.addCell(party.get(i).getCity());
-			table.addCell(party.get(i).getCity());
+            //System.out.println(party.get(i).getPartyName());
+            table.addCell(party.get(i).getPartyName());
+            table.addCell(party.get(i).getPartyAddress1());
+            table.addCell(party.get(i).getContactNo());
+            table.addCell(party.get(i).getCity());
+            table.addCell(party.get(i).getCity());
 
-		}
+        }
 
-		document.add(table);
-		document.close();
-
-
-		//______Document created successfully
+        document.add(table);
+        document.close();
 
 
+        //______Document created successfully
 
-		//Send mail
 
-		for(ToEmailList toEmailList:documentModel.getToEmailList())
-		{
-			System.out.println("To:"+toEmailList.getToEmail());
-			SendEmail email=new SendEmail(toEmailList.getToEmail(), fileName,documentModel.getSubjectEmail(),documentModel.getSendText());
-			email.sendMail();
+        //Send mail
 
-		}
+        for (ToEmailList toEmailList : documentModel.getToEmailList()) {
+            System.out.println("To:" + toEmailList.getToEmail());
+            SendEmail email = new SendEmail(toEmailList.getToEmail(), fileName, documentModel.getSubjectEmail(), documentModel.getSendText());
+            email.sendMail();
 
-	}
+        }
+
+    }
 
     public Party getPartyById(Long id) {
-		Party party = partyDao.findByPartyId(id);
-		return party;
+        Party party = partyDao.findByPartyId(id);
+        return party;
 
     }
 }

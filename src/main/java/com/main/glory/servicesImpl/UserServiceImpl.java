@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserServiceInterface {
 
 
     public UserData getUserById(Long id) {
-        var data=userDao.findById(id);
-        if(data.isEmpty())
+        var data = userDao.findById(id);
+        if (data.isEmpty())
             return null;
         else
             return data.get();
@@ -49,15 +49,14 @@ public class UserServiceImpl implements UserServiceInterface {
 
     public void createUser(UserAddRequest userDataDto) throws Exception {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        UserData userData =  modelMapper.map(userDataDto, UserData.class);
+        UserData userData = modelMapper.map(userDataDto, UserData.class);
 
         Optional<UserData> data = userDao.findByUserName(userData.getUserName());
 
-        if(!data.isPresent()) {
+        if (!data.isPresent()) {
             Optional<Designation> designationData = designationService.getDesignationById(userDataDto.getDesignationId());
-            if(!designationData.isPresent())
-            {
-                throw new Exception("No such desgination found:"+userDataDto.getDesignationId());
+            if (!designationData.isPresent()) {
+                throw new Exception("No such desgination found:" + userDataDto.getDesignationId());
 
 
             }
@@ -67,17 +66,14 @@ public class UserServiceImpl implements UserServiceInterface {
             userDao.saveAndFlush(userData);
 
 
-
-        }
-       else
-        {
-            throw new Exception("User is already available with username:"+userData.getUserName());
+        } else {
+            throw new Exception("User is already available with username:" + userData.getUserName());
         }
 
 
     }
 
-    public UserData checkUser(String userName,String password) {
+    public UserData checkUser(String userName, String password) {
         return userDao.findByUserNameAndPassword(userName, password);
     }
 
@@ -98,8 +94,8 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
     public boolean deleteUserById(Long id) {
-        var userIndex= userDao.findById(id);
-        if(!userIndex.isPresent())
+        var userIndex = userDao.findById(id);
+        if (!userIndex.isPresent())
             return false;
         else
             userDao.deleteById(id);
@@ -111,54 +107,30 @@ public class UserServiceImpl implements UserServiceInterface {
     public List<getAllUserInfo> getAllUser(String getBy, Long id) {
         List<UserData> userDataList = null;
         List<getAllUserInfo> getAllUserInfoList = new ArrayList<>();
-        if(id == null){
+        if (id == null) {
             userDataList = userDao.getAllUser();
-            int i=0;
+            int i = 0;
             for (UserData e : userDataList) {
                 getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
                 getAllUserInfoList.add(userData);
             }
-        }
-        else if(getBy.equals("own")){
+        } else if (getBy.equals("own")) {
             userDataList = userDao.findAllByCreatedBy(id);
-            int i=0;
+            int i = 0;
             for (UserData e : userDataList) {
                 getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
                 getAllUserInfoList.add(userData);
             }
-        }
-        else if(getBy.equals("group")){
-            //identify is the user first is master or operator
-            UserData userData = userDao.findUserById(id);
-            if(userData.getUserHeadId().equals(0l))
-            {
-                //master
-                userDataList = userDao.findAllByUserHeadId(id);
-                int i=0;
-                for (UserData e : userDataList) {
-                    getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
-                    getAllUserInfoList.add(userData1);
-                }
+        } else if (getBy.equals("group")) {
 
-            }
-            else
-            {
-                //operator
-                userDataList = userDao.findByUserAndHeadId(userData.getUserHeadId(),userData.getId());
-                int i=0;
-                for (UserData e : userDataList) {
-                    getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
-                    getAllUserInfoList.add(userData1);
-                }
-
-            }
-
-            /*userDataList = userDao.findAllByUserHeadId(id);
-            int i=0;
+            userDataList = userDao.findAllByUserHeadId(id);
+            int i = 0;
             for (UserData e : userDataList) {
-                getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
-                getAllUserInfoList.add(userData);
-            }*/
+                getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
+                getAllUserInfoList.add(userData1);
+            }
+
+
         }
         return getAllUserInfoList;
     }
@@ -166,18 +138,17 @@ public class UserServiceImpl implements UserServiceInterface {
     public int isAvailable(UserUpdateRequest userData) throws Exception {
 
         var userData1 = userDao.findById(userData.getId());
-        if(!userData1.isPresent())
-        {
+        if (!userData1.isPresent()) {
             return 0;
         }
-        UserData userData2 =  modelMapper.map(userData, UserData.class);
+        UserData userData2 = modelMapper.map(userData, UserData.class);
         Optional<Designation> d = designationService.getDesignationById(userData.getDesignationId());
-        if(d.isPresent()) {
+        if (d.isPresent()) {
             Optional<Designation> designation = designationDao.findById(userData.getDesignationId());
-            if(designation.isPresent())
+            if (designation.isPresent())
                 userData1.get().setDesignationId(designation.get());
             else
-                throw new Exception("Wrong designation id"+userData1.get().getDesignationId());
+                throw new Exception("Wrong designation id" + userData1.get().getDesignationId());
 
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
@@ -190,41 +161,39 @@ public class UserServiceImpl implements UserServiceInterface {
             userData1.get().setUpdatedBy(userData.getUpdatedBy());
             userData1.get().setUserPermissionData(userData.getUserPermissionData());
             userDao.save(userData1.get());
-        }
-        else
-            throw new Exception("Wrong designation id"+userData2.getId());
+        } else
+            throw new Exception("Wrong designation id" + userData2.getId());
 
         return 1;
     }
 
     public List<GetAllOperator> getAllOperator() throws Exception {
 
-        List<GetAllOperator> getAllOperatorList=new ArrayList<>();
+        List<GetAllOperator> getAllOperatorList = new ArrayList<>();
         Designation operatoDesoignation = designationDao.findDesignationOperator();
 
-        if(operatoDesoignation==null)
+        if (operatoDesoignation == null)
             throw new Exception("no operator designation found");
 
-       List<UserData> operatorList =  userDao.findByDesignationId(operatoDesoignation.getId());
+        List<UserData> operatorList = userDao.findByDesignationId(operatoDesoignation.getId());
 
-       if(operatorList.isEmpty())
-           throw new Exception("no user found");
-
-
-       for(UserData operator:operatorList)
-       {
-           GetAllOperator getAllOperator=new GetAllOperator(operator);
-           getAllOperatorList.add(getAllOperator);
-       }
+        if (operatorList.isEmpty())
+            throw new Exception("no user found");
 
 
-       return getAllOperatorList;
+        for (UserData operator : operatorList) {
+            GetAllOperator getAllOperator = new GetAllOperator(operator);
+            getAllOperatorList.add(getAllOperator);
+        }
+
+
+        return getAllOperatorList;
 
     }
 
     public UserData getUserByUserHeadIdAndId(Long userHeadId, Long createdBy) throws Exception {
-        UserData userData=userDao.findByUserHeadIdAndUserId(userHeadId,createdBy);
-        if(userData==null)
+        UserData userData = userDao.findByUserHeadIdAndUserId(userHeadId, createdBy);
+        if (userData == null)
             throw new Exception("no user found with head id");
 
         return userData;

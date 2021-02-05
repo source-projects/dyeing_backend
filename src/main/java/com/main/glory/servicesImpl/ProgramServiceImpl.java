@@ -129,38 +129,19 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
             }
         }
         else if(getBy.equals("group")){
-            UserData userData = userDao.findUserById(id);
-            System.out.println("user head:"+userData.getUserHeadId());
-            if(userData.getUserHeadId().equals(0l)) {
-                //master
-                programList = programDao.findByUserHeadId(id);
-                for (Program e : programList) {
-                    GetAllProgram programData;
-                    if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
-                    {
-                        Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                        Optional<Party> party = partyDao.findById(e.getPartyId());
-                        programData=new GetAllProgram(e,party.get(),quality.get());
-                        getAllProgramList.add(programData);
-                    }
+            //receiving user head always
+            programList = programDao.findByUserHeadId(id);
+            for (Program e : programList) {
+                GetAllProgram programData;
+                if (e.getPartyId() != null && e.getQualityEntryId() != null) {
+                    Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                    Optional<Party> party = partyDao.findById(e.getPartyId());
+                    programData = new GetAllProgram(e, party.get(), quality.get());
+                    getAllProgramList.add(programData);
                 }
             }
-            else
-            {
-                //operator
-                programList = programDao.findByUserHeadIdAndCreatedId(userData.getId(),userData.getUserHeadId());
-                for (Program e : programList) {
-                    GetAllProgram programData;
-                    if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
-                    {
-                        Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
-                        Optional<Party> party = partyDao.findById(e.getPartyId());
-                        programData=new GetAllProgram(e,party.get(),quality.get());
-                        getAllProgramList.add(programData);
-                    }
-                }
 
-            }
+
 
 
         }

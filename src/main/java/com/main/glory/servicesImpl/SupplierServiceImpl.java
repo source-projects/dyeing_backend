@@ -42,11 +42,11 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Override
     @Transactional
-    public Boolean addSupplier(Supplier supplier){
-        try{
+    public Boolean addSupplier(Supplier supplier) {
+        try {
             supplierDao.save(supplier);
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -54,17 +54,17 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Override
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
-        try{
+        try {
             Optional<Supplier> supplierOptional = (Optional<Supplier>) supplierDao.findById(addSupplierRateRequest.getId());
-            if(!supplierOptional.isPresent()){
+            if (!supplierOptional.isPresent()) {
                 return false;
             }
             Supplier supplier = supplierOptional.get();
             Double disc = (supplier).getDiscountPercentage();
             Double gst = (supplier).getGstPercentage();
             addSupplierRateRequest.getSupplierRates().forEach(e -> {
-                e.setDiscountedRate(e.getRate() * (1 - disc/100));
-                e.setGstRate(e.getDiscountedRate() * (1 + gst/100));
+                e.setDiscountedRate(e.getRate() * (1 - disc / 100));
+                e.setGstRate(e.getDiscountedRate() * (1 + gst / 100));
                 supplier.getSupplierRates().add(e);
             });
             supplierDao.saveAndFlush(supplier);
@@ -80,9 +80,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public Optional<Supplier> getSupplier(Long id) {
         try {
 //            Supplier s = supplierDao.findById(id).get();
- //           return s;
+            //           return s;
             return supplierDao.findById(id);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -92,10 +92,10 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Override
     @Transactional
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest) {
-        try{
+        try {
             //System.out.println(updateSupplierRequest.getId());
             Supplier supplier = ((Optional<Supplier>) supplierDao.findById(updateSupplierRequest.getId())).get();
-            if(supplier == null){
+            if (supplier == null) {
                 return false;
             }
 
@@ -116,20 +116,20 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     @Override
     public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) {
-        try{
+        try {
             Long sid = updateSupplierRatesRequest.getSupplierId();
             //System.out.println("_______________"+sid);
 //            supplierRateDao.setInactive(sid);
             Optional<Supplier> temp = supplierDao.findById(sid);
-            if(temp.isEmpty()){
+            if (temp.isEmpty()) {
                 return false;
             }
             Supplier s = temp.get();
             Double disc = (s).getDiscountPercentage();
             Double gst = (s).getGstPercentage();
             updateSupplierRatesRequest.getSupplierRates().forEach(e -> {
-                e.setDiscountedRate(e.getRate() * (1 - disc/100));
-                e.setGstRate(e.getDiscountedRate() * (1 + gst/100));
+                e.setDiscountedRate(e.getRate() * (1 - disc / 100));
+                e.setGstRate(e.getDiscountedRate() * (1 + gst / 100));
             });
             s.setSupplierRates(updateSupplierRatesRequest.getSupplierRates());
             supplierDao.saveAndFlush(s);
@@ -143,45 +143,33 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Override
     public List getAllSupplier(String getBy, Long id) throws Exception {
         List s = null;
-        if(id == null){
+        if (id == null) {
             s = supplierDao.findAllWithoutRates();
-        }
-        else if(getBy.equals("own")){
+        } else if (getBy.equals("own")) {
             s = supplierDao.findAllWithoutRatesByCreatedBy(id);
-        }
-        else if(getBy.equals("group")){
-            UserData userData = userDao.findUserById(id);
-            if(userData.getUserHeadId().equals(0l)) {
-                //master
-                s = supplierDao.findAllWithoutRatesByUserHeadId(id);
-            }
-            else
-            {
-                //operator
-                s = supplierDao.findAllWithoutRatesByUserHeadIdAndCreatedBy(userData.getId(),userData.getUserHeadId());
-            }
-
+        } else if (getBy.equals("group")) {
+            s = supplierDao.findAllWithoutRatesByUserHeadId(id);
         }
 
-        if(s.isEmpty())
+        if (s.isEmpty())
             throw new Exception("data not added yet");
         return s;
     }
 
-	public Object getAllRates() {
-	    try{
-	        List<GetAllSupplierRate> getAllSupplierRateList=null;
-	        List<GetAllSupplierRatesResponse> supplierRatesResponses=null;
-	        getAllSupplierRateList = supplierRateDao.findWithSupplierName();
+    public Object getAllRates() {
+        try {
+            List<GetAllSupplierRate> getAllSupplierRateList = null;
+            List<GetAllSupplierRatesResponse> supplierRatesResponses = null;
+            getAllSupplierRateList = supplierRateDao.findWithSupplierName();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             supplierRatesResponses = modelMapper.map(getAllSupplierRateList, List.class);
-            if(supplierRatesResponses.isEmpty())
+            if (supplierRatesResponses.isEmpty())
                 throw new Exception("no data found");
 
-	        return supplierRatesResponses;
-        } catch (Exception e){
-	        e.printStackTrace();
-	        return false;
+            return supplierRatesResponses;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -192,17 +180,15 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     public List<RateAndItem> getSupplierItemAndRate(Long id) throws Exception {
         Optional<Supplier> supplier = supplierDao.findById(id);
-        if(supplier.isPresent())
-        {
-            List<RateAndItem> rateAndItemList =new ArrayList<>();
+        if (supplier.isPresent()) {
+            List<RateAndItem> rateAndItemList = new ArrayList<>();
 
             List<SupplierRate> supplierRateList = supplierRateDao.findBySupplierId(id);
-            for(SupplierRate supplierRate : supplierRateList)
-            {
+            for (SupplierRate supplierRate : supplierRateList) {
                 RateAndItem rateAndItem = new RateAndItem(supplierRate);
                 rateAndItemList.add(rateAndItem);
             }
-            if(rateAndItemList.isEmpty())
+            if (rateAndItemList.isEmpty())
                 throw new Exception("no data found");
 
             return rateAndItemList;
@@ -214,32 +200,30 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     public List<GetAllSupplierWithName> getAllSupplierName() throws Exception {
         List<GetAllSupplierWithName> s = supplierDao.findAllName();
 
-        if(s.isEmpty())
+        if (s.isEmpty())
             throw new Exception("no data found");
-       return s;
+        return s;
     }
 
     public List<GetItemWithSupplier> getAllItemWithSupplierName() throws Exception {
-        List<GetItemWithSupplier> getItemWithSupplierList=new ArrayList<>();
+        List<GetItemWithSupplier> getItemWithSupplierList = new ArrayList<>();
 
         List<ItemWithSupplier> itemWithSupplier = supplierRateDao.findAllSupplierItem();
 
-        for(ItemWithSupplier item:itemWithSupplier)
-        {
+        for (ItemWithSupplier item : itemWithSupplier) {
 
-            if(item.getSupplierId()!=null)
-            {
+            if (item.getSupplierId() != null) {
                 Optional<Supplier> supplier = supplierDao.findById(item.getSupplierId());
-                if(supplier.isEmpty())
+                if (supplier.isEmpty())
                     continue;
 
-                GetItemWithSupplier getItemWithSupplier=new GetItemWithSupplier(supplier.get(),item);
+                GetItemWithSupplier getItemWithSupplier = new GetItemWithSupplier(supplier.get(), item);
                 getItemWithSupplierList.add(getItemWithSupplier);
             }
 
         }
 
-        if(getItemWithSupplierList.isEmpty())
+        if (getItemWithSupplierList.isEmpty())
             throw new Exception("no data found");
 
         return getItemWithSupplierList;
@@ -252,9 +236,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     public String getSupplierNameByItemId(Long itemId) throws Exception {
-        String name ;
+        String name;
         name = supplierRateDao.getSupplierNameByItemId(itemId);
-        if(name.isEmpty())
+        if (name.isEmpty())
             throw new Exception("no supplier name found for given item");
         return name;
     }
