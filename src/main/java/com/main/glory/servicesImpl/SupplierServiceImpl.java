@@ -148,7 +148,16 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         } else if (getBy.equals("own")) {
             s = supplierDao.findAllWithoutRatesByCreatedBy(id);
         } else if (getBy.equals("group")) {
-            s = supplierDao.findAllWithoutRatesByUserHeadId(id);
+            UserData userData = userDao.findUserById(id);
+
+            if(userData.getUserHeadId()==0) {
+                //master user
+                s = supplierDao.findAllWithoutRatesByUserHeadIdAndCreatedBy(id,id);
+            }
+            else {
+                s = supplierDao.findAllWithoutRatesByUserHeadIdAndCreatedBy(id,userData.getUserHeadId());
+            }
+
         }
 
         if (s.isEmpty())

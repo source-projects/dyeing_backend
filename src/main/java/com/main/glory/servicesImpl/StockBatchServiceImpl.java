@@ -103,7 +103,17 @@ public class StockBatchServiceImpl {
 
         }
         else if(getBy.equals("own")){
-            data = stockMastDao.getAllStockWithPartyNameByCreatedBy(id);
+            UserData userData = userDao.findUserById(id);
+
+            if(userData.getUserHeadId()==0) {
+                //master user
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
+            }
+            else
+            {
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,userData.getUserHeadId());
+            }
+
 
         }
 

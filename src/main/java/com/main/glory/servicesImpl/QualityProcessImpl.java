@@ -5,6 +5,7 @@ import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessDataDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.quality.Quality;
@@ -15,6 +16,7 @@ import com.main.glory.model.qualityProcess.QualityProcessMast;
 import com.main.glory.model.qualityProcess.request.UpdateRequestQualityProcess;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
+import com.main.glory.model.user.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import java.util.zip.CheckedInputStream;
 @Service
 public class QualityProcessImpl {
 
+	@Autowired
+	UserDao userDao;
 	@Autowired
 	ColorServiceImpl colorService;
 
@@ -100,7 +104,16 @@ public class QualityProcessImpl {
 			q = qualityProcessMastDao.findAllByCreatedBy(id);
 		}
 		else if(getBy.equals("group")){
-			q = qualityProcessMastDao.findAllByUserHeadId(id);
+			UserData userData = userDao.findUserById(id);
+
+			if(userData.getUserHeadId()==0) {
+				//master user
+				q = qualityProcessMastDao.findAllUserHeadAndCreatedBy(id,id);
+			}
+			else
+			{
+				q = qualityProcessMastDao.findAllUserHeadAndCreatedBy(id,userData.getUserHeadId());
+			}
 		}
 
 		if(q.isEmpty())

@@ -32,4 +32,7 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     @Query("select new com.main.glory.model.supplier.Supplier(s.id, s.supplierName, s.discountPercentage, s.gstPercentage, s.remark, s.createdBy, s.createdDate, s.updatedDate, s.paymentTerms, s.updatedBy, s.userHeadId) from Supplier s where s.userHeadId = :userHeadId OR s.createdBy=:id")
     List findAllWithoutRatesByUserHeadIdAndCreatedBy(Long id, Long userHeadId);
+
+
+
 }
