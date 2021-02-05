@@ -130,7 +130,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         }
         else if(getBy.equals("group")){
             UserData userData = userDao.findUserById(id);
-            System.out.println("user head:"+userData.getUserHeadId());
+            System.out.println("user head:"+userData.getId());
             if(userData.getUserHeadId().equals(0l)) {
                 //master
                 programList = programDao.findByUserHeadId(id);
