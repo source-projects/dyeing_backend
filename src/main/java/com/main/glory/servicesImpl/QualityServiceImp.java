@@ -108,6 +108,7 @@ public class QualityServiceImp implements QualityServiceInterface {
             qualityData.get().setRemark(qualityDto.getRemark());
             qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
             qualityData.get().setQualityDate(qualityDto.getQualityDate());
+            qualityData.get().setRate(qualityDto.getRate());
             qualityDao.save(qualityData.get());
             return true;
         }

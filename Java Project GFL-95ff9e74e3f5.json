@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "java-project-gfl",
+  "private_key_id": "95ff9e74e3f5af826562ce68cd5b4171368db657",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDETG9DvOIhkvL9\n9o2DSbRnEBdRrA+X1UDEkz5W6Q+8k0L3NgzcRjQcVWpHR+upz/8rGvRJdHw9SBdl\nCtWvkbCrSZr10Usk0qyWoyRcxwCH3bWiyLnPX0gbd3OuoERW81DY+FTIKfTsJ/lE\nKHGt8wtTkjHOnsWFJQUNTxU+i5Gc+379Jd+F16x6IiPuQ6K3PiKmfy6zFu1WHQSP\nu31LnMmaj/F9g+8b1NFsO5DZar+7INxltIMLWJGH/fYlhCN6Muyyw5yxH7aVkpDu\nhIqB/tUywqJfyurln/mGXDa4BJHlYW9RLTgLOu8qMkjEr77ASbSt6cVxl2AQVVMB\n1f1HwY/HAgMBAAECggEAKLBRReCynNP5c0P2bFbMQqq2srKwHsBQ5w5AV0KDBQsf\nT9/PxZ71sUPRPko9oprfIP+60DkJgaheVQ7sYTKZRMACk16ZLV5P8P+LC4IibYc6\n3a2uujndV/goLfPBhqZzxS2gYUc1IfhdNlAN1EkzOVTt5w7JEYKta+dPF4JVogyw\nVCJDdkvpAvt1sSRWQcMhnzE2FhbY5zCg/ExGs/Qv9EpoV7dwDZXJUu3iIx6K/s00\n+B6vvzzakTpqN9nHPI8KDOU1b2+wLsXZIqOMObpMAUcc3YlfFo94BUBEIjyVpJ55\nZ0ymLPy2WDmJiJkcGNNDubf20EhvnLCa5GpXzvOVfQKBgQDu6q+xGOKcN218zCqZ\neK7Y/QtDtmdoeG7Jv50JolSISrTxUIjf44q8UsaRAf6tPvQKWR3nJKNEU2L4Qq/U\nkAqAbX8J+2E9oqsBos3TfqLUUcsrHZKyWTXzjfnE+lVxI6X7UVPmI19GzgQiKEmw\n7DMzI+SaBK62qDBHxPgDW0BO3QKBgQDSVaIIKOHRJCiQskCL7FdPkrqXQy+gpI0k\n3oyepHNYkSzEQ9zYh/9TdBj8xQt9SFtfOtS+VRwa0mK2TsYKe2tgj0RvWDRa64kZ\n0122ZT1sSz2pKrcmKp3uLJ4U3QAZCTC3O7WGOe4emEd7qlKJTVuvYUOouKH+tNSS\n/MVSoZRE8wKBgH8/Pa3sHB2po8W5E+NDlJR7SXmZ9797jT4ksOYFsFIav/5ar1vX\nW/freliXIGZzRhUQ281VBSQJ6YdiNTXYNc+rAeN2IJdsQPoRFODU7LJ6keP3zz7w\nJrz+XA4eak1k+C0/ZpkHM+KJLUhn/r+dPbO6JTIm1krwjy5aaOGYw0p9AoGAP8Yl\nJfI3XfFnt0/E0GgtpPvpRXnilAOwpBAydNuJ+b2y5CNrb9/0Y7pc5S9dp3Pr+Hjf\nDoLBzcQimAJUe9MmIJXv+w60eSjXXhQ/YtFZiV9a59MCyzi6v/+ZQtwrbmvh8HzT\nMkqYT4B+lBl1gxoIhampGRw6Sf9MQPERZ1eEnE8CgYBLL05EaoByVKVPKS7z+cMh\nq6CBV0WXWaAqmVG67S+xlrSN/cHonmJ7L4b3JXMfYw6wv3iDOwQiCzed34R7nos5\nFeaxSknJ+IwNCvX5tTg4B8wFmznTBPmzIgtbJVhZMZO5rAujMf2m9F9iy62zTKZ3\npRE0giBG2Fu28bM2MJB1cQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "java-gfl-cloud@java-project-gfl.iam.gserviceaccount.com",
+  "client_id": "100462306561399796799",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/java-gfl-cloud%40java-project-gfl.iam.gserviceaccount.com"
+}
