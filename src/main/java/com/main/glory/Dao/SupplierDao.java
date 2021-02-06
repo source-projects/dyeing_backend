@@ -34,5 +34,6 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
     List findAllWithoutRatesByUserHeadIdAndCreatedBy(Long id, Long userHeadId);
 
 
-
+    @Query("select s from Supplier s where s.id=:id")
+    Supplier findBySupplierId(Long id);
 }

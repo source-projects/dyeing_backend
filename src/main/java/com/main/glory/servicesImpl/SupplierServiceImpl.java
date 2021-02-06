@@ -55,20 +55,18 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     @Override
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
         try {
-            Optional<Supplier> supplierOptional = (Optional<Supplier>) supplierDao.findById(addSupplierRateRequest.getId());
-            if (!supplierOptional.isPresent()) {
-                return false;
+            Supplier supplierExist = supplierDao.findBySupplierId(addSupplierRateRequest.getId());
+            if(supplierExist==null)
+                throw new Exception("no supplier found");
+
+            List<SupplierRate> list=new ArrayList<>();
+            for(SupplierRate s: addSupplierRateRequest.getSupplierRates())
+            {
+                SupplierRate supplierRate=new SupplierRate(s);
+                list.add(supplierRate);
+
             }
-            Supplier supplier = supplierOptional.get();
-            Double disc = (supplier).getDiscountPercentage();
-            Double gst = (supplier).getGstPercentage();
-            addSupplierRateRequest.getSupplierRates().forEach(e -> {
-                e.setDiscountedRate(e.getRate() * (1 - disc / 100));
-                e.setGstRate(e.getDiscountedRate() * (1 + gst / 100));
-                supplier.getSupplierRates().add(e);
-            });
-            supplierDao.saveAndFlush(supplier);
-//            supplierRateDao.saveAll(addSupplierRateRequest.getSupplierRates());
+            supplierRateDao.saveAll(list);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,12 +123,6 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
                 return false;
             }
             Supplier s = temp.get();
-            Double disc = (s).getDiscountPercentage();
-            Double gst = (s).getGstPercentage();
-            updateSupplierRatesRequest.getSupplierRates().forEach(e -> {
-                e.setDiscountedRate(e.getRate() * (1 - disc / 100));
-                e.setGstRate(e.getDiscountedRate() * (1 + gst / 100));
-            });
             s.setSupplierRates(updateSupplierRatesRequest.getSupplierRates());
             supplierDao.saveAndFlush(s);
             return true;

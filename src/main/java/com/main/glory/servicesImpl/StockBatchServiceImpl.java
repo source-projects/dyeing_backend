@@ -1037,4 +1037,14 @@ public class StockBatchServiceImpl {
             throw new Exception("no data found");
         return list;
     }
+
+    public List<StockMast> getAllStockWithoutPlan() throws Exception {
+        List<StockMast> list =stockMastDao.getAllStockWithoutBatchPlanned();
+
+        if(list.isEmpty()) {
+            throw new Exception("no record found");
+        }
+
+        return list;
+    }
 }

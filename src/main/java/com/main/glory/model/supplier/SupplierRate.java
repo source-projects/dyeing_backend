@@ -27,10 +27,9 @@ public class SupplierRate {
     String itemName;
     String itemType;
     Double rate;
-    @ApiModelProperty(hidden = true)
+
     Double discountedRate;
 
-    @ApiModelProperty(hidden = true)
     Double gstRate;
     Long userHeadId;
 
