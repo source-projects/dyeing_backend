@@ -50,4 +50,7 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
  @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, (Select p.partyName from Party p where p.id = sm.partyId)) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:id")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByUserHeadIdAndCreatedBy(Long id, Long userHeadId);
+
+ @Query("select s from StockMast s where s.id=(select ss.controlId from BatchData ss where isProductionPlanned=false AND controlId IS NOT NULL AND batchId IS NOT NULL GROUP BY batchId,controlId )")
+ List<StockMast> getAllStockWithoutBatchPlanned();
 }
