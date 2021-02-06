@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface JetDataDao extends JpaRepository<JetData,Long> {
-    @Query("SELECT j from JetData j where j.controlId=:id ORDER BY j.sequence ASC")
+    @Query("SELECT j from JetData j where j.controlId=:id AND j.status!='success' ORDER BY j.sequence ASC")
     List<JetData> findByControlId(Long id);
 
 
