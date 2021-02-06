@@ -82,6 +82,7 @@ public class BasicController extends ControllerConfig {
         }
 
     }
+
     @GetMapping("/QualityAndParty/ByMaster/{userHeadId}")
     public GeneralResponse<List<PartyQuality>> ByMaster(@PathVariable(value = "userHeadId") Long userHeadId){
         try{
@@ -175,6 +176,29 @@ public class BasicController extends ControllerConfig {
         }
 
     }
+/*
+    //get the list of stock
+    @GetMapping("/stockBatch/batchListByQualityWithoutProductionPlan/{qualityId}")
+    public GeneralResponse<List<GetAllBatch>> getBatchListByQualityWithoutProductionPlan(@PathVariable(value = "qualityId") Long qualityId){
+        try{
+            if(qualityId!=null){
+                List<GetAllBatch> stockMast = stockBatchService.getBatchListByQualityWithoutProductionPlan(qualityId);
+                if(stockMast!=null){
+                    return new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                }else{
+                    return new GeneralResponse<>(null, "no data found for quality id: "+qualityId, false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+            }
+            else{
+                return new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
+        }catch(Exception e){
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+*/
+
 }
 
 
