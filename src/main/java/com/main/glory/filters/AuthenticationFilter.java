@@ -1,5 +1,6 @@
 package com.main.glory.filters;
 
+import com.main.glory.model.MappingPermission;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -44,12 +45,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		try{
 
 			// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/api")){
+		/*	if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
-			}
+			}*/
+
 
 			path = request.getRequestURI().substring(5);
+			System.out.println(path);
 			method = request.getMethod();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,31 +78,63 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				System.out.println(userPermissions);
 
 				System.out.println(path);
-				if(path.contains("party")){
-					Integer code = (Integer) userPermissions.get("pa");
-					Permissions permissions = new Permissions(code);
-					System.out.println(permissions);
-					if(method.equals("GET")){
-						if(!permissions.getView() && !permissions.getViewAll()){
-							throw new Exception("Unauthorized user");
+
+				Boolean pathFlag=false;
+				//first find the request contain which page request
+				MappingPermission mappingPermission=new MappingPermission();
+				Map<String,String> stringPath = mappingPermission.getMapping();
+				for (Map.Entry<String,String> entry : mappingPermission.getMapping().entrySet()) {
+
+					//getValue="moduleName" getKey="annottion"
+					if(path.contains(entry.getValue()))
+					{
+						pathFlag=true;
+						//if path contain then add check for that path
+						Integer code = (Integer) userPermissions.get(entry.getKey());
+						Permissions permissions = new Permissions(code);
+						System.out.println(permissions);
+						if(method.equals("GET")){
+							if(path.contains("all"))
+							{
+								if(!permissions.getViewAll() && path.contains("all"))
+								{
+									throw new Exception("Unauthorized user");
+								}
+								else if(!permissions.getView() && path.contains("own"))
+								{
+									throw new Exception("Unauthorized user");
+								}
+								else if(!permissions.getViewGroup() && path.contains("group"))
+								{
+									throw new Exception("Unauthorized user");
+								}
+
+							}
+
+						}
+						else if(method.equals("POST")){
+							if(!permissions.getAdd()){
+								throw new Exception("Unauthorized user");
+							}
+						}
+						else if(method.equals("PUT")){
+							if(!permissions.getEdit() || !permissions.getEditAll()){
+								throw new Exception("Unauthorized user");
+							}
+						}
+						else if(method.equals("DELETE")){
+							if(!permissions.getDelete() || !permissions.getDeleteAll()){
+								throw new Exception("Unauthorized user");
+							}
 						}
 					}
-					if(method.equals("POST")){
-						if(!permissions.getAdd()){
-							throw new Exception("Unauthorized user");
-						}
-					}
-					if(method.equals("PUT")){
-						if(!permissions.getEdit() && !permissions.getEditAll()){
-							throw new Exception("Unauthorized user");
-						}
-					}
-					if(method.equals("DELETE")){
-						if(!permissions.getDelete() && !permissions.getDeleteAll()){
-							throw new Exception("Unauthorized user");
-						}
-					}
+
 				}
+
+
+
+				if(pathFlag==false)
+					response.sendError(404,"page not found");
 
 			}
 
