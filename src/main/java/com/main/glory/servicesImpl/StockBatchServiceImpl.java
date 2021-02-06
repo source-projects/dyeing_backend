@@ -16,6 +16,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AutoPopulatingList;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -1039,7 +1040,21 @@ public class StockBatchServiceImpl {
     }
 
     public List<StockMast> getAllStockWithoutPlan() throws Exception {
-        List<StockMast> list =stockMastDao.getAllStockWithoutBatchPlanned();
+        List<StockMast> list =new ArrayList<>();
+        List<Long> listOfStockId =new ArrayList<>();
+        List<GetBatchWithControlId> stockIList = batchDao.getAllBatchQtyWithoutPlan();
+        for(GetBatchWithControlId getBatchWithControlId:stockIList)
+        {
+            if(!listOfStockId.contains(getBatchWithControlId.getControlId()))
+            listOfStockId.add(getBatchWithControlId.getControlId());
+        }
+
+        for(Long l : listOfStockId)
+        {
+            StockMast stockMast = stockMastDao.findByStockId(l);
+            list.add(stockMast);
+        }
+
 
         if(list.isEmpty()) {
             throw new Exception("no record found");

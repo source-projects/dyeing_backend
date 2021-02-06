@@ -92,5 +92,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<GetBatchWithControlId> getAllBatchQty();
 
 
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(b.batchId,b.controlId,SUM(b.wt) as WT,SUM(b.mtr) as MTR) from BatchData b where b.isProductionPlanned=false AND b.batchId IS NOT NULL AND b.controlId IS NOT NULL GROUP BY b.batchId,b.controlId")
+    List<GetBatchWithControlId> getAllBatchQtyWithoutPlan();
 }
 
