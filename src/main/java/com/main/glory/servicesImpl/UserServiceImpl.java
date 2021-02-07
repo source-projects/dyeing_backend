@@ -122,13 +122,27 @@ public class UserServiceImpl implements UserServiceInterface {
                 getAllUserInfoList.add(userData);
             }
         } else if (getBy.equals("group")) {
+            UserData userData = userDao.findUserById(id);
 
-            userDataList = userDao.findAllByUserHeadId(id);
-            int i = 0;
-            for (UserData e : userDataList) {
-                getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
-                getAllUserInfoList.add(userData1);
+            if(userData.getUserHeadId()==0) {
+                //master user
+                userDataList = userDao.findAllByCreatedByAndUserHeadId(id,id);
+                int i = 0;
+                for (UserData e : userDataList) {
+                    getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
+                    getAllUserInfoList.add(userData1);
+                }
             }
+            else
+            {
+                userDataList = userDao.findAllByCreatedByAndUserHeadId(id,userData.getUserHeadId());
+                int i = 0;
+                for (UserData e : userDataList) {
+                    getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
+                    getAllUserInfoList.add(userData1);
+                }
+            }
+
 
 
         }

@@ -14,4 +14,7 @@ public interface QualityProcessMastDao extends JpaRepository<QualityProcessMast,
 
     @Query("select qp from QualityProcessMast qp")
     List<QualityProcessMast> getAllQualityProcess();
+
+    @Query("select q from QualityProcessMast q where q.createdBy=:id OR q.userHeadId=:userHeadId")
+    List<QualityProcessMast> findAllUserHeadAndCreatedBy(Long id, Long userHeadId);
 }

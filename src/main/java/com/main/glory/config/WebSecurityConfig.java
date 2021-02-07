@@ -63,6 +63,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		httpSecurity.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+		httpSecurity.cors();//for cors origin
+
 	}
 
+
 }
+

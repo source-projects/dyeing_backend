@@ -102,21 +102,46 @@ public class ColorServiceImpl implements ColorServicesInterface {
                 }
             });
         } else if (getBy.equals("group")) {
-
-
-            List<ColorMast> data = colorMastDao.getAllByUserHeadId(id);
-            data.forEach(e -> {
-                try {
-                    ColorMastDetails x = new ColorMastDetails(e);
-                    String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
-                    if (!name.isEmpty()) {
-                        x.setSupplierName(name);
-                        colorMastDetails.add(x);
+            UserData userData = userDao.findUserById(id);
+            if(userData.getUserHeadId()==0)
+            {
+                //master user
+                List<ColorMast> data = colorMastDao.getAllByCreatedByAndHeadId(id,id);
+                data.forEach(e -> {
+                    try {
+                        ColorMastDetails x = new ColorMastDetails(e);
+                        String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                        if (!name.isEmpty()) {
+                            x.setSupplierName(name);
+                            colorMastDetails.add(x);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
+                });
+
+
+
+            }
+            else
+            {
+                //no operator
+                List<ColorMast> data = colorMastDao.getAllByCreatedByAndHeadId(id,userData.getUserHeadId());
+                data.forEach(e -> {
+                    try {
+                        ColorMastDetails x = new ColorMastDetails(e);
+                        String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                        if (!name.isEmpty()) {
+                            x.setSupplierName(name);
+                            colorMastDetails.add(x);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+            }
+
 
 
 
@@ -224,5 +249,13 @@ public class ColorServiceImpl implements ColorServicesInterface {
     public List<ColorBox> getColorBoxListByItemId(Long itemId) {
         List<ColorBox> list = colorDataDao.findAllIssuedBoxByItemId(itemId);
         return list;
+    }
+
+    public List<ColorBox> getAllBoxNotIssuedBoxByItemId(Long itemId) throws Exception {
+        List<ColorBox> colorBoxes = colorBoxDao.getAllNotIssuedBoxByItemId(itemId);
+        if(colorBoxes.isEmpty())
+            throw new Exception("no color box is found");
+        return colorBoxes;
+
     }
 }

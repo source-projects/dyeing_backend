@@ -64,10 +64,21 @@ public class QualityServiceImp implements QualityServiceInterface {
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             quality = modelMapper.map(qualityListobject, List.class);
         } else if (getBy.equals("group")) {
-            //receiving user head always
-            qualityListobject = qualityDao.findAllWithPartyNameByUserHeadId(id);
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            quality = modelMapper.map(qualityListobject, List.class);
+            UserData userData = userDao.findUserById(id);
+
+            if(userData.getUserHeadId()==0) {
+                //master user
+                qualityListobject = qualityDao.findAllWithPartyByCreatedAndHeadId(id,id);
+                modelMapper.getConfiguration().setAmbiguityIgnored(true);
+                quality = modelMapper.map(qualityListobject, List.class);
+            }
+            else
+            {
+                qualityListobject = qualityDao.findAllWithPartyByCreatedAndHeadId(id,userData.getUserHeadId());
+                modelMapper.getConfiguration().setAmbiguityIgnored(true);
+                quality = modelMapper.map(qualityListobject, List.class);
+            }
+
 
 
         } else if (getBy.equals("own")) {
@@ -97,6 +108,7 @@ public class QualityServiceImp implements QualityServiceInterface {
             qualityData.get().setRemark(qualityDto.getRemark());
             qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
             qualityData.get().setQualityDate(qualityDto.getQualityDate());
+            qualityData.get().setRate(qualityDto.getRate());
             qualityDao.save(qualityData.get());
             return true;
         }

@@ -46,4 +46,10 @@ public interface UserDao extends JpaRepository<UserData, Long> {
 
     @Query("select u from UserData u where u.id = :id")
     UserData findByUserAdminId(Long id);
+
+    @Query("select u from UserData u where u.id=:id")
+    UserData getUserById(Long id);
+
+    @Query("select s from UserData s where s.createdBy=:id OR s.userHeadId=:userHeadId")
+    List<UserData> findAllByCreatedByAndUserHeadId(Long id, Long userHeadId);
 }

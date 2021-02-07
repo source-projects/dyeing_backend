@@ -16,6 +16,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AutoPopulatingList;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -103,13 +104,24 @@ public class StockBatchServiceImpl {
 
         }
         else if(getBy.equals("own")){
+
             data = stockMastDao.getAllStockWithPartyNameByCreatedBy(id);
 
         }
 
         else if(getBy.equals("group")){
 
-                data = stockMastDao.getAllStockWithPartyNameByUserHeadId(id);
+            UserData userData = userDao.findUserById(id);
+
+            if(userData.getUserHeadId()==0) {
+                //master user
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
+            }
+            else
+            {
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,userData.getUserHeadId());
+            }
+
 
         }
         if(data.isEmpty()) throw new Exception("no data found");
@@ -1024,6 +1036,30 @@ public class StockBatchServiceImpl {
         }
         if(list.isEmpty())
             throw new Exception("no data found");
+        return list;
+    }
+
+    public List<StockMast> getAllStockWithoutPlan() throws Exception {
+        List<StockMast> list =new ArrayList<>();
+        List<Long> listOfStockId =new ArrayList<>();
+        List<GetBatchWithControlId> stockIList = batchDao.getAllBatchQtyWithoutPlan();
+        for(GetBatchWithControlId getBatchWithControlId:stockIList)
+        {
+            if(!listOfStockId.contains(getBatchWithControlId.getControlId()))
+            listOfStockId.add(getBatchWithControlId.getControlId());
+        }
+
+        for(Long l : listOfStockId)
+        {
+            StockMast stockMast = stockMastDao.findByStockId(l);
+            list.add(stockMast);
+        }
+
+
+        if(list.isEmpty()) {
+            throw new Exception("no record found");
+        }
+
         return list;
     }
 }

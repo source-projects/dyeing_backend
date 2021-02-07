@@ -56,6 +56,7 @@ public class JwtUtil {
 			claims.put("permissions", user.getUserPermissionData());
 			claims.put("designation", user.getDesignationId().getDesignation());
 			claims.put("userHeadId", user.getUserHeadId());
+			claims.put("id",user.getId());
 			claims.put("userName", user.getUserName());
 
 		} else if(tokenType.equals("refreshToken")) {

@@ -33,6 +33,7 @@ public class QualityController extends ControllerConfig {
 
     @PostMapping(value = "/quality")
     public GeneralResponse<Boolean> saveQuality(@RequestBody AddQualityRequest quality) {
+        GeneralResponse<Boolean> result;
         try{
 
             Optional<Party> party = partyDao.findById(quality.getPartyId());
@@ -42,12 +43,13 @@ public class QualityController extends ControllerConfig {
 
             int flag = qualityServiceImp.saveQuality(quality);
             if (flag == 1)
-                return new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             else
-                return new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return result;
     }
 
     @GetMapping(value = "/quality/all/{getBy}/{id}")
