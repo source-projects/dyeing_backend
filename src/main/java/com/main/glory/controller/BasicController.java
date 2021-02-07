@@ -67,20 +67,22 @@ public class BasicController extends ControllerConfig {
 
     @GetMapping("/Quality/ByParty/{id}")
     public GeneralResponse<PartyQuality> ByParty(@PathVariable(value = "id") Long partyId) {
+        GeneralResponse<PartyQuality> result;
         try {
 
             // String quality="sndkjabn";
             PartyQuality partyQualities = qualityServiceImp.getAllPartyWithQuality(partyId);
             if (partyQualities != null) {
-                return new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result= new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             } else {
-                return new GeneralResponse<>(null, "No data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        return result;
     }
 
     @GetMapping("/QualityAndParty/ByMaster/{userHeadId}")
