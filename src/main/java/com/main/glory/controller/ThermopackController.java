@@ -22,7 +22,7 @@ public class ThermopackController extends ControllerConfig {
     @Autowired
     ThermopackImpl thermopackService;
 
-    @PostMapping(value="/thermopack/")
+    @PostMapping(value="/machine/thermopack/")
     public GeneralResponse<Boolean> saveThermopackRecord(@RequestBody List<AddThermopackInfo> thermopackRecord) throws Exception {
         if(thermopackRecord==null)
         {
@@ -42,7 +42,7 @@ public class ThermopackController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value="/thermoPack/allMachineRecord")
+    @GetMapping(value="/machine/thermoPack/allMachineRecord")
     public GeneralResponse<List<Thermopack>> getAllMachine() throws Exception {
 
         boolean flag;
@@ -62,7 +62,7 @@ public class ThermopackController extends ControllerConfig {
         }
     }
 
-    @PostMapping(value="/thermopack/filter/")
+    @PostMapping(value="/machine/thermopack/filter/")
     public GeneralResponse<List<ThermopackFilterRecord>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
 
         boolean flag;
@@ -84,7 +84,7 @@ public class ThermopackController extends ControllerConfig {
 
 
 //record based on shift
-    @PostMapping(value="/thermopack/filter/basedOnShift/")
+    @PostMapping(value="/machine/thermopack/filter/basedOnShift/")
     public GeneralResponse<List<Thermopack>> getDataBasedOnFilter(@RequestBody ThermopackRecordBasedOnShift record) throws Exception {
 
         boolean flag;
