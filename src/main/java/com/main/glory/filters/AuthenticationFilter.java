@@ -45,10 +45,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		try{
 
 			// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/api")){
+			/*if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
-			}
+			}*/
 
 
 			path = request.getRequestURI().substring(5);
@@ -132,9 +132,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				}
 
 
-
-				if(pathFlag==false)
-					response.sendError(404,"page not found");
+				//for unrelated page request
+				/*if(pathFlag==false)
+					response.sendError(404,"page not found");*/
 
 			}
 

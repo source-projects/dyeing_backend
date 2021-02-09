@@ -38,6 +38,7 @@ public class MappingPermission {
         mapping.put("d","dispatch");
         mapping.put("bf","batch");//bf==batch finish mtr
         mapping.put("ip","machine");
+        mapping.put("wt","waterJet");
 
     }
 
