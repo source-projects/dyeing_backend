@@ -114,7 +114,7 @@ public class JetServiceImpl {
         //count the color amt to deduct
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
-/*
+
         //check the capacity first for the color box issue had that much capcity to fill the batch or not
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
@@ -123,7 +123,7 @@ public class JetServiceImpl {
             List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
 
             if(colorBoxList.isEmpty())
-                throw new Exception("please issue the box");
+                throw new Exception("please issue the box:no box is available");
 
             for(ColorBox c:colorBoxList)
             {
@@ -131,13 +131,13 @@ public class JetServiceImpl {
 
             }
             if(colorAmtToDeduct > data)
-                throw new Exception("issue the box first");
+                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data);
 
 
         }
 
 
-*/
+
         //save to jet data first check the capacity
         Double availableJetCapacity=0.0;
 
@@ -151,7 +151,7 @@ public class JetServiceImpl {
                 throw new Exception("control id can't be null ");
 
             if(addJetData.getProductionId()==null)
-                throw new Exception("prudction id can't be null ");
+                throw new Exception("pruduction id can't be null ");
 
             Optional<JetMast> jetMastExist = jetMastDao.findById(addJetData.getControlId());
 
@@ -213,6 +213,8 @@ public class JetServiceImpl {
 
 
             Optional<JetMast> jetMastExistJetMast = jetMastDao.findById(addJetData.getControlId());
+
+
             /*
 
             *********************** If all the condition is return true then perform 3 task *************
@@ -224,7 +226,7 @@ public class JetServiceImpl {
              */
 
             // 1. deduct the color amt as per the shade concentration
-/*            for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+            for(ShadeData shadeData:shadeMast.get().getShadeDataList())
             {
                 colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
                 List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
@@ -246,7 +248,7 @@ public class JetServiceImpl {
                 }
 
 
-            }*/
+            }
 
 
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
