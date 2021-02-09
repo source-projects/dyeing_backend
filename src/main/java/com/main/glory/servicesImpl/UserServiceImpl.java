@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.Request.UserAddRequest;
@@ -15,6 +16,8 @@ import com.main.glory.services.UserServiceInterface;
 import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -212,4 +215,6 @@ public class UserServiceImpl implements UserServiceInterface {
 
         return userData;
     }
+
+
 }

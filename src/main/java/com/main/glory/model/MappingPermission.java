@@ -36,10 +36,8 @@ public class MappingPermission {
         mapping.put("jp","jet");
         mapping.put("pt","paymentTerm");
         mapping.put("d","dispatch");
-        mapping.put("bf","batch");
+        mapping.put("bf","batch");//bf==batch finish mtr
         mapping.put("ip","machine");
-
-
 
     }
 

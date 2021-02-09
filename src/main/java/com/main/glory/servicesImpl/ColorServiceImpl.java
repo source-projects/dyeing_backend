@@ -252,10 +252,21 @@ public class ColorServiceImpl implements ColorServicesInterface {
     }
 
     public List<ColorBox> getAllBoxNotIssuedBoxByItemId(Long itemId) throws Exception {
-        List<ColorBox> colorBoxes = colorBoxDao.getAllNotIssuedBoxByItemId(itemId);
-        if(colorBoxes.isEmpty())
+        List<ColorBox> list = new ArrayList<>();
+
+        List<ColorData> colorData = colorDataDao.findByItemId(itemId);
+        for (ColorData c : colorData)
+        {
+            List<ColorBox> colorBoxes = colorBoxDao.getAllNotIssuedBoxByControlId(c.getId());
+            for(ColorBox colorBox:colorBoxes)
+            {
+                list.add(colorBox);
+            }
+        }
+
+        if(list.isEmpty())
             throw new Exception("no color box is found");
-        return colorBoxes;
+        return list;
 
     }
 }
