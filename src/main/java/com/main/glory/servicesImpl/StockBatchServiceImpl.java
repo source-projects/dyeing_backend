@@ -15,6 +15,9 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AutoPopulatingList;
 
@@ -1061,5 +1064,20 @@ public class StockBatchServiceImpl {
         }
 
         return list;
+    }
+
+    //pagnation example
+    public Page<StockMast> findPage(int pageno, int size)
+    {
+        Pageable pageable= PageRequest.of(pageno-1,size);
+        return stockMastDao.findAll(pageable);
+
+        //after return
+
+        /*
+
+        List<StokMast> lst =page.getContent();
+
+         */
     }
 }

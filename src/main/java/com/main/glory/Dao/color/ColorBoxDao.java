@@ -15,4 +15,7 @@ public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 
 	@Query("select c from ColorBox c where c.controlId =(select cc.id from ColorData cc where cc.itemId=:itemId) AND c.issued=false")
     List<ColorBox> getAllNotIssuedBoxByItemId(Long itemId);
+
+	@Query("select c from ColorBox c where c.controlId=:id AND c.issued=false")
+	List<ColorBox> getAllNotIssuedBoxByControlId(Long id);
 }
