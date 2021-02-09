@@ -21,7 +21,7 @@ public class DesignationController extends ControllerConfig {
     @Autowired
     private DesignationServiceImpl designationService;
 
-    @PostMapping("/designation")
+    @PostMapping("/user/designation")
     public GeneralResponse<Boolean> saveDesignation(@RequestBody Designation designationData) throws Exception{
 
         try{
@@ -40,7 +40,7 @@ public class DesignationController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/designation")
+    @GetMapping("/user/designation")
     public GeneralResponse<List<Designation>> getDesignation() throws Exception{
 
         try{
@@ -59,7 +59,7 @@ public class DesignationController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/designation/{id}")
+    @GetMapping("/user/designation/{id}")
     public GeneralResponse<Optional<Designation>> getDesignationById(@PathVariable(value = "id") Long id) throws Exception{
 
         try{
