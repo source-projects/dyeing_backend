@@ -82,7 +82,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				Boolean pathFlag=false;
 				//first find the request contain which page request
 				MappingPermission mappingPermission=new MappingPermission();
-				Map<String,String> stringPath = mappingPermission.getMapping();
+				//Map<String,String> stringPath = mappingPermission.getMapping();
 				for (Map.Entry<String,String> entry : mappingPermission.getMapping().entrySet()) {
 
 					//getValue="moduleName" getKey="annottion"

@@ -123,7 +123,7 @@ public class JetServiceImpl {
             List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
 
             if(colorBoxList.isEmpty())
-                throw new Exception("please issue the box:no box is available");
+                throw new Exception("no box is available for batch, supplier item:"+shadeData.getId());
 
             for(ColorBox c:colorBoxList)
             {
@@ -131,7 +131,7 @@ public class JetServiceImpl {
 
             }
             if(colorAmtToDeduct > data)
-                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data);
+                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+shadeData.getId());
 
 
         }
@@ -631,7 +631,7 @@ public class JetServiceImpl {
     public Boolean deleteJetDataByProductionId(Long id) throws Exception {
         JetData jetData=jetDataDao.findByProductionId(id);
         if(jetData==null) {
-            throw new Exception("production can't be deleted");
+            throw new Exception("production data not found");
         }
 
         //update the existing production from jet because the production is going to be deleted
