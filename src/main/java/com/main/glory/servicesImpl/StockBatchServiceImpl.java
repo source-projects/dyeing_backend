@@ -10,7 +10,9 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
+import com.main.glory.model.jet.JetData;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
@@ -28,6 +30,10 @@ import java.util.*;
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
 
+    @Autowired
+    JetServiceImpl jetService;
+    @Autowired
+    ProductionPlanImpl productionPlanService;
     @Autowired
     StockMastDao stockMastDao;
 
@@ -873,6 +879,7 @@ public class StockBatchServiceImpl {
             for(BatchData batchData : batch)
             {
 
+
                 if(batchData.getIsProductionPlanned()==true && batchData.getIsBillGenrated()==false) {
 
                     //Take another arraylist because it is not working with Object arrayList
@@ -903,6 +910,20 @@ public class StockBatchServiceImpl {
             {
                 if(!quality.isPresent() && !party.isPresent())
                     continue;
+
+                //first check the batch is completed from jet or not
+                //is the batch is done with jet as well
+                ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(batchName.get(x),controlId.get(x));
+
+                //is assign to jet
+                if(productionPlan.getStatus()==false)
+                    continue;
+
+                //if in jet then check in jet that batch is done with no
+                JetData jetDataProductionStatus = jetService.getJetDataByProductionId(productionPlan.getId());
+                if (jetDataProductionStatus==null || jetDataProductionStatus.getStatus().equals("success"))
+                    continue;
+
 
                 getAllBatch=new GetAllBatch(party.get(),quality.get());
                 getAllBatch.setBatchId(batchName.get(x));
@@ -1079,5 +1100,32 @@ public class StockBatchServiceImpl {
         List<StokMast> lst =page.getContent();
 
          */
+    }
+
+    //get All batch whoi's bill is not generated
+    public List<GetAllBatch> getAllBatchWithoutBillGenerated() throws Exception {
+        List<GetAllBatch> list=new ArrayList<>();
+        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
+
+        //filter the data if the batch is done with jet
+        for(GetAllBatch getAllBatch:dataList)
+        {
+            ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(getAllBatch.getBatchId(),getAllBatch.getControlId());
+
+            if(productionPlan.getStatus()==false)
+                continue;
+
+            JetData jetData = jetService.getJetDataByProductionId(productionPlan.getId());
+            if(jetData==null || jetData.getStatus().equals("success"))
+                continue;
+
+            list.add(getAllBatch);
+        }
+
+        if(list.isEmpty())
+            throw new Exception("no batch found");
+
+        return list;
+
     }
 }

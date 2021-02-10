@@ -94,7 +94,7 @@ public class BasicController extends ControllerConfig {
             if (partyQualities != null) {
                 return new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             } else {
-                return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,6 +103,27 @@ public class BasicController extends ControllerConfig {
 
     }
 
+   /* @GetMapping("/batch/getBatchWithoutBillGenerated/")
+    public GeneralResponse<List<GetAllBatch>> getAllBatchWithoutBillGenerated() {
+        GeneralResponse<List<GetAllBatch>> response;
+        try {
+            List<GetAllBatch> batchDataList = stockBatchService.getAllBatchWithoutBillGenerated();
+            if (batchDataList != null) {
+                response= new GeneralResponse<>(batchDataList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            } else {
+                response= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return response;
+
+    }
+    */
+
+
+    //get all batch who's dipatch is not created yet
     @GetMapping("/batch/ByMaster/{userHeadId}")
     public GeneralResponse<List<GetAllBatch>> GetBatchByMaster(@PathVariable(value = "userHeadId") Long userHeadId) {
         try {
@@ -110,7 +131,7 @@ public class BasicController extends ControllerConfig {
             if (batchDataList != null) {
                 return new GeneralResponse<>(batchDataList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
             } else {
-                return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "No data found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,6 +139,7 @@ public class BasicController extends ControllerConfig {
         }
 
     }
+
 
     @GetMapping("/shade/ByPartyIdAndQualityId/{partyId}/{qualityId}")
     public GeneralResponse<List<GetShadeByPartyAndQuality>> getShadeByPartyAndQuality(@PathVariable(value = "partyId") Long partyId, @PathVariable(value = "qualityId") Long qualityId) {

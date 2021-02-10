@@ -742,4 +742,11 @@ public class JetServiceImpl {
         jetMastDao.deleteByJetId(id);
         return true;
     }
+
+    public JetData getJetDataByProductionId(Long productionId) {
+
+        JetData jetData = jetDataDao.findByProductionId(productionId);
+        return jetData;
+
+    }
 }

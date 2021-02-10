@@ -1,9 +1,11 @@
 package com.main.glory.model.StockDataBatchData.response;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @AllArgsConstructor
@@ -13,6 +15,8 @@ import lombok.*;
 @ToString
 public class GetAllBatch {
 
+    @ApiModelProperty(hidden = true)
+    Double totalWt;
     Long controlId;
     String batchId;
     Boolean productionPlanned;
