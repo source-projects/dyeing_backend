@@ -52,6 +52,8 @@ public class ShadeMast {
 	//@Column(nullable = false)
 	String labColorNo;
 	String processName;
+	String acpNo;
+	Boolean pending;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -68,6 +70,8 @@ public class ShadeMast {
 
 	public ShadeMast(AddShadeMast addShadeMast)
 	{
+		this.acpNo=addShadeMast.getAcpNo();
+		this.pending=addShadeMast.getPending();
 		this.id=addShadeMast.getPartyId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();

@@ -45,10 +45,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		try{
 
 			// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/api")){
+			/*if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
-			}
+			}*/
 
 
 			path = request.getRequestURI().substring(5);
@@ -58,7 +58,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if(path.startsWith("user") || path.startsWith("login")){
+		if(path.startsWith("user") || path.startsWith("login") || path.contains("admin")){
 			chain.doFilter(request, response);
 			return;
 		}

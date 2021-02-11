@@ -23,25 +23,7 @@ public class JetController extends ControllerConfig {
     @Autowired
     JetServiceImpl jetService;
 
-    @PostMapping(value="/jet/addJet")
-    public GeneralResponse<Boolean> saveJet(@RequestBody AddJet jetMast) throws Exception {
-        if(jetMast==null)
-        {
-            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
 
-        boolean flag;
-        try {
-
-            jetService.saveJet(jetMast);
-            return new GeneralResponse<Boolean>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-
-        }
-        catch(Exception e)
-        {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @Transactional
     @PostMapping(value="/jet/addJetData")

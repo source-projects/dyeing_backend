@@ -1,6 +1,7 @@
 package com.main.glory.model.dyeingSlip;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.shade.ShadeMast;
@@ -37,6 +38,8 @@ public class DyeingSlipMast {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingSlipData> dyeingSlipDataList;
+
+    Long approvedId;
 
     public DyeingSlipMast(DyeingSlipMast dyeingSlipMastExist) {
         this.id=dyeingSlipMastExist.id;
