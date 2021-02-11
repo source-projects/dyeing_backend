@@ -6,6 +6,7 @@ import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
+import com.main.glory.model.shade.requestmodals.GetAcp;
 import com.main.glory.model.shade.requestmodals.GetAllShade;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
@@ -37,6 +38,32 @@ public class ShadeController extends ControllerConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@GetMapping("/shade/getACP")
+	public GeneralResponse<GetAcp> getAcpNumber(){
+		try {
+
+			GetAcp acp = shadeService.getAcpNumber();
+			return new GeneralResponse<>(acp, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@GetMapping("/shade/acpExist/{number}")
+	public GeneralResponse<Boolean> isACPExist(@PathVariable(name = "number")String number){
+		try {
+			Boolean acp = shadeService.isACPExist(number);
+			if(acp)
+				return new GeneralResponse<>(acp, "data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			else
+				return new GeneralResponse<>(acp, "data found", true, System.currentTimeMillis(), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

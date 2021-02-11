@@ -13,10 +13,10 @@ public class Permissions {
 	Boolean edit;
 	Boolean delete;
 	Boolean viewGroup;
-	Boolean editGroup;
-	Boolean deleteGroup;
 	Boolean viewAll;
+	Boolean editGroup;
 	Boolean editAll;
+	Boolean deleteGroup;
 	Boolean deleteAll;
 
 	public static String toBinary(int x, int len) {

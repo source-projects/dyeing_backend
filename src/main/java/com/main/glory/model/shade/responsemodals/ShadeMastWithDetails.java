@@ -23,12 +23,12 @@ public class ShadeMastWithDetails extends ShadeMast {
 	String qualityName;
 	String qualityType;
 
-	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, Long qualityId, Long partyId, String colorTone, Long createdBy, Long updatedBy, Date createdDate, Date updatedDate, Long userHeadId, Long cuttingId, String remark, String category, String labColorNo, String processName, List<ShadeData> shadeDataList, List<ProductionPlan> productionPlans) {
-		super(id, partyShadeNo, processId,  qualityId, partyId, colorTone, createdBy, updatedBy, createdDate, updatedDate, userHeadId, cuttingId, remark, category, labColorNo,processName, shadeDataList,productionPlans);
+	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, Long qualityId, Long partyId, String colorTone, Long createdBy, Long updatedBy, Date createdDate, Date updatedDate, Long userHeadId, Long cuttingId, String remark, String category, String labColorNo, String processName, List<ShadeData> shadeDataList, List<ProductionPlan> productionPlans,String acp,Boolean flag) {
+		super(id, partyShadeNo, processId,  qualityId, partyId, colorTone, createdBy, updatedBy, createdDate, updatedDate, userHeadId, cuttingId, remark, category, labColorNo,processName, acp,flag,shadeDataList,productionPlans);
 	}
 
 	public ShadeMastWithDetails(ShadeMast shadeMast) {
-		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getShadeDataList(),shadeMast.getProductionPlans());
+		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getAcpNo(),shadeMast.getPending(),shadeMast.getShadeDataList(),shadeMast.getProductionPlans());
 
 	}
 }

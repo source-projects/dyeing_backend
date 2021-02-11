@@ -28,6 +28,8 @@ public class AddShadeMast {
     String category;
     String remark;
     Long userHeadId;
+    String acpNo;
+    Boolean pending;
     List<ShadeData> shadeDataList;
 
 

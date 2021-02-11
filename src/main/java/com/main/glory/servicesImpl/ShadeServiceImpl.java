@@ -1,15 +1,14 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.QualityDao;
-import com.main.glory.Dao.ShadeDataDao;
-import com.main.glory.Dao.ShadeMastDao;
+import com.main.glory.Dao.*;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.ACP;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
+import com.main.glory.model.shade.requestmodals.GetAcp;
 import com.main.glory.model.shade.requestmodals.GetAllShade;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.model.user.UserData;
@@ -28,6 +27,9 @@ import java.util.Optional;
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl implements ShadeServicesInterface {
 
+	@Autowired
+	ACPDao acpDao;
+	
 	@Autowired
 	UserDao userDao;
 
@@ -57,28 +59,44 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	public void saveShade(AddShadeMast shadeMast) throws Exception{
 
-		Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
-		if(!quality.isPresent())
+		if (shadeMast.getPending()==true)
 		{
-			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+			if(!quality.isPresent())
+			{
+				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			}
+
+			//check the dyeing process for the shade is available or not
+
+			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+
+			ShadeMast shadeData =  new ShadeMast(shadeMast);
+
+			shadeData.setQualityEntryId(quality.get().getId());
+
+			Date dt = new Date(System.currentTimeMillis());
+
+
+			//check the ACP number
+
+			ACP numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getAcpNo().substring(3)));
+
+			if(numberExist!=null)
+				throw new Exception("number is already available");
+
+			numberExist.setPostFix(Long.parseLong(shadeMast.getAcpNo().substring(3)));
+			acpDao.save(numberExist);
+			shadeMastDao.save(shadeData);
+
+
+
+
+
 		}
 
-		//check the dyeing process for the shade is available or not
 
-		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
-		ShadeMast shadeData =  new ShadeMast(shadeMast);
-
-		shadeData.setQualityEntryId(quality.get().getId());
-
-		Date dt = new Date(System.currentTimeMillis());
-		ShadeMast x = shadeMastDao.save(shadeData);
-		shadeMast.getShadeDataList().forEach(e -> {
-			e.setControlId(x.getId());
-			e.setCreatedDate(dt);
-
-		});
-		shadeDataDao.saveAll(shadeMast.getShadeDataList());
 	}
 
 
@@ -105,8 +123,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Override
 	public Boolean updateShade(ShadeMast shadeMast) {
-		var shadeIndex = shadeMastDao.findById(shadeMast.getId());
-		if(!shadeIndex.isPresent())
+		ShadeMast shadeIndex = shadeMastDao.getShadeMastById(shadeMast.getId());
+		if(shadeIndex==null)
 			return false;
 		else{
 			try{
@@ -309,5 +327,36 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		return shadeByPartyAndQualities;
 
 
+	}
+
+	public GetAcp getAcpNumber() {
+		
+		Long number = acpDao.getAcpNumber();
+		if(number==null)
+		{
+			ACP acp =new ACP(1l);
+			ACP x = acpDao.save(acp);
+			GetAcp getAcp = new GetAcp(x);
+			return getAcp;
+
+		}
+		else
+		{
+			GetAcp x=new GetAcp(++number);
+			return x;
+		}
+
+
+	}
+
+	public Boolean isACPExist(String number) {
+
+		Long data = Long.parseLong(number.substring(3));
+
+		ACP flag = acpDao.getAcpNumberExist(data);
+		if(flag==null)
+			return true;
+		else
+			return false;
 	}
 }

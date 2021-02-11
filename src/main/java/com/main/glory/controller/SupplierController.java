@@ -22,6 +22,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class SupplierController extends ControllerConfig {
+
     @Autowired
     SupplierServiceImpl supplierService;
 
