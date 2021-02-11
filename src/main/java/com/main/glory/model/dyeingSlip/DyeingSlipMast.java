@@ -1,11 +1,6 @@
 package com.main.glory.model.dyeingSlip;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.main.glory.model.admin.ApprovedBy;
-import com.main.glory.model.dyeingProcess.DyeingProcessData;
-import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.shade.ShadeMast;
-import io.swagger.annotations.ApiModelProperty;
+import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +30,7 @@ public class DyeingSlipMast {
     String batchId;
 
 
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingSlipData> dyeingSlipDataList;
@@ -52,6 +48,16 @@ public class DyeingSlipMast {
         this.jetId=dyeingSlipMastExist.jetId;
         this.productionId=dyeingSlipMastExist.productionId;
         this.batchId=dyeingSlipMastExist.batchId;
+    }
+
+    public DyeingSlipMast(AddAdditionDyeingSlipModel addAdditionDyeingSlipModel) {
+
+        this.createdBy = addAdditionDyeingSlipModel.getCreatedBy();
+        this.updatedBy = addAdditionDyeingSlipModel.getUpdatedBy();
+        this.userHeadId = addAdditionDyeingSlipModel.getUserHeadId();
+
+        this.productionId = addAdditionDyeingSlipModel.getProductionId();
+        this.batchId = addAdditionDyeingSlipModel.getBatchId();
     }
 
 

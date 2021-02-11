@@ -15,7 +15,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Entity
-public class ACP {
+public class APC {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
@@ -23,7 +23,7 @@ public class ACP {
     Long postFix;
     Boolean status;
 
-    public ACP(Long i) {
+    public APC(Long i) {
         this.postFix=i;
     }
 }
