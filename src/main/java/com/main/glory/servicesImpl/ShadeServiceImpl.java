@@ -5,17 +5,16 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
-import com.main.glory.model.shade.ACP;
+import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
-import com.main.glory.model.shade.requestmodals.GetAcp;
+import com.main.glory.model.shade.requestmodals.GetAPC;
 import com.main.glory.model.shade.requestmodals.GetAllShade;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,7 +27,7 @@ import java.util.Optional;
 public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Autowired
-	ACPDao acpDao;
+	APCDao acpDao;
 	
 	@Autowired
 	UserDao userDao;
@@ -80,12 +79,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 			//check the ACP number
 
-			ACP numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getAcpNo().substring(3)));
+			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo().substring(3)));
 
 			if(numberExist!=null)
 				throw new Exception("number is already available");
 
-			numberExist.setPostFix(Long.parseLong(shadeMast.getAcpNo().substring(3)));
+			numberExist.setPostFix(Long.parseLong(shadeMast.getApcNo().substring(3)));
 			acpDao.save(numberExist);
 			shadeMastDao.save(shadeData);
 
@@ -329,31 +328,31 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	}
 
-	public GetAcp getAcpNumber() {
+	public GetAPC getAPCNumber() {
 		
 		Long number = acpDao.getAcpNumber();
 		if(number==null)
 		{
-			ACP acp =new ACP(1l);
-			ACP x = acpDao.save(acp);
-			GetAcp getAcp = new GetAcp(x);
+			APC acp =new APC(1l);
+			APC x = acpDao.save(acp);
+			GetAPC getAcp = new GetAPC(x);
 			return getAcp;
 
 		}
 		else
 		{
-			GetAcp x=new GetAcp(++number);
+			GetAPC x=new GetAPC(++number);
 			return x;
 		}
 
 
 	}
 
-	public Boolean isACPExist(String number) {
+	public Boolean isAPCExist(String number) {
 
 		Long data = Long.parseLong(number.substring(3));
 
-		ACP flag = acpDao.getAcpNumberExist(data);
+		APC flag = acpDao.getAcpNumberExist(data);
 		if(flag==null)
 			return true;
 		else

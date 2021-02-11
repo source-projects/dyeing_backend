@@ -1,7 +1,6 @@
 package com.main.glory.model.shade.responsemodals;
 
 import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class ShadeMastWithDetails extends ShadeMast {
 	}
 
 	public ShadeMastWithDetails(ShadeMast shadeMast) {
-		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getAcpNo(),shadeMast.getPending(),shadeMast.getShadeDataList(),shadeMast.getProductionPlans());
+		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getApcNo(),shadeMast.getPending(),shadeMast.getShadeDataList(),shadeMast.getProductionPlans());
 
 	}
 }

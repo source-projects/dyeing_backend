@@ -3,15 +3,15 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
+import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Access;
 import java.util.List;
 
 @RestController
@@ -76,6 +76,44 @@ public class DyeingSlipController extends ControllerConfig {
         return result;
     }
 
+    @GetMapping("/dyeingSlip/additionalDyeingslip/all")
+    public GeneralResponse<List<GetAllAdditionalSlip>> getAllAddtionalDyeignSlip(){
+        GeneralResponse<List<GetAllAdditionalSlip>> result;
+        try {
+
+            List<GetAllAdditionalSlip> data = dyeingSlipService.getAllAddtionalDyeignSlip();
+            if(data!=null)
+                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
+
+    //add addition dyeing slip
+    @GetMapping("/dyeingSlip/additionalDyeingSlip/")
+    public GeneralResponse<Boolean> addAddtionalDyeingSlip(@RequestBody AddAdditionDyeingSlipModel addAdditionDyeingSlipModel){
+        GeneralResponse<Boolean> result;
+        try {
+            if(addAdditionDyeingSlipModel ==null)
+            result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+
+            Boolean data = dyeingSlipService.addAddtionalSlipData(addAdditionDyeingSlipModel);
+            if(data)
+                result = new GeneralResponse<>(data, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(data, "data not added", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
 
 
 

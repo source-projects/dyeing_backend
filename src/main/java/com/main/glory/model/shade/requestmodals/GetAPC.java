@@ -1,6 +1,6 @@
 package com.main.glory.model.shade.requestmodals;
 
-import com.main.glory.model.shade.ACP;
+import com.main.glory.model.shade.APC;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,15 +10,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class GetAcp {
+public class GetAPC {
     String number;
 
-    public GetAcp(ACP x)
+    public GetAPC(APC x)
     {
         this.number = x.getPreFix()+x.getPostFix();
     }
 
-    public GetAcp(Long number) {
+    public GetAPC(Long number) {
         this.number = "ACP"+(number);
     }
 }

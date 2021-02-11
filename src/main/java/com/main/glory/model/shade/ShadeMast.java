@@ -2,8 +2,6 @@ package com.main.glory.model.shade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.program.Program;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -52,7 +50,7 @@ public class ShadeMast {
 	//@Column(nullable = false)
 	String labColorNo;
 	String processName;
-	String acpNo;
+	String apcNo;
 	Boolean pending;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -70,7 +68,7 @@ public class ShadeMast {
 
 	public ShadeMast(AddShadeMast addShadeMast)
 	{
-		this.acpNo=addShadeMast.getAcpNo();
+		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
 		this.id=addShadeMast.getPartyId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
