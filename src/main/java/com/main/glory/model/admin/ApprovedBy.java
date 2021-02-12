@@ -21,6 +21,9 @@ public class ApprovedBy {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String name;
+    String contact;
+    String email;
+
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore

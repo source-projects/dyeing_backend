@@ -37,6 +37,8 @@ public class RestoreDbController extends ControllerConfig {
         }
 
     }
+
+
     @GetMapping("/db/backup")
     public GeneralResponse<Boolean> backupDb() {
         try{
@@ -56,4 +58,25 @@ public class RestoreDbController extends ControllerConfig {
         }
 
     }
+    //clear the db except the designation
+    /*@GetMapping("/db/clearDb")
+    public GeneralResponse<Boolean> clearDb() {
+        try{
+
+
+            Boolean flag = restoreDb.clearDb();
+            if(flag)
+            {
+                return new GeneralResponse<>(true, "Db clear Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else return new GeneralResponse<>(false, "Db not cleared", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+    }*/
+
 }

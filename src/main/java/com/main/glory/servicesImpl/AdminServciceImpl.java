@@ -4,6 +4,7 @@ import com.main.glory.Dao.admin.ApproveByDao;
 import com.main.glory.Dao.admin.CompanyDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
+import com.main.glory.model.jet.request.AddJet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
 
 
     @Autowired
@@ -33,14 +35,12 @@ public class AdminServciceImpl {
 
     }
 
-    public void saveApprovedBy(String name) throws Exception {
+    public void saveApprovedBy(ApprovedBy data) throws Exception {
 
-        ApprovedBy approvedBy = approveByDao.findByApprovedByName(name);
+        ApprovedBy approvedBy = approveByDao.findByApprovedByName(data.getName());
         if(approvedBy!=null)
             throw new Exception("already data exist");
-
-        ApprovedBy approvedBy1 =new ApprovedBy(name);
-        approveByDao.save(approvedBy1);
+        approveByDao.save(data);
     }
 
     public List<ApprovedBy> getApprovedByList() {
@@ -50,4 +50,6 @@ public class AdminServciceImpl {
     public List<Company> getAllCompany() {
         return companyDao.getAllCompany();
     }
+
+
 }

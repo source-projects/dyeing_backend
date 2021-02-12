@@ -21,7 +21,6 @@ import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.responce.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -284,7 +283,7 @@ public class JetServiceImpl {
                         if (supplierRate.get().getItemType().equals("Color"))
                             slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
                         else
-                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt*jetMastExistJetMast.get().getLiquerRation()) / 1000);
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt*jetMastExistJetMast.get().getLiquorRatio()) / 1000);
                     }
 
                     slipItemLists.add(slipItemList);
@@ -714,10 +713,10 @@ public class JetServiceImpl {
 
                 //get the jet mast data
 
-                if(jetMastExist.get().getLiquerRation()==null || jetMastExist.get().getLiquerRation().equals(""))
+                if(jetMastExist.get().getLiquorRatio()==null || jetMastExist.get().getLiquorRatio().equals(""))
                     throw new Exception("jet liquer ration can't be null");
 
-                Double qty = (jetMastExist.get().getLiquerRation() * dyeingChemicalData.getConcentration() * wt) /1000;
+                Double qty = (jetMastExist.get().getLiquorRatio() * dyeingChemicalData.getConcentration() * wt) /1000;
                 item.setQty(qty);
                 itemLists.add(item);
 
@@ -739,8 +738,17 @@ public class JetServiceImpl {
 
 
     public Boolean deleteJetMastByJetId(Long id) {
-        jetMastDao.deleteByJetId(id);
-        return true;
+        try {
+            Optional<JetMast> jetMast  =jetMastDao.getJetById(id);
+            if(jetMast.isEmpty())
+                throw new Exception("no data found");
+            jetMastDao.deleteByJetId(id);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     public JetData getJetDataByProductionId(Long productionId) {
@@ -748,5 +756,20 @@ public class JetServiceImpl {
         JetData jetData = jetDataDao.findByProductionId(productionId);
         return jetData;
 
+    }
+
+    public List<AddJet> getAllJet() throws Exception {
+
+        List<AddJet> list = new ArrayList<>();
+        List<JetMast> jetMastList=jetMastDao.getAll();
+
+        if(jetMastList.isEmpty())
+            throw new Exception("no data found");
+
+        for(JetMast jetMast:jetMastList)
+        {
+            list.add(new AddJet(jetMast));
+        }
+        return list;
     }
 }
