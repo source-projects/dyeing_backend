@@ -157,7 +157,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(id == null){
 			shadeMastList = shadeMastDao.getAllShadeMast();
 			for (ShadeMast e : shadeMastList) {
-				GetAllShade getShade =  new GetAllShade();
+
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 				{
 					Optional<Party> party = partyDao.findById(e.getPartyId());
@@ -168,20 +168,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 					if(!party.isPresent())
 						continue;
 
-					getShade.setPartyName(party.get().getPartyName());
-					getShade.setQualityName(qualityName.get().getQualityName());
-					getShade.setId(e.getId());
-					getShade.setColorTone(e.getColorTone());
-					getShade.setProcessId(e.getProcessId());
-					getShade.setProcessName(e.getProcessName());
-					getShade.setPartyShadeNo(e.getPartyShadeNo());
-					getShade.setQualityId(qualityName.get().getQualityId());
-					getShade.setPartyId(party.get().getId());
-					getShade.setUserHeadId(e.getUserHeadId());
-					getShade.setCreatedBy(e.getCreatedBy());
-					getShade.setQualityEntryId(qualityName.get().getId());
-
-					getAllShadesList.add(getShade);
+					getAllShadesList.add(new GetAllShade(e,party,qualityName));
 
 				}
 
@@ -190,7 +177,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		else if(getBy.equals("own")){
 			shadeMastList = shadeMastDao.findAllByCreatedBy(id);
 			for (ShadeMast e : shadeMastList) {
-				GetAllShade getShade =  new GetAllShade();
+
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 				{
 					Optional<Party> party = partyDao.findById(e.getPartyId());
@@ -199,20 +186,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						continue;
 					if(!party.isPresent())
 						continue;
-					getShade.setPartyName(party.get().getPartyName());
-					getShade.setQualityName(qualityName.get().getQualityName());
-					getShade.setId(e.getId());
-					getShade.setColorTone(e.getColorTone());
-					getShade.setProcessId(e.getProcessId());
-					getShade.setProcessName(e.getProcessName());
-					getShade.setPartyShadeNo(e.getPartyShadeNo());
-					getShade.setQualityId(qualityName.get().getQualityId());
-					getShade.setPartyId(party.get().getId());
-					getShade.setUserHeadId(e.getUserHeadId());
-					getShade.setCreatedBy(e.getCreatedBy());
-					getShade.setQualityEntryId(qualityName.get().getId());
 
-					getAllShadesList.add(getShade);
+					getAllShadesList.add(new GetAllShade(e,party,qualityName));
 
 				}
 			}
@@ -224,7 +199,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 				//master user
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,id);
 				for (ShadeMast e : shadeMastList) {
-					GetAllShade getShade =  new GetAllShade();
+
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 					{
 						Optional<Party> party = partyDao.findById(e.getPartyId());
@@ -233,20 +208,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 							continue;
 						if(!party.isPresent())
 							continue;
-						getShade.setPartyName(party.get().getPartyName());
-						getShade.setQualityName(qualityName.get().getQualityName());
-						getShade.setId(e.getId());
-						getShade.setColorTone(e.getColorTone());
-						getShade.setProcessId(e.getProcessId());
-						getShade.setProcessName(e.getProcessName());
-						getShade.setPartyShadeNo(e.getPartyShadeNo());
-						getShade.setQualityId(qualityName.get().getQualityId());
-						getShade.setPartyId(party.get().getId());
-						getShade.setUserHeadId(e.getUserHeadId());
-						getShade.setCreatedBy(e.getCreatedBy());
-						getShade.setQualityEntryId(qualityName.get().getId());
 
-						getAllShadesList.add(getShade);
+						getAllShadesList.add(new GetAllShade(e,party,qualityName));
 
 
 					}
@@ -256,7 +219,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			{
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,userData.getUserHeadId());
 				for (ShadeMast e : shadeMastList) {
-					GetAllShade getShade =  new GetAllShade();
+
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 					{
 						Optional<Party> party = partyDao.findById(e.getPartyId());
@@ -265,20 +228,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 							continue;
 						if(!party.isPresent())
 							continue;
-						getShade.setPartyName(party.get().getPartyName());
-						getShade.setQualityName(qualityName.get().getQualityName());
-						getShade.setId(e.getId());
-						getShade.setColorTone(e.getColorTone());
-						getShade.setProcessId(e.getProcessId());
-						getShade.setProcessName(e.getProcessName());
-						getShade.setPartyShadeNo(e.getPartyShadeNo());
-						getShade.setQualityId(qualityName.get().getQualityId());
-						getShade.setPartyId(party.get().getId());
-						getShade.setUserHeadId(e.getUserHeadId());
-						getShade.setCreatedBy(e.getCreatedBy());
-						getShade.setQualityEntryId(qualityName.get().getId());
-
-						getAllShadesList.add(getShade);
+						getAllShadesList.add(new GetAllShade(e,party,qualityName));
 
 
 					}
