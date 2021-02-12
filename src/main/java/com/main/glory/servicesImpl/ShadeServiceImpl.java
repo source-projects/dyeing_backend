@@ -160,15 +160,20 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 				{
+					DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 					Optional<Party> party = partyDao.findById(e.getPartyId());
 					Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+					if(dyeingProcessMast==null)
+						continue;
 
 					if(!qualityName.isPresent())
 						continue;
 					if(!party.isPresent())
 						continue;
 
-					getAllShadesList.add(new GetAllShade(e,party,qualityName));
+					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 				}
 
@@ -180,14 +185,20 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 				{
+					DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 					Optional<Party> party = partyDao.findById(e.getPartyId());
 					Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+					if(dyeingProcessMast==null)
+						continue;
+
 					if(!qualityName.isPresent())
 						continue;
 					if(!party.isPresent())
 						continue;
 
-					getAllShadesList.add(new GetAllShade(e,party,qualityName));
+					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 				}
 			}
@@ -202,14 +213,20 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 					{
+						DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 						Optional<Party> party = partyDao.findById(e.getPartyId());
 						Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+						if(dyeingProcessMast==null)
+							continue;
+
 						if(!qualityName.isPresent())
 							continue;
 						if(!party.isPresent())
 							continue;
 
-						getAllShadesList.add(new GetAllShade(e,party,qualityName));
+						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 
 					}
@@ -222,13 +239,20 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 					{
+						DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 						Optional<Party> party = partyDao.findById(e.getPartyId());
 						Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+						if(dyeingProcessMast==null)
+							continue;
+
 						if(!qualityName.isPresent())
 							continue;
 						if(!party.isPresent())
 							continue;
-						getAllShadesList.add(new GetAllShade(e,party,qualityName));
+
+						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 
 					}
