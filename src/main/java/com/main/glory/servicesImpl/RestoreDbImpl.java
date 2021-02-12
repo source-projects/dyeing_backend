@@ -241,7 +241,7 @@ public class RestoreDbImpl {
 
         //clear by all the table payment type
         //partyDao.trucateRecord();
-        partyDao.dropCommand(dbname);
+       // partyDao.dropCommand(dbname);
 
         return true;
     }
