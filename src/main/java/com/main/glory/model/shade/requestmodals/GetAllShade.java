@@ -1,5 +1,6 @@
 package com.main.glory.model.shade.requestmodals;
 
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -32,7 +33,7 @@ public class GetAllShade {
     Boolean pending;
 
 
-    public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName) {
+    public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName,DyeingProcessMast dyeingProcessMast) {
         this.id=e.getId();
         this.partyShadeNo=e.getPartyShadeNo();
         this.processId=e.getProcessId();
@@ -46,5 +47,8 @@ public class GetAllShade {
         this.createdBy=e.getCreatedBy();
         this.apcNo=e.getApcNo();
         this.pending=e.getPending();
+        this.processName=dyeingProcessMast.getProcessName();
     }
+
+
 }
