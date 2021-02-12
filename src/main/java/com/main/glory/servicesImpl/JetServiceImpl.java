@@ -772,4 +772,10 @@ public class JetServiceImpl {
         }
         return list;
     }
+
+    public JetData getJetDataByProductionIdWithoutFilter(Long id) {
+
+        JetData jetData = jetDataDao.getJetDataByProductionId(id);
+        return jetData;
+    }
 }

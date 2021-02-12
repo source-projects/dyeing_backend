@@ -82,10 +82,10 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo().substring(3)));
 
 			if(numberExist!=null)
-				throw new Exception("number is already available");
+				throw new Exception("APC number is already available");
 
-			numberExist.setPostFix(Long.parseLong(shadeMast.getApcNo().substring(3)));
-			acpDao.save(numberExist);
+			APC apc=new APC(Long.parseLong(shadeMast.getApcNo().substring(3)));
+			acpDao.save(apc);
 			shadeMastDao.save(shadeData);
 
 

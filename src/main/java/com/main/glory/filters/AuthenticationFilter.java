@@ -36,7 +36,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 	@SneakyThrows
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws ServletException, IOException {
+			{
 
 
 		String path = "";

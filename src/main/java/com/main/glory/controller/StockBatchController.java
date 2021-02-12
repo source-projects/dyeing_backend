@@ -365,4 +365,24 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
+    @GetMapping("/stockBatch/getAllBatchForFinishMtr")
+    public GeneralResponse<List<GetAllBatch>> getAllBatchWithoutBillGenerated() {
+        GeneralResponse<List<GetAllBatch>> response;
+
+        try {
+            List<GetAllBatch> flag = stockBatchService.getAllBatchWithoutBillGenerated();
+
+            if (!flag.isEmpty())
+                response= new GeneralResponse<>(flag, "Batch fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                response= new GeneralResponse<>(flag, "Batch not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return response;
+
+    }
+
 }
