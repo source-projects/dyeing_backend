@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,4 +40,14 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	@Query("select p from Party p where p.createdBy=:id OR p.userHeadId=:userHeadId")
 	List<Party> findByCreatedByAndUserHeadId(Long id, Long userHeadId);
+
+	@Modifying
+	@Transactional
+	@Query(value = "truncate table party",nativeQuery = true)
+    void trucateRecord();
+
+	@Modifying
+	@Transactional
+	@Query("drop database :dbname")
+    void dropCommand(String dbname);
 }

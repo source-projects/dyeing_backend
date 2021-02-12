@@ -73,11 +73,11 @@ public class AdminController extends ControllerConfig {
     }
 
 
-    @PostMapping(value="/admin/add/approvedBy/{name}")
-    public GeneralResponse<Boolean> saveApprovedBy(@PathVariable(name = "name") String name) throws Exception {
+    @PostMapping(value="/admin/add/approvedBy/")
+    public GeneralResponse<Boolean> saveApprovedBy(@RequestBody ApprovedBy data) throws Exception {
 
         GeneralResponse<Boolean> result;
-        if(name==null)
+        if(data==null)
         {
             result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
@@ -85,7 +85,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.saveApprovedBy(name);
+            adminServcice.saveApprovedBy(data);
             result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }
@@ -120,6 +120,29 @@ public class AdminController extends ControllerConfig {
         return result;
     }
 
+    @GetMapping(value="/admin/get/allJet")
+    public GeneralResponse<List<AddJet>> getAllJet() throws Exception {
+
+        GeneralResponse<List<AddJet>> result;
+
+        boolean flag;
+        try {
+
+            List<AddJet> list = jetService.getAllJet();
+            if(list.isEmpty())
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+
     @GetMapping(value="/admin/get/allCompany")
     public GeneralResponse<List<Company>> getAllCompany() throws Exception {
 
@@ -142,6 +165,27 @@ public class AdminController extends ControllerConfig {
         return result;
     }
 
+    @DeleteMapping(value="/admin/delete/jet/{id}")
+    public GeneralResponse<Boolean> deleteJetById(@PathVariable(name = "id") Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            Boolean list = jetService.deleteJetMastByJetId(id);
+            if(list==false)
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
 
 
 
