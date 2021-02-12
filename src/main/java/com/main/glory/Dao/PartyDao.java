@@ -46,8 +46,8 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query(value = "truncate table party",nativeQuery = true)
     void trucateRecord();
 
-	@Modifying
-	@Transactional
-	@Query("drop database :dbname")
-    void dropCommand(String dbname);
+//	@Modifying
+//	@Transactional
+//	@Query("drop database :dbname")
+//    void dropCommand(String dbname);
 }

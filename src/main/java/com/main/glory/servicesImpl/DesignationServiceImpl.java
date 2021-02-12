@@ -47,4 +47,20 @@ public class DesignationServiceImpl implements DesignationServiceInterface
 
         return designationList;
     }
+
+    public Boolean deleteDesignationById(Long id) throws Exception {
+
+        try {
+            Designation designationExist = designationDao.getDesignationById(id);
+            if (designationExist == null)
+                throw new Exception("no designation found");
+
+            designationDao.deleteDesignationById(id);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }
