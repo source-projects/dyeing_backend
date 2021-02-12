@@ -29,4 +29,7 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
 
     @Query("select j from JetData j where j.productionId=:id AND j.status='inQueue'")
     JetData findByProductionId(Long id);
+
+    @Query("select j from JetData j where j.productionId=:id")
+    JetData getJetDataByProductionId(Long id);
 }

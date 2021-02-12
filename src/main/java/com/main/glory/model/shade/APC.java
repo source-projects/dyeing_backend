@@ -19,7 +19,7 @@ public class APC {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    String preFix="ACP";
+    String preFix="APC";
     Long postFix;
     Boolean status;
 
