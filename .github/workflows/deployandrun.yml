@@ -42,8 +42,8 @@ jobs:
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
-          sudo systemctl restart /usr/lib/systemd/system/javaapp.service
-          #java -jar /home/ubuntu/builds/target/*.jar > /home/ubuntu/builds/target/server-logs.txt 2>&1 &
+          #sudo systemctl restart /usr/lib/systemd/system/javaapp.service
+          java -jar /home/ubuntu/builds/target/*.jar > /home/ubuntu/builds/target/server-logs.txt 2>&1 &
           
     - name: slack the message for success
       if: success()
