@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
@@ -31,6 +32,26 @@ public class ProductionPlanController extends ControllerConfig {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    //get batch detail by production and batch id
+    @GetMapping(value="/productionPlan/getBatchdDetailByProductionAndBatch/{productionId}/{batchId}")
+    public GeneralResponse<GetBatchDetailByProduction> getBatchDetailByProductinIdAndBatchId(@PathVariable(name="productionId")Long productionId,@PathVariable(name = "batchId") String batchId)
+    {
+        GeneralResponse<GetBatchDetailByProduction> result;
+        try {
+            GetBatchDetailByProduction data = productionPlanService.getBatchDetailByProductionAndBatchId(productionId,batchId);
+            if(data!=null)
+                result= new GeneralResponse<>(data, " Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            else
+                result= new GeneralResponse<>(data, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
     }
 
     @PutMapping(value="/updateProductionPlan/")

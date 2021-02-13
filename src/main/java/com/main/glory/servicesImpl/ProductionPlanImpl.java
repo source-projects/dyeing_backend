@@ -3,6 +3,9 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
@@ -130,6 +133,24 @@ public class ProductionPlanImpl {
     public ProductionPlan getProductionDataByBatchAndStock(String batchId, Long controlId) {
         ProductionPlan productionPlan=productionPlanDao.getProductionByBatchAndStockId(batchId,controlId);
         return productionPlan;
+    }
+
+    public GetBatchDetailByProduction getBatchDetailByProductionAndBatchId(Long productionId, String batchId) throws Exception {
+
+        ProductionPlan productionExist = productionPlanDao.getProductionByBatchAndProduction(batchId,productionId);
+
+        if(productionExist==null)
+            throw new Exception("no data found");
+
+        StockMast stockMast=stockBatchService.getStockByStockId(productionExist.getStockId());
+        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId());
+        Double totalWt = batchDao.getAllBatchQtyByBatchIdAndStockId(productionExist.getBatchId(),productionExist.getStockId());
+        Party party=partyServiceImp.getPartyDetailById(stockMast.getPartyId());
+
+        GetBatchDetailByProduction data =new GetBatchDetailByProduction(party,totalWt,shadeMast.get(),stockMast,batchId);
+
+        return data;
+
     }
 
 /*

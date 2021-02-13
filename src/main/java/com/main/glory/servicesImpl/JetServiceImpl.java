@@ -283,7 +283,7 @@ public class JetServiceImpl {
                         if (supplierRate.get().getItemType().equals("Color"))
                             slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
                         else
-                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt*jetMastExistJetMast.get().getLiquorRatio()) / 1000);
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt *jetMastExistJetMast.get().getLiquorRatio()) / 1000);
                     }
 
                     slipItemLists.add(slipItemList);

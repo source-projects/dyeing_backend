@@ -1,5 +1,6 @@
 package com.main.glory.Dao.productionPlan;
 
+import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,9 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select p from ProductionPlan p where p.batchId=:batchId AND p.stockId=:controlId")
     ProductionPlan getProductionByBatchAndStockId(String batchId, Long controlId);
+
+    @Query("select p from ProductionPlan p where p.id=:productionId AND p.batchId=:batchId")
+    ProductionPlan getProductionByBatchAndProduction(String batchId, Long productionId);
+
+
 }
