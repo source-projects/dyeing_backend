@@ -107,5 +107,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<GetBatchByInvoice> getBatcheByStockIdWithoutBillGenerated(Long id);
 
 
+    @Query("select SUM(b.wt) from BatchData b where b.batchId=:batchId AND b.controlId=:stockId")
+    Double getAllBatchQtyByBatchIdAndStockId(String batchId, Long stockId);
 }
 
