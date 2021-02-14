@@ -11,4 +11,7 @@ public interface AdditionDyeingProcessSlipDao extends JpaRepository<AdditionDyei
 
     @Query("select s from AdditionDyeingProcessSlip s")
     List<AdditionDyeingProcessSlip> getAllAdditional();
+
+    @Query("select c from AdditionDyeingProcessSlip c where c.id=:id")
+    AdditionDyeingProcessSlip getAdditionalDyeingSlipById(Long id);
 }

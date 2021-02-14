@@ -1,9 +1,12 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
+import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
+import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
 import com.main.glory.model.dyeingSlip.AdditionDyeingProcessSlip;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
@@ -22,6 +25,11 @@ import java.util.Optional;
 @Service("dyeingSlipServiceImpl")
 public class DyeingSlipServiceImpl {
 
+    @Autowired
+    DyeingSlipDataDao dyeingSlipDataDao;
+
+    @Autowired
+    DyeingSlipItemDataDao dyeingSlipItemDataDao;
     @Autowired
     AdditionDyeingProcessSlipDao additionDyeingProcessSlipDao;
 
@@ -141,5 +149,18 @@ public class DyeingSlipServiceImpl {
             throw new Exception("no data found");
 
         return list;
+    }
+
+    public DyeingSlipMast getAdditionalDyeingSlipById(Long id) throws Exception {
+
+        //get the process from addtional table
+        AdditionDyeingProcessSlip additionDyeingProcessSlipExist = additionDyeingProcessSlipDao.getAdditionalDyeingSlipById(id);
+        if(additionDyeingProcessSlipExist==null)
+            throw new Exception("no data found");
+
+        DyeingSlipMast data = dyeingSlipMastDao.getDyeingSlipById(additionDyeingProcessSlipExist.getProcessId());
+
+        return data;
+
     }
 }

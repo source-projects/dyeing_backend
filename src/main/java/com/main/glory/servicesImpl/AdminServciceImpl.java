@@ -25,6 +25,7 @@ public class AdminServciceImpl {
     public void saveCompanyName(Company company) throws Exception {
 
         Company companyExist = companyDao.findByCompanyName(company.getName());
+        System.out.println(company.getId());
         if(companyExist!=null)
             throw new Exception("company name is already exist");
 
@@ -52,4 +53,34 @@ public class AdminServciceImpl {
     }
 
 
+    public boolean deleteCompanyById(Long id) {
+        try {
+            Company companyExist = companyDao.getCompanyById(id);
+            if (companyExist == null)
+                throw new Exception("no data found");
+
+            companyDao.deleteByCompanyId(id);
+            return true;
+        }catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    public Boolean deleteApprovedById(Long id) {
+        try {
+            ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
+            if (approvedByExist == null)
+                throw new Exception("no data found");
+
+            approveByDao.deleteApprovedById(id);
+            return true;
+
+
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }
