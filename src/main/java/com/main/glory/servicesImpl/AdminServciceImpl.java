@@ -22,15 +22,15 @@ public class AdminServciceImpl {
     ApproveByDao approveByDao;
 
 
-    public void saveCompanyName(String name) throws Exception {
+    public void saveCompanyName(Company company) throws Exception {
 
-        Company companyExist = companyDao.findByCompanyName(name);
+        Company companyExist = companyDao.findByCompanyName(company.getName());
         if(companyExist!=null)
             throw new Exception("company name is already exist");
 
-        Company company=new Company(name);
+        Company companyX=new Company(company.getName());
 
-        companyDao.save(company);
+        companyDao.save(companyX);
 
 
     }

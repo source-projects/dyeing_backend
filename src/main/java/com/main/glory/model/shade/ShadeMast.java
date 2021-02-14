@@ -63,6 +63,8 @@ public class ShadeMast {
 	@JoinColumn(name = "shadeId", referencedColumnName = "id")
 	private List<ProductionPlan> productionPlans;
 
+	@PrePersist
+	protected void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
