@@ -49,7 +49,7 @@ public class AdminController extends ControllerConfig {
 
 
     @PostMapping(value="/admin/add/company/")
-    public GeneralResponse<Boolean> saveCompany(Company c) throws Exception {
+    public GeneralResponse<Boolean> saveCompany(@RequestBody Company c) throws Exception {
 
         GeneralResponse<Boolean> result;
         if(c.getName()==null)
