@@ -71,6 +71,31 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @DeleteMapping(value="/admin/delete/companyBy/{id}")
+    public GeneralResponse<Boolean> deleteCompany(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        if(id==null)
+        {
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            flag = adminServcice.deleteCompanyById(id);
+            if(flag)
+            result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<Boolean>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
 
 
     @PostMapping(value="/admin/add/approvedBy/")
@@ -174,6 +199,28 @@ public class AdminController extends ControllerConfig {
         try {
 
             Boolean list = jetService.deleteJetMastByJetId(id);
+            if(list==false)
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @DeleteMapping(value="/admin/delete/approved/{id}")
+    public GeneralResponse<Boolean> deleteApprovedById(@PathVariable(name = "id") Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            Boolean list = adminServcice.deleteApprovedById(id);
             if(list==false)
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
             else

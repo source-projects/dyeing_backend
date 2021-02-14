@@ -95,7 +95,7 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
     //add addition dyeing slip
-    @GetMapping("/dyeingSlip/additionalDyeingSlip/")
+    @PostMapping("/dyeingSlip/additionalDyeingSlip/")
     public GeneralResponse<Boolean> addAddtionalDyeingSlip(@RequestBody AddAdditionDyeingSlipModel addAdditionDyeingSlipModel){
         GeneralResponse<Boolean> result;
         try {
@@ -107,6 +107,27 @@ public class DyeingSlipController extends ControllerConfig {
                 result = new GeneralResponse<>(data, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 result = new GeneralResponse<>(data, "data not added", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
+
+    //get addition dyeing slip
+    @GetMapping("/dyeingSlip/getAdditionalDyeingSlipBy/{id}")
+    public GeneralResponse<DyeingSlipMast> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
+        GeneralResponse<DyeingSlipMast> result;
+        try {
+            if(id ==null)
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+
+            DyeingSlipMast data = dyeingSlipService.getAdditionalDyeingSlipById(id);
+            if(data!=null)
+                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(data, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
