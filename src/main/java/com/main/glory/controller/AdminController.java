@@ -48,11 +48,11 @@ public class AdminController extends ControllerConfig {
 
 
 
-    @PostMapping(value="/admin/add/company/{name}")
-    public GeneralResponse<Boolean> saveCompany(@PathVariable(name = "name") String name) throws Exception {
+    @PostMapping(value="/admin/add/company/")
+    public GeneralResponse<Boolean> saveCompany(Company c) throws Exception {
 
         GeneralResponse<Boolean> result;
-        if(name==null)
+        if(c.getName()==null)
         {
             result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
@@ -60,7 +60,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.saveCompanyName(name);
+            adminServcice.saveCompanyName(c);
             result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }

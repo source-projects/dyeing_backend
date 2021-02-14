@@ -74,9 +74,6 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 			shadeData.setQualityEntryId(quality.get().getId());
 
-			Date dt = new Date(System.currentTimeMillis());
-
-
 			//check the ACP number
 
 			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo().substring(3)));
@@ -89,6 +86,36 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			shadeMastDao.save(shadeData);
 
 
+
+
+
+		}
+		else {
+			//consider we have data and add directlt
+			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+			if(!quality.isPresent())
+			{
+				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			}
+
+			//check the dyeing process for the shade is available or not
+
+			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+
+			ShadeMast shadeData =  new ShadeMast(shadeMast);
+
+			shadeData.setQualityEntryId(quality.get().getId());
+
+			//check the ACP number
+
+			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo().substring(3)));
+
+			if(numberExist!=null)
+				throw new Exception("APC number is already available");
+
+			APC apc=new APC(Long.parseLong(shadeMast.getApcNo().substring(3)));
+			acpDao.save(apc);
+			shadeMastDao.save(shadeData);
 
 
 
