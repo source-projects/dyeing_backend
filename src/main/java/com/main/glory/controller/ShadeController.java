@@ -105,7 +105,23 @@ public class ShadeController extends ControllerConfig {
 		try{
 			Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(id);
 			if(shadeMast != null){
-				return new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
+				return new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			}else{
+				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	//get All pending shade list
+	@GetMapping("/shade/allPendingAPC")
+	public GeneralResponse<List<ShadeMast>> getAllPendingShade(){
+		try{
+			List<ShadeMast> shadeMast = shadeService.getAllPendingShade();
+			if(shadeMast != null){
+				return new GeneralResponse<>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			}else{
 				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 			}
