@@ -1,6 +1,8 @@
 package com.main.glory.Dao.color;
 
 import com.main.glory.model.color.ColorBox;
+import com.main.glory.model.color.request.ItemWithLeftQty;
+import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,4 +20,8 @@ public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 
 	@Query("select c from ColorBox c where c.controlId=:id AND c.issued=false")
 	List<ColorBox> getAllNotIssuedBoxByControlId(Long id);
+
+
+	@Query("select new com.main.glory.model.color.request.ItemWithLeftQty((select cd.itemId from ColorData cd where cd.id=cb.controlId )as ItemId,SUM(cb.quantityLeft)) from ColorBox cb where cb.issued=true AND cb.finished=false AND cb.quantityLeft > 0 GROUP BY cb.controlId")
+	List<ItemWithLeftQty> getAllLeftQtyItemList();
 }
