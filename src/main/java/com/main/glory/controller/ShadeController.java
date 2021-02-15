@@ -120,10 +120,11 @@ public class ShadeController extends ControllerConfig {
 	public GeneralResponse<List<ShadeMast>> getAllPendingShade(){
 		try{
 			List<ShadeMast> shadeMast = shadeService.getAllPendingShade();
-			if(shadeMast != null){
-				return new GeneralResponse<>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
-			}else{
+			if(shadeMast.isEmpty()){
 				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+			else{
+				return new GeneralResponse<>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			}
 		}catch (Exception e){
 			e.printStackTrace();

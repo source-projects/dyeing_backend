@@ -201,7 +201,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 					if(!party.isPresent())
 						continue;
 
-					if(e.getShadeDataList()==null)
+					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
 						continue;
 
 					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -228,7 +228,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						continue;
 					if(!party.isPresent())
 						continue;
-					if(e.getShadeDataList()==null)
+					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
 						continue;
 
 					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -259,7 +259,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						if(!party.isPresent())
 							continue;
 
-						if(e.getShadeDataList()==null)
+						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
 							continue;
 
 						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -287,7 +287,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 							continue;
 						if(!party.isPresent())
 							continue;
-						if(e.getShadeDataList()==null)
+						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
 							continue;
 
 						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
