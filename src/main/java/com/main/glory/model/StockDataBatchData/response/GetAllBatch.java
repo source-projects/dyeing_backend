@@ -61,7 +61,7 @@ public class GetAllBatch {
         this.qualityId=quality.get().getQualityId();
         this.qualityName=quality.get().getQualityName();
         this.qualityType=quality.get().getQualityType();
-        this.productionPlanned=false;//because it is already getting the data who;s flag is false
+        this.productionPlanned=true;//because it is already getting the data who;s flag is true
         this.isBillGenerated=false;
     }
 }
