@@ -201,6 +201,9 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 					if(!party.isPresent())
 						continue;
 
+					if(e.getShadeDataList()==null)
+						continue;
+
 					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 				}
@@ -224,6 +227,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 					if(!qualityName.isPresent())
 						continue;
 					if(!party.isPresent())
+						continue;
+					if(e.getShadeDataList()==null)
 						continue;
 
 					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -254,6 +259,9 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						if(!party.isPresent())
 							continue;
 
+						if(e.getShadeDataList()==null)
+							continue;
+
 						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 
@@ -278,6 +286,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						if(!qualityName.isPresent())
 							continue;
 						if(!party.isPresent())
+							continue;
+						if(e.getShadeDataList()==null)
 							continue;
 
 						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -362,8 +372,14 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	}
 
 	public List<ShadeMast> getAllPendingShade() {
+		List<ShadeMast> dataList=new ArrayList<>();
 		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
+		for(ShadeMast s:list)
+		{
+			if(s.getShadeDataList()==null)
+				dataList.add(s);
+		}
 
-		return list;
+		return dataList;
 	}
 }
