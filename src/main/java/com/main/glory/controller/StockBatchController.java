@@ -366,11 +366,11 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/getAllBatchForFinishMtr")
-    public GeneralResponse<List<GetAllBatch>> getAllBatchWithoutBillGenerated() {
-        GeneralResponse<List<GetAllBatch>> response;
+    public GeneralResponse<List<GetAllBatchWithProduction>> getAllBatchWithoutBillGenerated() {
+        GeneralResponse<List<GetAllBatchWithProduction>> response;
 
         try {
-            List<GetAllBatch> flag = stockBatchService.getAllBatchWithoutBillGenerated();
+            List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated();
 
             if (!flag.isEmpty())
                 response= new GeneralResponse<>(flag, "Batch fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);

@@ -64,4 +64,19 @@ public class GetAllBatch {
         this.productionPlanned=true;//because it is already getting the data who;s flag is true
         this.isBillGenerated=false;
     }
+
+    public GetAllBatch(GetAllBatch getAllBatch) {
+        this.totalWt=getAllBatch.getTotalWt();
+        this.controlId=getAllBatch.getControlId();
+        this.batchId=getAllBatch.getBatchId();
+        this.productionPlanned=getAllBatch.getProductionPlanned();
+        this.isBillGenerated=getAllBatch.getIsBillGenerated();
+        this.partyId=getAllBatch.getPartyId();
+        this.partyName=getAllBatch.getPartyName();
+        this.qualityEntryId=getAllBatch.getQualityEntryId();
+        this.qualityId=getAllBatch.getQualityId();
+        this.qualityName=getAllBatch.qualityName;
+        this.qualityType=getAllBatch.qualityType;
+
+    }
 }
