@@ -58,7 +58,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	public void saveShade(AddShadeMast shadeMast) throws Exception{
 
-		if (shadeMast.getPending()==true)
+		if (shadeMast.getShadeDataList()==null)
 		{
 			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
 			if(!quality.isPresent())
@@ -71,6 +71,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
 			ShadeMast shadeData =  new ShadeMast(shadeMast);
+			shadeData.setPending(true);
 
 			shadeData.setQualityEntryId(quality.get().getId());
 
@@ -103,7 +104,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
 			ShadeMast shadeData =  new ShadeMast(shadeMast);
-
+			shadeData.setPending(false);
 			shadeData.setQualityEntryId(quality.get().getId());
 
 			//check the ACP number
@@ -358,5 +359,11 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			return true;
 		else
 			return false;
+	}
+
+	public List<ShadeMast> getAllPendingShade() {
+		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
+
+		return list;
 	}
 }
