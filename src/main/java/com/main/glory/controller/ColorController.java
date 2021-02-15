@@ -8,6 +8,7 @@ import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
+import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
 import com.main.glory.model.fabric.FabStockMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.supplier.Supplier;
@@ -138,6 +139,24 @@ public class ColorController extends ControllerConfig {
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@GetMapping(value = "/color/supplierList/getSupplierItemWithAvailableStock")
+	public GeneralResponse<List<SupplierItemWithLeftColorQty>> getSupplierItemWithAvailableStock(){
+
+		GeneralResponse<List<SupplierItemWithLeftColorQty>> result;
+		try {
+			List<SupplierItemWithLeftColorQty> records = colorService.getSupplierItemWithAvailableStock();
+			if(records.isEmpty())
+				result= new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			else
+			result= new GeneralResponse<>(records, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return result;
+	}
+
+
 
 	@PostMapping("/color/box/issue")
 	public GeneralResponse<Boolean> issueBox(@RequestBody IssueBoxRequest issueBoxRequest){

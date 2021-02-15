@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.color.ColorBoxDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
@@ -9,7 +10,12 @@ import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.request.IssueBoxRequest;
+import com.main.glory.model.color.request.ItemWithLeftQty;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
+import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
+import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ColorServicesInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +30,8 @@ import java.util.Optional;
 @Service
 public class ColorServiceImpl implements ColorServicesInterface {
 
+    @Autowired
+    SupplierRateDao supplierRateDao;
     @Autowired
     UserDao userDao;
     @Autowired
@@ -266,6 +274,23 @@ public class ColorServiceImpl implements ColorServicesInterface {
 
         if(list.isEmpty())
             throw new Exception("no color box is found");
+        return list;
+
+    }
+
+    public List<SupplierItemWithLeftColorQty> getSupplierItemWithAvailableStock() {
+
+        List<SupplierItemWithLeftColorQty> list=new ArrayList<>();
+
+        List<ItemWithLeftQty> leftQtyList = colorBoxDao.getAllLeftQtyItemList();
+
+        for(ItemWithLeftQty itemWithLeftQty:leftQtyList)
+        {
+            //System.out.println(itemWithLeftQty.getItemId()+":"+ itemWithLeftQty.getAvailableQty());
+            Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+            SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+            list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+        }
         return list;
 
     }
