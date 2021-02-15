@@ -278,4 +278,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
         return chemicalItemList;
     }
+
+    public SupplierRate getSupplierRateByItemId(Long supplierItemId) {
+        SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(supplierItemId);
+        return supplierRate;
+    }
 }

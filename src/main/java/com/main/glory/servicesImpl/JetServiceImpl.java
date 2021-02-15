@@ -114,15 +114,17 @@ public class JetServiceImpl {
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
 
-        //check the capacity first for the color box issue had that much capcity to fill the batch or not
+        //check the capacity first for the color box issue had that much capacity to fill the batch or not
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
+            String suppplierName = supplierService.getSupplierNameByItemId(shadeData.getSupplierItemId());
+            SupplierRate supplierRate=supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
             Double data=0.0;
             colorAmtToDeduct = (shadeData.getConcentration()*totalBatchWt)/100;
             List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
 
             if(colorBoxList.isEmpty())
-                throw new Exception("no box is available for batch, supplier item:"+shadeData.getId());
+                throw new Exception("no box is available for batch, supplier:"+suppplierName+", item:"+supplierRate.getItemName());
 
             for(ColorBox c:colorBoxList)
             {
