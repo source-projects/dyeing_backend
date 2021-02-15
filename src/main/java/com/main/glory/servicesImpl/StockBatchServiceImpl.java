@@ -1060,8 +1060,8 @@ public class StockBatchServiceImpl {
     }
 
     //get All batch whoi's bill is not generated
-    public List<GetAllBatch> getAllBatchWithoutBillGenerated() throws Exception {
-        List<GetAllBatch> list=new ArrayList<>();
+    public List<GetAllBatchWithProduction> getAllBatchWithoutBillGenerated() throws Exception {
+        List<GetAllBatchWithProduction> list=new ArrayList<>();
         List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
 
         //filter the data if the batch is done with jet
@@ -1079,7 +1079,7 @@ public class StockBatchServiceImpl {
             //System.out.println(jetData.getStatus());
             if(jetData.getStatus()== JetStatus.success)
             {
-                list.add(getAllBatch);
+                list.add(new GetAllBatchWithProduction(getAllBatch,productionPlan.getId()));
             }
 
 
