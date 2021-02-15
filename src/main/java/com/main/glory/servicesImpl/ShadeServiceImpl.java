@@ -150,6 +150,11 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Override
 	public Boolean updateShade(ShadeMast shadeMast) {
+		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
+			shadeMast.setPending(true);
+		else
+			shadeMast.setPending(false);
+
 		ShadeMast shadeIndex = shadeMastDao.getShadeMastById(shadeMast.getId());
 		if(shadeIndex==null)
 			return false;
@@ -376,7 +381,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
 		for(ShadeMast s:list)
 		{
-			if(s.getShadeDataList()==null)
+			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty())
 				dataList.add(s);
 		}
 

@@ -1069,6 +1069,9 @@ public class StockBatchServiceImpl {
         {
             ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(getAllBatch.getBatchId(),getAllBatch.getControlId());
 
+            if(productionPlan==null)
+                continue;
+
             if(productionPlan.getStatus()==false)
                 continue;
            // System.out.println(productionPlan.getId());
