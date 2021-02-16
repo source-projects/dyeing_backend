@@ -52,6 +52,11 @@ public class ProductionPlanImpl {
 
         if(qualityIsExist.isPresent() && shadeMastExist.isPresent())
         {
+            //check already batch and stock is exist or not
+            ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(productionPlan.getBatchId(),productionPlan.getStockId());
+            if(productionPlanExist!=null)
+                throw new Exception("already stock and batch is exist");
+
             List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
             if(batchDataList.isEmpty())
                 throw new Exception("No batch data found");
