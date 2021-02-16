@@ -126,9 +126,9 @@ public class DyeingSlipController extends ControllerConfig {
 
             Boolean data = dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
             if(data)
-                result = new GeneralResponse<>(data, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(data, "Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result = new GeneralResponse<>(data, "data not added", false, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(data, "data not updated", false, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,6 +148,25 @@ public class DyeingSlipController extends ControllerConfig {
             DyeingSlipMast data = dyeingSlipService.getAdditionalDyeingSlipById(id);
             if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(data, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
+    @DeleteMapping("/dyeingSlip/deleteAdditionalDyeingSlipBy/{id}")
+    public GeneralResponse<Boolean> deleteAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
+        GeneralResponse<Boolean> result;
+        try {
+            if(id ==null)
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+
+            Boolean data = dyeingSlipService.deleteAdditionalDyeingSlipById(id);
+            if(data)
+                result = new GeneralResponse<>(data, "Data deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 result = new GeneralResponse<>(data, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 
