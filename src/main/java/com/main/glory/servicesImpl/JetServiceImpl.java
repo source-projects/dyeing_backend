@@ -137,6 +137,8 @@ public class JetServiceImpl {
         }
 
 
+        //*********  Color item checks end
+
 
         //save to jet data first check the capacity
         Double availableJetCapacity=0.0;
@@ -209,6 +211,7 @@ public class JetServiceImpl {
             if(newBatchCapacity > availableJetCapacity)
                 throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
 
+            //********** jet capcity check end
 
 
 
@@ -222,7 +225,7 @@ public class JetServiceImpl {
              1.Shade color box deduct
              2.insert the data into the slip as per the process
              3.store the jet with production
-             4.create the dyeing slip as per the dyeing process
+
 
              */
 
@@ -285,7 +288,7 @@ public class JetServiceImpl {
                         if (supplierRate.get().getItemType().equals("Color"))
                             slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
                         else
-                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt *jetMastExistJetMast.get().getLiquorRatio()) / 1000);
+                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt *dyeingProcessData.getLiquerRation()) / 1000);
                     }
 
                     slipItemLists.add(slipItemList);

@@ -25,4 +25,5 @@ public class DyeingSlipItemData {
     Long supplierId;
     String supplierName;
     Double qty;
+    Long controlId;
 }

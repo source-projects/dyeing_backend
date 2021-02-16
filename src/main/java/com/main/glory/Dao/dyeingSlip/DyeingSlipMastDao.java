@@ -15,4 +15,19 @@ public interface DyeingSlipMastDao extends JpaRepository<DyeingSlipMast,Long> {
     List<DyeingSlipMast> getAllDyeingSlip();
     @Query("select d from DyeingSlipMast d where d.productionId=:productionId AND d.batchId=:batchId")
     DyeingSlipMast findByBatchIdAndProductionId(String batchId, Long productionId);
+
+    @Query("select d from DyeingSlipMast d where d.productionId=:productionId")
+    DyeingSlipMast getDyeingSlipByProductionId(Long productionId);
+
+    @Query("select d from DyeingSlipMast d where d.id=(select dd.controlId from DyeingSlipData dd where dd.processType='addition')")
+    List<DyeingSlipMast> getAllAddtionalDyeingProcess();
+
+
+    @Query("select d from DyeingSlipMast d where d.id=(select dd.controlId from DyeingSlipData dd where dd.controlId=:id AND dd.processType='addition')")
+    DyeingSlipMast getAdditionalDyeingSlipById(Long id);
+
+
+
+
+
 }

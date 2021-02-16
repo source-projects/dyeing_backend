@@ -78,11 +78,11 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
     @GetMapping("/dyeingSlip/additionalDyeingslip/all")
-    public GeneralResponse<List<GetAllAdditionalSlip>> getAllAddtionalDyeignSlip(){
-        GeneralResponse<List<GetAllAdditionalSlip>> result;
+    public GeneralResponse<List<DyeingSlipMast>> getAllAddtionalDyeignSlip(){
+        GeneralResponse<List<DyeingSlipMast>> result;
         try {
 
-            List<GetAllAdditionalSlip> data = dyeingSlipService.getAllAddtionalDyeignSlip();
+            List<DyeingSlipMast> data = dyeingSlipService.getAllAddtionalDyeignSlip();
             if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
@@ -104,6 +104,27 @@ public class DyeingSlipController extends ControllerConfig {
             result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
 
             Boolean data = dyeingSlipService.addAddtionalSlipData(addAdditionDyeingSlipModel);
+            if(data)
+                result = new GeneralResponse<>(data, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(data, "data not added", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
+
+    //update addition dyeing slip
+    @PutMapping("/dyeingSlip/update/additionalDyeingSlip/")
+    public GeneralResponse<Boolean> updateAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
+        GeneralResponse<Boolean> result;
+        try {
+            if(addAdditionDyeingSlipModel ==null)
+                result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+
+            Boolean data = dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
             if(data)
                 result = new GeneralResponse<>(data, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
