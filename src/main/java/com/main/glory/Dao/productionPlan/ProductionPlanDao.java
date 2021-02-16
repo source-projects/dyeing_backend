@@ -30,4 +30,6 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
     ProductionPlan getProductionByBatchAndProduction(String batchId, Long productionId);
 
 
+    @Query("select p from ProductionPlan p ")
+    List<ProductionPlan> getAllProductionWithoutFilter();
 }

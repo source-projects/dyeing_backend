@@ -54,6 +54,8 @@ public class ProductionPlanController extends ControllerConfig {
         return result;
     }
 
+
+
     @PutMapping(value="/updateProductionPlan/")
     public GeneralResponse<Boolean> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
     {
@@ -115,6 +117,25 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    //get all production without filter]
+    @GetMapping(value="/productionPlan/allProductionWithoutFilter")
+    public GeneralResponse<List<ProductionPlan>> allProductionWithoutFilter()
+    {
+        try {
+            List<ProductionPlan> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
+            if(productionPlanRecord.isEmpty())
+                throw new Exception("no data faund");
+
+            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     //get production by party and quality who are not added in jet yet
     @GetMapping(value="/productionPlan/getProductionByPartyAndQuality/{partyId}/{qualityEntryId}")
     public GeneralResponse<List<ProductionPlan>> getProductionByPartyAndQuality(@PathVariable(name = "partyId") Long partyId,@PathVariable(name = "qualityEntryId") Long qualityEntryId)
