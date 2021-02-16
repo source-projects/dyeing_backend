@@ -58,7 +58,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	public void saveShade(AddShadeMast shadeMast) throws Exception{
 
-		if (shadeMast.getShadeDataList()==null)
+		if (shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
 		{
 			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
 			if(!quality.isPresent())
@@ -106,7 +106,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			ShadeMast shadeData =  new ShadeMast(shadeMast);
 			shadeData.setPending(false);
 			shadeData.setQualityEntryId(quality.get().getId());
-
+			shadeData.setShadeDataList(shadeMast.getShadeDataList());
 			//check the ACP number
 
 			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo()));

@@ -84,5 +84,6 @@ public class ShadeMast {
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
 		this.userHeadId=addShadeMast.getUserHeadId();
+		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
 }
