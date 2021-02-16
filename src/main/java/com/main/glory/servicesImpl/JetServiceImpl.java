@@ -91,7 +91,6 @@ public class JetServiceImpl {
 
 
 
-    @Transactional
     public void saveJetData( List<AddJetData> jetDataList) throws Exception{
 
         //get the dyeing process color box list
