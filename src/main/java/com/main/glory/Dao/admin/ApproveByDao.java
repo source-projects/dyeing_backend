@@ -1,6 +1,7 @@
 package com.main.glory.Dao.admin;
 
 import com.main.glory.model.admin.ApprovedBy;
+import com.main.glory.model.admin.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,5 @@ public interface ApproveByDao extends JpaRepository<ApprovedBy,Long> {
     @Modifying
     @Query("delete from ApprovedBy x where x.id=:id")
     void deleteApprovedById(Long id);
+
 }
