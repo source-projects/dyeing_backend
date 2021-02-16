@@ -101,8 +101,28 @@ public class DyeingSlipServiceImpl {
 
     public Boolean addAddtionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
-        AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
+        //AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
         try {
+
+            DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+            if(dyeingSlipMast==null) {
+                throw new Exception("no dyeing slip found for given batch or production");
+            }
+
+
+            DyeingSlipData dyeingSlipData = new DyeingSlipData(addAdditionDyeingSlipModel.getDyeingSlipData());
+            dyeingSlipData.setControlId(dyeingSlipMast.getId());
+            DyeingSlipData x = dyeingSlipDataDao.save(dyeingSlipData);
+
+            List<DyeingSlipItemData> list = new ArrayList<>();
+            for(DyeingSlipItemData d:addAdditionDyeingSlipModel.getDyeingSlipData().getDyeingSlipItemData())
+            {
+                d.setControlId(x.getId());
+                list.add(d);
+
+            }
+
+            dyeingSlipItemDataDao.saveAll(list);
             return true;
         }catch (Exception e)
         {
@@ -111,32 +131,31 @@ public class DyeingSlipServiceImpl {
 
     }
 
-    public List<GetAllAdditionalSlip> getAllAddtionalDyeignSlip() throws Exception {
-        List<GetAllAdditionalSlip> list =new ArrayList<>();
-
-        List<AdditionDyeingProcessSlip> additionSlipList = additionDyeingProcessSlipDao.getAllAdditional();
-        for(AdditionDyeingProcessSlip slip:additionSlipList)
-        {
-            GetAllAdditionalSlip getAllAdditionalSlip = new GetAllAdditionalSlip(slip);
-            list.add(getAllAdditionalSlip);
-        }
-
-        if (list.isEmpty())
-            throw new Exception("no data found");
+    public List<DyeingSlipMast> getAllAddtionalDyeignSlip() throws Exception {
+        List<DyeingSlipMast> list =dyeingSlipMastDao.getAllAddtionalDyeingProcess();
 
         return list;
     }
 
     public DyeingSlipMast getAdditionalDyeingSlipById(Long id) throws Exception {
 
-        //get the process from addtional table
-        AdditionDyeingProcessSlip additionDyeingProcessSlipExist = additionDyeingProcessSlipDao.getAdditionalDyeingSlipById(id);
-        if(additionDyeingProcessSlipExist==null)
-            throw new Exception("no data found");
-
-        DyeingSlipMast data = dyeingSlipMastDao.getDyeingSlipById(additionDyeingProcessSlipExist.getProcessId());
+        DyeingSlipMast data = dyeingSlipMastDao.getAdditionalDyeingSlipById(id);
 
         return data;
+
+    }
+
+    public Boolean updateAddtionalDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
+
+        DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+        if(dyeingSlipMast==null)
+            throw new Exception("no dyeing slip found");
+
+
+        dyeingSlipDataDao.saveAndFlush(addAdditionDyeingSlipModel.getDyeingSlipData());
+        return true;
+
+
 
     }
 }
