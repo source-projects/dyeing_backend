@@ -2,8 +2,10 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.admin.ApproveByDao;
 import com.main.glory.Dao.admin.CompanyDao;
+import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
+import com.main.glory.model.admin.Department;
 import com.main.glory.model.jet.request.AddJet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,8 @@ import java.util.List;
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
 
-
+    @Autowired
+    DepartmentDao departmentDao;
 
     @Autowired
     CompanyDao companyDao;
@@ -82,5 +85,38 @@ public class AdminServciceImpl {
         {
             return false;
         }
+    }
+
+    public void saveDepartment(Department c) throws Exception {
+
+        Department exist = departmentDao.getDepartmentByName(c.getName());
+        if (exist != null)
+            throw new Exception("department already exist");
+
+        Department d=new Department(c);
+        departmentDao.save(d);
+
+
+    }
+
+    public boolean deleteDepartmentById(Long id) {
+        try {
+            Department exist = departmentDao.getDepartmentById(id);
+            if (exist == null)
+                throw new Exception("no data found");
+
+            departmentDao.deleteDepartmentById(id);
+            return true;
+
+
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    public List<Department> getAllDepartmentList() {
+        return departmentDao.getAllDepartment();
     }
 }

@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
+import com.main.glory.model.admin.Department;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.servicesImpl.AdminServciceImpl;
 import com.main.glory.servicesImpl.JetServiceImpl;
@@ -71,6 +72,31 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+
+
+    @PostMapping(value="/admin/add/department/")
+    public GeneralResponse<Boolean> saveDepartment(@RequestBody Department c) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        if(c.getName()==null)
+        {
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.saveDepartment(c);
+            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
     @DeleteMapping(value="/admin/delete/companyBy/{id}")
     public GeneralResponse<Boolean> deleteCompany(@PathVariable(name = "id")Long id) throws Exception {
 
@@ -86,6 +112,32 @@ public class AdminController extends ControllerConfig {
             flag = adminServcice.deleteCompanyById(id);
             if(flag)
             result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<Boolean>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @DeleteMapping(value="/admin/delete/department/{id}")
+    public GeneralResponse<Boolean> deleteDepartment(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        if(id==null)
+        {
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            flag = adminServcice.deleteDepartmentById(id);
+            if(flag)
+                result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 result= new GeneralResponse<Boolean>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
@@ -136,6 +188,28 @@ public class AdminController extends ControllerConfig {
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
             else
             result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @GetMapping(value="/admin/get/department")
+    public GeneralResponse<List<Department>> getAllDepartment() throws Exception {
+
+        GeneralResponse<List<Department>> result;
+
+        boolean flag;
+        try {
+
+            List<Department> list = adminServcice.getAllDepartmentList();
+            if(list.isEmpty())
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }
         catch(Exception e)
