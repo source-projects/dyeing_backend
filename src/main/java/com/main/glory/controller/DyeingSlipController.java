@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
+import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
@@ -95,8 +96,8 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
     //add addition dyeing slip
-    @PostMapping("/dyeingSlip/additionalDyeingSlip/")
-    public GeneralResponse<Boolean> addAddtionalDyeingSlip(@RequestBody AddAdditionDyeingSlipModel addAdditionDyeingSlipModel){
+    @PostMapping("/dyeingSlip/add/additionalDyeingSlip/")
+    public GeneralResponse<Boolean> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
         GeneralResponse<Boolean> result;
         try {
             if(addAdditionDyeingSlipModel ==null)

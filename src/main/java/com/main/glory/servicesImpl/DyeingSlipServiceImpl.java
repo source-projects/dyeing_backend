@@ -9,6 +9,7 @@ import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
+import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -98,35 +99,10 @@ public class DyeingSlipServiceImpl {
         return dyeingSlipMast;
     }
 
-    public Boolean addAddtionalSlipData(AddAdditionDyeingSlipModel addAdditionDyeingSlipModel) throws Exception {
+    public Boolean addAddtionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
         AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
         try {
-            DyeingSlipMast dyeingSlipMast = new DyeingSlipMast(addAdditionDyeingSlipModel);
-            ProductionPlan productionPlan = productionPlanService.getProductionData(addAdditionDyeingSlipModel.getProductionId());
-
-            //DyeingSlipMast existingDyeingSlip = dyeingSlipMastDao.findByBatchIdAndProductionId(addAdditionDyeingSlipModel.getBatchId(), addAdditionDyeingSlipModel.getProductionId());
-
-
-            dyeingSlipMast.setStockId(productionPlan.getStockId());
-            if(addAdditionDyeingSlipModel.getDyeingSlipMast().getDyeingSlipDataList()==null)
-                throw new Exception("slip item can't be null");
-
-            DyeingSlipMast x = dyeingSlipMastDao.save(dyeingSlipMast);
-
-
-            //to store the addtional slip data
-            toStoreSlip.setStockId(productionPlan.getStockId());
-            toStoreSlip.setName(addAdditionDyeingSlipModel.getName());
-            toStoreSlip.setBatchId(productionPlan.getBatchId());
-            toStoreSlip.setCreatedBy(addAdditionDyeingSlipModel.getCreatedBy());
-            toStoreSlip.setUserHeadId(addAdditionDyeingSlipModel.getUserHeadId());
-            toStoreSlip.setProductionId(addAdditionDyeingSlipModel.getProductionId());
-            toStoreSlip.setUpdatedBy(addAdditionDyeingSlipModel.getUpdatedBy());
-            toStoreSlip.setCreatedDate(new Date(System.currentTimeMillis()));
-            toStoreSlip.setProcessId(x.getId());
-
-            additionDyeingProcessSlipDao.save(toStoreSlip);
             return true;
         }catch (Exception e)
         {

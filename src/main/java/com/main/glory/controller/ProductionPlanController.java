@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
@@ -120,10 +121,10 @@ public class ProductionPlanController extends ControllerConfig {
 
     //get all production without filter]
     @GetMapping(value="/productionPlan/allProductionWithoutFilter")
-    public GeneralResponse<List<ProductionPlan>> allProductionWithoutFilter()
+    public GeneralResponse<List<GetAllProduction>> allProductionWithoutFilter()
     {
         try {
-            List<ProductionPlan> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
+            List<GetAllProduction> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
@@ -154,25 +155,6 @@ public class ProductionPlanController extends ControllerConfig {
         }
     }
 
-
-
-    //get all batch based on text
-    /*@GetMapping(value="/getAllBatchBy/{partyId}/{qualityEntryId}/{batchId}")
-    public GeneralResponse<List<BatchData>> getAllBatchByPartyIdAndQualityIdAndBatchId(@PathVariable(name ="partyId" ) Long partyId,@PathVariable(name="qualityEntryId") Long qualityEntryId,String batchId)
-    {
-        try {
-            List<BatchData> batchDataList = productionPlanService.getAllBatch(partyId,qualityEntryId,batchId);
-            if(batchDataList.isEmpty())
-                throw new Exception("no data faund");
-
-            return new GeneralResponse<>(batchDataList, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
-    }*/
 
     @DeleteMapping(value="/productionPlan/deleteBy/{id}")
     public GeneralResponse<Boolean> deleteById(@PathVariable(name="id")Long id)
