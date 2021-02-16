@@ -36,7 +36,7 @@ public class ShadeData {
 	Long createdBy;
 	@ApiModelProperty(hidden = true)
 	Long updatedBy;
-	@Column(nullable = false)
+
 	Long supplierItemId;
 
 }
