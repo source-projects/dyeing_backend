@@ -222,6 +222,7 @@ public class JetServiceImpl {
              1.Shade color box deduct
              2.insert the data into the slip as per the process
              3.store the jet with production
+             4.create the dyeing slip as per the dyeing process
 
              */
 

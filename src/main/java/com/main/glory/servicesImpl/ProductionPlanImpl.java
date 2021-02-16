@@ -6,14 +6,17 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,8 +156,27 @@ public class ProductionPlanImpl {
 
     }
 
-    public List<ProductionPlan> getAllProductionWithoutFilter() {
-        return productionPlanDao.getAllProductionWithoutFilter();
+    public List<GetAllProduction> getAllProductionWithoutFilter() throws Exception {
+        List<GetAllProduction> dataList = new ArrayList<>();
+        Optional<List<GetAllProductionWithShadeData>> list = productionPlanDao.getAllProduction();
+
+        if(list.isEmpty())
+            throw new Exception("no data found");
+
+        for(GetAllProductionWithShadeData g:list.get())
+        {
+            Party party = partyServiceImp.getPartyDetailById(g.getPartyId());
+            GetQualityResponse quality=qualityServiceImp.getQualityByID(g.getQualityEntryId());
+
+            if(party==null)
+                continue;
+            if (quality==null)
+                continue;
+
+            dataList.add(new GetAllProduction(g,party,quality));
+        }
+
+        return dataList;
     }
 
 /*

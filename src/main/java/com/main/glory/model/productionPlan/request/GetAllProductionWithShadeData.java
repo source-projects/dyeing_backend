@@ -19,4 +19,10 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
         super(productionPlan);
         this.colorTone=colorTone;
     }
+
+    public GetAllProductionWithShadeData(GetAllProductionWithShadeData g)
+    {
+        super(g);
+        this.colorTone=g.getColorTone();
+    }
 }
