@@ -18,10 +18,7 @@ import com.main.glory.model.shade.ShadeMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("dyeingSlipServiceImpl")
 public class DyeingSlipServiceImpl {
@@ -147,15 +144,38 @@ public class DyeingSlipServiceImpl {
 
     public Boolean updateAddtionalDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
-        DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
-        if(dyeingSlipMast==null)
-            throw new Exception("no dyeing slip found");
+        try {
+
+           /* DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+            if(dyeingSlipMast==null) {
+                throw new Exception("no dyeing slip found for given batch or production");
+            }
+
+            DyeingSlipData dyeingSlipData = new DyeingSlipData(addAdditionDyeingSlipModel.getDyeingSlipData());
+            dyeingSlipData.setControlId(dyeingSlipMast.getId());
+            //  dyeingSlipData.setDyeingSlipItemData(addAdditionDyeingSlipModel.getDyeingSlipData().getDyeingSlipItemData());
+            DyeingSlipData x = dyeingSlipDataDao.saveAndFlush(dyeingSlipData);
+*/
+            return true;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+
+        }
 
 
-        dyeingSlipDataDao.saveAndFlush(addAdditionDyeingSlipModel.getDyeingSlipData());
+    }
+
+    public Boolean deleteAdditionalDyeingSlipById(Long id) throws Exception {
+
+        DyeingSlipMast existingDyeingSlip = dyeingSlipMastDao.getAdditionalDyeingSlipById(id);
+        if(existingDyeingSlip==null)
+            throw new Exception("no additonal slip found");
+
+        dyeingSlipItemDataDao.deleteByDyeingSlipId(id);
+        dyeingSlipDataDao.deleteAdditionalSlipDataByDyeingSlipId(id);
         return true;
-
-
 
     }
 }

@@ -19,14 +19,20 @@ import java.util.Date;
 public class ShadeData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@ApiModelProperty(hidden = true)
 	Long id;
+	@Column(nullable = true)
 	Long controlId;
+	@Column(nullable = true)
 	String itemName;
+	@Column(nullable = true)
 	Long supplierId;
+	@Column(nullable = true)
 	String supplierName;
+	@Column(nullable = true)
 	Double rate;
+	@Column(nullable = true)
 	Double amount;
+	@Column(nullable = true)
 	Double concentration;
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
@@ -37,6 +43,7 @@ public class ShadeData {
 	@ApiModelProperty(hidden = true)
 	Long updatedBy;
 
+	@Column(nullable = true)
 	Long supplierItemId;
 
 }
