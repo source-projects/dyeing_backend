@@ -38,6 +38,6 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 	@Query("select s from ShadeMast s where s.id = :id")
     ShadeMast getShadeMastById(Long id);
 
-	@Query("select s from ShadeMast s where s.pending=true")
+	@Query("select s from ShadeMast s")
     List<ShadeMast> getAllPendingShadeMast();
 }
