@@ -153,6 +153,10 @@ public class ProductionPlanImpl {
 
     }
 
+    public List<ProductionPlan> getAllProductionWithoutFilter() {
+        return productionPlanDao.getAllProductionWithoutFilter();
+    }
+
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 
