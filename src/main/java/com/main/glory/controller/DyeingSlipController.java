@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
@@ -123,28 +124,27 @@ public class DyeingSlipController extends ControllerConfig {
             if(addAdditionDyeingSlipModel ==null)
                 result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
 
-            Boolean data = dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
-            if(data)
-                result = new GeneralResponse<>(data, "Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result = new GeneralResponse<>(data, "data not updated", false, System.currentTimeMillis(), HttpStatus.OK);
+           dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
+
+           result = new GeneralResponse<>(true, "Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
         return result;
     }
 
     //get addition dyeing slip
     @GetMapping("/dyeingSlip/getAdditionalDyeingSlipBy/{id}")
-    public GeneralResponse<DyeingSlipMast> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
-        GeneralResponse<DyeingSlipMast> result;
+    public GeneralResponse<GetAllAdditionalDyeingSlip> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
+        GeneralResponse<GetAllAdditionalDyeingSlip> result;
         try {
             if(id ==null)
                 result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
 
-            DyeingSlipMast data = dyeingSlipService.getAdditionalDyeingSlipById(id);
+            GetAllAdditionalDyeingSlip data = dyeingSlipService.getAdditionalDyeingSlipById(id);
             if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else

@@ -141,35 +141,33 @@ public class DyeingSlipServiceImpl {
         return resultList;
     }
 
-    public DyeingSlipMast getAdditionalDyeingSlipById(Long id) throws Exception {
+    public GetAllAdditionalDyeingSlip getAdditionalDyeingSlipById(Long id) throws Exception {
 
-        DyeingSlipMast data = dyeingSlipMastDao.getAdditionalDyeingSlipById(id);
+        DyeingSlipData data = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(id);
+        if(data==null)
+            throw new Exception("no additional process found");
 
-        return data;
+        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
+
+        GetAllAdditionalDyeingSlip dyeingSlipMast =new GetAllAdditionalDyeingSlip(dyeingSlipMastExist);
+
+        dyeingSlipMast.setDyeingSlipData(data);
+
+        return dyeingSlipMast;
 
     }
 
-    public Boolean updateAddtionalDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
+    public void updateAddtionalDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
-        try {
-
-           /* DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+           DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
             if(dyeingSlipMast==null) {
                 throw new Exception("no dyeing slip found for given batch or production");
             }
+            if(!addAdditionDyeingSlipModel.getDyeingSlipData().getProcessType().equals("addition"))
+                throw new Exception("process type is not found");
 
-            DyeingSlipData dyeingSlipData = new DyeingSlipData(addAdditionDyeingSlipModel.getDyeingSlipData());
-            dyeingSlipData.setControlId(dyeingSlipMast.getId());
-            //  dyeingSlipData.setDyeingSlipItemData(addAdditionDyeingSlipModel.getDyeingSlipData().getDyeingSlipItemData());
-            DyeingSlipData x = dyeingSlipDataDao.saveAndFlush(dyeingSlipData);
-*/
-            return true;
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            return false;
-
-        }
+            dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
+            return;
 
 
     }

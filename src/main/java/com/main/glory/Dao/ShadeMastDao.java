@@ -3,7 +3,9 @@ package com.main.glory.Dao;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,4 +42,12 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 
 	@Query("select s from ShadeMast s")
     List<ShadeMast> getAllPendingShadeMast();
+
+	@Query("select s from ShadeMast s where s.processId=:id")
+    List<ShadeMast> getAllShadeByProcessId(Long id);
+
+	@Modifying
+	@Transactional
+	@Query("update ShadeMast s set s.processId=:processId where s.id=:shadeId")
+	void updateProcessId(Long shadeId, Long processId);
 }
