@@ -381,8 +381,10 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
 		for(ShadeMast s:list)
 		{
-			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty())
+			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty()) {
+				s.setPending(true);
 				dataList.add(s);
+			}
 		}
 
 		return dataList;
