@@ -64,6 +64,8 @@ public class DyeingSlipServiceImpl {
     public SlipFormatData getDyeingSlipByBatchStockId(String batchId, Long productionId) throws Exception {
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
+        if(dyeingSlipMastExist==null)
+            throw new Exception("no dyeing slip found");
         SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
