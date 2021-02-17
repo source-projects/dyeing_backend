@@ -86,4 +86,24 @@ public class ShadeMast {
 		this.userHeadId=addShadeMast.getUserHeadId();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
+
+	public ShadeMast(ShadeMast addShadeMast)
+	{
+		this.apcNo =addShadeMast.getApcNo();
+		this.pending=addShadeMast.getPending();
+		this.id=addShadeMast.getPartyId();
+		this.partyShadeNo=addShadeMast.getPartyShadeNo();
+		this.processId=addShadeMast.getProcessId();
+		this.partyId=addShadeMast.getPartyId();
+		this.colorTone=addShadeMast.getColorTone();
+		this.createdBy=addShadeMast.getCreatedBy();
+		this.cuttingId=addShadeMast.getCuttingId();
+		this.remark=addShadeMast.getRemark();
+		this.category=addShadeMast.getCategory();
+		this.labColorNo=addShadeMast.getLabColorNo();
+		this.processName=addShadeMast.getProcessName();
+		this.userHeadId=addShadeMast.getUserHeadId();
+		//this.shadeDataList=addShadeMast.getShadeDataList();
+	}
+
 }

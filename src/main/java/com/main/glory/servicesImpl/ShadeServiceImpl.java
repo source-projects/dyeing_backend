@@ -9,12 +9,10 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.shade.requestmodals.AddShadeMast;
-import com.main.glory.model.shade.requestmodals.GetAPC;
-import com.main.glory.model.shade.requestmodals.GetAllShade;
-import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
+import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
+import org.hibernate.engine.jdbc.env.spi.QualifiedObjectNameFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -389,14 +387,16 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			return false;
 	}
 
-	public List<ShadeMast> getAllPendingShade() {
-		List<ShadeMast> dataList=new ArrayList<>();
+	public List<GetAllPendingShade> getAllPendingShade() {
+		List<GetAllPendingShade> dataList=new ArrayList<>();
 		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
 		for(ShadeMast s:list)
 		{
+			Party party =partyDao.findByPartyId(s.getPartyId());
+			Optional<Quality> quality =qualityDao.findById(s.getQualityEntryId());
 			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty()) {
 				s.setPending(true);
-				dataList.add(s);
+				dataList.add(new GetAllPendingShade(s,party,quality.get()));
 			}
 		}
 
