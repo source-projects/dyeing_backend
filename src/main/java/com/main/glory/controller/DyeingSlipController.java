@@ -7,6 +7,7 @@ import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
+import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,12 +79,12 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
     @GetMapping("/dyeingSlip/additionalDyeingslip/all")
-    public GeneralResponse<List<DyeingSlipMast>> getAllAddtionalDyeignSlip(){
-        GeneralResponse<List<DyeingSlipMast>> result;
+    public GeneralResponse<List<GetAllAdditionalDyeingSlip>> getAllAddtionalDyeignSlip(){
+        GeneralResponse<List<GetAllAdditionalDyeingSlip>> result;
         try {
 
-            List<DyeingSlipMast> data = dyeingSlipService.getAllAddtionalDyeignSlip();
-            if(data!=null)
+            List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllAddtionalDyeignSlip();
+            if(!data.isEmpty())
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);

@@ -11,6 +11,7 @@ import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
+import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.response.GetQualityResponse;
@@ -129,10 +130,18 @@ public class DyeingSlipServiceImpl {
 
     }
 
-    public List<DyeingSlipMast> getAllAddtionalDyeignSlip() throws Exception {
-        List<DyeingSlipMast> list =dyeingSlipMastDao.getAllAddtionalDyeingProcess();
+    public List<GetAllAdditionalDyeingSlip> getAllAddtionalDyeignSlip() throws Exception {
+        List<GetAllAdditionalDyeingSlip> resultList =new ArrayList<>();
+        List<GetAllAdditionalDyeingSlip> list =dyeingSlipMastDao.getAllAddtionalDyeingProcess();
 
-        return list;
+        for(GetAllAdditionalDyeingSlip ad:list)
+        {
+            DyeingSlipData additionalDyeingSlip = dyeingSlipDataDao.getOnlyAdditionalSlipById(ad.getId());
+            resultList.add(new GetAllAdditionalDyeingSlip(ad,additionalDyeingSlip));
+        }
+        if(resultList.isEmpty())
+            throw new Exception("no data found");
+        return resultList;
     }
 
     public DyeingSlipMast getAdditionalDyeingSlipById(Long id) throws Exception {
