@@ -387,4 +387,24 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 		return dataList;
 	}
+
+	public List<ShadeMast> getAllShadeMastByProcessId(Long id) throws Exception {
+		List<ShadeMast> list = shadeMastDao.getAllShadeByProcessId(id);
+		if(list.isEmpty())
+			throw new Exception("no shade found for process");
+		return list;
+	}
+
+	public void saveAllShade(List<ShadeMast> getAllShade) {
+		shadeMastDao.saveAll(getAllShade);
+	}
+
+	public void saveShadeData(ShadeMast s)
+	{
+		shadeMastDao.save(s);
+	}
+
+	public void updateShadeProcessId(Long shadeId, Long processId) {
+		shadeMastDao.updateProcessId(shadeId,processId);
+	}
 }

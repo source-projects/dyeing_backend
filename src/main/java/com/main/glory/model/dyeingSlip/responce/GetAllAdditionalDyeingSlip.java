@@ -1,6 +1,7 @@
 package com.main.glory.model.dyeingSlip.responce;
 
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,5 +38,14 @@ public class GetAllAdditionalDyeingSlip {
         this.stockId=ad.getStockId();
         this.productionId=ad.getProductionId();
         this.dyeingSlipData=additionalDyeingSlip;
+    }
+
+    public GetAllAdditionalDyeingSlip(DyeingSlipMast dyeingSlipMastExist) {
+        this.id=dyeingSlipMastExist.getId();
+        this.batchId=dyeingSlipMastExist.getBatchId();
+        this.jetId=dyeingSlipMastExist.getJetId();
+        this.stockId=dyeingSlipMastExist.getStockId();
+        this.productionId=dyeingSlipMastExist.getProductionId();
+       // this.dyeingSlipData=dyeingSlipMastExist;
     }
 }
