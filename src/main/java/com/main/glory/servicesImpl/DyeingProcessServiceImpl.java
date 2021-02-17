@@ -83,11 +83,10 @@ public class DyeingProcessServiceImpl {
         }
         List<ShadeMast> getAllShade= shadeService.getAllShadeMastByProcessId(dyeingProcessMastExist.get().getId());
         DyeingProcessMast x = dyeingProcessMastDao.save(data);
-       for(ShadeMast s :getAllShade)
-       {
+        for(ShadeMast s :getAllShade)
+        {
            shadeService.updateShadeProcessId(s.getId(),x.getId());
-       }
-
+        }
 
 
 

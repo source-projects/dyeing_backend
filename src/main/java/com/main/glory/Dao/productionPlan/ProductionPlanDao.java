@@ -4,7 +4,9 @@ import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProducti
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,4 +34,12 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select p from ProductionPlan p ")
     List<ProductionPlan> getAllProductionWithoutFilter();
+
+    @Query("select p from ProductionPlan p where p.shadeId=:shadeId")
+    List<ProductionPlan> getAllProductionByShadeId(Long shadeId);
+
+    @Modifying
+    @Transactional
+    @Query("update ProductionPlan p set p.shadeId=:shadeId where p.id=:id")
+    void updateProductionWithShadeId(Long id, Long shadeId);
 }

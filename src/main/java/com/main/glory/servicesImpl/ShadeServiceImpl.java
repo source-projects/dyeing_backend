@@ -1,9 +1,11 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.*;
+import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeMast;
@@ -26,6 +28,12 @@ import java.util.Optional;
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl implements ShadeServicesInterface {
 
+
+	@Autowired
+	ProductionPlanDao productionPlanDao;
+
+	@Autowired
+	ProductionPlanImpl productionPlanService;
 	@Autowired
 	APCDao acpDao;
 	
@@ -161,7 +169,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		else{
 			try{
 				//System.out.println(shadeMast);
-				shadeMastDao.save(shadeMast);
+				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
+				ShadeMast x = shadeMastDao.save(shadeMast);
+				for(ProductionPlan p :productionPlansList)
+				{
+					productionPlanDao.updateProductionWithShadeId(p.getId(),x.getId());
+				}
 				//shadeDataDao.saveAll(shadeMast.getShadeDataList());
 			}catch(Exception e){
 				e.printStackTrace();

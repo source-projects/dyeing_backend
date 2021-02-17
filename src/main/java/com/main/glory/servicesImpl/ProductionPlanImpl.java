@@ -186,6 +186,10 @@ public class ProductionPlanImpl {
         return dataList;
     }
 
+    public List<ProductionPlan> getProductionByShadeId(Long shadeId) {
+        return productionPlanDao.getAllProductionByShadeId(shadeId);
+    }
+
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 
