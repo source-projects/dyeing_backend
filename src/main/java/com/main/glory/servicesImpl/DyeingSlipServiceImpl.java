@@ -4,15 +4,12 @@ import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
-import com.main.glory.model.dyeingSlip.AdditionDyeingProcessSlip;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
-import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
-import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
@@ -97,16 +94,21 @@ public class DyeingSlipServiceImpl {
         return dyeingSlipMast;
     }
 
-    public Boolean addAddtionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
+    public void addAddtionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
         //AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
-        try {
 
             DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
             if(dyeingSlipMast==null) {
                 throw new Exception("no dyeing slip found for given batch or production");
             }
 
+
+            //check the dyeing slip already exist with batch or not
+
+            DyeingSlipData dyeingSlipDataExistWithAdditional = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
+            if(dyeingSlipDataExistWithAdditional!=null)
+                throw new Exception("additional process already exist with batch:"+addAdditionDyeingSlipModel.getBatchId());
 
             DyeingSlipData dyeingSlipData = new DyeingSlipData(addAdditionDyeingSlipModel.getDyeingSlipData());
             dyeingSlipData.setControlId(dyeingSlipMast.getId());
@@ -121,12 +123,7 @@ public class DyeingSlipServiceImpl {
             }
 
             dyeingSlipItemDataDao.saveAll(list);
-            return true;
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            return false;
-        }
+
 
     }
 
@@ -136,7 +133,7 @@ public class DyeingSlipServiceImpl {
 
         for(GetAllAdditionalDyeingSlip ad:list)
         {
-            DyeingSlipData additionalDyeingSlip = dyeingSlipDataDao.getOnlyAdditionalSlipById(ad.getId());
+            DyeingSlipData additionalDyeingSlip = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(ad.getId());
             resultList.add(new GetAllAdditionalDyeingSlip(ad,additionalDyeingSlip));
         }
         if(resultList.isEmpty())
