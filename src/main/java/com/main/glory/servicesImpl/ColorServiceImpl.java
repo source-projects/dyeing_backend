@@ -294,4 +294,9 @@ public class ColorServiceImpl implements ColorServicesInterface {
         return list;
 
     }
+
+    public ColorBox getColorBoxById(Long boxId) {
+        ColorBox colorBox=colorBoxDao.getColorBoxById(boxId);
+        return colorBox;
+    }
 }

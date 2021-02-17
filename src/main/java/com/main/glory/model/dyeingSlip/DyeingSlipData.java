@@ -51,4 +51,5 @@ public class DyeingSlipData {
         this.isColor = dyeingSlipData.getIsColor();
         this.liquerRation= dyeingSlipData.getLiquerRation();
     }
+
 }

@@ -25,4 +25,9 @@ public interface DyeingSlipDataDao extends JpaRepository<DyeingSlipData,Long> {
 
     @Query("select d from DyeingSlipData d where d.controlId=:id AND d.processType='addition'")
     DyeingSlipData getOnlyAdditionalSlipMastById(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("delete from DyeingSlipData dd where dd.id=:id")
+    void deleteDyeingSlipDataById(Long id);
 }
