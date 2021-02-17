@@ -104,15 +104,13 @@ public class DyeingSlipController extends ControllerConfig {
             if(addAdditionDyeingSlipModel ==null)
             result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
 
-            Boolean data = dyeingSlipService.addAddtionalSlipData(addAdditionDyeingSlipModel);
-            if(data)
-                result = new GeneralResponse<>(data, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result = new GeneralResponse<>(data, "data not added", false, System.currentTimeMillis(), HttpStatus.OK);
+            dyeingSlipService.addAddtionalSlipData(addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return result;
     }
