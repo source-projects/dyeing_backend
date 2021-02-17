@@ -3,10 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.shade.requestmodals.AddShadeMast;
-import com.main.glory.model.shade.requestmodals.GetAPC;
-import com.main.glory.model.shade.requestmodals.GetAllShade;
-import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
+import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -117,9 +114,9 @@ public class ShadeController extends ControllerConfig {
 
 	//get All pending shade list
 	@GetMapping("/shade/allPendingAPC")
-	public GeneralResponse<List<ShadeMast>> getAllPendingShade(){
+	public GeneralResponse<List<GetAllPendingShade>> getAllPendingShade(){
 		try{
-			List<ShadeMast> shadeMast = shadeService.getAllPendingShade();
+			List<GetAllPendingShade> shadeMast = shadeService.getAllPendingShade();
 			if(shadeMast.isEmpty()){
 				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 			}
