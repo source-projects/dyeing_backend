@@ -50,6 +50,9 @@ public class QualityServiceImp implements QualityServiceInterface {
         if (quality1 != null)
             throw new Exception("Quality id is already exist");
 
+        if(quality.getUnit().equals("weight"))
+            quality.setWtPer100m(1.0);
+
         qualityDao.save(quality);
         return 1;
     }

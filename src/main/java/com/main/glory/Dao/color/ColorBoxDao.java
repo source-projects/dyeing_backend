@@ -24,4 +24,7 @@ public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 
 	@Query("select new com.main.glory.model.color.request.ItemWithLeftQty((select cd.itemId from ColorData cd where cd.id=cb.controlId )as ItemId,SUM(cb.quantityLeft)) from ColorBox cb where cb.issued=true AND cb.finished=false AND cb.quantityLeft > 0 GROUP BY cb.controlId")
 	List<ItemWithLeftQty> getAllLeftQtyItemList();
+
+	@Query("select c from ColorBox c where c.id=:boxId")
+    ColorBox getColorBoxById(Long boxId);
 }

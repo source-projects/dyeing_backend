@@ -183,4 +183,24 @@ public class DyeingSlipServiceImpl {
         return true;
 
     }
+
+    public DyeingSlipMast getDyeingSlipByProductionId(Long id) {
+        DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(id);
+        return dyeingSlipMast;
+    }
+
+    public void deleteDyeingSlipDataByMastId(Long id) {
+
+        DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipById(id);
+        for(DyeingSlipData dyeingSlipData:dyeingSlipMast.getDyeingSlipDataList())
+        {
+            //remove all the item and data from the dyeing slip
+            dyeingSlipItemDataDao.deleteDyeingSlipItemByDyeingSlipDataId(dyeingSlipData.getId());
+            dyeingSlipDataDao.deleteDyeingSlipDataById(dyeingSlipData.getId());
+
+        }
+
+        //remove the  dyeing mast process by id
+        dyeingSlipMastDao.deleteDyeingSlipById(id);
+    }
 }
