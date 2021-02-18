@@ -80,6 +80,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			shadeData.setPending(true);
 
 			shadeData.setQualityEntryId(quality.get().getId());
+			shadeData.setShadeDataList(null);
 
 			//check the ACP number
 
@@ -217,7 +218,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 					if(!party.isPresent())
 						continue;
 
-					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
+					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty() || e.getShadeDataList().get(0).getSupplierItemId()==null)
 						continue;
 
 					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -244,7 +245,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						continue;
 					if(!party.isPresent())
 						continue;
-					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
+					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
 						continue;
 
 					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -275,7 +276,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						if(!party.isPresent())
 							continue;
 
-						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
+						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
 							continue;
 
 						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -303,7 +304,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 							continue;
 						if(!party.isPresent())
 							continue;
-						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty())
+						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
 							continue;
 
 						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
@@ -394,7 +395,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		{
 			Party party =partyDao.findByPartyId(s.getPartyId());
 			Optional<Quality> quality =qualityDao.findById(s.getQualityEntryId());
-			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty()) {
+			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty() || s.getShadeDataList().get(0).getSupplierItemId()==null) {
 				s.setPending(true);
 				dataList.add(new GetAllPendingShade(s,party,quality.get()));
 			}

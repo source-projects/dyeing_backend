@@ -91,7 +91,7 @@ public class ShadeMast {
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
-		this.id=addShadeMast.getPartyId();
+		this.id=addShadeMast.getId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
 		this.partyId=addShadeMast.getPartyId();
