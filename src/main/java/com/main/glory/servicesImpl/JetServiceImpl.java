@@ -268,9 +268,9 @@ public class JetServiceImpl {
 
 
             //check the slip is already exist or not
-            DyeingSlipMast dyeingSlipMastExist = dyeingSlipService.getDyeingSlipByBatchStockId(productionPlanExist.getBatchId(),productionPlanExits.getStockId());
-            if(dyeingSlipMastExist!=null)
-                throw new Exception("slip already is exist for batch id:"+productionPlanExits.getBatchId());
+            //DyeingSlipMast dyeingSlipMastExist = dyeingSlipService.getDyeingSlipByBatchStockId(productionPlanExist.getBatchId(),productionPlanExits.getStockId());
+            //if(dyeingSlipMastExist!=null)
+                //throw new Exception("slip already is exist for batch id:"+productionPlanExits.getBatchId());
 
             //set the dyeing slip master table first
             dyeingSlipMast.setJetId(jetMastExist.get().getId());
