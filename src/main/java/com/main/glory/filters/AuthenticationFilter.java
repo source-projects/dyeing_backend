@@ -36,7 +36,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 	@SneakyThrows
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws ServletException, IOException {
+			{
 
 
 		String path = "";
@@ -58,7 +58,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if(path.startsWith("user") || path.startsWith("login")){
+		if(path.startsWith("user") || path.startsWith("login") || path.contains("admin") || path.contains("db")){
 			chain.doFilter(request, response);
 			return;
 		}
@@ -82,7 +82,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				Boolean pathFlag=false;
 				//first find the request contain which page request
 				MappingPermission mappingPermission=new MappingPermission();
-				Map<String,String> stringPath = mappingPermission.getMapping();
+				//Map<String,String> stringPath = mappingPermission.getMapping();
 				for (Map.Entry<String,String> entry : mappingPermission.getMapping().entrySet()) {
 
 					//getValue="moduleName" getKey="annottion"
@@ -132,9 +132,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				}
 
 
-
-				if(pathFlag==false)
-					response.sendError(404,"page not found");
+				//for unrelated page request
+				/*if(pathFlag==false)
+					response.sendError(404,"page not found");*/
 
 			}
 

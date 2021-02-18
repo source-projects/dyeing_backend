@@ -22,7 +22,7 @@ public class BoilerController extends ControllerConfig {
     @Autowired
     BoilerRecordImpl boilerRecordService;
 
-    @PostMapping(value="/boilerRecord")
+    @PostMapping(value="/machine/boilerRecord")
     public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
         if(boilerMachineRecord==null)
         {
@@ -43,7 +43,7 @@ public class BoilerController extends ControllerConfig {
     }
 
     //get boiler record as per the requirement
-    @PostMapping(value="/boilerRecord/basedOnFilter/")
+    @PostMapping(value="/machine/boilerRecord/basedOnFilter/")
     public GeneralResponse<List<BoilerMachineRecord>> getBoilerRecordByFilter(@RequestBody BoilerRecordBasedOnFilter filter) throws Exception {
         if(filter==null)
         {
@@ -67,7 +67,7 @@ public class BoilerController extends ControllerConfig {
         }
     }
 
-    @GetMapping(value="/boilerRecord/allMachineRecord")
+    @GetMapping(value="/machine/boilerRecord/allMachineRecord")
     public GeneralResponse<List<BoilerMachineRecord>> getAllMachine() throws Exception {
 
         boolean flag;
@@ -87,7 +87,7 @@ public class BoilerController extends ControllerConfig {
         }
     }
 
-    @PostMapping(value="/boilerRecord/filter/")
+    @PostMapping(value="/machine/boilerRecord/filter/")
     public GeneralResponse<List<BoilerFilter>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
 
         boolean flag;
@@ -109,7 +109,7 @@ public class BoilerController extends ControllerConfig {
 
 
 
-    @PutMapping(value="/boilerRecord/update/")
+    @PutMapping(value="/machine/boilerRecord/update/")
     public GeneralResponse<Boolean> updateBoilerRecord(@RequestBody UpdateBoilerRecord record) throws Exception {
 
         boolean flag;

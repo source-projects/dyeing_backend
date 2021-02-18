@@ -2,8 +2,6 @@ package com.main.glory.model.shade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.program.Program;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -52,6 +50,8 @@ public class ShadeMast {
 	//@Column(nullable = false)
 	String labColorNo;
 	String processName;
+	String apcNo;
+	Boolean pending;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -63,11 +63,15 @@ public class ShadeMast {
 	@JoinColumn(name = "shadeId", referencedColumnName = "id")
 	private List<ProductionPlan> productionPlans;
 
+	@PrePersist
+	protected void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
 	public ShadeMast(AddShadeMast addShadeMast)
 	{
+		this.apcNo =addShadeMast.getApcNo();
+		this.pending=addShadeMast.getPending();
 		this.id=addShadeMast.getPartyId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
@@ -80,5 +84,26 @@ public class ShadeMast {
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
 		this.userHeadId=addShadeMast.getUserHeadId();
+		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
+
+	public ShadeMast(ShadeMast addShadeMast)
+	{
+		this.apcNo =addShadeMast.getApcNo();
+		this.pending=addShadeMast.getPending();
+		this.id=addShadeMast.getId();
+		this.partyShadeNo=addShadeMast.getPartyShadeNo();
+		this.processId=addShadeMast.getProcessId();
+		this.partyId=addShadeMast.getPartyId();
+		this.colorTone=addShadeMast.getColorTone();
+		this.createdBy=addShadeMast.getCreatedBy();
+		this.cuttingId=addShadeMast.getCuttingId();
+		this.remark=addShadeMast.getRemark();
+		this.category=addShadeMast.getCategory();
+		this.labColorNo=addShadeMast.getLabColorNo();
+		this.processName=addShadeMast.getProcessName();
+		this.userHeadId=addShadeMast.getUserHeadId();
+		//this.shadeDataList=addShadeMast.getShadeDataList();
+	}
+
 }

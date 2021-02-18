@@ -19,5 +19,8 @@ public interface ColorDataDao extends JpaRepository<ColorData, Long> {
 
     @Query("select cb from ColorBox cb where cb.controlId IN (select c.id from ColorData c where c.itemId=:itemId) AND cb.issued=true AND cb.finished = false AND cb.quantityLeft > 0 ")
     List<ColorBox> findAllIssuedBoxByItemId(Long itemId);
+
+    @Query("select MAX(c.id) from ColorBox c where c.controlId = (select MAX(cc.id) from ColorData cc where cc.itemId=:supplierItemId) AND c.issued=true")
+    Long getLatestIssuedColorBoxByColorDataId(Long supplierItemId);
 }
 

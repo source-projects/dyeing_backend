@@ -58,8 +58,10 @@ public class BatchImpl {
         {
 
             //if it extra batch then create it
-            if(batchData.getId()==0)
+            if(batchData.getId()==0) {
                 batchData.setIsExtra(true);
+                batchData.setMtr(0.0);
+            }
             else
             {
                 //if it is already available then replace the flag from the hash map

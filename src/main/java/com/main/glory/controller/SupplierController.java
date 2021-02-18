@@ -3,6 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class SupplierController extends ControllerConfig {
+
     @Autowired
     SupplierServiceImpl supplierService;
 
@@ -193,5 +195,43 @@ public class SupplierController extends ControllerConfig {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+
+    //get color item of supplier
+    @GetMapping("/supplier/rate/colorItemsById/{supplierId}")
+    public GeneralResponse<List<SupplierRate>> getAllColorItemBySupplierId(@PathVariable(name = "supplierId") Long supplierId){
+
+        GeneralResponse<List<SupplierRate>> result;
+        try{
+            List<SupplierRate> obj = supplierService.getAllColorItemBySupplierId(supplierId);
+            if(obj != null){
+                result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
+
+    //get color item of supplier
+    @GetMapping("/supplier/rate/chemicalItemsById/{supplierId}")
+    public GeneralResponse<List<SupplierRate>> getAllChemicalItemBySupplierId(@PathVariable(name ="supplierId") Long supplierId){
+
+        GeneralResponse<List<SupplierRate>> result;
+        try{
+            List<SupplierRate> obj = supplierService.getAllChemicalItemBySupplierId(supplierId);
+            if(obj != null){
+                result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
     }
 }

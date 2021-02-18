@@ -1,7 +1,6 @@
 package com.main.glory.model.jet;
 
 import com.main.glory.model.jet.request.AddJet;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,7 @@ public class JetMast {
     Long id;
     String name;
     Double capacity;
-    Double liquerRation;
+    Double liquorRatio;
 
 
     
@@ -34,6 +33,6 @@ public class JetMast {
     public JetMast(AddJet jetMast) {
         this.capacity=jetMast.getCapacity();
         this.name=jetMast.getName();
-        this.liquerRation=jetMast.getLiquerRation();
+        this.liquorRatio =jetMast.getLiquorRatio();
     }
 }

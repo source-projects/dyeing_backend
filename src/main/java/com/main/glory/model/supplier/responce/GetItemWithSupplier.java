@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -16,6 +16,12 @@ public class GetItemWithSupplier {
     Long itemId;
     String itemName;
 
+    public GetItemWithSupplier(Long supplierId, String supplierName, Long itemId, String itemName) {
+        this.supplierId = supplierId;
+        this.supplierName = supplierName;
+        this.itemId = itemId;
+        this.itemName = itemName;
+    }
 
     public GetItemWithSupplier(Supplier supplier, ItemWithSupplier item) {
         this.supplierId=supplier.getId();

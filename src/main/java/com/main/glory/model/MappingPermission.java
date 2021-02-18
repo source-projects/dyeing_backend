@@ -34,8 +34,11 @@ public class MappingPermission {
         mapping.put("pr","dyeingProcess");
         mapping.put("pp","productionPlan");
         mapping.put("jp","jet");
-
-
+        mapping.put("pt","paymentTerm");
+        mapping.put("d","dispatch");
+        mapping.put("bf","batch");//bf==batch finish mtr
+        mapping.put("ip","machine");//machine=all machine except jet
+        mapping.put("wt","waterJet");
 
     }
 

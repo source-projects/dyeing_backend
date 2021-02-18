@@ -1,5 +1,34 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.*;
+import com.main.glory.Dao.Jet.JetDataDao;
+import com.main.glory.Dao.Jet.JetMastDao;
+import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.Dao.admin.ApproveByDao;
+import com.main.glory.Dao.batch.BatchDataDao;
+import com.main.glory.Dao.color.ColorBoxDao;
+import com.main.glory.Dao.color.ColorDataDao;
+import com.main.glory.Dao.color.ColorMastDao;
+import com.main.glory.Dao.designation.DesignationDao;
+import com.main.glory.Dao.dispatch.DispatchDataDao;
+import com.main.glory.Dao.dispatch.DispatchMastDao;
+import com.main.glory.Dao.dyeingProcess.DyeingChemicalDataDao;
+import com.main.glory.Dao.dyeingProcess.DyeingProcessDataDao;
+import com.main.glory.Dao.dyeingProcess.DyeingProcessMastDao;
+import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
+import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
+import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
+import com.main.glory.Dao.paymentTerm.AdvancePaymentDao;
+import com.main.glory.Dao.paymentTerm.PaymentDataDao;
+import com.main.glory.Dao.paymentTerm.PaymentMastDao;
+import com.main.glory.Dao.productionPlan.ProductionPlanDao;
+import com.main.glory.Dao.qualityProcess.ChemicalDao;
+import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
+import com.main.glory.Dao.user.UserDao;
+import com.main.glory.Dao.user.UserPermissionDao;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.supplier.SupplierRate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +41,102 @@ import java.util.Date;
 
 @Service("restoreDbServiceImp")
 public class RestoreDbImpl {
+
+    @Autowired
+    PartyDao partyDao;
+
+    @Autowired
+    QualityDao qualityDao;
+
+    @Autowired
+    ProgramDao programDao;
+
+    @Autowired
+    QualityProcessMastDao qualityProcessMastDao;
+
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    UserPermissionDao userPermissionDao;
+
+    @Autowired
+    ShadeMastDao shadeMastDao;
+
+    @Autowired
+    ShadeDataDao shadeDataDao;
+
+    @Autowired
+    JetMastDao jetMastDao;
+
+    @Autowired
+    JetDataDao jetDataDao;
+
+    @Autowired
+    ProductionPlanDao productionPlanDao;
+
+    @Autowired
+    DispatchMastDao dispatchMastDao;
+
+    @Autowired
+    DispatchDataDao dispatchDataDao;
+
+    @Autowired
+    AdvancePaymentDao advancePaymentDao;
+
+    @Autowired
+    PaymentMastDao paymentMastDao;
+
+    @Autowired
+    PaymentDataDao paymentDataDao;
+
+    @Autowired
+    SupplierDao supplierDao;
+
+    @Autowired
+    SupplierRateDao supplierRateDao;
+
+    @Autowired
+    DyeingSlipMastDao dyeingSlipMastDao;
+
+    @Autowired
+    DyeingSlipDataDao dyeingSlipDataDao;
+
+    @Autowired
+    DyeingSlipItemDataDao dyeingSlipItemDataDao;
+
+    @Autowired
+    DyeingProcessMastDao dyeingProcessMastDao;
+
+    @Autowired
+    DyeingProcessDataDao dyeingProcessDataDao;
+
+    @Autowired
+    DyeingChemicalDataDao dyeingChemicalDataDao;
+
+    @Autowired
+    DesignationDao designationDao;
+
+    @Autowired
+    StockMastDao stockMastDao;
+
+    @Autowired
+    BatchDataDao batchDataDao;
+
+    @Autowired
+    ColorMastDao colorMastDao;
+
+    @Autowired
+    ColorDataDao colorDataDao;
+
+    @Autowired
+    ColorBoxDao colorBoxDao;
+
+    @Autowired
+    ApproveByDao approveByDao;
+
+    @Autowired
+    APCDao apcDao;
 
 
 
@@ -101,6 +226,8 @@ public class RestoreDbImpl {
             while ((line = buf.readLine()) != null) {
                 System.out.println("exec response: " + line);
             }*/
+
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
@@ -108,5 +235,14 @@ public class RestoreDbImpl {
 
         return false;
 
+    }
+
+    public Boolean clearDb() {
+
+        //clear by all the table payment type
+        //partyDao.trucateRecord();
+       // partyDao.dropCommand(dbname);
+
+        return true;
     }
 }

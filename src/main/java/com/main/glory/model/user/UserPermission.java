@@ -28,6 +28,11 @@ public class UserPermission {
     Long pr;
     Long pp;
     Long jp;
+    Long pt;
+    Long d;
+    Long bf;
+    Long ip;
+    Long wt;
 
 
 }

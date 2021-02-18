@@ -2,6 +2,7 @@ package com.main.glory.Dao.StockAndBatch;
 
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
+import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -22,6 +23,7 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
  List<StockMast> findByQualityId(Long qualityId);
 
+ @Query("select s from StockMast s where s.partyId=:partyId AND s.qualityId=:qualityId")
  List<StockMast> findByQualityIdAndPartyId(Long qualityId,Long partyId);
 
  @Query("select sm from StockMast sm where userHeadId =:userHeadId OR createdBy =:userHeadId")
@@ -53,4 +55,7 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
  @Query("select s from StockMast s where s.id=(select ss.controlId as id,SUM(ss.mtr) from BatchData ss where isProductionPlanned=false AND controlId IS NOT NULL AND batchId IS NOT NULL GROUP BY batchId,controlId )")
  List<StockMast> getAllStockWithoutBatchPlanned();
+
+
+
 }

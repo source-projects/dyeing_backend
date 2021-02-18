@@ -248,4 +248,39 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         Supplier supplier = supplierRateDao.getSupplierByItemId(itemId);
         return supplier;
     }
+
+    //get all color item
+    public List<SupplierRate> getAllColorItemBySupplierId(Long supplierId) throws Exception {
+
+        Supplier supplierExist = supplierDao.findBySupplierId(supplierId);
+
+        if(supplierExist==null)
+            throw new Exception("no supplier found");
+
+        List<SupplierRate> colorItemList = supplierRateDao.findItemBySupplierId(supplierId,"Color");
+        if(colorItemList.isEmpty())
+            throw new Exception("no color item found");
+
+       return colorItemList;
+    }
+
+    //getAllChemical List
+    public List<SupplierRate> getAllChemicalItemBySupplierId(Long supplierId) throws Exception {
+
+        Supplier supplierExist = supplierDao.findBySupplierId(supplierId);
+
+        if(supplierExist==null)
+            throw new Exception("no supplier found");
+
+        List<SupplierRate> chemicalItemList = supplierRateDao.findItemBySupplierId(supplierId,"Chemical");
+        if(chemicalItemList.isEmpty())
+            throw new Exception("no color item found");
+
+        return chemicalItemList;
+    }
+
+    public SupplierRate getSupplierRateByItemId(Long supplierItemId) {
+        SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(supplierItemId);
+        return supplierRate;
+    }
 }

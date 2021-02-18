@@ -2,14 +2,8 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.party.Party;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.shade.requestmodals.AddShadeMast;
-import com.main.glory.model.shade.requestmodals.GetAllShade;
-import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
-import com.main.glory.model.shade.responsemodals.ShadeMastWithDetails;
-import com.main.glory.services.ShadeServicesInterface;
+import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +31,32 @@ public class ShadeController extends ControllerConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@GetMapping("/shade/getAPC")
+	public GeneralResponse<GetAPC> getApcNumber(){
+		try {
+
+			GetAPC acp = shadeService.getAPCNumber();
+			return new GeneralResponse<>(acp, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	@GetMapping("/shade/apcExist/{number}")
+	public GeneralResponse<Boolean> isAPCExist(@PathVariable(name = "number")String number){
+		try {
+			Boolean acp = shadeService.isAPCExist(number);
+			if(acp)
+				return new GeneralResponse<>(acp, "data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			else
+				return new GeneralResponse<>(acp, "data found", true, System.currentTimeMillis(), HttpStatus.OK);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -82,9 +102,26 @@ public class ShadeController extends ControllerConfig {
 		try{
 			Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(id);
 			if(shadeMast != null){
-				return new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", false, System.currentTimeMillis(), HttpStatus.FOUND);
+				return new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			}else{
 				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	//get All pending shade list
+	@GetMapping("/shade/allPendingAPC")
+	public GeneralResponse<List<GetAllPendingShade>> getAllPendingShade(){
+		try{
+			List<GetAllPendingShade> shadeMast = shadeService.getAllPendingShade();
+			if(shadeMast.isEmpty()){
+				return new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			}
+			else{
+				return new GeneralResponse<>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			}
 		}catch (Exception e){
 			e.printStackTrace();

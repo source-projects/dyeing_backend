@@ -3,8 +3,10 @@ package com.main.glory.Dao.StockAndBatch;
 
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -94,5 +96,18 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(b.batchId,b.controlId,SUM(b.wt) as WT,SUM(b.mtr) as MTR) from BatchData b where b.isProductionPlanned=false AND b.batchId IS NOT NULL AND b.controlId IS NOT NULL GROUP BY b.batchId,b.controlId")
     List<GetBatchWithControlId> getAllBatchQtyWithoutPlan();
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.isBillGenrated=false AND b.isProductionPlanned=true AND b.controlId IS NOT NULL AND b.batchId IS NOT NULL GROUP BY b.batchId,b.controlId")
+    List<GetAllBatch> getAllBatchWithoutBillGenerated();
+
+
+
+    //batches by stock id
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(b.id)as wt,b.batchId,b.controlId) from BatchData b where b.isProductionPlanned=true AND b.isBillGenrated=false AND b.controlId=:id GROUP BY b.batchId,b.controlId")
+    List<GetBatchByInvoice> getBatcheByStockIdWithoutBillGenerated(Long id);
+
+
+    @Query("select SUM(b.wt) from BatchData b where b.batchId=:batchId AND b.controlId=:stockId")
+    Double getAllBatchQtyByBatchIdAndStockId(String batchId, Long stockId);
 }
 

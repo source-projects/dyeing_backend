@@ -7,6 +7,7 @@ import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
+import com.main.glory.model.shade.ShadeMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 public class DyeingProcessServiceImpl {
 
 
+    @Autowired
+    ShadeServiceImpl shadeService;
     @Autowired
     DyeingChemicalDataDao dyeingChemicalDataDao;
 
@@ -78,7 +81,14 @@ public class DyeingProcessServiceImpl {
         {
             throw new Exception("no proces found for id:"+data.getId());
         }
-        dyeingProcessMastDao.save(data);
+        List<ShadeMast> getAllShade= shadeService.getAllShadeMastByProcessId(dyeingProcessMastExist.get().getId());
+        DyeingProcessMast x = dyeingProcessMastDao.save(data);
+        for(ShadeMast s :getAllShade)
+        {
+           shadeService.updateShadeProcessId(s.getId(),x.getId());
+        }
+
+
 
     }
 

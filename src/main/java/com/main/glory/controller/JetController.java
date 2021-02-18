@@ -23,27 +23,9 @@ public class JetController extends ControllerConfig {
     @Autowired
     JetServiceImpl jetService;
 
-    @PostMapping(value="/jet/addJet")
-    public GeneralResponse<Boolean> saveJet(@RequestBody AddJet jetMast) throws Exception {
-        if(jetMast==null)
-        {
-            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
 
-        boolean flag;
-        try {
 
-            jetService.saveJet(jetMast);
-            return new GeneralResponse<Boolean>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
-        }
-        catch(Exception e)
-        {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Transactional
     @PostMapping(value="/jet/addJetData")
     public GeneralResponse<Boolean> saveJetData(@RequestBody List<AddJetData> jetData) throws Exception {
         if(jetData==null)
@@ -163,6 +145,25 @@ public class JetController extends ControllerConfig {
         }
         return result;
     }
+
+    //remove the production from the jet
+    @DeleteMapping(value="/jet/delete/removeProductionFromJet/{jetId}/{productionId}")
+    public GeneralResponse<Boolean> removeProductionFromJet(@PathVariable(name = "jetId") Long jetId , @PathVariable(name = "productionId") Long productionId)  throws Exception {
+        GeneralResponse<Boolean> result;
+        boolean flag;
+        try {
+            jetService.removeProductionFromJet(jetId,productionId);
+            result = new GeneralResponse<>(true, "production removed successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
 
 
     @GetMapping(value="/jet/getJetDataWithInQueueProdution/byJetId/{id}")

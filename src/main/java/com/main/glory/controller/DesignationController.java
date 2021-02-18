@@ -21,7 +21,7 @@ public class DesignationController extends ControllerConfig {
     @Autowired
     private DesignationServiceImpl designationService;
 
-    @PostMapping("/designation")
+    @PostMapping("/user/designation")
     public GeneralResponse<Boolean> saveDesignation(@RequestBody Designation designationData) throws Exception{
 
         try{
@@ -40,7 +40,7 @@ public class DesignationController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/designation")
+    @GetMapping("/user/designation")
     public GeneralResponse<List<Designation>> getDesignation() throws Exception{
 
         try{
@@ -58,8 +58,26 @@ public class DesignationController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @DeleteMapping("/user/designation/{id}")
+    public GeneralResponse<Boolean> deleteDesignationById(@PathVariable(name = "id") Long id) throws Exception{
 
-    @GetMapping("/designation/{id}")
+        try{
+            Boolean flag = designationService.deleteDesignationById(id);
+            if(flag){
+                return new GeneralResponse<>(flag,"Designation deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                return new GeneralResponse<>(flag,"Designation not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/user/designation/{id}")
     public GeneralResponse<Optional<Designation>> getDesignationById(@PathVariable(value = "id") Long id) throws Exception{
 
         try{

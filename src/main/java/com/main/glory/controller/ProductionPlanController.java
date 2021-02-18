@@ -3,6 +3,8 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
@@ -32,6 +34,28 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    //get batch detail by production and batch id
+    @GetMapping(value="/productionPlan/getBatchdDetailByProductionAndBatch/{productionId}/{batchId}")
+    public GeneralResponse<GetBatchDetailByProduction> getBatchDetailByProductinIdAndBatchId(@PathVariable(name="productionId")Long productionId,@PathVariable(name = "batchId") String batchId)
+    {
+        GeneralResponse<GetBatchDetailByProduction> result;
+        try {
+            GetBatchDetailByProduction data = productionPlanService.getBatchDetailByProductionAndBatchId(productionId,batchId);
+            if(data!=null)
+                result= new GeneralResponse<>(data, " Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            else
+                result= new GeneralResponse<>(data, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+
 
     @PutMapping(value="/updateProductionPlan/")
     public GeneralResponse<Boolean> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
@@ -94,6 +118,25 @@ public class ProductionPlanController extends ControllerConfig {
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    //get all production without filter]
+    @GetMapping(value="/productionPlan/allProductionWithoutFilter")
+    public GeneralResponse<List<GetAllProduction>> allProductionWithoutFilter()
+    {
+        try {
+            List<GetAllProduction> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
+            if(productionPlanRecord.isEmpty())
+                throw new Exception("no data faund");
+
+            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     //get production by party and quality who are not added in jet yet
     @GetMapping(value="/productionPlan/getProductionByPartyAndQuality/{partyId}/{qualityEntryId}")
     public GeneralResponse<List<ProductionPlan>> getProductionByPartyAndQuality(@PathVariable(name = "partyId") Long partyId,@PathVariable(name = "qualityEntryId") Long qualityEntryId)
@@ -113,25 +156,6 @@ public class ProductionPlanController extends ControllerConfig {
     }
 
 
-
-    //get all batch based on text
-    /*@GetMapping(value="/getAllBatchBy/{partyId}/{qualityEntryId}/{batchId}")
-    public GeneralResponse<List<BatchData>> getAllBatchByPartyIdAndQualityIdAndBatchId(@PathVariable(name ="partyId" ) Long partyId,@PathVariable(name="qualityEntryId") Long qualityEntryId,String batchId)
-    {
-        try {
-            List<BatchData> batchDataList = productionPlanService.getAllBatch(partyId,qualityEntryId,batchId);
-            if(batchDataList.isEmpty())
-                throw new Exception("no data faund");
-
-            return new GeneralResponse<>(batchDataList, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-        }
-    }*/
-
     @DeleteMapping(value="/productionPlan/deleteBy/{id}")
     public GeneralResponse<Boolean> deleteById(@PathVariable(name="id")Long id)
     {
@@ -146,7 +170,7 @@ public class ProductionPlanController extends ControllerConfig {
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
 

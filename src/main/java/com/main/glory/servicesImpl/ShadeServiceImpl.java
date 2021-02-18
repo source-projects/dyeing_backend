@@ -1,22 +1,20 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.QualityDao;
-import com.main.glory.Dao.ShadeDataDao;
-import com.main.glory.Dao.ShadeMastDao;
+import com.main.glory.Dao.*;
+import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.shade.requestmodals.AddShadeMast;
-import com.main.glory.model.shade.requestmodals.GetAllShade;
-import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
+import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
+import org.hibernate.engine.jdbc.env.spi.QualifiedObjectNameFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,6 +26,15 @@ import java.util.Optional;
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl implements ShadeServicesInterface {
 
+
+	@Autowired
+	ProductionPlanDao productionPlanDao;
+
+	@Autowired
+	ProductionPlanImpl productionPlanService;
+	@Autowired
+	APCDao acpDao;
+	
 	@Autowired
 	UserDao userDao;
 
@@ -57,28 +64,73 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	public void saveShade(AddShadeMast shadeMast) throws Exception{
 
-		Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
-		if(!quality.isPresent())
+		if (shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
 		{
-			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+			if(!quality.isPresent())
+			{
+				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			}
+
+			//check the dyeing process for the shade is available or not
+
+			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+
+			ShadeMast shadeData =  new ShadeMast(shadeMast);
+			shadeData.setPending(true);
+
+			shadeData.setQualityEntryId(quality.get().getId());
+			shadeData.setShadeDataList(null);
+
+			//check the ACP number
+
+			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo()));
+
+			if(numberExist!=null)
+				throw new Exception("APC number is already available");
+
+			APC apc=new APC(Long.parseLong(shadeMast.getApcNo()));
+			acpDao.save(apc);
+			shadeMastDao.save(shadeData);
+
+
+
+
+
+		}
+		else {
+			//consider we have data and add directlt
+			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+			if(!quality.isPresent())
+			{
+				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+			}
+
+			//check the dyeing process for the shade is available or not
+
+			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+
+			ShadeMast shadeData =  new ShadeMast(shadeMast);
+			shadeData.setPending(false);
+			shadeData.setQualityEntryId(quality.get().getId());
+			shadeData.setShadeDataList(shadeMast.getShadeDataList());
+			//check the ACP number
+
+			APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo()));
+
+			if(numberExist!=null)
+				throw new Exception("APC number is already available");
+
+			APC apc=new APC(Long.parseLong(shadeMast.getApcNo()));
+			acpDao.save(apc);
+			shadeMastDao.save(shadeData);
+
+
+
 		}
 
-		//check the dyeing process for the shade is available or not
 
-		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
-		ShadeMast shadeData =  new ShadeMast(shadeMast);
-
-		shadeData.setQualityEntryId(quality.get().getId());
-
-		Date dt = new Date(System.currentTimeMillis());
-		ShadeMast x = shadeMastDao.save(shadeData);
-		shadeMast.getShadeDataList().forEach(e -> {
-			e.setControlId(x.getId());
-			e.setCreatedDate(dt);
-
-		});
-		shadeDataDao.saveAll(shadeMast.getShadeDataList());
 	}
 
 
@@ -105,13 +157,23 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Override
 	public Boolean updateShade(ShadeMast shadeMast) {
-		var shadeIndex = shadeMastDao.findById(shadeMast.getId());
-		if(!shadeIndex.isPresent())
+		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
+			shadeMast.setPending(true);
+		else
+			shadeMast.setPending(false);
+
+		ShadeMast shadeIndex = shadeMastDao.getShadeMastById(shadeMast.getId());
+		if(shadeIndex==null)
 			return false;
 		else{
 			try{
 				//System.out.println(shadeMast);
-				shadeMastDao.save(shadeMast);
+				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
+				ShadeMast x = shadeMastDao.save(shadeMast);
+				for(ProductionPlan p :productionPlansList)
+				{
+					productionPlanDao.updateProductionWithShadeId(p.getId(),x.getId());
+				}
 				//shadeDataDao.saveAll(shadeMast.getShadeDataList());
 			}catch(Exception e){
 				e.printStackTrace();
@@ -140,31 +202,26 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(id == null){
 			shadeMastList = shadeMastDao.getAllShadeMast();
 			for (ShadeMast e : shadeMastList) {
-				GetAllShade getShade =  new GetAllShade();
+
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 				{
+					DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 					Optional<Party> party = partyDao.findById(e.getPartyId());
 					Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+					if(dyeingProcessMast==null)
+						continue;
 
 					if(!qualityName.isPresent())
 						continue;
 					if(!party.isPresent())
 						continue;
 
-					getShade.setPartyName(party.get().getPartyName());
-					getShade.setQualityName(qualityName.get().getQualityName());
-					getShade.setId(e.getId());
-					getShade.setColorTone(e.getColorTone());
-					getShade.setProcessId(e.getProcessId());
-					getShade.setProcessName(e.getProcessName());
-					getShade.setPartyShadeNo(e.getPartyShadeNo());
-					getShade.setQualityId(qualityName.get().getQualityId());
-					getShade.setPartyId(party.get().getId());
-					getShade.setUserHeadId(e.getUserHeadId());
-					getShade.setCreatedBy(e.getCreatedBy());
-					getShade.setQualityEntryId(qualityName.get().getId());
+					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty() || e.getShadeDataList().get(0).getSupplierItemId()==null)
+						continue;
 
-					getAllShadesList.add(getShade);
+					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 				}
 
@@ -173,29 +230,25 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		else if(getBy.equals("own")){
 			shadeMastList = shadeMastDao.findAllByCreatedBy(id);
 			for (ShadeMast e : shadeMastList) {
-				GetAllShade getShade =  new GetAllShade();
+
 				if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 				{
+					DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 					Optional<Party> party = partyDao.findById(e.getPartyId());
 					Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+					if(dyeingProcessMast==null)
+						continue;
+
 					if(!qualityName.isPresent())
 						continue;
 					if(!party.isPresent())
 						continue;
-					getShade.setPartyName(party.get().getPartyName());
-					getShade.setQualityName(qualityName.get().getQualityName());
-					getShade.setId(e.getId());
-					getShade.setColorTone(e.getColorTone());
-					getShade.setProcessId(e.getProcessId());
-					getShade.setProcessName(e.getProcessName());
-					getShade.setPartyShadeNo(e.getPartyShadeNo());
-					getShade.setQualityId(qualityName.get().getQualityId());
-					getShade.setPartyId(party.get().getId());
-					getShade.setUserHeadId(e.getUserHeadId());
-					getShade.setCreatedBy(e.getCreatedBy());
-					getShade.setQualityEntryId(qualityName.get().getId());
+					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
+						continue;
 
-					getAllShadesList.add(getShade);
+					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 				}
 			}
@@ -207,29 +260,26 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 				//master user
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,id);
 				for (ShadeMast e : shadeMastList) {
-					GetAllShade getShade =  new GetAllShade();
+
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 					{
+						DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 						Optional<Party> party = partyDao.findById(e.getPartyId());
 						Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+						if(dyeingProcessMast==null)
+							continue;
+
 						if(!qualityName.isPresent())
 							continue;
 						if(!party.isPresent())
 							continue;
-						getShade.setPartyName(party.get().getPartyName());
-						getShade.setQualityName(qualityName.get().getQualityName());
-						getShade.setId(e.getId());
-						getShade.setColorTone(e.getColorTone());
-						getShade.setProcessId(e.getProcessId());
-						getShade.setProcessName(e.getProcessName());
-						getShade.setPartyShadeNo(e.getPartyShadeNo());
-						getShade.setQualityId(qualityName.get().getQualityId());
-						getShade.setPartyId(party.get().getId());
-						getShade.setUserHeadId(e.getUserHeadId());
-						getShade.setCreatedBy(e.getCreatedBy());
-						getShade.setQualityEntryId(qualityName.get().getId());
 
-						getAllShadesList.add(getShade);
+						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
+							continue;
+
+						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 
 					}
@@ -239,29 +289,25 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			{
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,userData.getUserHeadId());
 				for (ShadeMast e : shadeMastList) {
-					GetAllShade getShade =  new GetAllShade();
+
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
 					{
+						DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
 						Optional<Party> party = partyDao.findById(e.getPartyId());
 						Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+						if(dyeingProcessMast==null)
+							continue;
+
 						if(!qualityName.isPresent())
 							continue;
 						if(!party.isPresent())
 							continue;
-						getShade.setPartyName(party.get().getPartyName());
-						getShade.setQualityName(qualityName.get().getQualityName());
-						getShade.setId(e.getId());
-						getShade.setColorTone(e.getColorTone());
-						getShade.setProcessId(e.getProcessId());
-						getShade.setProcessName(e.getProcessName());
-						getShade.setPartyShadeNo(e.getPartyShadeNo());
-						getShade.setQualityId(qualityName.get().getQualityId());
-						getShade.setPartyId(party.get().getId());
-						getShade.setUserHeadId(e.getUserHeadId());
-						getShade.setCreatedBy(e.getCreatedBy());
-						getShade.setQualityEntryId(qualityName.get().getId());
+						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
+							continue;
 
-						getAllShadesList.add(getShade);
+						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
 
 
 					}
@@ -309,5 +355,72 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		return shadeByPartyAndQualities;
 
 
+	}
+
+	public GetAPC getAPCNumber() {
+		
+		Long number = acpDao.getAcpNumber();
+		if(number==null)
+		{
+			APC acp =new APC(1l);
+			APC x = acpDao.save(acp);
+			GetAPC getAcp = new GetAPC(x);
+			return getAcp;
+
+		}
+		else
+		{
+			GetAPC x=new GetAPC(++number);
+			return x;
+		}
+
+
+	}
+
+	public Boolean isAPCExist(String number) {
+
+		Long data = Long.parseLong(number.substring(3));
+
+		APC flag = acpDao.getAcpNumberExist(data);
+		if(flag==null)
+			return true;
+		else
+			return false;
+	}
+
+	public List<GetAllPendingShade> getAllPendingShade() {
+		List<GetAllPendingShade> dataList=new ArrayList<>();
+		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
+		for(ShadeMast s:list)
+		{
+			Party party =partyDao.findByPartyId(s.getPartyId());
+			Optional<Quality> quality =qualityDao.findById(s.getQualityEntryId());
+			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty() || s.getShadeDataList().get(0).getSupplierItemId()==null) {
+				s.setPending(true);
+				dataList.add(new GetAllPendingShade(s,party,quality.get()));
+			}
+		}
+
+		return dataList;
+	}
+
+	public List<ShadeMast> getAllShadeMastByProcessId(Long id) throws Exception {
+		List<ShadeMast> list = shadeMastDao.getAllShadeByProcessId(id);
+		if(list.isEmpty())
+			throw new Exception("no shade found for process");
+		return list;
+	}
+
+	public void saveAllShade(List<ShadeMast> getAllShade) {
+		shadeMastDao.saveAll(getAllShade);
+	}
+
+	public void saveShadeData(ShadeMast s)
+	{
+		shadeMastDao.save(s);
+	}
+
+	public void updateShadeProcessId(Long shadeId, Long processId) {
+		shadeMastDao.updateProcessId(shadeId,processId);
 	}
 }

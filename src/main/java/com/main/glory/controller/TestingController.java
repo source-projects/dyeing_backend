@@ -20,14 +20,15 @@ public class TestingController extends ControllerConfig {
 
     @PutMapping("/testing/{records}")
     public GeneralResponse<Boolean> createRecord(@PathVariable(name = "records") Long records) throws Exception{
-
+        GeneralResponse<Boolean> result;
         for(int i=0;i<records;i++)
         {
             Testing testing = new Testing("test"+i);
             testingDao.save(testing);
         }
-        return new GeneralResponse<>(true, "added", true, System.currentTimeMillis(), HttpStatus.OK);
+        result= new GeneralResponse<>(true, "added", true, System.currentTimeMillis(), HttpStatus.OK);
 
+        return result;
     }
 
     @GetMapping("/testing")

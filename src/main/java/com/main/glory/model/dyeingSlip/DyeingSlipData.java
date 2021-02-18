@@ -41,4 +41,15 @@ public class DyeingSlipData {
         this.liquerRation=dyeingProcessData.getLiquerRation();
 
     }
+
+    public DyeingSlipData(DyeingSlipData dyeingSlipData) {
+        this.controlId=dyeingSlipData.getControlId();
+        this.processType=dyeingSlipData.getProcessType();
+        this.temp=dyeingSlipData.getTemp();
+        this.holdTime= dyeingSlipData.getHoldTime();
+        this.sequence = dyeingSlipData.getSequence();
+        this.isColor = dyeingSlipData.getIsColor();
+        this.liquerRation= dyeingSlipData.getLiquerRation();
+    }
+
 }

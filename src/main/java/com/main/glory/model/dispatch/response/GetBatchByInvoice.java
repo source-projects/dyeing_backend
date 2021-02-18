@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -16,4 +16,10 @@ public class GetBatchByInvoice {
     Long batchEntryId;
     String batchId;
     Long stockId;
+
+    public GetBatchByInvoice(Long batchEntryId, String batchId, Long stockId) {
+        this.batchEntryId = batchEntryId;
+        this.batchId = batchId;
+        this.stockId = stockId;
+    }
 }
