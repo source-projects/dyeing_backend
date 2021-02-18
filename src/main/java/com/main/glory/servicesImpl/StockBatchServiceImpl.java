@@ -9,6 +9,7 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
+import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.jet.JetData;
@@ -1090,5 +1091,12 @@ public class StockBatchServiceImpl {
 
         return list;
 
+    }
+
+    public WTByStockAndBatch getWtByStockAndBatchId(Long stockId, String batchId) throws Exception {
+        WTByStockAndBatch data = batchDao.getWtByStockAndBatchId(batchId,stockId);
+        if(data==null)
+            throw new Exception("no data found");
+        return data;
     }
 }

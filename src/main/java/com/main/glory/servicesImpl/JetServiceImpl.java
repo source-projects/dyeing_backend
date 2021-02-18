@@ -146,7 +146,7 @@ public class JetServiceImpl {
 
 
         }
-
+/*
         //check the capacity first for the chemical box issue had that much capacity to fill the batch or not
         for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
         {
@@ -176,7 +176,7 @@ public class JetServiceImpl {
 
         }
 
-
+*/
         //*********  Color item checks end
 
 
@@ -298,12 +298,13 @@ public class JetServiceImpl {
 
             }
 
+            /*
             //deduct the chemical amt from the box as per the dyeing process
             for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
             {
                 for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
                 {
-                    colorAmtToDeduct = dyeingProcessData.getLiquerRation()*totalBatchWt;
+                    colorAmtToDeduct = (dyeingProcessData.getLiquerRation()*totalBatchWt*dyeingChemicalData.getConcentration())/1000;
                     System.out.println(dyeingChemicalData.getItemId()+":chemical amt deduct:"+colorAmtToDeduct);
                     List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
 
@@ -330,7 +331,7 @@ public class JetServiceImpl {
 
             }
 
-
+*/
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
 
             DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
@@ -810,10 +811,10 @@ public class JetServiceImpl {
 
                 //get the jet mast data
 
-                if(jetMastExist.get().getLiquorRatio()==null || jetMastExist.get().getLiquorRatio().equals(""))
-                    throw new Exception("jet liquer ration can't be null");
+//                if(jetMastExist.get().getLiquorRatio()==null || jetMastExist.get().getLiquorRatio().equals(""))
+//                    throw new Exception("jet liquer ration can't be null");
 
-                Double qty = (jetMastExist.get().getLiquorRatio() * dyeingChemicalData.getConcentration() * wt) /1000;
+                Double qty = (dyeingProcessData.getLiquerRation() * dyeingChemicalData.getConcentration() * wt) /1000;
                 item.setQty(qty);
                 itemLists.add(item);
 
@@ -916,7 +917,7 @@ public class JetServiceImpl {
         }
 
         //take back the chemical color boxes that are being used
-
+/*
         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
         for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
         {
@@ -933,7 +934,7 @@ public class JetServiceImpl {
             }
 
         }
-
+*/
 
 
 
