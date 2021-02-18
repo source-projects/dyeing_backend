@@ -13,6 +13,7 @@ import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.SupplierRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,14 @@ import java.util.*;
 public class DyeingSlipServiceImpl {
 
     @Autowired
+    SupplierServiceImpl supplierService;
+
+    @Autowired
     DyeingSlipDataDao dyeingSlipDataDao;
 
     @Autowired
     DyeingSlipItemDataDao dyeingSlipItemDataDao;
+
     @Autowired
     AdditionDyeingProcessSlipDao additionDyeingProcessSlipDao;
 
@@ -66,6 +71,22 @@ public class DyeingSlipServiceImpl {
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
         if(dyeingSlipMastExist==null)
             throw new Exception("no dyeing slip found");
+
+        //set the color flag
+        int i=0;
+        for(DyeingSlipItemData dyeingSlipItemData:dyeingSlipMastExist.getDyeingSlipDataList().get(i).getDyeingSlipItemData())
+        {
+            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+            if(supplierRate.getItemType().equals("Color"))
+            {
+                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),true);
+            }
+            else
+            {
+                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),false);
+            }
+            i++;
+        }
         SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
@@ -152,7 +173,20 @@ public class DyeingSlipServiceImpl {
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
 
         GetAllAdditionalDyeingSlip dyeingSlipMast =new GetAllAdditionalDyeingSlip(dyeingSlipMastExist);
+        int i=0;
+        for(DyeingSlipItemData dyeingSlipItemData:dyeingSlipMast.getDyeingSlipData().getDyeingSlipItemData())
+        {
+            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+            if(supplierRate.getItemType().equals("Color"))
+            {
+                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),true);
+            }
+            else {
+                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),true);
+            }
 
+            i++;
+        }
         dyeingSlipMast.setDyeingSlipData(data);
 
         return dyeingSlipMast;

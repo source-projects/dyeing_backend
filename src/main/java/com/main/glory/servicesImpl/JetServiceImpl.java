@@ -295,6 +295,14 @@ public class JetServiceImpl {
                     slipItemList.setSupplierId(supplier.getId());
 
                     Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
+
+                    //for item type is color or not
+                    if(supplierRate.get().getItemType().equals("Color"))
+                        slipItemList.setIsColor(true);
+                    else
+                        slipItemList.setIsColor(false);
+
+
                     if(supplierRate.isPresent()) {
                         if (supplierRate.get().getItemType().equals("Color"))
                             slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
@@ -556,7 +564,8 @@ public class JetServiceImpl {
             {
                 if(jetData.getStatus()==JetStatus.inQueue)
                 {
-                    GetJetData getJetData=new GetJetData(jetData);
+                    ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
+                    GetJetData getJetData=new GetJetData(jetData,colorTone);
                     ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
                     getJetData.setBatchId(productionPlan.getBatchId());
                     jetDataList.add(getJetData);
