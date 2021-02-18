@@ -107,12 +107,18 @@ public class JetServiceImpl {
 
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
 
+
         if(shadeMast.isEmpty())
         {
             throw new Exception("no shade found with id:"+productionPlanExits.getShadeId());
         }
 
-        //count the color amt to deduct
+
+        //dyeing process \
+        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+
+        //count the color/chemical amt to deduct
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
 
@@ -122,11 +128,13 @@ public class JetServiceImpl {
             String suppplierName = supplierService.getSupplierNameByItemId(shadeData.getSupplierItemId());
             SupplierRate supplierRate=supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
             Double data=0.0;
+            if(supplierRate.getItemType().equals("Color"))
             colorAmtToDeduct = (shadeData.getConcentration()*totalBatchWt)/100;
+
             List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(shadeData.getSupplierItemId());
 
             if(colorBoxList.isEmpty())
-                throw new Exception("no box is available for batch, supplier:"+suppplierName+", item:"+supplierRate.getItemName());
+                throw new Exception("no color box is available for batch, supplier:"+suppplierName+", item:"+supplierRate.getItemName());
 
             for(ColorBox c:colorBoxList)
             {
@@ -139,8 +147,38 @@ public class JetServiceImpl {
 
         }
 
+        //check the capacity first for the chemical box issue had that much capacity to fill the batch or not
+        for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
+        {
+            for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
+            {
+                String suppplierName = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
+                SupplierRate supplierRate=supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                Double data=0.0;
+                if(supplierRate.getItemType().equals("Chemical"))
+                    colorAmtToDeduct = (dyeingChemicalData.getConcentration()*totalBatchWt*dyeingProcessData.getLiquerRation())/1000;
+
+                List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
+
+                if(colorBoxList.isEmpty())
+                    throw new Exception("no chemical box is available for batch, supplier:"+suppplierName+", item:"+supplierRate.getItemName());
+
+                for(ColorBox c:colorBoxList)
+                {
+                    data += c.getQuantityLeft();
+
+                }
+                if(colorAmtToDeduct > data)
+                    throw new Exception("issue the box first because required chemical amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+dyeingChemicalData.getItemId());
+
+            }
+
+
+        }
+
 
         //*********  Color item checks end
+
 
 
         //save to jet data first check the capacity
@@ -260,9 +298,41 @@ public class JetServiceImpl {
 
             }
 
+            //deduct the chemical amt from the box as per the dyeing process
+            for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
+            {
+                for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
+                {
+                    colorAmtToDeduct = dyeingProcessData.getLiquerRation()*totalBatchWt;
+                    System.out.println(dyeingChemicalData.getItemId()+":chemical amt deduct:"+colorAmtToDeduct);
+                    List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
+
+                    for(ColorBox colorBox:colorBoxList)
+                    {
+                        if((colorAmtToDeduct - colorBox.getQuantityLeft()) > 0 )
+                        {
+                            System.out.println("use chemical:"+colorBox.getBoxNo());
+                            colorBox.setFinished(true);
+                            colorAmtToDeduct=colorAmtToDeduct-colorBox.getQuantityLeft();
+                            colorBox.setQuantityLeft(0.0);
+                        }
+                        else
+                        {
+                            System.out.println("\"use chemical:\""+colorBox.getBoxNo());
+                            colorBox.setQuantityLeft(colorBox.getQuantityLeft() - colorAmtToDeduct);
+                            break;
+                        }
+
+                    }
+                }
+
+
+
+            }
+
 
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
-            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
             DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
             List<DyeingSlipData> dyeingSlipDataList =new ArrayList<>();
 
@@ -819,7 +889,7 @@ public class JetServiceImpl {
 
             *********************** Task to perform while removing the production from jet *************
 
-             1.take back the amount of color which is used for dyeing batch
+             1.take back the amount of color and chemical which is used for dyeing batch
              2.remove the data of dyeing slip as well
              3.change the status of production
              4.change the production sequence of jet data & remove the entry from jet data table
@@ -830,12 +900,12 @@ public class JetServiceImpl {
         // 1. take back the amount of color which is issue for the batch and change the status of that boxes
 
         Double totalBatchWt = stockBatchService.getWtByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
-        Double colorAmtUsed=0.0;
+        Double colorAmtUsed=0.0;//color and chemical used
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
 
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
-            colorAmtUsed = shadeData.getConcentration()*totalBatchWt;//amt of color for the item
+            colorAmtUsed = (shadeData.getConcentration()*totalBatchWt)/100;//amt of color for the item
             System.out.println("used:"+colorAmtUsed);
 
             Long boxId = colorDataDao.getLatestIssuedColorBoxByColorDataId(shadeData.getSupplierItemId());
@@ -844,6 +914,30 @@ public class JetServiceImpl {
             colorBox.setQuantityLeft(colorBox.getQuantityLeft()+colorAmtUsed);
 
         }
+
+        //take back the chemical color boxes that are being used
+
+        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+        for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
+        {
+            for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
+            {
+                colorAmtUsed = (dyeingChemicalData.getConcentration()*totalBatchWt*dyeingProcessData.getLiquerRation())/1000;//amt of color for the item
+                System.out.println("used:"+colorAmtUsed);
+
+                Long boxId = colorDataDao.getLatestIssuedColorBoxByColorDataId(dyeingChemicalData.getItemId());
+                ColorBox colorBox=colorService.getColorBoxById(boxId);
+                colorBox.setFinished(false);
+                colorBox.setQuantityLeft(colorBox.getQuantityLeft()+colorAmtUsed);
+
+            }
+
+        }
+
+
+
+
+
 
 
         // 2.remove the dyeing slip from the dyeign slip based on jet and produciton id

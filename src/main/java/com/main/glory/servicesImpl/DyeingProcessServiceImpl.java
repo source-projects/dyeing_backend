@@ -105,4 +105,8 @@ public class DyeingProcessServiceImpl {
         return flag;
 
     }
+
+    public DyeingProcessData getDyeingProcessDataByItemId(Long supplierItemId) {
+        return null;
+    }
 }
