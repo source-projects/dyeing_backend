@@ -423,4 +423,15 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	public void updateShadeProcessId(Long shadeId, Long processId) {
 		shadeMastDao.updateProcessId(shadeId,processId);
 	}
+
+    public ShadeMast getColorToneByProductionId(Long productionId) {
+
+		String colorTone="";
+
+		ShadeMast shadeMast = shadeMastDao.getShadeColorToneByProductionId(productionId);
+
+		return shadeMast;
+    }
+
+
 }

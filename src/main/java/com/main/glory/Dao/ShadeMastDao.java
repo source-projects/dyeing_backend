@@ -50,4 +50,7 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 	@Transactional
 	@Query("update ShadeMast s set s.processId=:processId where s.id=:shadeId")
 	void updateProcessId(Long shadeId, Long processId);
+
+	@Query("select s from ShadeMast s where s.id =(select ss.shadeId from ProductionPlan ss where ss.id=:productionId)")
+    ShadeMast getShadeColorToneByProductionId(Long productionId);
 }

@@ -23,4 +23,9 @@ public interface DyeingSlipItemDataDao extends JpaRepository<DyeingSlipItemData,
     @Modifying
     @Query("delete from DyeingSlipItemData dd where dd.controlId=:id")
     void deleteDyeingSlipItemByDyeingSlipDataId(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update DyeingSlipItemData dd set dd.isColor=:b where dd.itemId=:itemId ")
+    void updateIsColorByItemId(Long itemId, boolean b);
 }

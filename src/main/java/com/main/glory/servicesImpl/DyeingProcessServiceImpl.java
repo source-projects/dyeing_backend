@@ -31,7 +31,6 @@ public class DyeingProcessServiceImpl {
     DyeingProcessMastDao dyeingProcessMastDao;
 
     public void addDyeingProcess(DyeingProcessMast data) {
-
         dyeingProcessMastDao.save(data);
     }
 
