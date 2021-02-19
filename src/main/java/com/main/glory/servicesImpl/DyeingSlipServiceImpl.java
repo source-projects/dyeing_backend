@@ -74,18 +74,17 @@ public class DyeingSlipServiceImpl {
 
         //set the color flag
         int i=0;
-        for(DyeingSlipItemData dyeingSlipItemData:dyeingSlipMastExist.getDyeingSlipDataList().get(i).getDyeingSlipItemData())
+        for(DyeingSlipData dyeingSlipData:dyeingSlipMastExist.getDyeingSlipDataList())
         {
-            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
-            if(supplierRate.getItemType().equals("Color"))
-            {
-                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),true);
+            for(DyeingSlipItemData dyeingSlipItemData:dyeingSlipData.getDyeingSlipItemData()) {
+                SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+                if (supplierRate.getItemType().equals("Color")) {
+                    dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(), true);
+                } else {
+                    dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(), false);
+                }
+                i++;
             }
-            else
-            {
-                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),false);
-            }
-            i++;
         }
         SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
 
