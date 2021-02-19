@@ -282,6 +282,45 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @PutMapping(value="/admin/update/approvedBy/")
+    public GeneralResponse<Boolean> updateApproved(@RequestBody ApprovedBy approvedBy) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+                adminServcice.updateApprovedBy(approvedBy);
+                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @GetMapping(value="/admin/get/approvedBy/{id}")
+    public GeneralResponse<ApprovedBy> getApprovedById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<ApprovedBy> result;
+
+        boolean flag;
+        try {
+
+            if(id==null)
+                throw new Exception("data can't be null");
+
+            ApprovedBy data =adminServcice.getApprovedById(id);
+            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
 
     @GetMapping(value="/admin/get/department")
     public GeneralResponse<List<Department>> getAllDepartment() throws Exception {
@@ -380,10 +419,8 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            Boolean list = adminServcice.deleteApprovedById(id);
-            if(list==false)
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
-            else
+                Boolean list = adminServcice.deleteApprovedById(id);
+
                 result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }

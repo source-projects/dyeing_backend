@@ -78,8 +78,8 @@ public class AdminServciceImpl {
         }
     }
 
-    public Boolean deleteApprovedById(Long id) {
-        try {
+    public Boolean deleteApprovedById(Long id) throws Exception {
+
             ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
             if (approvedByExist == null)
                 throw new Exception("no data found");
@@ -92,11 +92,8 @@ public class AdminServciceImpl {
             return true;
 
 
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+
+
     }
 
     public void saveDepartment(Department c) throws Exception {
@@ -155,5 +152,27 @@ public class AdminServciceImpl {
             userService.updateUserCompanyById(userData.getId(),company.getName());
         }
 
+    }
+
+    public void updateApprovedBy(ApprovedBy approvedBy) throws Exception {
+        ApprovedBy approvedExist = approveByDao.getApprovedById(approvedBy.getId());
+        if (approvedExist==null)
+            throw new Exception("no record found");
+
+        List<DyeingSlipMast> dyeingSlipMasts = dyeingSlipService.getDyeingSlipByApprovedId(approvedBy.getId());
+        approveByDao.save(approvedBy);
+
+        for(DyeingSlipMast dyeingSlipMast:dyeingSlipMasts)
+        {
+            dyeingSlipService.updateDyeingSlipWithApproveById(approvedBy.getId(),dyeingSlipMast.getId());
+        }
+
+    }
+
+    public ApprovedBy getApprovedById(Long id) throws Exception {
+        ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
+        if(approvedByExist==null)
+            throw new Exception("no data found");
+        return approvedByExist;
     }
 }
