@@ -309,11 +309,15 @@ public class ColorServiceImpl implements ColorServicesInterface {
             for(SupplierRate supplierRate:supplierRatesList)
             {
                 List<ColorData> colorDataList  = colorDataDao.getAllColorDataByItemId(supplierRate.getId());
-                for(ColorData colorData:colorDataList)
-                {
-                    leftQty+=colorBoxDao.getAllIssueBoxQty(colorData.getId());
+                if(colorDataList!=null) {
+                    for (ColorData colorData : colorDataList) {
+                        leftQty += colorBoxDao.getAllIssueBoxQty(colorData.getId());
+                    }
+                    list.add(new SupplierItemWithLeftColorQty(supplier, supplierRate, leftQty));
                 }
-                list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate,leftQty));
+                else
+                    list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate,0.0));
+
                 leftQty=0.0;
             }
         }
