@@ -36,7 +36,7 @@ public class DyeingSlipItemData {
 
     public DyeingSlipItemData(ShadeData shadeData, SupplierRate supplierRate, Supplier supplier, Double totalBatchWt) {
         this.itemName=shadeData.getItemName();
-        this.itemId=shadeData.getId();
+        this.itemId=supplierRate.getId();
         this.supplierId=shadeData.getSupplierId();
         this.supplierName=supplier.getSupplierName();
         this.isColor=true;
