@@ -38,4 +38,13 @@ public class TestingController extends ControllerConfig {
 
     }
 
+    /*@GetMapping("/testing/")
+    public GeneralResponse<Boolean> callThePdf() throws Exception{
+        GeneralResponse<Boolean> result;
+
+        result= new GeneralResponse<>(true, "done", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        return result;
+    }*/
+
 }
