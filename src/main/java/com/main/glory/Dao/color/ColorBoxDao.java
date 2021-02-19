@@ -27,4 +27,7 @@ public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 
 	@Query("select c from ColorBox c where c.id=:boxId")
     ColorBox getColorBoxById(Long boxId);
+
+	@Query("select SUM(c.quantityLeft) from ColorBox c where c.controlId=:id AND c.issued=true")
+	Double getAllIssueBoxQty(Long id);
 }

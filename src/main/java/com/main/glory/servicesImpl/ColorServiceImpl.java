@@ -282,14 +282,40 @@ public class ColorServiceImpl implements ColorServicesInterface {
 
         List<SupplierItemWithLeftColorQty> list=new ArrayList<>();
 
-        List<ItemWithLeftQty> leftQtyList = colorBoxDao.getAllLeftQtyItemList();
+        Double leftQty=0.0;
+        /*List<ItemWithLeftQty> leftQtyList = colorBoxDao.getAllLeftQtyItemList();
 
         for(ItemWithLeftQty itemWithLeftQty:leftQtyList)
         {
             //System.out.println(itemWithLeftQty.getItemId()+":"+ itemWithLeftQty.getAvailableQty());
-            Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
-            SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
-            list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+            if(itemWithLeftQty==null){
+                Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+                list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate));
+            }
+            else
+            {
+                Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+                list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+            }
+
+        }*/
+
+        List<Supplier> supplierList =supplierDao.getAllSupplierList();
+        for(Supplier supplier:supplierList)
+        {
+            List<SupplierRate> supplierRatesList= supplierRateDao.getItemBySupplier(supplier.getId());
+            for(SupplierRate supplierRate:supplierRatesList)
+            {
+                List<ColorData> colorDataList  = colorDataDao.getAllColorDataByItemId(supplierRate.getId());
+                for(ColorData colorData:colorDataList)
+                {
+                    leftQty+=colorBoxDao.getAllIssueBoxQty(colorData.getId());
+                }
+                list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate,leftQty));
+                leftQty=0.0;
+            }
         }
         return list;
 
