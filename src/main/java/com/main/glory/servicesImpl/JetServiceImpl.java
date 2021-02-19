@@ -391,7 +391,54 @@ public class JetServiceImpl {
 
             }
             dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
-            dyeingSlipService.saveDyeingSlipMast(dyeingSlipMast);
+
+            DyeingSlipMast x = dyeingSlipService.saveDyeingSlipMastFromProcess(dyeingSlipMast);
+
+            //****** also add the shade data with the slip of dyeing process of dyeing function
+
+            //get the dyeing function from the dyeing process of batch
+            DyeingSlipData getDyeingProcess  = dyeingSlipService.getDyeingProcessDataOnlyBySlipMast(x.getId());
+
+            //if it is exisiting then add shade data with that dyeing process
+            List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
+            if(getDyeingProcess!=null)
+            {
+                //add the privious one item in dyeing list
+                for(DyeingSlipItemData dyeingSlipItemData:getDyeingProcess.getDyeingSlipItemData())
+                {
+                    dyeingSlipItemDataList.add(dyeingSlipItemData);
+                }
+                //add the shade data together
+                for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+                {
+                    Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
+                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
+
+                    DyeingSlipItemData dyeingSlipItemData=new DyeingSlipItemData(shadeData,supplierRate,supplier,totalBatchWt);
+
+                    dyeingSlipItemDataList.add(dyeingSlipItemData);
+                }
+            }
+            else {
+                //if not exist then create slip for dyeing with shade data only
+                getDyeingProcess.setControlId(x.getId());
+                getDyeingProcess.setProcessType("Dyeing");
+                for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+                {
+                    Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
+                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
+
+                    DyeingSlipItemData dyeingSlipItemData=new DyeingSlipItemData(shadeData,supplierRate,supplier,totalBatchWt);
+
+                    dyeingSlipItemDataList.add(dyeingSlipItemData);
+                }
+
+            }
+            getDyeingProcess.setDyeingSlipItemData(dyeingSlipItemDataList);
+            dyeingSlipService.saveDyeingSlipDataOnly(getDyeingProcess);
+
+            //if not then create on function and add the shade data with function by the given formula
+
 
 
             // 3. change the status of production

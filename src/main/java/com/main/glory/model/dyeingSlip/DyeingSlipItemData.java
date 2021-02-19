@@ -1,5 +1,8 @@
 package com.main.glory.model.dyeingSlip;
 
+import com.main.glory.model.shade.ShadeData;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,4 +31,14 @@ public class DyeingSlipItemData {
     Long controlId;
     Boolean isColor;
 
+
+
+    public DyeingSlipItemData(ShadeData shadeData, SupplierRate supplierRate, Supplier supplier, Double totalBatchWt) {
+        this.itemName=shadeData.getItemName();
+        this.itemId=shadeData.getId();
+        this.supplierId=shadeData.getSupplierId();
+        this.supplierName=supplier.getSupplierName();
+        this.isColor=true;
+        this.qty=(totalBatchWt*shadeData.getConcentration())/100;
+    }
 }

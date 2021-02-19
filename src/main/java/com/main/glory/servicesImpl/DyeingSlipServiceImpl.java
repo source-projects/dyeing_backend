@@ -239,4 +239,19 @@ public class DyeingSlipServiceImpl {
         //remove the  dyeing mast process by id
         dyeingSlipMastDao.deleteDyeingSlipById(id);
     }
+
+    public DyeingSlipMast saveDyeingSlipMastFromProcess(DyeingSlipMast dyeingSlipMast) {
+
+        DyeingSlipMast x =dyeingSlipMastDao.save(dyeingSlipMast);
+        return x;
+    }
+
+    public DyeingSlipData getDyeingProcessDataOnlyBySlipMast(Long id) {
+        DyeingSlipData dyeingSlipData = dyeingSlipDataDao.getOnlyDyeingProcessByMastId(id);
+        return dyeingSlipData;
+    }
+
+    public void saveDyeingSlipDataOnly(DyeingSlipData getDyeingProcess) {
+        dyeingSlipDataDao.save(getDyeingProcess);
+    }
 }
