@@ -404,11 +404,12 @@ public class JetServiceImpl {
             if(getDyeingProcess!=null)
             {
                 //add the privious one item in dyeing list
+
                 for(DyeingSlipItemData dyeingSlipItemData:getDyeingProcess.getDyeingSlipItemData())
                 {
                     dyeingSlipItemDataList.add(dyeingSlipItemData);
                 }
-                //add the shade data together
+
                 for(ShadeData shadeData:shadeMast.get().getShadeDataList())
                 {
                     Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
@@ -421,6 +422,7 @@ public class JetServiceImpl {
             }
             else {
                 //if not exist then create slip for dyeing with shade data only
+                getDyeingProcess=new DyeingSlipData();
                 getDyeingProcess.setControlId(x.getId());
                 getDyeingProcess.setProcessType("Dyeing");
                 for(ShadeData shadeData:shadeMast.get().getShadeDataList())
