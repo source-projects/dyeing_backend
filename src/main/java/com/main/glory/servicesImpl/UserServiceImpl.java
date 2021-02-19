@@ -217,4 +217,17 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
+    public List<UserData> getAllUserByCompany(String name) {
+        List<UserData> list = userDao.findByCompanyName(name);
+        return list;
+    }
+
+    public void updateUserCompanyById(Long id, String name) throws Exception {
+        UserData userData =userDao.getUserById(id);
+        if(userData==null)
+            throw new Exception("no user found");
+
+        userDao.updateCompanyById(id,name);
+
+    }
 }

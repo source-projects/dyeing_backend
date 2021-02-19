@@ -34,5 +34,6 @@ public class JetMast {
         this.capacity=jetMast.getCapacity();
         this.name=jetMast.getName();
         this.liquorRatio =jetMast.getLiquorRatio();
+
     }
 }
