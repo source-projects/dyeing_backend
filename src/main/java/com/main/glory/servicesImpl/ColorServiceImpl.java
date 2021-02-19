@@ -287,9 +287,18 @@ public class ColorServiceImpl implements ColorServicesInterface {
         for(ItemWithLeftQty itemWithLeftQty:leftQtyList)
         {
             //System.out.println(itemWithLeftQty.getItemId()+":"+ itemWithLeftQty.getAvailableQty());
-            Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
-            SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
-            list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+            if(itemWithLeftQty==null){
+                Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+                list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate));
+            }
+            else
+            {
+                Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+                list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+            }
+
         }
         return list;
 
