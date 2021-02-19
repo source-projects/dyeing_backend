@@ -31,7 +31,6 @@ public class DyeingProcessServiceImpl {
     DyeingProcessMastDao dyeingProcessMastDao;
 
     public void addDyeingProcess(DyeingProcessMast data) {
-
         dyeingProcessMastDao.save(data);
     }
 
@@ -105,5 +104,9 @@ public class DyeingProcessServiceImpl {
             flag = false;
         return flag;
 
+    }
+
+    public DyeingProcessData getDyeingProcessDataByItemId(Long supplierItemId) {
+        return null;
     }
 }

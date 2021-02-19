@@ -2,6 +2,7 @@ package com.main.glory.Dao.StockAndBatch;
 
 
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
@@ -109,5 +110,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select SUM(b.wt) from BatchData b where b.batchId=:batchId AND b.controlId=:stockId")
     Double getAllBatchQtyByBatchIdAndStockId(String batchId, Long stockId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch(b.batchId,b.controlId,SUM(b.wt)) from BatchData b where b.batchId=:batchId AND b.controlId=:stockId")
+    WTByStockAndBatch getWtByStockAndBatchId(String batchId, Long stockId);
 }
 

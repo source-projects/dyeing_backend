@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -282,14 +283,57 @@ public class ColorServiceImpl implements ColorServicesInterface {
 
         List<SupplierItemWithLeftColorQty> list=new ArrayList<>();
 
-        List<ItemWithLeftQty> leftQtyList = colorBoxDao.getAllLeftQtyItemList();
+        Double leftQty=0.0;
+        Double packedQty=0.0;
+        /*List<ItemWithLeftQty> leftQtyList = colorBoxDao.getAllLeftQtyItemList();
 
         for(ItemWithLeftQty itemWithLeftQty:leftQtyList)
         {
             //System.out.println(itemWithLeftQty.getItemId()+":"+ itemWithLeftQty.getAvailableQty());
-            Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
-            SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
-            list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+            if(itemWithLeftQty==null){
+                Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+                list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate));
+            }
+            else
+            {
+                Supplier supplier = supplierRateDao.getSupplierByItemId(itemWithLeftQty.getItemId());
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(itemWithLeftQty.getItemId());
+                list.add(new SupplierItemWithLeftColorQty(itemWithLeftQty,supplier,supplierRate));
+            }
+
+        }*/
+
+        List<Supplier> supplierList =supplierDao.getAllSupplierList();
+        for(Supplier supplier:supplierList)
+        {
+            List<SupplierRate> supplierRatesList= supplierRateDao.getItemBySupplier(supplier.getId());
+            for(SupplierRate supplierRate:supplierRatesList)
+            {
+                List<ColorData> colorDataList  = colorDataDao.getAllColorDataByItemId(supplierRate.getId());
+                if(colorDataList!=null) {
+                    for (ColorData colorData : colorDataList) {
+
+                        List<ColorBox> colorBoxes = colorBoxDao.getAllBoxesByControlId(colorData.getId());
+                        for(ColorBox colorBox:colorBoxes)
+                        {
+                            if(colorBox.getIssued()==true)
+                            {
+                                leftQty+=colorBox.getQuantityLeft();
+                            }
+                            else
+                                packedQty+=colorBox.getQuantityLeft();
+                        }
+
+                    }
+                    list.add(new SupplierItemWithLeftColorQty(supplier, supplierRate, leftQty,packedQty));
+                }
+                else
+                    list.add(new SupplierItemWithLeftColorQty(supplier,supplierRate,0.0,0.0));
+
+                leftQty=0.0;
+                packedQty=0.0;
+            }
         }
         return list;
 

@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
+import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -38,6 +39,18 @@ public class StockBatchController extends ControllerConfig {
         } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/stockBatch/getWtByStockIdAndBatchId/{batchId}/{stockId}")
+    public GeneralResponse<WTByStockAndBatch> getWtByStockIdAndBatchId(@PathVariable(name = "batchId")String batchId,@PathVariable(name = "stockId")Long stockId) throws Exception {
+        try {
+            WTByStockAndBatch qty= stockBatchService.getWtByStockAndBatchId(stockId,batchId);
+
+                return new GeneralResponse<>(qty, "Stock batch qty fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
 

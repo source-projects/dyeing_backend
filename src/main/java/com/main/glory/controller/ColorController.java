@@ -151,6 +151,7 @@ public class ColorController extends ControllerConfig {
 			else
 			result= new GeneralResponse<>(records, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return result;
