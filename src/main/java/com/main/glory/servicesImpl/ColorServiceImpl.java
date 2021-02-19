@@ -9,20 +9,18 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.color.request.GetAllBox;
 import com.main.glory.model.color.request.IssueBoxRequest;
-import com.main.glory.model.color.request.ItemWithLeftQty;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
-import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ColorServicesInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -260,16 +258,18 @@ public class ColorServiceImpl implements ColorServicesInterface {
         return list;
     }
 
-    public List<ColorBox> getAllBoxNotIssuedBoxByItemId(Long itemId) throws Exception {
-        List<ColorBox> list = new ArrayList<>();
+    public List<GetAllBox> getAllBoxNotIssuedBoxByItemId(Long itemId, Boolean issued) throws Exception {
+        List<GetAllBox> list = new ArrayList<>();
 
         List<ColorData> colorData = colorDataDao.findByItemId(itemId);
         for (ColorData c : colorData)
         {
-            List<ColorBox> colorBoxes = colorBoxDao.getAllNotIssuedBoxByControlId(c.getId());
+            SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(c.getItemId());
+            Supplier supplier=supplierDao.findBySupplierId(supplierRate.getSupplierId());
+            List<ColorBox> colorBoxes = colorBoxDao.getAllBoxByControlIdWithFlag(c.getId(),issued);
             for(ColorBox colorBox:colorBoxes)
             {
-                list.add(colorBox);
+                list.add(new GetAllBox(colorBox,supplierRate,supplier));
             }
         }
 
@@ -342,5 +342,28 @@ public class ColorServiceImpl implements ColorServicesInterface {
     public ColorBox getColorBoxById(Long boxId) {
         ColorBox colorBox=colorBoxDao.getColorBoxById(boxId);
         return colorBox;
+    }
+
+    public List<GetAllBox> getAllColorBoxes() throws Exception {
+        List<GetAllBox> list =new ArrayList<>();
+        List<Supplier> supplierList =supplierDao.getAllSupplierList();
+        for(Supplier supplier:supplierList)
+        {
+            List<SupplierRate> supplierRateList =supplierRateDao.findBySupplierId(supplier.getId());
+            for(SupplierRate supplierRate:supplierRateList)
+            {
+                List<ColorData> colorDataList=colorDataDao.findByItemId(supplierRate.getId());
+                for(ColorData colorData:colorDataList)
+                {
+                    List<ColorBox> colorBoxList = colorBoxDao.findAllByControlId(colorData.getId());
+                    for(ColorBox colorBox:colorBoxList)
+                    {
+                        list.add(new GetAllBox(colorBox,supplierRate,supplier));
+                    }
+                }
+            }
+        }
+
+        return list;
     }
 }
