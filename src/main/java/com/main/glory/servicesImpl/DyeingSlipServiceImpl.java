@@ -258,4 +258,9 @@ public class DyeingSlipServiceImpl {
         List<DyeingSlipMast> dyeingSlipMasts = dyeingSlipMastDao.getDyeingSlipByApprovedById(id);
         return dyeingSlipMasts;
     }
+
+    public void updateDyeingSlipWithApproveById(Long approved, Long dyeingId) {
+
+        dyeingSlipMastDao.updateDyeingWithApprovedId(approved,dyeingId);
+    }
 }
