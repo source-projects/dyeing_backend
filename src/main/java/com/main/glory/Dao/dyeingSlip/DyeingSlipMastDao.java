@@ -35,4 +35,7 @@ public interface DyeingSlipMastDao extends JpaRepository<DyeingSlipMast,Long> {
     @Modifying
     @Query("delete from DyeingSlipMast d where d.id=:id")
     void deleteDyeingSlipById(Long id);
+
+    @Query("select d from DyeingSlipMast d where d.approvedId = :id")
+    List<DyeingSlipMast> getDyeingSlipByApprovedById(Long id);
 }

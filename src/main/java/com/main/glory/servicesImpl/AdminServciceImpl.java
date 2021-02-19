@@ -6,7 +6,9 @@ import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.request.AddJet;
+import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ import java.util.List;
 public class AdminServciceImpl {
 
     @Autowired
+    DyeingSlipServiceImpl dyeingSlipService;
+
+    @Autowired
     DepartmentDao departmentDao;
 
     @Autowired
@@ -23,6 +28,9 @@ public class AdminServciceImpl {
 
     @Autowired
     ApproveByDao approveByDao;
+
+    @Autowired
+    UserServiceImpl userService;
 
 
     public void saveCompanyName(Company company) throws Exception {
@@ -76,6 +84,10 @@ public class AdminServciceImpl {
             if (approvedByExist == null)
                 throw new Exception("no data found");
 
+            List<DyeingSlipMast> dyeingSlipMasts =dyeingSlipService.getDyeingSlipByApprovedId(id);
+            if(!dyeingSlipMasts.isEmpty())
+                throw new Exception("can't delete this record");
+
             approveByDao.deleteApprovedById(id);
             return true;
 
@@ -118,5 +130,30 @@ public class AdminServciceImpl {
 
     public List<Department> getAllDepartmentList() {
         return departmentDao.getAllDepartment();
+    }
+
+    public Company getCompanyById(Long id) throws Exception {
+
+        Company c= companyDao.getCompanyById(id);
+        if(c==null)
+            throw new Exception("no company found");
+
+        return c;
+    }
+
+    public void updateCompany(Company company) throws Exception {
+        Company companyExist = companyDao.getCompanyById(company.getId());
+        if(companyExist==null) {
+            throw new Exception("no data found");
+        }
+
+        List<UserData> userDataList =userService.getAllUserByCompany(companyExist.getName());
+        companyDao.save(company);
+
+        for(UserData userData:userDataList)
+        {
+            userService.updateUserCompanyById(userData.getId(),company.getName());
+        }
+
     }
 }

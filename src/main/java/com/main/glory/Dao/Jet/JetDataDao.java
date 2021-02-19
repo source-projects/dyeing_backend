@@ -40,4 +40,9 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
     @Modifying
     @Query("delete from JetData j where j.id=:id")
     void deleteJetDataById(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update JetData j set j.controlId=:id where j.id=:jetData")
+    void updateJetWithId(Long jetData, Long id);
 }
