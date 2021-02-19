@@ -343,7 +343,42 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @GetMapping(value="/admin/get/department/{id}")
+    public GeneralResponse<Department> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
 
+        GeneralResponse<Department> result;
+
+        boolean flag;
+        try {
+
+            Department list = adminServcice.getDepartmentById(id);
+            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @GetMapping(value="/admin/update/department/)")
+    public GeneralResponse<Boolean> getDepartmentById(@RequestBody Department department) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            adminServcice.updateDepartment(department);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
     @GetMapping(value="/admin/get/allJet")
     public GeneralResponse<List<AddJet>> getAllJet() throws Exception {
 
@@ -398,6 +433,27 @@ public class AdminController extends ControllerConfig {
         try {
 
             Boolean list = jetService.deleteJetMastByJetId(id);
+            if(list==false)
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @DeleteMapping(value="/admin/delete/department/{id}")
+    public GeneralResponse<Boolean> deleteDepartmentById(@PathVariable(name = "id") Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            Boolean list = adminServcice.deleteDepartmentById(id);
             if(list==false)
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
             else

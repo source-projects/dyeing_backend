@@ -113,6 +113,9 @@ public class AdminServciceImpl {
             Department exist = departmentDao.getDepartmentById(id);
             if (exist == null)
                 throw new Exception("no data found");
+            List<UserData> userDataList = userService.getAllUserByDepartment(exist.getName());
+            if(!userDataList.isEmpty())
+                throw new Exception("can't delete the department");
 
             departmentDao.deleteDepartmentById(id);
             return true;
@@ -174,5 +177,27 @@ public class AdminServciceImpl {
         if(approvedByExist==null)
             throw new Exception("no data found");
         return approvedByExist;
+    }
+
+    public Department getDepartmentById(Long id) throws Exception {
+        Department department = departmentDao.getDepartmentById(id);
+        if(department==null) {
+            throw new Exception("no data found");
+        }
+        return department;
+    }
+
+    public void updateDepartment(Department department) throws Exception {
+        Department departmentExist = departmentDao.getDepartmentById(department.getId());
+        if(departmentExist==null)
+            throw new Exception("no record found");
+
+        List<UserData> userDataList = userService.getAllUserByDepartment(department.getName());
+        departmentDao.save(department);
+        for(UserData userData: userDataList)
+        {
+            userService.updateUserByDepartment(userData.getId(),department.getName());
+        }
+
     }
 }
