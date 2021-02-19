@@ -29,7 +29,8 @@ public class DyeingSlipItemData {
     String supplierName;
     Double qty;
     Long controlId;
-    Boolean isColor;
+    Boolean isColor=false;
+
 
 
 
