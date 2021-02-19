@@ -42,6 +42,7 @@ public class ShadeData {
 	Long createdBy;
 	@ApiModelProperty(hidden = true)
 	Long updatedBy;
+	Double gstRate;
 
 	@Column(nullable = true)
 	Long supplierItemId;
