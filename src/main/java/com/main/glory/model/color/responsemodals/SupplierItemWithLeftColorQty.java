@@ -42,4 +42,12 @@ public class SupplierItemWithLeftColorQty {
         this.itemId=supplierRate.getId();
         this.itemName=supplierRate.getItemName();
     }
+
+    public SupplierItemWithLeftColorQty(Supplier supplier, SupplierRate supplierRate, Double leftQty) {
+        this.supplierId=supplier.getId();
+        this.name=supplier.getSupplierName();
+        this.itemId=supplierRate.getId();
+        this.itemName=supplierRate.getItemName();
+        this.leftQty=leftQty;
+    }
 }

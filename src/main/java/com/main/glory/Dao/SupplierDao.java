@@ -36,4 +36,7 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     @Query("select s from Supplier s where s.id=:id")
     Supplier findBySupplierId(Long id);
+
+    @Query("select s from Supplier s")
+    List<Supplier> getAllSupplierList();
 }
