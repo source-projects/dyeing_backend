@@ -62,4 +62,12 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Transactional
     @Query("update UserData u set u.company=:name where u.id=:id")
     void updateCompanyById(Long id, String name);
+
+    @Query("select u from UserData u where u.department=:name")
+    List<UserData> getAllUserByDepartment(String name);
+
+    @Modifying
+    @Transactional
+    @Query("update UserData u set u.department=:name where id=:id")
+    void updateDepartmentById(Long id, String name);
 }

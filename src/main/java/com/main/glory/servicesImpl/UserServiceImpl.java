@@ -230,4 +230,13 @@ public class UserServiceImpl implements UserServiceInterface {
         userDao.updateCompanyById(id,name);
 
     }
+
+    public List<UserData> getAllUserByDepartment(String name) {
+        List<UserData> userDataList = userDao.getAllUserByDepartment(name);
+        return userDataList;
+    }
+
+    public void updateUserByDepartment(Long id, String name) {
+        userDao.updateDepartmentById(id,name);
+    }
 }
