@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.color.request.GetAllBox;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
@@ -130,10 +131,10 @@ public class ColorController extends ControllerConfig {
 		}
 	}
 
-	@GetMapping(value = "/color/box/notIssued/{itemId}")
-	public GeneralResponse<List<ColorBox>> getColorBox(@PathVariable(value = "itemId") Long itemId){
+	@GetMapping(value = "/color/box/{issued}/{itemId}")
+	public GeneralResponse<List<GetAllBox>> getColorBox(@PathVariable(value = "itemId") Long itemId,@PathVariable(value = "issued") Boolean issued){
 		try {
-			List<ColorBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId);
+			List<GetAllBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId,issued);
 			return new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -158,7 +159,6 @@ public class ColorController extends ControllerConfig {
 	}
 
 
-
 	@PostMapping("/color/box/issue")
 	public GeneralResponse<Boolean> issueBox(@RequestBody IssueBoxRequest issueBoxRequest){
 		try {
@@ -168,5 +168,19 @@ public class ColorController extends ControllerConfig {
 			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	//get all color boxec
+	@GetMapping("/color/box/all")
+	public GeneralResponse<List<GetAllBox>> getAllBoxes(){
+		GeneralResponse<List<GetAllBox>> response;
+		try {
+			List<GetAllBox> list = colorService.getAllColorBoxes();
+			response= new GeneralResponse<>(list, "Box issued successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+		} catch (Exception e) {
+			response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
+		return response;
+	}
+
 
 }

@@ -28,6 +28,17 @@ public class ColorBox {
 	Long quantity;
 	Date createdDate;
 
+	public ColorBox(ColorBox colorBox) {
+		this.boxNo = colorBox.getBoxNo();
+		this.controlId=colorBox.getControlId();
+		this.issued=colorBox.getIssued();
+		this.issuedDate=colorBox.getIssuedDate();
+		this.finished=colorBox.getFinished();
+		this.quantityLeft= colorBox.getQuantityLeft();
+		this.quantity=colorBox.getQuantity();
+		this.createdDate=colorBox.createdDate;
+	}
+
 	@PrePersist protected void onCreate()
 	{
 		this.createdDate=new Date(System.currentTimeMillis());

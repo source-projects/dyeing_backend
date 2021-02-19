@@ -1,6 +1,7 @@
 package com.main.glory.Dao.color;
 
 import com.main.glory.model.color.ColorBox;
+import com.main.glory.model.color.request.GetAllBox;
 import com.main.glory.model.color.request.ItemWithLeftQty;
 import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +34,8 @@ public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 
 	@Query("select c from ColorBox c where c.controlId=:id")
 	List<ColorBox> getAllBoxesByControlId(Long id);
+
+
+	@Query("select c from ColorBox c where c.controlId=:id AND c.issued=:issued")
+	List<ColorBox> getAllBoxByControlIdWithFlag(Long id, Boolean issued);
 }
