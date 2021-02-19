@@ -19,6 +19,7 @@ public class SupplierItemWithLeftColorQty {
     Long itemId;
     String itemName;
     Double leftQty;
+    Double packedQty;
 
     public SupplierItemWithLeftColorQty(ItemWithLeftQty itemWithLeftQty, GetItemWithSupplier obj) {
         this.supplierId=obj.getSupplierId();
@@ -49,5 +50,14 @@ public class SupplierItemWithLeftColorQty {
         this.itemId=supplierRate.getId();
         this.itemName=supplierRate.getItemName();
         this.leftQty=leftQty;
+    }
+
+    public SupplierItemWithLeftColorQty(Supplier supplier, SupplierRate supplierRate, Double leftQty, Double packedQty) {
+        this.supplierId=supplier.getId();
+        this.name=supplier.getSupplierName();
+        this.itemId=supplierRate.getId();
+        this.itemName=supplierRate.getItemName();
+        this.leftQty=leftQty;
+        this.packedQty=packedQty;
     }
 }
