@@ -445,7 +445,7 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
-    @DeleteMapping(value="/admin/delete/department/{id}")
+    /*@DeleteMapping(value="/admin/delete/department/{id}")
     public GeneralResponse<Boolean> deleteDepartmentById(@PathVariable(name = "id") Long id) throws Exception {
 
         GeneralResponse<Boolean> result;
@@ -465,7 +465,7 @@ public class AdminController extends ControllerConfig {
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
         return result;
-    }
+    }*/
 
     @DeleteMapping(value="/admin/delete/approved/{id}")
     public GeneralResponse<Boolean> deleteApprovedById(@PathVariable(name = "id") Long id) throws Exception {
