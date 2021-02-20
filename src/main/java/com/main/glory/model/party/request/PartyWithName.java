@@ -13,5 +13,6 @@ import lombok.Setter;
 public class PartyWithName {
     private Long id;
     private String partyName;
+    String partyCode;
 
 }
