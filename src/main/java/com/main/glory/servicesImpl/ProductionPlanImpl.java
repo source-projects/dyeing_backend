@@ -78,7 +78,7 @@ public class ProductionPlanImpl {
             throw new Exception("unable to insert the record");
 
     }
-    @Transactional
+
     public ProductionPlan getProductionData(Long id) throws Exception{
         ProductionPlan productionPlan = productionPlanDao.getByProductionId(id);
 

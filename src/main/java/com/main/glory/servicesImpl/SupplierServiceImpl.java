@@ -218,7 +218,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
                 if (supplier.isEmpty())
                     continue;
 
-                GetItemWithSupplier getItemWithSupplier = new GetItemWithSupplier(supplier.get(), item);
+                SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(item.getId());
+
+                GetItemWithSupplier getItemWithSupplier = new GetItemWithSupplier(supplier.get(), item,supplierRate);
                 getItemWithSupplierList.add(getItemWithSupplier);
             }
 
