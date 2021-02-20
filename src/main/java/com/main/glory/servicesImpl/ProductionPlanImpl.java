@@ -80,12 +80,12 @@ public class ProductionPlanImpl {
     }
     @Transactional
     public ProductionPlan getProductionData(Long id) throws Exception{
-        Optional<ProductionPlan> productionPlan = productionPlanDao.getByProductionId(id);
+        ProductionPlan productionPlan = productionPlanDao.getByProductionId(id);
 
-        if(productionPlan.isEmpty())
+        if(productionPlan==null)
             throw new Exception("data not found for production:");
 
-        return productionPlan.get();
+        return productionPlan;
 
     }
 
