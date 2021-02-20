@@ -158,6 +158,30 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @PutMapping(value="/admin/update/department/")
+    public GeneralResponse<Boolean> updateDepartMent(@RequestBody Department department) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        if(department==null)
+        {
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.updateDepartment(department);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
 
 
     @PostMapping(value="/admin/add/department/")
