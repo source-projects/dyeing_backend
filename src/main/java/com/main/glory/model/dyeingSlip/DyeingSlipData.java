@@ -1,6 +1,8 @@
 package com.main.glory.model.dyeingSlip;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,8 @@ public class DyeingSlipData {
     Double temp;
     Double holdTime;
     Long sequence;
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
     Boolean isColor;
     Double liquerRation;
 

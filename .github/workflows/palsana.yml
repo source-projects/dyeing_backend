@@ -42,3 +42,13 @@ jobs:
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           java -jar /home/gloryauto/builds/target/*.jar > /home/gloryauto/builds/target/server-logs.txt 2>&1 &
+          
+    - name: slack the message for success
+      if: success()
+      run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline succeeded for palsana server"}' https://hooks.slack.com/services/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
+    - name: slack the message for faliure
+      if: failure()
+      run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline failed for palsana server"}' https://hooks.slack.com/services/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
+          

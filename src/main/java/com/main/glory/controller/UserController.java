@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.user.Request.UserAddRequest;
+import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserRequest;
@@ -193,6 +194,26 @@ public class UserController extends ControllerConfig {
             }
         }
         return new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+    }
+
+
+    //identify the user
+    @GetMapping(value="/user/getUserHeadDetailById/{id}")
+    public GeneralResponse<UserIdentification> getUserHeadDetailById(@PathVariable(value = "id") Long id)
+    {
+        GeneralResponse<UserIdentification> response;
+        try {
+
+
+            UserIdentification userIdentification = userService.getUserHeadDetail(id);
+            response= new GeneralResponse<>(userIdentification, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch (Exception e)
+        {
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return response;
     }
 
 }

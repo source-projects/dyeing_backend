@@ -142,7 +142,7 @@ public class JetServiceImpl {
 
             }
             if(colorAmtToDeduct > data)
-                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+shadeData.getId());
+                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+shadeData.getItemName());
 
 
         }
@@ -1011,5 +1011,30 @@ public class JetServiceImpl {
         //remover the jet record
         jetDataDao.deleteJetDataById(jetDataExist.getId());
 
+    }
+
+    public void updateJet(AddJet jetMast) throws Exception {
+        Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetMast.getId());
+        if(jetMastExist.isEmpty())
+            throw new Exception("jet data not found");
+
+        JetMast jetToUpdate = new JetMast(jetMast);
+        jetToUpdate.setId(jetMast.getId());
+        List<JetData> jetDataList = jetDataDao.findByControlId(jetMast.getId());
+
+        jetMastDao.save(jetToUpdate);
+        for(JetData jetData:jetDataList)
+        {
+            //jetData.setControlId(jetToUpdate.getId());
+            jetDataDao.updateJetWithId(jetData.getId(),jetToUpdate.getId());
+        }
+
+    }
+
+    public JetMast getJetMastById(Long id) throws Exception {
+        Optional<JetMast> jetMast = jetMastDao.getJetById(id);
+        if(jetMast.isEmpty())
+            throw new Exception("no jet data found");
+        return jetMast.get();
     }
 }

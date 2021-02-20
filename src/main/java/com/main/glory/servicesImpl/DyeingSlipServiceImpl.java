@@ -173,7 +173,7 @@ public class DyeingSlipServiceImpl {
 
         GetAllAdditionalDyeingSlip dyeingSlipMast =new GetAllAdditionalDyeingSlip(dyeingSlipMastExist);
         int i=0;
-        for(DyeingSlipItemData dyeingSlipItemData:dyeingSlipMast.getDyeingSlipData().getDyeingSlipItemData())
+        for(DyeingSlipItemData dyeingSlipItemData:data.getDyeingSlipItemData())
         {
             SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
             if(supplierRate.getItemType().equals("Color"))
@@ -252,5 +252,15 @@ public class DyeingSlipServiceImpl {
 
     public void saveDyeingSlipDataOnly(DyeingSlipData getDyeingProcess) {
         dyeingSlipDataDao.save(getDyeingProcess);
+    }
+
+    public List<DyeingSlipMast> getDyeingSlipByApprovedId(Long id) {
+        List<DyeingSlipMast> dyeingSlipMasts = dyeingSlipMastDao.getDyeingSlipByApprovedById(id);
+        return dyeingSlipMasts;
+    }
+
+    public void updateDyeingSlipWithApproveById(Long approved, Long dyeingId) {
+
+        dyeingSlipMastDao.updateDyeingWithApprovedId(approved,dyeingId);
     }
 }

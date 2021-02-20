@@ -6,6 +6,8 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.servicesImpl.AdminServciceImpl;
 import com.main.glory.servicesImpl.JetServiceImpl;
@@ -47,6 +49,44 @@ public class AdminController extends ControllerConfig {
         }
     }
 
+    @PutMapping(value="/admin/jet/updateJet")
+    public GeneralResponse<Boolean> updateJet(@RequestBody AddJet jetMast) throws Exception {
+        if(jetMast==null)
+        {
+            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            jetService.updateJet(jetMast);
+            return new GeneralResponse<Boolean>(null, "Jet updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(value="/admin/jet/getJetById/{id}")
+    public GeneralResponse<JetMast> getJetMast(@PathVariable(name = "id")Long id) throws Exception {
+        if(id==null)
+        {
+            return new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            JetMast jetMast = jetService.getJetMastById(id);
+            return new GeneralResponse<>(jetMast, "Jet data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @PostMapping(value="/admin/add/company/")
@@ -72,6 +112,76 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @GetMapping(value="/admin/get/company/{id}")
+    public GeneralResponse<Company> getCompanyById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Company> result;
+        if(id==null)
+        {
+            result= new GeneralResponse<>(null, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            Company c  = adminServcice.getCompanyById(id);
+            result= new GeneralResponse<>(c, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @PutMapping(value="/admin/update/company/")
+    public GeneralResponse<Boolean> updateCompany(@RequestBody Company company) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        if(company==null)
+        {
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.updateCompany(company);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @PutMapping(value="/admin/update/department/")
+    public GeneralResponse<Boolean> updateDepartMent(@RequestBody Department department) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        if(department==null)
+        {
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.updateDepartment(department);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
 
 
     @PostMapping(value="/admin/add/department/")
@@ -196,6 +306,45 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @PutMapping(value="/admin/update/approvedBy/")
+    public GeneralResponse<Boolean> updateApproved(@RequestBody ApprovedBy approvedBy) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+                adminServcice.updateApprovedBy(approvedBy);
+                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @GetMapping(value="/admin/get/approvedBy/{id}")
+    public GeneralResponse<ApprovedBy> getApprovedById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<ApprovedBy> result;
+
+        boolean flag;
+        try {
+
+            if(id==null)
+                throw new Exception("data can't be null");
+
+            ApprovedBy data =adminServcice.getApprovedById(id);
+            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
 
     @GetMapping(value="/admin/get/department")
     public GeneralResponse<List<Department>> getAllDepartment() throws Exception {
@@ -218,7 +367,42 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    @GetMapping(value="/admin/get/department/{id}")
+    public GeneralResponse<Department> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
 
+        GeneralResponse<Department> result;
+
+        boolean flag;
+        try {
+
+            Department list = adminServcice.getDepartmentById(id);
+            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+    @GetMapping(value="/admin/update/department/)")
+    public GeneralResponse<Boolean> getDepartmentById(@RequestBody Department department) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            adminServcice.updateDepartment(department);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
     @GetMapping(value="/admin/get/allJet")
     public GeneralResponse<List<AddJet>> getAllJet() throws Exception {
 
@@ -285,6 +469,27 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
+    /*@DeleteMapping(value="/admin/delete/department/{id}")
+    public GeneralResponse<Boolean> deleteDepartmentById(@PathVariable(name = "id") Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            Boolean list = adminServcice.deleteDepartmentById(id);
+            if(list==false)
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }*/
 
     @DeleteMapping(value="/admin/delete/approved/{id}")
     public GeneralResponse<Boolean> deleteApprovedById(@PathVariable(name = "id") Long id) throws Exception {
@@ -294,10 +499,8 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            Boolean list = adminServcice.deleteApprovedById(id);
-            if(list==false)
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
-            else
+                Boolean list = adminServcice.deleteApprovedById(id);
+
                 result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 
         }

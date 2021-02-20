@@ -78,14 +78,14 @@ public class ProductionPlanImpl {
             throw new Exception("unable to insert the record");
 
     }
-    @Transactional
-    public ProductionPlan getProductionData(Long id) throws Exception{
-        Optional<ProductionPlan> productionPlan = productionPlanDao.getByProductionId(id);
 
-        if(productionPlan.isEmpty())
+    public ProductionPlan getProductionData(Long id) throws Exception{
+        ProductionPlan productionPlan = productionPlanDao.getByProductionId(id);
+
+        if(productionPlan==null)
             throw new Exception("data not found for production:");
 
-        return productionPlan.get();
+        return productionPlan;
 
     }
 

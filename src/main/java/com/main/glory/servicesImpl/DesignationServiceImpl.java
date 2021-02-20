@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.model.designation.Designation;
+import com.main.glory.model.user.UserData;
 import com.main.glory.services.DesignationServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import java.util.Optional;
 @Service("designationServiceImpl")
 public class DesignationServiceImpl implements DesignationServiceInterface
 {
+    @Autowired
+    UserServiceImpl userService;
 
     @Autowired
     DesignationDao designationDao;
@@ -61,6 +64,16 @@ public class DesignationServiceImpl implements DesignationServiceInterface
         catch (Exception e)
         {
             return false;
+        }
+    }
+
+    public void updateDesignation(Designation designation) {
+        List<UserData> userDataList=userService.getUserByDesignation(designation.getId());
+
+        Designation x = designationDao.save(designation);
+        for(UserData userData:userDataList)
+        {
+            userService.updateUserByDesignation(x);
         }
     }
 }

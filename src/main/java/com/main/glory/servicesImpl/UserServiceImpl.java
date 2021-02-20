@@ -6,6 +6,7 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.Request.UserAddRequest;
+import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -217,4 +218,66 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
+    public List<UserData> getAllUserByCompany(String name) {
+        List<UserData> list = userDao.findByCompanyName(name);
+        return list;
+    }
+
+    public void updateUserCompanyById(Long id, String name) throws Exception {
+        UserData userData =userDao.getUserById(id);
+        if(userData==null)
+            throw new Exception("no user found");
+
+        userDao.updateCompanyById(id,name);
+
+    }
+
+    public List<UserData> getAllUserByDepartment(String name) {
+        List<UserData> userDataList = userDao.getAllUserByDepartment(name);
+        return userDataList;
+    }
+
+    public void updateUserByDepartment(Long id, String name) {
+        userDao.updateDepartmentById(id,name);
+    }
+
+    public UserIdentification getUserHeadDetail(Long id) throws Exception {
+
+        UserIdentification userIdentification=null;
+
+        UserData userData = userDao.getUserById(id);
+        Designation designation = designationDao.getDesignationById(userData.getDesignationId().getId());
+        if(userData==null)
+            throw new Exception("no user data found");
+
+        if(userData.getUserHeadId()==0)
+        {
+            userIdentification=new UserIdentification(userData,designation);
+        }
+        else
+        {
+           UserData userHead = userDao.getUserById(userData.getUserHeadId());
+           Designation designationHead = designationDao.getDesignationById(userHead.getDesignationId().getId());
+           userIdentification=new UserIdentification(userData,designation,userHead,designationHead);
+           if(userHead.getUserHeadId()>0)
+           {
+               UserData superUser = userDao.getUserById(userHead.getUserHeadId());
+               Designation designationSuper = designationDao.getDesignationById(superUser.getDesignationId().getId());
+               userIdentification=new UserIdentification(userData,designation,userHead,designationHead,superUser,designationSuper);
+           }
+
+        }
+
+
+        return userIdentification;
+    }
+
+    public List<UserData> getUserByDesignation(Long id) {
+        List<UserData> list = userDao.getAllUserByDesignation(id);
+        return list;
+    }
+
+    public void updateUserByDesignation(Designation designation) {
+        userDao.updateUserByDesignation(designation);
+    }
 }

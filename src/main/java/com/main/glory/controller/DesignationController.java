@@ -77,18 +77,15 @@ public class DesignationController extends ControllerConfig {
         }
     }
 
-    @GetMapping("/user/designation/{id}")
-    public GeneralResponse<Optional<Designation>> getDesignationById(@PathVariable(value = "id") Long id) throws Exception{
+    @PutMapping("/user/update/designation/")
+    public GeneralResponse<Boolean> updateDesignation(@RequestBody Designation designation) throws Exception{
 
         try{
-            Optional<Designation> flag = designationService.getDesignationById(id);
-            if(flag!=null){
-                return new GeneralResponse<>(flag,"Designation Fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }
-            else
-            {
-                return new GeneralResponse<>(flag,"Designation not Fetch successfully", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-            }
+
+            designationService.updateDesignation(designation);
+            return new GeneralResponse<>(true,"Designation updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
         }
         catch (Exception e){
             e.printStackTrace();
