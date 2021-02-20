@@ -271,4 +271,13 @@ public class UserServiceImpl implements UserServiceInterface {
 
         return userIdentification;
     }
+
+    public List<UserData> getUserByDesignation(Long id) {
+        List<UserData> list = userDao.getAllUserByDesignation(id);
+        return list;
+    }
+
+    public void updateUserByDesignation(Designation designation) {
+        userDao.updateUserByDesignation(designation);
+    }
 }
