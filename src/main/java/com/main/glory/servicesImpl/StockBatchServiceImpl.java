@@ -137,7 +137,31 @@ public class StockBatchServiceImpl {
 
         }
         if(data.isEmpty()) throw new Exception("no data found");
-        else return data.get();
+        else
+        {
+            Boolean planned=true;
+            for(GetAllStockWithPartyNameResponse stockMast : data.get())
+            {
+                for(BatchData b:stockMast.getBatchData())
+                {
+                    if(!b.getIsProductionPlanned())
+                    {
+                        planned=false;
+                    }
+
+                }
+                if(planned)
+                {
+                    stockMast.setIsProductionPlanned(true);
+                }
+                else
+                    stockMast.setIsProductionPlanned(false);
+            }
+            return data.get();
+        }
+
+
+
     }
 
     @Transactional
