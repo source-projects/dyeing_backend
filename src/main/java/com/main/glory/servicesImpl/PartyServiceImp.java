@@ -48,25 +48,51 @@ public class PartyServiceImp implements PartyServiceInterface {
             Party partyData = new Party(party);
 
             if (party.getGSTIN().isEmpty()) {
+
+                if (party.getPartyCode().length() > 4)
+                    throw new Exception("Party code should not be greater than 4 digit");
+
+               // Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
+                Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
+
+               /* if (gstAvailable!=null)
+                    throw new Exception("GST No." + party.getGSTIN() + " is already exist");*/
+
+                if (partyCodeAvailable!=null)
+                    throw new Exception("Party is availble with code:" + party.getPartyCode());
+
+                //check the partyname exist
+
+                Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
+                if(partyExistWithName!=null)
+                    throw new Exception("party name is already exist");
+
                 partyDao.save(partyData);
                 return;
             }
+            else {
 
+                if (party.getPartyCode().length() > 4)
+                    throw new Exception("Party code should not be greater than 4 digit");
 
-            if (party.getPartyCode().length() > 4)
-                throw new Exception("Party code should not be greater than 4 digit");
+                Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
+                Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
 
-            Optional<Party> gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
-            Optional<Party> partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
+                if (gstAvailable != null)
+                    throw new Exception("GST No." + party.getGSTIN() + " is already exist");
 
-            if (gstAvailable.isPresent())
-                throw new Exception("GST No." + party.getGSTIN() + " is already exist");
+                if (partyCodeAvailable != null)
+                    throw new Exception("Party is availble with code:" + party.getPartyCode());
 
-            if (partyCodeAvailable.isPresent())
-                throw new Exception("Party is availble with code:" + party.getPartyCode());
+                //check the partyname exist
 
-            partyDao.save(partyData);
+                Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
+                if (partyExistWithName == null)
+                    throw new Exception("party name is already exist");
 
+                partyDao.save(partyData);
+
+            }
         }
     }
 
@@ -108,11 +134,11 @@ public class PartyServiceImp implements PartyServiceInterface {
     @Override
     public boolean editPartyDetails(Party party) throws Exception {
         var partyIndex = partyDao.findById(party.getId());
-        Optional<Party> party1 = partyDao.findByPartyCode(party.getPartyCode());
+        Party party1 = partyDao.findByPartyCode(party.getPartyCode());
         if (!partyIndex.isPresent())
             throw new Exception("Party data not found for id:" + party.getId());
 
-        if (party1.isPresent() && party1.get().getId() != party.getId())
+        if (party1!=null && party1.getId() != party.getId())
             throw new Exception("Party code should be unique");
 
         if (party.getGSTIN().isEmpty()) {
@@ -123,7 +149,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         party1 = partyDao.findByGSTIN(party.getGSTIN());
 
-        if (party1.isPresent() && party1.get().getId() != party.getId())
+        if (party1!=null && party1.getId() != party.getId())
             throw new Exception("GST is already availble");
 
         if (!partyIndex.isPresent())
@@ -188,9 +214,9 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     public Boolean partyCodeExistOrNot(String partyCode) {
 
-        Optional<Party> party = partyDao.findByPartyCode(partyCode);
+        Party party = partyDao.findByPartyCode(partyCode);
 
-        if (!party.isPresent())
+        if (party!=null)
             return true;
 
         return false;

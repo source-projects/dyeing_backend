@@ -28,9 +28,11 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	List<Party> findByUserHeadId(Long userHeadId);
 
 
-    Optional<Party> findByGSTIN(String gstin);
+	@Query("select p from Party p where p.GSTIN=:gstin")
+    Party findByGSTIN(String gstin);
 
-	Optional<Party>findByPartyCode(String partyCode);
+    @Query("select p from Party p where p.partyCode=:partyCode")
+	Party findByPartyCode(String partyCode);
 
 	@Query("select p from Party p")
     List<Party> getAllParty();
@@ -45,6 +47,9 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Transactional
 	@Query(value = "truncate table party",nativeQuery = true)
     void trucateRecord();
+
+	@Query("select p from Party p where LOWER(p.partyName)=LOWER(:partyName)")
+    Party getPartyByName(String partyName);
 
 //	@Modifying
 //	@Transactional
