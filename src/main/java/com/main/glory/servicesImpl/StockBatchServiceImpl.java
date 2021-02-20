@@ -697,17 +697,17 @@ public class StockBatchServiceImpl {
 
             if(filter.getStock().getPartyCode()!="")
             {
-                Optional<Party> party = partyDao.findByPartyCode(filter.getStock().getPartyCode());
-                if(party.isEmpty())
+                Party party = partyDao.findByPartyCode(filter.getStock().getPartyCode());
+                if(party==null)
                     throw new Exception("no party found");
 
                 if (filter.getStock().getPartyId()!=null)
                 {
 
-                    if(!party.get().getId().equals(filter.getStock().getPartyId()))
+                    if(!party.getId().equals(filter.getStock().getPartyId()))
                         throw new Exception("party no found for party code:"+filter.getStock().getPartyCode());
 
-                    stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(party.get().getId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
+                    stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(party.getId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
                     if (stockMastList.isEmpty())
                         throw new Exception("no stock data found");
                     return stockMastList;
@@ -716,7 +716,7 @@ public class StockBatchServiceImpl {
                 }
                 else
                 {
-                    stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(party.get().getId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
+                    stockMastList = stockMastDao.findByQualityIdAndPartyIdAndDateFilter(party.getId(), filter.getStock().getQualityEntryId(), filter.getStock().getBillNo(), toDate, fromDate);
                     if (stockMastList.isEmpty())
                         throw new Exception("no stock data found");
                     return stockMastList;
