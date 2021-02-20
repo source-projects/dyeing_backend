@@ -142,7 +142,7 @@ public class JetServiceImpl {
 
             }
             if(colorAmtToDeduct > data)
-                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+shadeData.getId());
+                throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+shadeData.getItemName());
 
 
         }
