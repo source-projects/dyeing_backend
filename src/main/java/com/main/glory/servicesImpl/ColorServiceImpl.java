@@ -363,6 +363,8 @@ public class ColorServiceImpl implements ColorServicesInterface {
                 }
             }
         }
+	    if(list.isEmpty())
+            throw new Exception("no record found");
 
         return list;
     }
