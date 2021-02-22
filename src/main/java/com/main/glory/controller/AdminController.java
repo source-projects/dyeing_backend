@@ -385,7 +385,7 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
-    @GetMapping(value="/admin/update/department/)")
+    @GetMapping(value="/admin/update/department/")
     public GeneralResponse<Boolean> getDepartmentById(@RequestBody Department department) throws Exception {
 
         GeneralResponse<Boolean> result;
