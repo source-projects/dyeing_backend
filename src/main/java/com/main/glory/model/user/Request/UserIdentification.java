@@ -14,10 +14,14 @@ import lombok.Setter;
 @Setter
 public class UserIdentification {
     Long id;
+    String name;
     String userDesignation;
+
     Long userHeadId;
+    String userHeadName;
     String userHeadDesignation;
     Long superUserHeadId;
+    String superUserHeadName;
     String superUserHeadDesignation;
 
     public UserIdentification(UserData userData, Designation designation) {
@@ -35,9 +39,12 @@ public class UserIdentification {
     public UserIdentification(UserData userData, Designation designation, UserData userHead, Designation designationHead, UserData userSuperHead, Designation designationSuperHead) {
         this.id=userData.getId();
         this.userDesignation=designation.getDesignation();
+        this.name=userData.getFirstName();
         this.userHeadId=userHead.getId();
+        this.userHeadName=userHead.getFirstName();
         this.userHeadDesignation = designationHead.getDesignation();
         this.superUserHeadId=userSuperHead.getId();
+        this.superUserHeadName=userSuperHead.getFirstName();
         this.superUserHeadDesignation=designationSuperHead.getDesignation();
     }
 }
