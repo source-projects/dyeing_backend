@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserServiceInterface {
             if (!designationData.isPresent()) {
                 throw new Exception("No such desgination found:" + userDataDto.getDesignationId());
 
-
             }
             userData.setDesignationId(designationData.get());
             //System.out.println(userData.toString());
