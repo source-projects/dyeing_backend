@@ -1101,6 +1101,8 @@ public class StockBatchServiceImpl {
                 continue;
            // System.out.println(productionPlan.getId());
             JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+            if(jetData==null)
+                continue;
             //System.out.println(jetData.getStatus());
             if(jetData.getStatus()== JetStatus.success)
             {
