@@ -359,6 +359,7 @@ public class DispatchMastImpl {
 
 
 
+
        StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
         Party party=partyDao.findByPartyId(stockMast.getPartyId());
 
@@ -368,7 +369,8 @@ public class DispatchMastImpl {
 
 
 
-        PartyWithBatchByInvoice partyWithBatchByInvoice =new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList,party.get());
+        PartyWithBatchByInvoice partyWithBatchByInvoice =new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList,party);
+
 
         //status
         Boolean isSendToParty=dispatchDataDao.getSendToPartyFlag(invoiceNo);

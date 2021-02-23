@@ -82,7 +82,7 @@ public class ShadeController extends ControllerConfig {
 
 				case "all":
 					shadeMast = shadeService.getAllShadesInfo(null, null);
-					System.out.println(shadeMast);
+					//System.out.println(shadeMast);
 					if(!shadeMast.isEmpty())
 						return new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
 					else
