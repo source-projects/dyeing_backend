@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,6 +78,7 @@ public class Party {
     @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<StockMast> stockMasts;
 

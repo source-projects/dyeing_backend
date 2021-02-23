@@ -62,6 +62,12 @@ public class StockMast {
 
     Long qualityId;
 
+    @PreRemove
+    public void checkBatches() throws Exception {
+        if(!this.batchData.isEmpty())
+            throw new Exception("data can't be deleted because related to other record");
+    }
+
     public StockMast(StockMast sm) {
         this.id = sm.id;
         this.stockInType = sm.stockInType;
