@@ -18,4 +18,7 @@ public interface ProgramDao extends JpaRepository<Program,Long> {
 
     @Query("select p from Program p where p.createdBy=:id OR p.userHeadId=:userHeadId")
     List<Program> findByUserHeadIdAndCreatedId(Long id, Long userHeadId);
+
+    @Query("select p from Program p where p.qualityEntryId=:id")
+    List<Program> getAllProgramByqualityId(Long id);
 }

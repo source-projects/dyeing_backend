@@ -3,6 +3,11 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.color.ColorData;
+import com.main.glory.model.dyeingProcess.DyeingChemicalData;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
+import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
@@ -27,6 +32,18 @@ import java.util.Optional;
 public class SupplierServiceImpl implements SupplierServiceInterface {
     @Autowired
     SupplierDao supplierDao;
+
+    @Autowired
+    ColorServiceImpl colorService;
+
+    @Autowired
+    DyeingSlipServiceImpl dyeingSlipService;
+
+    @Autowired
+    ShadeServiceImpl shadeService;
+
+    @Autowired
+    DyeingProcessServiceImpl dyeingProcessService;
 
     @Autowired
     SupplierRateDao supplierRateDao;
@@ -119,23 +136,74 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
-    public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) {
-        try {
+    public void updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) throws Exception {
+
+    }
+
+
+    public void updateSupplierRatesWithValidation(UpdateSupplierRatesRequest updateSupplierRatesRequest) throws Exception{
+
             Long sid = updateSupplierRatesRequest.getSupplierId();
             //System.out.println("_______________"+sid);
-//            supplierRateDao.setInactive(sid);
-            Optional<Supplier> temp = supplierDao.findById(sid);
-            if (temp.isEmpty()) {
-                return false;
+
+            List<SupplierRate> existingSupplierRateList = supplierRateDao.getAllSupplierRateBySupplierId(updateSupplierRatesRequest.getSupplierId());
+            List<Long> existingItemId=new ArrayList<>();
+            List<Long> comingItemList=new ArrayList<>();
+
+            for(SupplierRate supplierRate:updateSupplierRatesRequest.getSupplierRates())
+            {
+                comingItemList.add(supplierRate.getId());
             }
+
+            for(SupplierRate supplierRate:existingSupplierRateList)
+            {
+                existingItemId.add(supplierRate.getId());
+            }
+
+
+            //now check the coming list is contain the record that are already availble in dyeing slip,process or shade or color data or not
+
+            for(Long e :existingItemId)
+            {
+                //check in shade that the item is available in coming item list or not
+
+                if(!comingItemList.contains(e))
+                {
+                    //if comign list not containe the record of existing data then check in
+                    List<DyeingChemicalData> chemicalDataList = dyeingProcessService.getDyeingProcessChemicalDataByItemId(e);
+                    if(!chemicalDataList.isEmpty())
+                        throw new Exception("can't update because item,because it is in chemical process record");
+
+                    List<ShadeData> shadeData = shadeService.getShadDataByItemId(e);
+                    if(!shadeData.isEmpty())
+                        throw new Exception("can't not update the item, because item is already in shade data");
+
+                    List<DyeingSlipItemData> dyeingSlipDataList = dyeingSlipService.getDyeingItemDataByItemId(e);
+                    if(!dyeingSlipDataList.isEmpty())
+                        throw new Exception("can't update record, because item is in dyeing slip");
+
+                    List<ColorData> colorData =colorService.colorDataDao.getAllColorDataByItemId(e);
+                    if(!colorData.isEmpty())
+                        throw new Exception("can't update the record because color stock is added for the item");
+
+
+                }
+            }
+
+            Optional<Supplier> temp = supplierDao.findById(sid);
+
             Supplier s = temp.get();
             s.setSupplierRates(updateSupplierRatesRequest.getSupplierRates());
+
+            //check the item is available in dyeing process/slip or in shade or not??
+
+
+
+
+
             supplierDao.saveAndFlush(s);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+
+
     }
 
     @Override

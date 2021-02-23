@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "ShadeMast")
 @ToString
-public class ShadeMast {
+	public class ShadeMast {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
