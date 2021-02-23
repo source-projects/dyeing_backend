@@ -359,11 +359,12 @@ public class DispatchMastImpl {
 
 
 
-        StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
-        Optional<Party> party=partyDao.findById(stockMast.getPartyId());
+       StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
+        Party party=partyDao.findByPartyId(stockMast.getPartyId());
 
-        if(!party.isPresent())
+        if(party==null)
             throw new Exception("no data found");
+
 
 
 
