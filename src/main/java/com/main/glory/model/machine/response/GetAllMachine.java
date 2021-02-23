@@ -15,6 +15,8 @@ import java.util.List;
 public class GetAllMachine {
     Long id;
     String machineName;
+    Long controlId;
+    String categoryName;
     List<GetAllMachineRecord> getAllMachineRecords;
 
 }

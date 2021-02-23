@@ -48,25 +48,14 @@ public class StockMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchData> batchData;
 
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "stockId", referencedColumnName = "id")
-    List<ProductionPlan> productionPlans;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "stockId", referencedColumnName = "id")
-    List<DispatchData> dispatchData;
 
     Long qualityId;
 
-    @PreRemove
+   /* @PreRemove
     public void checkBatches() throws Exception {
         if(!this.batchData.isEmpty())
             throw new Exception("data can't be deleted because related to other record");
-    }
+    }*/
 
     public StockMast(StockMast sm) {
         this.id = sm.id;
