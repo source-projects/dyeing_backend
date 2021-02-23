@@ -28,14 +28,6 @@ public class ProductionPlan {
     Long shadeId;
     Boolean status=false;
 
-    @JsonIgnore
-    @ApiModelProperty(hidden = true)
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "productionId", referencedColumnName = "id")
-    JetData jetData;
-
-
-
     public ProductionPlan(ProductionPlan productionPlan) {
         this.shadeId=productionPlan.getShadeId();
         this.qualityEntryId=productionPlan.getQualityEntryId();

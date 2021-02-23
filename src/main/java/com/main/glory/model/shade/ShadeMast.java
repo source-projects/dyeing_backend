@@ -57,11 +57,6 @@ public class ShadeMast {
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ShadeData> shadeDataList;
 
-	@ApiModelProperty(hidden = true)
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "shadeId", referencedColumnName = "id")
-	private List<ProductionPlan> productionPlans;
 
 	@PrePersist
 	protected void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}

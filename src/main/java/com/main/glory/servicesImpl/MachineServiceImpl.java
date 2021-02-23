@@ -107,10 +107,12 @@ public class MachineServiceImpl {
 
         for(MachineMast m:machineMasts)
         {
+            MachineCategory machineCategory = machineCategoryDao.getCategoryById(m.getControlId());
             GetAllMachine getAllMachine=new GetAllMachine();
             getAllMachine.setId(m.getId());
             getAllMachine.setMachineName(m.getMachineName());
-
+            getAllMachine.setControlId(machineCategory.getId());
+            getAllMachine.setCategoryName(machineCategory.getName());
 
             List<GetAllMachineRecord> machineRecordList=new ArrayList<>();
             int i=0;
@@ -229,6 +231,8 @@ public class MachineServiceImpl {
             GetAllMachine machine=new GetAllMachine();
             machine.setId(mm.getId());
             machine.setMachineName(mm.getMachineName());
+            machine.setCategoryName(machineCategory.get().getName());
+            machine.setControlId(id);
 
             List<GetAllMachineRecord> machineRecordList=new ArrayList<>();
             int i=0;

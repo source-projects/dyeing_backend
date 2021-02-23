@@ -15,4 +15,7 @@ public interface MachineCategoryDao extends  JpaRepository<MachineCategory,Long>
 
     @Query("select c from MachineCategory c")
     List<MachineCategory> getAllMahineCategory();
+
+    @Query("select q from MachineCategory q where q.id=:controlId")
+    MachineCategory getCategoryById(Long controlId);
 }

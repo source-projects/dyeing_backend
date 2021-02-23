@@ -63,43 +63,6 @@ public class Party {
     private Long userHeadId;
     private String partyCode;
 
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<Program> program;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<DispatchMast> dispatchMastList;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<StockMast> stockMasts;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<ShadeMast> shadeMast;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<ProductionPlan> productionPlans;
-
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<AdvancePayment> advancePayments;
 
 
     @PrePersist
