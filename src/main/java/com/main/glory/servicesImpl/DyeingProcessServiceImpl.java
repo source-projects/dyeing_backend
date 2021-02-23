@@ -53,7 +53,7 @@ public class DyeingProcessServiceImpl {
     public DyeingProcessMast getDyeingProcessById(Long processId) throws Exception {
 
         Optional<DyeingProcessMast> x = dyeingProcessMastDao.getDyeingProcessById(processId);
-        if(x==null)
+        if(x.isEmpty())
             throw new Exception("no process data found");
 
         return x.get();

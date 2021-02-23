@@ -26,13 +26,16 @@ public class UserIdentification {
 
     public UserIdentification(UserData userData, Designation designation) {
         this.id=userData.getId();
+        this.name = userData.getFirstName();
         this.userDesignation=designation.getDesignation();
     }
 
     public UserIdentification(UserData userData, Designation designation, UserData userHead, Designation designationHead) {
         this.id=userData.getId();
         this.userDesignation=designation.getDesignation();
+        this.name=userData.getFirstName();
         this.userHeadId=userHead.getId();
+        this.userHeadName=userHead.getUserName();
         this.userHeadDesignation = designationHead.getDesignation();
     }
 

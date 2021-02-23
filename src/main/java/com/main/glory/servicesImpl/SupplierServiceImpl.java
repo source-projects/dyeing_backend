@@ -104,7 +104,13 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             supplier.setSupplierName(updateSupplierRequest.getSupplierName());
             supplier.setUpdatedDate(new Date(System.currentTimeMillis()));
             supplier.setUpdatedBy(updateSupplierRequest.getUpdatedBy());
+
+            List<SupplierRate> list=supplierRateDao.getAllSupplierRateBySupplierId(updateSupplierRequest.getId());
             supplierDao.save(supplier);
+            for(SupplierRate s:list)
+            {
+                supplierRateDao.updateItemBySupplierIdAndItemId(supplier.getId(),s.getId());
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

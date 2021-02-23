@@ -114,14 +114,14 @@ public class JetServiceImpl {
         }
 
 
-        //dyeing process \
+        //dyeing process
         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
 
 
-        //count the color/chemical amt to deduct
+       //count the color/chemical amt to deduct
         Double colorAmtToDeduct=0.0;
         Double totalBatchWt=stockBatchService.getWtByControlAndBatchId(productionPlanExits.getStockId(),productionPlanExits.getBatchId());
-
+/*
         //check the capacity first for the color box issue had that much capacity to fill the batch or not
         for(ShadeData shadeData:shadeMast.get().getShadeDataList())
         {
@@ -145,7 +145,7 @@ public class JetServiceImpl {
                 throw new Exception("issue the box first because required color amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+shadeData.getItemName());
 
 
-        }
+        }*/
 /*
         //check the capacity first for the chemical box issue had that much capacity to fill the batch or not
         for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
@@ -271,7 +271,7 @@ public class JetServiceImpl {
              */
 
             // 1. deduct the color amt as per the shade concentration
-            for(ShadeData shadeData:shadeMast.get().getShadeDataList())
+           /* for(ShadeData shadeData:shadeMast.get().getShadeDataList())
             {
                 colorAmtToDeduct = shadeData.getConcentration()*totalBatchWt;
                 System.out.println(shadeData.getSupplierItemId()+":color amt deduct:"+colorAmtToDeduct);
@@ -296,7 +296,7 @@ public class JetServiceImpl {
                 }
 
 
-            }
+            }*/
 
             /*
             //deduct the chemical amt from the box as per the dyeing process
@@ -735,8 +735,8 @@ public class JetServiceImpl {
             //check the sequence of production is first or not
 
 
-            if(jetDataExist.get().getSequence()!=1)
-                throw new Exception("unable to update the production");
+          /*  if(jetDataExist.get().getSequence()!=1)
+                throw new Exception("unable to update the production");*/
 
             //System.out.println(jetDataExist.get().getStatus());
             List<JetData> jetDataList = jetDataDao.findByControlId(jetDataToUpdate.getControlId());
@@ -949,7 +949,7 @@ public class JetServiceImpl {
 
         // 1. take back the amount of color which is issue for the batch and change the status of that boxes
 
-        Double totalBatchWt = stockBatchService.getWtByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+       /* Double totalBatchWt = stockBatchService.getWtByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
         Double colorAmtUsed=0.0;//color and chemical used
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
 
@@ -963,7 +963,7 @@ public class JetServiceImpl {
             colorBox.setFinished(false);
             colorBox.setQuantityLeft(colorBox.getQuantityLeft()+colorAmtUsed);
 
-        }
+        }*/
 
         //take back the chemical color boxes that are being used
 /*
