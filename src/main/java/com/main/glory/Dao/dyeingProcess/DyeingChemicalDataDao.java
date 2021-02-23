@@ -12,4 +12,7 @@ public interface DyeingChemicalDataDao extends JpaRepository<DyeingChemicalData,
 
     @Query("select q from DyeingChemicalData q where q.controlId=:id")
     List<DyeingChemicalData> getChemicalListByControlId(Long id);
+
+    @Query("select q from DyeingChemicalData q where q.itemId=:id")
+    List<DyeingChemicalData> getChemicalDataByItemId(Long id);
 }

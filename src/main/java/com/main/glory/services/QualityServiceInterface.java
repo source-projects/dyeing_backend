@@ -11,7 +11,7 @@ public interface QualityServiceInterface {
 	public List<GetQualityResponse> getAllQuality(Long id, String getBy) throws Exception;
 	public int saveQuality(AddQualityRequest obj) throws Exception;
 	public boolean updateQuality(UpdateQualityRequest obj) throws Exception;
-	public boolean deleteQualityById(Long id);
+	public boolean deleteQualityById(Long id) throws Exception;
 	public GetQualityResponse getQualityByID(Long id);
 	public String isQualityAlreadyExist(String qualityId);
 	public String getPartyNameByPartyId(Long partyName);

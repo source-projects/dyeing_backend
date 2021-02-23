@@ -14,7 +14,7 @@ public interface SupplierServiceInterface {
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest);
     public Object getSupplier(Long id);
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest);
-    public Boolean updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest);
+    public void updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) throws Exception;
     public List getAllSupplier(String getBy, Long id) throws Exception;
 
 

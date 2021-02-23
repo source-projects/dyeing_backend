@@ -5,15 +5,19 @@ import java.util.List;
 import java.util.Optional;
 
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,19 @@ import com.main.glory.services.QualityServiceInterface;
 
 @Service("qualityServiceImp")
 public class QualityServiceImp implements QualityServiceInterface {
+
+    @Autowired
+    ProgramServiceImpl programService;
+
+    @Autowired
+    StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    ShadeServiceImpl shadeService;
+
+    @Autowired
+    ProductionPlanImpl productionPlan;
+
 
     @Autowired
     UserDao userDao;
@@ -118,12 +135,29 @@ public class QualityServiceImp implements QualityServiceInterface {
     }
 
     @Override
-    public boolean deleteQualityById(Long id) {
-        var partyIndex = qualityDao.findById(id);
-        if (!partyIndex.isPresent())
-            return false;
-        else
-            qualityDao.deleteById(id);
+    public boolean deleteQualityById(Long id) throws Exception {
+        Quality qualityExist = qualityDao.getqualityById(id);
+
+        if(qualityExist==null)
+            throw new Exception("no quality found");
+
+        List<StockMast> stockMastList = stockBatchService.getStockByQualityEntryId(id);
+        if(!stockMastList.isEmpty())
+            throw new Exception("delete the stock record first");
+
+        List<ProductionPlan> productionPlans = productionPlan.getProductionByQualityId(id);
+        if(!productionPlans.isEmpty())
+            throw new Exception("delete the production data first");
+
+        List<Program> programList =programService.getAllProgramByQualityId(id);
+        if(!programList.isEmpty())
+            throw new Exception("delete the program record first");
+
+        List<ShadeMast> shadeMastList = shadeService.getAllShadeByQualityId(id);
+        if(!shadeMastList.isEmpty())
+            throw new Exception("delete the shade record first");
+
+        qualityDao.deleteByQualtyId(id);
         return true;
     }
 
@@ -275,5 +309,10 @@ public class QualityServiceImp implements QualityServiceInterface {
 
         return quality;
 
+    }
+
+    public List<Quality> getqualityListByPartyId(Long id) {
+        List<Quality> list = qualityDao.getQualityListByPartyIdId(id);
+        return list;
     }
 }

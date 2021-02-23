@@ -190,6 +190,15 @@ public class ProductionPlanImpl {
         return productionPlanDao.getAllProductionByShadeId(shadeId);
     }
 
+    public List<ProductionPlan> getProductionByQualityId(Long id) {
+        List<ProductionPlan> list = productionPlanDao.getAllProductionByQualityId(id);
+        return list;
+    }
+
+    public List<ProductionPlan>getAllProductinByPartyId(Long id) {
+        return productionPlanDao.getAllProuctionByPartyId(id);
+    }
+
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 

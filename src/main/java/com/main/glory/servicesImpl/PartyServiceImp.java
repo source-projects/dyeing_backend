@@ -12,17 +12,21 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.PaymentMast;
 import com.main.glory.model.SendEmail;
+import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.codec.multipart.Part;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +34,29 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.party.Party;
 import com.main.glory.services.PartyServiceInterface;
 
+import javax.mail.Part;
+
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface {
 
     @Autowired
+    DispatchMastImpl dispatchMast;
+
+    @Autowired
     private PartyDao partyDao;
+
+    @Autowired
+    ProductionPlanImpl productionPlanService;
+
+    @Autowired
+    QualityServiceImp qualityServiceImp;
+
+    @Autowired
+    PaymentTermImpl paymentTermService;
+    @Autowired
+    ShadeServiceImpl shadeService;
+    @Autowired
+    StockBatchServiceImpl stockBatchService;
 
     @Autowired
     UserDao userDao;
@@ -160,13 +182,41 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
     @Override
-    public boolean deletePartyById(Long id) {
+    public boolean deletePartyById(Long id) throws Exception {
 
-        var partyIndex = partyDao.findById(id);
-        if (!partyIndex.isPresent())
+        Party partyIndex = partyDao.findByPartyId(id);
+        if (partyIndex==null)
             return false;
-        else
+        else {
+            //check the record in sub table that are avialble or not
+            List<DispatchMast> dispatchMastList = dispatchMast.getDispatchByPartyId(id);
+            if(!dispatchMastList.isEmpty())
+                throw new Exception("delete the invoice data first");
+
+            List<Quality> qualityList = qualityServiceImp.getqualityListByPartyId(id);
+            if(!qualityList.isEmpty())
+                throw new Exception("delete the quality data first");
+
+            List<PaymentMast> paymentMastList = paymentTermService.getAllPaymentByPartyId(id);
+            if(!paymentMastList.isEmpty())
+                throw new Exception("delete the payment record first");
+
+            List<ShadeMast> shadeMastList = shadeService.getShadeByPartyId(id);
+            if(!shadeMastList.isEmpty())
+                throw new Exception("delete the shade record first");
+
+            List<ProductionPlan> productionPlans =productionPlanService.getAllProductinByPartyId(id);
+            if(!productionPlans.isEmpty())
+                throw new Exception("delete the production record first");
+
+            List<StockMast> stockMastList = stockBatchService.getAllStockByPartyId(id);
+            if(!stockMastList.isEmpty())
+                throw new Exception("delete the stock record first");
+
+
             partyDao.deleteById(id);
+
+        }
         return true;
     }
 

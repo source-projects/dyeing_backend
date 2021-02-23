@@ -185,12 +185,10 @@ public class SupplierController extends ControllerConfig {
     @PutMapping("/supplier/rates")
     public GeneralResponse<Boolean> updateSupplier(@RequestBody UpdateSupplierRatesRequest updateSupplierRequest){
         try{
-            Boolean flag = supplierService.updateSupplierRates(updateSupplierRequest);
-            if (flag) {
+            supplierService.updateSupplierRatesWithValidation(updateSupplierRequest);
+
                 return new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            } else {
-                return new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);

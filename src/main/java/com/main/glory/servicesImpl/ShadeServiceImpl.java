@@ -8,6 +8,7 @@ import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.APC;
+import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.model.user.UserData;
@@ -434,4 +435,18 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
     }
 
 
+    public List<ShadeMast> getShadeByPartyId(Long id) {
+		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeByPartyId(id);
+		return shadeMastList;
+
+    }
+
+	public List<ShadeMast> getAllShadeByQualityId(Long id) {
+		List<ShadeMast> list = shadeMastDao.getAllShadeByQualityId(id);
+		return list;
+	}
+
+	public List<ShadeData> getShadDataByItemId(Long e) {
+		return shadeDataDao.getShadeDataByItemid(e);
+	}
 }

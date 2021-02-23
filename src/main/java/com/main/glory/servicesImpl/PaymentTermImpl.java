@@ -200,4 +200,9 @@ public class PaymentTermImpl {
             throw new Exception("no data found");
         return list;
     }
+
+    public List<PaymentMast> getAllPaymentByPartyId(Long id) {
+        List<PaymentMast> list = paymentMastDao.findByPartyId(id);
+        return list;
+    }
 }

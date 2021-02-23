@@ -1007,4 +1007,9 @@ public class DispatchMastImpl {
         return list;
 
     }
+
+    public List<DispatchMast> getDispatchByPartyId(Long id) {
+        List<DispatchMast> dispatchMast = dispatchMastDao.getDipatchByPartyId(id);
+        return dispatchMast;
+    }
 }

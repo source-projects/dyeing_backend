@@ -31,4 +31,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
     //@Query("select d from DispatchMast d where (d.partyId,d.partyId)=(:partyId,NULL) OR (:from IS NULL OR d.createdDate>=:from) OR (:to IS NULL OR d.createdDate<=:to) OR (:userHeadId IS NULL OR d.userHeadId=:userHeadId)")
     @Query("select d from DispatchMast d where (:from IS NULL OR d.createdDate>=:from) AND (:to IS NULL OR d.createdDate<=:to) AND (:partyId IS NULL OR d.partyId=:partyId) AND (:userHeadId IS NULL OR d.userHeadId=:userHeadId) ")
     List<DispatchMast> getInvoiceByFilter(Date from, Date to, Long partyId, Long userHeadId);
+
+    @Query("select d from DispatchMast d where d.partyId=:id")
+    List<DispatchMast> getDipatchByPartyId(Long id);
 }
