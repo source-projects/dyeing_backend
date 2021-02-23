@@ -62,10 +62,10 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception("Party is availble with code:" + party.getPartyCode());
 
                 //check the partyname exist
-
+/*
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if(partyExistWithName!=null)
-                    throw new Exception("party name is already exist");
+                    throw new Exception("party name is already exist");*/
 
                 partyDao.save(partyData);
                 return;
@@ -86,9 +86,9 @@ public class PartyServiceImp implements PartyServiceInterface {
 
                 //check the partyname exist
 
-                Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
+               /* Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if (partyExistWithName == null)
-                    throw new Exception("party name is already exist");
+                    throw new Exception("party name is already exist");*/
 
                 partyDao.save(partyData);
 
@@ -216,7 +216,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         Party party = partyDao.findByPartyCode(partyCode);
 
-        if (party!=null)
+        if (party==null)
             return true;
 
         return false;
