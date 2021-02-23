@@ -50,7 +50,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				return;
 			}
 
-
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
@@ -58,11 +57,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if(path.startsWith("user") || path.startsWith("login") || path.contains("admin") || path.contains("db")){
+		/*if(path.startsWith("user") || path.startsWith("login") || path.contains("admin") || path.contains("db")){
 			chain.doFilter(request, response);
 			return;
 		}
-
+*/
 		final String authorizationHeader = request.getHeader("Authorization");
 
 		String id = null;
@@ -71,6 +70,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 				jwt = authorizationHeader.substring(7);
 				id = jwtUtil.extractUsername(jwt);
+				// request.id = id;
+				//response
+				System.out.println("setheader:"+id);
+
 				Claims claims = jwtUtil.extractAllClaims(jwt);
 				Map userPermissions = (Map) claims.get("permissions", Object.class);
 

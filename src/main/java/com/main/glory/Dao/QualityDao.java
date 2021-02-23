@@ -56,7 +56,7 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("select q from Quality q where q.partyId=:id")
     List<Quality> getQualityListByPartyIdId(Long id);
 
-    @Query("select q form Quality q where q.id=:id")
+    @Query("select q from Quality q where q.id=:id")
     Quality getqualityById(Long id);
 
     @Modifying
