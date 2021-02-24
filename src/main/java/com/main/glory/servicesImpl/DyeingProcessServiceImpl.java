@@ -98,6 +98,12 @@ public class DyeingProcessServiceImpl {
         if(dyeingProcessMastExist!=null)
         {
             flag=true;
+            //check the process is related to shade or not
+
+            List<ShadeMast> shadeMastList = shadeService.getAllShadeMastByProcessId(dyeingProcessMastExist.getId());
+            if(!shadeMastList.isEmpty())
+            throw new Exception("remove all the shade first");
+
             dyeingProcessMastDao.deleteByProcessId(id);
         }
         else
