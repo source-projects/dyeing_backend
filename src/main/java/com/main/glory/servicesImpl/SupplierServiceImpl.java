@@ -171,19 +171,19 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
                     //if coming list not containe the record of existing data then check in
                     List<DyeingChemicalData> chemicalDataList = dyeingProcessService.getDyeingProcessChemicalDataByItemId(e);
                     if(!chemicalDataList.isEmpty())
-                        throw new Exception("can't update because item,because it is in chemical process record");
+                        throw new Exception("can't remove because item,because it is in chemical process record");
 
                     List<ShadeData> shadeData = shadeService.getShadDataByItemId(e);
                     if(!shadeData.isEmpty())
-                        throw new Exception("can't not update the item, because item is already in shade data");
+                        throw new Exception("can't not remove the item, because item is already in shade data");
 
                     List<DyeingSlipItemData> dyeingSlipDataList = dyeingSlipService.getDyeingItemDataByItemId(e);
                     if(!dyeingSlipDataList.isEmpty())
-                        throw new Exception("can't update record, because item is in dyeing slip");
+                        throw new Exception("can't remove record, because item is in dyeing slip");
 
                     List<ColorData> colorData =colorService.colorDataDao.getAllColorDataByItemId(e);
                     if(!colorData.isEmpty())
-                        throw new Exception("can't update the record because color stock is added for the item");
+                        throw new Exception("can't remove the record because color stock is added for the item");
 
                     //change the hash map values for delete the item later because the item is not coming from
                     toDeleteItem.replace(e,true);

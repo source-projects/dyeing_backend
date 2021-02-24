@@ -192,7 +192,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		if(shadeMast.isEmpty()){
 			throw new Exception("shade data does not exist with id:"+id);
 		}
-		//check the produciton is avialble or not
+		//check the production is avialble or not
 		List<ProductionPlan> productionPlans = productionPlanDao.getAllProductionByShadeId(id);
 		if(!productionPlans.isEmpty())
 			throw new Exception("remove the production first");
