@@ -216,15 +216,28 @@ public class StockBatchServiceImpl {
             }
         }
 
-        //##Iterate the loop and delete the record who flag is false
+        //##Iterate the loop first for check the record that are production plan true or not and then delete the record who flag is false
         for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
         {
-            System.out.println(entry.getKey()+":"+entry.getValue());
+            //System.out.println(entry.getKey()+":"+entry.getValue());
+            if(entry.getValue()==false)
+            {
+                BatchData batchDataProductionPlan = batchDao.getBatchDataById(entry.getKey());
+                if(batchDataProductionPlan.getIsProductionPlanned())
+                    throw new Exception("remove the production first og batch:"+batchDataProductionPlan.getBatchId());
+
+            }
+        }
+        //remove the record
+        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+        {
+            //System.out.println(entry.getKey()+":"+entry.getValue());
             if(entry.getValue()==false)
             {
                 batchDao.deleteById(entry.getKey());
             }
         }
+
 
         //update record
         stockMastDao.save(stockMast);
@@ -242,6 +255,9 @@ public class StockBatchServiceImpl {
         if(Objects.equals(stockMast.get().getIsProductionPlanned(),true)){
             throw new Exception("Can't delete the batch, already in production, for id:"+id);
         }
+        List<ProductionPlan> productionPlans = productionPlanService.getProductionByStockId(id);
+        if(!productionPlans.isEmpty())
+            throw new Exception("can't delete the stock , because already sent to production");
 
         stockMastDao.deleteById(id);
     }

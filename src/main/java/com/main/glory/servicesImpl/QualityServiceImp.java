@@ -18,7 +18,9 @@ import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -314,5 +316,70 @@ public class QualityServiceImp implements QualityServiceInterface {
     public List<Quality> getqualityListByPartyId(Long id) {
         List<Quality> list = qualityDao.getQualityListByPartyIdId(id);
         return list;
+    }
+
+    public List<GetAllQualtiy> getAllQualityDataWithHeaderId(String id) throws Exception {
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+
+        Permissions permissions = new Permissions(userPermission.getPa().intValue());
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if(userData.getUserHeadId() == 0)
+            {
+                userId=null;
+                userHeadId=null;
+            }
+            else if(userData.getUserHeadId() > 0)
+            {
+                //check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+
+                if(userHead.getUserHeadId()==0)
+                {
+                    //for master
+                    userId=userData.getId();
+                    userHeadId=userData.getId();
+
+                }
+                else {
+                    //for operator
+                    userId=userData.getId();
+                    userHeadId=userData.getUserHeadId();
+                }
+            }
+
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+        }
+
+
+        List<Quality> qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
+        List<GetAllQualtiy> getAllQualtiyList = new ArrayList<>();
+        for (Quality quality : qualities) {
+            Optional<Party> partyName = partyDao.findById(quality.getPartyId());
+            if (!partyName.isPresent())
+                continue;
+
+            GetAllQualtiy getAllQualtiy = new GetAllQualtiy(quality);
+            getAllQualtiy.setPartyName(partyName.get().getPartyName());
+            getAllQualtiyList.add(getAllQualtiy);
+        }
+        if (getAllQualtiyList.isEmpty())
+            throw new Exception("no data found");
+        return getAllQualtiyList;
     }
 }

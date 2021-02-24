@@ -689,6 +689,8 @@ public class JetServiceImpl {
                     ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
                     GetJetData getJetData=new GetJetData(jetData,colorTone);
                     ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
+                    if(productionPlan==null)
+                        continue;
                     getJetData.setBatchId(productionPlan.getBatchId());
                     jetDataList.add(getJetData);
                 }

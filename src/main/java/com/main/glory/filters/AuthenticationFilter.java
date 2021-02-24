@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -45,10 +46,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		try{
 
 			// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/api")){
+			/*if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
-			}
+			}*/
 
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
@@ -72,6 +73,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				id = jwtUtil.extractUsername(jwt);
 				// request.id = id;
 				//response
+
+				response.addHeader("userHead",id);
 				System.out.println("setheader:"+id);
 
 				Claims claims = jwtUtil.extractAllClaims(jwt);

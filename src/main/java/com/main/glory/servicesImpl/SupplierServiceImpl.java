@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("SupplierServiceImpl")
 public class SupplierServiceImpl implements SupplierServiceInterface {
@@ -149,6 +146,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             List<SupplierRate> existingSupplierRateList = supplierRateDao.getAllSupplierRateBySupplierId(updateSupplierRatesRequest.getSupplierId());
             List<Long> existingItemId=new ArrayList<>();
             List<Long> comingItemList=new ArrayList<>();
+            Map<Long,Boolean> toDeleteItem = new HashMap<>();
 
             for(SupplierRate supplierRate:updateSupplierRatesRequest.getSupplierRates())
             {
@@ -158,6 +156,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
             for(SupplierRate supplierRate:existingSupplierRateList)
             {
                 existingItemId.add(supplierRate.getId());
+                toDeleteItem.put(supplierRate.getId(),false);
             }
 
 
@@ -169,39 +168,50 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
                 if(!comingItemList.contains(e))
                 {
-                    //if comign list not containe the record of existing data then check in
+                    //if coming list not containe the record of existing data then check in
                     List<DyeingChemicalData> chemicalDataList = dyeingProcessService.getDyeingProcessChemicalDataByItemId(e);
                     if(!chemicalDataList.isEmpty())
-                        throw new Exception("can't update because item,because it is in chemical process record");
+                        throw new Exception("can't remove because item,because it is in chemical process record");
 
                     List<ShadeData> shadeData = shadeService.getShadDataByItemId(e);
                     if(!shadeData.isEmpty())
-                        throw new Exception("can't not update the item, because item is already in shade data");
+                        throw new Exception("can't not remove the item, because item is already in shade data");
 
                     List<DyeingSlipItemData> dyeingSlipDataList = dyeingSlipService.getDyeingItemDataByItemId(e);
                     if(!dyeingSlipDataList.isEmpty())
-                        throw new Exception("can't update record, because item is in dyeing slip");
+                        throw new Exception("can't remove record, because item is in dyeing slip");
 
                     List<ColorData> colorData =colorService.colorDataDao.getAllColorDataByItemId(e);
                     if(!colorData.isEmpty())
-                        throw new Exception("can't update the record because color stock is added for the item");
+                        throw new Exception("can't remove the record because color stock is added for the item");
 
+                    //change the hash map values for delete the item later because the item is not coming from
+                    toDeleteItem.replace(e,true);
 
                 }
+
+
+
             }
 
-            Optional<Supplier> temp = supplierDao.findById(sid);
+        // using for-each loop for iteration over Map.entrySet()
+        for (Map.Entry<Long,Boolean> entry : toDeleteItem.entrySet())
+        {
+            if(entry.getValue())
+            {
+                //delete if the flag is true
+                supplierRateDao.deleteItemById(entry.getKey());
+            }
+        }
 
-            Supplier s = temp.get();
-            s.setSupplierRates(updateSupplierRatesRequest.getSupplierRates());
 
-            //check the item is available in dyeing process/slip or in shade or not??
+        Supplier temp = supplierDao.findBySupplierId(sid);
 
-
-
-
-
-            supplierDao.saveAndFlush(s);
+            if(temp!=null) {
+                Supplier s = temp;
+                s.setSupplierRates(updateSupplierRatesRequest.getSupplierRates());
+                supplierDao.saveAndFlush(s);
+            }
 
 
     }

@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.main.glory.Dao.PartyDao;
@@ -120,12 +121,12 @@ public class QualityController extends ControllerConfig {
             return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
     @GetMapping(value = "/quality/allQuality")
-    public GeneralResponse<List<GetAllQualtiy>> getAllQualityData() throws Exception{
+    public GeneralResponse<List<GetAllQualtiy>> getAllQualityData(@RequestHeader Map<String, String> headers) throws Exception{
 
         try {
 
 
-            List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityData();
+            List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityDataWithHeaderId(headers.get("id"));
             if (qualityData == null) {
                 return new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }

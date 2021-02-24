@@ -24,7 +24,9 @@ import com.main.glory.model.party.request.PartyWithPartyCode;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -334,5 +336,75 @@ public class PartyServiceImp implements PartyServiceInterface {
         Party party = partyDao.findByPartyId(id);
         return party;
 
+    }
+
+    public List<PartyWithName> getAllPartyNameWithHeaderId(String id) {
+        try {
+
+            Long userId = Long.parseLong(id);
+
+            UserData userData = userDao.getUserById(userId);
+            Long userHeadId=null;
+
+            UserPermission userPermission = userData.getUserPermissionData();
+
+            Permissions permissions = new Permissions(userPermission.getPa().intValue());
+            if (permissions.getViewAll())
+            {
+                userId=null;
+                userHeadId=null;
+            }
+            else if (permissions.getViewGroup()) {
+                //check the user is master or not ?
+                //admin
+                if(userData.getUserHeadId() == 0)
+                {
+                    userId=null;
+                    userHeadId=null;
+                }
+                else if(userData.getUserHeadId() > 0)
+                {
+                    //check weather master or operator
+                    UserData userHead = userDao.getUserById(userData.getUserHeadId());
+
+                    if(userHead.getUserHeadId()==0)
+                    {
+                        //for master
+                        userId=userData.getId();
+                        userHeadId=userData.getId();
+
+                    }
+                    else {
+                        //for operator
+                        userId=userData.getId();
+                        userHeadId=userData.getUserHeadId();
+                    }
+                }
+
+            }
+            else if (permissions.getView()) {
+                userId = userData.getId();
+                userHeadId=null;
+            }
+
+
+
+
+            List<Party> partyAll = partyDao.getAllPartiesByUserId(userId,userHeadId);
+
+            List<PartyWithName> partyWithNameList = new ArrayList<>();
+            if (!partyAll.isEmpty()) {
+                partyAll.forEach(e ->
+                {
+                    PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName(),e.getPartyCode());
+                    //System.out.println(partyWithName.getId());
+                    partyWithNameList.add(partyWithName);
+                });
+            }
+            return partyWithNameList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
