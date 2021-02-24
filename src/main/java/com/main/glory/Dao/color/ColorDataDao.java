@@ -3,8 +3,10 @@ package com.main.glory.Dao.color;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,5 +27,10 @@ public interface ColorDataDao extends JpaRepository<ColorData, Long> {
 
     @Query("select c from ColorData c where c.itemId=:id")
     List<ColorData> getAllColorDataByItemId(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("delete from ColorData c where c.controlId IS NULL")
+    void deleteColorWhichIsNull();
 }
 

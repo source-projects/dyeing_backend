@@ -449,4 +449,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	public List<ShadeData> getShadDataByItemId(Long e) {
 		return shadeDataDao.getShadeDataByItemid(e);
 	}
+
+	public List<ShadeMast> getAllShadeByProcessId(Long id) {
+		return shadeMastDao.getAllShadeByProcessId(id);
+	}
 }
