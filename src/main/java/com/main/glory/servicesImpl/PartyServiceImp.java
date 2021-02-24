@@ -357,11 +357,35 @@ public class PartyServiceImp implements PartyServiceInterface {
                 userHeadId=null;
             }
             else if (permissions.getViewGroup()) {
-                userId=userData.getId();
-                userHeadId = userData.getUserHeadId();
+                //check the user is master or not ?
+                //admin
+                if(userData.getUserHeadId() == 0)
+                {
+                    userId=null;
+                    userHeadId=null;
+                }
+                else if(userData.getUserHeadId() > 0)
+                {
+                    //check weather master or operator
+                    UserData userHead = userDao.getUserById(userData.getUserHeadId());
+
+                    if(userHead.getUserHeadId()==0)
+                    {
+                        //for master
+                        userId=userData.getId();
+                        userHeadId=userData.getId();
+
+                    }
+                    else {
+                        //for operator
+                        userId=userData.getId();
+                        userHeadId=userData.getUserHeadId();
+                    }
+                }
+
             }
             else if (permissions.getView()) {
-                userId = userId;
+                userId = userData.getId();
                 userHeadId=null;
             }
 
