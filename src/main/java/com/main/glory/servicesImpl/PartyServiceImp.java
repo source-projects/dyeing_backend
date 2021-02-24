@@ -346,8 +346,6 @@ public class PartyServiceImp implements PartyServiceInterface {
             UserData userData = userDao.getUserById(userId);
             Long userHeadId=null;
 
-
-
             UserPermission userPermission = userData.getUserPermissionData();
 
             Permissions permissions = new Permissions(userPermission.getPa().intValue());

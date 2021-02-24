@@ -63,6 +63,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Transactional
     @Query("delete from Quality q where q.id=:id")
     void deleteByQualtyId(Long id);
+
+    @Query("select s from Quality s where (:userId IS NULL OR s.createdBy=:userId) OR (:userHeadId IS NULL OR s.userHeadId=:userHeadId)")
+    List<Quality> getAllQualityWithIdAndUserHeadId(Long userId, Long userHeadId);
 }
 
 
