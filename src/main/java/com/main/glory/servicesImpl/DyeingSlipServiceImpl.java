@@ -264,4 +264,9 @@ public class DyeingSlipServiceImpl {
 
         dyeingSlipMastDao.updateDyeingWithApprovedId(approved,dyeingId);
     }
+
+    public List<DyeingSlipItemData> getDyeingItemDataByItemId(Long e) {
+        return dyeingSlipItemDataDao.getAllItemByItemId(e);
+
+    }
 }

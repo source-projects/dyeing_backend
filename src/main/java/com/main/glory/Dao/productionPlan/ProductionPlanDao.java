@@ -42,4 +42,10 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
     @Transactional
     @Query("update ProductionPlan p set p.shadeId=:shadeId where p.id=:id")
     void updateProductionWithShadeId(Long id, Long shadeId);
+
+    @Query("select p from ProductionPlan p where p.qualityEntryId=:id")
+    List<ProductionPlan> getAllProductionByQualityId(Long id);
+
+    @Query("select p from ProductionPlan p where p.partyId=:id")
+    List<ProductionPlan> getAllProuctionByPartyId(Long id);
 }

@@ -57,5 +57,9 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  List<StockMast> getAllStockWithoutBatchPlanned();
 
 
+ @Query("select s from StockMast s where s.partyId=:id")
+ List<StockMast> getAllStockByPartyId(Long id);
 
+    @Query("select s from StockMast s where s.qualityId=:id")
+    List<StockMast> getAllStockByQualityId(Long id);
 }

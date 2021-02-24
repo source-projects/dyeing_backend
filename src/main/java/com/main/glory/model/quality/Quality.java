@@ -43,32 +43,6 @@ public class Quality {
 	private Double rate;
 	private String HSN="9988";
 
-
-	@ApiModelProperty(hidden = true)
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "qualityId", referencedColumnName = "id")
-	List<StockMast> stockMasts;
-
-	@ApiModelProperty(hidden = true)
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
-	private List<Program> program;
-
-	@ApiModelProperty(hidden = true)
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
-	private List<ProductionPlan> productionPlans;
-
-	@ApiModelProperty(hidden = true)
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "qualityEntryId", referencedColumnName = "id")
-	private List<ShadeMast> shadeMasts;
-
-
 	public Quality(Quality other) {
 		this.id = other.id;
 		this.qualityId = other.qualityId;

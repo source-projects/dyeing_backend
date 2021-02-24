@@ -355,5 +355,10 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
         }
         return stockQualityWiseList;
     }
+
+    public List<Program>getAllProgramByQualityId(Long id) {
+       List<Program> programList = programDao.getAllProgramByqualityId(id);
+       return programList;
+    }
 }
 

@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,42 +63,6 @@ public class Party {
     private Long userHeadId;
     private String partyCode;
 
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<Program> program;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<DispatchMast> dispatchMastList;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<StockMast> stockMasts;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<ShadeMast> shadeMast;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<ProductionPlan> productionPlans;
-
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<AdvancePayment> advancePayments;
 
 
     @PrePersist

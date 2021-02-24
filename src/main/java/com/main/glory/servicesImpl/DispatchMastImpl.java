@@ -359,15 +359,18 @@ public class DispatchMastImpl {
 
 
 
-        StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
-        Optional<Party> party=partyDao.findById(stockMast.getPartyId());
 
-        if(!party.isPresent())
+       StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
+        Party party=partyDao.findByPartyId(stockMast.getPartyId());
+
+        if(party==null)
             throw new Exception("no data found");
 
 
 
-        PartyWithBatchByInvoice partyWithBatchByInvoice =new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList,party.get());
+
+        PartyWithBatchByInvoice partyWithBatchByInvoice =new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList,party);
+
 
         //status
         Boolean isSendToParty=dispatchDataDao.getSendToPartyFlag(invoiceNo);
@@ -1003,5 +1006,10 @@ public class DispatchMastImpl {
 
         return list;
 
+    }
+
+    public List<DispatchMast> getDispatchByPartyId(Long id) {
+        List<DispatchMast> dispatchMast = dispatchMastDao.getDipatchByPartyId(id);
+        return dispatchMast;
     }
 }

@@ -37,6 +37,9 @@ public class StockBatchServiceImpl {
     JetServiceImpl jetService;
     @Autowired
     ProductionPlanImpl productionPlanService;
+
+    @Autowired
+    DyeingSlipServiceImpl dyeingSlipService;
     @Autowired
     StockMastDao stockMastDao;
 
@@ -1124,5 +1127,15 @@ public class StockBatchServiceImpl {
         if(data==null)
             throw new Exception("no data found");
         return data;
+    }
+
+    public List<StockMast> getAllStockByPartyId(Long id) {
+        List<StockMast> list = stockMastDao.getAllStockByPartyId(id);
+        return list;
+    }
+
+    public List<StockMast> getStockByQualityEntryId(Long id) {
+        List<StockMast> list = stockMastDao.getAllStockByQualityId(id);
+        return list;
     }
 }

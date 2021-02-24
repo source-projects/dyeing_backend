@@ -165,4 +165,24 @@ public class QualityController extends ControllerConfig {
         return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping(value="/quality/{id}")
+    public GeneralResponse<Boolean> deleteQualityDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
+        GeneralResponse<Boolean> result;
+        try {
+            if (id != null) {
+                boolean flag = qualityServiceImp.deleteQualityById(id);
+                if (flag) {
+                    result =  new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                } else {
+                    result= new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                }
+            }
+            result= new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }catch (Exception e )
+        {
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
 }

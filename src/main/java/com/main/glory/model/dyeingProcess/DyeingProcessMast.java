@@ -34,11 +34,7 @@ public class DyeingProcessMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingProcessData> dyeingProcessData;
 
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "processId", referencedColumnName = "id")
-    private List<ShadeMast> shadeMastList;
+
 
     @PrePersist
     void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
