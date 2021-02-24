@@ -16,7 +16,7 @@ public interface DyeingProcessMastDao extends JpaRepository<DyeingProcessMast,Lo
     List<DyeingProcessMast> getAllProcess();
 
     @Query("select x from DyeingProcessMast x where x.id=:processId")
-    Optional<DyeingProcessMast> getDyeingProcessById(Long processId);
+    DyeingProcessMast getDyeingProcessById(Long processId);
 
 
     @Modifying

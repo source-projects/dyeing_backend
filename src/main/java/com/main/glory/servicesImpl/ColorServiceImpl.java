@@ -183,6 +183,8 @@ public class ColorServiceImpl implements ColorServicesInterface {
             throw new Exception("No such color data present with id:" + colorMast.getId());
         }
         colorMastDao.save(colorMast);
+        colorDataDao.deleteColorWhichIsNull();
+        colorBoxDao.deleteColorBoxWhichIsNUll();
         return true;
     }
 

@@ -52,4 +52,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
     @Transactional
     @Query("update SupplierRate s set s.supplierId=:supplierId where id=:itemId")
     void updateItemBySupplierIdAndItemId(Long supplierId, Long itemId);
+
+    @Query("delete from SupplierRate s where s.id=:key")
+    void deleteItemById(Long key);
 }

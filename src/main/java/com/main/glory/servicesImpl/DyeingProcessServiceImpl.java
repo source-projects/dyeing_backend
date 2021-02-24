@@ -53,11 +53,8 @@ public class DyeingProcessServiceImpl {
 
     public DyeingProcessMast getDyeingProcessById(Long processId) throws Exception {
 
-        Optional<DyeingProcessMast> x = dyeingProcessMastDao.getDyeingProcessById(processId);
-        if(x.isEmpty())
-            throw new Exception("no process data found");
-
-        return x.get();
+        DyeingProcessMast x = dyeingProcessMastDao.getDyeingProcessById(processId);
+        return x;
     }
 
     public List<DyeingProcessData> getDyeingProcessDataById(Long id) throws Exception {
@@ -75,17 +72,19 @@ public class DyeingProcessServiceImpl {
 
     public void updateDyeingProcess(DyeingProcessMast data) throws Exception {
 
-        Optional<DyeingProcessMast> dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
+        DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
 
-        if(dyeingProcessMastExist.isEmpty())
+        if(dyeingProcessMastExist==null)
         {
             throw new Exception("no proces found for id:"+data.getId());
         }
-        List<ShadeMast> getAllShade= shadeService.getAllShadeMastByProcessId(dyeingProcessMastExist.get().getId());
+        List<ShadeMast> getAllShade= shadeService.getAllShadeByProcessId(dyeingProcessMastExist.getId());
         DyeingProcessMast x = dyeingProcessMastDao.save(data);
-        for(ShadeMast s :getAllShade)
-        {
-           shadeService.updateShadeProcessId(s.getId(),x.getId());
+
+        if(!getAllShade.isEmpty()) {
+            for (ShadeMast s : getAllShade) {
+                shadeService.updateShadeProcessId(s.getId(), x.getId());
+            }
         }
 
 
@@ -94,9 +93,9 @@ public class DyeingProcessServiceImpl {
 
     public Boolean deleteByProcessId(Long id) throws Exception {
         Boolean flag=false;
-        Optional<DyeingProcessMast> dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(id);
+        DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(id);
 
-        if(dyeingProcessMastExist.isPresent())
+        if(dyeingProcessMastExist!=null)
         {
             flag=true;
             dyeingProcessMastDao.deleteByProcessId(id);
