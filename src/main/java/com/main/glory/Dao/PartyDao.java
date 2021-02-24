@@ -51,6 +51,10 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query("select p from Party p where LOWER(p.partyName)=LOWER(:partyName)")
     Party getPartyByName(String partyName);
 
+
+	@Query("select p from Party p where (:userId IS NULL OR p.createdBy=:userId) OR (:userHeadId IS NULL OR p.userHeadId = :userHeadId)")
+	List<Party> getAllPartiesByUserId(Long userId, Long userHeadId);
+
 //	@Modifying
 //	@Transactional
 //	@Query("drop database :dbname")
