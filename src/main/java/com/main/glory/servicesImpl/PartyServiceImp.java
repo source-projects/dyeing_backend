@@ -352,9 +352,11 @@ public class PartyServiceImp implements PartyServiceInterface {
 
             Permissions permissions = new Permissions(userPermission.getPa().intValue());
             if (permissions.getView()) {
-                userHeadId = userId;
+                userId = userId;
+                userHeadId=null;
             }
             if (permissions.getViewGroup()) {
+                userId=userData.getId();
                 userHeadId = userData.getUserHeadId();
             }
             if (permissions.getViewAll())
