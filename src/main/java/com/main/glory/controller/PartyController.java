@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import com.main.glory.config.ControllerConfig;
@@ -9,24 +10,28 @@ import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.main.glory.model.party.Party;
 import com.main.glory.servicesImpl.PartyServiceImp;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api")
-public class PartyController  extends ControllerConfig {
+public class PartyController extends ControllerConfig {
 
-	@Autowired 
+	@Autowired
 	private PartyServiceImp partyServiceImp;
-	
+
 	@PostMapping(value="/party")
-	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party)
+	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
 	{
 		try {
 		    partyServiceImp.saveParty(party);
+			System.out.println("har::"+headers.get("id"));
 			//System.out.println(id);
 			return new GeneralResponse<Boolean>(true, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 		}
@@ -88,9 +93,9 @@ public class PartyController  extends ControllerConfig {
 
 
 	@GetMapping(value="/party/allPartyWithName")
-	public GeneralResponse<List<PartyWithName>> getAllPartyName()
+	public GeneralResponse<List<PartyWithName>> getAllPartyName(@RequestHeader Map<String, String> headers)
 	{
-		List<PartyWithName> partyObject=partyServiceImp.getAllPartyNameWithId();
+		List<PartyWithName> partyObject=partyServiceImp.getAllPartyNameWithHeaderId(headers.get("id"));
 		if(!partyObject.isEmpty())
 		{
 			return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
