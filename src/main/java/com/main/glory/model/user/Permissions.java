@@ -18,6 +18,7 @@ public class Permissions {
 	Boolean editAll;
 	Boolean deleteGroup;
 	Boolean deleteAll;
+	//1111101010
 
 	public static String toBinary(int x, int len) {
 		if (len > 0) {
