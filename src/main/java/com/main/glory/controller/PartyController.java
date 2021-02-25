@@ -72,7 +72,8 @@ public class PartyController extends ControllerConfig {
 					return new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			return new GeneralResponse<List<Party>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			return new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		}
 	}
 

@@ -90,13 +90,13 @@ public class ProductionPlanImpl {
     }
 
     public Boolean deleteById(Long id) throws Exception {
-        Optional<ProductionPlan> productionPlan = productionPlanDao.findById(id);
-        if (productionPlan.isEmpty())
+       ProductionPlan productionPlan = productionPlanDao.getByProductionId(id);
+        if (productionPlan==null)
             return false;
 
-        if(productionPlan.get().getStatus()==true)
+        if(productionPlan.getStatus()==true)
         throw new Exception("production is already planned with Jet");
-        productionPlanDao.deleteById(id);
+        productionPlanDao.deleteProductionById(id);
         return true;
 
     }

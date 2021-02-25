@@ -134,7 +134,8 @@ public class StockBatchServiceImpl {
             }
             else
             {
-                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,userData.getUserHeadId());
+                UserData userOperator =userDao.getUserById(id);
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(userOperator.getUserHeadId(),userOperator.getUserHeadId());
             }
 
 

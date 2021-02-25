@@ -132,8 +132,9 @@ public class ColorServiceImpl implements ColorServicesInterface {
             }
             else
             {
-                //no operator
-                List<ColorMast> data = colorMastDao.getAllByCreatedByAndHeadId(id,userData.getUserHeadId());
+                UserData userOperator=userDao.getUserById(id);
+                // operator
+                List<ColorMast> data = colorMastDao.getAllByCreatedByAndHeadId(userOperator.getUserHeadId(),userOperator.getUserHeadId());
                 data.forEach(e -> {
                     try {
                         ColorMastDetails x = new ColorMastDetails(e);

@@ -96,7 +96,8 @@ public class QualityServiceImp implements QualityServiceInterface {
             }
             else
             {
-                qualityListobject = qualityDao.findAllWithPartyByCreatedAndHeadId(id,userData.getUserHeadId());
+                UserData userOperator = userDao.getUserById(id);
+                qualityListobject = qualityDao.findQualityByUserHeadId(userOperator.getUserHeadId());
                 modelMapper.getConfiguration().setAmbiguityIgnored(true);
                 quality = modelMapper.map(qualityListobject, List.class);
             }
@@ -327,11 +328,13 @@ public class QualityServiceImp implements QualityServiceInterface {
 
         UserPermission userPermission = userData.getUserPermissionData();
 
+        List<Quality> qualities = null;
         Permissions permissions = new Permissions(userPermission.getPa().intValue());
         if (permissions.getViewAll())
         {
             userId=null;
             userHeadId=null;
+            qualities = qualityDao.getAllQuality();
         }
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
@@ -340,6 +343,7 @@ public class QualityServiceImp implements QualityServiceInterface {
             {
                 userId=null;
                 userHeadId=null;
+                qualities=qualityDao.getAllQuality();
             }
             else if(userData.getUserHeadId() > 0)
             {
@@ -351,12 +355,14 @@ public class QualityServiceImp implements QualityServiceInterface {
                     //for master
                     userId=userData.getId();
                     userHeadId=userData.getId();
+                    qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
 
                 }
                 else {
                     //for operator
                     userId=userData.getId();
                     userHeadId=userData.getUserHeadId();
+                    qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
                 }
             }
 
@@ -364,10 +370,11 @@ public class QualityServiceImp implements QualityServiceInterface {
         else if (permissions.getView()) {
             userId = userData.getId();
             userHeadId=null;
+            qualities = qualityDao.getAllQualityCreatedBy(userId);
         }
 
 
-        List<Quality> qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
+
         List<GetAllQualtiy> getAllQualtiyList = new ArrayList<>();
         for (Quality quality : qualities) {
             Optional<Party> partyName = partyDao.findById(quality.getPartyId());

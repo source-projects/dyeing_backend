@@ -133,7 +133,8 @@ public class PartyServiceImp implements PartyServiceInterface {
                 partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,id);
             }
             else {
-                partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,userData.getUserHeadId());
+                UserData opratorUsr = userDao.getUserById(id);
+                partyDetailsList = partyDao.findByUserHeadId(opratorUsr.getUserHeadId());
             }
 
 
@@ -348,11 +349,13 @@ public class PartyServiceImp implements PartyServiceInterface {
 
             UserPermission userPermission = userData.getUserPermissionData();
 
+            List<Party> partyAll=null ;
             Permissions permissions = new Permissions(userPermission.getPa().intValue());
             if (permissions.getViewAll())
             {
                 userId=null;
                 userHeadId=null;
+                partyAll = partyDao.getAllParty();
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -361,6 +364,7 @@ public class PartyServiceImp implements PartyServiceInterface {
                 {
                     userId=null;
                     userHeadId=null;
+                    partyAll = partyDao.getAllParty();
                 }
                 else if(userData.getUserHeadId() > 0)
                 {
@@ -372,12 +376,14 @@ public class PartyServiceImp implements PartyServiceInterface {
                         //for master
                         userId=userData.getId();
                         userHeadId=userData.getId();
+                        partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
 
                     }
                     else {
                         //for operator
                         userId=userData.getId();
                         userHeadId=userData.getUserHeadId();
+                        partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
                     }
                 }
 
@@ -385,12 +391,14 @@ public class PartyServiceImp implements PartyServiceInterface {
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
+
+                partyAll=partyDao.getAllPartyByCreatedBy(userId);
             }
 
 
 
 
-            List<Party> partyAll = partyDao.getAllPartiesByUserId(userId,userHeadId);
+
 
             List<PartyWithName> partyWithNameList = new ArrayList<>();
             if (!partyAll.isEmpty()) {
@@ -407,4 +415,6 @@ public class PartyServiceImp implements PartyServiceInterface {
         }
         return null;
     }
+
+
 }
