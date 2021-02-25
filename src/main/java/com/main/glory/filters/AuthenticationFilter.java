@@ -66,15 +66,15 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		/*if( path.startsWith("login")  || request.getRequestURI().contains("/swagger-ui.html")){
+		if( path.startsWith("login")  || request.getRequestURI().contains("/swagger-ui.html")){
 			chain.doFilter(request, response);
 			return;
-		}*/
+		}
 
 		final String authorizationHeader = request.getHeader("Authorization");
 
-		if(authorizationHeader==null)
-			chain.doFilter(request, response);
+		/*if(authorizationHeader==null)
+			chain.doFilter(request, response);*/
 
 		String id = null;
 		String jwt = null;
