@@ -58,7 +58,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if( path.startsWith("login")  || request.getRequestURI().startsWith("swagger-ui.html")){
+		if( path.startsWith("login")  || request.getRequestURI().contains("/swagger-ui.html")){
 			chain.doFilter(request, response);
 			return;
 		}
