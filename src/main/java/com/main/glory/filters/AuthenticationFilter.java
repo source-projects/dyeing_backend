@@ -45,11 +45,20 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 		try{
 
-			// for swagger turn off the guards
-// 			if(true || !request.getRequestURI().startsWith("/api")){
-// 				chain.doFilter(request, response);
-// 				return;
-// 			}
+
+
+			/*// for swagger turn off the guards
+			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+				chain.doFilter(request, response);
+				return;
+			}*/
+
+
+			/*if(true || !request.getRequestURI().startsWith("/api")){
+				chain.doFilter(request, response);
+				return;
+			}
+*/
 
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
@@ -64,6 +73,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		final String authorizationHeader = request.getHeader("Authorization");
+
+		if(authorizationHeader==null)
+			chain.doFilter(request, response);
 
 		String id = null;
 		String jwt = null;
@@ -102,20 +114,26 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 						if(method.equals("GET")){
 							if(path.contains("all"))
 							{
-								if(!permissions.getViewAll() && path.contains("all"))
+								if(path.contains("own"))
 								{
-									throw new Exception("Unauthorized user");
+									if(!permissions.getView())
+										throw new Exception("Unauthorized user");
 								}
-								else if(!permissions.getView() && path.contains("own"))
+								else if(path.contains("group"))
 								{
-									throw new Exception("Unauthorized user");
+									if(!permissions.getViewGroup())
+										throw new Exception("Unauthorized user");
 								}
-								else if(!permissions.getViewGroup() && path.contains("group"))
+								else if(path.contains("all"))
 								{
-									throw new Exception("Unauthorized user");
+									if(!permissions.getViewAll())
+										throw new Exception("Unauthorized user");
 								}
 
+
+
 							}
+							break;
 
 						}
 						else if(method.equals("POST")){
