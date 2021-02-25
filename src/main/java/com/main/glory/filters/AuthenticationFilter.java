@@ -53,11 +53,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			}*/
 
 
+
 			/*if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
-			}*/
-
+			}
+*/
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
@@ -65,10 +66,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if( path.startsWith("login")  || request.getRequestURI().contains("/swagger-ui.html")){
+		/*if( path.startsWith("login")  || request.getRequestURI().contains("/swagger-ui.html")){
 			chain.doFilter(request, response);
 			return;
-		}
+		}*/
 
 		final String authorizationHeader = request.getHeader("Authorization");
 
