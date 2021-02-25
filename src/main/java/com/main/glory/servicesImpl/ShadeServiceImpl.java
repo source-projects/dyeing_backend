@@ -292,7 +292,8 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			}
 			else
 			{
-				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,userData.getUserHeadId());
+				UserData userOperator=userDao.getUserById(id);
+				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(userOperator.getUserHeadId(),userOperator.getUserHeadId());
 				for (ShadeMast e : shadeMastList) {
 
 					if(e.getPartyId()!=null && e.getQualityEntryId()!=null)

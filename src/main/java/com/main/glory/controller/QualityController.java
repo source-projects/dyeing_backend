@@ -125,7 +125,6 @@ public class QualityController extends ControllerConfig {
 
         try {
 
-
             List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityDataWithHeaderId(headers.get("id"));
             if (qualityData == null) {
                 return new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);

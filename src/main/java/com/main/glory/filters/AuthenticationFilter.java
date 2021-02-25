@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -45,8 +46,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 		try{
 
-
-
 			/*// for swagger turn off the guards
 			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
@@ -57,8 +56,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			/*if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
-			}
-*/
+			}*/
 
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
@@ -86,8 +84,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				// request.id = id;
 				//response
 
-				response.addHeader("userHead",id);
-				System.out.println("setheader:"+id);
+//				response.addHeader("userHead",id);
+//				System.out.println("setheader:"+id);
 
 				Claims claims = jwtUtil.extractAllClaims(jwt);
 				Map userPermissions = (Map) claims.get("permissions", Object.class);
@@ -106,13 +104,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 					//getValue="moduleName" getKey="annottion"
 					if(path.contains(entry.getValue()))
 					{
+						String[] pathArray = path.split("/");
 						pathFlag=true;
 						//if path contain then add check for that path
 						Integer code = (Integer) userPermissions.get(entry.getKey());
 						Permissions permissions = new Permissions(code);
 						System.out.println(permissions);
 						if(method.equals("GET")){
-							if(path.contains("all"))
+							if(Arrays.asList(pathArray).contains("all"))
 							{
 								if(path.contains("own"))
 								{
@@ -129,12 +128,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 									if(!permissions.getViewAll())
 										throw new Exception("Unauthorized user");
 								}
-
-
-
 							}
 							break;
-
 						}
 						else if(method.equals("POST")){
 							if(!permissions.getAdd()){
