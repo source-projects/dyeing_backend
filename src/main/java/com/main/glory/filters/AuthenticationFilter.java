@@ -58,11 +58,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		/*if(path.startsWith("user") || path.startsWith("login") || path.contains("admin") || path.contains("db")){
+		if( path.startsWith("login")){
 			chain.doFilter(request, response);
 			return;
 		}
-*/
+
 		final String authorizationHeader = request.getHeader("Authorization");
 
 		String id = null;
@@ -158,9 +158,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 
-// 			if(id == null){
-// 				throw new Exception("No JWT found");
-// 			}
+			if(id == null){
+				throw new Exception("No JWT found");
+			}
 
 			chain.doFilter(request, response);
 		} catch(Exception e){
