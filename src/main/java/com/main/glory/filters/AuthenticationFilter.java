@@ -45,7 +45,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 		try{
 
-			// for swagger turn off the guards
+
+			/*// for swagger turn off the guards
+			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+				chain.doFilter(request, response);
+				return;
+			}*/
+
+
 			if(true || !request.getRequestURI().startsWith("/api")){
 				chain.doFilter(request, response);
 				return;
@@ -64,6 +71,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		}
 */
 		final String authorizationHeader = request.getHeader("Authorization");
+
+		if(authorizationHeader==null)
+			chain.doFilter(request, response);
 
 		String id = null;
 		String jwt = null;
