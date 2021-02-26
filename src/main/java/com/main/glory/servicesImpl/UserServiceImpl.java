@@ -2,27 +2,20 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.designation.Designation;
-import com.main.glory.model.quality.Quality;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
-import com.main.glory.model.user.UserPermission;
 import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.services.UserServiceInterface;
 
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,15 +87,28 @@ public class UserServiceImpl implements UserServiceInterface {
         return userDao.findByUserNameAndPassword(userName, password);
     }
 
-    public List<getAllUserInfo> getAllHeadUser() throws Exception {
+    public List<getAllUserInfo> getAllHeadUser(String id) throws Exception {
 
-
-        List<UserData> list =userDao.getAllUserHeadList();
         List<getAllUserInfo> userHeads =new ArrayList<>();
-        for(UserData e : list)
+        //identify the user is master/admin/operator
+        UserData userData = userDao.getUserById(Long.parseLong(id));
+        if(userData.getUserHeadId()==0)
         {
-            userHeads.add(new getAllUserInfo(e));
+            List<UserData> list =userDao.getAllUserHeadList();
+
+            for(UserData e : list)
+            {
+                userHeads.add(new getAllUserInfo(e));
+            }
+
         }
+        else if(userData.getUserHeadId()>0)
+        {
+            //master and operator get only master detail
+            userHeads.add(new getAllUserInfo(userData));
+
+        }
+
         if(userHeads.isEmpty())
             throw new Exception("no user head found");
 

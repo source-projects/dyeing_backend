@@ -3,7 +3,6 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.party.Party;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
@@ -19,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -61,10 +61,10 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/userHead")
-    public GeneralResponse<List<getAllUserInfo>> getAllHead()
+    public GeneralResponse<List<getAllUserInfo>> getAllHead(@RequestHeader Map<String, String> headers)
     {
         try {
-            var data = userService.getAllHeadUser();
+            var data = userService.getAllHeadUser(headers.get("id"));
             if (data != null) {
                 return new GeneralResponse<>(data, "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
@@ -77,12 +77,12 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/user/AllUsers/{getBy}/{id}")
-    public GeneralResponse<List<getAllUserInfo>> getAllUser(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id)
+    public GeneralResponse<List<getAllUserInfo>> getAllUser(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id,@RequestHeader Map<String, String> headers)
     {   List<getAllUserInfo> users = null;
         try{
             switch (getBy) {
                 case "own":
-                    if(userService.getAllHeadUser()!=null) {
+                    if(userService.getAllHeadUser(headers.get("id"))!=null) {
                         users = userService.getAllUser(getBy, id);
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -93,7 +93,7 @@ public class UserController extends ControllerConfig {
                         return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "group":
-                    if(userService.getAllHeadUser()!=null) {
+                    if(userService.getAllHeadUser(headers.get("id"))!=null) {
                         users = userService.getAllUser(getBy, id);
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -104,7 +104,7 @@ public class UserController extends ControllerConfig {
                         return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
                 case "all":
-                    if(userService.getAllHeadUser()!=null) {
+                    if(userService.getAllHeadUser(headers.get("id"))!=null) {
                         users = userService.getAllUser(null, null);
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
