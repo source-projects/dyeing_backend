@@ -63,13 +63,16 @@ public class UserController extends ControllerConfig {
     @GetMapping("/userHead")
     public GeneralResponse<List<getAllUserInfo>> getAllHead()
     {
-        var data = userService.getAllHeadUser();
-        if(data!=null) {
-            return new GeneralResponse<>(data, "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-        }
-        else
+        try {
+            var data = userService.getAllHeadUser();
+            if (data != null) {
+                return new GeneralResponse<>(data, "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                return new GeneralResponse<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e)
         {
-            return new GeneralResponse<>(null, "User Head Not Available ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            return new GeneralResponse<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -206,7 +209,7 @@ public class UserController extends ControllerConfig {
 
 
             UserIdentification userIdentification = userService.getUserHeadDetail(id);
-            response= new GeneralResponse<>(userIdentification, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            response= new GeneralResponse<>(userIdentification, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch (Exception e)

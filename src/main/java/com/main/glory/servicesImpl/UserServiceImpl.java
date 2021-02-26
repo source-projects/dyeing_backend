@@ -66,7 +66,21 @@ public class UserServiceImpl implements UserServiceInterface {
             userData.setDesignationId(designationData.get());
             //System.out.println(userData.toString());
 
-            userDao.saveAndFlush(userData);
+
+
+            Long id  = userData.getCreatedBy();
+            UserData x = userDao.saveAndFlush(userData);
+
+            //identify the user recently added was master or operator
+            UserData user = userDao.getUserById(x.getUserHeadId());
+            if(user.getUserHeadId()==0)
+            {
+                //master
+                userDao.updateUserHeadId(x.getId(),x.getId());
+            }
+
+
+
 
 
         } else {
@@ -80,19 +94,19 @@ public class UserServiceImpl implements UserServiceInterface {
         return userDao.findByUserNameAndPassword(userName, password);
     }
 
-    public List<getAllUserInfo> getAllHeadUser() {
-        List<UserData> adminList = userDao.findByUserHeadId(0l);
-        List<getAllUserInfo> userHeads = new ArrayList<>();
+    public List<getAllUserInfo> getAllHeadUser() throws Exception {
 
-        for (UserData e : adminList) {
-            //userHeads.add(modelMapper.map(e, getAllUserInfo.class));
-            List<UserData> users = userDao.findByUserHeadId(e.getId());
-            for (UserData ex : users) {
-                getAllUserInfo userData = modelMapper.map(ex, getAllUserInfo.class);
-                System.out.println(userData.getUserHeadId());
-                userHeads.add(userData);
-            }
+
+        List<UserData> list =userDao.getAllUserHeadList();
+        List<getAllUserInfo> userHeads =new ArrayList<>();
+        for(UserData e : list)
+        {
+            userHeads.add(new getAllUserInfo(e));
         }
+        if(userHeads.isEmpty())
+            throw new Exception("no user head found");
+
+
         return userHeads;
     }
 
