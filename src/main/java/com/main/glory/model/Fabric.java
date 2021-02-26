@@ -1,6 +1,6 @@
 package com.main.glory.model;
 
-import io.swagger.annotations.ApiModelProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ import javax.persistence.*;
 public class Fabric {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@ApiModelProperty(hidden = true)
+//	@ApiModelProperty(hidden = true)
 	private Long id;
 	private Long stockId;
 	private String stockInType;

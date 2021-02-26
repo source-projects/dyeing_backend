@@ -2,7 +2,6 @@ package com.main.glory.model.paymentTerm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dispatch.DispatchMast;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,13 +23,13 @@ public class PaymentType {
     Long id;
     String paymentType;
 
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "payTypeId", referencedColumnName = "id")
     private List<PaymentData> paymentData;
 
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "payTypeId", referencedColumnName = "id")

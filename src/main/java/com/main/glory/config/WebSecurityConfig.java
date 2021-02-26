@@ -40,27 +40,20 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
+
 	}
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable()
-				.authorizeRequests().antMatchers("/**"//,
-//				"sign-up",
-//				"/mobilenumbers/**",
-//				"/insert-details",
-//				"/refresh-access-token",
-//				"/v2/api-docs",
-//				"/configuration/ui",
-//				"/swagger-resources/**",
-//				"/configuration/security",
-//				"/swagger-ui.html",
-//				"/webjars/**"
-		)
-				.permitAll().
-				anyRequest().authenticated().and().
-				exceptionHandling().and().sessionManagement()
+				.authorizeRequests().
+				antMatchers("/swagger-ui/**").permitAll()
+				.antMatchers("/v3/api-docs", "/v3/api-docs.yaml", "/v3/api-docs/swagger-config", "/configuration/*", "/swagger/*", "/webjars/*").permitAll().
+				anyRequest().authenticated()
+				.and()
+				.exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 		httpSecurity.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		httpSecurity.cors();//for cors origin

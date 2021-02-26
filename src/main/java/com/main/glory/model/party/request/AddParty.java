@@ -1,7 +1,6 @@
 package com.main.glory.model.party.request;
 
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

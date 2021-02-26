@@ -1,6 +1,6 @@
 package com.main.glory.model.testing;
 
-import io.swagger.annotations.ApiModelProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

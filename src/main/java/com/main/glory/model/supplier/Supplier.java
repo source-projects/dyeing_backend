@@ -2,7 +2,7 @@ package com.main.glory.model.supplier;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModelProperty;
+//import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,16 +23,16 @@ import java.util.List;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     Long id;
     String supplierName;
     Double discountPercentage;
     Double gstPercentage;
     String remark;
     Long createdBy;
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     Date createdDate;
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     Date updatedDate;
     Long paymentTerms;
     Long updatedBy;
@@ -40,7 +40,7 @@ public class Supplier {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 
     public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, String remark, Long createdBy, Date createdDate, Date updatedDate, Long paymentTerms, Long updatedBy, Long userHeadId) {

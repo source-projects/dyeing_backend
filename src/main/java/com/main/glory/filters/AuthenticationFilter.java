@@ -29,138 +29,112 @@ import java.util.Map;
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private UserServiceImpl userService;
+    @Autowired
+    private UserServiceImpl userService;
 
-	@Autowired
-	private JwtUtil jwtUtil;
-
-	@SneakyThrows
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			{
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
-		String path = "";
-		String method = "";
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException,IOException {
 
-		try{
-
-			/*// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
-				chain.doFilter(request, response);
-				return;
-			}*/
-
-
-
-			/*if(true || !request.getRequestURI().startsWith("/api")){
-				chain.doFilter(request, response);
-				return;
-			}
-*/
-			path = request.getRequestURI().substring(5);
-			System.out.println(path);
-			method = request.getMethod();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if( path.startsWith("login")  || request.getRequestURI().contains("/swagger-ui.html")){
-			chain.doFilter(request, response);
-			return;
-		}
+        UserData userData = null;
+        String jwt = null;
+        String path = null;
+        String method = null;
+		String userId=null;
 
 		final String authorizationHeader = request.getHeader("Authorization");
 
-		/*if(authorizationHeader==null)
-			chain.doFilter(request, response);*/
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7);
+            try {
+                userId = jwtUtil.extractUsername(jwt);
+                userData = userService.getUserById(Long.parseLong(userId));
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(403, e.getMessage());
+            }
+        } else {
+           logger.error("no jwt found");
+        }
 
-		String id = null;
-		String jwt = null;
-		try {
-			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-				jwt = authorizationHeader.substring(7);
-				id = jwtUtil.extractUsername(jwt);
-				// request.id = id;
-				//response
 
-//				response.addHeader("userHead",id);
-//				System.out.println("setheader:"+id);
+        if (userData != null) {
 
-				Claims claims = jwtUtil.extractAllClaims(jwt);
-				Map userPermissions = (Map) claims.get("permissions", Object.class);
+            path = request.getRequestURI().substring(5);
+//			System.out.println(path);
+            method = request.getMethod();
+			Claims claims = null;
+			try {
+				claims = jwtUtil.extractAllClaims(jwt);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Map userPermissions = (Map) claims.get("permissions", Object.class);
 
-				System.out.println(path+"-"+method);
+				/*System.out.println(path+"-"+method);
 				System.out.println(userPermissions);
 
-				System.out.println(path);
+				System.out.println(path);*/
 
-				Boolean pathFlag=false;
-				//first find the request contain which page request
-				MappingPermission mappingPermission=new MappingPermission();
-				//Map<String,String> stringPath = mappingPermission.getMapping();
-				for (Map.Entry<String,String> entry : mappingPermission.getMapping().entrySet()) {
+            Boolean pathFlag = false;
+            //first find the request contain which page request
+            MappingPermission mappingPermission = new MappingPermission();
+            //Map<String,String> stringPath = mappingPermission.getMapping();
+            for (Map.Entry<String, String> entry : mappingPermission.getMapping().entrySet()) {
 
-					//getValue="moduleName" getKey="annottion"
-					if(path.contains(entry.getValue()))
-					{
-						String[] pathArray = path.split("/");
-						pathFlag=true;
-						//if path contain then add check for that path
-						Integer code = (Integer) userPermissions.get(entry.getKey());
-						Permissions permissions = new Permissions(code);
-						System.out.println(permissions);
-						if(method.equals("GET")){
-							if(Arrays.asList(pathArray).contains("all"))
-							{
-								if(path.contains("own"))
-								{
-									if(!permissions.getView())
+                //getValue="moduleName" getKey="annottion"
+                if (path.contains(entry.getValue())) {
+					String[] pathArray = path.split("/");
+					pathFlag = true;
+					//if path contain then add check for that path
+					Integer code = (Integer) userPermissions.get(entry.getKey());
+					Permissions permissions = new Permissions(code);
+					System.out.println(permissions);
+
+					try {
+						if (method.equals("GET")) {
+							if (Arrays.asList(pathArray).contains("all")) {
+								if (path.contains("own")) {
+									if (!permissions.getView())
 										throw new Exception("Unauthorized user");
-								}
-								else if(path.contains("group"))
-								{
-									if(!permissions.getViewGroup())
+								} else if (path.contains("group")) {
+									if (!permissions.getViewGroup())
 										throw new Exception("Unauthorized user");
-								}
-								else if(path.contains("all"))
-								{
-									if(!permissions.getViewAll())
+								} else if (path.contains("all")) {
+									if (!permissions.getViewAll())
 										throw new Exception("Unauthorized user");
 								}
 							}
 							break;
-						}
-						else if(method.equals("POST")){
-							if(!permissions.getAdd()){
+						} else if (method.equals("POST")) {
+							if (!permissions.getAdd()) {
+								throw new Exception("Unauthorized user");
+							}
+						} else if (method.equals("PUT")) {
+							if (!permissions.getEdit() || !permissions.getEditAll()) {
+								throw new Exception("Unauthorized user");
+							}
+						} else if (method.equals("DELETE")) {
+							if (!permissions.getDelete() || !permissions.getDeleteAll()) {
 								throw new Exception("Unauthorized user");
 							}
 						}
-						else if(method.equals("PUT")){
-							if(!permissions.getEdit() || !permissions.getEditAll()){
-								throw new Exception("Unauthorized user");
-							}
-						}
-						else if(method.equals("DELETE")){
-							if(!permissions.getDelete() || !permissions.getDeleteAll()){
-								throw new Exception("Unauthorized user");
-							}
-						}
-					}
 
+					}catch (Exception e)
+					{
+						e.printStackTrace();
+					}
 				}
 
+            }
 
-				//for unrelated page request
-				/*if(pathFlag==false)
-					response.sendError(404,"page not found");*/
+//            if(jwtUtil.validateToken(jwt,userData.getUserName(),))
 
-			}
-
-			//System.out.println(SecurityContextHolder.getContext().getAuthentication());
-			if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-				UserData userDetails = userService.getUserById(Long.parseLong(id));
+			if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+				UserData userDetails = userService.getUserById(Long.parseLong(userId));
 				//System.out.println(userDetails);
 				if (userDetails != null && jwtUtil.validateToken(jwt, userDetails, System.currentTimeMillis())) {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -172,15 +146,157 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 
-			if(id == null){
-				throw new Exception("No JWT found");
-			}
+        }
+		chain.doFilter(request, response);
+    }
 
-			chain.doFilter(request, response);
-		} catch(Exception e){
-			e.printStackTrace();
-			response.sendError(403,e.getMessage());
-		}
-	}
+
+
+//
+//		String path = "";
+//		String method = "";
+//
+//		try{
+//
+//			/*// for swagger turn off the guards
+//			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+//				chain.doFilter(request, response);
+//				return;
+//			}*/
+//
+//
+//
+//			/*if(true || !request.getRequestURI().startsWith("/api")){
+//				chain.doFilter(request, response);
+//				return;
+//			}
+//*/
+//			path = request.getRequestURI().substring(5);
+//			System.out.println(path);
+//			method = request.getMethod();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		if( path.startsWith("login")  || request.getRequestURI().contains("ger-ui.html") || request.getRequestURI().contains("con.ico\n")) {
+//			chain.doFilter(request, response);
+//			return;
+//		}
+//
+//		final String authorizationHeader = request.getHeader("Authorization");
+//
+//		/*if(authorizationHeader==null)
+//			chain.doFilter(request, response);*/
+//
+//		String id = null;
+//		String jwt = null;
+//		try {
+
+//			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//				jwt = authorizationHeader.substring(7);
+//				id = jwtUtil.extractUsername(jwt);
+//				// request.id = id;
+//				//response
+//
+////				response.addHeader("userHead",id);
+////				System.out.println("setheader:"+id);
+//
+//				Claims claims = jwtUtil.extractAllClaims(jwt);
+//				Map userPermissions = (Map) claims.get("permissions", Object.class);
+//
+//				System.out.println(path+"-"+method);
+//				System.out.println(userPermissions);
+//
+//				System.out.println(path);
+//
+//				Boolean pathFlag=false;
+//				//first find the request contain which page request
+//				MappingPermission mappingPermission=new MappingPermission();
+//				//Map<String,String> stringPath = mappingPermission.getMapping();
+//				for (Map.Entry<String,String> entry : mappingPermission.getMapping().entrySet()) {
+//
+//					//getValue="moduleName" getKey="annottion"
+//					if(path.contains(entry.getValue()))
+//					{
+//						String[] pathArray = path.split("/");
+//						pathFlag=true;
+//						//if path contain then add check for that path
+//						Integer code = (Integer) userPermissions.get(entry.getKey());
+//						Permissions permissions = new Permissions(code);
+//						System.out.println(permissions);
+//						if(method.equals("GET")){
+//							if(Arrays.asList(pathArray).contains("all"))
+//							{
+//								if(path.contains("own"))
+//								{
+//									if(!permissions.getView())
+//										throw new Exception("Unauthorized user");
+//								}
+//								else if(path.contains("group"))
+//								{
+//									if(!permissions.getViewGroup())
+//										throw new Exception("Unauthorized user");
+//								}
+//								else if(path.contains("all"))
+//								{
+//									if(!permissions.getViewAll())
+//										throw new Exception("Unauthorized user");
+//								}
+//							}
+//							break;
+//						}
+//						else if(method.equals("POST")){
+//							if(!permissions.getAdd()){
+//								throw new Exception("Unauthorized user");
+//							}
+//						}
+//						else if(method.equals("PUT")){
+//							if(!permissions.getEdit() || !permissions.getEditAll()){
+//								throw new Exception("Unauthorized user");
+//							}
+//						}
+//						else if(method.equals("DELETE")){
+//							if(!permissions.getDelete() || !permissions.getDeleteAll()){
+//								throw new Exception("Unauthorized user");
+//							}
+//						}
+//					}
+//
+//				}
+//
+//
+//				//for unrelated page request
+//				/*if(pathFlag==false)
+//					response.sendError(404,"page not found");*/
+//
+//			}
+//
+
+
+
+//			//System.out.println(SecurityContextHolder.getContext().getAuthentication());
+//			if (id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//				UserData userDetails = userService.getUserById(Long.parseLong(id));
+//				//System.out.println(userDetails);
+//				if (userDetails != null && jwtUtil.validateToken(jwt, userDetails, System.currentTimeMillis())) {
+//					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+//							userDetails, null, new ArrayList<>());
+//					usernamePasswordAuthenticationToken
+//							.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+////					response.setHeader("accessToken", jwtUtil.generateToken(userDetails,otp));
+//				}
+//			}
+//
+//			if(id == null){
+//				throw new Exception("No JWT found");
+//			}
+//
+//			chain.doFilter(request, response);
+//		} catch(Exception e){
+//			e.printStackTrace();
+//			response.sendError(403,e.getMessage());
+//		}
+//	}
 
 }

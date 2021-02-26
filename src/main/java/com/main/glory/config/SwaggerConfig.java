@@ -1,3 +1,4 @@
+/*
 package com.main.glory.config;
 
 import org.springframework.context.annotation.Bean;
@@ -29,4 +30,4 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2);
     }
 
-}
+}*/

@@ -2,7 +2,6 @@ package com.main.glory.model.admin;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +24,7 @@ public class ApprovedBy {
     String email;
 
 
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "approvedId", referencedColumnName = "id")
