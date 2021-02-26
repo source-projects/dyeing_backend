@@ -9,6 +9,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
+import com.main.glory.model.party.request.PartyWithUserHeadName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -78,15 +79,15 @@ public class PartyController extends ControllerConfig {
 	}
 
 	@GetMapping(value="/party/{id}")
-	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
+	public GeneralResponse<PartyWithUserHeadName> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
            if(id!=null)
 		   {
-			   Party partyObject=partyServiceImp.getPartyDetailById(id);
+			   PartyWithUserHeadName partyObject=partyServiceImp.getPartyDetailById(id);
 			   if(partyObject!=null)
 			   {
-			   	    return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			   	    return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			   }
-			   return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			   return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		   }
            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}

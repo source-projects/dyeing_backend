@@ -21,6 +21,7 @@ import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
+import com.main.glory.model.party.request.PartyWithUserHeadName;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -148,12 +149,12 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
     @Override
-    public Party getPartyDetailById(Long id) throws Exception {
-        var partyData = partyDao.findById(id);
-        if (partyData.isEmpty())
+    public PartyWithUserHeadName getPartyDetailById(Long id) throws Exception {
+        var partyData = partyDao.findPartyWithUserHeadById(id);
+        if (partyData==null)
             throw new Exception("no data found");
         else
-            return partyData.get();
+            return partyData;
     }
 
     @Override
