@@ -65,6 +65,13 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query("select new com.main.glory.model.party.request.PartyWithUserHeadName(p,(select u.firstName from UserData u where u.id=p.userHeadId )) from Party p where p.id = :id")
 	PartyWithUserHeadName findPartyWithUserHeadById(Long id);
 
+	@Query("select p from Party p where LOWER(p.partyName)=LOWER(:name) AND p.id!=:id")
+    Party getPartyByNameExceptId(String name, Long id);
+
+
+	@Query("select p from Party p where p.partyCode=:partyCode AND p.id!=:id")
+	Party findByPartyCodeExceptId(String partyCode, Long id);
+
 //	@Modifying
 //	@Transactional
 //	@Query("drop database :dbname")

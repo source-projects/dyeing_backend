@@ -43,20 +43,20 @@ public class PartyController extends ControllerConfig {
 		}
 	}
 
-	@GetMapping(value="/party/isPartyNameIsExist/{name}")
-	public GeneralResponse<Boolean> isPartyNameIsExist(@PathVariable(name = "name") String name)
+	@GetMapping(value="/party/isPartyNameIsExist/{name}/{id}")
+	public GeneralResponse<Boolean> isPartyNameIsExist(@PathVariable(name = "name") String name,@PathVariable(name="id")Long id)
 	{
 		GeneralResponse<Boolean> response;
 		try {
-			Boolean flag = partyServiceImp.isPartyNameIsExist(name);
+			Boolean flag = partyServiceImp.isPartyNameIsExist(name,id);
 
 			if(flag)
 			{
-				response = new GeneralResponse<>(false, "name is not exist", false, System.currentTimeMillis(), HttpStatus.OK);
+				response = new GeneralResponse<>(false, "name not found", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 			else
 			{
-				response = new GeneralResponse<>(true, "name is exist", true, System.currentTimeMillis(), HttpStatus.OK);
+				response = new GeneralResponse<>(true, "name found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}
 
 
@@ -132,19 +132,19 @@ public class PartyController extends ControllerConfig {
 		return new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 	}
 
-	@GetMapping(value="/party/partyCodeExist/{partyCode}")
-	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode)
+	@GetMapping(value="/party/partyCodeExist/{partyCode}/{id}")
+	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode,@PathVariable(name="id") Long id)
 	{
 		if(partyCode==null)
 		{
 			return new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 
-		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode);
+		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode,id);
 		if(partyCodeExistOrNot==true)
-			return new GeneralResponse<>(true, "Party code is available to use ", true, System.currentTimeMillis(), HttpStatus.OK);
+			return new GeneralResponse<>(true, "Party code not found ", true, System.currentTimeMillis(), HttpStatus.OK);
 		else
-		return new GeneralResponse<>(false, "Party code is already exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
+		return new GeneralResponse<>(false, "Party code found", false, System.currentTimeMillis(), HttpStatus.FOUND);
 	}
 
 	@PutMapping(value="/party")
