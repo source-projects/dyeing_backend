@@ -23,4 +23,7 @@ public interface DyeingProcessMastDao extends JpaRepository<DyeingProcessMast,Lo
     @Transactional
     @Query("delete from DyeingProcessMast d where d.id=:id")
     void deleteByProcessId(Long id);
+
+    @Query("select d from DyeingProcessMast d where d.processName=:processName")
+    DyeingProcessMast getDyeingProcessByName(String processName);
 }
