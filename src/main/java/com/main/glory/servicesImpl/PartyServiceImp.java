@@ -417,4 +417,13 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
 
+    public Boolean isPartyNameIsExist(String name) {
+        Party party= partyDao.getPartyByName(name);
+        if(party==null)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 }

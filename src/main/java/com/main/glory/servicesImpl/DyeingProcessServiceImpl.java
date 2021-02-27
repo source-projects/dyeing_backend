@@ -124,4 +124,12 @@ public class DyeingProcessServiceImpl {
         List<DyeingChemicalData> chemicalList = dyeingChemicalDataDao.getChemicalDataByItemId(id);
         return chemicalList;
     }
+
+    public Boolean dyeingProcessExistWithName(String name) {
+        DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.getDyeingProcessByName(name);
+        if(dyeingProcessMast==null)
+            return true;
+        else
+            return false;
+    }
 }

@@ -54,11 +54,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 
 
-			/*if(true || !request.getRequestURI().startsWith("/api")){
+			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
 			}
-*/
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
