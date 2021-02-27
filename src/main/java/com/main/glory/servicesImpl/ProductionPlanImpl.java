@@ -12,6 +12,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +97,13 @@ public class ProductionPlanImpl {
 
         if(productionPlan.getStatus()==true)
         throw new Exception("production is already planned with Jet");
+
+        //change the status of batch if all the condition are
+        List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+        for(BatchData batchData: batchDataList)
+        {
+            batchDao.updateProductionPlanned(batchData.getId(),false);
+        }
         productionPlanDao.deleteProductionById(id);
         return true;
 

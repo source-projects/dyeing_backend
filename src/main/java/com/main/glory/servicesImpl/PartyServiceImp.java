@@ -72,7 +72,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party != null) {
             Party partyData = new Party(party);
 
-            if (party.getGSTIN().isEmpty()) {
+            if (party.getGSTIN()==null || party.getGSTIN().isEmpty()) {
 
                 if (party.getPartyCode().length() > 4)
                     throw new Exception("Party code should not be greater than 4 digit");
@@ -87,10 +87,9 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception("Party is availble with code:" + party.getPartyCode());
 
                 //check the partyname exist
-/*
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if(partyExistWithName!=null)
-                    throw new Exception("party name is already exist");*/
+                    throw new Exception("party name is already exist");
 
                 partyDao.save(partyData);
                 return;
@@ -111,9 +110,9 @@ public class PartyServiceImp implements PartyServiceInterface {
 
                 //check the partyname exist
 
-               /* Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
+                Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if (partyExistWithName == null)
-                    throw new Exception("party name is already exist");*/
+                    throw new Exception("party name is already exist");
 
                 partyDao.save(partyData);
 
@@ -418,4 +417,13 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
 
+    public Boolean isPartyNameIsExist(String name) {
+        Party party= partyDao.getPartyByName(name);
+        if(party==null)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 }

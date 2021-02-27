@@ -458,4 +458,9 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	public List<ShadeMast> getAllShadeByProcessId(Long id) {
 		return shadeMastDao.getAllShadeByProcessId(id);
 	}
+
+	public List<ShadeMast> getAllShadeMastByProcessIdForDeleteProcess(Long id) {
+		List<ShadeMast> list = shadeMastDao.getAllShadeByProcessId(id);
+		return list;
+	}
 }

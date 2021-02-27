@@ -42,6 +42,32 @@ public class PartyController extends ControllerConfig {
 			return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@GetMapping(value="/party/isPartyNameIsExist/{name}")
+	public GeneralResponse<Boolean> isPartyNameIsExist(@PathVariable(name = "name") String name)
+	{
+		GeneralResponse<Boolean> response;
+		try {
+			Boolean flag = partyServiceImp.isPartyNameIsExist(name);
+
+			if(flag)
+			{
+				response = new GeneralResponse<>(false, "name is not exist", false, System.currentTimeMillis(), HttpStatus.OK);
+			}
+			else
+			{
+				response = new GeneralResponse<>(true, "name is exist", true, System.currentTimeMillis(), HttpStatus.OK);
+			}
+
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			response=  new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
+		return response;
+	}
 	
 	@GetMapping(value="/party/all/{getBy}/{id}")
 	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy)
