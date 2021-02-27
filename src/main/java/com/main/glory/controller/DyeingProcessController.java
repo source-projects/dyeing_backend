@@ -86,7 +86,7 @@ public class DyeingProcessController extends ControllerConfig{
         try{
 
             if(name==null)
-                throw new Exception("id can't be null");
+                throw new Exception("name can't be null");
 
             Boolean data = dyeingProcessService.dyeingProcessExistWithName(name,id);
             if(data){

@@ -135,10 +135,6 @@ public class PartyController extends ControllerConfig {
 	@GetMapping(value="/party/partyCodeExist/{partyCode}/{id}")
 	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode,@PathVariable(name="id") Long id)
 	{
-		if(partyCode==null)
-		{
-			return new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-		}
 
 		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode,id);
 		if(partyCodeExistOrNot==true)
