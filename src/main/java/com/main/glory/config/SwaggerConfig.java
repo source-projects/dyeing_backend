@@ -26,7 +26,38 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api(){
-        return new Docket(DocumentationType.SWAGGER_2);
+
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
+    private ApiInfo apiInfo() {
+        return new ApiInfo(
+                "My GFL REST API",
+                "GFL API's list",
+                "2.0",
+                "Terms of service",
+                new Contact("GFL", "GFL", "gfl@gmail.com"),
+                "License of API",
+                "API license URL",
+                Collections.emptyList());
+    }
+    private SecurityContext securityContext() {
+        return SecurityContext.builder().securityReferences(defaultAuth()).build();
     }
 
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
+    }
+    private ApiKey apiKey() {
+        return new ApiKey("JWT", "Authorization", "header");
+    }
 }
