@@ -389,4 +389,25 @@ public class QualityServiceImp implements QualityServiceInterface {
             throw new Exception("no data found");
         return getAllQualtiyList;
     }
+
+    public Boolean getQualityIsExist(String quality_id, Long id) {
+        //id is null then check with entire record else except that record id
+
+        if(id==null)
+        {
+            Quality quality = qualityDao.getQualityById(quality_id);
+            if(quality==null)
+                return false;
+            else
+                return true;
+        }
+        else {
+
+            Optional<Quality> quality = qualityDao.getQualityByIdExceptId(quality_id,id);
+            if(quality.isEmpty())
+                return false;
+            else
+                return true;
+        }
+    }
 }

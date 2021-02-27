@@ -125,11 +125,24 @@ public class DyeingProcessServiceImpl {
         return chemicalList;
     }
 
-    public Boolean dyeingProcessExistWithName(String name) {
-        DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.getDyeingProcessByName(name);
-        if(dyeingProcessMast==null)
-            return true;
+    public Boolean dyeingProcessExistWithName(String name, Long id) {
+        //if the id is not null then it is inserr request and check in entire db or else/
+        //check the record except the given id
+
+        if(id==null) {
+            DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.getDyeingProcessByName(name);
+            if (dyeingProcessMast == null)
+                return true;
+            else
+                return false;
+        }
         else
-            return false;
+        {
+            DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.getDyeingProcessByNameExceptId(name,id);
+            if (dyeingProcessMast == null)
+                return true;
+            else
+                return false;
+        }
     }
 }
