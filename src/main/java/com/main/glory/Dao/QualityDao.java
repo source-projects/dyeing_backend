@@ -64,8 +64,14 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("delete from Quality q where q.id=:id")
     void deleteByQualtyId(Long id);
 
-    @Query("select s from Quality s where (:userId IS NULL OR s.createdBy=:userId) OR (:userHeadId IS NULL OR s.userHeadId=:userHeadId)")
+    @Query("select s from Quality s where s.createdBy=:userId OR s.userHeadId=:userHeadId")
     List<Quality> getAllQualityWithIdAndUserHeadId(Long userId, Long userHeadId);
+
+    @Query("select q from Quality q where q.createdBy=:userId")
+    List<Quality> getAllQualityCreatedBy(Long userId);
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where q.userHeadId = :userHeadId AND q.partyId IS NOT NULL")
+    List<QualityWithPartyName> findQualityByUserHeadId(Long userHeadId);
 }
 
 

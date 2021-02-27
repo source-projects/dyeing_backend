@@ -385,7 +385,7 @@ public class AdminController extends ControllerConfig {
         }
         return result;
     }
-    @GetMapping(value="/admin/update/department/")
+    /*@GetMapping(value="/admin/update/department/")
     public GeneralResponse<Boolean> getDepartmentById(@RequestBody Department department) throws Exception {
 
         GeneralResponse<Boolean> result;
@@ -402,7 +402,7 @@ public class AdminController extends ControllerConfig {
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
         return result;
-    }
+    }*/
     @GetMapping(value="/admin/get/allJet")
     public GeneralResponse<List<AddJet>> getAllJet() throws Exception {
 

@@ -9,6 +9,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
+import com.main.glory.model.party.request.PartyWithUserHeadName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,32 @@ public class PartyController extends ControllerConfig {
 			return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@GetMapping(value="/party/isPartyNameIsExist/{name}")
+	public GeneralResponse<Boolean> isPartyNameIsExist(@PathVariable(name = "name") String name)
+	{
+		GeneralResponse<Boolean> response;
+		try {
+			Boolean flag = partyServiceImp.isPartyNameIsExist(name);
+
+			if(flag)
+			{
+				response = new GeneralResponse<>(false, "name is not exist", false, System.currentTimeMillis(), HttpStatus.OK);
+			}
+			else
+			{
+				response = new GeneralResponse<>(true, "name is exist", true, System.currentTimeMillis(), HttpStatus.OK);
+			}
+
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			response=  new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		}
+		return response;
+	}
 	
 	@GetMapping(value="/party/all/{getBy}/{id}")
 	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy)
@@ -72,20 +99,21 @@ public class PartyController extends ControllerConfig {
 					return new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			return new GeneralResponse<List<Party>>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			return new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@GetMapping(value="/party/{id}")
-	public GeneralResponse<Party> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
+	public GeneralResponse<PartyWithUserHeadName> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
            if(id!=null)
 		   {
-			   Party partyObject=partyServiceImp.getPartyDetailById(id);
+			   PartyWithUserHeadName partyObject=partyServiceImp.getPartyDetailById(id);
 			   if(partyObject!=null)
 			   {
-			   	    return new GeneralResponse<Party>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			   	    return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
 			   }
-			   return new GeneralResponse<Party>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			   return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 		   }
            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 	}

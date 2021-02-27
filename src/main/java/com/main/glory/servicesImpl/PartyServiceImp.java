@@ -21,6 +21,7 @@ import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
+import com.main.glory.model.party.request.PartyWithUserHeadName;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -71,7 +72,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party != null) {
             Party partyData = new Party(party);
 
-            if (party.getGSTIN().isEmpty()) {
+            if (party.getGSTIN()==null || party.getGSTIN().isEmpty()) {
 
                 if (party.getPartyCode().length() > 4)
                     throw new Exception("Party code should not be greater than 4 digit");
@@ -86,10 +87,9 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception("Party is availble with code:" + party.getPartyCode());
 
                 //check the partyname exist
-/*
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if(partyExistWithName!=null)
-                    throw new Exception("party name is already exist");*/
+                    throw new Exception("party name is already exist");
 
                 partyDao.save(partyData);
                 return;
@@ -110,9 +110,9 @@ public class PartyServiceImp implements PartyServiceInterface {
 
                 //check the partyname exist
 
-               /* Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
+                Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if (partyExistWithName == null)
-                    throw new Exception("party name is already exist");*/
+                    throw new Exception("party name is already exist");
 
                 partyDao.save(partyData);
 
@@ -133,7 +133,8 @@ public class PartyServiceImp implements PartyServiceInterface {
                 partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,id);
             }
             else {
-                partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,userData.getUserHeadId());
+                UserData opratorUsr = userDao.getUserById(id);
+                partyDetailsList = partyDao.findByUserHeadId(opratorUsr.getUserHeadId());
             }
 
 
@@ -147,12 +148,12 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
     @Override
-    public Party getPartyDetailById(Long id) throws Exception {
-        var partyData = partyDao.findById(id);
-        if (partyData.isEmpty())
+    public PartyWithUserHeadName getPartyDetailById(Long id) throws Exception {
+        var partyData = partyDao.findPartyWithUserHeadById(id);
+        if (partyData==null)
             throw new Exception("no data found");
         else
-            return partyData.get();
+            return partyData;
     }
 
     @Override
@@ -348,11 +349,13 @@ public class PartyServiceImp implements PartyServiceInterface {
 
             UserPermission userPermission = userData.getUserPermissionData();
 
+            List<Party> partyAll=null ;
             Permissions permissions = new Permissions(userPermission.getPa().intValue());
             if (permissions.getViewAll())
             {
                 userId=null;
                 userHeadId=null;
+                partyAll = partyDao.getAllParty();
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -361,6 +364,7 @@ public class PartyServiceImp implements PartyServiceInterface {
                 {
                     userId=null;
                     userHeadId=null;
+                    partyAll = partyDao.getAllParty();
                 }
                 else if(userData.getUserHeadId() > 0)
                 {
@@ -372,12 +376,14 @@ public class PartyServiceImp implements PartyServiceInterface {
                         //for master
                         userId=userData.getId();
                         userHeadId=userData.getId();
+                        partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
 
                     }
                     else {
                         //for operator
                         userId=userData.getId();
                         userHeadId=userData.getUserHeadId();
+                        partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
                     }
                 }
 
@@ -385,12 +391,14 @@ public class PartyServiceImp implements PartyServiceInterface {
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
+
+                partyAll=partyDao.getAllPartyByCreatedBy(userId);
             }
 
 
 
 
-            List<Party> partyAll = partyDao.getAllPartiesByUserId(userId,userHeadId);
+
 
             List<PartyWithName> partyWithNameList = new ArrayList<>();
             if (!partyAll.isEmpty()) {
@@ -406,5 +414,16 @@ public class PartyServiceImp implements PartyServiceInterface {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public Boolean isPartyNameIsExist(String name) {
+        Party party= partyDao.getPartyByName(name);
+        if(party==null)
+        {
+            return true;
+        }
+        else
+            return false;
     }
 }

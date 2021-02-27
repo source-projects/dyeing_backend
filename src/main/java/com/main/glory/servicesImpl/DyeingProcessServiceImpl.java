@@ -31,7 +31,11 @@ public class DyeingProcessServiceImpl {
     @Autowired
     DyeingProcessMastDao dyeingProcessMastDao;
 
-    public void addDyeingProcess(DyeingProcessMast data) {
+    public void addDyeingProcess(DyeingProcessMast data) throws Exception {
+        //check the dyeing process already exist with the name or not
+        DyeingProcessMast dyeingProcessMastExistWithName = dyeingProcessMastDao.getDyeingProcessByName(data.getProcessName());
+        if(dyeingProcessMastExistWithName!=null)
+            throw new Exception("already process exist with name");
         dyeingProcessMastDao.save(data);
     }
 
@@ -100,7 +104,7 @@ public class DyeingProcessServiceImpl {
             flag=true;
             //check the process is related to shade or not
 
-            List<ShadeMast> shadeMastList = shadeService.getAllShadeMastByProcessId(dyeingProcessMastExist.getId());
+            List<ShadeMast> shadeMastList = shadeService.getAllShadeMastByProcessIdForDeleteProcess(dyeingProcessMastExist.getId());
             if(!shadeMastList.isEmpty())
             throw new Exception("remove all the shade first");
 
@@ -119,5 +123,13 @@ public class DyeingProcessServiceImpl {
     public List<DyeingChemicalData> getDyeingProcessChemicalDataByItemId(Long id) {
         List<DyeingChemicalData> chemicalList = dyeingChemicalDataDao.getChemicalDataByItemId(id);
         return chemicalList;
+    }
+
+    public Boolean dyeingProcessExistWithName(String name) {
+        DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.getDyeingProcessByName(name);
+        if(dyeingProcessMast==null)
+            return true;
+        else
+            return false;
     }
 }

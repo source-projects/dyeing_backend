@@ -64,6 +64,32 @@ public class Party {
     private String partyCode;
 
 
+    public Party(Party party) {
+        this.id=party.getId();
+        this.partyName=party.getPartyName();
+        this.partyAddress1=party.getPartyAddress1();
+        this.partyAddress2=party.getPartyAddress2();
+        this.contactNo=party.getContactNo();
+        this.pincode=party.getPincode();
+        this.city = party.getCity();
+        this.state=party.getState();
+        this.GSTIN=party.getGSTIN();
+        this.mailId=party.getMailId();
+        this.createdDate = party.getCreatedDate();
+        this.createdBy=party.getCreatedBy();
+        this.updatedDate=party.getUpdatedDate();
+        this.updatedBy=party.getUpdatedBy();
+        this.debtor=party.getDebtor();
+        this.creditor=party.getCreditor();
+        this.internalTransfer=party.getInternalTransfer();
+        this.partyType=party.getPartyType();
+        this.paymentTerms=party.getPaymentTerms();
+        this.percentageDiscount=party.getPercentageDiscount();
+        this.gstPercentage = party.getGstPercentage();
+        this.userHeadId=party.getUserHeadId();
+        this.partyCode=party.getPartyCode();
+    }
+
 
     @PrePersist
     protected void onCreate() {

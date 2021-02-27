@@ -4,6 +4,7 @@ package com.main.glory.Dao.user;
 
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.response.getAllUserInfo;
 import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -80,4 +81,12 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Transactional
     @Query("update UserData u set u.designationId=:designation")
     void updateUserByDesignation(Designation designation);
+
+    @Modifying
+    @Transactional
+    @Query("update UserData u set u.userHeadId=:id1 where u.id=:id")
+    void updateUserHeadId(Long id, Long id1);
+
+    @Query("select u from UserData u where u.id=u.userHeadId")
+    List<UserData> getAllUserHeadList();
 }

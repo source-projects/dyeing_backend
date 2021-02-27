@@ -51,4 +51,9 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select p from ProductionPlan p where p.stockId=:id")
     List<ProductionPlan> getProductionByStockId(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("delete from ProductionPlan p where p.id=:id")
+    void deleteProductionById(Long id);
 }

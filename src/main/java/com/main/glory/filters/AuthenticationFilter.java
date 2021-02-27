@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -45,12 +46,18 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 		try{
 
-			// for swagger turn off the guards
-			/*if(true || !request.getRequestURI().startsWith("/api")){
+			/*// for swagger turn off the guards
+			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
 			}*/
 
+
+
+			/*if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+				chain.doFilter(request, response);
+				return;
+			}*/
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
@@ -58,12 +65,15 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		/*if(path.startsWith("user") || path.startsWith("login") || path.contains("admin") || path.contains("db")){
+		if( path.startsWith("login")  || request.getRequestURI().contains("machine")){
 			chain.doFilter(request, response);
 			return;
 		}
-*/
+
 		final String authorizationHeader = request.getHeader("Authorization");
+
+		/*if(authorizationHeader==null)
+			chain.doFilter(request, response);*/
 
 		String id = null;
 		String jwt = null;
@@ -74,8 +84,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				// request.id = id;
 				//response
 
-				response.addHeader("userHead",id);
-				System.out.println("setheader:"+id);
+//				response.addHeader("userHead",id);
+//				System.out.println("setheader:"+id);
 
 				Claims claims = jwtUtil.extractAllClaims(jwt);
 				Map userPermissions = (Map) claims.get("permissions", Object.class);
@@ -94,29 +104,32 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 					//getValue="moduleName" getKey="annottion"
 					if(path.contains(entry.getValue()))
 					{
+						String[] pathArray = path.split("/");
 						pathFlag=true;
 						//if path contain then add check for that path
 						Integer code = (Integer) userPermissions.get(entry.getKey());
 						Permissions permissions = new Permissions(code);
 						System.out.println(permissions);
 						if(method.equals("GET")){
-							if(path.contains("all"))
+							if(Arrays.asList(pathArray).contains("all"))
 							{
-								if(!permissions.getViewAll() && path.contains("all"))
+								if(path.contains("own"))
 								{
-									throw new Exception("Unauthorized user");
+									if(!permissions.getView())
+										throw new Exception("Unauthorized user");
 								}
-								else if(!permissions.getView() && path.contains("own"))
+								else if(path.contains("group"))
 								{
-									throw new Exception("Unauthorized user");
+									if(!permissions.getViewGroup())
+										throw new Exception("Unauthorized user");
 								}
-								else if(!permissions.getViewGroup() && path.contains("group"))
+								else if(path.contains("all"))
 								{
-									throw new Exception("Unauthorized user");
+									if(!permissions.getViewAll())
+										throw new Exception("Unauthorized user");
 								}
-
 							}
-
+							break;
 						}
 						else if(method.equals("POST")){
 							if(!permissions.getAdd()){

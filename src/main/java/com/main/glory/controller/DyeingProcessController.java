@@ -80,6 +80,28 @@ public class DyeingProcessController extends ControllerConfig{
         }
         return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @GetMapping("/dyeingProcess/isProcessExistWithName/{processName}")
+    public GeneralResponse<Boolean> isDyeingProcessExist(@PathVariable(name = "processName")String name){
+        GeneralResponse<Boolean> response;
+        try{
+
+            if(name==null)
+                throw new Exception("id can't be null");
+
+            Boolean data = dyeingProcessService.dyeingProcessExistWithName(name);
+            if(data){
+                response= new GeneralResponse<>(false, "name is not exist", false, System.currentTimeMillis(), HttpStatus.FOUND);
+            }
+            else {
+                response= new GeneralResponse<>(true, "name is exist", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+        return response;
+
+    }
 
     @DeleteMapping("/dyeingProcess/{id}")
     public GeneralResponse<Boolean> deleteProcessById(@PathVariable(name = "id") Long id){

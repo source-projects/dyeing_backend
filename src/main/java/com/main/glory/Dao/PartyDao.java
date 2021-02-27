@@ -1,6 +1,7 @@
 package com.main.glory.Dao;
 
 import com.main.glory.model.party.request.PartyWithName;
+import com.main.glory.model.party.request.PartyWithUserHeadName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.main.glory.model.party.Party;
@@ -24,7 +25,7 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	List<Party> findByCreatedBy(Long createdBy);
 
-	@Query("select p from Party p where p.createdBy=:userHeadId OR p.userHeadId=:userHeadId")
+	@Query("select p from Party p where p.userHeadId=:userHeadId")
 	List<Party> findByUserHeadId(Long userHeadId);
 
 
@@ -54,6 +55,15 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 
 	@Query("select p from Party p where (:userId IS NULL OR p.createdBy=:userId) OR (:userHeadId IS NULL OR p.userHeadId = :userHeadId)")
 	List<Party> getAllPartiesByUserId(Long userId, Long userHeadId);
+
+	@Query("select p from Party p where p.createdBy=:userId OR p.userHeadId=:userHeadId")
+	List<Party> getAllPartyByCreatedAndHead(Long userId, Long userHeadId);
+
+	@Query("select p from Party p where p.createdBy=:userId")
+	List<Party> getAllPartyByCreatedBy(Long userId);
+
+	@Query("select new com.main.glory.model.party.request.PartyWithUserHeadName(p,(select u.firstName from UserData u where u.id=p.userHeadId )) from Party p where p.id = :id")
+	PartyWithUserHeadName findPartyWithUserHeadById(Long id);
 
 //	@Modifying
 //	@Transactional

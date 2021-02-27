@@ -19,7 +19,7 @@ jobs:
       run: |
         sudo bash ./setenv.sh application.palsana
         mvn clean install
-        #curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline started"}' https://hooks.slack.com/services/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
+        #curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline started"}' https://hooks.slack.com/services/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
               
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
@@ -46,9 +46,9 @@ jobs:
     - name: slack the message for success
       if: success()
       run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline succeeded for palsana server"}' https://hooks.slack.com/services/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
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline succeeded for palsana server"}' https://hooks.slack.com/services/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
     - name: slack the message for faliure
       if: failure()
       run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline failed for palsana server"}' https://hooks.slack.com/services/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
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Back end pipeline failed for palsana server"}' https://hooks.slack.com/services/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
           
