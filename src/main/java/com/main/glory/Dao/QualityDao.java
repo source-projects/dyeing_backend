@@ -1,6 +1,5 @@
 package com.main.glory.Dao;
 
-import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.main.glory.model.quality.Quality;
@@ -18,7 +17,7 @@ import java.util.Optional;
 public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     @Query(value = "SELECT quality_id FROM quality as q WHERE q.quality_id = :qid", nativeQuery = true)
-     String isQualityNameExist(@Param("qid") String quality_id);
+    String isQualityNameExist(@Param("qid") String quality_id);
 
 
     @Query(value = "Select * from quality as qa where qa.quality_id=:qid",nativeQuery = true)
@@ -72,6 +71,12 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId)) from Quality q where q.userHeadId = :userHeadId AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findQualityByUserHeadId(Long userHeadId);
+
+    @Query("select q from Quality q where LOWER(q.qualityId)=LOWER(:quality_id)")
+    Quality getQualityById(String quality_id);
+
+    @Query("select q from Quality q where LOWER(q.qualityId)=LOWER(:quality_id) AND q.id!=:id")
+    Optional<Quality> getQualityByIdExceptId(String quality_id, Long id);
 }
 
 

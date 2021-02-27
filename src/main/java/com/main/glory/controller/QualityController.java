@@ -152,14 +152,15 @@ public class QualityController extends ControllerConfig {
 //        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 //    }
 
-    @GetMapping(value = "/is_quality_exist/{quality_id}")
-    public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id) {
+    @GetMapping(value = "/is_quality_exist/{quality_id}/{id}")
+    public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id,@PathVariable(name="id")Long id) {
 
         if (quality_id != null) {
-            String flag = qualityDao.isQualityNameExist(quality_id);
-            if (flag!=null) {
+            Boolean flag = qualityServiceImp.getQualityIsExist(quality_id,id);
+            if (flag) {
                 return new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
+            else
             return new GeneralResponse<Boolean>(false, "quality id not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
         return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

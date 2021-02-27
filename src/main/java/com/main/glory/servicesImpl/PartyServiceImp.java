@@ -265,14 +265,31 @@ public class PartyServiceImp implements PartyServiceInterface {
         return partyWithPartyCodesList;
     }
 
-    public Boolean partyCodeExistOrNot(String partyCode) {
+    public Boolean partyCodeExistOrNot(String partyCode, Long id) {
 
-        Party party = partyDao.findByPartyCode(partyCode);
+        //if the id is null then it is insert request and check the name in entire records
+        //else it is update request
+        if(id==null)
+        {
+            Party party = partyDao.findByPartyCode(partyCode);
 
-        if (party==null)
-            return true;
+            if (party==null)
+                return true;
 
-        return false;
+            else
+                return false;
+        }
+        else
+        {
+            Party party = partyDao.findByPartyCodeExceptId(partyCode,id);
+
+            if (party==null)
+                return true;
+
+            else
+                return false;
+        }
+
     }
 
     //send pdf for mail
@@ -417,13 +434,31 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
 
-    public Boolean isPartyNameIsExist(String name) {
-        Party party= partyDao.getPartyByName(name);
-        if(party==null)
+    public Boolean isPartyNameIsExist(String name, Long id) {
+        //if id is null then it is update request
+        //if id is not null then it is add request
+
+        if(id==null)
         {
-            return true;
+            Party party= partyDao.getPartyByName(name);
+            if(party==null)
+            {
+                return true;
+            }
+            else
+                return false;
+
         }
-        else
-            return false;
+        else {
+
+            //check the name except the given id
+            Party party = partyDao.getPartyByNameExceptId(name,id);
+            if(party==null)
+                return true;
+            else
+                return false;
+
+        }
+
     }
 }
