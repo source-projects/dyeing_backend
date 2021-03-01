@@ -228,6 +228,28 @@ public class MachineController extends ControllerConfig {
         }
         return null;
     }
+    @DeleteMapping(value="/machine/delete/category/{id}")
+    public GeneralResponse<Boolean> deleteMachineCategoryById(@PathVariable(name="id") Long id) throws Exception {
+
+        boolean flag;
+        try {
+
+            if(id==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            flag = machineService.deleteMachineCategoryById(id);
+            if(flag ==true)
+                return new GeneralResponse<>(true, "Machine category deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
+        }
+        return null;
+    }
 
 
 

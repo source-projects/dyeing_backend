@@ -575,4 +575,20 @@ public class MachineServiceImpl {
             throw new Exception("no data found for id:"+controlId);
         return machineMast.get();
     }
+
+    public boolean deleteMachineCategoryById(Long id) throws Exception {
+        MachineCategory machineCategory = machineCategoryDao.getCategoryById(id);
+        if (machineCategory==null)
+        {
+            throw new Exception("no machine category found");
+        }
+
+        List<MachineMast> machineMasts = machineDao.findByControlId(id);
+        if(!machineMasts.isEmpty())
+        {
+            throw new Exception("delete the machine first");
+        }
+        machineCategoryDao.deleteCategoryById(id);
+        return true;
+    }
 }
