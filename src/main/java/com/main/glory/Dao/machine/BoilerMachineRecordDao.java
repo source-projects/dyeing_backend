@@ -2,8 +2,10 @@ package com.main.glory.Dao.machine;
 
 import com.main.glory.model.machine.BoilerMachineRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -29,4 +31,12 @@ public interface BoilerMachineRecordDao extends JpaRepository<BoilerMachineRecor
     //record for night
     @Query("select br from BoilerMachineRecord br where br.controlId=:boilerId AND br.dateToEnter = :fromDate AND br.timeOf >= :fromTime OR br.timeOf <= :toTime")
     List<BoilerMachineRecord> findRecordBasedOnFilterForNight(Long boilerId, Date fromDate, Long fromTime, Long toTime);
+
+    @Query("select s from BoilerMachineRecord s where s.controlId=:id")
+    List<BoilerMachineRecord> getAllBoilerRecordByControlId(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("update BoilerMachineRecord m set m.controlId=:id1 where id=:id ")
+    void updateBoilerRecord(Long id, Long id1);
 }

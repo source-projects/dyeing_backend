@@ -225,7 +225,8 @@ public class StockBatchServiceImpl {
             {
                 BatchData batchDataProductionPlan = batchDao.getBatchDataById(entry.getKey());
                 if(batchDataProductionPlan.getIsProductionPlanned())
-                    throw new Exception("remove the production first og batch:"+batchDataProductionPlan.getBatchId());
+                    batchGr.replace(entry.getKey(),true);
+                    //throw new Exception("remove the production first of batch:"+batchDataProductionPlan.getBatchId());
 
             }
         }

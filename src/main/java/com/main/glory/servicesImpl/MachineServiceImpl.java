@@ -1,13 +1,9 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.machine.MachineCategoryDao;
-import com.main.glory.Dao.machine.MachineDao;
-import com.main.glory.Dao.machine.MachineRecordDao;
+import com.main.glory.Dao.machine.*;
+import com.main.glory.model.machine.*;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
-import com.main.glory.model.machine.MachineCategory;
-import com.main.glory.model.machine.MachineMast;
-import com.main.glory.model.machine.MachineRecord;
 import com.main.glory.model.machine.category.AddCategory;
 import com.main.glory.model.machine.response.GetAllCategory;
 import com.main.glory.model.machine.response.GetAllMachine;
@@ -15,21 +11,14 @@ import com.main.glory.model.machine.response.GetAllMachineRecord;
 import com.main.glory.model.machine.response.GetMachineByIdWithFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service("machineServiceImpl")
@@ -45,6 +34,11 @@ public class MachineServiceImpl {
     private MachineRecordDao machineRecordDao;
 
 
+    @Autowired
+    BoilerMachineRecordDao boilerMachineRecordDao;
+
+    @Autowired
+    ThermopackDao thermopackDao;
     @Autowired
     ModelMapper modelMapper;
 
@@ -190,6 +184,19 @@ public class MachineServiceImpl {
         {
             throw new Exception("No machine found for id:"+id);
         }
+
+        List<MachineRecord> machineRecords = machineRecordDao.getMachineRecordByControlId(id);
+        if(!machineRecords.isEmpty())
+            throw new Exception("remove the machine record first");
+
+        List<BoilerMachineRecord> boilerMachineRecords = boilerMachineRecordDao.getAllBoilerRecordByControlId(id);
+        if(!boilerMachineRecords.isEmpty())
+            throw new Exception("remove the machine record first");
+
+        List<Thermopack> thermopackList = thermopackDao.getAllThermopackRecordByControlId(id);
+        if(!thermopackList.isEmpty())
+            throw new Exception("remove the machine record first");
+
         machineDao.deleteById(machineMast.get().getId());
         return true;
     }
@@ -589,6 +596,63 @@ public class MachineServiceImpl {
             throw new Exception("delete the machine first");
         }
         machineCategoryDao.deleteCategoryById(id);
+        return true;
+    }
+
+    public boolean updateMachineCategory(MachineCategory machineCategory) throws Exception {
+        MachineCategory machineCategoryExist = machineCategoryDao.getCategoryById(machineCategory.getId());
+        if(machineCategoryExist==null)
+            throw new Exception("no machine category found");
+
+        machineCategoryExist=new MachineCategory(machineCategory);
+
+        machineCategoryDao.save(machineCategoryExist);
+
+        return true;
+
+    }
+
+    public boolean updateMachineMast(MachineMast machineMast) throws Exception {
+
+        MachineMast machineMastExist = machineDao.getMachineById(machineMast.getId());
+        if(machineMastExist==null)
+            throw new Exception("no machine found");
+
+
+
+        MachineMast x = machineDao.save(machineMast);
+        //update the respecte record by id of machine mast
+
+        List<MachineRecord> machineRecords = machineRecordDao.getMachineRecordByControlId(x.getId());
+        if(!machineRecords.isEmpty())
+        {
+            for(MachineRecord machineRecord:machineRecords)
+            {
+                machineRecordDao.updateMachineRecord(machineRecord.getId(),x.getId());
+            }
+
+        }
+
+        List<BoilerMachineRecord> boilerMachineRecords =boilerMachineRecordDao.getAllBoilerRecordByControlId(machineMastExist.getId());
+        if(!boilerMachineRecords.isEmpty())
+        {
+            for(BoilerMachineRecord boilerMachineRecord:boilerMachineRecords)
+            {
+                boilerMachineRecordDao.updateBoilerRecord(boilerMachineRecord.getId(),x.getId());
+            }
+        }
+
+        //thermopack
+
+        List<Thermopack> thermopackList = thermopackDao.getAllThermopackRecordByControlId(x.getId());
+        if(!thermopackList.isEmpty())
+        {
+            for(Thermopack t :thermopackList)
+            {
+                thermopackDao.udpateThermopackRecord(t.getId(),x.getId());
+            }
+        }
+
         return true;
     }
 }

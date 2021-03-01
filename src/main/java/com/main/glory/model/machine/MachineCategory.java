@@ -19,10 +19,10 @@ public class MachineCategory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String name;
-    @ApiModelProperty(hidden = true)
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "controlId", referencedColumnName = "id")
-    private List<MachineMast> machineMast;
 
 
+    public MachineCategory(MachineCategory machineCategory) {
+        this.id=machineCategory.id;
+        this.name=machineCategory.name;
+    }
 }

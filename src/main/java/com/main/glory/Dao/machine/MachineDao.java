@@ -17,4 +17,7 @@ public interface MachineDao extends JpaRepository<MachineMast,Long> {
 
     @Query("select m from MachineMast m")
     List<MachineMast> getAllMachineMast();
+
+    @Query("select s from MachineMast s where s.id=:id")
+    MachineMast getMachineById(Long id);
 }
