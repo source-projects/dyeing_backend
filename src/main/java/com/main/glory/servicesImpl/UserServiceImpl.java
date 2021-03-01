@@ -310,4 +310,8 @@ public class UserServiceImpl implements UserServiceInterface {
     public void updateUserByDesignation(Designation designation) {
         userDao.updateUserByDesignation(designation);
     }
+
+    public List<UserData> getUserByCompany(String name) {
+        return userDao.getAllUserByCompany(name);
+    }
 }

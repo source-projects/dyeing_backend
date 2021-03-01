@@ -210,7 +210,7 @@ public class AdminController extends ControllerConfig {
     @DeleteMapping(value="/admin/delete/companyBy/{id}")
     public GeneralResponse<Boolean> deleteCompany(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean> result=null;
         if(id==null)
         {
             result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
@@ -222,8 +222,7 @@ public class AdminController extends ControllerConfig {
             flag = adminServcice.deleteCompanyById(id);
             if(flag)
             result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result= new GeneralResponse<Boolean>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
         }
         catch(Exception e)
         {
@@ -236,10 +235,10 @@ public class AdminController extends ControllerConfig {
     @DeleteMapping(value="/admin/delete/department/{id}")
     public GeneralResponse<Boolean> deleteDepartment(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
         boolean flag;
@@ -247,14 +246,13 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteDepartmentById(id);
             if(flag)
-                result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result= new GeneralResponse<Boolean>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
         return result;
     }
