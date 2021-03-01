@@ -207,7 +207,7 @@ public class MachineController extends ControllerConfig {
         }
     }
 
-    @DeleteMapping(value="/machine/")
+    @DeleteMapping(value="/machine/delete/{id}")
     public GeneralResponse<Boolean> deleteMachineById(@PathVariable(name="id") Long id) throws Exception {
 
         boolean flag;
