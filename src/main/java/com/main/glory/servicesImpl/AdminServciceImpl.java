@@ -91,9 +91,6 @@ public class AdminServciceImpl {
             approveByDao.deleteApprovedById(id);
             return true;
 
-
-
-
     }
 
     public void saveDepartment(Department c) throws Exception {
