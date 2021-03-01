@@ -157,6 +157,7 @@ public class MachineController extends ControllerConfig {
         }
     }
 
+
     @GetMapping(value="/machine/{id}")
     public GeneralResponse<GetAllMachine> getMachineById(@PathVariable(name="id") Long id) throws Exception {
 
@@ -206,7 +207,7 @@ public class MachineController extends ControllerConfig {
         }
     }
 
-    @DeleteMapping(value="/machine/")
+    @DeleteMapping(value="/machine/delete/{id}")
     public GeneralResponse<Boolean> deleteMachineById(@PathVariable(name="id") Long id) throws Exception {
 
         boolean flag;
@@ -241,6 +242,52 @@ public class MachineController extends ControllerConfig {
             flag = machineService.deleteMachineCategoryById(id);
             if(flag ==true)
                 return new GeneralResponse<>(true, "Machine category deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
+        }
+        return null;
+    }
+
+    @PutMapping(value="/machine/update/category/")
+    public GeneralResponse<Boolean> updateMachineCategory(@RequestBody MachineCategory machineCategory) throws Exception {
+
+        boolean flag;
+        try {
+
+            if(machineCategory==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            flag = machineService.updateMachineCategory(machineCategory);
+            if(flag ==true)
+                return new GeneralResponse<>(true, "Machine category updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
+        }
+        return null;
+    }
+
+    @PutMapping(value="/machine/update/")
+    public GeneralResponse<Boolean> updateMachine(@RequestBody MachineMast machineMast) throws Exception {
+
+        boolean flag;
+        try {
+
+            if(machineMast==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            flag = machineService.updateMachineMast(machineMast);
+            if(flag ==true)
+                return new GeneralResponse<>(true, "Machine category updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)

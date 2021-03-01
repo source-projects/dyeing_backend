@@ -394,15 +394,17 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 			return false;
 	}
 
-	public List<GetAllPendingShade> getAllPendingShade() {
+	public List<GetAllPendingShade> getAllPendingShade() throws Exception {
 		List<GetAllPendingShade> dataList=new ArrayList<>();
 		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
 		for(ShadeMast s:list)
 		{
 			Party party =partyDao.findByPartyId(s.getPartyId());
 			Optional<Quality> quality =qualityDao.findById(s.getQualityEntryId());
+			DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(s.getProcessId());
 			if(s.getShadeDataList()==null || s.getShadeDataList().isEmpty() || s.getShadeDataList().get(0).getSupplierItemId()==null) {
 				s.setPending(true);
+				s.setProcessName(dyeingProcessMast.getProcessName());
 				dataList.add(new GetAllPendingShade(s,party,quality.get()));
 			}
 		}

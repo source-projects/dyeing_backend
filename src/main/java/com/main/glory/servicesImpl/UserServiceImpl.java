@@ -92,6 +92,8 @@ public class UserServiceImpl implements UserServiceInterface {
         List<getAllUserInfo> userHeads =new ArrayList<>();
         //identify the user is master/admin/operator
         UserData userData = userDao.getUserById(Long.parseLong(id));
+
+        //admin requesting
         if(userData.getUserHeadId()==0)
         {
             List<UserData> list =userDao.getAllUserHeadList();
@@ -105,7 +107,16 @@ public class UserServiceImpl implements UserServiceInterface {
         else if(userData.getUserHeadId()>0)
         {
             //master and operator get only master detail
-            userHeads.add(new getAllUserInfo(userData));
+            if(userData.getUserHeadId()==userData.getId())
+            {
+                userHeads.add(new getAllUserInfo(userData));
+            }
+            else {
+                //operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userHeads.add(new getAllUserInfo(userHead));
+            }
+
 
         }
 
@@ -298,5 +309,9 @@ public class UserServiceImpl implements UserServiceInterface {
 
     public void updateUserByDesignation(Designation designation) {
         userDao.updateUserByDesignation(designation);
+    }
+
+    public List<UserData> getUserByCompany(String name) {
+        return userDao.getAllUserByCompany(name);
     }
 }

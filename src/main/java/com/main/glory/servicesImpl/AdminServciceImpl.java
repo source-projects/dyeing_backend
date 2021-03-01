@@ -64,18 +64,21 @@ public class AdminServciceImpl {
     }
 
 
-    public boolean deleteCompanyById(Long id) {
-        try {
+    public boolean deleteCompanyById(Long id) throws Exception {
+
             Company companyExist = companyDao.getCompanyById(id);
             if (companyExist == null)
                 throw new Exception("no data found");
 
+            //check the company is assign to user or not
+
+            List<UserData> userData = userService.getUserByCompany(companyExist.getName());
+            if(!userData.isEmpty())
+                throw new Exception("remove the user first");
+
             companyDao.deleteByCompanyId(id);
             return true;
-        }catch (Exception e)
-        {
-            return false;
-        }
+
     }
 
     public Boolean deleteApprovedById(Long id) throws Exception {
@@ -91,9 +94,6 @@ public class AdminServciceImpl {
             approveByDao.deleteApprovedById(id);
             return true;
 
-
-
-
     }
 
     public void saveDepartment(Department c) throws Exception {
@@ -108,8 +108,8 @@ public class AdminServciceImpl {
 
     }
 
-    public boolean deleteDepartmentById(Long id) {
-        try {
+    public boolean deleteDepartmentById(Long id) throws Exception {
+
             Department exist = departmentDao.getDepartmentById(id);
             if (exist == null)
                 throw new Exception("no data found");
@@ -117,15 +117,11 @@ public class AdminServciceImpl {
             if(!userDataList.isEmpty())
                 throw new Exception("can't delete the department");
 
+
             departmentDao.deleteDepartmentById(id);
             return true;
 
 
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
     }
 
     public List<Department> getAllDepartmentList() {
