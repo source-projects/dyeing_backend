@@ -45,4 +45,6 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
     @Modifying
     @Query("update JetData j set j.controlId=:id where j.id=:jetData")
     void updateJetWithId(Long jetData, Long id);
+
+
 }
