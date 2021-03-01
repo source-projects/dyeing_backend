@@ -886,18 +886,20 @@ public class JetServiceImpl {
     }
 
 
-    public Boolean deleteJetMastByJetId(Long id) {
-        try {
+    public Boolean deleteJetMastByJetId(Long id) throws Exception {
+
             Optional<JetMast> jetMast  =jetMastDao.getJetById(id);
             if(jetMast.isEmpty())
                 throw new Exception("no data found");
+
+            //check the child record available for the jet or not
+            if(!jetMast.get().getJetDataList().isEmpty())
+                throw new Exception("remove the jet record first");
+
             jetMastDao.deleteByJetId(id);
             return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+
+
     }
 
     public JetData getJetDataByProductionId(Long productionId) {
@@ -1023,6 +1025,9 @@ public class JetServiceImpl {
         JetMast jetToUpdate = new JetMast(jetMast);
         jetToUpdate.setId(jetMast.getId());
         List<JetData> jetDataList = jetDataDao.findByControlId(jetMast.getId());
+
+        if(jetMast.getCapacity()<jetMastExist.get().getCapacity())
+            throw new Exception("jet capacity can't be update because already batch availble with that capacity");
 
         jetMastDao.save(jetToUpdate);
         for(JetData jetData:jetDataList)

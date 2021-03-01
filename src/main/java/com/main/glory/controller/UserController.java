@@ -16,6 +16,7 @@ import com.main.glory.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,22 @@ public class UserController extends ControllerConfig {
         }catch (Exception e)
         {
             return new GeneralResponse<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/user/{username}/{id}")
+    public GeneralResponse<Boolean> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id)
+    {
+        try {
+            Boolean data = userService.getUserNameExist(username,id);
+            if (data) {
+                return new GeneralResponse<>(data, "Username found", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                return new GeneralResponse<>(null, "Username not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -206,7 +223,6 @@ public class UserController extends ControllerConfig {
     {
         GeneralResponse<UserIdentification> response;
         try {
-
 
             UserIdentification userIdentification = userService.getUserHeadDetail(id);
             response= new GeneralResponse<>(userIdentification, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);

@@ -314,4 +314,25 @@ public class UserServiceImpl implements UserServiceInterface {
     public List<UserData> getUserByCompany(String name) {
         return userDao.getAllUserByCompany(name);
     }
+
+    public Boolean getUserNameExist(String username, Long id) {
+        //id is null then insert request
+        //else update request
+        if(id==null)
+        {
+            UserData userData = userDao.getUserByUserName(username);
+            if(userData!=null)
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            UserData userData = userDao.getUserByUserNameWithId(username,id);
+            if(userData!=null)
+                return true;
+            else
+                return false;
+        }
+    }
 }

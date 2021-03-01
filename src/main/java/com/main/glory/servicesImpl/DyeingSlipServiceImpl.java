@@ -202,6 +202,7 @@ public class DyeingSlipServiceImpl {
             if(!addAdditionDyeingSlipModel.getDyeingSlipData().getProcessType().equals("addition"))
                 throw new Exception("process type is not found");
 
+            addAdditionDyeingSlipModel.getDyeingSlipData().setControlId(dyeingSlipMast.getId());
             dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
             return;
 
