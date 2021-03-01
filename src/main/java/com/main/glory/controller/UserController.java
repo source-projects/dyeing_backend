@@ -75,6 +75,22 @@ public class UserController extends ControllerConfig {
             return new GeneralResponse<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/user/{username}/{id}")
+    public GeneralResponse<Boolean> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id)
+    {
+        try {
+            Boolean data = userService.getUserNameExist(username,id);
+            if (data) {
+                return new GeneralResponse<>(data, "Username found", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                return new GeneralResponse<>(null, "Username not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @GetMapping("/user/AllUsers/{getBy}/{id}")
     public GeneralResponse<List<getAllUserInfo>> getAllUser(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id,@RequestHeader Map<String, String> headers)
