@@ -7,6 +7,7 @@ import com.main.glory.model.user.UserPermission;
 import com.main.glory.servicesImpl.UserServiceImpl;
 import com.main.glory.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 @Component
@@ -77,14 +79,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		String id = null;
 		String jwt = null;
 		try {
+
 			if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 				jwt = authorizationHeader.substring(7);
 				id = jwtUtil.extractUsername(jwt);
-				// request.id = id;
-				//response
+				//validate user
 
-//				response.addHeader("userHead",id);
-//				System.out.println("setheader:"+id);
+
 
 				Claims claims = jwtUtil.extractAllClaims(jwt);
 				Map userPermissions = (Map) claims.get("permissions", Object.class);
@@ -148,12 +149,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 					}
 
 				}
-
-
-				//for unrelated page request
-				/*if(pathFlag==false)
-					response.sendError(404,"page not found");*/
-
+			}
+			if(id == null){
+				throw new Exception("No JWT found");
 			}
 
 			//System.out.println(SecurityContextHolder.getContext().getAuthentication());
@@ -168,16 +166,20 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 //					response.setHeader("accessToken", jwtUtil.generateToken(userDetails,otp));
 				}
+
 			}
 
- 			if(id == null){
- 				throw new Exception("No JWT found");
- 			}
 
 			chain.doFilter(request, response);
 		} catch(Exception e){
 			e.printStackTrace();
-			response.sendError(401,e.getMessage());
+			String errorMessage = e.getMessage();
+			Integer statusCode = 402;
+			if(errorMessage.contains("JWT expired")){
+				errorMessage = "JWT expired";
+				statusCode = 401;
+			}
+			response.sendError(statusCode,errorMessage);
 		}
 	}
 
