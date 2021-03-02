@@ -40,11 +40,11 @@ public class JwtUtil {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
 	}
-	public Claims extractAllClaims(String token) throws Exception{
+	public Claims extractAllClaims(String token){
 		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
 	}
 
-	private Boolean isTokenExpired(String token) throws Exception {
+	public Boolean isTokenExpired(String token) throws Exception {
 		return extractExpiration(token).before(new Date());
 	}
 
@@ -58,13 +58,14 @@ public class JwtUtil {
 			c.setTime(new Date(timeStamp));
 			c.add(Calendar.DATE,2);
 
-			exp = c.getTimeInMillis();
+			exp =c.getTimeInMillis();
 
 			claims.put("permissions", user.getUserPermissionData());
 			claims.put("designation", user.getDesignationId().getDesignation());
 			claims.put("userHeadId", user.getUserHeadId());
 			claims.put("id",user.getId());
 			claims.put("userName", user.getUserName());
+			claims.put("exp",exp);
 
 		} else if(tokenType.equals("refreshToken")) {
 			exp = timeStamp + 1000 * 60 * 60 * 60;
@@ -98,10 +99,11 @@ public class JwtUtil {
 			if(u == null) {
 				throw new BadCredentialsException("Invalid Token No Such User");
 			}
+
 			return (!isTokenExpired(token));
 		} catch(Exception e){
             e.printStackTrace(System.out);
-			return false;
+            return false;
 		}
 	}
 
