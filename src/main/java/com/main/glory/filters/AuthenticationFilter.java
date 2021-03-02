@@ -170,9 +170,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 
-// 			if(id == null){
-// 				throw new Exception("No JWT found");
-// 			}
+ 			if(id == null){
+ 				throw new Exception("No JWT found");
+ 			}
 
 			chain.doFilter(request, response);
 		} catch(Exception e){
