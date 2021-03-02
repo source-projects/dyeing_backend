@@ -138,13 +138,18 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
     //for All user
-    public List<getAllUserInfo> getAllUser(String getBy, Long id) {
+    public List<getAllUserInfo> getAllUser(String getBy, Long id, String s) {
+
+        Long headerId = Long.parseLong(s);
+
         List<UserData> userDataList = null;
         List<getAllUserInfo> getAllUserInfoList = new ArrayList<>();
         if (id == null) {
-            userDataList = userDao.getAllUser();
+            userDataList = userDao.getAllUserExceptHeaderId(headerId);
             int i = 0;
             for (UserData e : userDataList) {
+                if(e.getId()==headerId || e.getUserHeadId()==0)
+                    continue;
                 getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
                 getAllUserInfoList.add(userData);
             }
@@ -152,6 +157,8 @@ public class UserServiceImpl implements UserServiceInterface {
             userDataList = userDao.findAllByCreatedBy(id);
             int i = 0;
             for (UserData e : userDataList) {
+                if(e.getId()==headerId || e.getUserHeadId()==0)
+                    continue;
                 getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
                 getAllUserInfoList.add(userData);
             }
@@ -163,6 +170,8 @@ public class UserServiceImpl implements UserServiceInterface {
                 userDataList = userDao.findAllByCreatedByAndUserHeadId(id,id);
                 int i = 0;
                 for (UserData e : userDataList) {
+                    if(e.getId()==headerId)
+                        continue;
                     getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
                     getAllUserInfoList.add(userData1);
                 }
@@ -172,6 +181,8 @@ public class UserServiceImpl implements UserServiceInterface {
                 userDataList = userDao.findAllByCreatedByAndUserHeadId(id,userData.getUserHeadId());
                 int i = 0;
                 for (UserData e : userDataList) {
+                    if(e.getId()==headerId)
+                        continue;
                     getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
                     getAllUserInfoList.add(userData1);
                 }
