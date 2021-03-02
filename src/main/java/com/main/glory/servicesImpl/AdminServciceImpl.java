@@ -6,6 +6,7 @@ import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.designation.Designation;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.user.UserData;
@@ -196,4 +197,44 @@ public class AdminServciceImpl {
         }
 
     }
+
+    public Boolean getApprovedByDeletable(Long id) throws Exception {
+        ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
+        if (approvedByExist==null)
+            throw new Exception("no approvedBy found");
+
+        List<DyeingSlipMast> dyeingSlipMasts = dyeingSlipService.getDyeingSlipByApprovedId(id);
+        if(dyeingSlipMasts.isEmpty())
+            return true;
+        else
+            return false;
+    }
+
+    public Boolean getDepartmentIsDelatable(Long id) throws Exception {
+        Department departmentExist = departmentDao.getDepartmentById(id);
+        if(departmentExist==null)
+            throw new Exception("no department found");
+
+        List<UserData> userDataList = userService.getAllUserByDepartment(departmentExist.getName());
+
+        if(userDataList.isEmpty())
+            return true;
+        else
+            return false;
+
+    }
+
+    public Boolean getCompanyIsDelatable(Long id) throws Exception {
+        Company companyExist = companyDao.getCompanyById(id);
+        if(companyExist==null)
+            throw new Exception("company data not found");
+
+        List<UserData> userDataList = userService.getUserByCompany(companyExist.getName());
+        if(userDataList.isEmpty())
+            return true;
+        else
+            return false;
+    }
+
+
 }

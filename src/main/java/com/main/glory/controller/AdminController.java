@@ -423,6 +423,90 @@ public class AdminController extends ControllerConfig {
         return result;
     }
 
+    @GetMapping(value="/admin/jet/deleteTable/{id}")
+    public GeneralResponse<Boolean> isJetDeletable(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        try {
+
+            Boolean flag = jetService.getJetIsDeletable(id);
+            if(flag)
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @GetMapping(value="/admin/approvedBy/deleteTable/{id}")
+    public GeneralResponse<Boolean> isApprovedByDeletable(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        try {
+
+            Boolean flag = adminServcice.getApprovedByDeletable(id);
+            if(flag)
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @GetMapping(value="/admin/department/deleteTable/{id}")
+    public GeneralResponse<Boolean> isDepartMentDeletable(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        try {
+
+            Boolean flag = adminServcice.getDepartmentIsDelatable(id);
+            if(flag)
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
+    @GetMapping(value="/admin/company/deletable/{id}")
+    public GeneralResponse<Boolean> isCompanyDeletable(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        try {
+
+            Boolean flag = adminServcice.getCompanyIsDelatable(id);
+            if(flag)
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
 
     @GetMapping(value="/admin/get/allCompany")
     public GeneralResponse<List<Company>> getAllCompany() throws Exception {

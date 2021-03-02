@@ -12,6 +12,7 @@ import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,41 +73,47 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/all/{getBy}/{id}")
-    public GeneralResponse<List<GetAllStockWithPartyNameResponse>> getAllStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<List<GetAllStockWithPartyNameResponse>>> getAllStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) throws Exception {
+
+        GeneralResponse<List<GetAllStockWithPartyNameResponse>> result;
+
         try {
             List<GetAllStockWithPartyNameResponse> stockMast = null;
             switch (getBy) {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
                     if (stockMast == null) {
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
-                        return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     }
+                    break;
 
                 case "group":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
                     if (stockMast == null) {
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
-                        return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     }
+                    break;
 
                 case "all":
                     stockMast = stockBatchService.getAllStockBatch(null, null);
                     if (stockMast == null) {
-                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
-                        return new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(stockMast, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     }
-
+                    break;
                 default:
-                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/stockBatch/{id}")

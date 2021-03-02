@@ -1044,4 +1044,17 @@ public class JetServiceImpl {
             throw new Exception("no jet data found");
         return jetMast.get();
     }
+
+    public Boolean getJetIsDeletable(Long id) throws Exception {
+        Optional<JetMast> jetMastExist = jetMastDao.getJetById(id);
+        if(jetMastExist.isEmpty())
+            throw new Exception("no jet found");
+
+        List<JetData> jetDataList = jetDataDao.findByControlId(id);
+        if(jetDataList.isEmpty())
+            return true;
+        else
+            return false;
+
+    }
 }

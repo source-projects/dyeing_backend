@@ -177,7 +177,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			chain.doFilter(request, response);
 		} catch(Exception e){
 			e.printStackTrace();
-			response.sendError(403,e.getMessage());
+			response.sendError(401,e.getMessage());
 		}
 	}
 

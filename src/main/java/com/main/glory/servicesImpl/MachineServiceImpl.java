@@ -655,4 +655,37 @@ public class MachineServiceImpl {
 
         return true;
     }
+
+    public boolean getCategoryIsDeletble(Long id) throws Exception {
+        MachineCategory machineCategoryExist = machineCategoryDao.getCategoryById(id);
+
+        if(machineCategoryExist==null)
+            throw new Exception("machine category not found");
+
+        List<MachineMast> machineMasts = machineDao.findByControlId(id);
+
+        if(machineMasts.isEmpty())
+            return true;
+        else
+            return false;
+
+
+    }
+
+    public boolean getMachineIsDeletable(Long id) throws Exception {
+        MachineMast machineMastExist = machineDao.getMachineById(id);
+        if(machineMastExist==null)
+            throw new Exception("machine not found");
+
+        //check the record is available or not
+        List<BoilerMachineRecord> boilerMachineRecords = boilerMachineRecordDao.getAllBoilerRecordByControlId(id);
+        List<MachineRecord> machineRecords = machineRecordDao.getMachineRecordByControlId(id);
+        List<Thermopack> thermopackList = thermopackDao.getAllThermopackRecordByControlId(id);
+
+        if(thermopackList.isEmpty() && boilerMachineRecords.isEmpty() && machineRecords.isEmpty() )
+            return true;
+        else
+            return false;
+
+    }
 }
