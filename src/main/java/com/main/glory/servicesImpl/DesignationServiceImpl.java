@@ -76,4 +76,16 @@ public class DesignationServiceImpl implements DesignationServiceInterface
             userService.updateUserByDesignation(x);
         }
     }
+
+    public Boolean getDesignationIsDelatable(Long id) throws Exception {
+        Designation designationExist = designationDao.getDesignationById(id);
+        if(designationExist==null)
+            throw new Exception("no designation found");
+
+        List<UserData> userDataList = userService.getUserByDesignation(designationExist.getId());
+        if(userDataList.isEmpty())
+            return true;
+        else
+            return false;
+    }
 }

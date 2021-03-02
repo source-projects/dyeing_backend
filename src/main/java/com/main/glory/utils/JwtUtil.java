@@ -11,6 +11,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,13 @@ public class JwtUtil {
 		long timeStamp = System.currentTimeMillis();
 		long exp = 0;
 		if(tokenType.equals("accessToken")){
-			exp = timeStamp + 1000 * 60 * 60;
+			//token expire after 2 days
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date(timeStamp));
+			c.add(Calendar.DATE,2);
+
+			exp = c.getTimeInMillis();
+
 			claims.put("permissions", user.getUserPermissionData());
 			claims.put("designation", user.getDesignationId().getDesignation());
 			claims.put("userHeadId", user.getUserHeadId());

@@ -274,6 +274,54 @@ public class MachineController extends ControllerConfig {
         }
         return null;
     }
+    @GetMapping(value="/machine/get/category/isDeletable/{id}")
+    public GeneralResponse<Boolean> getCategoryIsDeletable(@PathVariable(name="id")Long id) throws Exception {
+
+        boolean flag;
+        try {
+
+            if(id==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            flag = machineService.getCategoryIsDeletble(id);
+            if(flag ==true)
+                return new GeneralResponse<>(true, "Machine category deletable", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "Machine not deletable", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
+        }
+
+    }
+    @GetMapping(value="/machine/get/isDeletable/{id}")
+    public GeneralResponse<Boolean> getMachineIsDeletable(@PathVariable(name="id")Long id) throws Exception {
+
+        boolean flag;
+        try {
+
+            if(id==null)
+            {
+                return new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            }
+            flag = machineService.getMachineIsDeletable(id);
+            if(flag ==true)
+                return new GeneralResponse<>(true, "Machine deletable", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(false, "Machine is not deletable", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
+        }
+
+    }
 
     @PutMapping(value="/machine/update/")
     public GeneralResponse<Boolean> updateMachine(@RequestBody MachineMast machineMast) throws Exception {
