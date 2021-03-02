@@ -39,6 +39,27 @@ public class DesignationController extends ControllerConfig {
             return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping(value="/user/designation/deleteTable/{id}")
+    public GeneralResponse<Boolean> isDesignationDeletable(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        try {
+
+            Boolean flag = designationService.getDesignationIsDelatable(id);
+            if(flag)
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            else
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+        return result;
+    }
+
 
     @GetMapping("/user/designation")
     public GeneralResponse<List<Designation>> getDesignation() throws Exception{
