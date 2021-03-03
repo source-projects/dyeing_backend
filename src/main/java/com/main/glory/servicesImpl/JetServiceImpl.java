@@ -427,7 +427,7 @@ public class JetServiceImpl {
                     Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
                     SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
 
-                    DyeingSlipItemData dyeingSlipItemData=new DyeingSlipItemData(shadeData,supplierRate,supplier,totalBatchWt);
+                        DyeingSlipItemData dyeingSlipItemData=new DyeingSlipItemData(shadeData,supplierRate,supplier,totalBatchWt);
 
                     dyeingSlipItemDataList.add(dyeingSlipItemData);
                 }

@@ -39,6 +39,9 @@ public class MappingPermission {
         mapping.put("bf","batch");//bf==batch finish mtr
         mapping.put("ip","machine");//machine=all machine except jet
         mapping.put("wt","waterJet");
+        mapping.put("ad","admin");
+
+
 
     }
 
