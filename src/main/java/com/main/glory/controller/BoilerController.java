@@ -11,6 +11,7 @@ import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.servicesImpl.BoilerRecordImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,31 +24,35 @@ public class BoilerController extends ControllerConfig {
     BoilerRecordImpl boilerRecordService;
 
     @PostMapping(value="/machine/boilerRecord")
-    public GeneralResponse<Boolean> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
+
+        GeneralResponse<Boolean> result;
         if(boilerMachineRecord==null)
         {
-            return new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
         boolean flag;
         try {
 
             boilerRecordService.saveMachine(boilerMachineRecord);
-            return new GeneralResponse<Boolean>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<Boolean>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get boiler record as per the requirement
     @PostMapping(value="/machine/boilerRecord/basedOnFilter/")
-    public GeneralResponse<List<BoilerMachineRecord>> getBoilerRecordByFilter(@RequestBody BoilerRecordBasedOnFilter filter) throws Exception {
+    public ResponseEntity<GeneralResponse<List<BoilerMachineRecord>>> getBoilerRecordByFilter(@RequestBody BoilerRecordBasedOnFilter filter) throws Exception {
+        GeneralResponse<List<BoilerMachineRecord>> result;
         if(filter==null)
         {
-            return new GeneralResponse<>(null, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
 
         boolean flag;
@@ -55,78 +60,86 @@ public class BoilerController extends ControllerConfig {
 
             List<BoilerMachineRecord> list = boilerRecordService.getBoilerRecordBasedOnFilter(filter);
             if(list!=null)
-            return new GeneralResponse<>(list, "Machine fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(list, "Machine fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(null, "data not found", false
-                        , System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null, "data not found", false
+                        , System.currentTimeMillis(), HttpStatus.OK);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/machine/boilerRecord/allMachineRecord")
-    public GeneralResponse<List<BoilerMachineRecord>> getAllMachine() throws Exception {
+    public ResponseEntity<GeneralResponse<List<BoilerMachineRecord>>> getAllMachine() throws Exception {
 
+        GeneralResponse<List<BoilerMachineRecord>> result;
         boolean flag;
         try {
 
             List<BoilerMachineRecord> machineMasts = boilerRecordService.getAllMachineRecord();
             if(machineMasts.isEmpty())
             {
-                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            return new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping(value="/machine/boilerRecord/filter/")
-    public GeneralResponse<List<BoilerFilter>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
+    public ResponseEntity<GeneralResponse<List<BoilerFilter>>> getDataBasedOnFilter(@RequestBody GetRecordBasedOnFilter record) throws Exception {
 
+        GeneralResponse<List<BoilerFilter>> result;
         boolean flag;
         try {
 
             List<BoilerFilter> machineRecord = boilerRecordService.getDataBasedOnFilter(record);
             if(machineRecord.isEmpty())
             {
-                return new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            return new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
 
     @PutMapping(value="/machine/boilerRecord/update/")
-    public GeneralResponse<Boolean> updateBoilerRecord(@RequestBody UpdateBoilerRecord record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> updateBoilerRecord(@RequestBody UpdateBoilerRecord record) throws Exception {
 
+        GeneralResponse<Boolean> result ;
         boolean flag;
         try {
 
             flag = boilerRecordService.updateRecord(record);
             if(flag==true)
             {
-                return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            return new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result = new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 

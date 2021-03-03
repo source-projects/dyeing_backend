@@ -16,6 +16,7 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.servicesImpl.ColorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,20 +33,22 @@ public class ColorController extends ControllerConfig {
 	ColorServiceImpl colorService;
 
 	@PostMapping("/color")
-	public GeneralResponse<Boolean> addColor(@RequestBody ColorMast colorMast){
+	public ResponseEntity<GeneralResponse<Boolean>> addColor(@RequestBody ColorMast colorMast){
+		GeneralResponse<Boolean> result ;
 		try {
 			Optional<Supplier> supplier = supplierDao.findById(colorMast.getSupplierId());
 			if(supplier.isEmpty())
-				return new GeneralResponse<Boolean>(null, "No supplier found with id: "+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				result= new GeneralResponse<Boolean>(null, "No supplier found with id: "+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK);
 			colorService.addColor(colorMast);
-			return new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result= new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
 			String msg = e.getMessage();
 			String cause = e.getCause().getMessage();
 			if(cause.equals("BR") || msg.contains("null"))
-				return new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
-			return new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+				result = new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result =new GeneralResponse<Boolean>(false, msg, false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping("/color/all/{getBy}/{id}")
@@ -142,36 +145,38 @@ public class ColorController extends ControllerConfig {
 	}
 
 	@GetMapping(value = "/color/supplierList/getSupplierItemWithAvailableStock")
-	public GeneralResponse<List<SupplierItemWithLeftColorQty>> getSupplierItemWithAvailableStock(){
+	public ResponseEntity<GeneralResponse<List<SupplierItemWithLeftColorQty>>> getSupplierItemWithAvailableStock(){
 
-		GeneralResponse<List<SupplierItemWithLeftColorQty>> result;
+		GeneralResponse<List<SupplierItemWithLeftColorQty>> result ;
 		try {
 			List<SupplierItemWithLeftColorQty> records = colorService.getSupplierItemWithAvailableStock();
 			if(records.isEmpty())
-				result= new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 			else
-			result= new GeneralResponse<>(records, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(records, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
-		return result;
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 
 	@PostMapping("/color/box/issue")
-	public GeneralResponse<Boolean> issueBox(@RequestBody IssueBoxRequest issueBoxRequest){
+	public ResponseEntity<GeneralResponse<Boolean>> issueBox(@RequestBody IssueBoxRequest issueBoxRequest){
+		GeneralResponse<Boolean> result;
 		try {
 			colorService.issueBox(issueBoxRequest);
-			return new GeneralResponse<>(true, "Box issued successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(true, "Box issued successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	//get all color boxec
 	@GetMapping("/color/box/all")
-	public GeneralResponse<List<GetAllBox>> getAllBoxes(){
+	public ResponseEntity<GeneralResponse<List<GetAllBox>>> getAllBoxes(){
 		GeneralResponse<List<GetAllBox>> response;
 		try {
 			List<GetAllBox> list = colorService.getAllColorBoxes();
@@ -179,7 +184,7 @@ public class ColorController extends ControllerConfig {
 		} catch (Exception e) {
 			response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
 	}
 
 
