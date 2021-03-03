@@ -330,11 +330,22 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	}
 
     public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId) throws Exception{
+		List<GetShadeByPartyAndQuality> list = new ArrayList<>();
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
-		if(shadeByPartyAndQualities.isEmpty())
+
+
+		for(GetShadeByPartyAndQuality getShadeByPartyAndQuality : shadeByPartyAndQualities)
+		{
+			List<ShadeData> shadeData = shadeDataDao.findByControlId(getShadeByPartyAndQuality.getId());//shade id
+			if(shadeData==null || shadeData.isEmpty())
+				continue;
+
+			list.add(getShadeByPartyAndQuality);
+		}
+		if(list.isEmpty())
 			throw new Exception("shade data not found");
 
-		return shadeByPartyAndQualities;
+		return list;
 
     }
 
