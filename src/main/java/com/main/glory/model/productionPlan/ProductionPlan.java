@@ -2,6 +2,7 @@ package com.main.glory.model.productionPlan;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.jet.JetData;
+import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,5 +38,13 @@ public class ProductionPlan {
         this.status=productionPlan.getStatus();
         this.id=productionPlan.getId();
 
+    }
+
+    public ProductionPlan(AddProductionWithJet productionPlan) {
+        this.batchId=productionPlan.getBatchId();
+        this.stockId=productionPlan.getStockId();
+        this.partyId=productionPlan.getPartyId();
+        this.qualityEntryId=productionPlan.getQualityEntryId();
+        this.shadeId=productionPlan.getShadeId();
     }
 }

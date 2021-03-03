@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -26,6 +27,20 @@ public class ProductionPlanController extends ControllerConfig {
     {
         try {
             Long id = productionPlanService.saveProductionPlan(productionPlan);
+            return new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value="/productionPlanWithJet/")
+    public GeneralResponse<Long> productionPlanWithJet(@RequestBody AddProductionWithJet productionPlan)
+    {
+        try {
+            Long id = productionPlanService.saveProductionPlanWithJet(productionPlan);
             return new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
