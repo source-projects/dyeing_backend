@@ -231,7 +231,7 @@ public class ProductionPlanImpl {
         ProductionPlan x = productionPlanDao.save(productionPlanExist);
 
         //now check that the jet id is null or not
-        if(productionPlan.getJetId()==null)
+        if(productionPlan.getJetId()==null || productionPlan.getJetId()==0)
         {
             return x.getId();
         }

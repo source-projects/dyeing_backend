@@ -11,6 +11,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class ProductionPlanController extends ControllerConfig {
         }
     }
 
+    @Transactional
     @PostMapping(value="/productionPlanWithJet/")
     public GeneralResponse<Long> productionPlanWithJet(@RequestBody AddProductionWithJet productionPlan)
     {
