@@ -99,37 +99,30 @@ public class UserController extends ControllerConfig {
         try{
             switch (getBy) {
                 case "own":
-                    if(userService.getAllHeadUser(headers.get("id"))!=null) {
-                        users = userService.getAllUser(getBy, id);
+
+                        users = userService.getAllUser(getBy, id,headers.get("id"));
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
                             return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                    }
-                    else
-                        return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
 
                 case "group":
-                    if(userService.getAllHeadUser(headers.get("id"))!=null) {
-                        users = userService.getAllUser(getBy, id);
+
+                        users = userService.getAllUser(getBy, id,headers.get("id"));
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
                             return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                    }
-                    else
-                        return new GeneralResponse<>(null, "User Not Available", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
 
                 case "all":
-                    if(userService.getAllHeadUser(headers.get("id"))!=null) {
-                        users = userService.getAllUser(null, null);
+                        users = userService.getAllUser(null, null,headers.get("id"));
                         if(!users.isEmpty())
                             return new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                         else
                             return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
-                    }
-                    else
-                        return new GeneralResponse<>(null, "User Not Available ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+
 
                 default:
                     return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);

@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.Jet.JetDataDao;
 import com.main.glory.Dao.Jet.JetMastDao;
+import com.main.glory.Dao.QuantityRangeDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
@@ -22,6 +23,7 @@ import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.responce.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.qty.QuantityRange;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -37,6 +39,8 @@ import java.util.*;
 @Transactional
 public class JetServiceImpl {
 
+    @Autowired
+    QuantityRangeDao quantityRangeDao;
     @Autowired
     ProductionPlanDao productionPlanDao;
     @Autowired
@@ -376,13 +380,21 @@ public class JetServiceImpl {
                         slipItemList.setIsColor(false);
 
 
+                    Double amtQty = 0.0;
                     if(supplierRate.isPresent()) {
                         if (supplierRate.get().getItemType().equals("Color"))
-                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt) / 100);
-                        else
-                            slipItemList.setQty((dyeingChemicalData.getConcentration() * totalBatchWt *dyeingProcessData.getLiquerRation()) / 1000);
+                            amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
+                        else {
+
+                            amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
+                            //function call to check in the range
+                            amtQty = getAmountInRange(amtQty);
+
+                        }
                     }
 
+
+                    slipItemList.setQty(amtQty);
                     slipItemLists.add(slipItemList);
                 }
                 dyeingSlipData.setDyeingSlipItemData(slipItemLists);
@@ -481,6 +493,42 @@ public class JetServiceImpl {
 
 
 
+
+    }
+
+    private Double getAmountInRange(Double amtQty) {
+
+        List<QuantityRange> quantityRangeList = quantityRangeDao.getAllRange();
+        Double valueToReturn=0.0;
+
+        int i=0;
+        for(QuantityRange q:quantityRangeList)
+        {
+            if(q.getValue()>amtQty){
+
+                if(i>0 && i<quantityRangeList.size()) {
+
+                    valueToReturn = (q.getValue() + quantityRangeList.get(i - 1).getValue()) / 2;// i'th contain last index
+                    if (amtQty < valueToReturn) {
+                        valueToReturn = quantityRangeList.get(i-1).getValue();
+                    } else {
+                        valueToReturn = q.getValue();
+                    }
+                }
+                else
+                {
+                    if(i==0)
+                        valueToReturn=quantityRangeList.get(0).getValue();
+                    else
+                        valueToReturn=quantityRangeList.get(quantityRangeList.size()-1).getValue();
+                }
+
+                break;
+            }
+            i++;
+
+        }
+        return  valueToReturn;
 
     }
 
