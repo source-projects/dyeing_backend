@@ -5,7 +5,9 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -14,6 +16,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,8 @@ public class ProductionPlanImpl {
 
     @Autowired
     ProductionPlanDao productionPlanDao;
+    @Autowired
+    JetServiceImpl jetService;
 
     @Autowired
     QualityServiceImp qualityServiceImp;
@@ -210,6 +215,40 @@ public class ProductionPlanImpl {
     public List<ProductionPlan> getProductionByStockId(Long id) {
         List<ProductionPlan> productionPlans = productionPlanDao.getProductionByStockId(id);
         return productionPlans;
+    }
+
+    @Transactional
+    public Long saveProductionPlanWithJet(AddProductionWithJet productionPlan) throws Exception {
+
+        //first of all we have to store the infor of production any how
+        //then process for the jet if the jet id is not null
+        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(productionPlan.getBatchId(),productionPlan.getStockId());
+        if(productionPlanExist!=null)
+            throw new Exception("same production available with batch and stock");
+
+
+        productionPlanExist = new ProductionPlan(productionPlan);
+        ProductionPlan x = productionPlanDao.save(productionPlanExist);
+
+        //now check that the jet id is null or not
+        if(productionPlan.getJetId()==null)
+        {
+            return x.getId();
+        }
+        else
+        {
+            //we have to add the same data with jet as well
+            List<AddJetData> jetDataList = new ArrayList<>();
+            AddJetData addJetData = new AddJetData();
+            addJetData.setProductionId(x.getId());
+            addJetData.setControlId(productionPlan.getJetId());
+            addJetData.setSequence(12l);
+            jetDataList.add(addJetData);
+
+            jetService.saveJetData(jetDataList);
+            return x.getId();
+        }
+
     }
 
 /*
