@@ -30,6 +30,7 @@ public class AddShadeMast {
     Long userHeadId;
     String apcNo;
     Boolean pending;
+    Double extraRate;
     List<ShadeData> shadeDataList;
 
 

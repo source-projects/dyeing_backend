@@ -262,7 +262,12 @@ public class StockBatchController extends ControllerConfig {
 
             BatchToPartyAndQuality batchData = stockBatchService.getPartyAndQualityByBatch(controlId, batchId);
 
+            if(batchData!=null)
             return new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                return new GeneralResponse<>(batchData, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+
 
 
         } catch (Exception e) {

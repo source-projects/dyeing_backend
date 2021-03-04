@@ -15,6 +15,7 @@ import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,178 +39,207 @@ public class SupplierController extends ControllerConfig {
     }
 
     @PostMapping("/supplier")
-    public GeneralResponse<Boolean> addSupplier(@RequestBody Supplier supplier){
+    public ResponseEntity<GeneralResponse<Boolean>> addSupplier(@RequestBody Supplier supplier){
+        GeneralResponse<Boolean> result;
         try{
             Boolean flag = supplierService.addSupplier(supplier);
             if(flag) {
-                return new GeneralResponse<Boolean>(true, "Supplier added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<Boolean>(true, "Supplier added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping("/supplier/rates")
-    public GeneralResponse<Boolean> addSupplierRates(@RequestBody AddSupplierRateRequest addSupplierRateRequest){
+    public ResponseEntity<GeneralResponse<Boolean>> addSupplierRates(@RequestBody AddSupplierRateRequest addSupplierRateRequest){
+
+        GeneralResponse<Boolean> result;
         try{
             Boolean flag = supplierService.addSupplierRates(addSupplierRateRequest);
             if(flag) {
-                return new GeneralResponse<Boolean>(true, "Supplier rates added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<Boolean>(true, "Supplier rates added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping("/supplier/rate/{id}")
-    public GeneralResponse<Object> getSupplierAlongWithRates(@PathVariable("id") Long id){
+    public ResponseEntity<GeneralResponse<Object>> getSupplierAlongWithRates(@PathVariable("id") Long id){
+        GeneralResponse<Object> result;
         try{
             if(id == null){
-                return new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
 
             Object obj =  supplierService.getSupplier(id);
             if(obj != null){
-                return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/supplier/GetItemWithRateBy/{id}")
-    public GeneralResponse<List<RateAndItem>> getSupplierItemWithRateById(@PathVariable("id") Long id){
+    public ResponseEntity<GeneralResponse<List<RateAndItem>>> getSupplierItemWithRateById(@PathVariable("id") Long id){
+        GeneralResponse<List<RateAndItem>> result;
+
         try{
             if(id == null){
-                return new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
 
             List<RateAndItem> item =  supplierService.getSupplierItemAndRate(id);
             if(item != null){
-                return new GeneralResponse<>(item, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(item, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/supplier/rates/all")
-    public GeneralResponse<Object> getAllSupplierRates(){
+    public ResponseEntity<GeneralResponse<Object>> getAllSupplierRates(){
+        GeneralResponse<Object> result;
         try{
             Object obj = supplierService.getAllRates();
             if(obj != null){
-                return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/supplier/getItemWithSupplierName/all")
-    public GeneralResponse<List<GetItemWithSupplier>> getAllItemWithSupplierName(){
+    public ResponseEntity<GeneralResponse<List<GetItemWithSupplier>>> getAllItemWithSupplierName(){
+        GeneralResponse<List<GetItemWithSupplier>> result;
         try{
             List<GetItemWithSupplier> obj = supplierService.getAllItemWithSupplierName();
             if(obj != null){
-                return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping("/supplier/all/{getBy}/{id}")
-    public GeneralResponse<List> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
+    public ResponseEntity<GeneralResponse<List>> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
+        GeneralResponse<List> result;
         try{
             switch (getBy) {
                 case "own":
                     List obj = supplierService.getAllSupplier(getBy, id);
                     if(!obj.isEmpty()){
-                        return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     } else
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
+                    break;
                 case "group":
                     List obj1 = supplierService.getAllSupplier(getBy, id);
 
                     if(!obj1.isEmpty()){
-                        return new GeneralResponse<>(obj1, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(obj1, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     } else {
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
+                    break;
 
                 case "all":
                     List obj2 = supplierService.getAllSupplier(null, null);
                     if(!obj2.isEmpty()){
-                        return new GeneralResponse<>(obj2, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(obj2, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
                     } else {
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                     }
 
+                    break;
                 default:
-                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
     }
     @GetMapping("/supplier/all")
-    public GeneralResponse<List<GetAllSupplierWithName>> getAllSupplierName(){
+    public ResponseEntity<GeneralResponse<List<GetAllSupplierWithName>>> getAllSupplierName(){
+        GeneralResponse<List<GetAllSupplierWithName>> result;
         try{
 
             List<GetAllSupplierWithName> object =supplierService.getAllSupplierName();
 
-            return new GeneralResponse<>(object, "Data found", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(object, "Data found", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PutMapping("/supplier")
-    public GeneralResponse<Boolean> updateSupplier(@RequestBody UpdateSupplierRequest updateSupplierRequest){
+    public ResponseEntity<GeneralResponse<Boolean>> updateSupplier(@RequestBody UpdateSupplierRequest updateSupplierRequest){
+        GeneralResponse<Boolean> result;
         try{
             Boolean flag = supplierService.updateSupplier(updateSupplierRequest);
             if (flag) {
-                return new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PutMapping("/supplier/rates")
-    public GeneralResponse<Boolean> updateSupplier(@RequestBody UpdateSupplierRatesRequest updateSupplierRequest){
+    public ResponseEntity<GeneralResponse<Boolean>> updateSupplier(@RequestBody UpdateSupplierRatesRequest updateSupplierRequest){
+
+        GeneralResponse<Boolean> result;
         try{
             supplierService.updateSupplierRatesWithValidation(updateSupplierRequest);
 
-                return new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
 
     //get color item of supplier
     @GetMapping("/supplier/rate/colorItemsById/{supplierId}")
-    public GeneralResponse<List<SupplierRate>> getAllColorItemBySupplierId(@PathVariable(name = "supplierId") Long supplierId){
+    public ResponseEntity<GeneralResponse<List<SupplierRate>>> getAllColorItemBySupplierId(@PathVariable(name = "supplierId") Long supplierId){
+
 
         GeneralResponse<List<SupplierRate>> result;
         try{
@@ -217,17 +247,17 @@ public class SupplierController extends ControllerConfig {
             if(obj != null){
                 result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get color item of supplier
     @GetMapping("/supplier/rate/chemicalItemsById/{supplierId}")
-    public GeneralResponse<List<SupplierRate>> getAllChemicalItemBySupplierId(@PathVariable(name ="supplierId") Long supplierId){
+    public ResponseEntity<GeneralResponse<List<SupplierRate>>> getAllChemicalItemBySupplierId(@PathVariable(name ="supplierId") Long supplierId){
 
         GeneralResponse<List<SupplierRate>> result;
         try{
@@ -235,11 +265,11 @@ public class SupplierController extends ControllerConfig {
             if(obj != null){
                 result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 }
