@@ -1,5 +1,6 @@
 package com.main.glory.Dao;
 
+import com.main.glory.model.party.Party;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,4 +40,7 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     @Query("select s from Supplier s")
     List<Supplier> getAllSupplierList();
+
+    @Query("select s from Supplier s where s.supplierName=:name AND s.id!=:id")
+    Optional<Supplier> isSupplierByName(String name, Long id);
 }

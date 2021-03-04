@@ -28,6 +28,16 @@ public class SupplierController extends ControllerConfig {
     @Autowired
     SupplierServiceImpl supplierService;
 
+    @GetMapping("/isSupplierNameExists/{name}/{id}")
+    public GeneralResponse<Boolean> isUniqueSupplierName(@PathVariable("name") String name, @PathVariable("id") Long id){
+        try{
+            Boolean isPresent = supplierService.isUniqueName(id, name);
+            return new GeneralResponse<Boolean>(isPresent, "Supplier name exists:"+isPresent, true, System.currentTimeMillis(), HttpStatus.OK);
+        }catch (Exception e){
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/supplier")
     public ResponseEntity<GeneralResponse<Boolean>> addSupplier(@RequestBody Supplier supplier){
         GeneralResponse<Boolean> result;
