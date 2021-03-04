@@ -30,6 +30,15 @@ public class BatchImpl {
     @Autowired
     QualityServiceImp qualityServiceImp;
 
+    public boolean isBatchIdExists(String name, Long id){
+        Optional<BatchData> b = batchDao.isBatchUnique(name, id);
+        if(b.isPresent()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     public void saveBatch(BatchData batchData) {
 
