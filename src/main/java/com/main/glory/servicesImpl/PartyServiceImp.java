@@ -167,7 +167,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party1!=null)
             throw new Exception("Party code should be unique");
 
-        if (party.getGSTIN().isEmpty()) {
+        if (party.getGSTIN() ==null || party.getGSTIN().isEmpty()) {
             partyDao.saveAndFlush(party);
             return true;
         }
