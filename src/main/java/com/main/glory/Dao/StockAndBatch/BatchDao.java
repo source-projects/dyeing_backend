@@ -121,5 +121,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Transactional
     @Query("update BatchData b set b.isProductionPlanned=:b where b.id=:id")
     void updateProductionPlanned(Long id, boolean b);
+
+    @Query("select b from BatchData b where b.batchId=:name AND b.id!=:id")
+    Optional<BatchData> isBatchUnique(String name, Long id);
 }
 

@@ -28,7 +28,7 @@ public class SupplierController extends ControllerConfig {
     @Autowired
     SupplierServiceImpl supplierService;
 
-    @GetMapping("/isSupplierNameExists/{name}/{id}")
+    @GetMapping("/supplier/isSupplierNameExists/{name}/{id}")
     public GeneralResponse<Boolean> isUniqueSupplierName(@PathVariable("name") String name, @PathVariable("id") Long id){
         try{
             Boolean isPresent = supplierService.isUniqueName(id, name);

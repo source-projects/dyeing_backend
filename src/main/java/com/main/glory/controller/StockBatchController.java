@@ -28,6 +28,16 @@ public class StockBatchController extends ControllerConfig {
     @Autowired
     private StockBatchServiceImpl stockBatchService;
 
+    @GetMapping("/stockBatch/isBatchExists/{name}/{id}")
+    public GeneralResponse<Boolean> isBatchIdUnique(@PathVariable(value="name") String name, @PathVariable(value="id") Long id){
+        try{
+            Boolean isPresent = batchService.isBatchIdExists(name, id);
+            return new GeneralResponse<>(isPresent, "BatchId exists:"+isPresent, true, System.currentTimeMillis(), HttpStatus.OK);
+        }catch (Exception e){
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
     @PostMapping("/stockBatch")
     public GeneralResponse<Boolean> createBatch(@RequestBody StockMast stockMast) throws Exception {
