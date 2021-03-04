@@ -67,6 +67,16 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
     @Override
+    public Boolean isUniqueName(Long id, String name) {
+        Optional<Supplier> s = supplierDao.isSupplierByName(name, id);
+        if(s.isPresent())
+            return true;
+        else
+            return false;
+    }
+
+
+    @Override
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
         try {
             Supplier supplierExist = supplierDao.findBySupplierId(addSupplierRateRequest.getId());
