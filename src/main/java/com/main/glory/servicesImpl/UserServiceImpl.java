@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
     public void createUser(UserAddRequest userDataDto) throws Exception {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        UserData userData = modelMapper.map(userDataDto, UserData.class);
+        UserData userData = new UserData(userDataDto);
 
         Optional<UserData> data = userDao.findByUserName(userData.getUserName());
 
@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserServiceInterface {
         if (!userData1.isPresent()) {
             return 0;
         }
-        UserData userData2 = modelMapper.map(userData, UserData.class);
+        //UserData userData2 = modelMapper.map(userData, UserData.class);
         Optional<Designation> d = designationService.getDesignationById(userData.getDesignationId());
         if (d.isPresent()) {
             Optional<Designation> designation = designationDao.findById(userData.getDesignationId());
@@ -209,6 +209,13 @@ public class UserServiceImpl implements UserServiceInterface {
             else
                 throw new Exception("Wrong designation id" + userData1.get().getDesignationId());
 
+            if(userData.getPassword()==null || userData.getPassword().isEmpty())
+            {
+                userData1.get().setPassword(userData1.get().getPassword());
+            }
+            else {
+                userData1.get().setPassword(userData.getPassword());
+            }
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
             userData1.get().setLastName(userData.getLastName());
@@ -219,9 +226,23 @@ public class UserServiceImpl implements UserServiceInterface {
             userData1.get().setUserHeadId(userData.getUserHeadId());
             userData1.get().setUpdatedBy(userData.getUpdatedBy());
             userData1.get().setUserPermissionData(userData.getUserPermissionData());
-            userDao.save(userData1.get());
+
+            UserData x = userDao.save(userData1.get());
+
+            //check wether the last record update from admin and become the master or not
+            UserData userAdmin = userDao.getUserById(x.getUserHeadId());
+
+            if(userAdmin!=null)
+            {
+                if(userAdmin.getUserHeadId()==0)
+                {
+                    //update the recently updated record to master
+                    userDao.updateUserHeadId(x.getId(),x.getId());
+                }
+            }
+
         } else
-            throw new Exception("Wrong designation id" + userData2.getId());
+            throw new Exception("Wrong designation for user id" + userData.getId());
 
         return 1;
     }

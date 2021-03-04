@@ -52,7 +52,8 @@ public class ColorController extends ControllerConfig {
 	}
 
 	@GetMapping("/color/all/{getBy}/{id}")
-	public GeneralResponse<List<ColorMastDetails>> getColor(@PathVariable(value="getBy")String getBy, @PathVariable(value="id")Long id){
+	public ResponseEntity<GeneralResponse<List<ColorMastDetails>>> getColor(@PathVariable(value="getBy")String getBy, @PathVariable(value="id")Long id){
+		GeneralResponse<List<ColorMastDetails>> result;
 		try{
 			List<ColorMastDetails> obj = null;
 			switch (getBy) {
@@ -60,88 +61,102 @@ public class ColorController extends ControllerConfig {
 					//System.out.println(obj);
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
-						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					} else {
-						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
 				case "group":
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
-						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					} else {
-						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
 				case "all":
 					obj = colorService.getAll(null,null);
 					if(!obj.isEmpty()){
-						return new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					} else {
-						return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
 				default:
-					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
 	}
 
 	@PutMapping("/color")
-	public GeneralResponse<Boolean> updateColor(@RequestBody ColorMast colorMast) {
+	public ResponseEntity<GeneralResponse<Boolean>> updateColor(@RequestBody ColorMast colorMast) {
+		GeneralResponse<Boolean> result;
 		try {
 			colorService.updateColor(colorMast);
-			return new GeneralResponse<>(true, "color updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(true, "color updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@DeleteMapping(value = "/color/{id}")
-	public GeneralResponse<Boolean> deleteColorById(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<GeneralResponse<Boolean>> deleteColorById(@PathVariable(value = "id") Long id) {
+		GeneralResponse<Boolean> result;
 		try{
 			colorService.deleteColorById(id);
-			return new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping(value = "/color/{id}")
-	public GeneralResponse<ColorMast> getColorDataById(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<GeneralResponse<ColorMast>> getColorDataById(@PathVariable(value = "id") Long id) {
+
+		GeneralResponse<ColorMast> result;
 		if (id != null) {
 			var colorData = colorService.getColorById(id);
 			if (colorData!=null) {
-				return new GeneralResponse<>(colorData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				result = new GeneralResponse<>(colorData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
 			} else
-				return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				result = new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK);
 		} else
-			return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
 
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping(value = "/color/box/all/{issued}")
-	public GeneralResponse<List<ColorBox>> getColorBox(@PathVariable(value = "issued") Boolean issued){
+	public ResponseEntity<GeneralResponse<List<ColorBox>>> getColorBox(@PathVariable(value = "issued") Boolean issued){
+		GeneralResponse<List<ColorBox>> result;
 		try {
 			List<ColorBox> colorBoxes = colorService.getAllBox(issued);
-			return new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping(value = "/color/box/{issued}/{itemId}")
-	public GeneralResponse<List<GetAllBox>> getColorBox(@PathVariable(value = "itemId") Long itemId,@PathVariable(value = "issued") Boolean issued){
+	public ResponseEntity<GeneralResponse<List<GetAllBox>>> getColorBox(@PathVariable(value = "itemId") Long itemId,@PathVariable(value = "issued") Boolean issued){
+
+		GeneralResponse<List<GetAllBox>> result;
 		try {
 			List<GetAllBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId,issued);
-			return new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping(value = "/color/supplierList/getSupplierItemWithAvailableStock")
@@ -171,7 +186,7 @@ public class ColorController extends ControllerConfig {
 		} catch (Exception e) {
 			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+		return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	//get all color boxec

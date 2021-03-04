@@ -22,6 +22,7 @@ public class UserUpdateRequest {
     Long designationId;
     Long userHeadId;
     Long updatedBy;
+    String password;
     private UserPermission userPermissionData;
 
 }

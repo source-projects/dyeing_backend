@@ -11,6 +11,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.servicesImpl.ProductionPlanImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,171 +25,190 @@ public class ProductionPlanController extends ControllerConfig {
     ProductionPlanImpl productionPlanService;
 
     @PostMapping(value="/productionPlan/")
-    public GeneralResponse<Long> saveProductionPlan(@RequestBody ProductionPlan productionPlan)
+    public ResponseEntity<GeneralResponse<Long>> saveProductionPlan(@RequestBody ProductionPlan productionPlan)
     {
+        GeneralResponse<Long> result =null;
         try {
             Long id = productionPlanService.saveProductionPlan(productionPlan);
-            return new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @Transactional
     @PostMapping(value="/productionPlanWithJet/")
-    public GeneralResponse<Long> productionPlanWithJet(@RequestBody AddProductionWithJet productionPlan)
+    public ResponseEntity<GeneralResponse<Long>> productionPlanWithJet(@RequestBody AddProductionWithJet productionPlan)
     {
+        GeneralResponse<Long> result;
         try {
             Long id = productionPlanService.saveProductionPlanWithJet(productionPlan);
-            return new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get batch detail by production and batch id
     @GetMapping(value="/productionPlan/getBatchdDetailByProductionAndBatch/{productionId}/{batchId}")
-    public GeneralResponse<GetBatchDetailByProduction> getBatchDetailByProductinIdAndBatchId(@PathVariable(name="productionId")Long productionId,@PathVariable(name = "batchId") String batchId)
+    public ResponseEntity<GeneralResponse<GetBatchDetailByProduction>> getBatchDetailByProductinIdAndBatchId(@PathVariable(name="productionId")Long productionId,@PathVariable(name = "batchId") String batchId)
     {
         GeneralResponse<GetBatchDetailByProduction> result;
         try {
             GetBatchDetailByProduction data = productionPlanService.getBatchDetailByProductionAndBatchId(productionId,batchId);
             if(data!=null)
-                result= new GeneralResponse<>(data, " Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result = new GeneralResponse<>(data, " Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result= new GeneralResponse<>(data, " data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(data, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
 
     @PutMapping(value="/updateProductionPlan/")
-    public GeneralResponse<Boolean> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
+    public ResponseEntity<GeneralResponse<Boolean>> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
     {
+        GeneralResponse<Boolean> result;
         try {
             productionPlanService.updateProductionPlan(productionPlan);
-            return new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
     @GetMapping(value="/productionPlan/{id}")
-    public GeneralResponse<ProductionPlan> getProductionPlan(@PathVariable(name="id")Long id)
+    public ResponseEntity<GeneralResponse<ProductionPlan>> getProductionPlan(@PathVariable(name="id")Long id)
     {
+        GeneralResponse<ProductionPlan> result;
         try {
             ProductionPlan productionPlanRecord = productionPlanService.getProductionData(id);
-            return new GeneralResponse<ProductionPlan>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result =  new GeneralResponse<ProductionPlan>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/productionPlan/all")
-    public GeneralResponse<List<GetAllProductionWithShadeData>> getAllProductionWithoutJetPlan()
+    public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>>> getAllProductionWithoutJetPlan()
     {
+        GeneralResponse<List<GetAllProductionWithShadeData>> result;
         try {
             List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData();
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/productionPlan/withAndWithoutPlan/all")
-    public GeneralResponse<List<GetAllProductionWithShadeData>> getAllProduction()
+    public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>>> getAllProduction()
     {
+        GeneralResponse<List<GetAllProductionWithShadeData>> result;
         try {
             List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionDataWithAndWithoutPlan();
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get all production without filter]
     @GetMapping(value="/productionPlan/allProductionWithoutFilter")
-    public GeneralResponse<List<GetAllProduction>> allProductionWithoutFilter()
+    public ResponseEntity<GeneralResponse<List<GetAllProduction>>> allProductionWithoutFilter()
     {
+        GeneralResponse<List<GetAllProduction>> result;
         try {
             List<GetAllProduction> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get production by party and quality who are not added in jet yet
     @GetMapping(value="/productionPlan/getProductionByPartyAndQuality/{partyId}/{qualityEntryId}")
-    public GeneralResponse<List<ProductionPlan>> getProductionByPartyAndQuality(@PathVariable(name = "partyId") Long partyId,@PathVariable(name = "qualityEntryId") Long qualityEntryId)
+    public ResponseEntity<GeneralResponse<List<ProductionPlan>>> getProductionByPartyAndQuality(@PathVariable(name = "partyId") Long partyId,@PathVariable(name = "qualityEntryId") Long qualityEntryId)
     {
+        GeneralResponse<List<ProductionPlan>> result;
         try {
             List<ProductionPlan> productionPlanRecord = productionPlanService.getAllProductionListByPartyAndQuality(partyId,qualityEntryId);
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            return new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @DeleteMapping(value="/productionPlan/deleteBy/{id}")
-    public GeneralResponse<Boolean> deleteById(@PathVariable(name="id")Long id)
+    public ResponseEntity<GeneralResponse<Boolean>> deleteById(@PathVariable(name="id")Long id)
     {
+        GeneralResponse<Boolean> result;
         try {
             Boolean flag = productionPlanService.deleteById(id);
             if(flag)
-            return new GeneralResponse<Boolean>(true, "Data deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<Boolean>(true, "Data deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<Boolean>(true, "Data not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<Boolean>(true, "Data not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
