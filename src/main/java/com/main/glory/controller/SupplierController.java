@@ -136,9 +136,10 @@ public class SupplierController extends ControllerConfig {
             if(obj != null){
                 result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -153,27 +154,27 @@ public class SupplierController extends ControllerConfig {
                 case "own":
                     List obj = supplierService.getAllSupplier(getBy, id);
                     if(!obj.isEmpty()){
-                        result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     } else
-                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
                     break;
                 case "group":
                     List obj1 = supplierService.getAllSupplier(getBy, id);
 
                     if(!obj1.isEmpty()){
-                        result= new GeneralResponse<>(obj1, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(obj1, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
-                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
                     }
                     break;
 
                 case "all":
                     List obj2 = supplierService.getAllSupplier(null, null);
                     if(!obj2.isEmpty()){
-                        result= new GeneralResponse<>(obj2, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(obj2, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
-                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
                     }
 
                     break;
