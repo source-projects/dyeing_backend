@@ -18,8 +18,10 @@ import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,12 @@ import java.util.*;
 
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
+
+    @Autowired
+    ProductionPlanImpl productionPlanService;
+
+    @Autowired
+    ShadeServiceImpl shadeService;
 
     @Autowired
     PartyServiceImp partyServiceImp;
@@ -725,9 +733,21 @@ public class DispatchMastImpl {
 
             }
 
+            //get the shade rate as well
+            ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.getBatchId(),batch.getStockId());
+            if(productionPlan==null)
+                continue;
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+
+            Double shadeRate=0.0;
+            if(shadeMast.isPresent())
+            {
+                shadeRate = shadeMast.get().getExtraRate();
+            }
+
             //Count the total amt based on quality rate and total finish mtr
             if(quality.get().getRate()!=null && finishMtr>0.0)
-            amt=quality.get().getRate()*finishMtr;
+            amt=(quality.get().getRate()+shadeRate)*finishMtr;
 
 
             //set the quality with batch data
