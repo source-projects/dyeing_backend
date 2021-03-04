@@ -66,6 +66,7 @@ public class ColorController extends ControllerConfig {
 						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
+					break;
 				case "group":
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
@@ -73,7 +74,7 @@ public class ColorController extends ControllerConfig {
 					} else {
 						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
-
+					break;
 				case "all":
 					obj = colorService.getAll(null,null);
 					if(!obj.isEmpty()){
@@ -82,6 +83,7 @@ public class ColorController extends ControllerConfig {
 						result = new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
 					}
 
+					break;
 				default:
 					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 			}

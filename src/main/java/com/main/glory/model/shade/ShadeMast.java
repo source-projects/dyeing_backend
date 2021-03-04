@@ -52,6 +52,7 @@ import java.util.List;
 	String processName;
 	String apcNo;
 	Boolean pending;
+	Double extraRate;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -79,6 +80,7 @@ import java.util.List;
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
 		this.userHeadId=addShadeMast.getUserHeadId();
+		this.extraRate = addShadeMast.getExtraRate();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
 
@@ -98,6 +100,7 @@ import java.util.List;
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
 		this.userHeadId=addShadeMast.getUserHeadId();
+		this.extraRate=addShadeMast.getExtraRate();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
 

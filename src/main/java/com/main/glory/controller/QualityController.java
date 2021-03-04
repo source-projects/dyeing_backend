@@ -66,14 +66,14 @@ public class QualityController extends ControllerConfig {
                         result =  new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
                         result = new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
-
+                    break;
                 case "group":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
                         result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
                         result= new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
-
+                    break;
                 case "all":
                     x = qualityServiceImp.getAllQuality(null, null);
                     if(!x.isEmpty())
@@ -81,6 +81,7 @@ public class QualityController extends ControllerConfig {
                     else
                         result= new GeneralResponse<>(x, "No quality added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 
+                    break;
                 default:
                     result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
             }
@@ -107,7 +108,9 @@ public class QualityController extends ControllerConfig {
                     result = new GeneralResponse<Boolean>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.OK);
                 }
             }
-            result =  new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            else {
+                result = new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
         }catch(Exception e){
             result =new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
@@ -176,6 +179,7 @@ public class QualityController extends ControllerConfig {
         }
         else
         result = new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
@@ -192,7 +196,9 @@ public class QualityController extends ControllerConfig {
                     result= new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
                 }
             }
-            result= new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            else {
+                result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            }
         }catch (Exception e )
         {
             result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
