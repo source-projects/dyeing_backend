@@ -136,11 +136,11 @@ public class SupplierController extends ControllerConfig {
             if(obj != null){
                 result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(obj, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
