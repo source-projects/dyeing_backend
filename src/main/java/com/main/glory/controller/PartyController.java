@@ -192,6 +192,7 @@ public class PartyController extends ControllerConfig {
 
 		}catch(Exception e)
 		{
+			e.printStackTrace();
 			result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
