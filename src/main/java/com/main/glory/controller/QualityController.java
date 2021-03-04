@@ -16,6 +16,7 @@ import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.main.glory.servicesImpl.QualityServiceImp;
 
@@ -33,7 +34,7 @@ public class QualityController extends ControllerConfig {
     private PartyDao partyDao;
 
     @PostMapping(value = "/quality")
-    public GeneralResponse<Boolean> saveQuality(@RequestBody AddQualityRequest quality) {
+    public ResponseEntity<GeneralResponse<Boolean>> saveQuality(@RequestBody AddQualityRequest quality) {
         GeneralResponse<Boolean> result;
         try{
 
@@ -50,46 +51,49 @@ public class QualityController extends ControllerConfig {
         } catch (Exception e) {
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value = "/quality/all/{getBy}/{id}")
-    public GeneralResponse<List<GetQualityResponse>> getQualityList(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) {
+    public ResponseEntity<GeneralResponse<List<GetQualityResponse>>> getQualityList(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) {
+        GeneralResponse<List<GetQualityResponse>> result;
         try {
             List<GetQualityResponse> x;
             switch (getBy){
                 case "own":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result =  new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
-                        return new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result = new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
                 case "group":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
-                        return new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
                 case "all":
                     x = qualityServiceImp.getAllQuality(null, null);
                     if(!x.isEmpty())
-                        return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
-                        return new GeneralResponse<>(x, "No quality added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        result= new GeneralResponse<>(x, "No quality added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 
                 default:
-                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PutMapping(value = "/quality")
-    public GeneralResponse<Boolean> updateQualityById(@RequestBody UpdateQualityRequest quality) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> updateQualityById(@RequestBody UpdateQualityRequest quality) throws Exception {
+        GeneralResponse<Boolean> result;
         try {
             Optional<Party> party = partyDao.findById(quality.getPartyId());
             if(party.isEmpty()){
@@ -98,44 +102,50 @@ public class QualityController extends ControllerConfig {
             if (quality.getId() != null) {
                 boolean flag = qualityServiceImp.updateQuality(quality);
                 if (flag) {
-                    return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                    result= new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                 } else {
-                    return new GeneralResponse<Boolean>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                    result = new GeneralResponse<Boolean>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.OK);
                 }
             }
-            return new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }catch(Exception e){
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value = "/quality/{id}")
-    public GeneralResponse<GetQualityResponse> getQualityDataById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<GeneralResponse<GetQualityResponse>> getQualityDataById(@PathVariable(value = "id") Long id) {
+        GeneralResponse<GetQualityResponse> result;
         if (id != null) {
             var qualityData = qualityServiceImp.getQualityByID(id);
             if (qualityData == null) {
-                return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result =  new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK);
             } else
-                return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result =  new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
         } else
-            return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value = "/quality/allQuality")
-    public GeneralResponse<List<GetAllQualtiy>> getAllQualityData(@RequestHeader Map<String, String> headers) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetAllQualtiy>>> getAllQualityData(@RequestHeader Map<String, String> headers) throws Exception{
 
+        GeneralResponse<List<GetAllQualtiy>> result;
         try {
 
             List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityDataWithHeaderId(headers.get("id"));
             if (qualityData == null) {
-                return new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result =  new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
+            else {
 
-            return new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result = new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
         }catch (Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
@@ -153,21 +163,25 @@ public class QualityController extends ControllerConfig {
 //    }
 
     @GetMapping(value = "/is_quality_exist/{quality_id}/{id}")
-    public GeneralResponse<Boolean> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id,@PathVariable(name="id")Long id) {
+    public ResponseEntity<GeneralResponse<Boolean>> IsQualityAlreadyExist(@PathVariable("quality_id") String quality_id,@PathVariable(name="id")Long id) {
 
+        GeneralResponse<Boolean> result;
         if (quality_id != null) {
             Boolean flag = qualityServiceImp.getQualityIsExist(quality_id,id);
             if (flag) {
-                return new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<Boolean>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-            return new GeneralResponse<Boolean>(false, "quality id not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result = new GeneralResponse<Boolean>(false, "quality id not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         }
-        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        else
+        result = new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
     }
 
     @DeleteMapping(value="/quality/{id}")
-    public GeneralResponse<Boolean> deleteQualityDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> deleteQualityDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
         GeneralResponse<Boolean> result;
         try {
             if (id != null) {
@@ -183,7 +197,7 @@ public class QualityController extends ControllerConfig {
         {
             result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 }

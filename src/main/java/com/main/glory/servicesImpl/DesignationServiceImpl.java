@@ -58,6 +58,11 @@ public class DesignationServiceImpl implements DesignationServiceInterface
             if (designationExist == null)
                 throw new Exception("no designation found");
 
+            List<UserData> userDataList  = userService.getUserByDesignation(id);
+            if(!userDataList.isEmpty())
+                throw new Exception("designation can't delete");
+
+
             designationDao.deleteDesignationById(id);
             return true;
         }

@@ -159,11 +159,12 @@ public class PartyServiceImp implements PartyServiceInterface {
     @Override
     public boolean editPartyDetails(Party party) throws Exception {
         var partyIndex = partyDao.findById(party.getId());
-        Party party1 = partyDao.findByPartyCode(party.getPartyCode());
+        Party party1 = partyDao.findByPartyCodeExceptId(party.getPartyCode(),party.getId());
+
         if (!partyIndex.isPresent())
             throw new Exception("Party data not found for id:" + party.getId());
 
-        if (party1!=null && party1.getId() != party.getId())
+        if (party1!=null)
             throw new Exception("Party code should be unique");
 
         if (party.getGSTIN().isEmpty()) {
