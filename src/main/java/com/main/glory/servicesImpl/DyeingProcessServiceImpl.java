@@ -9,6 +9,7 @@ import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
 import com.main.glory.model.qualityProcess.Chemical;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.SupplierRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ import java.util.Optional;
 @Service("dyeingProcessServiceImpl")
 public class DyeingProcessServiceImpl {
 
+    @Autowired
+    SupplierServiceImpl supplierService;
 
     @Autowired
     ShadeServiceImpl shadeService;
@@ -58,6 +61,25 @@ public class DyeingProcessServiceImpl {
     public DyeingProcessMast getDyeingProcessById(Long processId) throws Exception {
 
         DyeingProcessMast x = dyeingProcessMastDao.getDyeingProcessById(processId);
+        int i=0;
+        List<DyeingProcessData> dyeingProcessDataList = new ArrayList<>();
+        for(DyeingProcessData dyeingProcessData:x.getDyeingProcessData())
+        {
+            List<DyeingChemicalData> dyeingChemicalDataList = new ArrayList<>();
+
+            for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
+            {
+                SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                dyeingChemicalData.setItemName(supplierRate.getItemName());
+                dyeingChemicalDataList.add(dyeingChemicalData);
+            }
+
+            dyeingProcessData.setDyeingChemicalData(dyeingChemicalDataList);
+
+            dyeingProcessDataList.add(dyeingProcessData);
+        }
+        x.setDyeingProcessData(dyeingProcessDataList);
+
         return x;
     }
 
