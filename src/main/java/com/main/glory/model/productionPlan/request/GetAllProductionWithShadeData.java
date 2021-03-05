@@ -24,6 +24,8 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
     Double totalMtr;
 
 
+
+
     public GetAllProductionWithShadeData(ProductionPlan productionPlan,String colorTone,String qualityName,String qualityId,String processName,String partyShadeNo,Double WT,Double MTR)
     {
         super(productionPlan);
@@ -34,6 +36,7 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
         this.partyShadeNo=partyShadeNo;
         this.totalMtr=MTR;
         this.totalWt=WT;
+
     }
     public GetAllProductionWithShadeData(ProductionPlan productionPlan,String colorTone)
     {

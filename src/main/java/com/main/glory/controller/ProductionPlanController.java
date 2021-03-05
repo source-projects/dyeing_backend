@@ -41,7 +41,7 @@ public class ProductionPlanController extends ControllerConfig {
     }
 
     @Transactional
-    @PostMapping(value="/productionPlanWithJet/")
+    @PostMapping(value="/productionPlan/productionPlanWithJet/")
     public ResponseEntity<GeneralResponse<Long>> productionPlanWithJet(@RequestBody AddProductionWithJet productionPlan)
     {
         GeneralResponse<Long> result;
