@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
             }
             userData.setDesignationId(designationData.get());
+            userData.setUserPermissionData(userDataDto.getUserPermissionData());
             //System.out.println(userData.toString());
 
 
