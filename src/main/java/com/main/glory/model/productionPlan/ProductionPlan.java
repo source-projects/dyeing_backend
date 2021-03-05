@@ -41,10 +41,12 @@ public class ProductionPlan {
     }
 
     public ProductionPlan(AddProductionWithJet productionPlan) {
+        this.id=productionPlan.getProductionId();
         this.batchId=productionPlan.getBatchId();
         this.stockId=productionPlan.getStockId();
         this.partyId=productionPlan.getPartyId();
         this.qualityEntryId=productionPlan.getQualityEntryId();
         this.shadeId=productionPlan.getShadeId();
+        this.status = false;
     }
 }
