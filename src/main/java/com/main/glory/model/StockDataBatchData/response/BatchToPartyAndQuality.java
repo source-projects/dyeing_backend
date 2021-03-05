@@ -21,6 +21,8 @@ public class BatchToPartyAndQuality {
     String qualityName;
     Double totalWt;
     Double totalMtr;
+    String processName;
+    String partyShadeNo;
 
 
     public BatchToPartyAndQuality(Quality quality, Party party, GetBatchWithControlId batch) {

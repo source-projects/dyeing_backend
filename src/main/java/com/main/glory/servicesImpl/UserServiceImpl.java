@@ -1,7 +1,11 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.admin.CompanyDao;
+import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.admin.Company;
+import com.main.glory.model.admin.Department;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
@@ -21,6 +25,13 @@ import java.util.Optional;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserServiceInterface {
+
+    @Autowired
+    DepartmentDao departmentDao;
+
+    @Autowired
+    CompanyDao companyDao;
+
 
     @Autowired
     UserDao userDao;
@@ -45,8 +56,18 @@ public class UserServiceImpl implements UserServiceInterface {
 
 
     public void createUser(UserAddRequest userDataDto) throws Exception {
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        //company and designation check
+
+        Department departmentExist =departmentDao.getDepartmentById(userDataDto.getDepartmentId());
+        if(departmentExist==null)
+            throw new Exception("department not found");
+
+        Company companyExist = companyDao.getCompanyById(userDataDto.getCompanyId());
+        if(companyExist==null)
+            throw new Exception("company not found");
+
         UserData userData = new UserData(userDataDto);
+
 
         Optional<UserData> data = userDao.findByUserName(userData.getUserName());
 
@@ -96,11 +117,19 @@ public class UserServiceImpl implements UserServiceInterface {
         //admin requesting
         if(userData.getUserHeadId()==0)
         {
+
             List<UserData> list =userDao.getAllUserHeadList();
 
             for(UserData e : list)
             {
-                userHeads.add(new getAllUserInfo(e));
+                Company company =companyDao.getCompanyById(e.getCompanyId());
+                if(company==null)
+                    continue;
+
+                Department department= departmentDao.getDepartmentById(e.getDepartmentId());
+                if(department==null)
+                    continue;
+                userHeads.add(new getAllUserInfo(e,company,department));
             }
 
         }
@@ -109,12 +138,20 @@ public class UserServiceImpl implements UserServiceInterface {
             //master and operator get only master detail
             if(userData.getUserHeadId()==userData.getId())
             {
-                userHeads.add(new getAllUserInfo(userData));
+                Company company =companyDao.getCompanyById(userData.getCompanyId());
+                Department department = departmentDao.getDepartmentById(userData.getDepartmentId());
+
+
+                userHeads.add(new getAllUserInfo(userData,company,department));
             }
             else {
                 //operator
+
+
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
-                userHeads.add(new getAllUserInfo(userHead));
+                Company company =companyDao.getCompanyById(userHead.getCompanyId());
+                Department department = departmentDao.getDepartmentById(userHead.getDepartmentId());
+                userHeads.add(new getAllUserInfo(userData,company,department));
             }
 
 
@@ -216,13 +253,21 @@ public class UserServiceImpl implements UserServiceInterface {
             else {
                 userData1.get().setPassword(userData.getPassword());
             }
+            Company company =companyDao.getCompanyById(userData.getCompanyId());
+            if(company==null)
+                throw new Exception("company not found");
+
+            Department departmentExist =departmentDao.getDepartmentById(userData.getDepartmentId());
+            if(departmentExist==null)
+                throw new Exception("department not found");
+
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
             userData1.get().setLastName(userData.getLastName());
             userData1.get().setEmail(userData.getEmail());
             userData1.get().setContact(userData.getContact());
-            userData1.get().setCompany(userData.getCompany());
-            userData1.get().setDepartment(userData.getDepartment());
+            userData1.get().setCompanyId(userData.getCompanyId());
+            userData1.get().setDepartmentId(userData.getDepartmentId());
             userData1.get().setUserHeadId(userData.getUserHeadId());
             userData1.get().setUpdatedBy(userData.getUpdatedBy());
             userData1.get().setUserPermissionData(userData.getUserPermissionData());
@@ -280,28 +325,28 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
-    public List<UserData> getAllUserByCompany(String name) {
+    /*public List<UserData> getAllUserByCompany(String name) {
         List<UserData> list = userDao.findByCompanyName(name);
         return list;
-    }
+    }*/
 
-    public void updateUserCompanyById(Long id, String name) throws Exception {
+    /*public void updateUserCompanyById(Long id, String name) throws Exception {
         UserData userData =userDao.getUserById(id);
         if(userData==null)
             throw new Exception("no user found");
 
         userDao.updateCompanyById(id,name);
 
-    }
+    }*/
 
-    public List<UserData> getAllUserByDepartment(String name) {
+   /* public List<UserData> getAllUserByDepartment(String name) {
         List<UserData> userDataList = userDao.getAllUserByDepartment(name);
         return userDataList;
-    }
+    }*/
 
-    public void updateUserByDepartment(Long id, String name) {
+   /* public void updateUserByDepartment(Long id, String name) {
         userDao.updateDepartmentById(id,name);
-    }
+    }*/
 
     public UserIdentification getUserHeadDetail(Long id) throws Exception {
 
@@ -343,9 +388,9 @@ public class UserServiceImpl implements UserServiceInterface {
         userDao.updateUserByDesignation(designation);
     }
 
-    public List<UserData> getUserByCompany(String name) {
+   /* public List<UserData> getUserByCompany(String name) {
         return userDao.getAllUserByCompany(name);
-    }
+    }*/
 
     public Boolean getUserNameExist(String username, Long id) {
         //id is null then insert request
@@ -366,5 +411,13 @@ public class UserServiceImpl implements UserServiceInterface {
             else
                 return false;
         }
+    }
+
+    public List<UserData> getUserByCompanyId(Long id) {
+        return userDao.getUserByCompanyId(id);
+    }
+
+    public List<UserData> getAllUserByDepartmentId(Long id) {
+        return userDao.getAllUserByDepartmentId(id);
     }
 }
