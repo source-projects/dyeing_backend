@@ -12,12 +12,14 @@ import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,7 +36,14 @@ import java.util.*;
 public class StockBatchServiceImpl {
 
     @Autowired
+    ShadeServiceImpl shadeService;
+
+    @Autowired
+    DyeingProcessServiceImpl dyeingProcessService;
+
+    @Autowired
     JetServiceImpl jetService;
+
     @Autowired
     ProductionPlanImpl productionPlanService;
 
@@ -531,8 +540,30 @@ public class StockBatchServiceImpl {
 
                 Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
+
                 BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
 
+                //check that the process and party shade is exist or not
+                //if not then set the detail by null
+                ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.getBatchId(),batch.getControlId());
+                if(productionPlan==null) {
+                    batchToPartyAndQuality.setPartyShadeNo(null);
+                    batchToPartyAndQuality.setProcessName(null);
+                }
+                else
+                {
+                    //get the shade and process
+                    Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                    DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+                    if(dyeingProcessMast==null || shadeMast.isEmpty())
+                        continue;
+
+
+                    batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+                    batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
+                }
+                //add the record
                 getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
             }
         }

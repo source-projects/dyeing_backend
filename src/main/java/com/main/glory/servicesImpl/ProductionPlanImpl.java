@@ -227,8 +227,25 @@ public class ProductionPlanImpl {
             throw new Exception("same production available with batch and stock");
 
 
+
+        //update the status of  batches as well
+        List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
+        if(batchDataList.isEmpty())
+            throw new Exception("No batch data found");
+
+        //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
+
+        for(BatchData batchData:batchDataList)
+        {
+            if(batchData.getIsProductionPlanned()==false)
+                batchData.setIsProductionPlanned(true);
+            batchDao.save(batchData);
+        }
         productionPlanExist = new ProductionPlan(productionPlan);
         ProductionPlan x = productionPlanDao.save(productionPlanExist);
+
+
+
 
         //now check that the jet id is null or not
         if(productionPlan.getJetId()==null || productionPlan.getJetId()==0)
@@ -248,6 +265,7 @@ public class ProductionPlanImpl {
             jetService.saveJetData(jetDataList);
             return x.getId();
         }
+
 
     }
 

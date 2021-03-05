@@ -174,7 +174,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		} catch(Exception e){
 			e.printStackTrace();
 			String errorMessage = e.getMessage();
-			Integer statusCode = 402;
+			Integer statusCode = 402;//unauthotize access or no jwt
 			if(errorMessage.contains("JWT expired")){
 				errorMessage = "JWT expired";
 				statusCode = 401;

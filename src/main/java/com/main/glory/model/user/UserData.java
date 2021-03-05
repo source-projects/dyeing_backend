@@ -27,8 +27,8 @@ public class UserData {
     Long contact;
     @JsonIgnore
     String password;
-    String company;
-    String department;
+    Long companyId;
+    Long departmentId;
     Long userHeadId;
     Date createdDate;
     Date updatedDate;
@@ -48,8 +48,8 @@ public class UserData {
         this.lastName=userDataDto.getLastName();
         this.email=userDataDto.getEmail();
         this.password=userDataDto.getPassword();
-        this.company =userDataDto.getCompany();
-        this.department= userDataDto.getDepartment() ;
+        this.companyId =userDataDto.getCompanyId();
+        this.departmentId= userDataDto.getDepartmentId() ;
         this.createdBy = userDataDto.getCreatedBy();
         this.userHeadId = userDataDto.getUserHeadId();
 

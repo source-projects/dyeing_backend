@@ -303,8 +303,6 @@ public class StockBatchController extends ControllerConfig {
                 result = new GeneralResponse<>(batchData, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
 
-
-
         } catch (Exception e) {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
@@ -461,5 +459,6 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
 
     }
+
 
 }

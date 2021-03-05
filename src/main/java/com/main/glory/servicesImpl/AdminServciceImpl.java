@@ -73,7 +73,7 @@ public class AdminServciceImpl {
 
             //check the company is assign to user or not
 
-            List<UserData> userData = userService.getUserByCompany(companyExist.getName());
+            List<UserData> userData = userService.getUserByCompanyId(companyExist.getId());
             if(!userData.isEmpty())
                 throw new Exception("remove the user first");
 
@@ -114,7 +114,7 @@ public class AdminServciceImpl {
             Department exist = departmentDao.getDepartmentById(id);
             if (exist == null)
                 throw new Exception("no data found");
-            List<UserData> userDataList = userService.getAllUserByDepartment(exist.getName());
+            List<UserData> userDataList = userService.getAllUserByDepartmentId(exist.getId());
             if(!userDataList.isEmpty())
                 throw new Exception("can't delete the department");
 
@@ -144,13 +144,9 @@ public class AdminServciceImpl {
             throw new Exception("no data found");
         }
 
-        List<UserData> userDataList =userService.getAllUserByCompany(companyExist.getName());
+        //List<UserData> userDataList =userService.getAllUserByCompany(companyExist.getName());
         companyDao.save(company);
 
-        for(UserData userData:userDataList)
-        {
-            userService.updateUserCompanyById(userData.getId(),company.getName());
-        }
 
     }
 
@@ -189,12 +185,7 @@ public class AdminServciceImpl {
         if(departmentExist==null)
             throw new Exception("no record found");
 
-        List<UserData> userDataList = userService.getAllUserByDepartment(department.getName());
         departmentDao.save(department);
-        for(UserData userData: userDataList)
-        {
-            userService.updateUserByDepartment(userData.getId(),department.getName());
-        }
 
     }
 
@@ -215,7 +206,7 @@ public class AdminServciceImpl {
         if(departmentExist==null)
             throw new Exception("no department found");
 
-        List<UserData> userDataList = userService.getAllUserByDepartment(departmentExist.getName());
+        List<UserData> userDataList = userService.getAllUserByDepartmentId(departmentExist.getId());
 
         if(userDataList.isEmpty())
             return true;
@@ -229,7 +220,7 @@ public class AdminServciceImpl {
         if(companyExist==null)
             throw new Exception("company data not found");
 
-        List<UserData> userDataList = userService.getUserByCompany(companyExist.getName());
+        List<UserData> userDataList = userService.getUserByCompanyId(companyExist.getId());
         if(userDataList.isEmpty())
             return true;
         else

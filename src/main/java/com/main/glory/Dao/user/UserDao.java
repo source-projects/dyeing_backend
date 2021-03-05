@@ -58,22 +58,22 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select s from UserData s where s.createdBy=:id OR s.userHeadId=:userHeadId")
     List<UserData> findAllByCreatedByAndUserHeadId(Long id, Long userHeadId);
 
-    @Query("select u from UserData u where u.company=:name")
-    List<UserData> findByCompanyName(String name);
+    /*@Query("select u from UserData u where u.company=:name")
+    List<UserData> findByCompanyName(String name);*/
 
-    @Modifying
+    /*@Modifying
     @Transactional
     @Query("update UserData u set u.company=:name where u.id=:id")
-    void updateCompanyById(Long id, String name);
+    void updateCompanyById(Long id, String name);*/
 
-    @Query("select u from UserData u where u.department=:name")
-    List<UserData> getAllUserByDepartment(String name);
+    /*@Query("select u from UserData u where u.department=:name")
+    List<UserData> getAllUserByDepartment(String name);*/
 
-    @Modifying
+    /*@Modifying
     @Transactional
     @Query("update UserData u set u.department=:name where id=:id")
     void updateDepartmentById(Long id, String name);
-
+*/
     @Query("select u from UserData u where u.designationId.id=:id")
     List<UserData> getAllUserByDesignation(Long id);
 
@@ -91,8 +91,8 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.id=u.userHeadId")
     List<UserData> getAllUserHeadList();
 
-    @Query("select u from UserData u where u.company=:name")
-    List<UserData> getAllUserByCompany(String name);
+  /*  @Query("select u from UserData u where u.company=:name")
+    List<UserData> getAllUserByCompany(String name);*/
 
 
     @Query("select u from UserData u where u.userName=:username AND u.id!=:id")
@@ -103,4 +103,10 @@ public interface UserDao extends JpaRepository<UserData, Long> {
 
     @Query("select s from UserData s where s.id!=:headerId OR s.userHeadId=0")
     List<UserData> getAllUserExceptHeaderId(Long headerId);
+
+    @Query("select s from UserData s where s.companyId=:id")
+    List<UserData> getUserByCompanyId(Long id);
+
+    @Query("select s from UserData s where s.departmentId=:id")
+    List<UserData> getAllUserByDepartmentId(Long id);
 }
