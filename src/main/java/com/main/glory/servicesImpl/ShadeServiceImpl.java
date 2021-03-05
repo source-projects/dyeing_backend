@@ -337,7 +337,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		for(GetShadeByPartyAndQuality getShadeByPartyAndQuality : shadeByPartyAndQualities)
 		{
 			List<ShadeData> shadeData = shadeDataDao.findByControlId(getShadeByPartyAndQuality.getId());//shade id
-			if(shadeData==null || shadeData.isEmpty())
+			if(shadeData==null || shadeData.isEmpty() || shadeData.get(0).getSupplierItemId()==null)
 				continue;
 
 			list.add(getShadeByPartyAndQuality);
