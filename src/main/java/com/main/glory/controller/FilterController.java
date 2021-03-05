@@ -42,11 +42,11 @@ public class FilterController extends ControllerConfig {
             if(!stockMast.isEmpty()){
                 result = new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }else{
-                result = new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -66,7 +66,7 @@ public class FilterController extends ControllerConfig {
             }
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
@@ -85,7 +85,7 @@ public class FilterController extends ControllerConfig {
                 result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
@@ -98,12 +98,12 @@ public class FilterController extends ControllerConfig {
 
             List<InvoiceWithBatch> filterData = dispatchMastService.getInvoiceListBasedOnFilter(filter);
             if(!filterData.isEmpty())
-                result = new GeneralResponse<>(filterData, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result = new GeneralResponse<>(filterData, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
     }*/

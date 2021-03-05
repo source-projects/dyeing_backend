@@ -28,12 +28,12 @@ public class RestoreDbController extends ControllerConfig {
             {
                 return new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            else return new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            else return new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.OK);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
     }
@@ -49,12 +49,12 @@ public class RestoreDbController extends ControllerConfig {
             {
                 return new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            else return new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            else return new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.OK);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
     }

@@ -363,7 +363,8 @@ public class JetServiceImpl {
                 {
                     DyeingSlipItemData slipItemList =new DyeingSlipItemData();
                     slipItemList.setItemId(dyeingChemicalData.getItemId());
-                    slipItemList.setItemName(dyeingChemicalData.getItemName());
+                    SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                    slipItemList.setItemName(supplierRateItem.getItemName());
 
                     String name = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
                     slipItemList.setSupplierName(name);
@@ -903,7 +904,8 @@ public class JetServiceImpl {
             for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
             {
                 SlipItemList item =new SlipItemList();
-                item.setItemName(dyeingChemicalData.getItemName());
+                SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                item.setItemName(supplierRateItem.getItemName());
                 String supplier = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
                 item.setSupplierName(supplier);
                 //count the qty by liquerration * processConcentration * batchWt

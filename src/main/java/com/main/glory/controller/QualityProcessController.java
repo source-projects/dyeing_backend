@@ -35,13 +35,13 @@ public class QualityProcessController extends ControllerConfig {
 	public GeneralResponse<Boolean> addQualityProcess(@RequestBody QualityProcessMast qualityProcessMast){
 		try{
 			if(qualityProcessMast == null){
-				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 			qualityProcess.saveQualityProcessMast(qualityProcessMast);
 			return new GeneralResponse<>(true, "Process Added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		}catch (Exception e){
 			e.printStackTrace();
-			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class QualityProcessController extends ControllerConfig {
 						});
 						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
 					}else
-						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
 				case "group":
 					qualityProcessMasts = qualityProcess.qualityProcessMasts(getBy, id);
@@ -69,7 +69,7 @@ public class QualityProcessController extends ControllerConfig {
 						});
 						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
 					}else
-						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
 				case "all":
 					qualityProcessMasts = qualityProcess.qualityProcessMasts(null, null);
@@ -79,15 +79,15 @@ public class QualityProcessController extends ControllerConfig {
 						});
 						return new GeneralResponse<>(res, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
 					}else
-						return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 
 				default:
-					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+					return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class QualityProcessController extends ControllerConfig {
 			QualityProcessMast qualityProcessMasts = qualityProcess.findById(id);
 			return new GeneralResponse<>(qualityProcessMasts, "Fetched Successfully", true, System.currentTimeMillis(),HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
 
@@ -105,15 +105,15 @@ public class QualityProcessController extends ControllerConfig {
 	public GeneralResponse<Boolean> updateQualityProcess(@RequestBody UpdateRequestQualityProcess qualityProcessMast){
 		try{
 			if(qualityProcessMast == null){
-				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				return new GeneralResponse<>(false, "Null data passed", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 			Optional<QualityProcessMast> q = qualityProcessDao.findById(qualityProcessMast.getId());
 			if(!q.isPresent())
-				return new GeneralResponse<>(false, "No process found with id: "+qualityProcessMast.getId(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				return new GeneralResponse<>(false, "No process found with id: "+qualityProcessMast.getId(), false, System.currentTimeMillis(), HttpStatus.OK);
 			qualityProcess.update(qualityProcessMast);
 			return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
 
@@ -122,11 +122,11 @@ public class QualityProcessController extends ControllerConfig {
 		try{
 			Optional<QualityProcessMast> q = qualityProcessDao.findById(id);
 			if(!q.isPresent())
-				return new GeneralResponse<>(false, "No process found with id: "+id, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				return new GeneralResponse<>(false, "No process found with id: "+id, false, System.currentTimeMillis(), HttpStatus.OK);
 			qualityProcess.deleteQualityProcess(id);
 			return new GeneralResponse<>(true, "Process deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		}catch(Exception e){
-			return  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
 

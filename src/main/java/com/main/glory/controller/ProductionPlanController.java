@@ -72,7 +72,7 @@ public class ProductionPlanController extends ControllerConfig {
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -90,7 +90,7 @@ public class ProductionPlanController extends ControllerConfig {
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -102,12 +102,12 @@ public class ProductionPlanController extends ControllerConfig {
         GeneralResponse<ProductionPlan> result;
         try {
             ProductionPlan productionPlanRecord = productionPlanService.getProductionData(id);
-            result =  new GeneralResponse<ProductionPlan>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result =  new GeneralResponse<ProductionPlan>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -121,7 +121,7 @@ public class ProductionPlanController extends ControllerConfig {
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -140,7 +140,7 @@ public class ProductionPlanController extends ControllerConfig {
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -160,7 +160,7 @@ public class ProductionPlanController extends ControllerConfig {
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -180,7 +180,7 @@ public class ProductionPlanController extends ControllerConfig {
             if(productionPlanRecord.isEmpty())
                 throw new Exception("no data faund");
 
-            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -200,13 +200,13 @@ public class ProductionPlanController extends ControllerConfig {
             if(flag)
             result =  new GeneralResponse<Boolean>(true, "Data deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result = new GeneralResponse<Boolean>(true, "Data not found ", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<Boolean>(true, "Data not found ", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

@@ -36,7 +36,7 @@ public class PartyController extends ControllerConfig {
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -62,7 +62,7 @@ public class PartyController extends ControllerConfig {
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			response=  new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			response=  new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
 	}
@@ -110,11 +110,11 @@ public class PartyController extends ControllerConfig {
 					}
 					break;
 				default:
-					result = new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+					result = new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			result = new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -164,7 +164,7 @@ public class PartyController extends ControllerConfig {
 		GeneralResponse<Boolean> result;
 		if(partyCode==null)
 		{
-			result = new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.OK);
 		}
 
 		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode,id);
@@ -186,14 +186,17 @@ public class PartyController extends ControllerConfig {
 				if (flag) {
 					result = new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 				} else {
-					result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
 				}
+			}
+			else {
+				result=new GeneralResponse<>(false,"NUll id passed",false,System.currentTimeMillis(),HttpStatus.OK);
 			}
 
 		}catch(Exception e)
 		{
 			e.printStackTrace();
-			result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -207,15 +210,15 @@ public class PartyController extends ControllerConfig {
 				if (flag) {
 					result =  new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 				} else {
-					result= new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					result= new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
 				}
 			}
 			else {
-				result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		}catch (Exception e )
 		{
-			result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
