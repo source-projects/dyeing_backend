@@ -43,6 +43,7 @@ public class UserData {
     private Designation designationId;
 
     public UserData(UserAddRequest userDataDto) {
+        this.contact = userDataDto.getContact();
         this.userName=userDataDto.getUserName();
         this.firstName = userDataDto.getFirstName();
         this.lastName=userDataDto.getLastName();
