@@ -7,6 +7,7 @@ import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.servicesImpl.DocumentImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,16 +20,18 @@ public class Document extends ControllerConfig {
     DocumentImpl documentService;
 
     @GetMapping("/party/")
-    public GeneralResponse<Boolean> GetBatchByMaster(@RequestBody GetDocumentModel documentModel){
+    public ResponseEntity<GeneralResponse<Boolean>> GetBatchByMaster(@RequestBody GetDocumentModel documentModel){
+        GeneralResponse<Boolean> result;
         try{
             documentService.getParty(documentModel);
 
-            return new GeneralResponse<>(true, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(true, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
 

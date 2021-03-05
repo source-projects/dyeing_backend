@@ -85,7 +85,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId = :id AND p.isProductionPlanned = false GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> getBatchAndStockListWithoutProductionPlanByStockId(Long id);
 
-    @Query("select SUM(b.wt) from BatchData b where b.isProductionPlanned = true AND b.controlId=:controlId AND b.batchId=:batchId GROUP BY b.batchId,b.controlId")
+    @Query("select SUM(b.wt) from BatchData b where b.controlId=:controlId AND b.batchId=:batchId GROUP BY b.batchId,b.controlId")
     Double getTotalWtByControlIdAndBatchId(Long controlId, String batchId);
 
     @Query("select b from BatchData b where b.batchId=:batchId AND b.controlId=:stockId AND b.isBillGenrated=true")
@@ -121,5 +121,11 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Transactional
     @Query("update BatchData b set b.isProductionPlanned=:b where b.id=:id")
     void updateProductionPlanned(Long id, boolean b);
+
+    @Query("select b from BatchData b where b.batchId=:name AND b.controlId!=:id")
+    Optional<BatchData> isBatchUnique(String name, Long id);
+
+    @Query("select SUM(b.mtr) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId")
+    Double getTotalMtrByControlIdAndBatchId(Long stockId, String batchId);
 }
 

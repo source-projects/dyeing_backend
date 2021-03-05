@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.google.api.Http;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.user.Request.UserAddRequest;
@@ -7,6 +8,7 @@ import com.main.glory.model.waterJet.WaterJet;
 import com.main.glory.servicesImpl.WaterJetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,69 +21,80 @@ public class WaterJetController extends ControllerConfig {
     WaterJetServiceImpl waterJetService;
 
     @PostMapping("/waterJet")
-    public GeneralResponse<Boolean> saveWaterJet(@RequestBody WaterJet waterJetData) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> saveWaterJet(@RequestBody WaterJet waterJetData) throws Exception{
 
+        GeneralResponse<Boolean> result;
         try{
             waterJetService.saveWaterJet(waterJetData);
-            return new GeneralResponse<>(true,"Water Jet created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(true,"Water Jet created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
 
     }
 
     @GetMapping("/waterJet/{id}")
-    public GeneralResponse<WaterJet> getWaterJet(@PathVariable(name="id") Long id) throws Exception{
+    public ResponseEntity<GeneralResponse<WaterJet>> getWaterJet(@PathVariable(name="id") Long id) throws Exception{
+
+        GeneralResponse<WaterJet> result;
 
         try{
             WaterJet data = waterJetService.getWaterJetById(id);
-            return new GeneralResponse<>(data,"Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(data,"Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
     @DeleteMapping("/waterJet/delete/{id}")
-    public GeneralResponse<Boolean> deleteWaterJet(@PathVariable(name="id") Long id) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> deleteWaterJet(@PathVariable(name="id") Long id) throws Exception{
 
+        GeneralResponse<Boolean> result;
         try{
             waterJetService.deleteWaterJet(id);
-            return new GeneralResponse<>(true,"Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(true,"Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
     @PutMapping("/waterJet/update/{id}")
-    public GeneralResponse<Boolean> updateWaterJet(@RequestBody WaterJet waterJet) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> updateWaterJet(@RequestBody WaterJet waterJet) throws Exception{
 
+        GeneralResponse<Boolean> result;
         try{
             waterJetService.updateWaterJet(waterJet);
-            return new GeneralResponse<>(true,"Data updated successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(true,"Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
     @GetMapping("/waterJet/all")
-    public GeneralResponse<List<WaterJet>> GetAllWaterJet() throws Exception{
+    public ResponseEntity<GeneralResponse<List<WaterJet>>> GetAllWaterJet() throws Exception{
 
+        GeneralResponse<List<WaterJet>> result;
         try{
             List<WaterJet> waterJetList = waterJetService.getAllWaterJet();
-            return new GeneralResponse<>(waterJetList,"Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(waterJetList,"Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
 }

@@ -28,7 +28,7 @@ public class ProgramController extends ControllerConfig {
     public GeneralResponse<Boolean> saveProgram(@RequestBody AddProgramWithProgramRecord program) throws Exception {
         if(program==null)
         {
-            return new GeneralResponse<Boolean>(false, "Program id is null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, "Program id is null", true, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         try {
@@ -37,7 +37,7 @@ public class ProgramController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -48,31 +48,31 @@ public class ProgramController extends ControllerConfig {
                 case "own":
                     var data = programServiceImpl.getAllProgram(getBy, id);
                     if (!data.isEmpty())
-                        return new GeneralResponse<>(data, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(data, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
                 case "group":
                     var data1 = programServiceImpl.getAllProgram(getBy, id);
                     if (!data1.isEmpty())
-                        return new GeneralResponse<>(data1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(data1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
-                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
                 case "all":
                     var data2 = programServiceImpl.getAllProgram(null, null);
                     if (!data2.isEmpty())
-                        return new GeneralResponse<>(data2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                        return new GeneralResponse<>(data2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
                     else
-                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                        return new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 
                 default:
-                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                    return new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         }catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
     }
@@ -93,7 +93,7 @@ public class ProgramController extends ControllerConfig {
         }
         catch (Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 
         }
 
@@ -110,7 +110,7 @@ public class ProgramController extends ControllerConfig {
                 return new GeneralResponse<>(programObject,"Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         }
-        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+        return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
     }
 
     //get partshade no with respected shadeId
@@ -121,10 +121,10 @@ public class ProgramController extends ControllerConfig {
             if (listData != null) {
                 return new GeneralResponse<>(listData, "Data Get successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
-            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            return new GeneralResponse<>(null, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
         }catch (Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -140,7 +140,7 @@ public class ProgramController extends ControllerConfig {
         }
         catch(Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -155,10 +155,10 @@ public class ProgramController extends ControllerConfig {
             }
             else
             {
-                return new GeneralResponse<>(false,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(false,"Data not found",false,System.currentTimeMillis(),HttpStatus.OK);
             }
         }
-        return new GeneralResponse<>(false,"Data not deleted",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+        return new GeneralResponse<>(false,"Data not deleted",false,System.currentTimeMillis(),HttpStatus.OK);
     }
 
     @GetMapping(value="/program/BatchData/{id}")
@@ -174,7 +174,7 @@ public class ProgramController extends ControllerConfig {
                }
                else
                {
-                   return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.NOT_FOUND);
+                   return new GeneralResponse<>(null,"Data not found",false,System.currentTimeMillis(),HttpStatus.OK);
                }
            }
 
@@ -182,7 +182,7 @@ public class ProgramController extends ControllerConfig {
        }
        catch (Exception e)
        {
-           return new GeneralResponse<>(null,e.getMessage(),false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+           return new GeneralResponse<>(null,e.getMessage(),false,System.currentTimeMillis(),HttpStatus.OK);
        }
         return null;
     }

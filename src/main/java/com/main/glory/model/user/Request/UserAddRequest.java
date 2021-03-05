@@ -21,8 +21,8 @@ public class UserAddRequest {
     String email;
     Long contact;
     String password;
-    String company;
-    String department;
+    Long companyId;
+    Long departmentId;
     Long createdBy;
     Long designationId;
     Long userHeadId;

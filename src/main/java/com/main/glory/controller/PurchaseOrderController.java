@@ -28,10 +28,10 @@ public class PurchaseOrderController extends ControllerConfig {
             if(flag) {
                 return new GeneralResponse<Boolean>(true, "Order added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                return new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                return new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
     @GetMapping("/purchaseOrder/all")
@@ -40,12 +40,12 @@ public class PurchaseOrderController extends ControllerConfig {
             List<ResponsePurchase> purchaseOrderList = purchaseOrderService.getAllPurchaseOrder();
             if(purchaseOrderList.isEmpty())
             {
-                return new GeneralResponse<>(null, "Order not added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                return new GeneralResponse<>(null, "Order not added yet", false, System.currentTimeMillis(), HttpStatus.OK);
             }
             return new GeneralResponse<>(purchaseOrderList, "Order fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
     @PutMapping("/purchaseOrder/update/")
@@ -55,7 +55,7 @@ public class PurchaseOrderController extends ControllerConfig {
             return new GeneralResponse<>(true, "Order updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 

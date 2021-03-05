@@ -34,19 +34,19 @@ public class AdminController extends ControllerConfig {
     public GeneralResponse<Boolean> saveJet(@RequestBody AddJet jetMast) throws Exception {
         if(jetMast==null)
         {
-            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             jetService.saveJet(jetMast);
-            return new GeneralResponse<Boolean>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<Boolean>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -54,38 +54,38 @@ public class AdminController extends ControllerConfig {
     public GeneralResponse<Boolean> updateJet(@RequestBody AddJet jetMast) throws Exception {
         if(jetMast==null)
         {
-            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             jetService.updateJet(jetMast);
-            return new GeneralResponse<Boolean>(null, "Jet updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<Boolean>(null, "Jet updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
     @GetMapping(value="/admin/jet/getJetById/{id}")
     public GeneralResponse<JetMast> getJetMast(@PathVariable(name = "id")Long id) throws Exception {
         if(id==null)
         {
-            return new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             JetMast jetMast = jetService.getJetMastById(id);
-            return new GeneralResponse<>(jetMast, "Jet data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            return new GeneralResponse<>(jetMast, "Jet data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -96,20 +96,20 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveCompanyName(c);
-            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -119,20 +119,20 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Company> result;
         if(id==null)
         {
-            result= new GeneralResponse<>(null, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             Company c  = adminServcice.getCompanyById(id);
-            result= new GeneralResponse<>(c, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(c, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -142,20 +142,20 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(company==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             adminServcice.updateCompany(company);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -165,20 +165,20 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(department==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             adminServcice.updateDepartment(department);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -191,20 +191,20 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveDepartment(c);
-            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -214,7 +214,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -228,7 +228,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -239,7 +239,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -253,7 +253,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -265,20 +265,20 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(data==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveApprovedBy(data);
-            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -294,14 +294,14 @@ public class AdminController extends ControllerConfig {
 
             List<ApprovedBy> list = adminServcice.getApprovedByList();
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -314,12 +314,12 @@ public class AdminController extends ControllerConfig {
         try {
 
                 adminServcice.updateApprovedBy(approvedBy);
-                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -335,12 +335,12 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("data can't be null");
 
             ApprovedBy data =adminServcice.getApprovedById(id);
-            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }
@@ -362,7 +362,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -394,12 +394,12 @@ public class AdminController extends ControllerConfig {
         try {
 
             adminServcice.updateDepartment(department);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }*/
@@ -420,7 +420,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -441,7 +441,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -462,7 +462,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -483,7 +483,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -504,7 +504,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -527,7 +527,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -549,7 +549,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -563,14 +563,14 @@ public class AdminController extends ControllerConfig {
 
             Boolean list = adminServcice.deleteDepartmentById(id);
             if(list==false)
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return result;
     }*/
@@ -590,7 +590,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

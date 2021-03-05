@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddProductionWithJet {
+    Long productionId;
     String batchId;
     Long stockId;
     Long partyId;

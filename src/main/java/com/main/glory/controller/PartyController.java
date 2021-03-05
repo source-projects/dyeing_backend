@@ -24,23 +24,25 @@ public class PartyController extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 
 	@PostMapping(value="/party")
-	public GeneralResponse<Boolean> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
+	public ResponseEntity<GeneralResponse<Boolean>> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
 	{
+		GeneralResponse<Boolean> result;
 		try {
 		    partyServiceImp.saveParty(party);
 			System.out.println("har::"+headers.get("id"));
 			//System.out.println(id);
-			return new GeneralResponse<Boolean>(true, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+			result = new GeneralResponse<Boolean>(true, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping(value="/party/isPartyNameIsExist/{name}/{id}")
-	public GeneralResponse<Boolean> isPartyNameIsExist(@PathVariable(name = "name") String name,@PathVariable(name="id")Long id)
+	public ResponseEntity<GeneralResponse<Boolean>> isPartyNameIsExist(@PathVariable(name = "name") String name,@PathVariable(name="id")Long id)
 	{
 		GeneralResponse<Boolean> response;
 		try {
@@ -60,14 +62,14 @@ public class PartyController extends ControllerConfig {
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			response=  new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			response=  new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
 	}
 	
-	@ResponseStatus(HttpStatus.OK)
+
 	@GetMapping(value="/party/all/{getBy}/{id}")
-	public GeneralResponse<List<Party>> getPartyList(@PathVariable(value = "id") Long id, @PathVariable( value = "getBy") String getBy)
+	public ResponseEntity<GeneralResponse<List<Party>>> getPartyList(@PathVariable(value = "id") Long id, @PathVariable( value = "getBy") String getBy)
 	{
 		GeneralResponse<List<Party>> result;
 
@@ -76,110 +78,131 @@ public class PartyController extends ControllerConfig {
 				case "own":
 					var x = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x.isEmpty()) {
-						return new GeneralResponse<List<Party>>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						result = new GeneralResponse<List<Party>>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					}
 					else {
-						return new GeneralResponse<List<Party>>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<List<Party>>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 					}
+					break;
 				case "group":
 					var x1 = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x1.isEmpty())
 					{
-						return new GeneralResponse<List<Party>>(x1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						result = new GeneralResponse<List<Party>>(x1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					}
 					else {
-						return new GeneralResponse<List<Party>>(x1, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<List<Party>>(x1, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 					}
+					break;
 				case "all":
 					var x2 = partyServiceImp.getAllPartyDetails(null, null);
 					if (!x2.isEmpty()) {
 						//throw new ResponseStatusException(HttpStatus.OK,x2.toString());
-						return new GeneralResponse<List<Party>>(x2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
-						//return ResponseEntity.status(HttpStatus.OK).body(result);
+						result = new GeneralResponse<List<Party>>(x2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						//result = ResponseEntity.status(HttpStatus.OK).body(result);
 					}
 					else {
 
 						//response.getHeaders().add("status","404");
-						return new GeneralResponse<List<Party>>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<List<Party>>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 						//throw new Exception("no");
-						//return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+						//result = ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
 					}
+					break;
 				default:
-					return new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+					result = new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			result = new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 
 		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
 	}
 
 	@GetMapping(value="/party/{id}")
-	public GeneralResponse<PartyWithUserHeadName> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
-           if(id!=null)
+	public ResponseEntity<GeneralResponse<PartyWithUserHeadName>> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
+        GeneralResponse<PartyWithUserHeadName> result;
+		if(id!=null)
 		   {
 			   PartyWithUserHeadName partyObject=partyServiceImp.getPartyDetailById(id);
 			   if(partyObject!=null)
 			   {
-			   	    return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			   	    result = new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
 			   }
-			   return new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+			   else
+			   result = new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK);
 		   }
-           return new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		else {
+			result=new GeneralResponse<>(null,"null id passed",false,System.currentTimeMillis(),HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 
 
 	@GetMapping(value="/party/allPartyWithName")
-	public GeneralResponse<List<PartyWithName>> getAllPartyName(@RequestHeader Map<String, String> headers)
+	public ResponseEntity<GeneralResponse<List<PartyWithName>>> getAllPartyName(@RequestHeader Map<String, String> headers)
 	{
+		GeneralResponse<List<PartyWithName>> result;
 		List<PartyWithName> partyObject=partyServiceImp.getAllPartyNameWithHeaderId(headers.get("id"));
 		if(!partyObject.isEmpty())
 		{
-			return new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.FOUND);
+			result = new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
 		}
-
-		return new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+		else {
+			result = new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@GetMapping(value="/party/partyCodeExist/{partyCode}/{id}")
-	public GeneralResponse<Boolean> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode,@PathVariable(name="id") Long id)
+	public ResponseEntity<GeneralResponse<Boolean>> getPartyCodeExistOrNot(@PathVariable(name="partyCode") String partyCode,@PathVariable(name="id") Long id)
 	{
+		GeneralResponse<Boolean> result;
 		if(partyCode==null)
 		{
-			return new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result = new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.OK);
 		}
 
 		Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode,id);
 		if(partyCodeExistOrNot==true)
-			return new GeneralResponse<>(true, "Party code not found ", true, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(true, "Party code not found ", true, System.currentTimeMillis(), HttpStatus.OK);
 		else
-		return new GeneralResponse<>(false, "Party code found", false, System.currentTimeMillis(), HttpStatus.FOUND);
+		result = new GeneralResponse<>(false, "Party code found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
 	@PutMapping(value="/party")
-	public GeneralResponse<Boolean> updateParty(@RequestBody Party party) throws Exception
+	public ResponseEntity<GeneralResponse<Boolean>> updateParty(@RequestBody Party party) throws Exception
 	{
+		GeneralResponse<Boolean> result=null;
 		try {
 			if (party != null) {
 				boolean flag = partyServiceImp.editPartyDetails(party);
 				if (flag) {
-					return new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+					result = new GeneralResponse<Boolean>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 				} else {
-					return new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
 				}
+			}
+			else {
+				result=new GeneralResponse<>(false,"NUll id passed",false,System.currentTimeMillis(),HttpStatus.OK);
 			}
 
 		}catch(Exception e)
 		{
-			return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			e.printStackTrace();
+			result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
-		return null;
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 	
 	@DeleteMapping(value="/party/{id}")
-	public GeneralResponse<Boolean> deletePartyDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
+	public ResponseEntity<GeneralResponse<Boolean>> deletePartyDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
 		GeneralResponse<Boolean> result;
 		try {
 			if (id != null) {
@@ -187,14 +210,16 @@ public class PartyController extends ControllerConfig {
 				if (flag) {
 					result =  new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 				} else {
-					result= new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					result= new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
 				}
 			}
-			result= new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			else {
+				result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
+			}
 		}catch (Exception e )
 		{
-			result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
-		return result;
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 }

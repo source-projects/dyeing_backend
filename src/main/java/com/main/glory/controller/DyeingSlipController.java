@@ -13,6 +13,7 @@ import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalSlip;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,29 +26,30 @@ public class DyeingSlipController extends ControllerConfig {
     DyeingSlipServiceImpl dyeingSlipService;
 
     @PutMapping("/dyeingSlip")
-    public GeneralResponse<Boolean> updateDyeingSlip(@RequestBody DyeingSlipMast data){
+    public ResponseEntity<GeneralResponse<Boolean>> updateDyeingSlip(@RequestBody DyeingSlipMast data){
         GeneralResponse<Boolean> result;
         try {
             if(data == null){
-                result = new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK);
             }else {
                 dyeingSlipService.updateDyeingSlip(data);
                 result = new GeneralResponse<>(true, "Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/dyeingSlip/{batchId}/{productionId}")
-    public GeneralResponse<SlipFormatData> getDyeingSlipByBatchIdProductionId(@PathVariable(name = "batchId") String batchId, @PathVariable(name = "productionId") Long productionId){
+    public ResponseEntity<GeneralResponse<SlipFormatData>> getDyeingSlipByBatchIdProductionId(@PathVariable(name = "batchId") String batchId, @PathVariable(name = "productionId") Long productionId){
         GeneralResponse<SlipFormatData> result;
         try {
             if(batchId == null || productionId == null){
-                result = new GeneralResponse<>(null, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(null, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK);
             }else {
+
                 SlipFormatData data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
                 if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -56,13 +58,13 @@ public class DyeingSlipController extends ControllerConfig {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/dyeingSlip/all")
-    public GeneralResponse<List<DyeingSlipMast>> getAllDyeingSlip(){
+    public ResponseEntity<GeneralResponse<List<DyeingSlipMast>>> getAllDyeingSlip(){
         GeneralResponse<List<DyeingSlipMast>> result;
         try {
 
@@ -74,13 +76,13 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/dyeingSlip/additionalDyeingslip/all")
-    public GeneralResponse<List<GetAllAdditionalDyeingSlip>> getAllAddtionalDyeignSlip(){
+    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>>> getAllAddtionalDyeignSlip(){
         GeneralResponse<List<GetAllAdditionalDyeingSlip>> result;
         try {
 
@@ -92,18 +94,18 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //add addition dyeing slip
     @PostMapping("/dyeingSlip/add/additionalDyeingSlip/")
-    public GeneralResponse<Boolean> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
+    public ResponseEntity<GeneralResponse<Boolean>> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
         GeneralResponse<Boolean> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-            result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             dyeingSlipService.addAddtionalSlipData(addAdditionDyeingSlipModel);
             result = new GeneralResponse<>(true, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -111,18 +113,18 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //update addition dyeing slip
     @PutMapping("/dyeingSlip/update/additionalDyeingSlip/")
-    public GeneralResponse<Boolean> updateAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
+    public ResponseEntity<GeneralResponse<Boolean>> updateAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
         GeneralResponse<Boolean> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-                result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
            dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
 
@@ -131,18 +133,18 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get addition dyeing slip
     @GetMapping("/dyeingSlip/getAdditionalDyeingSlipBy/{id}")
-    public GeneralResponse<GetAllAdditionalDyeingSlip> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
+    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip>> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
         GeneralResponse<GetAllAdditionalDyeingSlip> result;
         try {
             if(id ==null)
-                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getAdditionalDyeingSlipById(id);
             if(data!=null)
@@ -152,16 +154,16 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @DeleteMapping("/dyeingSlip/deleteAdditionalDyeingSlipBy/{id}")
-    public GeneralResponse<Boolean> deleteAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
+    public ResponseEntity<GeneralResponse<Boolean>> deleteAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
         GeneralResponse<Boolean> result;
         try {
             if(id ==null)
-                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             Boolean data = dyeingSlipService.deleteAdditionalDyeingSlipById(id);
             if(data)
@@ -171,9 +173,9 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 

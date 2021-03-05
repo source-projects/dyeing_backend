@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface SupplierServiceInterface {
     public Boolean addSupplier(Supplier supplier);
+    public Boolean isUniqueName(Long id, String name);
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest);
     public Object getSupplier(Long id);
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest);

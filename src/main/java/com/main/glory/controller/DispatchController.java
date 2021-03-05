@@ -13,6 +13,7 @@ import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,135 +27,156 @@ public class DispatchController extends ControllerConfig {
     DispatchMastImpl dispatchMastService;
 
     @PostMapping("/dispatch/")
-    public GeneralResponse<Boolean> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
+        GeneralResponse<Boolean> result;
         try{
             Boolean flag = dispatchMastService.saveDispatch(dispatchMast);
             if(flag==true)
-                return new GeneralResponse<>(true,"Invoice data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(true,"Invoice data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(false,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(false,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
     @PostMapping("/dispatch/filter/forConslidateBill")
-    public GeneralResponse<List<GetConsolidatedBill>> getDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetConsolidatedBill>>> getDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+        GeneralResponse<List<GetConsolidatedBill>> result;
         try{
             List<GetConsolidatedBill> list = dispatchMastService.getDispatchByFilter(filter);
             if(!list.isEmpty())
-                return new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping("/dispatch/filter/getBill")
-    public GeneralResponse<List<GetBill>> getDispatchBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetBill>>> getDispatchBillByFilter(@RequestBody Filter filter) throws Exception{
+        GeneralResponse<List<GetBill>> result;
         try{
             List<GetBill> list = dispatchMastService.getDispatchBillByFilter(filter);
             if(!list.isEmpty())
-                return new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result =  new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
+                result =  new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
 
 
     //Get batches by the party id
     @GetMapping("/dispatch/getBatchByParty/{partyId}")
-    public GeneralResponse<List<BatchWithTotalMTRandFinishMTR>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+        GeneralResponse<List<BatchWithTotalMTRandFinishMTR>> result;
         try{
             if(partyId!=null) {
                 List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getBatchByParty(partyId);
-                return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-                return new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //Get dispatch by invoice number
     @GetMapping("/dispatch/getDispatch/byInvoiceNumber/{invoiceNo}")
-    public GeneralResponse<PartyWithBatchByInvoice> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+    public ResponseEntity<GeneralResponse<PartyWithBatchByInvoice>> getDispatchByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+        GeneralResponse<PartyWithBatchByInvoice> result;
         try{
             if(invoiceNo!=null) {
                 PartyWithBatchByInvoice x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
-                return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-                return new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping("/dispatch/getAll")
-    public GeneralResponse<List<GetAllDispatch>> getAllDispatch() throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetAllDispatch>>> getAllDispatch() throws Exception{
+
+        GeneralResponse<List<GetAllDispatch>> result;
         try{
 
             List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
-            return new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PutMapping("/dispatch/updateDispatch/")
-    public GeneralResponse<Boolean> updateDispatch(@RequestBody UpdateInvoice updateInvoice) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> updateDispatch(@RequestBody UpdateInvoice updateInvoice) throws Exception{
+        GeneralResponse<Boolean> result;
         try{
 
             Boolean flag = dispatchMastService.updateDispatch(updateInvoice);
             if(flag==true)
-            return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping("/dispatch/updateDispatchStatus/{invoiceNo}")
-    public GeneralResponse<Boolean> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+        GeneralResponse<Boolean> result;
         try{
 
             Boolean flag = dispatchMastService.updateDispatchStatus(invoiceNo);
             if(flag==true)
-                return new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                return new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
     }
 
     @GetMapping("/dispatch/getPartyWithQualityDispatchBy/{id}")
-    public GeneralResponse<PartyDataByInvoiceNumber> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
+    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber>> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
+        GeneralResponse<PartyDataByInvoiceNumber> result;
         try{
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchBy(id);
 
-                return new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-                return new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
@@ -169,7 +191,7 @@ public class DispatchController extends ControllerConfig {
                 return new GeneralResponse<>(false,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -184,7 +206,7 @@ public class DispatchController extends ControllerConfig {
                 return new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -199,7 +221,7 @@ public class DispatchController extends ControllerConfig {
                 return new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 */
@@ -214,7 +236,7 @@ public class DispatchController extends ControllerConfig {
 
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -227,7 +249,7 @@ public class DispatchController extends ControllerConfig {
 
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 
@@ -243,7 +265,7 @@ public class DispatchController extends ControllerConfig {
 
         } catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            return new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
 

@@ -5,6 +5,7 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
@@ -27,6 +28,8 @@ import java.util.Optional;
 @Service("productionPlanServiceImpl")
 public class ProductionPlanImpl {
 
+    @Autowired
+    DyeingProcessServiceImpl dyeingProcessService;
     @Autowired
     ProductionPlanDao productionPlanDao;
     @Autowired
@@ -116,11 +119,11 @@ public class ProductionPlanImpl {
 
     public List<GetAllProductionWithShadeData> getAllProductionData() throws Exception{
 
-        Optional<List<GetAllProductionWithShadeData>> productionWithShadeData = productionPlanDao.getAllProductionWithColorTone();
-        if(productionWithShadeData.isEmpty())
-            throw new Exception("no data found");
+        Optional<List<GetAllProductionWithShadeData>> list =productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+        if(list.isEmpty())
+              throw new Exception("no data found");
 
-        return productionWithShadeData.get();
+        return list.get();
 
 
     }
@@ -220,34 +223,105 @@ public class ProductionPlanImpl {
     @Transactional
     public Long saveProductionPlanWithJet(AddProductionWithJet productionPlan) throws Exception {
 
-        //first of all we have to store the infor of production any how
-        //then process for the jet if the jet id is not null
-        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(productionPlan.getBatchId(),productionPlan.getStockId());
-        if(productionPlanExist!=null)
-            throw new Exception("same production available with batch and stock");
+        //if production id is 0 then create the record with shade or jet
 
-
-        productionPlanExist = new ProductionPlan(productionPlan);
-        ProductionPlan x = productionPlanDao.save(productionPlanExist);
-
-        //now check that the jet id is null or not
-        if(productionPlan.getJetId()==null)
+        if(productionPlan.getProductionId()==null || productionPlan.getProductionId()==0)
         {
-            return x.getId();
+            //create the record
+
+
+            // first of all we have to store the infor of production any how
+            //then process for the jet if the jet id is not null
+            ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(productionPlan.getBatchId(),productionPlan.getStockId());
+            if(productionPlanExist!=null)
+                throw new Exception("same production available with batch and stock");
+
+
+
+            //update the status of  batches as well
+            List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
+            if(batchDataList.isEmpty())
+                throw new Exception("No batch data found");
+
+            //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
+
+            for(BatchData batchData:batchDataList)
+            {
+                if(batchData.getIsProductionPlanned()==false)
+                    batchData.setIsProductionPlanned(true);
+                batchDao.save(batchData);
+            }
+            productionPlanExist = new ProductionPlan(productionPlan);
+            ProductionPlan x = productionPlanDao.save(productionPlanExist);
+
+
+
+
+            //now check that the jet id is null or not
+            if(productionPlan.getJetId()==0 || productionPlan.getJetId()==null)
+            {
+                return x.getId();
+            }
+            else
+            {
+                //we have to add the same data with jet as well
+                List<AddJetData> jetDataList = new ArrayList<>();
+                AddJetData addJetData = new AddJetData();
+                addJetData.setProductionId(x.getId());
+                addJetData.setControlId(productionPlan.getJetId());
+                addJetData.setSequence(12l);
+                jetDataList.add(addJetData);
+
+                jetService.saveJetData(jetDataList);
+                return x.getId();
+            }
+
+
         }
         else
         {
-            //we have to add the same data with jet as well
-            List<AddJetData> jetDataList = new ArrayList<>();
-            AddJetData addJetData = new AddJetData();
-            addJetData.setProductionId(x.getId());
-            addJetData.setControlId(productionPlan.getJetId());
-            addJetData.setSequence(12l);
-            jetDataList.add(addJetData);
+            //update the record of only shade , if jet is not assign and check the status as well
 
-            jetService.saveJetData(jetDataList);
-            return x.getId();
+            //check the production is already added in jet or not
+            ProductionPlan productionPlanExist = productionPlanDao.getByProductionId(productionPlan.getProductionId());
+            if(productionPlanExist.getStatus()==true)
+                throw new Exception("production is already in jet");
+
+
+            //change the status of production
+            Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(productionPlan.getShadeId());
+            if(shadeMastExist.isEmpty())
+                throw new Exception("no shade found");
+
+            productionPlanExist=new ProductionPlan(productionPlan);
+
+            ProductionPlan x = productionPlanDao.save(productionPlanExist);
+            //check now that the jet is coming or not
+
+            //now check that the jet id is null or not
+            if(productionPlan.getJetId()==0 || productionPlan.getJetId()==null)
+            {
+                return x.getId();
+            }
+            else
+            {
+                //we have to add the same data with jet as well
+                List<AddJetData> jetDataList = new ArrayList<>();
+                AddJetData addJetData = new AddJetData();
+                addJetData.setProductionId(x.getId());
+                addJetData.setControlId(productionPlan.getJetId());
+                addJetData.setSequence(12l);
+                jetDataList.add(addJetData);
+
+                jetService.saveJetData(jetDataList);
+                return x.getId();
+            }
+
+
         }
+
+
+
 
     }
 

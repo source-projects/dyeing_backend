@@ -33,6 +33,8 @@ public class UserPermission {
     Long bf;
     Long ip;
     Long wt;
+    Long ad;
+
 
 
 }

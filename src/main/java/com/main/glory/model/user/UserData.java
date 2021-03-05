@@ -2,6 +2,7 @@ package com.main.glory.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.designation.Designation;
+import com.main.glory.model.user.Request.UserAddRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,8 +27,8 @@ public class UserData {
     Long contact;
     @JsonIgnore
     String password;
-    String company;
-    String department;
+    Long companyId;
+    Long departmentId;
     Long userHeadId;
     Date createdDate;
     Date updatedDate;
@@ -40,6 +41,20 @@ public class UserData {
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "designationId", referencedColumnName = "id")
     private Designation designationId;
+
+    public UserData(UserAddRequest userDataDto) {
+        this.contact = userDataDto.getContact();
+        this.userName=userDataDto.getUserName();
+        this.firstName = userDataDto.getFirstName();
+        this.lastName=userDataDto.getLastName();
+        this.email=userDataDto.getEmail();
+        this.password=userDataDto.getPassword();
+        this.companyId =userDataDto.getCompanyId();
+        this.departmentId= userDataDto.getDepartmentId() ;
+        this.createdBy = userDataDto.getCreatedBy();
+        this.userHeadId = userDataDto.getUserHeadId();
+
+    }
 
 
     @PrePersist

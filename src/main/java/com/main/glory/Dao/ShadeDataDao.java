@@ -11,7 +11,8 @@ import java.util.List;
 
 public interface ShadeDataDao extends JpaRepository<ShadeData, Long> {
 
-	public List<ShadeData> findByControlId(Long aLong);
+	@Query("select s from ShadeData s where s.controlId=:aLong")
+	List<ShadeData> findByControlId(Long aLong);
 
 	@Query("select s from ShadeData s where s.supplierItemId=:e")
     List<ShadeData> getShadeDataByItemid(Long e);

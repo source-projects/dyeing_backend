@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.google.api.Http;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 
@@ -12,6 +13,7 @@ import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import com.main.glory.servicesImpl.PaymentTermImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,143 +27,159 @@ public class PaymentTermController extends ControllerConfig {
 
 
     @PostMapping(value="/paymentTerm/")
-    public GeneralResponse<Boolean> savePayment(@RequestBody AddPaymentMast paymentMast) {
+    public ResponseEntity<GeneralResponse<Boolean>> savePayment(@RequestBody AddPaymentMast paymentMast) {
         GeneralResponse<Boolean> result;
         try {
             Boolean flag = paymentTermService.savePayment(paymentMast);
             if (flag) {
                 result = new GeneralResponse<Boolean>(true, "Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             } else {
-                result = new GeneralResponse<Boolean>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<Boolean>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //add payment type api
     @PostMapping(value="/paymentTerm/addPaymentType/{type}")
-    public GeneralResponse<Boolean> savePaymentType(@PathVariable(name = "type") String type) {
+    public ResponseEntity<GeneralResponse<Boolean>> savePaymentType(@PathVariable(name = "type") String type) {
         GeneralResponse<Boolean> result;
         try {
             Boolean flag = paymentTermService.savePaymentType(type);
             result = new GeneralResponse<Boolean>(true, "Payment Type Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     //add payment type api
     @GetMapping(value="/paymentTerm/getAllPaymentType")
-    public GeneralResponse<List<PaymentType>> getAllPaymentType() {
+    public ResponseEntity<GeneralResponse<List<PaymentType>>> getAllPaymentType() {
+        GeneralResponse<List<PaymentType>> result;
         try {
             List<PaymentType> flag = paymentTermService.getAllPayementType();
-            return new GeneralResponse<>(flag, "Payment Type Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result= new GeneralResponse<>(flag, "Payment Type Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @PostMapping(value="/paymentTerm/addAdvancePayment")
-    public GeneralResponse<Boolean> addAdvancePayment(@RequestBody List<AdvancePayment> paymentMast) {
+    public ResponseEntity<GeneralResponse<Boolean>> addAdvancePayment(@RequestBody List<AdvancePayment> paymentMast) {
+        GeneralResponse<Boolean> result;
         try {
             Boolean flag = paymentTermService.addAdvancePayment(paymentMast);
             if (flag) {
-                return new GeneralResponse<Boolean>(true, "Advance Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<Boolean>(true, "Advance Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             } else {
-                return new GeneralResponse<Boolean>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<Boolean>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
 
 
     //get the pending bill list
     @GetMapping(value="/paymentTerm/getPendingBillByPartyId/{partyId}")
-    public GeneralResponse<List<GetPendingDispatch>> getPendingBillByPartyId(@PathVariable(name = "partyId") Long partyId)
+    public ResponseEntity<GeneralResponse<List<GetPendingDispatch>>> getPendingBillByPartyId(@PathVariable(name = "partyId") Long partyId)
     {
+        GeneralResponse<List<GetPendingDispatch>> result;
         try {
             if(partyId==null)
                 throw new Exception("id can't be null");
 
             List<GetPendingDispatch> list = paymentTermService.getPendingBillByPartyId(partyId);
             if(!list.isEmpty())
-                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get the advance payment list
     @GetMapping(value="/paymentTerm/getAdvancePayment/{partyId}")
-    public GeneralResponse<List<GetAdvancePayment>> getAdvancePayment(@PathVariable(name = "partyId") Long partyId)
+    public ResponseEntity<GeneralResponse<List<GetAdvancePayment>>> getAdvancePayment(@PathVariable(name = "partyId") Long partyId)
     {
+        GeneralResponse<List<GetAdvancePayment>> result;
         try {
             if(partyId==null)
                 throw new Exception("id can't be null");
 
             List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
             if(!list.isEmpty())
-                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get payment mast list by party
     @GetMapping(value="/paymentTerm/getPaymentBunchListByPartyId/{partyId}")
-    public GeneralResponse<List<PaymentMast>> getPaymentMastByPartyId(@PathVariable(name = "partyId") Long partyId)
+    public ResponseEntity<GeneralResponse<List<PaymentMast>>> getPaymentMastByPartyId(@PathVariable(name = "partyId") Long partyId)
     {
+        GeneralResponse<List<PaymentMast>> result;
         try {
             if(partyId==null)
                 throw new Exception("id can't be null");
 
             List<PaymentMast> list = paymentTermService.getAllPaymentMast(partyId);
             if(!list.isEmpty())
-                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get the payment detail by paymentBunchId
     @GetMapping(value="/paymentTerm/getPaymentDetailById/{paymentBunchId}")
-    public GeneralResponse<PaymentMast> getPaymentDetailById(@PathVariable(name = "paymentBunchId") Long paymentBunchId)
+    public ResponseEntity<GeneralResponse<PaymentMast>> getPaymentDetailById(@PathVariable(name = "paymentBunchId") Long paymentBunchId)
     {
+        GeneralResponse<PaymentMast> result;
         try {
             if(paymentBunchId==null)
                 throw new Exception("id can't be null");
 
             PaymentMast list = paymentTermService.getPaymentDetailById(paymentBunchId);
             if(list!=null)
-                return new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
-            else return new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+           result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
     }
 
 

@@ -17,11 +17,12 @@ public class UserUpdateRequest {
     String lastName;
     String email;
     Long contact;
-    String company;
-    String department;
+    Long companyId;
+    Long departmentId;
     Long designationId;
     Long userHeadId;
     Long updatedBy;
+    String password;
     private UserPermission userPermissionData;
 
 }
