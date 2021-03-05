@@ -6,6 +6,7 @@ import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.servicesImpl.DocumentImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,16 +17,19 @@ public class DocumentController extends ControllerConfig {
     DocumentImpl documentService;
 
     @PostMapping("/Document/")
-    public GeneralResponse<Boolean> GetDocument(@RequestBody GetDocumentModel documentModel){
+    public ResponseEntity<GeneralResponse<Boolean>> GetDocument(@RequestBody GetDocumentModel documentModel){
+        GeneralResponse<Boolean> result;
+
         try{
             documentService.getDocument(documentModel);
 
-            return new GeneralResponse<>(true, "PDF send successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+            result = new GeneralResponse<>(true, "PDF send successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }catch (Exception e){
             e.printStackTrace();
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
 }

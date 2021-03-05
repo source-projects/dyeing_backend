@@ -47,9 +47,9 @@ public class QualityController extends ControllerConfig {
             if (flag == 1)
                 result= new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             else
-                result= new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<Boolean>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -109,10 +109,10 @@ public class QualityController extends ControllerConfig {
                 }
             }
             else {
-                result = new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<Boolean>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         }catch(Exception e){
-            result =new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -127,7 +127,7 @@ public class QualityController extends ControllerConfig {
             } else
                 result =  new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
         } else
-            result= new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value = "/quality/allQuality")
@@ -146,7 +146,7 @@ public class QualityController extends ControllerConfig {
             }
         }catch (Exception e)
         {
-            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -160,9 +160,9 @@ public class QualityController extends ControllerConfig {
 //            if (flag) {
 //                return new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 //            }
-//            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+//            return new GeneralResponse<Boolean>(false, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.OK);
 //        }
-//        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+//        return new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK);
 //    }
 
     @GetMapping(value = "/is_quality_exist/{quality_id}/{id}")
@@ -178,7 +178,7 @@ public class QualityController extends ControllerConfig {
             result = new GeneralResponse<Boolean>(false, "quality id not found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         else
-        result = new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+        result = new GeneralResponse<Boolean>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK);
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
@@ -197,11 +197,11 @@ public class QualityController extends ControllerConfig {
                 }
             }
             else {
-                result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         }catch (Exception e )
         {
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

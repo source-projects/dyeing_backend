@@ -29,13 +29,15 @@ public class SupplierController extends ControllerConfig {
     SupplierServiceImpl supplierService;
 
     @GetMapping("/supplier/isSupplierNameExists/{name}/{id}")
-    public GeneralResponse<Boolean> isUniqueSupplierName(@PathVariable("name") String name, @PathVariable("id") Long id){
+    public ResponseEntity<GeneralResponse<Boolean>> isUniqueSupplierName(@PathVariable("name") String name, @PathVariable("id") Long id){
+        GeneralResponse<Boolean> result;
         try{
             Boolean isPresent = supplierService.isUniqueName(id, name);
-            return new GeneralResponse<Boolean>(isPresent, "Supplier name exists:"+isPresent, true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<Boolean>(isPresent, "Supplier name exists:"+isPresent, true, System.currentTimeMillis(), HttpStatus.OK);
         }catch (Exception e){
-            return new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result =new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping("/supplier")
@@ -46,10 +48,10 @@ public class SupplierController extends ControllerConfig {
             if(flag) {
                 result= new GeneralResponse<Boolean>(true, "Supplier added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -66,7 +68,7 @@ public class SupplierController extends ControllerConfig {
                 result= new GeneralResponse<Boolean>(false, "Invalid Data Sent", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -77,17 +79,17 @@ public class SupplierController extends ControllerConfig {
         GeneralResponse<Object> result;
         try{
             if(id == null){
-                result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
             Object obj =  supplierService.getSupplier(id);
             if(obj != null){
                 result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -98,17 +100,17 @@ public class SupplierController extends ControllerConfig {
 
         try{
             if(id == null){
-                result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
             List<RateAndItem> item =  supplierService.getSupplierItemAndRate(id);
             if(item != null){
                 result= new GeneralResponse<>(item, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -121,10 +123,10 @@ public class SupplierController extends ControllerConfig {
             if(obj != null){
                 result= new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -179,10 +181,10 @@ public class SupplierController extends ControllerConfig {
 
                     break;
                 default:
-                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -211,10 +213,10 @@ public class SupplierController extends ControllerConfig {
             if (flag) {
                 result= new GeneralResponse<>(null, "Supplier Details Updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result= new GeneralResponse<>(null, "Send Valid Data", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -230,7 +232,7 @@ public class SupplierController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -251,7 +253,7 @@ public class SupplierController extends ControllerConfig {
                 result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -269,7 +271,7 @@ public class SupplierController extends ControllerConfig {
                 result= new GeneralResponse<>(null, "No Such Data Found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result= new GeneralResponse<>(null, "Internal Server Error", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

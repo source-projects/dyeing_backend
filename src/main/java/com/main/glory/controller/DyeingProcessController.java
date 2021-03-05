@@ -26,14 +26,14 @@ public class DyeingProcessController extends ControllerConfig{
         GeneralResponse<Boolean> result;
         try {
             if(data == null){
-                result = new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK);
             }else {
                 dyeingProcessService.addDyeingProcess(data);
                 result = new GeneralResponse<>(true, "Data Inserted Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
@@ -51,7 +51,7 @@ public class DyeingProcessController extends ControllerConfig{
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -62,7 +62,7 @@ public class DyeingProcessController extends ControllerConfig{
         try{
             List<GetAllDyeingProcessList> list = dyeingProcessService.getAllDyeingProcess();
             if(!list.isEmpty()){
-                result = new GeneralResponse<>(list, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result = new GeneralResponse<>(list, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -98,14 +98,14 @@ public class DyeingProcessController extends ControllerConfig{
 
             Boolean data = dyeingProcessService.dyeingProcessExistWithName(name,id);
             if(data){
-                response= new GeneralResponse<>(false, "name is not found", false, System.currentTimeMillis(), HttpStatus.FOUND);
+                response= new GeneralResponse<>(false, "name is not found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
             else {
                 response= new GeneralResponse<>(true, "name is found", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         }catch (Exception e){
             e.printStackTrace();
-            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
 
@@ -121,14 +121,14 @@ public class DyeingProcessController extends ControllerConfig{
 
             Boolean flag = dyeingProcessService.deleteByProcessId(id);
             if(flag){
-                result = new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+                result = new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 

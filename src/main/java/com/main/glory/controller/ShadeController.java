@@ -26,14 +26,14 @@ public class ShadeController extends ControllerConfig {
 		GeneralResponse<Boolean> result;
 		try {
 			if(shadeMast == null){
-				result =  new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+				result =  new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK);
 			}else {
 				shadeService.saveShade(shadeMast);
 				result = new GeneralResponse<>(true, "Data Inserted Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -46,7 +46,7 @@ public class ShadeController extends ControllerConfig {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
 	@GetMapping("/shade/apcExist/{number}")
@@ -56,13 +56,13 @@ public class ShadeController extends ControllerConfig {
 		try {
 			Boolean acp = shadeService.isAPCExist(number);
 			if(acp)
-				result = new GeneralResponse<>(acp, "data not found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				result = new GeneralResponse<>(acp, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 			else
 				result = new GeneralResponse<>(acp, "data found", true, System.currentTimeMillis(), HttpStatus.OK);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -77,34 +77,34 @@ public class ShadeController extends ControllerConfig {
 				case "own":
 					shadeMast = shadeService.getAllShadesInfo(getBy, id);
 					if(!shadeMast.isEmpty())
-						result = new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						result = new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					else
-						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
 					break;
 				case "group":
 					shadeMast = shadeService.getAllShadesInfo(getBy, id);
 					if(!shadeMast.isEmpty())
-						result = new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						result = new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					else
-					result =new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+					result =new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 
 					break;
 				case "all":
 					shadeMast = shadeService.getAllShadesInfo(null, null);
 					//System.out.println(shadeMast);
 					if(!shadeMast.isEmpty())
-						result =  new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+						result =  new GeneralResponse<List<GetAllShade>>(shadeMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					else
-						result = new GeneralResponse<>(null, "No shade data added yet", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+						result = new GeneralResponse<>(null, "No shade data added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 
 					break;
 				default:
-					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
-			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result ,HttpStatus.valueOf(result .getStatusCode()));
 	}
@@ -115,13 +115,13 @@ public class ShadeController extends ControllerConfig {
 		try{
 			Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(id);
 			if(shadeMast != null){
-				result = new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				result = new GeneralResponse<ShadeMast>(shadeMast.get(), "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}else{
-				result = new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				result = new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -134,14 +134,14 @@ public class ShadeController extends ControllerConfig {
 		try{
 			List<GetAllPendingShade> shadeMast = shadeService.getAllPendingShade();
 			if(shadeMast.isEmpty()){
-				result= new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				result= new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 			else{
-				result= new GeneralResponse<>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				result= new GeneralResponse<>(shadeMast, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -152,13 +152,13 @@ public class ShadeController extends ControllerConfig {
 		try{
 			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId);
 			if(shadeMastList != null){
-				result= new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.FOUND);
+				result= new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}else{
-				result= new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+				result= new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.INTERNAL_SERVER_ERROR);
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -175,7 +175,7 @@ public class ShadeController extends ControllerConfig {
 			}
 		}
 		else
-		result= new GeneralResponse<Boolean>(false, "Null shade Object", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+		result= new GeneralResponse<Boolean>(false, "Null shade Object", false, System.currentTimeMillis(), HttpStatus.OK);
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
@@ -186,7 +186,7 @@ public class ShadeController extends ControllerConfig {
 			shadeService.deleteShadeById(id);
 			result= new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
-			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}

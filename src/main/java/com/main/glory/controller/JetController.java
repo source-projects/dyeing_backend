@@ -33,7 +33,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(jetData==null)
         {
-            result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -46,7 +46,7 @@ public class JetController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -57,7 +57,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(jetDataToUpdate==null)
         {
-            result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -81,7 +81,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(jetDataToUpdate==null)
         {
-            result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -105,7 +105,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<List<GetJetData>> result;
         if(id==null)
         {
-            result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -137,7 +137,7 @@ public class JetController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -185,7 +185,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<List<GetJetData>> result;
         if(id==null)
         {
-             result=  new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+             result=  new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
 
@@ -227,7 +227,7 @@ public class JetController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<Boolean>> deleteJetDataByProductionId(@PathVariable(name = "id") Long id) throws Exception {
         GeneralResponse<Boolean> result;
         if(id==null) {
-            result = new GeneralResponse<>(null, "production info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, "production info is null", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         try {
@@ -236,12 +236,12 @@ public class JetController extends ControllerConfig {
             if(flag==true)
             result = new GeneralResponse<>(true, "Jet Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result = new GeneralResponse<>(false, "unable to delete the prouduction", true, System.currentTimeMillis(), HttpStatus.NOT_FOUND);
+                result = new GeneralResponse<>(false, "unable to delete the prouduction", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -251,7 +251,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(id==null)
         {
-            result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         try {
@@ -265,7 +265,7 @@ public class JetController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

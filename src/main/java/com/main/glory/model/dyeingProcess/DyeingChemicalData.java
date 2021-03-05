@@ -18,7 +18,6 @@ public class DyeingChemicalData {
     Long id;
     Long controlId;
     Long itemId;
-    String itemName;
     String byChemical;
     Double concentration;
 

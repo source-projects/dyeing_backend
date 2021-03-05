@@ -29,7 +29,7 @@ public class BoilerController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         if(boilerMachineRecord==null)
         {
-            result = new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -41,7 +41,7 @@ public class BoilerController extends ControllerConfig {
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -52,7 +52,7 @@ public class BoilerController extends ControllerConfig {
         GeneralResponse<List<BoilerMachineRecord>> result;
         if(filter==null)
         {
-            result = new GeneralResponse<>(null, "machine info is null", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
@@ -62,13 +62,12 @@ public class BoilerController extends ControllerConfig {
             if(list!=null)
             result = new GeneralResponse<>(list, "Machine fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
-                result = new GeneralResponse<>(null, "data not found", false
-                        , System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -85,12 +84,13 @@ public class BoilerController extends ControllerConfig {
             {
                 result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
+            else
             result = new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -107,12 +107,13 @@ public class BoilerController extends ControllerConfig {
             {
                 result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
+            else
             result = new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -132,12 +133,13 @@ public class BoilerController extends ControllerConfig {
             {
                 result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
+            else
             result = new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

@@ -37,7 +37,7 @@ public class DyeingSlipController extends ControllerConfig {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -47,8 +47,9 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<SlipFormatData> result;
         try {
             if(batchId == null || productionId == null){
-                result = new GeneralResponse<>(null, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(null, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK);
             }else {
+
                 SlipFormatData data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
                 if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -57,7 +58,7 @@ public class DyeingSlipController extends ControllerConfig {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -75,7 +76,7 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -93,7 +94,7 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -104,7 +105,7 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-            result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+            result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             dyeingSlipService.addAddtionalSlipData(addAdditionDyeingSlipModel);
             result = new GeneralResponse<>(true, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -112,7 +113,7 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -123,7 +124,7 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-                result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
            dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
 
@@ -143,7 +144,7 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<GetAllAdditionalDyeingSlip> result;
         try {
             if(id ==null)
-                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getAdditionalDyeingSlipById(id);
             if(data!=null)
@@ -153,7 +154,7 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -162,7 +163,7 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         try {
             if(id ==null)
-                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.BAD_REQUEST);
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             Boolean data = dyeingSlipService.deleteAdditionalDyeingSlipById(id);
             if(data)
@@ -172,7 +173,7 @@ public class DyeingSlipController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
