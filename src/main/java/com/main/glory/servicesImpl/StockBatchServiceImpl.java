@@ -1187,4 +1187,8 @@ public class StockBatchServiceImpl {
         List<StockMast> list = stockMastDao.getAllStockByQualityId(id);
         return list;
     }
+
+    public Double getMtrByControlAndBatchId(Long stockId, String batchId) {
+        return batchDao.getTotalMtrByControlIdAndBatchId(stockId,batchId);
+    }
 }

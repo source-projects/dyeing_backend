@@ -124,5 +124,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select b from BatchData b where b.batchId=:name AND b.controlId!=:id")
     Optional<BatchData> isBatchUnique(String name, Long id);
+
+    @Query("select SUM(b.mtr) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId")
+    Double getTotalMtrByControlIdAndBatchId(Long stockId, String batchId);
 }
 
