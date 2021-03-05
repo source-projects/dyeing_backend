@@ -5,6 +5,7 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
@@ -27,6 +28,8 @@ import java.util.Optional;
 @Service("productionPlanServiceImpl")
 public class ProductionPlanImpl {
 
+    @Autowired
+    DyeingProcessServiceImpl dyeingProcessService;
     @Autowired
     ProductionPlanDao productionPlanDao;
     @Autowired
@@ -116,11 +119,11 @@ public class ProductionPlanImpl {
 
     public List<GetAllProductionWithShadeData> getAllProductionData() throws Exception{
 
-        Optional<List<GetAllProductionWithShadeData>> productionWithShadeData = productionPlanDao.getAllProductionWithColorTone();
-        if(productionWithShadeData.isEmpty())
-            throw new Exception("no data found");
+        Optional<List<GetAllProductionWithShadeData>> list =productionPlanDao.getAllProductionWithColorToneAndBatchDetail();//new ArrayList<>();
+        if(list.isEmpty())
+              throw new Exception("no data found");
 
-        return productionWithShadeData.get();
+        return list.get();
 
 
     }
