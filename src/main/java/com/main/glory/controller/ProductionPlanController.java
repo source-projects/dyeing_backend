@@ -79,7 +79,7 @@ public class ProductionPlanController extends ControllerConfig {
 
 
 
-    @PutMapping(value="/updateProductionPlan/")
+    @PutMapping(value="/productionPlan/updateProductionPlan/")
     public ResponseEntity<GeneralResponse<Boolean>> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
     {
         GeneralResponse<Boolean> result;
