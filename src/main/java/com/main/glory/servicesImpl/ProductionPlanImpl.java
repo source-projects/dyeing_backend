@@ -119,9 +119,11 @@ public class ProductionPlanImpl {
 
     public List<GetAllProductionWithShadeData> getAllProductionData() throws Exception{
 
+        List<GetAllProductionWithShadeData> record=new ArrayList<>();
         Optional<List<GetAllProductionWithShadeData>> list =productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
         if(list.isEmpty())
               throw new Exception("no data found");
+
 
         return list.get();
 

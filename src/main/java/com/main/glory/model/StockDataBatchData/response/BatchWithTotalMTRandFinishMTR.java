@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -17,6 +17,15 @@ public class BatchWithTotalMTRandFinishMTR {
     Double totalFinishMtr;
     Long totalPcs;
 
+
+    public BatchWithTotalMTRandFinishMTR(String batchId, Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs) {
+        this.batchId = batchId;
+        this.controlId = controlId;
+        this.WT = WT;
+        this.MTR = MTR;
+        this.totalFinishMtr = totalFinishMtr;
+        this.totalPcs = totalPcs;
+    }
 
     public BatchWithTotalMTRandFinishMTR(BatchWithTotalMTRandFinishMTR getBatchWithControlIdData) {
         this.batchId=getBatchWithControlIdData.batchId;
