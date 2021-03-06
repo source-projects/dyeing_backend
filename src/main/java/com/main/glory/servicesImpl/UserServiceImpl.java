@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
-    public void createUser(UserAddRequest userDataDto) throws Exception {
+    public void createUser(UserAddRequest userDataDto, String headerId) throws Exception {
         //company and designation check
 
         Department departmentExist =departmentDao.getDepartmentById(userDataDto.getDepartmentId());
@@ -83,16 +83,31 @@ public class UserServiceImpl implements UserServiceInterface {
 
 
 
+
+
+
             Long id  = userData.getCreatedBy();
             UserData x = userDao.saveAndFlush(userData);
 
-            //identify the user recently added was master or operator
+            Long headId=Long.parseLong(headerId);
+            System.out.println(headId+":type:"+headId);
+            //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID which is co
+            if(x.getUserHeadId()==0)
+            {
+                //then adding opeator by master and set the is from the header
+                userDao.updateUserHeadId(x.getId(),headId);
+                return;
+            }
+
+            //identify the user recently added was master from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
             if(user.getUserHeadId()==0)
             {
                 //master
                 userDao.updateUserHeadId(x.getId(),x.getId());
             }
+            //else
+            //remain the operator
 
 
 
@@ -134,26 +149,22 @@ public class UserServiceImpl implements UserServiceInterface {
             }
 
         }
-        else if(userData.getUserHeadId()>0)
+        else if(userData.getUserHeadId()==userData.getId())
         {
-            //master and operator get only master detail
-            if(userData.getUserHeadId()==userData.getId())
-            {
+            //master
+
                 Company company =companyDao.getCompanyById(userData.getCompanyId());
-                Department department = departmentDao.getDepartmentById(userData.getDepartmentId());
-
-
+                Department department= departmentDao.getDepartmentById(userData.getDepartmentId());
                 userHeads.add(new getAllUserInfo(userData,company,department));
-            }
-            else {
-                //operator
 
-
-                UserData userHead = userDao.getUserById(userData.getUserHeadId());
-                Company company =companyDao.getCompanyById(userHead.getCompanyId());
-                Department department = departmentDao.getDepartmentById(userHead.getDepartmentId());
-                userHeads.add(new getAllUserInfo(userData,company,department));
-            }
+        }
+        else
+        {
+            //operator
+            UserData userHead = userDao.getUserById(userData.getUserHeadId());
+            Company company =companyDao.getCompanyById(userHead.getCompanyId());
+            Department department= departmentDao.getDepartmentById(userHead.getDepartmentId());
+            userHeads.add(new getAllUserInfo(userHead,company,department));
 
 
         }
