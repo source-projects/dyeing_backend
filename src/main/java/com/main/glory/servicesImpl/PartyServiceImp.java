@@ -111,7 +111,7 @@ public class PartyServiceImp implements PartyServiceInterface {
                 //check the partyname exist
 
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
-                if (partyExistWithName == null)
+                if (partyExistWithName != null)
                     throw new Exception("party name is already exist");
 
                 partyDao.save(partyData);
