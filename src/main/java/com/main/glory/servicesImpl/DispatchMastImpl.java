@@ -14,6 +14,7 @@ import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
+import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
@@ -297,6 +298,7 @@ public class DispatchMastImpl {
     }
 
     public List<GetAllDispatch> getAllDisptach() throws Exception{
+        List<BatchWithTotalMTRandFinishMTR> batchList=new ArrayList<>();
         List<GetAllDispatch> dispatchDataList=new ArrayList<>();
         List<DispatchData> dispatchList =dispatchDataDao.getAllDispatch();
 
@@ -312,6 +314,25 @@ public class DispatchMastImpl {
             {
                 invoiceNumber.add(dispatchData.getInvoiceNo());
                 GetAllDispatch getAllDispatch=new GetAllDispatch(dispatchData);
+
+                DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(dispatchData.getInvoiceNo().substring(3)));
+                Party party = partyServiceImp.getPartyDetailById(dispatchMast.getPartyId());
+                if(party==null)
+                    continue;
+                //get the batch data
+
+                List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchData.getInvoiceNo());
+
+                for(GetBatchByInvoice batch : batchListWithInvoiceList)
+                {
+                    //list of batches
+                    BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(),batch.getStockId());
+                    batchList.add(batchWithTotalMTRandFinishMTR);
+                }
+                getAllDispatch.setPartyId(party.getId());
+                getAllDispatch.setPartyName(party.getPartyName());
+                getAllDispatch.setBatchList(batchList);
+
                 dispatchDataList.add(getAllDispatch);
             }
 
