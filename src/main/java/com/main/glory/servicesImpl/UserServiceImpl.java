@@ -89,11 +89,13 @@ public class UserServiceImpl implements UserServiceInterface {
             Long id  = userData.getCreatedBy();
             UserData x = userDao.saveAndFlush(userData);
 
+            Long headId=Long.parseLong(headerId);
+            System.out.println(headId+":type:"+headId);
             //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID which is co
             if(x.getUserHeadId()==0)
             {
                 //then adding opeator by master and set the is from the header
-                userDao.updateUserHeadId(x.getUserHeadId(),Long.parseLong(headerId));
+                userDao.updateUserHeadId(x.getId(),headId);
                 return;
             }
 
