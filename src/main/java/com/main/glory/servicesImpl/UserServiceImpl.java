@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserServiceInterface {
             if(x.getUserHeadId()==0)
             {
                 //then adding opeator by master and set the is from the header
-                userDao.updateUserHeadId(x.getUserHeadId(),Long.parseLong(headerId));
+                userDao.updateUserHeadId(x.getId(),Long.parseLong(headerId));
                 return;
             }
 
