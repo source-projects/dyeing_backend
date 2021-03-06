@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserServiceInterface {
     }
 
 
-    public void createUser(UserAddRequest userDataDto) throws Exception {
+    public void createUser(UserAddRequest userDataDto, String headerId) throws Exception {
         //company and designation check
 
         Department departmentExist =departmentDao.getDepartmentById(userDataDto.getDepartmentId());
@@ -83,16 +83,29 @@ public class UserServiceImpl implements UserServiceInterface {
 
 
 
+
+
+
             Long id  = userData.getCreatedBy();
             UserData x = userDao.saveAndFlush(userData);
 
-            //identify the user recently added was master or operator
+            //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID which is co
+            if(x.getUserHeadId()==0)
+            {
+                //then adding opeator by master and set the is from the header
+                userDao.updateUserHeadId(x.getUserHeadId(),Long.parseLong(headerId));
+                return;
+            }
+
+            //identify the user recently added was master from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
             if(user.getUserHeadId()==0)
             {
                 //master
                 userDao.updateUserHeadId(x.getId(),x.getId());
             }
+            //else
+            //remain the operator
 
 
 

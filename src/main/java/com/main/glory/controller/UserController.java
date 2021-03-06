@@ -153,11 +153,11 @@ public class UserController extends ControllerConfig {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<GeneralResponse<Boolean>> createUser(@RequestBody UserAddRequest userData) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> createUser(@RequestBody UserAddRequest userData,@RequestHeader Map<String, String> headers) throws Exception{
 
         GeneralResponse<Boolean> result;
         try{
-            userService.createUser(userData);
+            userService.createUser(userData,headers.get("id"));
             result = new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             }
         catch (Exception e){
