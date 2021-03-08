@@ -20,7 +20,8 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
             "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
             "(select s.partyShadeNo from ShadeMast s where s.id=p.shadeId) AS partyShadeNo ," +
             "(select SUM(b.wt) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId) AS WT," +
-            "(select SUM(b.mtr) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId)AS MTR" +
+            "(select SUM(b.mtr) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId)AS MTR," +
+            "(select z.partyName from Party z where z.id=p.partyId) as partyName" +
             ") from ProductionPlan p where p.status=false")
     Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone();
 
@@ -65,7 +66,7 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
     @Query("delete from ProductionPlan p where p.id=:id")
     void deleteProductionById(Long id);
 
-    @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
+   /* @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
             "(select c.colorTone from ShadeMast c where c.id=p.shadeId) AS colorTone," +
             "(select c.qualityName from Quality c where c.id=p.qualityEntryId)AS qualityName," +
             "(select c.qualityId from Quality c where c.id=p.qualityEntryId)AS qualityId," +
@@ -75,6 +76,6 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
             "(select SUM(b.mtr) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId)AS MTR " +
             ")from ProductionPlan p")
     Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorToneAndBatchDetail();
-
+*/
 
 }

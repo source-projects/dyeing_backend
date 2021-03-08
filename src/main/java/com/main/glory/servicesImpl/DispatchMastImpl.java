@@ -298,7 +298,7 @@ public class DispatchMastImpl {
     }
 
     public List<GetAllDispatch> getAllDisptach() throws Exception{
-        List<BatchWithTotalMTRandFinishMTR> batchList=new ArrayList<>();
+
         List<GetAllDispatch> dispatchDataList=new ArrayList<>();
         List<DispatchData> dispatchList =dispatchDataDao.getAllDispatch();
 
@@ -309,6 +309,7 @@ public class DispatchMastImpl {
             throw new Exception("no data found");
         for(DispatchData dispatchData:dispatchList)
         {
+            List<BatchWithTotalMTRandFinishMTR> batchList=new ArrayList<>();
 
             if(!invoiceNumber.contains(dispatchData.getInvoiceNo()))
             {
