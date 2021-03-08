@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.basic.PartyQuality;
@@ -12,6 +13,7 @@ import com.main.glory.model.basic.QualityParty;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
@@ -26,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.services.QualityServiceInterface;
 
@@ -38,6 +40,9 @@ public class QualityServiceImp implements QualityServiceInterface {
 
     @Autowired
     StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    QualityNameDao qualityNameDao;
 
     @Autowired
     ShadeServiceImpl shadeService;
@@ -229,9 +234,11 @@ public class QualityServiceImp implements QualityServiceInterface {
             if (qualityList.get().isEmpty())
                 continue;
 
-            QualityData qualityData = new QualityData(quality);
-            qualityData.setPartyName(partName.get().getPartyName());
-            qualityDataList.add(qualityData);
+            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+            if(qualityName.isEmpty())
+                continue;
+
+            qualityDataList.add(new QualityData(quality,qualityName.get()));
 
 
         }
@@ -288,7 +295,11 @@ public class QualityServiceImp implements QualityServiceInterface {
                 partyQuality.setPartyName(party.getPartyName());
                 List<QualityData> qualityDataList = new ArrayList<>();
                 for (Quality quality1 : quality.get()) {
-                    QualityData qualityData = new QualityData(quality1);
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality1.getQualityNameId());
+                    if(qualityName.isEmpty())
+                        continue;
+
+                    QualityData qualityData = new QualityData(quality1,qualityName.get());
                     qualityDataList.add(qualityData);
 
                 }
@@ -381,8 +392,14 @@ public class QualityServiceImp implements QualityServiceInterface {
             if (!partyName.isPresent())
                 continue;
 
+            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+            if(qualityName.isEmpty())
+                continue;
+
             GetAllQualtiy getAllQualtiy = new GetAllQualtiy(quality);
             getAllQualtiy.setPartyName(partyName.get().getPartyName());
+            getAllQualtiy.setQualityName(qualityName.get().getQualityName());
+            getAllQualtiy.setQualityNameId(qualityName.get().getId());
             getAllQualtiyList.add(getAllQualtiy);
         }
         if (getAllQualtiyList.isEmpty())
@@ -409,5 +426,21 @@ public class QualityServiceImp implements QualityServiceInterface {
             else
                 return true;
         }
+    }
+
+
+    public Optional<List<Quality>> getQualityByQualityNameId(Long id) {
+        return qualityDao.getAllQualityByQualityNameId(id);
+    }
+
+    public Optional<List<QualityName>> getAllQualityNameData() {
+
+        return qualityNameDao.getAllQualityName();
+
+    }
+
+    public Optional<QualityName> getQualityNameDataById(Long id) {
+        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(id);
+        return qualityName;
     }
 }

@@ -9,6 +9,7 @@ import com.main.glory.model.admin.Department;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.servicesImpl.AdminServciceImpl;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class AdminController extends ControllerConfig {
     AdminServciceImpl adminServcice;
 
 
+
+
     @PostMapping(value="/admin/jet/addJet")
     public GeneralResponse<Boolean> saveJet(@RequestBody AddJet jetMast) throws Exception {
         if(jetMast==null)
@@ -49,6 +52,65 @@ public class AdminController extends ControllerConfig {
             return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
     }
+    @PostMapping(value="/admin/quality/add/qualityName/")
+    public GeneralResponse<Boolean> saveQualityName(@RequestBody QualityName qualityName) throws Exception {
+        if(qualityName==null)
+        {
+            return new GeneralResponse<Boolean>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.saveQualityName(qualityName);
+            return new GeneralResponse<Boolean>(null, "Quality Name Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+    }
+    @PutMapping(value="/admin/quality/update/qualityName/")
+    public GeneralResponse<Boolean> updateQualityName(@RequestBody QualityName qualityName) throws Exception {
+        if(qualityName==null)
+        {
+            return new GeneralResponse<Boolean>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.updateQualityName(qualityName);
+            return new GeneralResponse<Boolean>(null, "Quality Name Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+    }
+
+    @DeleteMapping(value="/admin/quality/delete/qualityName/{id}")
+    public GeneralResponse<Boolean> deleteQualityName(@PathVariable(name = "id") Long id) throws Exception {
+        if(id==null)
+        {
+            return new GeneralResponse<Boolean>(false, "id info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            adminServcice.deleteQualityNameById(id);
+            return new GeneralResponse<Boolean>(null, "Quality name deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+    }
+
 
     @PutMapping(value="/admin/jet/updateJet")
     public GeneralResponse<Boolean> updateJet(@RequestBody AddJet jetMast) throws Exception {

@@ -34,6 +34,7 @@ public class UserPermission {
     Long ip;
     Long wt;
     Long ad;
+    Long ds;
 
 
 
