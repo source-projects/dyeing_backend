@@ -58,6 +58,7 @@ public class Quality {
 		this.updatedBy = other.updatedBy;
 		this.updatedDate = other.updatedDate;
 //		this.qualityDate = other.qualityDate;
+		this.rate= other.rate;
 		this.userHeadId = other.userHeadId;
 		this.qualityNameId=other.qualityNameId;
 	}

@@ -237,8 +237,8 @@ public class AdminServciceImpl {
 
 
     public void saveQualityName(QualityName qualityName) throws Exception {
-        QualityName qualityNameExist =qualityNameDao.getQualityNameDetailByName(qualityName.getQualityName());
-        if(qualityNameExist!=null)
+        Optional<QualityName> qualityNameExist =qualityNameDao.getQualityNameDetailByNameAndId(qualityName.getQualityName(),0l);
+        if(qualityNameExist.isPresent())
             throw new Exception("quality name is already exist");
 
         qualityNameDao.save(qualityName);
@@ -246,9 +246,9 @@ public class AdminServciceImpl {
     }
 
     public void updateQualityName(QualityName qualityName) throws Exception {
-        Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityName.getId());
+        Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailByNameAndId(qualityName.getQualityName(), qualityName.getId());
         if(qualityNameExist.isEmpty())
-            throw new Exception("quality name is present");
+            throw new Exception("quality name is already exist");
 
         qualityNameDao.saveAndFlush(qualityName);
 
