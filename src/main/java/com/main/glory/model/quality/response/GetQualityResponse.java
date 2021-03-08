@@ -31,6 +31,7 @@ public class GetQualityResponse {
     private Date qualityDate;
     private Long userHeadId;
     private String  partyName;
+    String partyCode;
 
     public GetQualityResponse(QualityWithPartyName data) {
         this.id= data.getId();
@@ -50,6 +51,7 @@ public class GetQualityResponse {
         this.qualityDate = data.getQualityDate();
         this.userHeadId=data.getUserHeadId();
         this.partyName=data.getPartyName();
+        this.partyCode=data.getPartyCode();
     }
 
     public GetQualityResponse(Quality data) {

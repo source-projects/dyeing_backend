@@ -201,7 +201,12 @@ public class UserServiceImpl implements UserServiceInterface {
                     if (e.getId() == headerId || e.getUserHeadId() == 0)
                         continue;
                     Company company = companyDao.getCompanyById(e.getCompanyId());
-                    getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
+                    Department department = departmentDao.getDepartmentById(e.getDepartmentId());
+
+                    if(company==null || department==null)
+                        continue;
+
+                    getAllUserInfo userData = new getAllUserInfo(e,company,department);
                     userData.setCompany(company.getName());
                     getAllUserInfoList.add(userData);
                 }
@@ -212,7 +217,12 @@ public class UserServiceImpl implements UserServiceInterface {
                     if (e.getId() == headerId || e.getUserHeadId() == 0)
                         continue;
                     Company company = companyDao.getCompanyById(e.getCompanyId());
-                    getAllUserInfo userData = modelMapper.map(e, getAllUserInfo.class);
+                    Department department = departmentDao.getDepartmentById(e.getDepartmentId());
+
+                    if(company==null || department==null)
+                        continue;
+
+                    getAllUserInfo userData = new getAllUserInfo(e,company,department);
                     userData.setCompany(company.getName());
                     getAllUserInfoList.add(userData);
                 }
@@ -227,8 +237,12 @@ public class UserServiceImpl implements UserServiceInterface {
                         if (e.getId() == headerId)
                             continue;
                         Company company = companyDao.getCompanyById(e.getCompanyId());
-                        getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
-                        userData1.setCompany(company.getName());
+                        Department department = departmentDao.getDepartmentById(e.getDepartmentId());
+
+                        if(company==null || department==null)
+                            continue;
+
+                        getAllUserInfo userData1 = new getAllUserInfo(e,company,department);
                         getAllUserInfoList.add(userData1);
                     }
                 } else {
@@ -239,8 +253,12 @@ public class UserServiceImpl implements UserServiceInterface {
                             continue;
 
                         Company company = companyDao.getCompanyById(e.getCompanyId());
-                        getAllUserInfo userData1 = modelMapper.map(e, getAllUserInfo.class);
-                        userData1.setCompany(company.getName());
+                        Department department = departmentDao.getDepartmentById(e.getDepartmentId());
+
+                        if(company==null || department==null)
+                            continue;
+
+                        getAllUserInfo userData1 = new getAllUserInfo(e,company,department);
                         getAllUserInfoList.add(userData1);
                     }
                 }

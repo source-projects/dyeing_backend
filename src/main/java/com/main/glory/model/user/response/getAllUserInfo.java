@@ -22,6 +22,7 @@ public class getAllUserInfo {
     Long userHeadId;
     Long companyId;
     Long departmentId;
+    String department;
     String company;
     String designation;
     Long createdBy;
@@ -38,5 +39,7 @@ public class getAllUserInfo {
         this.company = company.getName();
         this.designation=e.getDesignationId().getDesignation();
         this.createdBy=e.getCreatedBy();
+        this.departmentId=department.getId();
+        this.department=department.getName();
     }
 }

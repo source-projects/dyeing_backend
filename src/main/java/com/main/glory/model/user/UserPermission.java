@@ -20,7 +20,7 @@ public class UserPermission {
     Long qu;
     Long u;
     Long sb;
-    Long prg;
+    //Long prg;
     Long sh;
     Long su;
     Long sr;
@@ -32,7 +32,7 @@ public class UserPermission {
     Long d;
     Long bf;
     Long ip;
-    Long wt;
+    //Long wt;
     Long ad;
     Long ds;
 

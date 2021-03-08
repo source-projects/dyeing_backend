@@ -16,9 +16,13 @@ import java.util.List;
 @Setter
 public class GetAllStockWithPartyNameResponse extends StockMast{
     String partyName;
+    String qualityName;
 
-    public GetAllStockWithPartyNameResponse(StockMast stockMast, String partyName) {
+
+    public GetAllStockWithPartyNameResponse(StockMast stockMast, String partyName,String qualityName) {
         super(stockMast);
         this.partyName = partyName;
+        this.qualityName=qualityName;
     }
+
 }

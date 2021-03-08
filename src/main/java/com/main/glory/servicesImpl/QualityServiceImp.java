@@ -11,6 +11,7 @@ import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.QualityName;
@@ -97,8 +98,9 @@ public class QualityServiceImp implements QualityServiceInterface {
                 if(qualityName.isEmpty())
                     continue;
                 data.setQualityName(qualityName.get().getQualityName());
+
                 quality.add(new GetQualityResponse(data));
-                System.out.println("rate:"+data.getRate() );
+                //System.out.println("rate:"+data.getRate() );
             }
 
         } else if (getBy.equals("group")) {
@@ -156,6 +158,10 @@ public class QualityServiceImp implements QualityServiceInterface {
         if (!qualityData.isPresent())
             return false;
         else {
+            Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityDto.getQualityNameId());
+            if(qualityNameExist.isEmpty())
+                throw new Exception("no quality name found");
+
             qualityData.get().setPartyId(qualityDto.getPartyId());
             qualityData.get().setQualityId(qualityDto.getQualityId());
             qualityData.get().setQualityNameId(qualityDto.getQualityNameId());
@@ -317,7 +323,7 @@ public class QualityServiceImp implements QualityServiceInterface {
         if (!QualityList.isPresent()) {
             throw new Exception("No quality found for master:" + userHeadId);
         }
-        List<Party> partyList = partyDao.findByUserHeadId(userHeadId);
+        List<PartyWithMasterName> partyList = partyDao.findByUserHeadId(userHeadId);
         if (partyList.isEmpty()) {
             throw new Exception("No party found for master:" + userHeadId);
         }
