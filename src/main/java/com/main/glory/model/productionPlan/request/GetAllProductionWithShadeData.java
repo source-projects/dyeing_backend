@@ -19,14 +19,14 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
     String qualityName;
     String qualityId;
     String processName;
-
     String partyShadeNo;
     Double totalWt;
     Double totalMtr;
+    String partyName;
 
 
 
-    public GetAllProductionWithShadeData(ProductionPlan productionPlan ,String colorTone, String qualityName, String qualityId, String processName, String partyShadeNo, Double totalWt, Double totalMtr) {
+    public GetAllProductionWithShadeData(ProductionPlan productionPlan ,String colorTone, String qualityName, String qualityId, String processName, String partyShadeNo, Double totalWt, Double totalMtr,String partyNam) {
         super(productionPlan);
         this.colorTone = colorTone;
         this.qualityName = qualityName;
@@ -35,6 +35,7 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
         this.partyShadeNo = partyShadeNo;
         this.totalWt = totalWt;
         this.totalMtr = totalMtr;
+        this.partyName = partyNam;
 
     }
 
