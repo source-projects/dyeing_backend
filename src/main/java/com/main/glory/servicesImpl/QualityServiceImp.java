@@ -85,34 +85,63 @@ public class QualityServiceImp implements QualityServiceInterface {
     @Override
     public List<GetQualityResponse> getAllQuality(Long id, String getBy) throws Exception {
         List<QualityWithPartyName> qualityListobject = null;
-        List<GetQualityResponse> quality = null;
+        List<GetQualityResponse> quality = new ArrayList<>();
         if (id == null) {
             qualityListobject = qualityDao.findAllWithPartyName();
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            quality = modelMapper.map(qualityListobject, List.class);
+
+
+            for(QualityWithPartyName data :qualityListobject)
+            {
+
+                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
+                if(qualityName.isEmpty())
+                    continue;
+                data.setQualityName(qualityName.get().getQualityName());
+                quality.add(new GetQualityResponse(data));
+                System.out.println("rate:"+data.getRate() );
+            }
+
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
 
             if(userData.getUserHeadId()==0) {
                 //master user
                 qualityListobject = qualityDao.findAllWithPartyByCreatedAndHeadId(id,id);
-                modelMapper.getConfiguration().setAmbiguityIgnored(true);
-                quality = modelMapper.map(qualityListobject, List.class);
+                for(QualityWithPartyName data :qualityListobject)
+                {
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
+                    if(qualityName.isEmpty())
+                        continue;
+                    data.setQualityName(qualityName.get().getQualityName());
+                    quality.add(new GetQualityResponse(data));
+                }
             }
             else
             {
                 UserData userOperator = userDao.getUserById(id);
                 qualityListobject = qualityDao.findQualityByUserHeadId(userOperator.getUserHeadId());
-                modelMapper.getConfiguration().setAmbiguityIgnored(true);
-                quality = modelMapper.map(qualityListobject, List.class);
+                for(QualityWithPartyName data :qualityListobject)
+                {
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
+                    if(qualityName.isEmpty())
+                        continue;
+                    data.setQualityName(qualityName.get().getQualityName());
+                    quality.add(new GetQualityResponse(data));
+                }
             }
 
 
 
         } else if (getBy.equals("own")) {
             qualityListobject = qualityDao.findAllWithPartyNameByCreatedBy(id);
-            modelMapper.getConfiguration().setAmbiguityIgnored(true);
-            quality = modelMapper.map(qualityListobject, List.class);
+            for(QualityWithPartyName data :qualityListobject)
+            {
+                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
+                if(qualityName.isEmpty())
+                    continue;
+                data.setQualityName(qualityName.get().getQualityName());
+                quality.add(new GetQualityResponse(data));
+            }
         }
 
         if (quality.isEmpty())
@@ -129,6 +158,7 @@ public class QualityServiceImp implements QualityServiceInterface {
         else {
             qualityData.get().setPartyId(qualityDto.getPartyId());
             qualityData.get().setQualityId(qualityDto.getQualityId());
+            qualityData.get().setQualityNameId(qualityDto.getQualityNameId());
             qualityData.get().setQualityName(qualityDto.getQualityName());
             qualityData.get().setQualityType(qualityDto.getQualityType());
             qualityData.get().setUnit(qualityDto.getUnit());
@@ -175,7 +205,13 @@ public class QualityServiceImp implements QualityServiceInterface {
         if (!quality.isPresent())
             return null;
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        GetQualityResponse quality1 = modelMapper.map(quality.get(), GetQualityResponse.class);
+        GetQualityResponse quality1 = new GetQualityResponse(quality.get());
+        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality1.getQualityNameId());
+        if(qualityName.isEmpty())
+            return null;
+        quality1.setQualityName(qualityName.get().getQualityName());
+        String party = partyDao.getPartyNameByPartyId(quality1.getPartyId());
+        quality1.setPartyName(party);
 
         return quality1;
     }

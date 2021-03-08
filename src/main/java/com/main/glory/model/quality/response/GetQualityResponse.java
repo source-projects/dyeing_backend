@@ -1,5 +1,7 @@
 package com.main.glory.model.quality.response;
 
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityWithPartyName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ public class GetQualityResponse {
     private Long id;
     private String  qualityId;
     private String  qualityName;
+    Long qualityNameId;
     private String qualityType;
     private String unit;
     private Long  partyId;
@@ -28,4 +31,45 @@ public class GetQualityResponse {
     private Date qualityDate;
     private Long userHeadId;
     private String  partyName;
+
+    public GetQualityResponse(QualityWithPartyName data) {
+        this.id= data.getId();
+        this.qualityId = data.getQualityId();
+        this.qualityName =data.getQualityName();
+        this.qualityNameId = data.getQualityNameId();
+        this.qualityType = data.getQualityType();
+        this.unit=data.getUnit();
+        this.partyId = data.getPartyId();
+        this.rate = data.getRate();
+        this.wtPer100m= data.getWtPer100m();
+        this.remark= data.getRemark();
+        this.createdBy=data.getCreatedBy();
+        this.createdDate=data.getCreatedDate();
+        this.updatedBy=data.getUpdatedBy();
+        this.updatedDate=data.getUpdatedDate();
+        this.qualityDate = data.getQualityDate();
+        this.userHeadId=data.getUserHeadId();
+        this.partyName=data.getPartyName();
+    }
+
+    public GetQualityResponse(Quality data) {
+        this.id= data.getId();
+        this.qualityId = data.getQualityId();
+        this.qualityName =data.getQualityName();
+        this.qualityNameId = data.getQualityNameId();
+        this.qualityType = data.getQualityType();
+        this.unit=data.getUnit();
+        this.partyId = data.getPartyId();
+        this.rate = data.getRate();
+        this.wtPer100m= data.getWtPer100m();
+        this.remark= data.getRemark();
+        this.createdBy=data.getCreatedBy();
+        this.createdDate=data.getCreatedDate();
+        this.updatedBy=data.getUpdatedBy();
+        this.updatedDate=data.getUpdatedDate();
+        this.qualityDate = data.getQualityDate();
+        this.userHeadId=data.getUserHeadId();
+        //this.partyName=data.getPartyName();
+
+    }
 }

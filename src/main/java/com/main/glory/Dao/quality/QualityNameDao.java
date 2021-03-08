@@ -25,5 +25,6 @@ public interface QualityNameDao extends JpaRepository<QualityName,Long> {
     @Query("select s from QualityName s ")
     Optional<List<QualityName>> getAllQualityName();
 
-
+    @Query("Select c from QualityName c where LOWER(c.qualityName)=LOWER(:qualityName) AND c.id!=:id ")
+    Optional<QualityName> getQualityNameDetailByNameAndId(String qualityName, Long id);
 }
