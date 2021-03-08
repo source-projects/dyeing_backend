@@ -1,12 +1,12 @@
 package com.main.glory.services;
 import java.util.List;
-import java.util.Optional;
 
 import com.main.glory.model.party.Party;
+import com.main.glory.model.party.PartyWithMasterName;
 
 public interface PartyServiceInterface {
 
-	public List<Party> getAllPartyDetails(Long id, String getBy) throws Exception;
+	public List<PartyWithMasterName> getAllPartyDetails(Long id, String getBy) throws Exception;
 	public boolean editPartyDetails(Party pary) throws Exception;
 	public boolean deletePartyById(Long id) throws Exception;
 	public Party getPartyDetailById(Long id) throws Exception;

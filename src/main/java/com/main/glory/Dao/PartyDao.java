@@ -1,5 +1,6 @@
 package com.main.glory.Dao;
 
+import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithUserHeadName;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,10 +24,11 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query(value = "SELECT p.id,p.party_name FROM party as p ", nativeQuery = true)
 	List<PartyWithName> getAllPartiesWithName();
 
-	List<Party> findByCreatedBy(Long createdBy);
+	@Query("select new com.main.glory.model.party.PartyWithMasterName(p,(select x.userName from UserData x where x.id=p.userHeadId)) from Party p where p.createdBy=:createdBy")
+	List<PartyWithMasterName> findByCreatedBy(Long createdBy);
 
-	@Query("select p from Party p where p.userHeadId=:userHeadId")
-	List<Party> findByUserHeadId(Long userHeadId);
+	@Query("select new com.main.glory.model.party.PartyWithMasterName(p,(select x.userName from UserData x where x.id=p.userHeadId)) from Party p where p.userHeadId=:userHeadId")
+	List<PartyWithMasterName> findByUserHeadId(Long userHeadId);
 
 
 	@Query("select p from Party p where p.GSTIN=:gstin")
@@ -35,14 +37,17 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
     @Query("select p from Party p where p.partyCode=:partyCode")
 	Party findByPartyCode(String partyCode);
 
+	@Query("select new com.main.glory.model.party.PartyWithMasterName(p,(select x.userName from UserData x where x.id=p.userHeadId)) from Party p")
+    List<PartyWithMasterName> getAllParty();
+
 	@Query("select p from Party p")
-    List<Party> getAllParty();
+	List<Party> getAllPartyDetail();
 
 	@Query("select p from Party p where p.id=:id")
     Party findByPartyId(Long id);
 
-	@Query("select p from Party p where p.createdBy=:id OR p.userHeadId=:userHeadId")
-	List<Party> findByCreatedByAndUserHeadId(Long id, Long userHeadId);
+	@Query("select new com.main.glory.model.party.PartyWithMasterName(p,(select x.userName from UserData x where x.id=p.userHeadId)) from Party p where p.createdBy=:id OR p.userHeadId=:userHeadId")
+	List<PartyWithMasterName> findByCreatedByAndUserHeadId(Long id, Long userHeadId);
 
 	@Modifying
 	@Transactional

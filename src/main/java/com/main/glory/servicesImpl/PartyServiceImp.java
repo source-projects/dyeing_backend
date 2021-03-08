@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Phrase;
@@ -18,6 +17,7 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.document.request.ToEmailList;
+import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithPartyCode;
@@ -30,14 +30,11 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.party.Party;
 import com.main.glory.services.PartyServiceInterface;
-
-import javax.mail.Part;
 
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface {
@@ -121,8 +118,8 @@ public class PartyServiceImp implements PartyServiceInterface {
     }
 
     @Override
-    public List<Party> getAllPartyDetails(Long id, String getBy) throws Exception {
-        List<Party> partyDetailsList = null;
+    public List<PartyWithMasterName> getAllPartyDetails(Long id, String getBy) throws Exception {
+        List<PartyWithMasterName> partyDetailsList = null;
         if (id == null) {
             partyDetailsList = partyDao.getAllParty();
         } else if (getBy.equals("group")) {
@@ -232,7 +229,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     public List<PartyWithName> getAllPartyNameWithId() {
         try {
-            List<Party> partyAll = partyDao.getAllParty();
+            List<Party> partyAll = partyDao.getAllPartyDetail();
 
             List<PartyWithName> partyWithNameList = new ArrayList<>();
             if (!partyAll.isEmpty()) {
@@ -252,7 +249,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     public List<PartyWithPartyCode> getAllPartyNameWithPartyCode() throws Exception {
         List<PartyWithPartyCode> partyWithPartyCodesList = new ArrayList<>();
-        List<Party> partyList = partyDao.getAllParty();
+        List<Party> partyList = partyDao.getAllPartyDetail();
         for (Party party : partyList) {
             if (party.getPartyCode() != null) {
                 PartyWithPartyCode partyWithPartyCode = new PartyWithPartyCode(party);
@@ -317,7 +314,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         table.addCell(partyState);
         table.setHeaderRows(1);
 
-        List<Party> party = partyDao.getAllParty();
+        List<Party> party = partyDao.getAllPartyDetail();
 
         if (documentModel.getToRow() > party.size())
             throw new Exception("Party size is :" + party.size());
@@ -373,7 +370,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             {
                 userId=null;
                 userHeadId=null;
-                partyAll = partyDao.getAllParty();
+                partyAll = partyDao.getAllPartyDetail();
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -382,7 +379,7 @@ public class PartyServiceImp implements PartyServiceInterface {
                 {
                     userId=null;
                     userHeadId=null;
-                    partyAll = partyDao.getAllParty();
+                    partyAll = partyDao.getAllPartyDetail();
                 }
                 else if(userData.getUserHeadId() > 0)
                 {
