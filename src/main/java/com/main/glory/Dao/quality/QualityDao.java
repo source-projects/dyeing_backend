@@ -1,4 +1,4 @@
-package com.main.glory.Dao;
+package com.main.glory.Dao.quality;
 
 import com.main.glory.model.quality.QualityWithPartyName;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -77,6 +77,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     @Query("select q from Quality q where LOWER(q.qualityId)=LOWER(:quality_id) AND q.id!=:id")
     Optional<Quality> getQualityByIdExceptId(String quality_id, Long id);
+
+    @Query("select q from Quality q where q.qualityNameId=:id")
+    Optional<List<Quality>> getAllQualityByQualityNameId(Long id);
 }
 
 

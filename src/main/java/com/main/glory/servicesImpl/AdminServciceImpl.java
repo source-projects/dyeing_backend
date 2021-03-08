@@ -3,20 +3,28 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.admin.ApproveByDao;
 import com.main.glory.Dao.admin.CompanyDao;
 import com.main.glory.Dao.admin.DepartmentDao;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
-import com.main.glory.model.designation.Designation;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
-import com.main.glory.model.jet.request.AddJet;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
+    @Autowired
+    QualityServiceImp qualityServiceImp;
+
+    @Autowired
+    QualityNameDao qualityNameDao;
 
     @Autowired
     DyeingSlipServiceImpl dyeingSlipService;
@@ -228,4 +236,34 @@ public class AdminServciceImpl {
     }
 
 
+    public void saveQualityName(QualityName qualityName) throws Exception {
+        QualityName qualityNameExist =qualityNameDao.getQualityNameDetailByName(qualityName.getQualityName());
+        if(qualityNameExist!=null)
+            throw new Exception("quality name is already exist");
+
+        qualityNameDao.save(qualityName);
+
+    }
+
+    public void updateQualityName(QualityName qualityName) throws Exception {
+        Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityName.getId());
+        if(qualityNameExist.isEmpty())
+            throw new Exception("quality name is present");
+
+        qualityNameDao.saveAndFlush(qualityName);
+
+    }
+
+    public void deleteQualityNameById(Long id) throws Exception {
+
+        Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(id);
+        if(qualityNameExist.isEmpty())
+            throw new Exception("quality name is present");
+
+        Optional<List<Quality>> qualityList = qualityServiceImp.getQualityByQualityNameId(id);
+        if(qualityList.isPresent())
+            throw new Exception("remove the quality data first");
+
+        qualityNameDao.deleteQualityNameById(id);
+    }
 }

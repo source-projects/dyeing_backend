@@ -5,15 +5,16 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.QualityDao;
-import com.main.glory.Dao.user.UserDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.servicesImpl.QualityProcessImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -123,13 +124,41 @@ public class QualityController extends ControllerConfig {
         if (id != null) {
             var qualityData = qualityServiceImp.getQualityByID(id);
             if (qualityData == null) {
-                result =  new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK);
+                result =  new GeneralResponse<>(null, "No quality data found ", false, System.currentTimeMillis(), HttpStatus.OK);
             } else
                 result =  new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
         } else
             result= new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @GetMapping(value = "/quality/qualityName/get/all")
+    public ResponseEntity<GeneralResponse<List<QualityName>>> getAllQualityNameData() {
+        GeneralResponse<List<QualityName>> result;
+
+            var qualityData = qualityServiceImp.getAllQualityNameData();
+            if (qualityData.isEmpty()) {
+                result =  new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
+            } else
+                result =  new GeneralResponse<>(qualityData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value = "/quality/qualityName/get/{id}")
+    public ResponseEntity<GeneralResponse<QualityName>> getAllQualityNameByQualityNameId(@PathVariable(name = "id")Long id) throws Exception {
+        GeneralResponse<QualityName> result;
+
+        if(id==null)
+            throw new Exception("null id passed");
+
+        var qualityData = qualityServiceImp.getQualityNameDataById(id);
+        if (qualityData.isEmpty()) {
+            result =  new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
+        } else
+            result =  new GeneralResponse<>(qualityData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     @GetMapping(value = "/quality/allQuality")
     public ResponseEntity<GeneralResponse<List<GetAllQualtiy>>> getAllQualityData(@RequestHeader Map<String, String> headers) throws Exception{
 

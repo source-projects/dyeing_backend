@@ -2,6 +2,7 @@ package com.main.glory.model.basic;
 
 
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class QualityData {
 
     Long qualityEntryId;
     String qualityId;
+    Long qualityNameId;
     String qualityName;
     String qualityType;
     String unit;
@@ -23,13 +25,15 @@ public class QualityData {
     private Double wtPer100m;
 
 
-    public QualityData(Quality quality1) {
+    public QualityData(Quality quality1, QualityName qualityName) {
         this.qualityEntryId=quality1.getId();
         this.qualityId=quality1.getQualityId();
-        this.qualityName=quality1.getQualityName();
+        this.qualityName=qualityName.getQualityName();
         this.qualityType=quality1.getQualityType();
         this.unit=quality1.getUnit();
         this.partyId=quality1.getPartyId();
         this.wtPer100m=quality1.getWtPer100m();
+        this.qualityNameId = quality1.getQualityNameId();
+
     }
 }
