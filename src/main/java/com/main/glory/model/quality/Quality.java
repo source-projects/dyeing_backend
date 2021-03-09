@@ -66,7 +66,8 @@ public class Quality {
 	//for adding the quality
 	public Quality(AddQualityRequest qualityDto) {
 		this.qualityId=qualityDto.getQualityId();
-		//this.qualityName=qualityDto.getQualityName();
+		this.qualityName=qualityDto.getQualityName();
+		this.qualityNameId=qualityDto.getQualityNameId();
 		this.qualityType=qualityDto.getQualityType();
 		this.unit=qualityDto.getUnit();
 		this.partyId=qualityDto.getPartyId();
