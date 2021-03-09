@@ -80,6 +80,10 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
 
     @Query("select q from Quality q where q.qualityNameId=:id")
     Optional<List<Quality>> getAllQualityByQualityNameId(Long id);
+
+
+    @Query(value = "SELECT * FROM quality as q WHERE q.quality_id = :qualityId", nativeQuery = true)
+    Optional<Quality> findByQualityId(String qualityId);
 }
 
 
