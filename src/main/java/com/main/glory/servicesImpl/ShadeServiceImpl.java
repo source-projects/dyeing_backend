@@ -3,11 +3,13 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.*;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -26,6 +28,8 @@ import java.util.Optional;
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl implements ShadeServicesInterface {
 
+	@Autowired
+	QualityNameDao qualityNameDao;
 
 	@Autowired
 	ProductionPlanDao productionPlanDao;
@@ -224,8 +228,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty() || e.getShadeDataList().get(0).getSupplierItemId()==null)
 						continue;
+					Optional<QualityName> qualityName1 =qualityNameDao.getQualityNameDetailById(qualityName.get().getQualityNameId());
 
-					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
+					if(qualityName1.isEmpty())
+						continue;
+
+					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast,qualityName1.get()));
 
 				}
 
@@ -252,7 +260,13 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 					if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
 						continue;
 
-					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
+
+					Optional<QualityName> qualityName1 =qualityNameDao.getQualityNameDetailById(qualityName.get().getQualityNameId());
+
+					if(qualityName1.isEmpty())
+						continue;
+
+					getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast,qualityName1.get()));
 
 				}
 			}
@@ -283,7 +297,13 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
 							continue;
 
-						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
+						Optional<QualityName> qualityName1 =qualityNameDao.getQualityNameDetailById(qualityName.get().getQualityNameId());
+
+						if(qualityName1.isEmpty())
+							continue;
+
+						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast,qualityName1.get()));
+
 
 
 					}
@@ -311,8 +331,12 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 							continue;
 						if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty()|| e.getShadeDataList().get(0).getSupplierItemId()==null)
 							continue;
+						Optional<QualityName> qualityName1 =qualityNameDao.getQualityNameDetailById(qualityName.get().getQualityNameId());
 
-						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast));
+						if(qualityName1.isEmpty())
+							continue;
+
+						getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast,qualityName1.get()));
 
 
 					}
