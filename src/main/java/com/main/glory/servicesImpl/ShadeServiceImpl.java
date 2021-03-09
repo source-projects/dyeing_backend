@@ -70,10 +70,10 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 		if (shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
 		{
-			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+			Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
 			if(!quality.isPresent())
 			{
-				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId());
 			}
 
 			//check the dyeing process for the shade is available or not
@@ -104,10 +104,10 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		}
 		else {
 			//consider we have data and add directlt
-			Optional<Quality> quality=qualityDao.findByQualityIdAndQualityName(shadeMast.getQualityId(),shadeMast.getQualityName());
+			Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
 			if(!quality.isPresent())
 			{
-				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId()+" and QualityName:"+shadeMast.getQualityName());
+				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId());
 			}
 
 			//check the dyeing process for the shade is available or not
