@@ -14,6 +14,7 @@ import java.util.Date;
 public class UpdateQualityRequest {
     private Long id;
     private String qualityId;
+    Long qualityNameId;
     private String qualityName;
     private String qualityType;
     private String unit;

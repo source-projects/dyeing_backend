@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.*;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
@@ -13,14 +14,12 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.ShadeServicesInterface;
-import org.hibernate.engine.jdbc.env.spi.QualifiedObjectNameFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 	SupplierServiceImpl supplierService;
 
 	@Autowired
-	QualityDao qualityDao;
+    QualityDao qualityDao;
 
 	@Autowired
 	PartyDao partyDao;

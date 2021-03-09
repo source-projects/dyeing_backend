@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithUserHeadName;
@@ -69,52 +70,52 @@ public class PartyController extends ControllerConfig {
 	
 
 	@GetMapping(value="/party/all/{getBy}/{id}")
-	public ResponseEntity<GeneralResponse<List<Party>>> getPartyList(@PathVariable(value = "id") Long id, @PathVariable( value = "getBy") String getBy)
+	public ResponseEntity<GeneralResponse<List<PartyWithMasterName>>> getPartyList(@PathVariable(value = "id") Long id, @PathVariable( value = "getBy") String getBy)
 	{
-		GeneralResponse<List<Party>> result;
+		GeneralResponse<List<PartyWithMasterName>> result;
 
 		try{
 			switch (getBy) {
 				case "own":
 					var x = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x.isEmpty()) {
-						result = new GeneralResponse<List<Party>>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					}
 					else {
-						result = new GeneralResponse<List<Party>>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 					}
 					break;
 				case "group":
 					var x1 = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x1.isEmpty())
 					{
-						result = new GeneralResponse<List<Party>>(x1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(x1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 					}
 					else {
-						result = new GeneralResponse<List<Party>>(x1, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(x1, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
 					}
 					break;
 				case "all":
 					var x2 = partyServiceImp.getAllPartyDetails(null, null);
 					if (!x2.isEmpty()) {
 						//throw new ResponseStatusException(HttpStatus.OK,x2.toString());
-						result = new GeneralResponse<List<Party>>(x2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(x2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 						//result = ResponseEntity.status(HttpStatus.OK).body(result);
 					}
 					else {
 
 						//response.getHeaders().add("status","404");
-						result = new GeneralResponse<List<Party>>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.OK);
+						result = new GeneralResponse<>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.OK);
 						//throw new Exception("no");
 						//result = ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
 					}
 					break;
 				default:
-					result = new GeneralResponse<List<Party>>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
+					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = new GeneralResponse<List<Party>>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

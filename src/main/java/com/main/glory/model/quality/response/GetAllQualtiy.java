@@ -19,6 +19,7 @@ public class GetAllQualtiy {
     private String qualityType;
     private String unit;
     private Double wtPer100m;
+    Long qualityNameId;
 
     public GetAllQualtiy(Quality quality) {
         this.id=quality.getId();

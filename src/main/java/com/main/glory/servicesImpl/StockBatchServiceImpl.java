@@ -1,7 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.Dao.user.UserDao;
@@ -26,7 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.AutoPopulatingList;
 
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;

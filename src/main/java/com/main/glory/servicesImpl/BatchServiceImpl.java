@@ -3,7 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.batch.BatchDataDao;
 import com.main.glory.Dao.batch.BatchGrDetailDao;
 import com.main.glory.Dao.batch.BatchMastDao;
-import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.fabric.FabStockDataDao;
 import com.main.glory.Dao.fabric.FabStockMastDao;
 import com.main.glory.model.quality.Quality;

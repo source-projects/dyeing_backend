@@ -1,7 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.QualityDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.model.quality.Quality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

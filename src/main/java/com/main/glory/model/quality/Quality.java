@@ -28,7 +28,7 @@ public class Quality {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	private String  qualityId;
-	private String  qualityName;
+	String qualityName;
 	private String qualityType;
 	private String unit;
 	private Long  partyId;
@@ -42,11 +42,12 @@ public class Quality {
 	private Long userHeadId;
 	private Double rate;
 	private String HSN="9988";
+	Long qualityNameId;
 
 	public Quality(Quality other) {
 		this.id = other.id;
 		this.qualityId = other.qualityId;
-		this.qualityName = other.qualityName;
+		//this.qualityName = other.qualityName;
 		this.qualityType = other.qualityType;
 		this.unit = other.unit;
 		this.partyId = other.partyId;
@@ -57,13 +58,16 @@ public class Quality {
 		this.updatedBy = other.updatedBy;
 		this.updatedDate = other.updatedDate;
 //		this.qualityDate = other.qualityDate;
+		this.rate= other.rate;
 		this.userHeadId = other.userHeadId;
+		this.qualityNameId=other.qualityNameId;
 	}
 
 	//for adding the quality
 	public Quality(AddQualityRequest qualityDto) {
 		this.qualityId=qualityDto.getQualityId();
 		this.qualityName=qualityDto.getQualityName();
+		this.qualityNameId=qualityDto.getQualityNameId();
 		this.qualityType=qualityDto.getQualityType();
 		this.unit=qualityDto.getUnit();
 		this.partyId=qualityDto.getPartyId();

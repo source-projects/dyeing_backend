@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class AddQualityRequest {
     private String qualityId;
+    private Long qualityNameId;
     private String qualityName;
     private String qualityType;
     private String unit;

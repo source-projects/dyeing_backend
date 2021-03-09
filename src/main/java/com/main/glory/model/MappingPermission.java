@@ -26,7 +26,7 @@ public class MappingPermission {
         mapping.put("qu","quality");
         mapping.put("u","user");
         mapping.put("sb","stockBatch");
-        mapping.put("prg","program");
+        //mapping.put("prg","program");
         mapping.put("sh","shade");
         mapping.put("su","supplier");
         mapping.put("sr","supplier/rate");
@@ -38,9 +38,9 @@ public class MappingPermission {
         mapping.put("d","dispatch");
         mapping.put("bf","batch");//bf==batch finish mtr
         mapping.put("ip","machine");//machine=all machine except jet
-        mapping.put("wt","waterJet");
-//         mapping.put("ad","admin");
-
+        //mapping.put("wt","waterJet");
+        mapping.put("ad","admin");
+        mapping.put("ds","dyeingSlip");
 
 
     }

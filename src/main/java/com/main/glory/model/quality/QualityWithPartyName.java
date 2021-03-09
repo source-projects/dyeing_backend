@@ -8,10 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QualityWithPartyName extends Quality {
-	private String  partyName;
+	String partyCode;
+	private String partyName;
 
-	public QualityWithPartyName(Quality other, String partyName) {
+	public QualityWithPartyName(Quality other, String partyName,String partyCode) {
 		super(other);
 		this.partyName = partyName;
+		this.partyCode=partyCode;
 	}
 }
