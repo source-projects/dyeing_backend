@@ -35,8 +35,13 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         try{
             Boolean isPresent = batchService.isBatchIdExists(name, id);
+            if(isPresent)
             result = new GeneralResponse<>(isPresent, "BatchId exists:"+isPresent, true, System.currentTimeMillis(), HttpStatus.OK);
+            else {
+                result = new GeneralResponse<>(isPresent, "BatchId not exists:"+isPresent, false, System.currentTimeMillis(), HttpStatus.OK);
+            }
         }catch (Exception e){
+            e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
