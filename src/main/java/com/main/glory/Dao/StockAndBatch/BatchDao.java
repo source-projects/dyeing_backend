@@ -28,6 +28,11 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.mtr) as MTR, SUM(p.wt) as WT, p.batchId as batchId) from BatchData p where p.controlId =:id AND isProductionPlanned = false AND isExtra=false GROUP BY p.batchId ")
     List<GetAllBatchResponse> findAllQTYControlId(@Param("id") Long id);
 
+
+    //getAll batch by stock ud
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.mtr) as MTR, SUM(p.wt) as WT, p.batchId as batchId) from BatchData p where p.controlId =:id GROUP BY p.batchId ")
+    List<GetAllBatchResponse> findAllBatchesByControlId(@Param("id") Long id);
+
     Optional<List<BatchData>> findByBatchId(String batchId);
 
 
@@ -123,7 +128,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("update BatchData b set b.isProductionPlanned=:b where b.id=:id")
     void updateProductionPlanned(Long id, boolean b);
 
-    @Query("select b from BatchData b where b.batchId=:name AND b.controlId!=:id")
+    @Query(value = "select * from batch_data as b where b.batch_id=:name AND b.control_id!=:id ORDER BY b.id LIMIT 1",nativeQuery = true)
     Optional<BatchData> isBatchUnique(String name, Long id);
 
     @Query("select SUM(b.mtr) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId")

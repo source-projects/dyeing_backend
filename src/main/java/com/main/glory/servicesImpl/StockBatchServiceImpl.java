@@ -4,6 +4,7 @@ import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -21,6 +22,7 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +35,8 @@ import java.util.*;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
+    @Autowired
+    QualityNameDao qualityNameDao;
 
     @Autowired
     ShadeServiceImpl shadeService;
@@ -121,9 +125,27 @@ public class StockBatchServiceImpl {
     @Transactional
     public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
+        List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
+
         Boolean flag = false;
+
         if(id ==  null){
             data = stockMastDao.getAllStockWithPartyName();
+            if(data.isPresent())
+            {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for(GetAllStockWithPartyNameResponse batchData:data.get())
+                {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData,batchDataList,qualityName));
+
+                }
+
+
+            }
+
 
         }
         else if(getBy.equals("own")){
@@ -148,12 +170,14 @@ public class StockBatchServiceImpl {
 
 
         }
-        if(data.isEmpty()) throw new Exception("no data found");
+
+       /* if(data.isEmpty()) throw new Exception("no data found");
         else
         {
-            Boolean planned=true;
             for(GetAllStockWithPartyNameResponse stockMast : data.get())
             {
+
+                List<BatchData> batchDataList = new ArrayList<>();
                 for(BatchData b:stockMast.getBatchData())
                 {
                     if(!b.getIsProductionPlanned())
@@ -168,9 +192,9 @@ public class StockBatchServiceImpl {
                 }
                 else
                     stockMast.setIsProductionPlanned(false);
-            }
-            return data.get();
-        }
+            }*/
+            return list;
+
 
 
 
