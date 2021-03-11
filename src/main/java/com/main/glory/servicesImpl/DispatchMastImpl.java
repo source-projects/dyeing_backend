@@ -327,14 +327,18 @@ public class DispatchMastImpl {
         for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
             List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
 
-            Quality quality = qualityServiceImp.getQualityByEntryId(createDispatch.getStockId());
-            if(quality==null)
-                throw new Exception("no quality found");
+
             //get the shade detail
             ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(createDispatch.getBatchId(), createDispatch.getStockId());
             if(productionPlan==null)
                 throw new Exception("no production plan found for batch");
+
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+
+            Quality quality = qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+
+            if(quality==null)
+                throw new Exception("no quality found");
 
             if(shadeMast.isEmpty())
                 throw new Exception("no shade found");
@@ -1219,8 +1223,8 @@ public class DispatchMastImpl {
 
 
 
-            if(party.getId()!=stockMastExist.getPartyId())
-                throw new Exception("may the stock or batch is not belong to the same party");
+            /*if(party.getId()!=stockMastExist.getPartyId())
+                throw new Exception("may the stock or batch is not belong to the same party");*/
 
 
         }
