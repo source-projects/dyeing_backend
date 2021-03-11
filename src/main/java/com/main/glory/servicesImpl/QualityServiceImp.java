@@ -485,4 +485,8 @@ public class QualityServiceImp implements QualityServiceInterface {
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(id);
         return qualityName;
     }
+
+    public Quality getQualityByEntryId(Long qualityId) {
+        return qualityDao.getqualityById(qualityId);
+    }
 }

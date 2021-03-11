@@ -3,10 +3,12 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.admin.ApproveByDao;
 import com.main.glory.Dao.admin.CompanyDao;
 import com.main.glory.Dao.admin.DepartmentDao;
+import com.main.glory.Dao.admin.InvoiceSequenceDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
@@ -19,6 +21,9 @@ import java.util.Optional;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
+    @Autowired
+    InvoiceSequenceDao invoiceSequenceDao;
 
     @Autowired
     QualityServiceImp qualityServiceImp;
@@ -265,5 +270,30 @@ public class AdminServciceImpl {
             throw new Exception("remove the quality data first");
 
         qualityNameDao.deleteQualityNameById(id);
+    }
+
+    public void addInvoiceSequence(InvoiceSequence record) throws Exception {
+
+        InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
+        if(invoiceSequenceExist!=null)
+            throw new Exception("update the existing sequence");
+
+        invoiceSequenceDao.save(record);
+    }
+
+    public InvoiceSequence getInvoiceSequence() throws Exception {
+        InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
+        if(invoiceSequenceExist!=null)
+            throw new Exception("No data found");
+        return invoiceSequenceExist;
+
+    }
+
+    public void updateInvoiceSequence(InvoiceSequence invoiceSequence) throws Exception {
+        InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequenceById(invoiceSequence.getId());
+        if(invoiceSequenceExist!=null)
+            throw new Exception("No data found");
+
+        invoiceSequenceDao.save(invoiceSequence);
     }
 }
