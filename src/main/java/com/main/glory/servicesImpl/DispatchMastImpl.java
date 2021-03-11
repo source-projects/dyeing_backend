@@ -349,6 +349,10 @@ public class DispatchMastImpl {
                 if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
                 {
                     DispatchData dispatchData=new DispatchData(batchData,shadeMast.get(),quality);
+                    if(shadeMast.get().getExtraRate()==null)
+                        dispatchData.setShadeRate(0.0);
+                    else
+                        dispatchData.setShadeRate(shadeMast.get().getExtraRate());
 
                     dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
 
@@ -878,10 +882,10 @@ public class DispatchMastImpl {
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
 
             Double shadeRate=0.0;
-            if(shadeMast.isPresent())
+            /*if(shadeMast.isPresent())
             {
                 shadeRate = shadeMast.get().getExtraRate();
-            }
+            }*/
 
             //get the rate
 
