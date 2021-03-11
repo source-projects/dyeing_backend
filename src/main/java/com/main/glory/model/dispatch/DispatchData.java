@@ -46,8 +46,10 @@ public class DispatchData {
         this.qualityEntryId=quality.getId();
         this.qualityRate=quality.getRate();
         this.shadeId=shadeMast.getId();
-        this.shadeRate=shadeMast.getExtraRate();
+        //this.shadeRate=shadeMast.getExtraRate();
     }
+
+
 
     @PrePersist
     protected void onCreate() {
