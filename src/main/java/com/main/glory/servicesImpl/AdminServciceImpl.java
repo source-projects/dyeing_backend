@@ -283,7 +283,7 @@ public class AdminServciceImpl {
 
     public InvoiceSequence getInvoiceSequence() throws Exception {
         InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
-        if(invoiceSequenceExist!=null)
+        if(invoiceSequenceExist==null)
             throw new Exception("No data found");
         return invoiceSequenceExist;
 
@@ -291,10 +291,10 @@ public class AdminServciceImpl {
 
     public void updateInvoiceSequence(InvoiceSequence invoiceSequence) throws Exception {
         InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequenceById(invoiceSequence.getId());
-        if(invoiceSequenceExist!=null)
+        if(invoiceSequenceExist==null)
             throw new Exception("No data found");
 
-        if(invoiceSequenceExist.getSequence()<invoiceSequence.getSequence())
+        if(invoiceSequenceExist.getSequence()>invoiceSequence.getSequence())
             throw new Exception("please add greater sequence than previous one");
 
         invoiceSequenceDao.save(invoiceSequence);
