@@ -197,7 +197,7 @@ public class UserController extends ControllerConfig {
 
 
     @PutMapping("/user")
-    public ResponseEntity<GeneralResponse<Boolean>> upddateUser(@RequestBody UserUpdateRequest userData) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean>> updateUser(@RequestBody UserUpdateRequest userData) throws Exception{
 
         GeneralResponse<Boolean> result;
         try{

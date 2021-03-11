@@ -91,7 +91,7 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public Boolean saveStockBatch(StockMast stockMast) throws Exception {
+    public Boolean saveStockBatch(StockMast stockMast, String id) throws Exception {
        Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
@@ -107,6 +107,15 @@ public class StockBatchServiceImpl {
                 {
                     if(batchData.getBatchId()==null)
                         throw new Exception("batch id can't be null");
+                }
+
+                //for data entry user
+                UserData userData = userDao.getUserById(Long.parseLong(id));
+                if(userData.getDataEntry()==true)
+                {
+                    //fetch the party record to set the usert head
+                    Party party = partyDao.findByPartyId(stockMast.getPartyId());
+                    stockMast.setUserHeadId(party.getUserHeadId());
                 }
                 StockMast x = stockMastDao.save(stockMast);
 

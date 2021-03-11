@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -49,10 +50,10 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PostMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody StockMast stockMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody StockMast stockMast,@RequestHeader Map<String, String> headers) throws Exception {
         GeneralResponse<Boolean> result;
         try {
-            Boolean flag = stockBatchService.saveStockBatch(stockMast);
+            Boolean flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
             if (flag == true)
                 result = new GeneralResponse<>(true, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else

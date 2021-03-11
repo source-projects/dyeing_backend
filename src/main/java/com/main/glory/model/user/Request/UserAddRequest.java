@@ -26,6 +26,7 @@ public class UserAddRequest {
     Long createdBy;
     Long designationId;
     Long userHeadId;
+    Boolean dataEntry;
     private UserPermission userPermissionData;
 
 

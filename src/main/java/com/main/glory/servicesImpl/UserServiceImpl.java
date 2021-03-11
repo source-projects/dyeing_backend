@@ -79,11 +79,8 @@ public class UserServiceImpl implements UserServiceInterface {
             }
             userData.setDesignationId(designationData.get());
             userData.setUserPermissionData(userDataDto.getUserPermissionData());
+
             //System.out.println(userData.toString());
-
-
-
-
 
 
             Long id  = userData.getCreatedBy();
@@ -91,20 +88,29 @@ public class UserServiceImpl implements UserServiceInterface {
 
             Long headId=Long.parseLong(headerId);
             System.out.println(headId+":type:"+headId);
-            //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID which is co
+            //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID
             if(x.getUserHeadId()==0)
             {
-                //then adding opeator by master and set the is from the header
+                //then adding opeator by master and set from the header
                 userDao.updateUserHeadId(x.getId(),headId);
                 return;
             }
 
-            //identify the user recently added was master from admin
+            //identify the user recently added was master/oprator or data-entry from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
+
             if(user.getUserHeadId()==0)
             {
+                //data entry
+                if(x.getDataEntry()==true)
+                {
+                    userDao.updateUserHeadId(x.getId(),0l);
+                    return;
+                }
+
                 //master
-                userDao.updateUserHeadId(x.getId(),x.getId());
+              userDao.updateUserHeadId(x.getId(), x.getId());
+
             }
             //else
             //remain the operator
