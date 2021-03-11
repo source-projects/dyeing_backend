@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,13 +23,13 @@ public class ShadeController extends ControllerConfig {
 	ShadeServiceImpl shadeService;
 
 	@PostMapping("/shade")
-	public ResponseEntity<GeneralResponse<Boolean>> addShadeData(@RequestBody AddShadeMast shadeMast){
+	public ResponseEntity<GeneralResponse<Boolean>> addShadeData(@RequestBody AddShadeMast shadeMast ,@RequestHeader Map<String, String> headers){
 		GeneralResponse<Boolean> result;
 		try {
 			if(shadeMast == null){
 				result =  new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK);
 			}else {
-				shadeService.saveShade(shadeMast);
+				shadeService.saveShade(shadeMast,headers.get("id"));
 				result = new GeneralResponse<>(true, "Data Inserted Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 			}
 		} catch (Exception e) {

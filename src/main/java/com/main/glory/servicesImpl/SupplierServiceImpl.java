@@ -26,7 +26,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 @Service("SupplierServiceImpl")
-public class SupplierServiceImpl implements SupplierServiceInterface {
+public class SupplierServiceImpl {
     @Autowired
     SupplierDao supplierDao;
 
@@ -54,9 +54,9 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     UserDao userDao;
 
 
-    @Override
+    
     @Transactional
-    public Boolean addSupplier(Supplier supplier) {
+    public Boolean addSupplier(Supplier supplier,String id) {
         try {
             supplierDao.save(supplier);
             return true;
@@ -66,7 +66,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         }
     }
 
-    @Override
+    
     public Boolean isUniqueName(Long id, String name) {
         Optional<Supplier> s = supplierDao.isSupplierByName(name, id);
         if(s.isPresent())
@@ -76,7 +76,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
     }
 
 
-    @Override
+    
     public Boolean addSupplierRates(AddSupplierRateRequest addSupplierRateRequest) {
         try {
             Supplier supplierExist = supplierDao.findBySupplierId(addSupplierRateRequest.getId());
@@ -98,7 +98,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         }
     }
 
-    @Override
+    
     public Optional<Supplier> getSupplier(Long id) {
         try {
 //            Supplier s = supplierDao.findById(id).get();
@@ -111,7 +111,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     }
 
-    @Override
+    
     @Transactional
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest) {
         try {
@@ -142,7 +142,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
         }
     }
 
-    @Override
+    
     public void updateSupplierRates(UpdateSupplierRatesRequest updateSupplierRatesRequest) throws Exception {
 
     }
@@ -226,7 +226,7 @@ public class SupplierServiceImpl implements SupplierServiceInterface {
 
     }
 
-    @Override
+    
     public List getAllSupplier(String getBy, Long id) throws Exception {
         List s = null;
         if (id == null) {
