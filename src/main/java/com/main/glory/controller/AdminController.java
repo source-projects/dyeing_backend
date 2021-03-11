@@ -722,6 +722,30 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PutMapping(value="/admin/get/invoiceSequence/{id}")
+    public ResponseEntity<GeneralResponse<InvoiceSequence>> getInvoiceSequenceById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<InvoiceSequence> result=null;
+
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception("id can't null");
+
+            InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
+            if(invoiceSequence!=null)
+            result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 
 }

@@ -294,6 +294,13 @@ public class AdminServciceImpl {
         if(invoiceSequenceExist!=null)
             throw new Exception("No data found");
 
+        if(invoiceSequenceExist.getSequence()<invoiceSequence.getSequence())
+            throw new Exception("please add greater sequence than previous one");
+
         invoiceSequenceDao.save(invoiceSequence);
+    }
+
+    public InvoiceSequence getInvoiceSequenceById(Long id) {
+        return invoiceSequenceDao.getSequenceById(id);
     }
 }
