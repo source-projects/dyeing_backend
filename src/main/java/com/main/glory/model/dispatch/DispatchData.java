@@ -1,6 +1,8 @@
 package com.main.glory.model.dispatch;
 
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.ShadeMast;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +26,10 @@ public class DispatchData {
     Date createdDate;
     Long createdBy;
     Long updatedBy;
+    Long qualityEntryId;
+    Long shadeId;
+    Double qualityRate;
+    Double shadeRate;
 
 
     public DispatchData(BatchData batchData) {
@@ -31,6 +37,16 @@ public class DispatchData {
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
 
+    }
+
+    public DispatchData(BatchData batchData, ShadeMast shadeMast, Quality quality) {
+        this.batchEntryId=batchData.getId();
+        this.batchId=batchData.getBatchId();
+        this.stockId=batchData.getControlId();
+        this.qualityEntryId=quality.getId();
+        this.qualityRate=quality.getRate();
+        this.shadeId=shadeMast.getId();
+        this.shadeRate=shadeMast.getExtraRate();
     }
 
     @PrePersist

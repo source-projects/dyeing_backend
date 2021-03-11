@@ -272,4 +272,31 @@ public class DispatchController extends ControllerConfig {
 
 */
 
+
+
+
+
+    //********************* New Invoice module
+
+    @PostMapping("/dispatch/get/receipt/getPartyWithQualityDispatchByBatchesAndStock/")
+    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber>> getPartyWithQualityDispatchBy(@RequestBody CreateDispatch createDispatch) throws Exception{
+        GeneralResponse<PartyDataByInvoiceNumber> result;
+        try{
+            if(createDispatch!=null) {
+                PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchByBatchesAndStockId(createDispatch);
+
+                result= new GeneralResponse<>(x, "Invoice receipt successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result= new GeneralResponse<>(null,"Invoice record can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+
 }
