@@ -440,7 +440,7 @@ public class DispatchMastImpl {
                 invoiceNumber.add(dispatchData.getInvoiceNo());
                 GetAllDispatch getAllDispatch=new GetAllDispatch(dispatchData);
 
-                DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(dispatchData.getInvoiceNo().substring(3)));
+                DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(dispatchData.getInvoiceNo()));
                 Party party = partyServiceImp.getPartyDetailById(dispatchMast.getPartyId());
                 if(party==null)
                     continue;
