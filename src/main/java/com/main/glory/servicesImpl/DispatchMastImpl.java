@@ -1196,14 +1196,13 @@ public class DispatchMastImpl {
 
         StockMast stockMast = stockBatchService.getStockById(createDispatch.getBatchAndStockIdList().get(0).getStockId());
 
-        Party party = null;
+        if(stockMast==null)
+            throw new Exception("party not found");
 
-        if(stockMast!=null)
-        {
-            party=partyDao.findByPartyId(stockMast.getPartyId());
+        Party party = partyDao.findByPartyId(stockMast.getPartyId());
             if(party==null)
                 throw new Exception("party not found");
-        }
+
 
 
 
@@ -1217,6 +1216,7 @@ public class DispatchMastImpl {
             List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
             if(batchDataList.isEmpty())
                 throw new Exception("no batch record found with stock");
+
 
 
             if(party.getId()!=stockMastExist.getPartyId())
