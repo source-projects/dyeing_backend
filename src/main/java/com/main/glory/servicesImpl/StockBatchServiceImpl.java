@@ -161,13 +161,27 @@ public class StockBatchServiceImpl {
 
             data = stockMastDao.getAllStockWithPartyNameByCreatedBy(id);
 
+            if(data.isPresent())
+            {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for(GetAllStockWithPartyNameResponse batchData:data.get())
+                {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData,batchDataList,qualityName));
+
+                }
+
+
+            }
         }
 
         else if(getBy.equals("group")){
 
             UserData userData = userDao.findUserById(id);
 
-            if(userData.getUserHeadId()==0) {
+            if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
             }
@@ -175,6 +189,20 @@ public class StockBatchServiceImpl {
             {
                 UserData userOperator =userDao.getUserById(id);
                 data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(userOperator.getId(),userOperator.getUserHeadId());
+            }
+            if(data.isPresent())
+            {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for(GetAllStockWithPartyNameResponse batchData:data.get())
+                {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData,batchDataList,qualityName));
+
+                }
+
+
             }
 
 

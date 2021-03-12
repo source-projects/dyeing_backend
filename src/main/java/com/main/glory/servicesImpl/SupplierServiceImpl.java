@@ -236,7 +236,7 @@ public class SupplierServiceImpl {
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
 
-            if(userData.getUserHeadId()==0) {
+            if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 s = supplierDao.findAllWithoutRatesByUserHeadIdAndCreatedBy(id,id);
             }

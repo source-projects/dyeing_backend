@@ -125,7 +125,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
 
-            if(userData.getUserHeadId()==0) {
+            if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,id);
             }
