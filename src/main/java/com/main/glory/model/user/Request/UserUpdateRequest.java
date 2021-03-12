@@ -23,6 +23,7 @@ public class UserUpdateRequest {
     Long userHeadId;
     Long updatedBy;
     String password;
+    Boolean dataEntry;
     private UserPermission userPermissionData;
 
 }

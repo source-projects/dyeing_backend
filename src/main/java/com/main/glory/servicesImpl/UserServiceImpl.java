@@ -319,6 +319,7 @@ public class UserServiceImpl implements UserServiceInterface {
             userData1.get().setDepartmentId(userData.getDepartmentId());
             userData1.get().setUserHeadId(userData.getUserHeadId());
             userData1.get().setUpdatedBy(userData.getUpdatedBy());
+            userData1.get().setDataEntry(userData.getDataEntry());
             userData1.get().setUserPermissionData(userData.getUserPermissionData());
 
             UserData x = userDao.save(userData1.get());
