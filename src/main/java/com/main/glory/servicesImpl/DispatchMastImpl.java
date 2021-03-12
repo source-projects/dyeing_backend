@@ -73,7 +73,7 @@ public class DispatchMastImpl {
     @Autowired
     QualityDao qualityDao;
 
-    public Boolean saveDispatch(CreateDispatch dispatchList) throws Exception {
+    public Long saveDispatch(CreateDispatch dispatchList) throws Exception {
 
         /*List<DispatchMast> list = dispatchMastDao.getAllInvoiceList();
 
@@ -391,7 +391,7 @@ public class DispatchMastImpl {
 
         //update the invoice sequence by one
         invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(),invoiceSequenceExist.getSequence()+1);
-        return true;
+        return invoiceSequenceExist.getSequence();
 
     }
 
