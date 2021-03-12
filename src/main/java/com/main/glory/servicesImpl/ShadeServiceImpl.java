@@ -246,7 +246,7 @@ public class ShadeServiceImpl {
 		else if(getBy.equals("group")){
 			UserData userData = userDao.findUserById(id);
 
-			if(userData.getUserHeadId()==0) {
+			if(userData.getUserHeadId().equals(userData.getId())) {
 				//master user
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,id);
 				for (ShadeMast e : shadeMastList) {
