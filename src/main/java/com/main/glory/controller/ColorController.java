@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,14 +34,14 @@ public class ColorController extends ControllerConfig {
 	ColorServiceImpl colorService;
 
 	@PostMapping("/color")
-	public ResponseEntity<GeneralResponse<Boolean>> addColor(@RequestBody ColorMast colorMast){
+	public ResponseEntity<GeneralResponse<Boolean>> addColor(@RequestBody ColorMast colorMast,@RequestHeader Map<String, String> headers){
 		GeneralResponse<Boolean> result ;
 		try {
 			Optional<Supplier> supplier = supplierDao.findById(colorMast.getSupplierId());
 			if(supplier.isEmpty())
 				result= new GeneralResponse<Boolean>(null, "No supplier found with id: "+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK);
 			else {
-				colorService.addColor(colorMast);
+				colorService.addColor(colorMast,headers.get("id"));
 				result = new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}
 		} catch (Exception e) {
