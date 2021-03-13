@@ -70,10 +70,12 @@ public class QualityServiceImp  {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         Quality quality = new Quality(qualityDto);
-        
+
+        System.out.println("header:"+id);
 
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
+        System.out.println(":"+user.getId());
         if(user.getDataEntry()==true)
         {
             Party party = partyDao.findByPartyId(qualityDto.getPartyId());

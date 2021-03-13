@@ -7,6 +7,7 @@ import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
@@ -58,6 +59,8 @@ public class SupplierServiceImpl {
     @Transactional
     public Boolean addSupplier(Supplier supplier,String id) {
         try {
+
+
             supplierDao.save(supplier);
             return true;
         } catch (Exception e) {
