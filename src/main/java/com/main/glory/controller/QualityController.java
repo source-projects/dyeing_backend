@@ -35,7 +35,7 @@ public class QualityController extends ControllerConfig {
     private PartyDao partyDao;
 
     @PostMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean>> saveQuality(@RequestBody AddQualityRequest quality) {
+    public ResponseEntity<GeneralResponse<Boolean>> saveQuality(@RequestBody AddQualityRequest quality,@RequestHeader Map<String, String> headers) {
         GeneralResponse<Boolean> result;
         try{
 
@@ -44,7 +44,7 @@ public class QualityController extends ControllerConfig {
                 throw new Exception("No party present with id:"+quality.getPartyId());
             }
 
-            int flag = qualityServiceImp.saveQuality(quality);
+            int flag = qualityServiceImp.saveQuality(quality,headers.get("id"));
             if (flag == 1)
                 result= new GeneralResponse<Boolean>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             else

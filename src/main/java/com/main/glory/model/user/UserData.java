@@ -34,6 +34,8 @@ public class UserData {
     Date updatedDate;
     Long createdBy;
     Long updatedBy;
+    @Column(columnDefinition = "boolean default false")
+    Boolean dataEntry;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;
@@ -43,6 +45,7 @@ public class UserData {
     private Designation designationId;
 
     public UserData(UserAddRequest userDataDto) {
+        this.dataEntry=userDataDto.getDataEntry();
         this.contact = userDataDto.getContact();
         this.userName=userDataDto.getUserName();
         this.firstName = userDataDto.getFirstName();

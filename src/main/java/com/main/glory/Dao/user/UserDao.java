@@ -29,8 +29,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.createdBy=:userHeadId OR u.userHeadId=:userHeadId")
     List<UserData>findAllByUserHeadId(Long userHeadId);
 
-
-
+    @Query("select u from UserData u where u.createdBy=:createdBy")
     List<UserData>findAllByCreatedBy(Long createdBy);
 
     @Query("select u from UserData u where u.designationId.id=:id")
@@ -42,7 +41,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.userHeadId=:userHeadId AND u.id=:createdBy")
     UserData findByUserHeadIdAndUserId(Long userHeadId, Long createdBy);
 
-    @Query("select u from UserData u where u.id= (select uu.userHeadId from UserData uu where uu.id=:id)")
+    @Query(value = "select * from user as u where u.id=id LIMIT 1",nativeQuery = true)
     UserData findUserById(Long id);
 
     @Query("select u from UserData u where u.createdBy=:id OR u.userHeadId=:userHeadId")
@@ -52,7 +51,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.id = :id")
     UserData findByUserAdminId(Long id);
 
-    @Query("select u from UserData u where u.id=:id")
+    @Query(value = "select * from user as u where u.id=:id LIMIT 1",nativeQuery = true)
     UserData getUserById(Long id);
 
     @Query("select s from UserData s where s.createdBy=:id OR s.userHeadId=:userHeadId")
@@ -88,7 +87,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("update UserData u set u.userHeadId=:id1 where u.id=:id")
     void updateUserHeadId(Long id, Long id1);
 
-    @Query("select u from UserData u where u.id=u.userHeadId")
+    @Query("select u from UserData u where u.id=u.userHeadId AND u.dataEntry=false")
     List<UserData> getAllUserHeadList();
 
   /*  @Query("select u from UserData u where u.company=:name")
@@ -101,7 +100,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.userName=:username")
     UserData getUserByUserName(String username);
 
-    @Query("select s from UserData s where s.id!=:headerId OR s.userHeadId=0")
+    @Query("select s from UserData s where s.id!=:headerId")
     List<UserData> getAllUserExceptHeaderId(Long headerId);
 
     @Query("select s from UserData s where s.companyId=:id")

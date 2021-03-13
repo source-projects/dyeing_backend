@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -41,10 +42,10 @@ public class SupplierController extends ControllerConfig {
     }
 
     @PostMapping("/supplier")
-    public ResponseEntity<GeneralResponse<Boolean>> addSupplier(@RequestBody Supplier supplier){
+    public ResponseEntity<GeneralResponse<Boolean>> addSupplier(@RequestBody Supplier supplier,@RequestHeader Map<String, String> headers){
         GeneralResponse<Boolean> result;
         try{
-            Boolean flag = supplierService.addSupplier(supplier);
+            Boolean flag = supplierService.addSupplier(supplier,headers.get("id"));
             if(flag) {
                 result= new GeneralResponse<Boolean>(true, "Supplier added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {

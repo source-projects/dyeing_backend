@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
@@ -652,6 +653,98 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping(value="/admin/add/invoiceSequence/")
+    public ResponseEntity<GeneralResponse<Boolean>> addInvoiceSequence(@RequestBody InvoiceSequence record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+
+            if(record == null)
+                throw new Exception("null data passed");
+
+            adminServcice.addInvoiceSequence(record);
+
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/invoiceSequence/")
+    public ResponseEntity<GeneralResponse<InvoiceSequence>> getInvoiceSequence() throws Exception {
+
+        GeneralResponse<InvoiceSequence> result=null;
+
+        boolean flag;
+        try {
+
+
+            InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequence();
+            if(invoiceSequence!=null)
+                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @PutMapping(value="/admin/update/invoiceSequence/")
+    public ResponseEntity<GeneralResponse<Boolean>> updateInvoiceSequence(@RequestBody InvoiceSequence invoiceSequence) throws Exception {
+
+        GeneralResponse<Boolean> result=null;
+
+        boolean flag;
+        try {
+
+
+            adminServcice.updateInvoiceSequence(invoiceSequence);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping(value="/admin/get/invoiceSequence/{id}")
+    public ResponseEntity<GeneralResponse<InvoiceSequence>> getInvoiceSequenceById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<InvoiceSequence> result=null;
+
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception("id can't null");
+
+            InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
+            if(invoiceSequence!=null)
+            result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

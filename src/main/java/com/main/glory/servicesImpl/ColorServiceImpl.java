@@ -13,6 +13,7 @@ import com.main.glory.model.color.request.GetAllBox;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
 import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.UserData;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ColorServiceImpl implements ColorServicesInterface {
+public class ColorServiceImpl {
 
     @Autowired
     SupplierRateDao supplierRateDao;
@@ -45,9 +46,22 @@ public class ColorServiceImpl implements ColorServicesInterface {
     @Autowired
     SupplierDao supplierDao;
 
-    @Override
     @Transactional
-    public void addColor(ColorMast colorMast) {
+    public void addColor(ColorMast colorMast,String id) throws Exception {
+
+        //identify the record is addedby the data entry user
+        //for data entry user
+        UserData user = userDao.getUserById(Long.parseLong(id));
+        if(user.getDataEntry()==true)
+        {
+            Optional<Supplier> supplier = supplierDao.getSupplierById(colorMast.getSupplierId());
+            if(supplier.isEmpty())
+                throw new Exception("no supplier found");
+            colorMast.setUserHeadId(supplier.get().getUserHeadId());
+        }
+
+
+
         ColorMast colorMast1 = colorMastDao.save(colorMast);
         colorMast1.getColorDataList().forEach(e -> {
             e.setControlId(colorMast1.getId());
@@ -72,7 +86,6 @@ public class ColorServiceImpl implements ColorServicesInterface {
         }
     }
 
-    @Override
     public List<ColorMastDetails> getAll(String getBy, Long id) throws Exception {
         List<ColorMastDetails> colorMastDetails = new ArrayList<>();
 
@@ -110,7 +123,7 @@ public class ColorServiceImpl implements ColorServicesInterface {
             });
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
-            if(userData.getUserHeadId()==0)
+            if(userData.getUserHeadId().equals(userData.getId()))
             {
                 //master user
                 List<ColorMast> data = colorMastDao.getAllByCreatedByAndHeadId(id,id);

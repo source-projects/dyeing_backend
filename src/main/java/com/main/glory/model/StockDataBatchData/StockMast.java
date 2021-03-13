@@ -1,6 +1,7 @@
 package com.main.glory.model.StockDataBatchData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -74,6 +75,9 @@ public class StockMast {
         this.createdBy = sm.createdBy;
         this.updatedBy = sm.updatedBy;
     }
+
+
+
 
 
     @PrePersist

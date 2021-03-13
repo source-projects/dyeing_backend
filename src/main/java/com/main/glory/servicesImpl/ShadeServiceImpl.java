@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service("ShadeServiceImpl")
-public class ShadeServiceImpl implements ShadeServicesInterface {
+public class ShadeServiceImpl {
 
 	@Autowired
 	QualityNameDao qualityNameDao;
@@ -66,79 +66,51 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 
 	@Transactional
 
-	public void saveShade(AddShadeMast shadeMast) throws Exception{
+	public void saveShade(AddShadeMast shadeMast,String id) throws Exception{
+		//consider we have data and add directlt
+		Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
+		if(!quality.isPresent())
+		{
+			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId());
+		}
+
+		//check the dyeing process for the shade is available or not
+
+		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+
+		ShadeMast shadeData =  new ShadeMast(shadeMast);
+
+		shadeData.setQualityEntryId(quality.get().getId());
+
 
 		if (shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
 		{
-			Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
-			if(!quality.isPresent())
-			{
-				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId());
-			}
-
-			//check the dyeing process for the shade is available or not
-
-			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
-
-			ShadeMast shadeData =  new ShadeMast(shadeMast);
-			shadeData.setPending(true);
-
-			shadeData.setQualityEntryId(quality.get().getId());
 			shadeData.setShadeDataList(null);
-
-			//check the ACP number
-
-			/*APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo()));
-
-			if(numberExist!=null)
-				throw new Exception("APC number is already available");
-
-			APC apc=new APC(Long.parseLong(shadeMast.getApcNo()));
-			acpDao.save(apc);*/
-			shadeMastDao.save(shadeData);
-
-
-
-
-
+			shadeData.setPending(true);
 		}
 		else {
-			//consider we have data and add directlt
-			Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
-			if(!quality.isPresent())
-			{
-				throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId());
-			}
 
-			//check the dyeing process for the shade is available or not
-
-			DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
-
-			ShadeMast shadeData =  new ShadeMast(shadeMast);
 			shadeData.setPending(false);
-			shadeData.setQualityEntryId(quality.get().getId());
 			shadeData.setShadeDataList(shadeMast.getShadeDataList());
-			//check the ACP number
-
-			/*APC numberExist =acpDao.getAcpNumberExist(Long.parseLong(shadeMast.getApcNo()));
-
-			if(numberExist!=null)
-				throw new Exception("APC number is already available");
-
-			APC apc=new APC(Long.parseLong(shadeMast.getApcNo()));
-			acpDao.save(apc);*/
-			shadeMastDao.save(shadeData);
-
-
-
 		}
+
+
+		//check that the shade add by data entry or what
+		UserData userData = userDao.getUserById(Long.parseLong(id));
+		if(userData.getDataEntry()==true) {
+			//get the party record
+			Party party = partyDao.findByPartyId(shadeData.getPartyId());
+			shadeData.setUserHeadId(party.getUserHeadId());
+		}
+		
+		shadeMastDao.save(shadeData);
 
 
 
 	}
 
 
-	@Override
+	
 	public List<ShadeMast> getAllShadeMast() throws Exception{
 		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeMast();
 		if(shadeMastList.isEmpty())
@@ -148,7 +120,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		}
 	}
 
-	@Override
+	
 	public Optional<ShadeMast> getShadeMastById(Long id) throws Exception {
 		Optional<ShadeMast> shadeMastList = shadeMastDao.findById(id);
 
@@ -159,7 +131,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		}
 	}
 
-	@Override
+	
 	public Boolean updateShade(ShadeMast shadeMast) {
 		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
 			shadeMast.setPending(true);
@@ -274,7 +246,7 @@ public class ShadeServiceImpl implements ShadeServicesInterface {
 		else if(getBy.equals("group")){
 			UserData userData = userDao.findUserById(id);
 
-			if(userData.getUserHeadId()==0) {
+			if(userData.getUserHeadId().equals(userData.getId())) {
 				//master user
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id,id);
 				for (ShadeMast e : shadeMastList) {

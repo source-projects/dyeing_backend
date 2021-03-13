@@ -7,6 +7,7 @@ import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFini
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,6 +28,11 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     //get total mtr based on stock it without extra batch mtr count
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.mtr) as MTR, SUM(p.wt) as WT, p.batchId as batchId) from BatchData p where p.controlId =:id AND isProductionPlanned = false AND isExtra=false GROUP BY p.batchId ")
     List<GetAllBatchResponse> findAllQTYControlId(@Param("id") Long id);
+
+
+    //getAll batch by stock ud
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.mtr) as MTR, SUM(p.wt) as WT, p.batchId as batchId) from BatchData p where p.controlId =:id GROUP BY p.batchId ")
+    List<GetAllBatchResponse> findAllBatchesByControlId(@Param("id") Long id);
 
     Optional<List<BatchData>> findByBatchId(String batchId);
 
@@ -123,7 +129,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("update BatchData b set b.isProductionPlanned=:b where b.id=:id")
     void updateProductionPlanned(Long id, boolean b);
 
-    @Query("select b from BatchData b where b.batchId=:name AND b.controlId!=:id")
+    @Query(value = "select * from batch_data as b where b.batch_id=:name AND b.control_id!=:id ORDER BY b.id LIMIT 1",nativeQuery = true)
     Optional<BatchData> isBatchUnique(String name, Long id);
 
     @Query("select SUM(b.mtr) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId")
@@ -132,5 +138,31 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(b.batchId,b.controlId,SUM(b.wt),SUM(b.mtr),SUM(b.finishMtr),COUNT(b.id)) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId")
     BatchWithTotalMTRandFinishMTR getAllBatchWithTotalMtrAndTotalFinishMtr(String batchId, Long stockId);
+
+
+    //get the quality bill responce by stock and batch id 3rd parameter for bill generated or not
+   /* @Query("select new com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber(" +
+            "(select q.qualityId from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS qualityId," +
+            "(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select sm.qualityId from StockMast sm where sm.id=:stockId))) AS qualityName," +
+            "(select q.rate from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS rate," +
+            "(select q.HSN from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS HSN," +
+            ":batchId AS batchId," +
+            "SUM(b.mtr) AS totalMtr," +
+            "SUM(b.finishMtr) AS totalFinishMtr," +
+            "COUNT(b.id) AS totalPcs," +
+            "(select sm.chlNo from StockMast sm where sm.id=:stockId) AS pchalNo" +
+            ") from BatchData b where b.batchId=:batchId AND b.controlId=:stockId AND b.isBillGenrated=:flag")
+    QualityBillByInvoiceNumber getQualityBillByStockAndBatchId(Long stockId, String batchId, boolean flag);*/
+
+
+
+    @Query("select b from BatchData b where b.batchId=:batchId AND b.controlId=:stockId AND b.isBillGenrated=:flag ")
+    List<BatchData> getBatchRecordByBillGeneratedFlag(Long stockId, String batchId, boolean flag);
+
+    @Query("select SUM(b.finishMtr) from BatchData b where b.batchId=:batchId AND b.controlId=:stockId")
+    Double getTotalFinishMtrByBatchAndStock(String batchId, Long stockId);
+
+    @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId")
+    Long getTotalPcsByBatchAndStockId(Long stockId, String batchId);
 }
 

@@ -27,17 +27,15 @@ public class DispatchController extends ControllerConfig {
     DispatchMastImpl dispatchMastService;
 
     @PostMapping("/dispatch/")
-    public ResponseEntity<GeneralResponse<Boolean>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
-        GeneralResponse<Boolean> result;
+    public ResponseEntity<GeneralResponse<Long>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
+        GeneralResponse<Long> result;
         try{
-            Boolean flag = dispatchMastService.saveDispatch(dispatchMast);
-            if(flag==true)
-                result= new GeneralResponse<>(true,"Invoice data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result= new GeneralResponse<>(false,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK);
+            Long flag = dispatchMastService.saveDispatch(dispatchMast);
+            result= new GeneralResponse<>(flag,"Invoice data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
         } catch (Exception e){
             e.printStackTrace();
-            result =  new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -271,5 +269,32 @@ public class DispatchController extends ControllerConfig {
 
 
 */
+
+
+
+
+
+    //********************* New Invoice module
+
+    @PostMapping("/dispatch/get/receipt/getPartyWithQualityDispatchByBatchesAndStock/")
+    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber>> getPartyWithQualityDispatchBy(@RequestBody CreateDispatch createDispatch) throws Exception{
+        GeneralResponse<PartyDataByInvoiceNumber> result;
+        try{
+            if(createDispatch!=null) {
+                PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchByBatchesAndStockId(createDispatch);
+
+                result= new GeneralResponse<>(x, "Invoice receipt successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result= new GeneralResponse<>(null,"Invoice record can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
 
 }

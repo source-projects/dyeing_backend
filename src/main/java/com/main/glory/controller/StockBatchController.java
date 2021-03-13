@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,8 +36,13 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         try{
             Boolean isPresent = batchService.isBatchIdExists(name, id);
+            if(isPresent)
             result = new GeneralResponse<>(isPresent, "BatchId exists:"+isPresent, true, System.currentTimeMillis(), HttpStatus.OK);
+            else {
+                result = new GeneralResponse<>(isPresent, "BatchId not exists:"+isPresent, false, System.currentTimeMillis(), HttpStatus.OK);
+            }
         }catch (Exception e){
+            e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -44,10 +50,10 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PostMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody StockMast stockMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody StockMast stockMast,@RequestHeader Map<String, String> headers) throws Exception {
         GeneralResponse<Boolean> result;
         try {
-            Boolean flag = stockBatchService.saveStockBatch(stockMast);
+            Boolean flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
             if (flag == true)
                 result = new GeneralResponse<>(true, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else

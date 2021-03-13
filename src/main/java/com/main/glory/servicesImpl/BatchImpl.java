@@ -31,6 +31,7 @@ public class BatchImpl {
     QualityServiceImp qualityServiceImp;
 
     public boolean isBatchIdExists(String name, Long id){
+
         Optional<BatchData> b = batchDao.isBatchUnique(name, id);
         if(b.isPresent()){
             return true;

@@ -34,7 +34,7 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.services.QualityServiceInterface;
 
 @Service("qualityServiceImp")
-public class QualityServiceImp implements QualityServiceInterface {
+public class QualityServiceImp  {
 
     @Autowired
     ProgramServiceImpl programService;
@@ -64,13 +64,25 @@ public class QualityServiceImp implements QualityServiceInterface {
     @Autowired
     ModelMapper modelMapper;
 
-    @Override
-    public int saveQuality(AddQualityRequest qualityDto) throws Exception {
+    
+    public int saveQuality(AddQualityRequest qualityDto,String id) throws Exception {
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         Quality quality = new Quality(qualityDto);
 
+        System.out.println("header:"+id);
+
+        //for data entry user
+        UserData user = userDao.getUserById(Long.parseLong(id));
+        System.out.println(":"+user.getId());
+        if(user.getDataEntry()==true)
+        {
+            Party party = partyDao.findByPartyId(qualityDto.getPartyId());
+            quality.setUserHeadId(party.getUserHeadId());
+        }
+
+        //elese remin the master
         String quality1 = qualityDao.isQualityNameExist(qualityDto.getQualityId());
         if (quality1 != null)
             throw new Exception("Quality id is already exist");
@@ -83,7 +95,7 @@ public class QualityServiceImp implements QualityServiceInterface {
     }
 
 
-    @Override
+    
     public List<GetQualityResponse> getAllQuality(Long id, String getBy) throws Exception {
         List<QualityWithPartyName> qualityListobject = null;
         List<GetQualityResponse> quality = new ArrayList<>();
@@ -106,7 +118,7 @@ public class QualityServiceImp implements QualityServiceInterface {
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
 
-            if(userData.getUserHeadId()==0) {
+            if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 qualityListobject = qualityDao.findAllWithPartyByCreatedAndHeadId(id,id);
                 for(QualityWithPartyName data :qualityListobject)
@@ -152,7 +164,7 @@ public class QualityServiceImp implements QualityServiceInterface {
     }
 
 
-    @Override
+    
     public boolean updateQuality(UpdateQualityRequest qualityDto) throws Exception {
         var qualityData = qualityDao.findById(qualityDto.getId());
         if (!qualityData.isPresent())
@@ -178,7 +190,7 @@ public class QualityServiceImp implements QualityServiceInterface {
         }
     }
 
-    @Override
+    
     public boolean deleteQualityById(Long id) throws Exception {
         Quality qualityExist = qualityDao.getqualityById(id);
 
@@ -205,7 +217,7 @@ public class QualityServiceImp implements QualityServiceInterface {
         return true;
     }
 
-    @Override
+    
     public GetQualityResponse getQualityByID(Long id) {
         Optional<Quality> quality = qualityDao.findById(id);
         if (!quality.isPresent())
@@ -222,13 +234,13 @@ public class QualityServiceImp implements QualityServiceInterface {
         return quality1;
     }
 
-    @Override
+    
     public String isQualityAlreadyExist(String qualityId) {
         String quakit = qualityDao.isQualityNameExist(qualityId);
         return quakit;
     }
 
-    @Override
+    
     public String getPartyNameByPartyId(Long partyId) {
         String partyName = partyDao.getPartyNameByPartyId(partyId);
         return partyName;
@@ -484,5 +496,9 @@ public class QualityServiceImp implements QualityServiceInterface {
     public Optional<QualityName> getQualityNameDataById(Long id) {
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(id);
         return qualityName;
+    }
+
+    public Quality getQualityByEntryId(Long qualityId) {
+        return qualityDao.getqualityById(qualityId);
     }
 }

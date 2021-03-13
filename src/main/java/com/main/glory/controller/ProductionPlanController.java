@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -25,7 +26,7 @@ public class ProductionPlanController extends ControllerConfig {
     ProductionPlanImpl productionPlanService;
 
     @PostMapping(value="/productionPlan/")
-    public ResponseEntity<GeneralResponse<Long>> saveProductionPlan(@RequestBody ProductionPlan productionPlan)
+    public ResponseEntity<GeneralResponse<Long>> saveProductionPlan(@RequestBody ProductionPlan productionPlan,@RequestHeader Map<String, String> headers)
     {
         GeneralResponse<Long> result =null;
         try {
