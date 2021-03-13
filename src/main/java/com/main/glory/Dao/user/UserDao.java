@@ -100,7 +100,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.userName=:username")
     UserData getUserByUserName(String username);
 
-    @Query("select s from UserData s where s.id!=:headerId OR s.userHeadId=0")
+    @Query("select s from UserData s where s.id!=:headerId")
     List<UserData> getAllUserExceptHeaderId(Long headerId);
 
     @Query("select s from UserData s where s.companyId=:id")
