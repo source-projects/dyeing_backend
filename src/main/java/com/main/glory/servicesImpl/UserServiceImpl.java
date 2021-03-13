@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserServiceInterface {
                     getAllUserInfoList.add(userData);
                 }
             } else if (getBy.equals("own")) {
-                userDataList = userDao.findAllByCreatedBy(id);
+                userDataList = userDao.findAllByCreatedBy(id,headerId);
                 int i = 0;
                 for (UserData e : userDataList) {
                     if (e.getId() == headerId || e.getUserHeadId() == 0)
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
                 if (userData.getUserHeadId() == 0) {
                     //master user
-                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id);
+                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id,headerId);
                     int i = 0;
                     for (UserData e : userDataList) {
                         if (e.getId() == headerId)
@@ -252,7 +252,7 @@ public class UserServiceImpl implements UserServiceInterface {
                         getAllUserInfoList.add(userData1);
                     }
                 } else {
-                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId());
+                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId(),headerId);
                     int i = 0;
                     for (UserData e : userDataList) {
                         if (e.getId() == headerId)

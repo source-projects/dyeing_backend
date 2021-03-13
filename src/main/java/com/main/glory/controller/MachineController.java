@@ -188,7 +188,7 @@ public class MachineController extends ControllerConfig {
             }
             GetAllMachine machineMasts = machineService.getMachineById(id);
             if(machineMasts ==null)
-            {
+            {   
                 result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
