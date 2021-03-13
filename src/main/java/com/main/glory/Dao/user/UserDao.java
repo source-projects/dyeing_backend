@@ -41,7 +41,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.userHeadId=:userHeadId AND u.id=:createdBy")
     UserData findByUserHeadIdAndUserId(Long userHeadId, Long createdBy);
 
-    @Query("select u from UserData u where u.id= (select uu.userHeadId from UserData uu where uu.id=:id)")
+    @Query(value = "select * from user as u where u.id=id LIMIT 1",nativeQuery = true)
     UserData findUserById(Long id);
 
     @Query("select u from UserData u where u.createdBy=:id OR u.userHeadId=:userHeadId")
@@ -51,7 +51,7 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.id = :id")
     UserData findByUserAdminId(Long id);
 
-    @Query("select u from UserData u where u.id=:id")
+    @Query(value = "select * from user as u where u.id=:id LIMIT 1",nativeQuery = true)
     UserData getUserById(Long id);
 
     @Query("select s from UserData s where s.createdBy=:id OR s.userHeadId=:userHeadId")

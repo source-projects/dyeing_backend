@@ -2,10 +2,10 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
-import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
@@ -15,9 +15,8 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
+import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +34,8 @@ public class ProductionPlanImpl {
     @Autowired
     JetServiceImpl jetService;
 
+    @Autowired
+    UserDao userDao;
     @Autowired
     QualityServiceImp qualityServiceImp;
 
@@ -78,6 +79,8 @@ public class ProductionPlanImpl {
                     batchData.setIsProductionPlanned(true);
                 batchDao.save(batchData);
             }
+
+
             productionPlanDao.save(productionPlan);
             return productionPlan.getId();
 

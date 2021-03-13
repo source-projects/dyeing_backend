@@ -10,7 +10,6 @@ import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
-import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
