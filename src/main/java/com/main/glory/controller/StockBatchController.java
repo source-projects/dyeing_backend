@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
@@ -50,7 +51,7 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PostMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody StockMast stockMast,@RequestHeader Map<String, String> headers) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) throws Exception {
         GeneralResponse<Boolean> result;
         try {
             Boolean flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
@@ -362,7 +363,7 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> updateStockBatch(@RequestBody StockMast stockMast) {
+    public ResponseEntity<GeneralResponse<Boolean>> updateStockBatch(@RequestBody AddStockBatch stockMast) {
         GeneralResponse<Boolean> result;
         try {
             stockBatchService.updateBatch(stockMast);
