@@ -30,6 +30,8 @@ public class DispatchData {
     Long shadeId;
     Double qualityRate;
     Double shadeRate;
+    @Column(columnDefinition = "varchar(255) default 'meter'")
+    String billingUnit;
 
 
     public DispatchData(BatchData batchData) {

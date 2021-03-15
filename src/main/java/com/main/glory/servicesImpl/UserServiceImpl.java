@@ -310,6 +310,7 @@ public class UserServiceImpl implements UserServiceInterface {
             if(departmentExist==null)
                 throw new Exception("department not found");
 
+            //userData1.get().setId(userData.getId());
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
             userData1.get().setLastName(userData.getLastName());

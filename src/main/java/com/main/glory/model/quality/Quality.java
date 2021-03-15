@@ -43,6 +43,8 @@ public class Quality {
 	private Double rate;
 	private String HSN="9988";
 	Long qualityNameId;
+	@Column(columnDefinition = "varchar(255) default 'meter'")
+	String billingUnit;
 
 	public Quality(Quality other) {
 		this.id = other.id;
@@ -77,6 +79,7 @@ public class Quality {
 		this.updatedBy=qualityDto.getUpdatedBy();
 		this.userHeadId=qualityDto.getUserHeadId();
 		this.rate=qualityDto.getRate();
+		this.billingUnit=qualityDto.getBillingUnit();
 
 	}
 
