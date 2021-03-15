@@ -31,6 +31,7 @@ public class GetQualityResponse {
     private Date qualityDate;
     private Long userHeadId;
     private String  partyName;
+    String billingUnit;
     String partyCode;
 
     public GetQualityResponse(QualityWithPartyName data) {
@@ -71,6 +72,7 @@ public class GetQualityResponse {
         this.updatedDate=data.getUpdatedDate();
         this.qualityDate = data.getQualityDate();
         this.userHeadId=data.getUserHeadId();
+        this.billingUnit=data.getBillingUnit();
         //this.partyName=data.getPartyName();
 
     }

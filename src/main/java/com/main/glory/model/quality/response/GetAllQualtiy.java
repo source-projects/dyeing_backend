@@ -19,6 +19,7 @@ public class GetAllQualtiy {
     private String qualityType;
     private String unit;
     private Double wtPer100m;
+    String billingUnit;
     Long qualityNameId;
 
     public GetAllQualtiy(Quality quality) {
@@ -26,6 +27,7 @@ public class GetAllQualtiy {
         this.qualityId=quality.getQualityId();
         this.qualityName=quality.getQualityName();
         this.qualityType=quality.getQualityType();
+        this.billingUnit=quality.getBillingUnit();
         this.unit=quality.getUnit();
         this.partyId=quality.getPartyId();
         this.wtPer100m=quality.getWtPer100m();

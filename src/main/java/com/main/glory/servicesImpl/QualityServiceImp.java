@@ -185,6 +185,7 @@ public class QualityServiceImp  {
             qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
             qualityData.get().setQualityDate(qualityDto.getQualityDate());
             qualityData.get().setRate(qualityDto.getRate());
+            qualityData.get().setBillingUnit(qualityDto.getBillingUnit());
             qualityDao.save(qualityData.get());
             return true;
         }

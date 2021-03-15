@@ -25,4 +25,5 @@ public class UpdateQualityRequest {
     private Date qualityDate;
     private Long userHeadId;
     Double rate;
+    String billingUnit;
 }
