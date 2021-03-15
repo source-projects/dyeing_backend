@@ -20,6 +20,7 @@ public class GetAllQualtiy {
     private String unit;
     private Double wtPer100m;
     String billingUnit;
+    Double mtrPerKg;
     Long qualityNameId;
 
     public GetAllQualtiy(Quality quality) {
@@ -31,5 +32,6 @@ public class GetAllQualtiy {
         this.unit=quality.getUnit();
         this.partyId=quality.getPartyId();
         this.wtPer100m=quality.getWtPer100m();
+        this.mtrPerKg=quality.getMtrPerKg();
     }
 }

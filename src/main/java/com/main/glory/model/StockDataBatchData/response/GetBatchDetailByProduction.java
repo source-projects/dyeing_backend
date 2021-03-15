@@ -20,6 +20,7 @@ public class GetBatchDetailByProduction {
     Long stockId;
     String colorTone;
     Double totalWt;
+    String colorName;
 
 
 
@@ -27,6 +28,7 @@ public class GetBatchDetailByProduction {
     public GetBatchDetailByProduction(Party party, Double totalWt, ShadeMast shadeMast, StockMast stockMast, String batchId) {
         this.partyName=party.getPartyName();
         this.partyShadeNo=shadeMast.getPartyShadeNo();
+        this.colorName=shadeMast.getColorName();
         this.batchId=batchId;
         this.stockId=stockMast.getId();
         this.colorTone=shadeMast.getColorTone();

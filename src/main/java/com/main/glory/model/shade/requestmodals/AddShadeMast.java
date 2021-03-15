@@ -31,6 +31,7 @@ public class AddShadeMast {
     String apcNo;
     Boolean pending;
     Double extraRate;
+    String colorName;
     List<ShadeData> shadeDataList;
 
 

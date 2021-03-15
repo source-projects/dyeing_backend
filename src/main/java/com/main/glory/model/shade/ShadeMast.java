@@ -53,6 +53,8 @@ import java.util.List;
 	String apcNo;
 	Boolean pending;
 	Double extraRate;
+	@Column(columnDefinition = "varchar(255) default 'Not mentioned'")
+	String colorName;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -81,6 +83,7 @@ import java.util.List;
 		this.processName=addShadeMast.getProcessName();
 		this.userHeadId=addShadeMast.getUserHeadId();
 		this.extraRate = addShadeMast.getExtraRate();
+		this.colorName=addShadeMast.getColorName();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
 
