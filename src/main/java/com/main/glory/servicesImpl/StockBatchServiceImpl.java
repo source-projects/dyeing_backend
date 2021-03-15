@@ -8,6 +8,7 @@ import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
@@ -22,7 +23,6 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -91,7 +91,7 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public Boolean saveStockBatch(StockMast stockMast, String id) throws Exception {
+    public Boolean saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
        Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
@@ -117,7 +117,13 @@ public class StockBatchServiceImpl {
                     Party party = partyDao.findByPartyId(stockMast.getPartyId());
                     stockMast.setUserHeadId(party.getUserHeadId());
                 }
-                StockMast x = stockMastDao.save(stockMast);
+
+                //add record
+                StockMast x =new StockMast(stockMast);
+                stockMastDao.save(x);
+
+                //update the quality wt per 100 as well
+                qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),1/stockMast.getWtPer100m());
 
                 return true;
 
@@ -248,7 +254,7 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public void updateBatch(StockMast stockMast) throws Exception {
+    public void updateBatch(AddStockBatch stockMast) throws Exception {
         //first check the batch id is null or not
 
         Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
@@ -311,7 +317,11 @@ public class StockBatchServiceImpl {
 
 
         //update record
-        stockMastDao.save(stockMast);
+        StockMast x =new StockMast(stockMast);
+        stockMastDao.save(x);
+
+        //update the quality wt per 100 as well
+        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),1/stockMast.getWtPer100m());
 
 
     }
