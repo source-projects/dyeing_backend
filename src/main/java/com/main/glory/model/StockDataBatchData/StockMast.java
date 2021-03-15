@@ -42,6 +42,7 @@ public class StockMast {
     Boolean isProductionPlanned;
     @ApiModelProperty(hidden = true)
     Date createdDate;
+    @Column(columnDefinition = "DATE DEFAULT CURRENT_DATE")
     Date receiveDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
