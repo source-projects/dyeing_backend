@@ -32,6 +32,7 @@ public class GetQualityResponse {
     private Long userHeadId;
     private String  partyName;
     String billingUnit;
+    Double mtrPerKg;
     String partyCode;
 
     public GetQualityResponse(QualityWithPartyName data) {
@@ -52,6 +53,7 @@ public class GetQualityResponse {
         this.qualityDate = data.getQualityDate();
         this.userHeadId=data.getUserHeadId();
         this.partyName=data.getPartyName();
+        this.mtrPerKg=data.getMtrPerKg();
         this.partyCode=data.getPartyCode();
     }
 
@@ -73,6 +75,7 @@ public class GetQualityResponse {
         this.qualityDate = data.getQualityDate();
         this.userHeadId=data.getUserHeadId();
         this.billingUnit=data.getBillingUnit();
+        this.mtrPerKg=data.getMtrPerKg();
         //this.partyName=data.getPartyName();
 
     }
