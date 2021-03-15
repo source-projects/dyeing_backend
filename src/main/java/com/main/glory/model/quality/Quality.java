@@ -33,6 +33,7 @@ public class Quality {
 	private String unit;
 	private Long  partyId;
 	private Double wtPer100m;
+	private Double mtrPerKg;
 	private String remark;
 	private  Date createdDate;
 	private Long createdBy;
@@ -43,6 +44,8 @@ public class Quality {
 	private Double rate;
 	private String HSN="9988";
 	Long qualityNameId;
+	@Column(columnDefinition = "varchar(255) default 'meter'")
+	String billingUnit;
 
 	public Quality(Quality other) {
 		this.id = other.id;
@@ -61,6 +64,8 @@ public class Quality {
 		this.rate= other.rate;
 		this.userHeadId = other.userHeadId;
 		this.qualityNameId=other.qualityNameId;
+		this.billingUnit=other.getBillingUnit();
+		this.mtrPerKg=other.getMtrPerKg();
 	}
 
 	//for adding the quality
@@ -77,6 +82,8 @@ public class Quality {
 		this.updatedBy=qualityDto.getUpdatedBy();
 		this.userHeadId=qualityDto.getUserHeadId();
 		this.rate=qualityDto.getRate();
+		this.billingUnit=qualityDto.getBillingUnit();
+		this.mtrPerKg=qualityDto.getMtrPerKg();
 
 	}
 

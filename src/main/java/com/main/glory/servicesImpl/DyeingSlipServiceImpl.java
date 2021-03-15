@@ -97,6 +97,7 @@ public class DyeingSlipServiceImpl {
 
 
         slipFormatData.setColorTone(shadeMast.get().getColorTone());
+        slipFormatData.setColorName(shadeMast.get().getColorName());
         slipFormatData.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
         slipFormatData.setTotalWt(wt);
         slipFormatData.setQualityId(quality.getQualityId());

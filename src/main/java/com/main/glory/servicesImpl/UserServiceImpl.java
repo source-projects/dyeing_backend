@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserServiceInterface {
                     getAllUserInfoList.add(userData);
                 }
             } else if (getBy.equals("own")) {
-                userDataList = userDao.findAllByCreatedBy(id);
+                userDataList = userDao.findAllByCreatedBy(id,headerId);
                 int i = 0;
                 for (UserData e : userDataList) {
                     if (e.getId() == headerId || e.getUserHeadId() == 0)
@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
                 if (userData.getUserHeadId() == 0) {
                     //master user
-                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id);
+                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id,headerId);
                     int i = 0;
                     for (UserData e : userDataList) {
                         if (e.getId() == headerId)
@@ -252,7 +252,7 @@ public class UserServiceImpl implements UserServiceInterface {
                         getAllUserInfoList.add(userData1);
                     }
                 } else {
-                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId());
+                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId(),headerId);
                     int i = 0;
                     for (UserData e : userDataList) {
                         if (e.getId() == headerId)
@@ -310,6 +310,7 @@ public class UserServiceImpl implements UserServiceInterface {
             if(departmentExist==null)
                 throw new Exception("department not found");
 
+            //userData1.get().setId(userData.getId());
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
             userData1.get().setLastName(userData.getLastName());

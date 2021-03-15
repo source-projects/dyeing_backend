@@ -32,6 +32,7 @@ public class GetAllShade {
     Long createdBy;
     String apcNo;
     Boolean pending;
+    String colorName;
 
 
     public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName,DyeingProcessMast dyeingProcessMast) {
@@ -48,6 +49,7 @@ public class GetAllShade {
         this.createdBy=e.getCreatedBy();
         this.apcNo=e.getApcNo();
         this.pending=e.getPending();
+        this.colorName=e.getColorName();
         this.processName=dyeingProcessMast.getProcessName();
     }
 
@@ -68,5 +70,6 @@ public class GetAllShade {
         this.pending=e.getPending();
         this.processName=dyeingProcessMast.getProcessName();
         this.qualityName=qualityName1.getQualityName();
+        this.colorName=e.getColorName();
     }
 }

@@ -1,6 +1,7 @@
 package com.main.glory.model.StockDataBatchData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
@@ -41,6 +42,8 @@ public class StockMast {
     Boolean isProductionPlanned;
     @ApiModelProperty(hidden = true)
     Date createdDate;
+    @Column(columnDefinition = "DATE DEFAULT CURRENT_DATE")
+    Date receiveDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
     String remark;
@@ -48,8 +51,6 @@ public class StockMast {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchData> batchData;
-
-
     Long qualityId;
 
    /* @PreRemove
@@ -66,18 +67,34 @@ public class StockMast {
         this.batchData = sm.batchData;
         this.partyId = sm.partyId;
         this.qualityId = sm.qualityId;
-        this.billDate = sm.billDate;
-        this.billNo = sm.billNo;
         this.chlDate = sm.chlDate;
         this.chlNo = sm.chlNo;
         this.unit = sm.unit;
         this.isProductionPlanned = sm.isProductionPlanned;
         this.createdBy = sm.createdBy;
         this.updatedBy = sm.updatedBy;
+        this.userHeadId= sm.getUserHeadId();
+        this.receiveDate=sm.receiveDate;
     }
 
+    public StockMast(AddStockBatch sm) {
+        this.id = sm.getId();
+        this.stockInType = sm.getStockInType();
+        this.createdDate = sm.getCreatedDate();
+        this.updatedDate = sm.getUpdatedDate();
+        this.batchData = sm.getBatchData();
+        this.partyId = sm.getPartyId();
+        this.qualityId = sm.getQualityId();
+        this.chlDate = sm.getChlDate();
+        this.chlNo = sm.getChlNo();
+        this.unit = sm.getUnit();
+        this.isProductionPlanned = sm.getIsProductionPlanned();
+        this.createdBy = sm.getCreatedBy();
+        this.updatedBy = sm.getUpdatedBy();
+        this.userHeadId= sm.getUserHeadId();
+        this.receiveDate=sm.getReceiveDate();
 
-
+    }
 
 
     @PrePersist

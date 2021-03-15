@@ -18,6 +18,7 @@ public class SlipFormatData extends DyeingSlipMast{
     String partyShadeNo;
     Long batchCount=1l;
     String colorTone;
+    String colorName;
 
 
     public SlipFormatData(DyeingSlipMast dyeingSlipMastExist) {

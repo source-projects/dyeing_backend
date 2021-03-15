@@ -146,10 +146,10 @@ public class ShadeServiceImpl {
 				//System.out.println(shadeMast);
 				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
 				ShadeMast x = shadeMastDao.save(shadeMast);
-				for(ProductionPlan p :productionPlansList)
+				/*for(ProductionPlan p :productionPlansList)
 				{
 					productionPlanDao.updateProductionWithShadeId(p.getId(),x.getId());
-				}
+				}*/
 				//shadeDataDao.saveAll(shadeMast.getShadeDataList());
 			}catch(Exception e){
 				e.printStackTrace();

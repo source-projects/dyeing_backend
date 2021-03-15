@@ -24,4 +24,6 @@ public class AddQualityRequest {
     private  Long updatedBy;
     private Long userHeadId;
     private Double rate;
+    Double mtrPerKg;
+    String billingUnit;
 }
