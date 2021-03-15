@@ -123,7 +123,7 @@ public class StockBatchServiceImpl {
                 stockMastDao.save(x);
 
                 //update the quality wt per 100 as well
-                qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),1/stockMast.getWtPer100m());
+                qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
 
                 return true;
 
@@ -131,6 +131,7 @@ public class StockBatchServiceImpl {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return false;
         }
     }
@@ -321,7 +322,7 @@ public class StockBatchServiceImpl {
         stockMastDao.save(x);
 
         //update the quality wt per 100 as well
-        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),1/stockMast.getWtPer100m());
+        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
 
 
     }
