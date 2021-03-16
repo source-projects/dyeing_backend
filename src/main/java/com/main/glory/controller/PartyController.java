@@ -7,6 +7,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.party.request.PartyReport;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithUserHeadName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,7 +220,31 @@ public class PartyController extends ControllerConfig {
 			}
 		}catch (Exception e )
 		{
+			e.printStackTrace();
 			result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+	}
+
+	@GetMapping(value="/party/get/report")
+	public ResponseEntity<GeneralResponse<PartyReport>> getPartyReportById(@RequestParam(name = "id") Long id,@RequestParam(name = "qualityId")Long qualityId) throws Exception {
+		GeneralResponse<PartyReport> result;
+		try {
+			if (id != null ||qualityId!=null) {
+				PartyReport flag = partyServiceImp.getPartyReportById(id,qualityId);
+				if (flag!=null) {
+					result =  new GeneralResponse<>(flag, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+				} else {
+					result= new GeneralResponse<>(null, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
+				}
+			}
+			else {
+				result = new GeneralResponse<>(null, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
+			}
+		}catch (Exception e )
+		{
+			e.printStackTrace();
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}

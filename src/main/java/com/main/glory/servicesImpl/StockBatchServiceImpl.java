@@ -8,10 +8,7 @@ import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
-import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
-import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
-import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
+import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
@@ -20,6 +17,7 @@ import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
@@ -1261,5 +1259,48 @@ public class StockBatchServiceImpl {
 
     public Double getMtrByControlAndBatchId(Long stockId, String batchId) {
         return batchDao.getTotalMtrByControlIdAndBatchId(stockId,batchId);
+    }
+
+    public List<BatchDetail> getBatchDetailForReport(Long partyId, Long qualityId) {
+        List<BatchDetail> batchDetailList = new ArrayList<>();
+
+        List<StockMast> stockMastList = stockMastDao.getAllStockByPartyIdAndQualityId(partyId,qualityId);
+
+        Quality quality = qualityDao.getqualityById(qualityId);
+        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+        if(stockMastList.isEmpty()) {
+            return null;
+        }
+        for(StockMast stockMast:stockMastList)
+        {
+            List<BatchDetail> batchDetails = batchDao.getBatchDetailByStockId(stockMast.getId());
+            if(batchDetails.isEmpty())
+                continue;
+            for(BatchDetail batchDetail:batchDetails)
+            {
+                if(batchDetail.getIsProductionPlanned())
+                {
+                    ProductionPlan productionPlan= productionPlanService.getProductionDataByBatchAndStock(batchDetail.getBatchId(),batchDetail.getControlId());
+                    ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
+                    if(productionPlan==null || shadeMast==null)
+                        continue;
+                    BatchDetail batchDetail1 = new BatchDetail(batchDetail,quality,qualityName.get());
+                    batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
+                    batchDetail1.setColorName(shadeMast.getColorName());
+                    batchDetail1.setColorTone(shadeMast.getColorTone());
+                    batchDetailList.add(batchDetail1);
+
+                }
+                else {
+
+                    batchDetailList.add(new BatchDetail(batchDetail,quality,qualityName.get()));
+                }
+
+            }
+        }
+
+        if(batchDetailList.isEmpty())
+            return null;
+        return batchDetailList;
     }
 }

@@ -1,6 +1,7 @@
 package com.main.glory.model.shade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import io.swagger.annotations.ApiModelProperty;
