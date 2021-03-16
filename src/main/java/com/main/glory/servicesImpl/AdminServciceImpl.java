@@ -1,18 +1,13 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.admin.ApproveByDao;
-import com.main.glory.Dao.admin.CompanyDao;
-import com.main.glory.Dao.admin.DepartmentDao;
-import com.main.glory.Dao.admin.InvoiceSequenceDao;
+import com.main.glory.Dao.admin.*;
 import com.main.glory.Dao.quality.QualityNameDao;
-import com.main.glory.model.admin.ApprovedBy;
-import com.main.glory.model.admin.Company;
-import com.main.glory.model.admin.Department;
-import com.main.glory.model.admin.InvoiceSequence;
+import com.main.glory.model.admin.*;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.user.UserData;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +16,9 @@ import java.util.Optional;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
+    @Autowired
+    BatchSequneceDao batchSequneceDao;
 
     @Autowired
     InvoiceSequenceDao invoiceSequenceDao;
@@ -302,5 +300,32 @@ public class AdminServciceImpl {
 
     public InvoiceSequence getInvoiceSequenceById(Long id) {
         return invoiceSequenceDao.getSequenceById(id);
+    }
+
+    public void addBatchSequence(BatchSequence record) throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+
+        if(batchSequence!=null)
+            throw new Exception("batch sequence found");
+
+        batchSequneceDao.save(record);
+
+    }
+
+    public BatchSequence getBatchSequence() throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+
+        if(batchSequence==null)
+            throw new Exception("no batch sequence found");
+        return batchSequence;
+
+    }
+
+    public BatchSequence getBatchSequenceById(Long id) throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequenceById(id);
+        if(batchSequence==null) {
+            throw new Exception("no batch sequence found");
+        }
+        return batchSequence;
     }
 }

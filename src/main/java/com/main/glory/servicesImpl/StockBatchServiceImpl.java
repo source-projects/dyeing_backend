@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
@@ -33,6 +34,10 @@ import java.util.*;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
+
+    @Autowired
+    BatchSequneceDao batchSequneceDao;
+
     @Autowired
     QualityNameDao qualityNameDao;
 

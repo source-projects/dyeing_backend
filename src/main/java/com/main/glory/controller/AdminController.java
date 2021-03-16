@@ -3,10 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.admin.ApprovedBy;
-import com.main.glory.model.admin.Company;
-import com.main.glory.model.admin.Department;
-import com.main.glory.model.admin.InvoiceSequence;
+import com.main.glory.model.admin.*;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
@@ -749,6 +746,100 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping(value="/admin/add/batchSequence/")
+    public ResponseEntity<GeneralResponse<Boolean>> addBatchSequence(@RequestBody BatchSequence record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+
+            if(record == null)
+                throw new Exception("null data passed");
+
+            adminServcice.addBatchSequence(record);
+
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @PutMapping(value="/admin/update/batchSequence/")
+    public ResponseEntity<GeneralResponse<Boolean>> updateBatchSequence(@RequestBody BatchSequence record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+
+            if(record == null)
+                throw new Exception("null data passed");
+
+            adminServcice.addBatchSequence(record);
+
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/batchSequence/")
+    public ResponseEntity<GeneralResponse<BatchSequence>> getBatchSequence() throws Exception {
+
+        GeneralResponse<BatchSequence> result;
+
+        boolean flag;
+        try {
+
+            BatchSequence batchSequence = adminServcice.getBatchSequence();
+            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/batchSequence/{id}")
+    public ResponseEntity<GeneralResponse<BatchSequence>> getBatchSequenceById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<BatchSequence> result;
+
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception("null id passed");
+
+            BatchSequence batchSequence = adminServcice.getBatchSequenceById(id);
+            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 
 
