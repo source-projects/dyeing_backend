@@ -2,6 +2,7 @@ package com.main.glory.Dao.StockAndBatch;
 
 
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
@@ -164,5 +165,20 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId")
     Long getTotalPcsByBatchAndStockId(Long stockId, String batchId);
+
+
+    /*//for party report batch detail
+    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave,(:qualityId)as qualityEntrI," +
+            "(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=:qualityId))as qualityNam," +
+            "(select qq.qualityId from Quality qq where qq.id=:qualityId)as qualityI," +
+            "count(b.id),sum(b.mtr),(select s.receiveDate from StockMast s where s.id=b.controlId)" +
+            ") from BatchData b where b.batchId IS NOT NULL AND b.controlId IS NULL AND b.controlId = (select sm.id from StockMast sm where sm.partyId=:partyId AND sm.qualityId=:qualityId) GROUP BY b.batchId")
+    List<BatchDetail> getBatchDetailForReportByPartyIdAndQualityId(Long partyId, Long qualityId);
+*/
+
+    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave," +
+            "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)" +
+            ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id GROUP BY b.batchId")
+    List<BatchDetail> getBatchDetailByStockId(Long id);
 }
 

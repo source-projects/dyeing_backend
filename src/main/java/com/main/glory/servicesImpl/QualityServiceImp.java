@@ -275,8 +275,8 @@ public class QualityServiceImp  {
 
         Optional<List<Quality>> qualityList = qualityDao.findByPartyId(partyId);
 
-        Optional<Party> partName = partyDao.findById(partyId);
-        if (!partName.isPresent())
+        Party partName = partyDao.findByPartyId(partyId);
+        if (partName==null)
             throw new Exception("No such Party id available with id:" + partyId);
         if (!qualityList.isPresent()) {
             throw new Exception("Add Quality data for partyId:" + partyId);
@@ -301,7 +301,7 @@ public class QualityServiceImp  {
         partyQualityData.setPartyId(partyId);
 
 
-        partyQualityData.setPartyName(partName.get().getPartyName());
+        partyQualityData.setPartyName(partName.getPartyName());
 
 
         if (partyQualityData == null)

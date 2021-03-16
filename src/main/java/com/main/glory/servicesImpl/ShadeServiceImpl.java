@@ -471,4 +471,8 @@ public class ShadeServiceImpl {
 		List<ShadeMast> list = shadeMastDao.getAllShadeByProcessId(id);
 		return list;
 	}
+
+    public ShadeMast getShadeById(Long shadeId) {
+		return shadeMastDao.getShadeMastById(shadeId);
+    }
 }
