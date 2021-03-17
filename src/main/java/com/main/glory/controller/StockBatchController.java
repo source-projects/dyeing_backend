@@ -52,17 +52,16 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PostMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) throws Exception {
-        GeneralResponse<Boolean> result;
+    public ResponseEntity<GeneralResponse<Long>> createBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) throws Exception {
+        GeneralResponse<Long> result = null;
         try {
-            Boolean flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
-            if (flag == true)
-                result = new GeneralResponse<>(true, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result= new GeneralResponse<>(false, "Stock batch not created because quality in not availble", false, System.currentTimeMillis(), HttpStatus.OK);
+            Long flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
+            if (flag != null)
+                result = new GeneralResponse<>(flag, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -483,7 +482,7 @@ public class StockBatchController extends ControllerConfig {
         try {
             if(batchId.isEmpty() || stockId==null)
                 throw new Exception("null id passed");
-            
+
             JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(stockId,batchId);
 
             result= new GeneralResponse<>(qty, "Job card fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
