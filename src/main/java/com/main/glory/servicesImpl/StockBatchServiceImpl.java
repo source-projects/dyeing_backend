@@ -135,7 +135,7 @@ public class StockBatchServiceImpl {
                 if(batchSequence==null)
                     throw new Exception("add batch sequence first");
 
-                if(max > batchSequence.getSequence())
+                if(max >= batchSequence.getSequence())
                 {
                     batchSequneceDao.updateBatchSequence(batchSequence.getId(),max+1);
                 }
@@ -354,7 +354,7 @@ public class StockBatchServiceImpl {
 
             //update the sequence
             BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
-            if (max > batchSequence.getSequence()) {
+            if (max >= batchSequence.getSequence()) {
                 batchSequneceDao.updateBatchSequence(batchSequence.getId(), max + 1);
             }
 
