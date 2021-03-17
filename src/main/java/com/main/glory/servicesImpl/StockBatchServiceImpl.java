@@ -1362,7 +1362,8 @@ public class StockBatchServiceImpl {
         System.out.println(stockMast.getId());
         System.out.println(party.getId());
         System.out.println(quality.getId());
-        System.out.println(quality.getQualityNameId());
+        System.out.println(qualityName.get().getId());
+        System.out.println(userData.getId());
         System.out.println(totalMtr);
         System.out.println(totalPcs);
         System.out.println(totalWt);
