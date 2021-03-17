@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
+import com.main.glory.model.StockDataBatchData.request.JobCard;
 import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
@@ -79,6 +80,11 @@ public class StockBatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+
+
+
+
 
     @GetMapping("/stockBatch/batch/ByQualityAndParty/{qualityId}/{partyId}")
     public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
@@ -468,4 +474,24 @@ public class StockBatchController extends ControllerConfig {
     }
 
 
+
+
+    //gt the job card detail by batch and stock Id
+    @GetMapping("/stockBatch/get/getJobCardBy")
+    public ResponseEntity<GeneralResponse<JobCard>> getJobCardByStockIdAndBatchId(@RequestParam(name = "batchId")String batchId, @RequestParam(name = "stockId")Long stockId) throws Exception {
+        GeneralResponse<JobCard> result;
+        try {
+            if(batchId.isEmpty() || stockId==null)
+                throw new Exception("null id passed");
+            
+            JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(stockId,batchId);
+
+            result= new GeneralResponse<>(qty, "Job card fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 }
