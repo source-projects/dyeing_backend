@@ -104,7 +104,7 @@ public class StockBatchServiceImpl {
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
         Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
-        try {
+
             if (!quality.isPresent()) {
                 throw new Exception("Insert Quality first");
             }
@@ -116,7 +116,7 @@ public class StockBatchServiceImpl {
                     if(batchData.getBatchId()==null)
                         throw new Exception("batch id can't be null");
                     batchId=Long.parseLong(batchData.getBatchId());
-                    if(max > batchId)
+                    if(batchId > max)
                     {
                         max=batchId;
                     }
@@ -124,22 +124,12 @@ public class StockBatchServiceImpl {
 
                 //for data entry user
                 UserData userData = userDao.getUserById(Long.parseLong(id));
-                if(userData.getDataEntry()==true)
+                if(userData.getDataEntry()==true || userData.getUserHeadId()==0)
                 {
                     //fetch the party record to set the usert head
                     Party party = partyDao.findByPartyId(stockMast.getPartyId());
                     stockMast.setUserHeadId(party.getUserHeadId());
                 }
-
-                //add record
-                StockMast x =new StockMast(stockMast);
-                stockMastDao.save(x);
-
-                //update the quality wt per 100 as well
-                qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
-
-
-
                 //check the invoice sequence
                 BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
                 if(batchSequence==null)
@@ -149,15 +139,22 @@ public class StockBatchServiceImpl {
                 {
                     batchSequneceDao.updateBatchSequence(batchSequence.getId(),max+1);
                 }
+
+
+                //add record
+                StockMast x =new StockMast(stockMast);
+                stockMastDao.save(x);
+
+                //update the quality wt per 100 as well
+                qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
                 return x.getId();
 
+
+
+
+
             }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+
     }
 
 
@@ -279,7 +276,7 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public void updateBatch(AddStockBatch stockMast) throws Exception {
+    public void updateBatch(AddStockBatch stockMast,String id) throws Exception {
         //first check the batch id is null or not
         try {
             Long batchId = 0l, max = 0l;
@@ -314,7 +311,7 @@ public class StockBatchServiceImpl {
                     batchGr.replace(batch.getId(), true);
                 }
                 batchId = Long.parseLong(batch.getBatchId());
-                if (max > batchId) {
+                if (batchId > max) {
                     max = batchId;
                 }
             }
@@ -339,6 +336,14 @@ public class StockBatchServiceImpl {
             }
 
 
+            //for data entry user
+            UserData userData = userDao.getUserById(Long.parseLong(id));
+            if(userData.getDataEntry()==true || userData.getUserHeadId()==0)
+            {
+                //fetch the party record to set the usert head
+                Party party = partyDao.findByPartyId(stockMast.getPartyId());
+                stockMast.setUserHeadId(party.getUserHeadId());
+            }
             //update record
             StockMast x = new StockMast(stockMast);
             stockMastDao.save(x);
