@@ -276,7 +276,7 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public void updateBatch(AddStockBatch stockMast) throws Exception {
+    public void updateBatch(AddStockBatch stockMast,String id) throws Exception {
         //first check the batch id is null or not
         try {
             Long batchId = 0l, max = 0l;
@@ -336,6 +336,14 @@ public class StockBatchServiceImpl {
             }
 
 
+            //for data entry user
+            UserData userData = userDao.getUserById(Long.parseLong(id));
+            if(userData.getDataEntry()==true || userData.getUserHeadId()==0)
+            {
+                //fetch the party record to set the usert head
+                Party party = partyDao.findByPartyId(stockMast.getPartyId());
+                stockMast.setUserHeadId(party.getUserHeadId());
+            }
             //update record
             StockMast x = new StockMast(stockMast);
             stockMastDao.save(x);
