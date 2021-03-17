@@ -97,7 +97,7 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public Boolean saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
+    public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
 
         Long max=0l,batchId=0l;
         Date dt = new Date(System.currentTimeMillis());
@@ -149,14 +149,14 @@ public class StockBatchServiceImpl {
                 {
                     batchSequneceDao.updateBatchSequence(batchSequence.getId(),max+1);
                 }
-                return true;
+                return x.getId();
 
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
