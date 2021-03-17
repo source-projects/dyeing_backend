@@ -1359,7 +1359,7 @@ public class StockBatchServiceImpl {
         Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
 
-        JobCard jobCard=new JobCard(stockMast,party,userData,quality,qualityName,totalMtr,totalPcs,totalWt);
+        JobCard jobCard=new JobCard(stockMast,party,userData,quality,qualityName.get(),totalMtr,totalPcs,totalWt);
         jobCard.setBatchId(batchId);
         jobCard.setTotalFinishMtr(totalFinish);
         jobCard.setBatchDataList(batchData);

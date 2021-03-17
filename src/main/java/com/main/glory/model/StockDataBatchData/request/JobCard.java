@@ -38,14 +38,14 @@ public class JobCard {
     List<BatchData> batchDataList;
 
 
-    public JobCard(StockMast stockMast, Party party, UserData userData, Quality quality, Optional<QualityName> qualityName, Double totalMtr, Long totalPcs, Double totalWt) {
+    public JobCard(StockMast stockMast, Party party, UserData userData, Quality quality, QualityName qualityName, Double totalMtr, Long totalPcs, Double totalWt) {
         this.partyId=party.getId();
         this.partyName = party.getPartyName();
         this.masterName=userData.getUserName();
         this.userHeadId = userData.getId();
         this.receiveDate = stockMast.getReceiveDate();
         this.chalNo=stockMast.getChlNo();
-        this.qualityName=qualityName.get().getQualityName();
+        this.qualityName=qualityName.getQualityName();
         this.qualityId=quality.getQualityId();
         this.qualiyEntryId = quality.getId();
         this.totalMtr=totalMtr;
