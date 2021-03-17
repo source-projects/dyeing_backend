@@ -1308,4 +1308,32 @@ public class StockBatchServiceImpl {
             return null;
         return batchDetailList;
     }
+
+    public JobCard getJobCardByStockIdAndBatchId(Long stockId, String batchId) throws Exception {
+
+
+        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(stockId,batchId);
+        if(batchData.isEmpty())
+            throw new Exception("no batch record found");
+
+
+
+        //header record
+        Double totalWt = batchDao.getTotalWtByControlIdAndBatchId(stockId,batchId);
+        Double totalMtr = batchDao.getTotalMtrByControlIdAndBatchId(stockId,batchId);
+        Double totalFinish = batchDao.getTotalFinishMtrByBatchAndStock(batchId,stockId);
+        Long totalPcs= batchDao.getTotalPcsByBatchAndStockId(stockId,batchId);
+        StockMast stockMast = stockMastDao.findByStockId(stockId);
+        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        UserData userData = userDao.getUserById(stockMast.getUserHeadId());
+        Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
+        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+
+        JobCard jobCard=new JobCard(stockMast,party,userData,quality,qualityName,totalMtr,totalPcs,totalWt);
+        jobCard.setBatchId(batchId);
+        jobCard.setTotalFinishMtr(totalFinish);
+        jobCard.setBatchDataList(batchData);
+        return jobCard;
+
+    }
 }
