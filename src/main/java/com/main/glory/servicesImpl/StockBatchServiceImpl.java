@@ -11,6 +11,8 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
+import com.main.glory.model.admin.BatchSequence;
+import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.JetData;
@@ -22,6 +24,7 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -95,7 +98,9 @@ public class StockBatchServiceImpl {
 
     @Transactional
     public Boolean saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
-       Date dt = new Date(System.currentTimeMillis());
+
+        Long max=0l,batchId=0l;
+        Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
         Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
@@ -110,6 +115,11 @@ public class StockBatchServiceImpl {
                 {
                     if(batchData.getBatchId()==null)
                         throw new Exception("batch id can't be null");
+                    batchId=Long.parseLong(batchData.getBatchId());
+                    if(max > batchId)
+                    {
+                        max=batchId;
+                    }
                 }
 
                 //for data entry user
@@ -128,6 +138,17 @@ public class StockBatchServiceImpl {
                 //update the quality wt per 100 as well
                 qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
 
+
+
+                //check the invoice sequence
+                BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+                if(batchSequence==null)
+                    throw new Exception("add batch sequence first");
+
+                if(max > batchSequence.getSequence())
+                {
+                    batchSequneceDao.updateBatchSequence(batchSequence.getId(),max+1);
+                }
                 return true;
 
             }
@@ -260,74 +281,83 @@ public class StockBatchServiceImpl {
     @Transactional
     public void updateBatch(AddStockBatch stockMast) throws Exception {
         //first check the batch id is null or not
+        try {
+            Long batchId = 0l, max = 0l;
 
-        Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
-        if(original.isEmpty()){
-            throw new Exception("No such batch present with id:"+stockMast.getId());
-        }
-
-        // Validate, if batch is not given to the production planning then throw the exception
-        if(original.get().getIsProductionPlanned()){
-            throw new Exception("BatchData is already sent to production, for id:"+stockMast.getId());
-        }
-
-
-
-        //for delete the batch gr if not coming from FE
-
-        //##Get the data first from the list
-        Map<Long,Boolean> batchGr=new HashMap<>();
-        List<BatchData> batchData = batchDao.findByControlId(stockMast.getId());
-        for(BatchData batch: batchData)
-        {
-            batchGr.put(batch.getId(),false);
-            //System.out.println(batch.getId());
-        }
-
-        //change the as per the data is coming from FE
-        for(BatchData batch:stockMast.getBatchData())
-        {
-            if(batch.getBatchId()==null || batch.getBatchId().isEmpty())
-                throw new Exception("batch id can't be null");
-            //System.out.println("coming:"+batch.getId());
-            if(batchGr.containsKey(batch.getId()))
-            {
-                batchGr.replace(batch.getId(),true);
+            Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
+            if (original.isEmpty()) {
+                throw new Exception("No such batch present with id:" + stockMast.getId());
             }
-        }
 
-        //##Iterate the loop first for check the record that are production plan true or not and then delete the record who flag is false
-        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
-        {
-            //System.out.println(entry.getKey()+":"+entry.getValue());
-            if(entry.getValue()==false)
-            {
-                BatchData batchDataProductionPlan = batchDao.getBatchDataById(entry.getKey());
-                if(batchDataProductionPlan.getIsProductionPlanned())
-                    batchGr.replace(entry.getKey(),true);
+            // Validate, if batch is not given to the production planning then throw the exception
+            if (original.get().getIsProductionPlanned()) {
+                throw new Exception("BatchData is already sent to production, for id:" + stockMast.getId());
+            }
+
+
+            //for delete the batch gr if not coming from FE
+
+            //##Get the data first from the list
+            Map<Long, Boolean> batchGr = new HashMap<>();
+            List<BatchData> batchData = batchDao.findByControlId(stockMast.getId());
+            for (BatchData batch : batchData) {
+                batchGr.put(batch.getId(), false);
+                //System.out.println(batch.getId());
+            }
+
+            //change the as per the data is coming from FE
+            for (BatchData batch : stockMast.getBatchData()) {
+                if (batch.getBatchId() == null || batch.getBatchId().isEmpty())
+                    throw new Exception("batch id can't be null");
+                //System.out.println("coming:"+batch.getId());
+                if (batchGr.containsKey(batch.getId())) {
+                    batchGr.replace(batch.getId(), true);
+                }
+                batchId = Long.parseLong(batch.getBatchId());
+                if (max > batchId) {
+                    max = batchId;
+                }
+            }
+
+            //##Iterate the loop first for check the record that are production plan true or not and then delete the record who flag is false
+            for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
+                //System.out.println(entry.getKey()+":"+entry.getValue());
+                if (entry.getValue() == false) {
+                    BatchData batchDataProductionPlan = batchDao.getBatchDataById(entry.getKey());
+                    if (batchDataProductionPlan.getIsProductionPlanned())
+                        batchGr.replace(entry.getKey(), true);
                     //throw new Exception("remove the production first of batch:"+batchDataProductionPlan.getBatchId());
 
+                }
             }
+            //remove the record
+            for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
+                //System.out.println(entry.getKey()+":"+entry.getValue());
+                if (entry.getValue() == false) {
+                    batchDao.deleteById(entry.getKey());
+                }
+            }
+
+
+            //update record
+            StockMast x = new StockMast(stockMast);
+            stockMastDao.save(x);
+
+            //update the quality wt per 100 as well
+            qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
+
+
+            //update the sequence
+            BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+            if (max > batchSequence.getSequence()) {
+                batchSequneceDao.updateBatchSequence(batchSequence.getId(), max + 1);
+            }
+
         }
-        //remove the record
-        for(Map.Entry<Long,Boolean> entry:batchGr.entrySet())
+        catch (Exception e)
         {
-            //System.out.println(entry.getKey()+":"+entry.getValue());
-            if(entry.getValue()==false)
-            {
-                batchDao.deleteById(entry.getKey());
-            }
+            e.printStackTrace();
         }
-
-
-        //update record
-        StockMast x =new StockMast(stockMast);
-        stockMastDao.save(x);
-
-        //update the quality wt per 100 as well
-        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
-
-
     }
 
     @Transactional
