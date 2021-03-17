@@ -368,14 +368,14 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> updateStockBatch(@RequestBody AddStockBatch stockMast) {
-        GeneralResponse<Boolean> result;
+    public ResponseEntity<GeneralResponse<Long>> updateStockBatch(@RequestBody AddStockBatch stockMast) {
+        GeneralResponse<Long> result;
         try {
             stockBatchService.updateBatch(stockMast);
-            result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(stockMast.getId(), "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
