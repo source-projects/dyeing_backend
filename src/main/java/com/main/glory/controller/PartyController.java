@@ -226,7 +226,7 @@ public class PartyController extends ControllerConfig {
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
-	@GetMapping(value="/party/get/report")
+	@GetMapping(value="/party/all/report")
 	public ResponseEntity<GeneralResponse<PartyReport>> getPartyReportById(@RequestParam(name = "id") Long id,@RequestParam(name = "qualityId")Long qualityId) throws Exception {
 		GeneralResponse<PartyReport> result;
 		try {
