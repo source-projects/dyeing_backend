@@ -174,6 +174,8 @@ public class MachineServiceImpl {
 
         List<GetAllMachineRecord> getAllMachineRecordList = new ArrayList<>();
 
+        if(machineRecord==null)
+            throw new Exception("no record found");
             GetAllMachineRecord getAllMachineRecord=new GetAllMachineRecord();
             getAllMachineRecord.setId(machineRecord.getId());
             getAllMachineRecord.setControlId(machineRecord.getControlId());
