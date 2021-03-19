@@ -496,7 +496,7 @@ public class JetServiceImpl {
 
     }
 
-    private Double getAmountInRange(Double amtQty) {
+    Double getAmountInRange(Double amtQty) {
 
         List<QuantityRange> quantityRangeList = quantityRangeDao.getAllRange();
         Double valueToReturn=0.0;
@@ -1105,5 +1105,9 @@ public class JetServiceImpl {
         else
             return false;
 
+    }
+
+    public void saveJetRecord(JetData jetData) {
+        jetDataDao.save(jetData);
     }
 }

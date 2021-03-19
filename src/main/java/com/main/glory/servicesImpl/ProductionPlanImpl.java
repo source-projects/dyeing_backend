@@ -6,15 +6,27 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.dyeingProcess.DyeingChemicalData;
+import com.main.glory.model.dyeingProcess.DyeingProcessData;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.jet.JetData;
+import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJetData;
+import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +40,13 @@ import java.util.Optional;
 public class ProductionPlanImpl {
 
     @Autowired
+    SupplierServiceImpl supplierService;
+
+    @Autowired
     DyeingProcessServiceImpl dyeingProcessService;
+
+    @Autowired
+    DyeingSlipServiceImpl dyeingSlipService;
     @Autowired
     ProductionPlanDao productionPlanDao;
     @Autowired
@@ -324,6 +342,141 @@ public class ProductionPlanImpl {
 
 
         }
+
+
+
+
+    }
+
+    @Transactional
+    public void saveDirectDyeingSlip(AddDirectBatchToJet record) throws Exception {
+        //store direct dyeing slip with jet and with shade or else shade colour
+
+        /*
+
+        1.check the record exist or not
+        2.create the production
+        3.add the record to the jet
+        4.create the dyeing slip for the batch
+        5.change the batch status
+
+         */
+
+        Double totalBatchCapacity = 0.0;
+
+        Long jetSequence=0l;
+
+        Double totalBatchWt = stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
+        //process type ::directDyeing
+
+        ProductionPlan productionPlan =new ProductionPlan(record);
+        if(productionPlan.getShadeId()==null && productionPlan.getColorName().isEmpty())
+            throw new Exception("please enter shade or color name");
+
+
+
+        //check the production is exist with batch and stock or not
+
+        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(record.getBatchId(),record.getStockId());
+        if(productionPlanExist!=null)
+            throw new Exception("batch and stock is already exist");
+
+        ProductionPlan x = productionPlanDao.save(productionPlan);
+
+
+        //jet capacity check and store the jet record
+        JetMast jetMast = jetService.getJetMastById(record.getJetId());
+        List<GetJetData> jetDataList = jetService.getJetData(record.getJetId());
+
+
+        for(GetJetData getJetData : jetDataList)
+        {
+           ProductionPlan jetWithProduction = productionPlanDao.getByProductionId(getJetData.getProductionId());
+           totalBatchCapacity+=stockBatchService.getWtByControlAndBatchId(jetWithProduction.getStockId(),jetWithProduction.getBatchId());
+
+           if(jetSequence < getJetData.getSequence())
+           {
+               jetSequence=getJetData.getSequence();
+           }
+        }
+
+        if(totalBatchCapacity+totalBatchWt>jetMast.getCapacity())
+           throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
+
+        JetData jetData = new JetData(x,jetSequence+1,jetMast);
+        jetService.saveJetRecord(jetData);
+
+
+
+
+
+        //create the dyeing slip for the given dyeing record
+
+        DyeingSlipMast dyeingSlipMast = new DyeingSlipMast(record,x);
+        List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
+        //dyeing slip record
+        DyeingSlipData dyeingSlipData = new DyeingSlipData(record.getDyeingProcessData());
+        List<DyeingSlipItemData> dyeingSlipItemDataList  =new ArrayList<>();
+
+        for(DyeingChemicalData dyeingChemicalData:record.getDyeingProcessData().getDyeingChemicalData())
+        {
+
+            Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
+            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+
+
+            DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(supplier,supplierRate);
+            Double amtQty = 0.0;
+
+            if (supplierRate.getItemType().equals("Color"))
+                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
+            else {
+
+                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * record.getDyeingProcessData().getLiquerRation()) / 1000;
+                //function call to check in the range
+                amtQty = jetService.getAmountInRange(amtQty);
+
+            }
+            dyeingSlipItemData.setQty(amtQty);
+
+            dyeingSlipItemDataList.add(dyeingSlipItemData);
+        }
+
+        //if shade id is not null then
+        if(record.getShadeId()!=null) {
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(record.getShadeId());
+            for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
+                Optional<Supplier> supplier = supplierService.getSupplier(shadeData.getSupplierId());
+                SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
+                dyeingSlipItemDataList.add(new DyeingSlipItemData(shadeData, supplierRate, supplier.get(), totalBatchWt));
+            }
+        }
+
+
+
+
+        dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
+        dyeingSlipDataList.add(dyeingSlipData);
+
+        dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
+        dyeingSlipService.addDirectDyeingSlip(dyeingSlipMast);
+
+
+
+        //change the batch status
+
+        //update the status of  batches as well
+        List<BatchData> batchDataList = batchService.getBatchById(x.getBatchId(),x.getStockId());
+
+        //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
+
+        for(BatchData batchData:batchDataList)
+        {
+            if(batchData.getIsProductionPlanned()==false)
+                batchData.setIsProductionPlanned(true);
+            batchDao.save(batchData);
+        }
+
 
 
 
