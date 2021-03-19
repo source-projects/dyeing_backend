@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.Multipart;
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -136,4 +139,37 @@ public class EmployeeController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+   /* @PostMapping(value = "/employee/file")
+    public ResponseEntity<GeneralResponse<Boolean>> addfile(@RequestBody MultipartFile id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception("null id passed");
+
+            //employeeService.deleteEmployeeById(id);
+            //String filePath ="/path/"+id;
+            //String filename = getRandomString();
+
+            //File targetFile = new File(id.getOriginalFilename());
+
+            File parent = new File("path");
+            if(!parent.exists())
+                parent.mkdir();
+
+            id.transferTo(new File(parent+"/"+id.getOriginalFilename()));
+            //e.setUrl(filePath);
+            //System.out.println(targetFile.getAbsoluteFile());
+            result= new GeneralResponse<>(true, " Data created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+*/
 }
