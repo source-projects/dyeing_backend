@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
@@ -32,6 +33,23 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             Long id = productionPlanService.saveProductionPlan(productionPlan);
             result= new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @Transactional
+    @PostMapping(value="/productionPlan/directDyeingSlip")
+    public ResponseEntity<GeneralResponse<Boolean>> saveDirectBatchToJet(@RequestBody AddDirectBatchToJet productionPlan, @RequestHeader Map<String, String> headers)
+    {
+        GeneralResponse<Boolean> result =null;
+        try {
+            productionPlanService.saveDirectDyeingSlip(productionPlan);
+            result= new GeneralResponse<>(true, "Direct dyeing slip data Saved Successfully ", true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {

@@ -1,5 +1,6 @@
 package com.main.glory.model.dyeingSlip;
 
+import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
@@ -42,4 +43,15 @@ public class DyeingSlipItemData {
         this.isColor=true;
         this.qty=(totalBatchWt*shadeData.getConcentration())/100;
     }
+
+    public DyeingSlipItemData(DyeingChemicalData dyeingChemicalData) {
+    }
+
+    public DyeingSlipItemData(Supplier supplier, SupplierRate supplierRate) {
+        this.supplierName=supplier.getSupplierName();
+        this.supplierId=supplier.getId();
+        this.itemId=supplierRate.getId();
+    }
+
+
 }

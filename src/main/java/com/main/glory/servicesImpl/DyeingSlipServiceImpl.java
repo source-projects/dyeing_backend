@@ -271,4 +271,12 @@ public class DyeingSlipServiceImpl {
         return dyeingSlipItemDataDao.getAllItemByItemId(e);
 
     }
+
+    public void addDirectDyeingSlip(DyeingSlipMast dyeingSlipMast) throws Exception {
+        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipByProductionId(dyeingSlipMast.getProductionId());
+        if(dyeingSlipMastExist!=null)
+            throw new Exception("already dyeing slip exist for the production");
+        dyeingSlipMastDao.save(dyeingSlipMast);
+
+    }
 }

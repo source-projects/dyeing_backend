@@ -7,6 +7,7 @@ import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.qualityProcess.Chemical;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.SupplierRate;
@@ -167,4 +168,5 @@ public class DyeingProcessServiceImpl {
                 return false;
         }
     }
+
 }

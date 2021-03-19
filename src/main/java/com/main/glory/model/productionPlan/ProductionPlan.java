@@ -2,6 +2,7 @@ package com.main.glory.model.productionPlan;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.jet.JetData;
+import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,10 @@ public class ProductionPlan {
     Long partyId;
     Long qualityEntryId;
     Long shadeId;
+    @Column(columnDefinition = "varchar(255) default 'Not mention'")
+    String colorName;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isDirect;
     Boolean status=false;
 
     public ProductionPlan(ProductionPlan productionPlan) {
@@ -48,5 +53,16 @@ public class ProductionPlan {
         this.qualityEntryId=productionPlan.getQualityEntryId();
         this.shadeId=productionPlan.getShadeId();
         this.status = false;
+    }
+
+    public ProductionPlan(AddDirectBatchToJet record) {
+        this.partyId=record.getPartyId();
+        this.qualityEntryId = record.getQualityEntryId();
+        this.batchId = record.getBatchId();
+        this.stockId= record.getStockId();
+        this.isDirect = true;
+        this.status=true;
+        this.shadeId=(record.getShadeId()!=null)?record.getShadeId():null;
+
     }
 }
