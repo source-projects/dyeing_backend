@@ -38,6 +38,6 @@ public class GetJetData {
         this.status=jetData.getStatus().toString();
         this.sequence=jetData.getSequence();
         this.productionId=jetData.getProductionId();
-        this.colorTone=color.getColorTone();
+        this.colorTone=(color.getColorTone()==null)?"not mention":color.getColorTone();
     }
 }

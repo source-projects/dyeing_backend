@@ -545,6 +545,17 @@ public class JetServiceImpl {
         }
         return getJetDataList;
     }
+    public List<GetJetData> getJetRecordData(Long id) throws Exception{
+
+        List<GetJetData> getJetDataList=new ArrayList<>();
+        List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
+
+        for(JetData jetData:jetDataList)
+        {
+            getJetDataList.add(new GetJetData(jetData));
+        }
+        return getJetDataList;
+    }
 
     public List<GetStatus> getJetStatusList() throws Exception{
 
@@ -734,8 +745,13 @@ public class JetServiceImpl {
             {
                 if(jetData.getStatus()==JetStatus.inQueue)
                 {
+                    GetJetData getJetData;
                     ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
-                    GetJetData getJetData=new GetJetData(jetData,colorTone);
+                    if(colorTone!=null)
+                        getJetData=new GetJetData(jetData,colorTone);
+                    else{
+                        getJetData=new GetJetData(jetData);
+                    }
                     ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
                     if(productionPlan==null)
                         continue;
