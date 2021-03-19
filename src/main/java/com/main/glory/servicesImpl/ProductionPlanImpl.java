@@ -370,8 +370,8 @@ public class ProductionPlanImpl {
         //process type ::directDyeing
 
         ProductionPlan productionPlan =new ProductionPlan(record);
-        if(productionPlan.getShadeId()==null && productionPlan.getColorName().isEmpty())
-            throw new Exception("please enter shade or color name");
+        /*if(productionPlan.getShadeId()==null && productionPlan.getColorName().isEmpty())
+            throw new Exception("please enter shade or color name");*/
 
 
 
@@ -381,12 +381,11 @@ public class ProductionPlanImpl {
         if(productionPlanExist!=null)
             throw new Exception("batch and stock is already exist");
 
-        ProductionPlan x = productionPlanDao.save(productionPlan);
 
 
         //jet capacity check and store the jet record
         JetMast jetMast = jetService.getJetMastById(record.getJetId());
-        List<GetJetData> jetDataList = jetService.getJetData(record.getJetId());
+        List<GetJetData> jetDataList = jetService.getJetRecordData(record.getJetId());
 
 
         for(GetJetData getJetData : jetDataList)
@@ -403,6 +402,8 @@ public class ProductionPlanImpl {
         if(totalBatchCapacity+totalBatchWt>jetMast.getCapacity())
            throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
 
+        ProductionPlan x = productionPlanDao.save(productionPlan);
+
         JetData jetData = new JetData(x,jetSequence+1,jetMast);
         jetService.saveJetRecord(jetData);
 
@@ -418,31 +419,7 @@ public class ProductionPlanImpl {
         DyeingSlipData dyeingSlipData = new DyeingSlipData(record.getDyeingProcessData());
         List<DyeingSlipItemData> dyeingSlipItemDataList  =new ArrayList<>();
 
-        for(DyeingChemicalData dyeingChemicalData:record.getDyeingProcessData().getDyeingChemicalData())
-        {
-
-            Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
-            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
-
-
-            DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(supplier,supplierRate);
-            Double amtQty = 0.0;
-
-            if (supplierRate.getItemType().equals("Color"))
-                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
-            else {
-
-                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * record.getDyeingProcessData().getLiquerRation()) / 1000;
-                //function call to check in the range
-                amtQty = jetService.getAmountInRange(amtQty);
-
-            }
-            dyeingSlipItemData.setQty(amtQty);
-
-            dyeingSlipItemDataList.add(dyeingSlipItemData);
-        }
-
-        //if shade id is not null then
+        //if shade id is not null then get the shade item as well
         if(record.getShadeId()!=null) {
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(record.getShadeId());
             for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
@@ -454,7 +431,7 @@ public class ProductionPlanImpl {
 
 
 
-
+        dyeingSlipItemDataList.addAll(dyeingSlipData.getDyeingSlipItemData());
         dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
         dyeingSlipDataList.add(dyeingSlipData);
 

@@ -28,8 +28,8 @@ public class ProductionPlan {
     Long partyId;
     Long qualityEntryId;
     Long shadeId;
-    @Column(columnDefinition = "varchar(255) default 'Not mention'")
-    String colorName;
+    /*@Column(columnDefinition = "varchar(255) default 'Not mention'")
+    String colorName;*/
     @Column(columnDefinition = "boolean default false")
     Boolean isDirect;
     Boolean status=false;

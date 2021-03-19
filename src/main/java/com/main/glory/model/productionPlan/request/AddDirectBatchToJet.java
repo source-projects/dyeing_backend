@@ -1,6 +1,8 @@
 package com.main.glory.model.productionPlan.request;
 
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,6 @@ public class AddDirectBatchToJet {
     Long jetId;
     Long createdBy;
     Long updatedBy;
-    DyeingProcessData dyeingProcessData;
+    DyeingSlipData dyeingProcessData;
 
 }

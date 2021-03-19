@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
-            "(select c.colorTone from ShadeMast c where c.id=p.shadeId) AS colorTone," +
+            "(select c.colorTone from ShadeMast c where c.id=p.shadeId AND p.shadeId IS NOT NULL) AS colorTone," +
             "(select c.qualityName from Quality c where c.id=p.qualityEntryId)AS qualityName," +
             "(select c.qualityId from Quality c where c.id=p.qualityEntryId)AS qualityId," +
             "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
