@@ -10,4 +10,7 @@ public interface AttendanceDao extends JpaRepository<Attendance,Long> {
 
     @Query("select s from Attendance s where s.controlId=:empId ")
     List<Attendance> getAllAttendanceByEmployeeId(Long empId);
+
+    @Query("select s from Attendance s where s.id=:id")
+    Attendance getAttendanceById(Long id);
 }

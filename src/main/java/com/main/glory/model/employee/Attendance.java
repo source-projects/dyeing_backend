@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -19,8 +20,8 @@ public class Attendance {
     private Long id;
     Long controlId;
     Date date;
-    Date inTime;
-    Date outTime;
+    Time inTime;
+    Time outTime;
     Date createdDate;
     Long createdBy;
     Long updatedBy;
