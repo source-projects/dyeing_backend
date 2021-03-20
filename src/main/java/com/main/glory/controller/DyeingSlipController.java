@@ -179,7 +179,84 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
 
+    @GetMapping("/dyeingSlip/directDyeingSlip/all")
+    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>>> getAllDirectDyeignSlip(){
+        GeneralResponse<List<GetAllAdditionalDyeingSlip>> result;
+        try {
 
+            List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllDirectDyeignSlip();
+            if(!data.isEmpty())
+                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    //get direct dyeing slip
+    @GetMapping("/dyeingSlip/getDirectDyeingSlipBy/{id}")
+    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip>> getDirectDyeingSlipBy(@PathVariable(name = "id") Long id){
+        GeneralResponse<GetAllAdditionalDyeingSlip> result;
+        try {
+            if(id ==null)
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
+
+            GetAllAdditionalDyeingSlip data = dyeingSlipService.getDirectDyeingSlipById(id);
+            if(data!=null)
+                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(data, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    //update direct dyeing slip
+    @PutMapping("/dyeingSlip/update/directDyeingSlip/")
+    public ResponseEntity<GeneralResponse<Boolean>> updateDirectDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
+        GeneralResponse<Boolean> result;
+        try {
+            if (addAdditionDyeingSlipModel == null)
+                result = new GeneralResponse<>(false, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+
+            dyeingSlipService.updateDirectDyeingSlip(addAdditionDyeingSlipModel);
+
+            result = new GeneralResponse<>(true, "Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    /*@DeleteMapping("/dyeingSlip/deleteAdditionalDyeingSlipBy/{id}")
+    public ResponseEntity<GeneralResponse<Boolean>> deleteAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
+        GeneralResponse<Boolean> result;
+        try {
+            if(id ==null)
+                result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
+
+            Boolean data = dyeingSlipService.deleteAdditionalDyeingSlipById(id);
+            if(data)
+                result = new GeneralResponse<>(data, "Data deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(data, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }*/
 
 
 
