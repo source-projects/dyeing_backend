@@ -416,7 +416,7 @@ public class ProductionPlanImpl {
         DyeingSlipMast dyeingSlipMast = new DyeingSlipMast(record,x);
         List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
         //dyeing slip record
-        DyeingSlipData dyeingSlipData = new DyeingSlipData(record.getDyeingProcessData());
+        DyeingSlipData dyeingSlipData = new DyeingSlipData(record.getDyeingSlipData());
         List<DyeingSlipItemData> dyeingSlipItemDataList  =new ArrayList<>();
 
         //if shade id is not null then get the shade item as well
