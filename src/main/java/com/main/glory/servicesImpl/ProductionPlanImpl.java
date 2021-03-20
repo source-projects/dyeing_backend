@@ -356,7 +356,7 @@ public class ProductionPlanImpl {
     }
 
     @Transactional
-    public void saveDirectDyeingSlip(AddDirectBatchToJet record) throws Exception {
+    public Long saveDirectDyeingSlip(AddDirectBatchToJet record) throws Exception {
         //store direct dyeing slip with jet and with shade or else shade colour
 
         /*
@@ -461,7 +461,7 @@ public class ProductionPlanImpl {
             batchDao.save(batchData);
         }
 
-
+        return x.getId();
 
 
 
