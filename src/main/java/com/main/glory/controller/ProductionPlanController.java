@@ -177,7 +177,7 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<GetAllProduction> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data faund");
+                throw new Exception("no data found");
 
             result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
