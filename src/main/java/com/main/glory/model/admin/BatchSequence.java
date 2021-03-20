@@ -20,4 +20,9 @@ public class BatchSequence {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     Long sequence;
+
+    public BatchSequence(BatchSequence batchSequence, BatchSequence record) {
+        this.id= batchSequence.getId();
+        this.sequence=record.getSequence();
+    }
 }
