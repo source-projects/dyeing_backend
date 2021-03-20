@@ -196,7 +196,7 @@ public class ProductionPlanImpl {
         Double totalWt = batchDao.getAllBatchQtyByBatchIdAndStockId(productionExist.getBatchId(),productionExist.getStockId());
         Party party=partyServiceImp.getPartyDetailById(stockMast.getPartyId());
 
-        GetBatchDetailByProduction data =new GetBatchDetailByProduction(party,totalWt,shadeMast.get(),stockMast,batchId);
+        GetBatchDetailByProduction data =new GetBatchDetailByProduction(party,totalWt,shadeMast,stockMast,batchId);
 
         return data;
 
