@@ -774,9 +774,9 @@ public class AdminController extends ControllerConfig {
 
 
     @PutMapping(value="/admin/update/batchSequence/")
-    public ResponseEntity<GeneralResponse<Boolean>> updateBatchSequence(@RequestBody BatchSequence record) throws Exception {
+    public ResponseEntity<GeneralResponse<BatchSequence>> updateBatchSequence(@RequestBody BatchSequence record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<BatchSequence> result;
 
         boolean flag;
         try {
@@ -785,9 +785,9 @@ public class AdminController extends ControllerConfig {
             if(record == null)
                 throw new Exception("null data passed");
 
-            adminServcice.addBatchSequence(record);
+            BatchSequence id = adminServcice.updateBatchSequence(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(id, " Data upadted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)

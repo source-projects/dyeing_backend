@@ -328,4 +328,18 @@ public class AdminServciceImpl {
         }
         return batchSequence;
     }
+
+    public BatchSequence updateBatchSequence(BatchSequence record) throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequenceById(record.getId());
+        if(batchSequence==null) {
+            throw new Exception("no batch sequence found");
+        }
+
+        //check is exiting batchsequence is < coming batch seqeunce
+        if(batchSequence.getSequence()<record.getSequence())
+            return batchSequence;
+
+        BatchSequence x =batchSequneceDao.updateBatchSequence(batchSequence.getId(),record.getSequence());
+        return x;
+    }
 }
