@@ -58,6 +58,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				chain.doFilter(request, response);
 				return;
 			}*/
+
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
