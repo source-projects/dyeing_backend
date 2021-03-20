@@ -187,16 +187,23 @@ public class ProductionPlanImpl {
     public GetBatchDetailByProduction getBatchDetailByProductionAndBatchId(Long productionId, String batchId) throws Exception {
 
         ProductionPlan productionExist = productionPlanDao.getProductionByBatchAndProduction(batchId,productionId);
-
+        GetBatchDetailByProduction data;
         if(productionExist==null)
             throw new Exception("no data found");
 
         StockMast stockMast=stockBatchService.getStockByStockId(productionExist.getStockId());
-        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId()==null?0: productionExist.getShadeId());
         Double totalWt = batchDao.getAllBatchQtyByBatchIdAndStockId(productionExist.getBatchId(),productionExist.getStockId());
         Party party=partyServiceImp.getPartyDetailById(stockMast.getPartyId());
+        if(productionExist.getShadeId()==null)
+        {
+            data=new GetBatchDetailByProduction(party,totalWt,stockMast,batchId);
+        }
+        else
+        {
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId());
+            data=new GetBatchDetailByProduction(party,totalWt,shadeMast,stockMast,batchId);
+        }
 
-        GetBatchDetailByProduction data =new GetBatchDetailByProduction(party,totalWt,shadeMast,stockMast,batchId);
 
         return data;
 

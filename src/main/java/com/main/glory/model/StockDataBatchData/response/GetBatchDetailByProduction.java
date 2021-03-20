@@ -36,4 +36,11 @@ public class GetBatchDetailByProduction {
         this.colorTone=shadeMast.isPresent()?shadeMast.get().getColorTone():null;
         this.totalWt=totalWt;
     }
+
+    public GetBatchDetailByProduction(Party party, Double totalWt, StockMast stockMast, String batchId) {
+        this.partyName=party.getPartyName();
+        this.batchId=batchId;
+        this.stockId=stockMast.getId();
+        this.totalWt=totalWt;
+    }
 }
