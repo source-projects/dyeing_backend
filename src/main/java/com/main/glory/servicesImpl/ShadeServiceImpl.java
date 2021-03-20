@@ -5,6 +5,7 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl {
+	QualityServiceImp qualityServiceImp;
 
 	@Autowired
 	QualityNameDao qualityNameDao;
@@ -337,9 +339,9 @@ public class ShadeServiceImpl {
 
 			list.add(getShadeByPartyAndQuality);
 		}
-		if(list.isEmpty())
+		/*if(list.isEmpty())
 			throw new Exception("shade data not found");
-
+*/
 		return list;
 
     }
@@ -475,4 +477,36 @@ public class ShadeServiceImpl {
     public ShadeMast getShadeById(Long shadeId) {
 		return shadeMastDao.getShadeMastById(shadeId);
     }
+
+	public List<GetShadeByPartyAndQuality> getShadeByPartyAndWithAndWithoutQuality(Long partyId, Long qualityId) throws Exception {
+
+
+		Party partyExist =partyDao.findByPartyId(partyId);
+		if (partyExist==null)
+			throw new Exception("no party record found");
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
+
+		if(qualityId==null)
+		{
+			List<Quality> qualityList = qualityServiceImp.getqualityListByPartyId(partyId);
+			for(Quality quality:qualityList)
+			{
+				shadeByPartyAndQualities= shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+			}
+
+
+		}
+		else
+		{
+			Optional<Quality> qualityExistWithParty = qualityServiceImp.getQualityEntryByIDAndPartyId(qualityId,partyId);
+			if(qualityExistWithParty.isEmpty())
+				throw new Exception("quality not found");
+			shadeByPartyAndQualities= shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+
+		}
+
+
+
+		return shadeByPartyAndQualities;
+	}
 }

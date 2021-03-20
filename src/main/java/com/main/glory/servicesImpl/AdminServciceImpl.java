@@ -341,7 +341,9 @@ public class AdminServciceImpl {
         if(batchSequence.getSequence() > record.getSequence())
             return batchSequence;
 
-        batchSequneceDao.updateBatchSequence(batchSequence.getId(),record.getSequence());
+
+        BatchSequence batch = new BatchSequence(batchSequence,record);
+        batchSequneceDao.saveAndFlush(batch);
         return batchSequneceDao.getBatchSequence();
     }
 }

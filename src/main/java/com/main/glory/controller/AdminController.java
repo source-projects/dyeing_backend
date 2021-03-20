@@ -787,7 +787,7 @@ public class AdminController extends ControllerConfig {
 
             BatchSequence id = adminServcice.updateBatchSequence(record);
 
-            result= new GeneralResponse<>(id, " Data upadted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(id, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
