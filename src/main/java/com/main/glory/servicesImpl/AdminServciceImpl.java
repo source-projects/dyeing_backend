@@ -335,7 +335,9 @@ public class AdminServciceImpl {
             throw new Exception("no batch sequence found");
         }
 
+
         //check is exiting batchsequence is < coming batch seqeunce
+
         if(batchSequence.getSequence() > record.getSequence())
             return batchSequence;
 
