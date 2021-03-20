@@ -485,28 +485,33 @@ public class ShadeServiceImpl {
 		if (partyExist==null)
 			throw new Exception("no party record found");
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
-
+		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
 		if(qualityId==null)
 		{
-			List<Quality> qualityList = qualityServiceImp.getqualityListByPartyId(partyId);
+			List<Quality> qualityList = qualityDao.getQualityListByPartyIdId(partyId);
 			for(Quality quality:qualityList)
 			{
-				shadeByPartyAndQualities= shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+				if(quality==null)
+					continue;
+				shadeByPartyAndQualities= shadeMastDao.findByQualityEntryIdAndPartyId(quality.getId(),partyId);
+				if(shadeByPartyAndQualities.isEmpty())
+					continue;
+				list.addAll(shadeByPartyAndQualities);
 			}
 
 
 		}
 		else
 		{
-			Optional<Quality> qualityExistWithParty = qualityServiceImp.getQualityEntryByIDAndPartyId(qualityId,partyId);
+			Optional<Quality> qualityExistWithParty = qualityDao.getQualityByEntryIdAndPartyId(qualityId,partyId);
 			if(qualityExistWithParty.isEmpty())
 				throw new Exception("quality not found");
-			shadeByPartyAndQualities= shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+			list= shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
 
 		}
 
 
 
-		return shadeByPartyAndQualities;
+		return list;
 	}
 }
