@@ -335,11 +335,13 @@ public class AdminServciceImpl {
             throw new Exception("no batch sequence found");
         }
 
-        //check is exiting batchsequence is > coming batch seqeunce
+
+        //check is exiting batchsequence is < coming batch seqeunce
+
         if(batchSequence.getSequence() > record.getSequence())
             return batchSequence;
 
-        BatchSequence x =batchSequneceDao.updateBatchSequence(batchSequence.getId(),record.getSequence());
-        return x;
+        batchSequneceDao.updateBatchSequence(batchSequence.getId(),record.getSequence());
+        return batchSequneceDao.getBatchSequence();
     }
 }

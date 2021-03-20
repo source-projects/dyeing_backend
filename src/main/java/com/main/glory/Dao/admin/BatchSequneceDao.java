@@ -19,5 +19,5 @@ public interface BatchSequneceDao extends JpaRepository<BatchSequence,Long> {
     @Modifying
     @Transactional
     @Query("update BatchSequence x set x.sequence=:l where x.id=:id ")
-    BatchSequence updateBatchSequence(Long id, long l);
+    void updateBatchSequence(Long id, long l);
 }
