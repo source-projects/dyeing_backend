@@ -336,10 +336,10 @@ public class AdminServciceImpl {
         }
 
         //check is exiting batchsequence is < coming batch seqeunce
-        if(batchSequence.getSequence()<record.getSequence())
+        if(batchSequence.getSequence() > record.getSequence())
             return batchSequence;
 
-        BatchSequence x =batchSequneceDao.updateBatchSequence(batchSequence.getId(),record.getSequence());
-        return x;
+        batchSequneceDao.updateBatchSequence(batchSequence.getId(),record.getSequence());
+        return batchSequneceDao.getBatchSequence();
     }
 }
