@@ -91,14 +91,22 @@ public class DyeingSlipServiceImpl {
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
         GetQualityResponse quality=qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
         Double wt = stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
-        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
-        if(shadeMast.isEmpty())
-            throw new Exception("no shade data found");
+        if(productionPlan.getShadeId()!=null)
+        {
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+            slipFormatData.setColorTone(shadeMast.get().getColorTone());
+            slipFormatData.setColorName(shadeMast.get().getColorName());
+            slipFormatData.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+        }
+        else
+        {
+            slipFormatData.setColorTone("#fff");
+            slipFormatData.setColorName("No Color");
+            slipFormatData.setPartyShadeNo("-");
+        }
 
 
-        slipFormatData.setColorTone(shadeMast.get().getColorTone());
-        slipFormatData.setColorName(shadeMast.get().getColorName());
-        slipFormatData.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+
         slipFormatData.setTotalWt(wt);
         slipFormatData.setQualityId(quality.getQualityId());
         slipFormatData.setQualityEntryId(quality.getId());
