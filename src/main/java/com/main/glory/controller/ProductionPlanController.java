@@ -44,12 +44,12 @@ public class ProductionPlanController extends ControllerConfig {
 
     @Transactional
     @PostMapping(value="/productionPlan/directDyeingSlip")
-    public ResponseEntity<GeneralResponse<Boolean>> saveDirectBatchToJet(@RequestBody AddDirectBatchToJet productionPlan, @RequestHeader Map<String, String> headers)
+    public ResponseEntity<GeneralResponse<Long>> saveDirectBatchToJet(@RequestBody AddDirectBatchToJet productionPlan, @RequestHeader Map<String, String> headers)
     {
-        GeneralResponse<Boolean> result =null;
+        GeneralResponse<Long> result =null;
         try {
-            productionPlanService.saveDirectDyeingSlip(productionPlan);
-            result= new GeneralResponse<>(true, "Direct dyeing slip data Saved Successfully ", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            Long id  = productionPlanService.saveDirectDyeingSlip(productionPlan);
+            result= new GeneralResponse<>(id, "Direct dyeing slip data Saved Successfully ", true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {
