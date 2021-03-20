@@ -35,7 +35,7 @@ public class EmployeeMast {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
-    List<EmployeeData> employeeDataList;
+    List<EmployeeData> employeeDocumentList;
 
 
 

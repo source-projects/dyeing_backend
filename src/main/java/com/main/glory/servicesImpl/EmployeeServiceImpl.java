@@ -27,8 +27,8 @@ public class EmployeeServiceImpl {
     public Long addEmployeeRecord(EmployeeMast record) throws Exception {
 
 
-//         if(record.getEmployeeDataList().isEmpty())
-//             throw new Exception("employee document can't be null");
+         if(record.getEmployeeDocumentList().isEmpty())
+             throw new Exception("employee document can't be null");
 
 
         EmployeeMast employeeMastExistWithAdhar = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
