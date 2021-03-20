@@ -22,6 +22,6 @@ public class AddDirectBatchToJet {
     Long jetId;
     Long createdBy;
     Long updatedBy;
-    DyeingSlipData dyeingProcessData;
+    DyeingSlipData dyeingSlipData;
 
 }
