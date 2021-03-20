@@ -192,7 +192,7 @@ public class ProductionPlanImpl {
             throw new Exception("no data found");
 
         StockMast stockMast=stockBatchService.getStockByStockId(productionExist.getStockId());
-        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId());
+        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId()==null?0: productionExist.getShadeId());
         Double totalWt = batchDao.getAllBatchQtyByBatchIdAndStockId(productionExist.getBatchId(),productionExist.getStockId());
         Party party=partyServiceImp.getPartyDetailById(stockMast.getPartyId());
 
