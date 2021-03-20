@@ -43,4 +43,7 @@ public interface DyeingSlipMastDao extends JpaRepository<DyeingSlipMast,Long> {
     @Transactional
     @Query("update DyeingSlipMast d set d.approvedId=:approved where d.id=:dyeingId")
     void updateDyeingWithApprovedId(Long approved, Long dyeingId);
+
+    @Query("select new com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip(d.id,d.stockId,d.jetId,d.productionId,d.batchId) from DyeingSlipMast d where d.id IN (select dd.controlId from DyeingSlipData dd where dd.processType='directDyeing')")
+    List<GetAllAdditionalDyeingSlip> getAllDirectDyeingProcess();
 }

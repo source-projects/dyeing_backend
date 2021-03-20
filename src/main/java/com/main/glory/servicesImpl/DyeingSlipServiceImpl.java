@@ -279,4 +279,59 @@ public class DyeingSlipServiceImpl {
         dyeingSlipMastDao.save(dyeingSlipMast);
 
     }
+
+    public List<GetAllAdditionalDyeingSlip> getAllDirectDyeignSlip() throws Exception {
+        List<GetAllAdditionalDyeingSlip> resultList =new ArrayList<>();
+        //List<GetAllAdditionalDyeingSlip> list =dyeingSlipMastDao.getAllAddtionalDyeingProcess();
+        List<GetAllAdditionalDyeingSlip> list =dyeingSlipMastDao.getAllDirectDyeingProcess();
+
+        for(GetAllAdditionalDyeingSlip ad:list)
+        {
+            DyeingSlipData directDyeingSlip = dyeingSlipDataDao.getOnlyDirectSlipMastById(ad.getId());
+            resultList.add(new GetAllAdditionalDyeingSlip(ad,directDyeingSlip));
+        }
+        if(resultList.isEmpty())
+            throw new Exception("no data found");
+        return resultList;
+    }
+
+    public GetAllAdditionalDyeingSlip getDirectDyeingSlipById(Long id) throws Exception {
+        DyeingSlipData data = dyeingSlipDataDao.getOnlyDirectSlipMastById(id);
+        if(data==null)
+            throw new Exception("no direct slip found");
+
+        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
+
+        GetAllAdditionalDyeingSlip dyeingSlipMast =new GetAllAdditionalDyeingSlip(dyeingSlipMastExist);
+        int i=0;
+        for(DyeingSlipItemData dyeingSlipItemData:data.getDyeingSlipItemData())
+        {
+            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+            if(supplierRate.getItemType().equals("Color"))
+            {
+                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),true);
+            }
+            else {
+                dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(),true);
+            }
+
+            i++;
+        }
+        dyeingSlipMast.setDyeingSlipData(data);
+
+        return dyeingSlipMast;
+    }
+
+    public void updateDirectDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
+        DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+        if(dyeingSlipMast==null) {
+            throw new Exception("no dyeing slip found for given batch or production");
+        }
+        if(!addAdditionDyeingSlipModel.getDyeingSlipData().getProcessType().equals("directDyeing"))
+            throw new Exception("process type is not found");
+
+        addAdditionDyeingSlipModel.getDyeingSlipData().setControlId(dyeingSlipMast.getId());
+        dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
+        return;
+    }
 }
