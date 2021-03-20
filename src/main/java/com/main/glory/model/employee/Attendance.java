@@ -20,12 +20,13 @@ public class Attendance {
     private Long id;
     Long controlId;
     Date date;
-    Time inTime;
-    Time outTime;
+    Date inTime;
+    Date outTime;
     Date createdDate;
     Long createdBy;
     Long updatedBy;
     Date updatedDate;
+    Boolean shift; //true:morning
 
     @PrePersist
     public void onCreate()
