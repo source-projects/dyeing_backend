@@ -89,6 +89,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Transactional
     @Query("update Quality q set q.wtPer100m=:per100m,q.mtrPerKg=:mtrPerKg where q.id=:qualityId")
     void updateQualityWtAndMtrKgById(Long qualityId, Double per100m, Double mtrPerKg);
+
+    @Query("Select q from Quality q where id = :qualityId AND q.partyId =:partyId")
+    Optional<Quality> getQualityByEntryIdAndPartyId(Long qualityId, Long partyId);
 }
 
 
