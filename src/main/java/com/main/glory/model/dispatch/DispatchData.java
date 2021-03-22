@@ -47,7 +47,16 @@ public class DispatchData {
         this.stockId=batchData.getControlId();
         this.qualityEntryId=quality.getId();
         this.qualityRate=quality.getRate();
-        this.shadeId=shadeMast.getId();
+        this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
+        //this.shadeRate=shadeMast.getExtraRate();
+    }
+    public DispatchData(BatchData batchData,  Quality quality) {
+        this.batchEntryId=batchData.getId();
+        this.batchId=batchData.getBatchId();
+        this.stockId=batchData.getControlId();
+        this.qualityEntryId=quality.getId();
+        this.qualityRate=quality.getRate();
+        //this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         //this.shadeRate=shadeMast.getExtraRate();
     }
 
