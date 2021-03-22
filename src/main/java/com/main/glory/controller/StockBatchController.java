@@ -496,13 +496,32 @@ public class StockBatchController extends ControllerConfig {
 
     //get all batch for additional slip
     @GetMapping("/stockBatch/batch/forAdditionalSlip")
-    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForReDyeingByPartyAndQualityId() {
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForAdditionalSlipByPartyAndQualityId() {
         GeneralResponse<List<GetAllBatch>> result;
         try {
 
                 List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip();
 
                 result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        } catch (Exception e) {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+    }
+
+
+    //get all batch for additional slip
+    @GetMapping("/stockBatch/batch/forRedyeingSlip")
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForReDyeingByPartyAndQualityId() {
+        GeneralResponse<List<GetAllBatch>> result;
+        try {
+
+            List<GetAllBatch> batchData = stockBatchService.getAllBatchForRedyeingSlip();
+
+            result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
 
         } catch (Exception e) {

@@ -1409,4 +1409,35 @@ public class StockBatchServiceImpl {
 
         return list;
     }
+
+    public List<GetAllBatch> getAllBatchForRedyeingSlip() throws Exception {
+
+        List<GetAllBatch> list=new ArrayList<>();
+
+        //get all batches which are in the queue
+        List<JetData> jetDataList = jetService.getAllProductionSuccessFromJet();
+
+        for(JetData jetData:jetDataList)
+        {
+            //get the production record
+            ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
+            if(productionPlan==null)
+                continue;
+
+            //check the batch bill is generated or not
+            if(batchDao.isFinishMtrSave(productionPlan.getBatchId(),productionPlan.getStockId()))
+            continue;
+            GetAllBatch getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+            if(getAllBatch!=null)
+                list.add(getAllBatch);
+
+        }
+
+
+        if(list.isEmpty())
+            throw new Exception("no record found");
+
+        return list;
+
+    }
 }

@@ -1130,4 +1130,8 @@ public class JetServiceImpl {
     public List<JetData> getAllProductionInTheQueue() {
         return jetDataDao.getAllProductionInTheQueue();
     }
+
+    public List<JetData> getAllProductionSuccessFromJet() {
+        return jetDataDao.getAllProductionSuccessFromJet();
+    }
 }
