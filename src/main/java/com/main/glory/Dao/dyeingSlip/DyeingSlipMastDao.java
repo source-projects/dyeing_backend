@@ -46,4 +46,7 @@ public interface DyeingSlipMastDao extends JpaRepository<DyeingSlipMast,Long> {
 
     @Query("select new com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip(d.id,d.stockId,d.jetId,d.productionId,d.batchId) from DyeingSlipMast d where d.id IN (select dd.controlId from DyeingSlipData dd where dd.processType='directDyeing')")
     List<GetAllAdditionalDyeingSlip> getAllDirectDyeingProcess();
+
+    @Query("select new com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip(d.id,d.stockId,d.jetId,d.productionId,d.batchId) from DyeingSlipMast d where d.id IN (select dd.controlId from DyeingSlipData dd where dd.processType='Re-Dyeing')")
+    List<GetAllAdditionalDyeingSlip> getAllReDyeingProcess();
 }

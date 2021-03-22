@@ -180,5 +180,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
             "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)" +
             ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id GROUP BY b.batchId,b.controlId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave")
     List<BatchDetail> getBatchDetailByStockId(Long id);
+
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId")
+    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(Long stockId, String batchId);
 }
 

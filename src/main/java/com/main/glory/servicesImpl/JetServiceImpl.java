@@ -1126,4 +1126,8 @@ public class JetServiceImpl {
     public void saveJetRecord(JetData jetData) {
         jetDataDao.save(jetData);
     }
+
+    public List<JetData> getAllProductionInTheQueue() {
+        return jetDataDao.getAllProductionInTheQueue();
+    }
 }
