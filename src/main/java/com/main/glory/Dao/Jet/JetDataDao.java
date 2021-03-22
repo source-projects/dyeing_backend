@@ -47,4 +47,6 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
     void updateJetWithId(Long jetData, Long id);
 
 
+    @Query("select j from JetData j where j.status='inQueue'")
+    List<JetData> getAllProductionInTheQueue();
 }

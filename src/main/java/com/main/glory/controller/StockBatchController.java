@@ -12,8 +12,6 @@ import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
-import com.sun.source.tree.LabeledStatementTree;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -492,5 +490,25 @@ public class StockBatchController extends ControllerConfig {
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+    //get all batch for additional slip
+    @GetMapping("/stockBatch/batch/forAdditionalSlip")
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForReDyeingByPartyAndQualityId() {
+        GeneralResponse<List<GetAllBatch>> result;
+        try {
+
+                List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip();
+
+                result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        } catch (Exception e) {
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
     }
 }

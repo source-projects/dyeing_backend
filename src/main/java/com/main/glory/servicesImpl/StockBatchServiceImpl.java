@@ -12,7 +12,6 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.admin.BatchSequence;
-import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.JetData;
@@ -24,7 +23,6 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +35,10 @@ import java.util.*;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
+
+    @Autowired
+    DispatchMastImpl dispatchMastService;
+
 
     @Autowired
     BatchSequneceDao batchSequneceDao;
@@ -1379,5 +1381,32 @@ public class StockBatchServiceImpl {
         jobCard.setBatchDataList(batchData);
         return jobCard;
 
+    }
+
+
+    public List<GetAllBatch> getAllBatchForAdditionalSlip() throws Exception {
+
+        List<GetAllBatch> list=new ArrayList<>();
+
+        //get all batches which are in the queue
+        List<JetData> jetDataList = jetService.getAllProductionInTheQueue();
+
+        for(JetData jetData:jetDataList)
+        {
+            //get the production record
+            ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
+            if(productionPlan==null)
+                continue;
+            GetAllBatch getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+            if(getAllBatch!=null)
+            list.add(getAllBatch);
+
+        }
+
+
+        if(list.isEmpty())
+            throw new Exception("no record found");
+
+        return list;
     }
 }
