@@ -3,8 +3,9 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.Attendance;
-import com.main.glory.model.employee.responce.EmployeeWithAttendance;
-import com.main.glory.model.party.request.AddParty;
+import com.main.glory.model.employee.request.FilterAttendance;
+import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
+import com.main.glory.model.employee.response.EmployeeWithAttendance;
 import com.main.glory.servicesImpl.AttendanceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -155,6 +155,37 @@ public class AttendanceController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+    //filter api
+    @PostMapping(value="/attendance/get/filter")
+    public ResponseEntity<GeneralResponse<List<EmployeeAttendanceResponse>>> getEmployeeAttendanceByFilter(@RequestBody FilterAttendance filterAttendance)
+    {
+        GeneralResponse<List<EmployeeAttendanceResponse>> result;
+        try {
+            if(filterAttendance==null)
+                throw new Exception("record can't be null");
+
+
+            List<EmployeeAttendanceResponse> list = attendanceService.getAttendanceRecordBasedOnFilter(filterAttendance);
+            //System.out.println("har::"+headers.get("id"));
+            //System.out.println(id);
+            if(list.isEmpty())
+            {
+                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+
+            }
+            else {
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 
 }
