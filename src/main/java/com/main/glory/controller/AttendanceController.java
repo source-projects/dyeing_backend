@@ -45,7 +45,7 @@ public class AttendanceController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping(value="/attendance")
-    public ResponseEntity<GeneralResponse<Boolean>> updateAttendace(@RequestBody Attendance record)
+    public ResponseEntity<GeneralResponse<Boolean>> updateAttendance(@RequestBody Attendance record)
     {
         GeneralResponse<Boolean> result;
         try {
@@ -113,7 +113,7 @@ public class AttendanceController extends ControllerConfig {
 
             }
             else {
-                result = new GeneralResponse<>(list, "Attendance Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
             }
 
         }
