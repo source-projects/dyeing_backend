@@ -3,6 +3,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.Attendance;
+import com.main.glory.model.employee.responce.EmployeeWithAttendance;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.servicesImpl.AttendanceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class AttendanceController extends ControllerConfig {
             attendanceService.updateAttendance(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
-            result = new GeneralResponse<Boolean>(true, "Attendance Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result = new GeneralResponse<Boolean>(true, "Date fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {
@@ -79,6 +80,36 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list.isEmpty())
             {result = new GeneralResponse<>(list, "Attendance Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+
+            }
+            else {
+                result = new GeneralResponse<>(list, "Date fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/attendance/latest/byEmployeeId")
+    public ResponseEntity<GeneralResponse<EmployeeWithAttendance>> getLatestAttendanceByEmployeeId(@RequestParam(name = "id") Long id)
+    {
+        GeneralResponse<EmployeeWithAttendance> result;
+        try {
+            if(id==null)
+                throw new Exception("record can't be null");
+
+
+            EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeId(id);
+            //System.out.println("har::"+headers.get("id"));
+            //System.out.println(id);
+            if(list==null)
+            {
+                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
 
             }
             else {

@@ -34,6 +34,8 @@ public class UserData {
     Date updatedDate;
     Long createdBy;
     Long updatedBy;
+    @Column(columnDefinition = "boolean default true")
+    Boolean isMaster;
     @Column(columnDefinition = "boolean default false")
     Boolean dataEntry;
     @OneToOne(cascade = CascadeType.ALL)
@@ -56,6 +58,7 @@ public class UserData {
         this.departmentId= userDataDto.getDepartmentId() ;
         this.createdBy = userDataDto.getCreatedBy();
         this.userHeadId = userDataDto.getUserHeadId();
+        this.isMaster = userDataDto.getIsMaster();
 
     }
 

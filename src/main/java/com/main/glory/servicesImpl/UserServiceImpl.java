@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserServiceInterface {
             UserData x = userDao.saveAndFlush(userData);
 
             Long headId=Long.parseLong(headerId);
-            System.out.println(headId+":type:"+headId);
+            //System.out.println(headId+":type:"+headId);
             //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID
             if(x.getUserHeadId()==0)
             {
@@ -101,23 +101,12 @@ public class UserServiceImpl implements UserServiceInterface {
 
             if(user.getUserHeadId()==0)
             {
-                //data entry
-                if(x.getDataEntry()==true)
-                {
-                    userDao.updateUserHeadId(x.getId(),0l);
-                    return;
-                }
-
-                //master
+                //master or data entry master if the isMaster true then user is master else data entry master
               userDao.updateUserHeadId(x.getId(), x.getId());
 
             }
             //else
-            //remain the operator
-
-
-
-
+            //remain the operator or data entry operator
 
         } else {
             throw new Exception("User is already available with username:" + userData.getUserName());
