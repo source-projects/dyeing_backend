@@ -66,7 +66,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if( path.startsWith("login")  || request.getRequestURI().contains("machine")||request.getRequestURI().contains("employee") || request.getRequestURI().contains("attendance")){
+		if( path.startsWith("login")  || request.getRequestURI().contains("machine") || request.getRequestURI().contains("employee")|| request.getRequestURI().contains("attendance")  ){
 			chain.doFilter(request, response);
 			return;
 		}

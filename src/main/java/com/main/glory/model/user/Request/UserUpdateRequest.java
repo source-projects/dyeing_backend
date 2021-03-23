@@ -24,6 +24,7 @@ public class UserUpdateRequest {
     Long updatedBy;
     String password;
     Boolean dataEntry;
+    Boolean isMaster;
     private UserPermission userPermissionData;
 
 }
