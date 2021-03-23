@@ -4,6 +4,7 @@ import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.Dao.employee.EmployeeDataDao;
 import com.main.glory.Dao.employee.EmployeeMastDao;
 import com.main.glory.model.employee.Attendance;
+import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,5 +93,10 @@ public class EmployeeServiceImpl {
             throw new Exception("remove the record of attendace");
 
         employeeMastDao.deleteByEmployeeId(id);
+    }
+
+    public Long addEmployeeDataRecord(EmployeeData record) {
+        EmployeeData employeeData = employeeDataDao.saveAndFlush(record);
+        return employeeData.getId() ;
     }
 }

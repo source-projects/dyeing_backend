@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.request.AddEmployee;
 import com.main.glory.servicesImpl.EmployeeServiceImpl;
@@ -34,6 +35,28 @@ public class EmployeeController extends ControllerConfig {
 
 
             Long id= employeeService.addEmployeeRecord(record);
+
+            result= new GeneralResponse<>(id, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @PostMapping(value = "/employee/add/document")
+    public ResponseEntity<GeneralResponse<Long>> addEmployeeDocument(@RequestBody EmployeeData record) throws Exception {
+
+        GeneralResponse<Long> result;
+        boolean flag;
+        try {
+            if(record == null)
+                throw new Exception("null data passed");
+
+
+            Long id= employeeService.addEmployeeDataRecord(record);
 
             result= new GeneralResponse<>(id, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
