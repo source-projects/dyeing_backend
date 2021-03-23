@@ -3,12 +3,13 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeMast;
-import com.main.glory.model.employee.responce.EmployeeWithAttendance;
+import com.main.glory.model.employee.request.FilterAttendance;
+import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
+import com.main.glory.model.employee.response.EmployeeWithAttendance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("attendanceServiceImpl")
@@ -71,5 +72,37 @@ public class AttendanceServiceImpl {
         }
         return  employeeWithAttendance;
 
+    }
+
+    public List<EmployeeAttendanceResponse> getAttendanceRecordBasedOnFilter(FilterAttendance filterAttendance) throws Exception {
+        List<EmployeeAttendanceResponse> list=new ArrayList<>();
+
+
+
+        if(filterAttendance.getControlId()==null)
+        {
+            List<EmployeeMast> employeeMastList = employeeService.getAllEmployee();
+            for(EmployeeMast employeeMast:employeeMastList)
+            {
+                EmployeeAttendanceResponse employeeAttendanceResponse = attendanceDao.getAttendanceBasedOnFilter(employeeMast.getId(),filterAttendance.getFromDate(),filterAttendance.getToDate());
+                if(employeeAttendanceResponse!=null)
+                list.add(new EmployeeAttendanceResponse(employeeAttendanceResponse,filterAttendance,employeeMast));
+            }
+        }
+        else
+        {
+            //check the employee is exist or not
+
+            EmployeeMast employeeMastExist = employeeService.getEmployeeById(filterAttendance.getControlId());
+            if(employeeMastExist==null)
+                throw new Exception("no employee record found");
+
+            EmployeeAttendanceResponse employeeAttendanceResponse = attendanceDao.getAttendanceBasedOnFilter(employeeMastExist.getId(),filterAttendance.getFromDate(),filterAttendance.getToDate());
+            if(employeeAttendanceResponse!=null)
+                list.add(new EmployeeAttendanceResponse(employeeAttendanceResponse,filterAttendance,employeeMastExist));
+
+        }
+
+        return list;
     }
 }

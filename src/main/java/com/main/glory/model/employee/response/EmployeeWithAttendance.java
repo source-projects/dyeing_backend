@@ -1,8 +1,7 @@
-package com.main.glory.model.employee.responce;
+package com.main.glory.model.employee.response;
 
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeMast;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
