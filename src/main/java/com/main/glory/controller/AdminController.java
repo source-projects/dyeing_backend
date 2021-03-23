@@ -839,6 +839,121 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+    @PostMapping(value="/admin/add/receiver")
+    public ResponseEntity<GeneralResponse<Boolean>> addReceiver(@RequestBody ReceiverBy record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+            if(record==null)
+                throw new Exception("null record passed");
+
+            adminServcice.addReceiver(record);
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping(value="/admin/update/receiver")
+    public ResponseEntity<GeneralResponse<Boolean>> updateReceiver(@RequestBody ReceiverBy record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+            if(record==null)
+                throw new Exception("null record passed");
+
+            adminServcice.updateReceiver(record);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @GetMapping(value="/admin/get/receiver")
+    public ResponseEntity<GeneralResponse<List<ReceiverBy>>> getAllReceiver() throws Exception {
+
+        GeneralResponse<List<ReceiverBy>> result;
+
+        boolean flag;
+        try {
+
+            List<ReceiverBy> list = adminServcice.getAllReceiver();
+            if(list.isEmpty())
+            {
+                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/receiver/{id}")
+    public ResponseEntity<GeneralResponse<ReceiverBy>> getReceiverById(@PathVariable(name = "id") Long id) throws Exception {
+
+        GeneralResponse<ReceiverBy> result;
+
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception("null record passed");
+
+            ReceiverBy list = adminServcice.getReceiverById(id);
+            if(list==null)
+            {
+                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @DeleteMapping(value="/admin/delete/receiver/{id}")
+    public ResponseEntity<GeneralResponse<Boolean>> deleteReceiverById(@PathVariable(name = "id") Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception("null record passed");
+
+            adminServcice.deleteReceiverById(id);
+            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 
 
