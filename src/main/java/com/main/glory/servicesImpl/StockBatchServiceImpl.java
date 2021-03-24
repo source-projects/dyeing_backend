@@ -126,7 +126,7 @@ public class StockBatchServiceImpl {
 
                 //for data entry user
                 UserData userData = userDao.getUserById(Long.parseLong(id));
-                if(userData.getDataEntry()==true || userData.getUserHeadId()==0)
+                if(userData.getIsMaster()==false)
                 {
                     //fetch the party record to set the usert head
                     Party party = partyDao.findByPartyId(stockMast.getPartyId());
@@ -340,7 +340,7 @@ public class StockBatchServiceImpl {
 
             //for data entry user
             UserData userData = userDao.getUserById(Long.parseLong(id));
-            if(userData.getDataEntry()==true || userData.getUserHeadId()==0)
+            if(userData.getIsMaster()==false)
             {
                 //fetch the party record to set the usert head
                 Party party = partyDao.findByPartyId(stockMast.getPartyId());

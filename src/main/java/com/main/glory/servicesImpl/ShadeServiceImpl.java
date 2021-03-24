@@ -99,7 +99,7 @@ public class ShadeServiceImpl {
 
 		//check that the shade add by data entry or what
 		UserData userData = userDao.getUserById(Long.parseLong(id));
-		if(userData.getDataEntry()==true) {
+		if(userData.getIsMaster()==false) {
 			//get the party record
 			Party party = partyDao.findByPartyId(shadeData.getPartyId());
 			shadeData.setUserHeadId(party.getUserHeadId());
