@@ -377,6 +377,7 @@ public class ProductionPlanImpl {
         //process type ::directDyeing
 
         ProductionPlan productionPlan =new ProductionPlan(record);
+
         /*if(productionPlan.getShadeId()==null && productionPlan.getColorName().isEmpty())
             throw new Exception("please enter shade or color name");*/
 
@@ -407,7 +408,7 @@ public class ProductionPlanImpl {
         }
 
         if(totalBatchCapacity+totalBatchWt>jetMast.getCapacity())
-           throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
+           throw new Exception("Batch WT is greater than Jet capacity please reduce or remove the Batch");
 
         ProductionPlan x = productionPlanDao.save(productionPlan);
 
@@ -418,32 +419,33 @@ public class ProductionPlanImpl {
 
 
 
-        //create the dyeing slip for the given dyeing record
+        //create the dyeing slip for the given dyeing record only
 
         DyeingSlipMast dyeingSlipMast = new DyeingSlipMast(record,x);
         List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
         //dyeing slip record
-        DyeingSlipData dyeingSlipData = new DyeingSlipData(record.getDyeingSlipData());
-        List<DyeingSlipItemData> dyeingSlipItemDataList  =new ArrayList<>();
+        dyeingSlipDataList.add(new DyeingSlipData(record.getDyeingSlipData()));
+
+        dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
+        dyeingSlipService.addDirectDyeingSlip(dyeingSlipMast);
+
+        //List<DyeingSlipItemData> dyeingSlipItemDataList  =new ArrayList<>();
 
         //if shade id is not null then get the shade item as well
-        if(record.getShadeId()!=null) {
+        /*if(record.getShadeId()!=null) {
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(record.getShadeId());
             for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
                 Optional<Supplier> supplier = supplierService.getSupplier(shadeData.getSupplierId());
                 SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
                 dyeingSlipItemDataList.add(new DyeingSlipItemData(shadeData, supplierRate, supplier.get(), totalBatchWt));
             }
-        }
+        }*/
 
 
 
-        dyeingSlipItemDataList.addAll(dyeingSlipData.getDyeingSlipItemData());
-        dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
-        dyeingSlipDataList.add(dyeingSlipData);
+        /*dyeingSlipItemDataList.addAll(dyeingSlipData.getDyeingSlipItemData());
+        dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);*/
 
-        dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
-        dyeingSlipService.addDirectDyeingSlip(dyeingSlipMast);
 
 
 

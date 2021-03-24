@@ -1,5 +1,6 @@
 package com.main.glory.Dao;
 
+import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
@@ -55,4 +56,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
 
     @Query("delete from SupplierRate s where s.id=:key")
     void deleteItemById(Long key);
+
+    @Query("select new com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing(s.id,s.itemName,s.supplierId,(select ss.supplierName from Supplier ss where ss.id=s.supplierId)as name) from SupplierRate s where s.id=:supplierItemId")
+    ItemListForDirectDyeing getSupplierWithItemByItemId(Long supplierItemId);
 }
