@@ -52,7 +52,7 @@ public class ColorServiceImpl {
         //identify the record is addedby the data entry user
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
-        if(user.getDataEntry()==true)
+        if(user.getIsMaster()==false)
         {
             Optional<Supplier> supplier = supplierDao.getSupplierById(colorMast.getSupplierId());
             if(supplier.isEmpty())

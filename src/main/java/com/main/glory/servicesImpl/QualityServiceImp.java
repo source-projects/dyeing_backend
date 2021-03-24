@@ -76,7 +76,7 @@ public class QualityServiceImp  {
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
         System.out.println(":"+user.getId());
-        if(user.getDataEntry()==true)
+        if(user.getIsMaster()==false)
         {
             Party party = partyDao.findByPartyId(qualityDto.getPartyId());
             quality.setUserHeadId(party.getUserHeadId());
