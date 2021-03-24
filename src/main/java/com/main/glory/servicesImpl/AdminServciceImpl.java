@@ -321,9 +321,11 @@ public class AdminServciceImpl {
     public BatchSequence getBatchSequence() throws Exception {
         BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
 
+        batchSequence.setSequence(batchSequence.getSequence()+1);
+        BatchSequence x= batchSequneceDao.saveAndFlush(batchSequence);
         if(batchSequence==null)
             throw new Exception("no batch sequence found");
-        return batchSequence;
+        return x;
 
     }
 

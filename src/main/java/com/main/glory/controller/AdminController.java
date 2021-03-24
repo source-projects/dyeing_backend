@@ -773,7 +773,7 @@ public class AdminController extends ControllerConfig {
     }
 
 
-    @PutMapping(value="/admin/update/batchSequence/")
+    /*@PutMapping(value="/admin/update/batchSequence/")
     public ResponseEntity<GeneralResponse<BatchSequence>> updateBatchSequence(@RequestBody BatchSequence record) throws Exception {
 
         GeneralResponse<BatchSequence> result;
@@ -796,7 +796,7 @@ public class AdminController extends ControllerConfig {
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }
+    }*/
 
     @GetMapping(value="/admin/get/batchSequence/")
     public ResponseEntity<GeneralResponse<BatchSequence>> getBatchSequence() throws Exception {
