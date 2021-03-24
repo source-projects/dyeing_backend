@@ -5,8 +5,10 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
+import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
+import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -321,6 +323,31 @@ public class DyeingSlipController extends ControllerConfig {
         } catch (Exception e) {
             e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    //get shade item for the direct dyeing slip
+
+    @PostMapping("/dyeingSlip/getItemListByShadeAndBatch")
+    public ResponseEntity<GeneralResponse<List<ItemListForDirectDyeing>>> getItemListByShadeAndBatch(@RequestBody GetItemByShadeAndBatch record) {
+        GeneralResponse<List<ItemListForDirectDyeing>> result;
+        try {
+            if (record == null)
+                result = new GeneralResponse<>(null, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+
+            List<ItemListForDirectDyeing> list  = dyeingSlipService.getItemListByShadeAndBatch(record);
+
+            if(!list.isEmpty())
+            result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+            result = new GeneralResponse<>(list, "Data not found", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }

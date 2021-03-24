@@ -8,10 +8,13 @@ import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
+import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
+import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.SupplierRate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -396,5 +399,26 @@ public class DyeingSlipServiceImpl {
         addAdditionDyeingSlipModel.getDyeingSlipData().setControlId(dyeingSlipMast.getId());
         dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
         return;
+    }
+
+    public List<ItemListForDirectDyeing> getItemListByShadeAndBatch(GetItemByShadeAndBatch record) throws Exception {
+        List<ItemListForDirectDyeing> list =new ArrayList<>();
+
+        Double totalBatchWt =stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
+        Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
+        if(shadeMastExist.isEmpty())
+            throw new Exception("no shade data found");
+
+        for(ShadeData shadeData:shadeMastExist.get().getShadeDataList())
+        {
+            ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
+            if(item==null)
+                continue;
+
+            list.add(new ItemListForDirectDyeing(item,shadeData,totalBatchWt));
+
+        }
+
+        return list;
     }
 }

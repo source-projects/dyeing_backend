@@ -1080,6 +1080,23 @@ public class JetServiceImpl {
         //remover the jet record
         jetDataDao.deleteJetDataById(jetDataExist.getId());
 
+
+
+        ///remove the production record if the production record added by direct
+        if(productionPlan.getIsDirect()==true)
+        {
+            //change the status of batches as well
+
+            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+            batchDataList.forEach(e->{
+                e.setIsProductionPlanned(false);
+                batchDao.save(e);
+            });
+
+            productionPlanDao.deleteProductionById(productionPlan.getId());
+
+        }
+
     }
 
     public void updateJet(AddJet jetMast) throws Exception {
