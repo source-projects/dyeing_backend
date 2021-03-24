@@ -159,7 +159,7 @@ public class DyeingSlipServiceImpl {
 
     }
 
-    public List<GetAllAdditionalDyeingSlip> getAllAddtionalDyeignSlip() throws Exception {
+    public List<GetAllAdditionalDyeingSlip> getAllAdditionalDyeingSlip() throws Exception {
         List<GetAllAdditionalDyeingSlip> resultList =new ArrayList<>();
         List<GetAllAdditionalDyeingSlip> list =dyeingSlipMastDao.getAllAddtionalDyeingProcess();
 

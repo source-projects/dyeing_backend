@@ -33,10 +33,10 @@ public class EmployeeServiceImpl {
              throw new Exception("employee document can't be null");
 
 
-        EmployeeMast employeeMastExistWithAdhar = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
+        /*EmployeeMast employeeMastExistWithAdhar = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
 
         if(employeeMastExistWithAdhar!=null)
-            throw new Exception("employee exist with aadhaar number");
+            throw new Exception("employee exist with aadhaar number");*/
 
 
       /*  //process the image and store to the cloudniary
@@ -65,9 +65,9 @@ public class EmployeeServiceImpl {
     public Long updateEmployeeRecord(EmployeeMast record) throws Exception {
         //find the record
 
-        EmployeeMast employeeMastExist = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
+       /* EmployeeMast employeeMastExist = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
         if(employeeMastExist!=null)
-            throw new Exception("employee exist with aadhaar number");
+            throw new Exception("employee exist with aadhaar number");*/
 
         EmployeeMast x = employeeMastDao.saveAndFlush(record);
 
@@ -91,7 +91,7 @@ public class EmployeeServiceImpl {
 
         List<Attendance> attendances = attendanceDao.getAllAttendanceByEmployeeId(id);
         if(!attendances.isEmpty())
-            throw new Exception("remove the record of attendace");
+            throw new Exception("remove the record of attendance");
 
         employeeMastDao.deleteByEmployeeId(id);
     }

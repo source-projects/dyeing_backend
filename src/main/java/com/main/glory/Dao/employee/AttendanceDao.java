@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface AttendanceDao extends JpaRepository<Attendance,Long> {
 
-    @Query("select s from Attendance s where s.controlId=:empId ")
+    @Query("select s from Attendance s where s.controlId=:empId")
     List<Attendance> getAllAttendanceByEmployeeId(Long empId);
 
     @Query("select s from Attendance s where s.id=:id")

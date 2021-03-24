@@ -31,7 +31,7 @@ public class PartyController extends ControllerConfig {
 		GeneralResponse<Boolean> result;
 		try {
 		    partyServiceImp.saveParty(party);
-			System.out.println("har::"+headers.get("id"));
+			//System.out.println("har::"+headers.get("id"));
 			//System.out.println(id);
 			result = new GeneralResponse<Boolean>(true, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
 		}
