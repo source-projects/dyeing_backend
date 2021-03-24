@@ -101,9 +101,13 @@ public class UserServiceImpl implements UserServiceInterface {
 
             if(user.getUserHeadId()==0)
             {
-                //master or data entry master if the isMaster true then user is master else data entry master
-              userDao.updateUserHeadId(x.getId(), x.getId());
-
+                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = 0
+                if(userDataDto.getIsMaster()==false)
+                {
+                    userDao.updateUserHeadId(x.getId(), 0l);
+                }else {
+                    userDao.updateUserHeadId(x.getId(), x.getId());
+                }
             }
             //else
             //remain the operator or data entry operator
