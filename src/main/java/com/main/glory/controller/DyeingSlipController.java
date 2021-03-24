@@ -83,7 +83,7 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<List<GetAllAdditionalDyeingSlip>> result;
         try {
 
-            List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllAddtionalDyeignSlip();
+            List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllAdditionalDyeingSlip();
             if(!data.isEmpty())
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
@@ -265,7 +265,7 @@ public class DyeingSlipController extends ControllerConfig {
     // make only get view delete redyeing slip api
 
     @GetMapping("/dyeingSlip/reDyeingSlip/all")
-    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>>> getAllReDirectDyeignSlip(){
+    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>>> getAllReDirectDyeingSlip(){
         GeneralResponse<List<GetAllAdditionalDyeingSlip>> result;
         try {
 
