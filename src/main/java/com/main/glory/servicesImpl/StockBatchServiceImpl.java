@@ -22,7 +22,9 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -638,9 +640,51 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<BatchToPartyAndQuality> getAllBatchDetail()  throws Exception{
+    public List<BatchToPartyAndQuality> getAllBatchDetail(String id)  throws Exception{
+
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
+        List<GetBatchWithControlId> batchData = null;
         List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
-        List<GetBatchWithControlId> batchData = batchDao.findAllBasedOnControlIdAndBatchId();
+
+        //filter the record
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+            batchData = batchDao.findAllBasedOnControlIdAndBatchId();
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                batchData = batchDao.findAllBasedOnControlIdAndBatchId();
+            } else if (userData.getUserHeadId() > 0) {
+                //check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                batchData = batchDao.findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(userId,userHeadId);
+
+            }
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+            batchData = batchDao.findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(userId,userHeadId);
+        }
+
+
+
 
         for(GetBatchWithControlId batch : batchData)
         {
@@ -1247,10 +1291,62 @@ public class StockBatchServiceImpl {
          */
     }
 
-    //get All batch whoi's bill is not generated
-    public List<GetAllBatchWithProduction> getAllBatchWithoutBillGenerated() throws Exception {
+    //get All batch who's bill is not generated
+    public List<GetAllBatchWithProduction> getAllBatchWithoutBillGenerated(String id) throws Exception {
         List<GetAllBatchWithProduction> list=new ArrayList<>();
         List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
+
+
+
+        //filter the batch
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
+
+        //filter the record
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+            dataList =  batchDao.getAllBatchWithoutBillGenerated();
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                dataList =  batchDao.getAllBatchWithoutBillGenerated();
+            } else if (userData.getUserHeadId() > 0) {
+                //check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                dataList =  batchDao.getAllBatchWithoutBillGenerated(userId,userHeadId);
+
+            }
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+            dataList =  batchDao.getAllBatchWithoutBillGenerated(userId,userHeadId);
+        }
+
+
+
+
+
+
+
+
+
+
 
         //filter the data if the batch is done with jet
         for(GetAllBatch getAllBatch:dataList)
@@ -1384,9 +1480,21 @@ public class StockBatchServiceImpl {
     }
 
 
-    public List<GetAllBatch> getAllBatchForAdditionalSlip() throws Exception {
+    public List<GetAllBatch> getAllBatchForAdditionalSlip(String id) throws Exception {
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
+
 
         List<GetAllBatch> list=new ArrayList<>();
+
+
 
         //get all batches which are in the queue
         List<JetData> jetDataList = jetService.getAllProductionInTheQueue();
@@ -1397,9 +1505,42 @@ public class StockBatchServiceImpl {
             ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
             if(productionPlan==null)
                 continue;
-            GetAllBatch getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
-            if(getAllBatch!=null)
-            list.add(getAllBatch);
+
+            GetAllBatch getAllBatch=null;
+            //filter the record
+            if (permissions.getViewAll())
+            {
+                userId=null;
+                userHeadId=null;
+                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+            }
+            else if (permissions.getViewGroup()) {
+                //check the user is master or not ?
+                //admin
+                if (userData.getUserHeadId() == 0) {
+                    userId = null;
+                    userHeadId = null;
+                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                } else if (userData.getUserHeadId() > 0) {
+                    //check weather master or operator
+                    UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                    userId = userData.getId();
+                    userHeadId = userHead.getId();
+                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+
+                }
+            }
+            else if (permissions.getView()) {
+                userId = userData.getId();
+                userHeadId=null;
+                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+            }
+
+
+            if(getAllBatch.getControlId()!=null)
+                list.add(getAllBatch);;
+
+
 
         }
 
@@ -1410,7 +1551,16 @@ public class StockBatchServiceImpl {
         return list;
     }
 
-    public List<GetAllBatch> getAllBatchForRedyeingSlip() throws Exception {
+    public List<GetAllBatch> getAllBatchForRedyeingSlip(String id) throws Exception {
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
 
         List<GetAllBatch> list=new ArrayList<>();
 
@@ -1419,6 +1569,7 @@ public class StockBatchServiceImpl {
 
         for(JetData jetData:jetDataList)
         {
+            GetAllBatch getAllBatch=null;
             //get the production record
             ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
             if(productionPlan==null)
@@ -1427,8 +1578,36 @@ public class StockBatchServiceImpl {
             //check the batch bill is generated or not
             if(batchDao.isFinishMtrSave(productionPlan.getBatchId(),productionPlan.getStockId()))
             continue;
-            GetAllBatch getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
-            if(getAllBatch!=null)
+            //GetAllBatch getAllBatch=null;
+            //filter the record
+            if (permissions.getViewAll())
+            {
+                userId=null;
+                userHeadId=null;
+                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+            }
+            else if (permissions.getViewGroup()) {
+                //check the user is master or not ?
+                //admin
+                if (userData.getUserHeadId() == 0) {
+                    userId = null;
+                    userHeadId = null;
+                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                } else if (userData.getUserHeadId() > 0) {
+                    //check weather master or operator
+                    UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                    userId = userData.getId();
+                    userHeadId = userHead.getId();
+                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+
+                }
+            }
+            else if (permissions.getView()) {
+                userId = userData.getId();
+                userHeadId=null;
+                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+            }
+            if(getAllBatch.getControlId()!=null)
                 list.add(getAllBatch);
 
         }

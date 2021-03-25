@@ -29,4 +29,7 @@ public interface DyeingProcessMastDao extends JpaRepository<DyeingProcessMast,Lo
 
     @Query("select d from DyeingProcessMast d where LOWER(d.processName)=LOWER(:name) AND d.id!=:id")
     DyeingProcessMast getDyeingProcessByNameExceptId(String name, Long id);
+
+    @Query("select d from DyeingProcessMast d where d.createdBy=:userId OR d.userHeadId=:userHeadId")
+    List<DyeingProcessMast> getAllDyeingProcessByCreatedAndHead(Long userId, Long userHeadId);
 }

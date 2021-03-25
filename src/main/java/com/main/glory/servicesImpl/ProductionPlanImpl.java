@@ -27,7 +27,9 @@ import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,10 +140,53 @@ public class ProductionPlanImpl {
 
     }
 
-    public List<GetAllProductionWithShadeData> getAllProductionData() throws Exception{
+    public List<GetAllProductionWithShadeData> getAllProductionData(String id) throws Exception{
 
-        List<GetAllProductionWithShadeData> record=new ArrayList<>();
-        Optional<List<GetAllProductionWithShadeData>> list =productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
+
+
+        Optional<List<GetAllProductionWithShadeData>> list =null;
+        //filter the record
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+            list =  productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                list =  productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+            } else if (userData.getUserHeadId() > 0) {
+                //check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                list =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
+
+            }
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+            list  =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
+        }
+
+
+
+
+
         if(list.isEmpty())
               throw new Exception("no data found");
 
@@ -151,7 +196,7 @@ public class ProductionPlanImpl {
 
     }
 
-    public void updateProductionPlan(ProductionPlan productionPlan) throws Exception{
+    public void updateProductionPlan(ProductionPlan productionPlan, String id) throws Exception{
 
         Optional<ProductionPlan> productionPlanExist = productionPlanDao.findById(productionPlan.getId());
         if(productionPlanExist.isEmpty())

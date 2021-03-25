@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -76,7 +77,7 @@ public class JetController extends ControllerConfig {
     }
 
     @PutMapping(value="/jet/updateJetData/productionStatus/")
-    public ResponseEntity<GeneralResponse<Boolean>> updateJetData(@RequestBody ChangeStatus jetDataToUpdate) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> updateJetData(@RequestBody ChangeStatus jetDataToUpdate,@RequestHeader Map<String, String> headers) throws Exception {
 
         GeneralResponse<Boolean> result;
         if(jetDataToUpdate==null)
@@ -87,7 +88,7 @@ public class JetController extends ControllerConfig {
         boolean flag;
         try {
 
-            jetService.updateProductionStatus(jetDataToUpdate);
+            jetService.updateProductionStatus(jetDataToUpdate,headers.get("id"));
             result = new GeneralResponse<Boolean>(null, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }

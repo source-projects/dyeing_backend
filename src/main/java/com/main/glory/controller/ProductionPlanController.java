@@ -99,11 +99,11 @@ public class ProductionPlanController extends ControllerConfig {
 
 
     @PutMapping(value="/productionPlan/updateProductionPlan/")
-    public ResponseEntity<GeneralResponse<Boolean>> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
+    public ResponseEntity<GeneralResponse<Boolean>> updateProductionPlan(@RequestBody ProductionPlan productionPlan,@RequestHeader Map<String, String> headers)
     {
         GeneralResponse<Boolean> result;
         try {
-            productionPlanService.updateProductionPlan(productionPlan);
+            productionPlanService.updateProductionPlan(productionPlan,headers.get("id"));
             result = new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
@@ -132,13 +132,13 @@ public class ProductionPlanController extends ControllerConfig {
     }
 
     @GetMapping(value="/productionPlan/all")
-    public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>>> getAllProductionWithoutJetPlan()
+    public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>>> getAllProductionWithoutJetPlan(@RequestHeader Map<String, String> headers)
     {
         GeneralResponse<List<GetAllProductionWithShadeData>> result;
         try {
-            List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData();
+            List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData(headers.get("id"));
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data faund");
+                throw new Exception("no data found");
 
             result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }

@@ -13,9 +13,15 @@ import lombok.Setter;
 public class GetAllDyeingProcessList {
     Long id;
     String dyeingProcessName;
+    Long userHeadId;
+    Long createdBy;
+    Long updatedBy;
 
     public GetAllDyeingProcessList(DyeingProcessMast d) {
         this.id=d.getId();
         this.dyeingProcessName=d.getProcessName();
+        this.userHeadId=d.getUserHeadId();
+        this.createdBy=d.getCreatedBy();
+        this.updatedBy=d.getUpdatedBy();
     }
 }

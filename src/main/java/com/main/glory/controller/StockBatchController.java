@@ -264,11 +264,11 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/all")
-    public ResponseEntity<GeneralResponse<List<BatchToPartyAndQuality>>> getAllBatch() {
+    public ResponseEntity<GeneralResponse<List<BatchToPartyAndQuality>>> getAllBatch(@RequestHeader Map<String, String> headers) {
         GeneralResponse<List<BatchToPartyAndQuality>> result;
         try {
 
-            List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
+            List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail(headers.get("id"));
 
             result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -451,11 +451,11 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/getAllBatchForFinishMtr")
-    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>>> getAllBatchWithoutBillGenerated() {
+    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>>> getAllBatchWithoutBillGenerated(@RequestHeader Map<String, String> headers) {
         GeneralResponse<List<GetAllBatchWithProduction>> response;
 
         try {
-            List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated();
+            List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated(headers.get("id"));
 
             if (!flag.isEmpty())
                 response= new GeneralResponse<>(flag, "Batch fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -496,11 +496,11 @@ public class StockBatchController extends ControllerConfig {
 
     //get all batch for additional slip
     @GetMapping("/stockBatch/batch/forAdditionalSlip")
-    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForAdditionalSlipByPartyAndQualityId() {
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForAdditionalSlip(@RequestHeader Map<String, String> headers) {
         GeneralResponse<List<GetAllBatch>> result;
         try {
 
-                List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip();
+                List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip(headers.get("id"));
 
                 result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -515,11 +515,11 @@ public class StockBatchController extends ControllerConfig {
 
     //get all batch for additional slip
     @GetMapping("/stockBatch/batch/forRedyeingSlip")
-    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForReDyeingByPartyAndQualityId() {
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForReDyeingByPartyAndQualityId(@RequestHeader Map<String, String> headers) {
         GeneralResponse<List<GetAllBatch>> result;
         try {
 
-            List<GetAllBatch> batchData = stockBatchService.getAllBatchForRedyeingSlip();
+            List<GetAllBatch> batchData = stockBatchService.getAllBatchForRedyeingSlip(headers.get("id"));
 
             result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
