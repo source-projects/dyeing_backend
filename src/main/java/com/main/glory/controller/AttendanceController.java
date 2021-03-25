@@ -56,7 +56,7 @@ public class AttendanceController extends ControllerConfig {
             attendanceService.updateAttendance(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
-            result = new GeneralResponse<Boolean>(true, "Date fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            result = new GeneralResponse<Boolean>(true, "Date updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {

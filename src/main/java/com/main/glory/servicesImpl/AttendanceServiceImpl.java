@@ -62,7 +62,6 @@ public class AttendanceServiceImpl {
 
         Attendance attendance = attendanceDao.getLatestAttendanceRecordByEmployeeId(id);
 
-
         if(attendance.getInTime()!=null && attendance.getOutTime()!=null || attendance==null)//attendance.getInTime()!=null && attendance.getOutTime()!=null)
         {
             employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,new Attendance());
