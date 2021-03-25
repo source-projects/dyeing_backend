@@ -69,7 +69,13 @@ public class EmployeeServiceImpl {
         if(employeeMastExist!=null)
             throw new Exception("employee exist with aadhaar number");*/
 
+        List<EmployeeData> documentList = employeeDataDao.getEmployeeDataByEmployeeId(record.getId());
         EmployeeMast x = employeeMastDao.saveAndFlush(record);
+        for(EmployeeData employeeData:documentList)
+        {
+            employeeData.setControlId(x.getId());
+            employeeDataDao.saveAndFlush(employeeData);
+        }
 
         //employeeDataDao.saveAll(record.getEmployeeDocumentList());
         return x.getId();

@@ -1,8 +1,11 @@
 package com.main.glory.Dao.productionPlan;
 
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -77,6 +80,15 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
     @Transactional
     @Query("delete from ProductionPlan p where p.id=:id")
     void deleteProductionById(Long id);
+
+    @Query("select p from Party p where p.id=(select pp.partyId from ProductionPlan pp where pp.id=:productionId)")
+    Party getPartyByProductionId(Long productionId);
+
+    @Query("select x from Quality x where x.id = (select p.qualityEntryId from ProductionPlan p where p.id=:productionId)")
+    Quality getQualityByProductionId(Long productionId);
+
+    @Query("select z from QualityName z where z.id = (select x.qualityNameId from Quality x where x.id = (select p.qualityEntryId from ProductionPlan p where p.id=:productionId))")
+    QualityName getQualityNameByProductionId(Long productionId);
 
    /* @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
             "(select c.colorTone from ShadeMast c where c.id=p.shadeId) AS colorTone," +

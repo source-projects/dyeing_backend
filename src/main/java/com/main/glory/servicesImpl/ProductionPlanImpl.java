@@ -22,6 +22,7 @@ import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -516,6 +517,18 @@ public class ProductionPlanImpl {
 
     public ProductionPlan getProductionDataById(Long productionId) {
         return productionPlanDao.getByProductionId(productionId);
+    }
+
+    public Party getPartyDetailByProductionId(Long productionId) {
+        return productionPlanDao.getPartyByProductionId(productionId);
+    }
+
+    public Quality getQualityByProductionId(Long productionId) {
+        return productionPlanDao.getQualityByProductionId(productionId);
+    }
+
+    public QualityName getQualityNameByProductionId(Long productionId) {
+        return productionPlanDao.getQualityNameByProductionId(productionId);
     }
 
 /*

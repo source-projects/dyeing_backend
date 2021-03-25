@@ -31,7 +31,7 @@ public class ProductionPlan {
     /*@Column(columnDefinition = "varchar(255) default 'Not mention'")
     String colorName;*/
     @Column(columnDefinition = "boolean default false")
-    Boolean isDirect;
+    Boolean isDirect=false;
     Boolean status=false;
 
     public ProductionPlan(ProductionPlan productionPlan) {

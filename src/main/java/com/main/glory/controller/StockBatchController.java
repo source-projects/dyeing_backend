@@ -204,12 +204,12 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/ByQualityAndPartyWithoutProductionPlan/{qualityId}/{partyId}")
-    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> ByQualityAndPartyWithoutProducctionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> ByQualityAndPartyWithoutProductionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId,@RequestHeader Map<String, String> headers) {
 
         GeneralResponse<List<GetAllBatch>> result;
         try {
             if (qualityId != null && partyId != null) {
-                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId);
+                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId,headers.get("id"));
 
                 result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 

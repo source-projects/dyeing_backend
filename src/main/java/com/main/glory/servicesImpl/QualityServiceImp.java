@@ -293,7 +293,7 @@ public class QualityServiceImp  {
             if(qualityName.isEmpty())
                 continue;
 
-            qualityDataList.add(new QualityData(quality,qualityName.get()));
+            qualityDataList.add(new QualityData(quality,qualityName.get(),partName));
 
 
         }

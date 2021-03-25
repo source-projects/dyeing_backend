@@ -404,9 +404,50 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<GetAllBatch> byQualityAndPartyWithoutProductionPlan(Long qualityId, Long partyId) throws Exception{
+    public List<GetAllBatch> byQualityAndPartyWithoutProductionPlan(Long qualityId, Long partyId,String id) throws Exception{
 
-        List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
+
+        List<StockMast> stockMast=null;
+        //filter the record
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+            stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+            } else if (userData.getUserHeadId() > 0) {
+                //check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId,userId,userHeadId);
+
+            }
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+            stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId,userId,userHeadId);
+        }
+
+
+
         if(stockMast.isEmpty())
         {
             throw new Exception("No batch found");
