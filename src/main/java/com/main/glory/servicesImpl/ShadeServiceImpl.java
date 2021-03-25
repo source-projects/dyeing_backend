@@ -15,7 +15,9 @@ import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -326,9 +328,53 @@ public class ShadeServiceImpl {
 		return getAllShadesList;
 	}
 
-    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId) throws Exception{
+    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId, String id) throws Exception{
+
+		//get the user record first
+		Long userId = Long.parseLong(id);
+
+
+		UserData userData = userDao.getUserById(userId);
+		Long userHeadId=null;
+
+		UserPermission userPermission = userData.getUserPermissionData();
+		Permissions permissions = new Permissions(userPermission.getSh().intValue());
+
+
+
 		List<GetShadeByPartyAndQuality> list = new ArrayList<>();
-		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
+
+		//filter the record
+		if (permissions.getViewAll())
+		{
+			userId=null;
+			userHeadId=null;
+			shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+		}
+		else if (permissions.getViewGroup()) {
+			//check the user is master or not ?
+			//admin
+			if (userData.getUserHeadId() == 0) {
+				userId = null;
+				userHeadId = null;
+				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+			} else if (userData.getUserHeadId() > 0) {
+				//check weather master or operator
+				UserData userHead = userDao.getUserById(userData.getUserHeadId());
+				userId = userData.getId();
+				userHeadId = userHead.getId();
+				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId,userId,userHeadId);
+
+			}
+		}
+		else if (permissions.getView()) {
+			userId = userData.getId();
+			userHeadId=null;
+			shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId,userId,userHeadId);
+		}
+
+
 
 
 		for(GetShadeByPartyAndQuality getShadeByPartyAndQuality : shadeByPartyAndQualities)

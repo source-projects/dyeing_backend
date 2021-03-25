@@ -149,10 +149,10 @@ public class ShadeController extends ControllerConfig {
 	}
 
 	@GetMapping("/shade/{qualityId}/{partyId}")
-	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId){
+	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId,@RequestHeader Map<String, String> headers){
 		GeneralResponse<List<GetShadeByPartyAndQuality>> result;
 		try{
-			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId);
+			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId, headers.get("id"));
 			if(shadeMastList != null){
 				result= new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}else{

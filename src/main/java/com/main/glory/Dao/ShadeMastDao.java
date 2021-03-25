@@ -30,6 +30,8 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(s.id, s.partyShadeNo, s.colorTone,s.partyId,(select pp.partyCode from Party pp where pp.id=:partyId),(select pp.partyName from Party pp where pp.id=:partyId),s.qualityEntryId,(select q.qualityId from Quality q where q.id=:qualityId) as qualityIdString,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=:qualityId))) from ShadeMast s where s.partyId = :partyId AND s.qualityEntryId=:qualityId AND s.partyId IS NOT NULL AND s.qualityEntryId IS NOT NULL")
     List<GetShadeByPartyAndQuality> findByQualityEntryIdAndPartyId(Long qualityId, Long partyId);
 
+	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(s.id, s.partyShadeNo, s.colorTone,s.partyId,(select pp.partyCode from Party pp where pp.id=:partyId),(select pp.partyName from Party pp where pp.id=:partyId),s.qualityEntryId,(select q.qualityId from Quality q where q.id=:qualityId) as qualityIdString,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=:qualityId))) from ShadeMast s where s.partyId = :partyId AND s.qualityEntryId=:qualityId AND (s.createdBy=:userId OR s.userHeadId=:userHeadId) AND s.partyId IS NOT NULL AND s.qualityEntryId IS NOT NULL")
+	List<GetShadeByPartyAndQuality> findByQualityEntryIdAndPartyId(Long qualityId, Long partyId,Long userId,Long userHeadId);
 
 	@Query("select s from ShadeMast s where s.pending=false")
     List<ShadeMast> getAllShadeMast();

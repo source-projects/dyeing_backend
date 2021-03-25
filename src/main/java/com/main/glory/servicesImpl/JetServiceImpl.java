@@ -6,6 +6,7 @@ import com.main.glory.Dao.QuantityRangeDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -21,8 +22,11 @@ import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.responce.*;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.qty.QuantityRange;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -38,6 +42,10 @@ import java.util.*;
 @Transactional
 public class JetServiceImpl {
 
+
+
+    @Autowired
+    PartyServiceImp partyServiceImp;
     @Autowired
     QuantityRangeDao quantityRangeDao;
     @Autowired
@@ -46,6 +54,9 @@ public class JetServiceImpl {
     DyeingSlipServiceImpl dyeingSlipService;
     @Autowired
     QualityServiceImp qualityServiceImp;
+
+    @Autowired
+    QualityNameDao qualityNameDao;
 
     @Autowired
     QualityProcessImpl qualityProcessServiceImp;
@@ -745,18 +756,38 @@ public class JetServiceImpl {
             {
                 if(jetData.getStatus()==JetStatus.inQueue)
                 {
-                    GetJetData getJetData;
-                    ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
-                    if(colorTone!=null)
-                        getJetData=new GetJetData(jetData,colorTone);
-                    else{
-                        getJetData=new GetJetData(jetData);
-                    }
-                    ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
+                    ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
                     if(productionPlan==null)
                         continue;
-                    getJetData.setBatchId(productionPlan.getBatchId());
-                    jetDataList.add(getJetData);
+                    Party party = productionPlanService.getPartyDetailByProductionId(jetData.getProductionId());
+                    Quality quality = productionPlanService.getQualityByProductionId(jetData.getProductionId());
+                    QualityName qualityName = productionPlanService.getQualityNameByProductionId(jetData.getProductionId());
+                    //ProductionPlan productionPlan =productionPlanService.getProductionData(jetData.getProductionId());
+                    Double totalWt = stockBatchService.getWtByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+                    Double totalMtr = stockBatchService.getMtrByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+                    GetJetData getJetData=null;
+                    if(productionPlan.getIsDirect()==false)
+                    {
+
+                        ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
+                        if(colorTone!=null) {
+                            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
+                            getJetData = new GetJetData(jetData, colorTone, party, quality, qualityName, totalMtr, totalWt, productionPlan,dyeingProcessMast);
+                            jetDataList.add(getJetData);
+                        }
+                    }
+                    else
+                    {
+                        getJetData=new GetJetData(jetData,party,quality,qualityName,totalMtr,totalWt,productionPlan);
+                        getJetData.setProcessName("directDyeing");
+                        jetDataList.add(getJetData);
+                    }
+
+
+
+                    /*//getJetData.setBatchId(productionPlan.getBatchId());
+                    if(getJetData.getPartyId()!=null)*/
+
                 }
 
             }
