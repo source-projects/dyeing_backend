@@ -25,6 +25,18 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
             ") from ProductionPlan p where p.status=false")
     Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone();
 
+    @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
+            "(select c.colorTone from ShadeMast c where c.id=p.shadeId AND p.shadeId IS NOT NULL) AS colorTone," +
+            "(select c.qualityName from Quality c where c.id=p.qualityEntryId)AS qualityName," +
+            "(select c.qualityId from Quality c where c.id=p.qualityEntryId)AS qualityId," +
+            "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
+            "(select s.partyShadeNo from ShadeMast s where s.id=p.shadeId) AS partyShadeNo ," +
+            "(select SUM(b.wt) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId) AS WT," +
+            "(select SUM(b.mtr) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId)AS MTR," +
+            "(select z.partyName from Party z where z.id=p.partyId) as partyName" +
+            ") from ProductionPlan p where p.status=false AND p.stockId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId)")
+    Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone(Long userId,Long userHeadId);
+
     @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p ")
     Optional<List<GetAllProductionWithShadeData>> getAllProduction();
 

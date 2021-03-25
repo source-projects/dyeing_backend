@@ -776,7 +776,16 @@ public class JetServiceImpl {
 
     }
 
-    public void updateProductionStatus(ChangeStatus jetDataToUpdate) throws Exception{
+    public void updateProductionStatus(ChangeStatus jetDataToUpdate, String id) throws Exception{
+
+        /*
+            * before change the status of batch to complete from the jet
+            * make sure the user had permission and belong to the batch
+            * then batch can be updated
+            *
+            ****** optional****
+         */
+
         Optional<JetData> jetDataExist= jetDataDao.findByControlIdAndProductionId(jetDataToUpdate.getControlId(),jetDataToUpdate.getProdcutionId());
 
         if(jetDataExist.isEmpty())

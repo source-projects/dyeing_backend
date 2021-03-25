@@ -405,33 +405,18 @@ public class QualityServiceImp  {
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
             //admin
-            if(userData.getUserHeadId() == 0)
-            {
-                userId=null;
-                userHeadId=null;
-                qualities=qualityDao.getAllQuality();
-            }
-            else if(userData.getUserHeadId() > 0)
-            {
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                qualities = qualityDao.getAllQuality();
+            } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId, userHeadId);
 
-                if(userHead.getUserHeadId()==0)
-                {
-                    //for master
-                    userId=userData.getId();
-                    userHeadId=userData.getId();
-                    qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
-
-                }
-                else {
-                    //for operator
-                    userId=userData.getId();
-                    userHeadId=userData.getUserHeadId();
-                    qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
-                }
             }
-
         }
         else if (permissions.getView()) {
             userId = userData.getId();

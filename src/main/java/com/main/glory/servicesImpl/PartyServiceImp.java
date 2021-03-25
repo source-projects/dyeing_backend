@@ -381,23 +381,13 @@ public class PartyServiceImp implements PartyServiceInterface {
                 }
                 else if(userData.getUserHeadId() > 0)
                 {
-                    //check weather master or operator
+                    //for master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
-
-                    if(userHead.getUserHeadId()==0)
-                    {
-                        //for master
                         userId=userData.getId();
-                        userHeadId=userData.getId();
+                        userHeadId=userHead.getId();
                         partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
 
-                    }
-                    else {
-                        //for operator
-                        userId=userData.getId();
-                        userHeadId=userData.getUserHeadId();
-                        partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
-                    }
+
                 }
 
             }

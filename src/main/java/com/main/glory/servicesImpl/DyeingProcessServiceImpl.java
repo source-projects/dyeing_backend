@@ -3,6 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.dyeingProcess.DyeingChemicalDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessMastDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
@@ -11,6 +12,9 @@ import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.qualityProcess.Chemical;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.SupplierRate;
+import com.main.glory.model.user.Permissions;
+import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,10 @@ import java.util.Optional;
 @Service("dyeingProcessServiceImpl")
 public class DyeingProcessServiceImpl {
 
+
+
+    @Autowired
+    UserDao userDao;
     @Autowired
     SupplierServiceImpl supplierService;
 
@@ -43,12 +51,53 @@ public class DyeingProcessServiceImpl {
         dyeingProcessMastDao.save(data);
     }
 
-    public List<GetAllDyeingProcessList> getAllDyeingProcess() throws Exception {
+    public List<GetAllDyeingProcessList> getAllDyeingProcess(String id) throws Exception {
 
+        Long userId = Long.parseLong(id);
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
         List<GetAllDyeingProcessList> list = new ArrayList<>();
-        List<DyeingProcessMast> processList = dyeingProcessMastDao.getAllProcess();
-        if(processList.isEmpty())
-            throw new Exception("no data found");
+        List<DyeingProcessMast> processList = null;
+        Permissions permissions = new Permissions(userPermission.getPr().intValue());
+
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+            processList = dyeingProcessMastDao.getAllProcess();
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if(userData.getUserHeadId() == 0)
+            {
+                userId=null;
+                userHeadId=null;
+                processList = dyeingProcessMastDao.getAllProcess();
+            }
+            else if(userData.getUserHeadId() > 0)
+            {
+                //check for master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                    userId=userData.getId();
+                    userHeadId=userHead.getId();
+                    processList = dyeingProcessMastDao.getAllDyeingProcessByCreatedAndHead(userId,userHeadId);
+
+
+            }
+
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+            processList = dyeingProcessMastDao.getAllDyeingProcessByCreatedAndHead(userId,userHeadId);
+        }
+
+
+
 
         for(DyeingProcessMast d:processList)
         {

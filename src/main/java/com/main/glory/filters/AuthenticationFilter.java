@@ -113,7 +113,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 						if(method.equals("GET")){
 							if(Arrays.asList(pathArray).contains("all"))
 							{
-								if(path.contains("own"))
+								/*if(path.contains("own"))
 								{
 									if(!permissions.getView())
 										throw new Exception("Unauthorized user");
@@ -127,7 +127,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 								{
 									if(!permissions.getViewAll())
 										throw new Exception("Unauthorized user");
-								}
+								}*/
 							}
 							break;
 						}
@@ -137,9 +137,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 							}
 						}
 						else if(method.equals("PUT")){
-							if(!permissions.getEdit() || !permissions.getEditAll()){
+							/*if(!permissions.getEdit()){
 								throw new Exception("Unauthorized user");
 							}
+							else if(!permissions.getEditGroup()){
+								throw new Exception("Unauthorized user");
+							}
+							else if(!permissions.getEditAll()){
+								throw new Exception("Unauthorized user");
+							}
+							break;*/
+
 						}
 						else if(method.equals("DELETE")){
 							if(!permissions.getDelete() || !permissions.getDeleteAll()){
