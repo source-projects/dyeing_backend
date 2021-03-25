@@ -506,6 +506,7 @@ public class StockBatchController extends ControllerConfig {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -525,6 +526,7 @@ public class StockBatchController extends ControllerConfig {
 
 
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
