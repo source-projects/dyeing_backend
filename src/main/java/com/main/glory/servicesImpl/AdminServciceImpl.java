@@ -346,7 +346,7 @@ public class AdminServciceImpl {
 
         //check is exiting batchsequence is < coming batch seqeunce
 
-        if(batchSequence.getSequence() < record.getSequence())
+        if(record.getSequence() < batchSequence.getSequence())
             throw new Exception("please enter greater sequence");
 
 
