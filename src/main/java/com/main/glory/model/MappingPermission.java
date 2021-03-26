@@ -41,8 +41,8 @@ public class MappingPermission {
         //mapping.put("wt","waterJet");
         mapping.put("ad","admin");
         mapping.put("ds","dyeingSlip");
-       /* mapping.put("emp","employee");
-        mapping.put("attnds","attendance");*/
+        mapping.put("emp","employee");
+        mapping.put("attnds","attendance");
 
 
     }
