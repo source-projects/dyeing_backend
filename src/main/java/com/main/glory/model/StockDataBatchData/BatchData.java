@@ -36,6 +36,7 @@ public class BatchData {
     Double finishMtr=0.0;
     Boolean isBillGenrated=false;
     Boolean isFinishMtrSave=false;
+    String mergeBatchId;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore

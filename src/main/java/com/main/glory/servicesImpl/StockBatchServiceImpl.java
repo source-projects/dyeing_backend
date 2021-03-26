@@ -25,6 +25,7 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -1658,6 +1659,87 @@ public class StockBatchServiceImpl {
             throw new Exception("no record found");
 
         return list;
+
+    }
+
+    public void createMergeBatchList(CreateMergeBatch record) throws Exception {
+        //check first the all batch record is exist or not
+
+        List<BatchData> batchDataRecordList =new ArrayList<>();
+        for(BatchData batchData : record.getBatchDataList())
+        {
+            BatchData batchExist = batchDao.getBatchDataById(batchData.getId());
+            if(batchExist==null)
+                throw new Exception("batch record not found");
+
+            batchExist.setMergeBatchId(record.getMergeBatchId());
+            batchDataRecordList.add(batchExist);
+        }
+
+        if(!batchDataRecordList.isEmpty())
+        {
+            batchDao.saveAll(batchDataRecordList);
+        }
+
+    }
+
+    public void updateMergeBatchList(CreateMergeBatch record) throws Exception {
+
+        List<BatchData> batchDataRecordList =new ArrayList<>();
+        //check the merge batch record is exit or not
+        BatchData batchDataExist = batchDao.getMergeBatchExist(record.getMergeBatchId());
+        if(batchDataExist==null)
+            throw new Exception("no merge batch record found");
+
+        //existing batches record with mergeBatchId
+        //List<BatchData> existingBatchRecord =batchDao.getMergeBatchListByMergeBatchId(record.getMergeBatchId());
+        List<Long> comingBatchRecordId =new ArrayList<>();
+        List<Long> existingBatchRecordId =batchDao.getMergeBatchIdListByMergeBatchId(record.getMergeBatchId());
+        for(BatchData batchData : record.getBatchDataList())
+        {
+            BatchData batchExist = batchDao.getBatchDataById(batchData.getId());
+            if(batchExist==null)
+                throw new Exception("batch record not found");
+
+            batchExist.setMergeBatchId(record.getMergeBatchId());
+
+            comingBatchRecordId.add(batchExist.getId());
+            batchDataRecordList.add(batchExist);
+        }
+        batchDao.saveAll(batchDataRecordList);
+
+        //change the status of batches which are existing but not comming from batch record
+        existingBatchRecordId.forEach(e->{
+            if(!comingBatchRecordId.contains(e))
+            {
+                batchDao.updateMergeIdByBatchEntryId(e,null);
+            }
+
+        });
+
+
+
+
+
+
+    }
+
+    public List<MergeBatchId> getAllMergeBatchId() {
+       // List<GetAllMergeBatchId> list = new ArrayList<>();
+
+        List<MergeBatchId> record = batchDao.getAllMergeBatchId();
+
+        return record;
+    }
+
+    public CreateMergeBatch getMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
+        MergeBatchId record = batchDao.getMergeBatchByMergeBatchId(mergeBatchId);
+        if(record==null)
+            throw new Exception("no record found");
+        List<BatchData> batchData  = batchDao.getMergeBatchDataByMergeBatchId(mergeBatchId);
+
+        CreateMergeBatch createMergeBatch = new CreateMergeBatch(record,batchData);
+        return createMergeBatch;
 
     }
 }
