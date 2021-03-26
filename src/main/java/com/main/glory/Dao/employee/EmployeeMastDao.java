@@ -18,7 +18,7 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
     @Query("select s from EmployeeMast s where s.id=:id")
     EmployeeMast getEmployeeById(Long id);
 
-    @Query("select s from EmployeeMast s")
+    @Query("select s from EmployeeMast s ORDER BY s.id DESC")
     List<EmployeeMast> getAllEmployee();
 
     @Modifying

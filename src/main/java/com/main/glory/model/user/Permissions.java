@@ -13,10 +13,10 @@ public class Permissions {
 	Boolean edit;
 	Boolean delete;
 	Boolean viewGroup;
-	Boolean viewAll;
 	Boolean editGroup;
-	Boolean editAll;
 	Boolean deleteGroup;
+	Boolean viewAll;
+	Boolean editAll;
 	Boolean deleteAll;
 	//1111101010
 

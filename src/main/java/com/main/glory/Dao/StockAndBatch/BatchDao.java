@@ -4,10 +4,7 @@ package com.main.glory.Dao.StockAndBatch;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
-import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
-import com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse;
-import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
@@ -16,6 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -198,6 +196,29 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     //get the data for batch without extra batches
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId) GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(Long userId, Long userHeadId);
+
+    @Query(value = "select * from batch_data as b where b.merge_batch_id=:batchId LIMIT 1",nativeQuery = true)
+    BatchData getMergeBatchExist(@RequestParam(name = "batchId") String batchId);
+
+    @Query("select x from BatchData x where x.mergeBatchId=:batchId")
+    List<BatchData> getMergeBatchListByMergeBatchId(String batchId);
+
+    @Query("select x.id from BatchData x where x.mergeBatchId=:batchId")
+    List<Long> getMergeBatchIdListByMergeBatchId(String batchId);
+
+    @Modifying
+    @Transactional
+    @Query("update BatchData b set b.mergeBatchId=:batchId where b.id=:e")
+    void updateMergeIdByBatchEntryId(Long e, String batchId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.MergeBatchId(sum(b.mtr) as sum,b.mergeBatchId) from BatchData b where b.mergeBatchId IS NOT NULL GROUP BY b.mergeBatchId ")
+    List<MergeBatchId> getAllMergeBatchId();
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.MergeBatchId(sum(b.mtr) as sum,b.mergeBatchId) from BatchData b where b.mergeBatchId =:mergeBatchId ")
+    MergeBatchId getMergeBatchByMergeBatchId(String mergeBatchId);
+
+    @Query("select x from BatchData x where x.mergeBatchId = :mergeBatchId")
+    List<BatchData> getMergeBatchDataByMergeBatchId(String mergeBatchId);
 /*
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where GROUP BY b.controlId, b.batchId")
     List<GetAllBatch> getAllBatchWithoutBillGeneratedAndFinishMtrSave();*/

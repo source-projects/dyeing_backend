@@ -118,6 +118,8 @@ public class EmployeeController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+
     @GetMapping(value = "/employee/all")
     public ResponseEntity<GeneralResponse<List<EmployeeMast>>> getEmployeAll() throws Exception {
 
@@ -152,6 +154,34 @@ public class EmployeeController extends ControllerConfig {
 
             employeeService.deleteEmployeeById(id);
             result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+    @GetMapping(value = "/employee/exist")
+    public ResponseEntity<GeneralResponse<Boolean>> getEmployeeExistById(@RequestParam(name = "id") Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+        boolean flag;
+        try {
+            if(id == null)
+                throw new Exception("null data passed");
+
+
+            EmployeeMast employeeMast= employeeService.getEmployeeById(id);
+
+            if(employeeMast!=null)
+                result= new GeneralResponse<>(true, " Data found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result= new GeneralResponse<>(false, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
