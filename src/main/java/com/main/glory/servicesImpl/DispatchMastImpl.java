@@ -878,6 +878,8 @@ public class DispatchMastImpl {
                 throw new Exception("no quality found");
 
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber=new QualityBillByInvoiceNumber(quality.get());
+            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
+            qualityBillByInvoiceNumber.setQualityName(qualityName.get().getQualityName());
 
             List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
 
