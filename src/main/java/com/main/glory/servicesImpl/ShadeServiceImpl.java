@@ -328,7 +328,8 @@ public class ShadeServiceImpl {
 		return getAllShadesList;
 	}
 
-    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId, String id) throws Exception{
+    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(String qualityId, String partyId, String id) throws Exception{
+
 
 		//get the user record first
 		Long userId = Long.parseLong(id);
@@ -343,36 +344,76 @@ public class ShadeServiceImpl {
 
 
 		List<GetShadeByPartyAndQuality> list = new ArrayList<>();
-		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=new ArrayList<>();
 
-		//filter the record
-		if (permissions.getViewAll())
-		{
-			userId=null;
-			userHeadId=null;
-			shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
-		}
-		else if (permissions.getViewGroup()) {
-			//check the user is master or not ?
-			//admin
-			if (userData.getUserHeadId() == 0) {
+
+		if(!partyId.contains(",")) {
+			//filter the record
+			if (permissions.getViewAll()) {
 				userId = null;
 				userHeadId = null;
-				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
-			} else if (userData.getUserHeadId() > 0) {
-				//check weather master or operator
-				UserData userHead = userDao.getUserById(userData.getUserHeadId());
-				userId = userData.getId();
-				userHeadId = userHead.getId();
-				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId,userId,userHeadId);
+				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualityId), Long.parseLong(partyId));
+			} else if (permissions.getViewGroup()) {
+				//check the user is master or not ?
+				//admin
+				if (userData.getUserHeadId() == 0) {
+					userId = null;
+					userHeadId = null;
+					shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualityId), Long.parseLong(partyId));
+				} else if (userData.getUserHeadId() > 0) {
+					//check weather master or operator
+					UserData userHead = userDao.getUserById(userData.getUserHeadId());
+					userId = userData.getId();
+					userHeadId = userHead.getId();
+					shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualityId), Long.parseLong(partyId), userId, userHeadId);
 
+				}
+			} else if (permissions.getView()) {
+				userId = userData.getId();
+				userHeadId = null;
+				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualityId), Long.parseLong(partyId), userId, userHeadId);
 			}
 		}
-		else if (permissions.getView()) {
-			userId = userData.getId();
-			userHeadId=null;
-			shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId,userId,userHeadId);
+		else
+		{
+			//perform split operation
+			String[] parties  =partyId.split(",");
+			String[] qualities  =qualityId.split(",");
+			for(int i=0;i<parties.length;i++)
+			{
+				List<GetShadeByPartyAndQuality> record=new ArrayList<>();
+
+				if (permissions.getViewAll()) {
+					userId = null;
+					userHeadId = null;
+					record = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualities[i]), Long.parseLong(parties[i]));
+				} else if (permissions.getViewGroup()) {
+					//check the user is master or not ?
+					//admin
+					if (userData.getUserHeadId() == 0) {
+						userId = null;
+						userHeadId = null;
+						record = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualities[i]), Long.parseLong(parties[i]));
+					} else if (userData.getUserHeadId() > 0) {
+						//check weather master or operator
+						UserData userHead = userDao.getUserById(userData.getUserHeadId());
+						userId = userData.getId();
+						userHeadId = userHead.getId();
+						record = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualities[i]), Long.parseLong(parties[i]), userId, userHeadId);
+
+					}
+				} else if (permissions.getView()) {
+					userId = userData.getId();
+					userHeadId = null;
+					record = shadeMastDao.findByQualityEntryIdAndPartyId(Long.parseLong(qualities[i]), Long.parseLong(parties[i]), userId, userHeadId);
+				}
+				if(!record.isEmpty())
+				shadeByPartyAndQualities.addAll(record);
+			}
+
+
 		}
+
 
 
 
