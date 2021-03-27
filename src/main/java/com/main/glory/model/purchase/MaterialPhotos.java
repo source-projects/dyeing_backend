@@ -21,5 +21,6 @@ public class MaterialPhotos {
     Long id;
     String picUrl;
     Long controlId;
+    String type;//bill,material
 
 }
