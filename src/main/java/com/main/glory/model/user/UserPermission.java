@@ -38,6 +38,9 @@ public class UserPermission {
     Long ad;
     Long ds;
 
+    Long emp;
+    Long attnds;
+
 
 
 }

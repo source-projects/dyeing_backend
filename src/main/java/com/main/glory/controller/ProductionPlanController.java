@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
@@ -32,6 +33,23 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             Long id = productionPlanService.saveProductionPlan(productionPlan);
             result= new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.CREATED);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @Transactional
+    @PostMapping(value="/productionPlan/directDyeingSlip")
+    public ResponseEntity<GeneralResponse<Long>> saveDirectBatchToJet(@RequestBody AddDirectBatchToJet productionPlan, @RequestHeader Map<String, String> headers)
+    {
+        GeneralResponse<Long> result =null;
+        try {
+            Long id  = productionPlanService.saveDirectDyeingSlip(productionPlan);
+            result= new GeneralResponse<>(id, "Direct dyeing slip data Saved Successfully ", true, System.currentTimeMillis(), HttpStatus.CREATED);
         }
         catch (Exception e)
         {
@@ -81,11 +99,11 @@ public class ProductionPlanController extends ControllerConfig {
 
 
     @PutMapping(value="/productionPlan/updateProductionPlan/")
-    public ResponseEntity<GeneralResponse<Boolean>> updateProductionPlan(@RequestBody ProductionPlan productionPlan)
+    public ResponseEntity<GeneralResponse<Boolean>> updateProductionPlan(@RequestBody ProductionPlan productionPlan,@RequestHeader Map<String, String> headers)
     {
         GeneralResponse<Boolean> result;
         try {
-            productionPlanService.updateProductionPlan(productionPlan);
+            productionPlanService.updateProductionPlan(productionPlan,headers.get("id"));
             result = new GeneralResponse<Boolean>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
         catch (Exception e)
@@ -114,13 +132,13 @@ public class ProductionPlanController extends ControllerConfig {
     }
 
     @GetMapping(value="/productionPlan/all")
-    public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>>> getAllProductionWithoutJetPlan()
+    public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>>> getAllProductionWithoutJetPlan(@RequestHeader Map<String, String> headers)
     {
         GeneralResponse<List<GetAllProductionWithShadeData>> result;
         try {
-            List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData();
+            List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData(headers.get("id"));
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data faund");
+                throw new Exception("no data found");
 
             result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }
@@ -159,7 +177,7 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<GetAllProduction> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data faund");
+                throw new Exception("no data found");
 
             result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         }

@@ -27,6 +27,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -293,7 +294,7 @@ public class DispatchMastImpl {
             throw new Exception("no party found for id:"+stockMast.getPartyId());
 
 
-        //check the user are exist or not
+       /* //check the user are exist or not
         if(dispatchList.getCreatedBy()!=null && dispatchList.getUserHeadId()!= null) {
 
             UserData createdUserExist = userService.getUserById(dispatchList.getCreatedBy());
@@ -307,7 +308,7 @@ public class DispatchMastImpl {
                 throw new Exception("no user found with head");
         }
         else
-            throw new Exception("user head id or createdBy id can't be null");
+            throw new Exception("user head id or createdBy id can't be null");*/
 
 
 
@@ -333,16 +334,19 @@ public class DispatchMastImpl {
             if(productionPlan==null)
                 throw new Exception("no production plan found for batch");
 
-            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+            ShadeMast shadeMast = null;
+            if(productionPlan.getShadeId()!=null)
+            {
+                shadeMast=shadeService.getShadeById(productionPlan.getShadeId());
+                if(shadeMast==null)
+                    throw new Exception("no shade record found");
+            }
+
 
             Quality quality = qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
 
             if(quality==null)
                 throw new Exception("no quality found");
-
-            if(shadeMast.isEmpty())
-                throw new Exception("no shade found");
-
 
             if (batchDataList.isEmpty())
                 throw new Exception("no batch data found");
@@ -352,11 +356,21 @@ public class DispatchMastImpl {
 
                 if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
                 {
-                    DispatchData dispatchData=new DispatchData(batchData,shadeMast.get(),quality);
-                    if(shadeMast.get().getExtraRate()==null)
-                        dispatchData.setShadeRate(0.0);
+                    DispatchData dispatchData=null;
+                    if(shadeMast!=null)
+                    {
+                        dispatchData=new DispatchData(batchData,shadeMast,quality);
+                        dispatchData.setShadeRate(shadeMast.getExtraRate());
+
+                    }
                     else
-                        dispatchData.setShadeRate(shadeMast.get().getExtraRate());
+                    {
+                        dispatchData=new DispatchData(batchData,quality);
+                        dispatchData.setShadeRate(0.0);
+                    }
+
+
+
 
                     dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
 
@@ -864,6 +878,8 @@ public class DispatchMastImpl {
                 throw new Exception("no quality found");
 
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber=new QualityBillByInvoiceNumber(quality.get());
+            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
+            qualityBillByInvoiceNumber.setQualityName(qualityName.get().getQualityName());
 
             List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
 
@@ -883,7 +899,9 @@ public class DispatchMastImpl {
             ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.getBatchId(),batch.getStockId());
             if(productionPlan==null)
                 continue;
-            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+           /* Optional<ShadeMast> shadeMast = null;
+            if(productionPlan.getShadeId()!=null)
+            shadeService.getShadeMastById(productionPlan.getShadeId());*/
 
             Double shadeRate=0.0;
             /*if(shadeMast.isPresent())

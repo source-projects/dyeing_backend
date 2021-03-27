@@ -54,11 +54,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				return;
 			}*/
 
-
 			/*if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
 			}*/
+
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
@@ -66,7 +66,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if( path.startsWith("login")  || request.getRequestURI().contains("machine")){
+		if( path.startsWith("login")  || request.getRequestURI().contains("machine") || request.getRequestURI().contains("db") || request.getRequestURI().contains("employee")|| request.getRequestURI().contains("attendance")  ){
 			chain.doFilter(request, response);
 			return;
 		}
@@ -113,7 +113,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 						if(method.equals("GET")){
 							if(Arrays.asList(pathArray).contains("all"))
 							{
-								if(path.contains("own"))
+								/*if(path.contains("own"))
 								{
 									if(!permissions.getView())
 										throw new Exception("Unauthorized user");
@@ -127,7 +127,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 								{
 									if(!permissions.getViewAll())
 										throw new Exception("Unauthorized user");
-								}
+								}*/
 							}
 							break;
 						}
@@ -137,9 +137,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 							}
 						}
 						else if(method.equals("PUT")){
-							if(!permissions.getEdit() || !permissions.getEditAll()){
+							/*if(!permissions.getEdit()){
 								throw new Exception("Unauthorized user");
 							}
+							else if(!permissions.getEditGroup()){
+								throw new Exception("Unauthorized user");
+							}
+							else if(!permissions.getEditAll()){
+								throw new Exception("Unauthorized user");
+							}
+							break;*/
+
 						}
 						else if(method.equals("DELETE")){
 							if(!permissions.getDelete() || !permissions.getDeleteAll()){

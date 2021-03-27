@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.party.request.PartyReport;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
@@ -148,10 +149,10 @@ public class ShadeController extends ControllerConfig {
 	}
 
 	@GetMapping("/shade/{qualityId}/{partyId}")
-	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId){
+	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId,@RequestHeader Map<String, String> headers){
 		GeneralResponse<List<GetShadeByPartyAndQuality>> result;
 		try{
-			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId);
+			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId, headers.get("id"));
 			if(shadeMastList != null){
 				result= new GeneralResponse<List<GetShadeByPartyAndQuality>>(shadeMastList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 			}else{
@@ -163,6 +164,7 @@ public class ShadeController extends ControllerConfig {
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+
 
 	@PutMapping(value = "/shade")
 	public ResponseEntity<GeneralResponse<Boolean>> updateShadeById(@RequestBody ShadeMast shadeMast) throws Exception {
@@ -188,6 +190,29 @@ public class ShadeController extends ControllerConfig {
 			result= new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 		} catch (Exception e) {
 			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+	}
+
+	@GetMapping(value="/shade/all")
+	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadeByPartyAndWithAndWithoutQuality(@RequestParam(name = "partyId") Long partyId, @RequestParam(name = "qualityId")Long qualityId) throws Exception {
+		GeneralResponse<List<GetShadeByPartyAndQuality>> result;
+		try {
+			if (partyId != null) {
+				List<GetShadeByPartyAndQuality> flag = shadeService.getShadeByPartyAndWithAndWithoutQuality(partyId,qualityId);
+				if (!flag.isEmpty()) {
+					result =  new GeneralResponse<>(flag, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+				} else {
+					result= new GeneralResponse<>(null, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
+				}
+			}
+			else {
+				result = new GeneralResponse<>(null, "Null object", false, System.currentTimeMillis(), HttpStatus.OK);
+			}
+		}catch (Exception e )
+		{
+			e.printStackTrace();
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}

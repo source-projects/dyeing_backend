@@ -7,6 +7,7 @@ import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
+import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.supplier.GetAllSupplierRate;
@@ -382,5 +383,9 @@ public class SupplierServiceImpl {
     public SupplierRate getSupplierRateByItemId(Long supplierItemId) {
         SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(supplierItemId);
         return supplierRate;
+    }
+
+    public ItemListForDirectDyeing getSupplierWithItemByItemId(Long supplierItemId) {
+        return supplierRateDao.getSupplierWithItemByItemId(supplierItemId) ;
     }
 }

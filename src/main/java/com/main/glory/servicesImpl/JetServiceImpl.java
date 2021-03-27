@@ -6,6 +6,7 @@ import com.main.glory.Dao.QuantityRangeDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -21,8 +22,11 @@ import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.responce.*;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.qty.QuantityRange;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -38,6 +42,10 @@ import java.util.*;
 @Transactional
 public class JetServiceImpl {
 
+
+
+    @Autowired
+    PartyServiceImp partyServiceImp;
     @Autowired
     QuantityRangeDao quantityRangeDao;
     @Autowired
@@ -46,6 +54,9 @@ public class JetServiceImpl {
     DyeingSlipServiceImpl dyeingSlipService;
     @Autowired
     QualityServiceImp qualityServiceImp;
+
+    @Autowired
+    QualityNameDao qualityNameDao;
 
     @Autowired
     QualityProcessImpl qualityProcessServiceImp;
@@ -496,7 +507,7 @@ public class JetServiceImpl {
 
     }
 
-    private Double getAmountInRange(Double amtQty) {
+    Double getAmountInRange(Double amtQty) {
 
         List<QuantityRange> quantityRangeList = quantityRangeDao.getAllRange();
         Double valueToReturn=0.0;
@@ -538,6 +549,17 @@ public class JetServiceImpl {
         List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
         if(jetDataList.isEmpty())
             throw new Exception("No data found");
+
+        for(JetData jetData:jetDataList)
+        {
+            getJetDataList.add(new GetJetData(jetData));
+        }
+        return getJetDataList;
+    }
+    public List<GetJetData> getJetRecordData(Long id) throws Exception{
+
+        List<GetJetData> getJetDataList=new ArrayList<>();
+        List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
 
         for(JetData jetData:jetDataList)
         {
@@ -734,13 +756,38 @@ public class JetServiceImpl {
             {
                 if(jetData.getStatus()==JetStatus.inQueue)
                 {
-                    ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
-                    GetJetData getJetData=new GetJetData(jetData,colorTone);
-                    ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
+                    ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
                     if(productionPlan==null)
                         continue;
-                    getJetData.setBatchId(productionPlan.getBatchId());
-                    jetDataList.add(getJetData);
+                    Party party = productionPlanService.getPartyDetailByProductionId(jetData.getProductionId());
+                    Quality quality = productionPlanService.getQualityByProductionId(jetData.getProductionId());
+                    QualityName qualityName = productionPlanService.getQualityNameByProductionId(jetData.getProductionId());
+                    //ProductionPlan productionPlan =productionPlanService.getProductionData(jetData.getProductionId());
+                    Double totalWt = stockBatchService.getWtByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+                    Double totalMtr = stockBatchService.getMtrByControlAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+                    GetJetData getJetData=null;
+                    if(productionPlan.getIsDirect()==false)
+                    {
+
+                        ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
+                        if(colorTone!=null) {
+                            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
+                            getJetData = new GetJetData(jetData, colorTone, party, quality, qualityName, totalMtr, totalWt, productionPlan,dyeingProcessMast);
+                            jetDataList.add(getJetData);
+                        }
+                    }
+                    else
+                    {
+                        getJetData=new GetJetData(jetData,party,quality,qualityName,totalMtr,totalWt,productionPlan);
+                        getJetData.setProcessName("directDyeing");
+                        jetDataList.add(getJetData);
+                    }
+
+
+
+                    /*//getJetData.setBatchId(productionPlan.getBatchId());
+                    if(getJetData.getPartyId()!=null)*/
+
                 }
 
             }
@@ -760,7 +807,16 @@ public class JetServiceImpl {
 
     }
 
-    public void updateProductionStatus(ChangeStatus jetDataToUpdate) throws Exception{
+    public void updateProductionStatus(ChangeStatus jetDataToUpdate, String id) throws Exception{
+
+        /*
+            * before change the status of batch to complete from the jet
+            * make sure the user had permission and belong to the batch
+            * then batch can be updated
+            *
+            ****** optional****
+         */
+
         Optional<JetData> jetDataExist= jetDataDao.findByControlIdAndProductionId(jetDataToUpdate.getControlId(),jetDataToUpdate.getProdcutionId());
 
         if(jetDataExist.isEmpty())
@@ -1064,6 +1120,23 @@ public class JetServiceImpl {
         //remover the jet record
         jetDataDao.deleteJetDataById(jetDataExist.getId());
 
+
+
+        ///remove the production record if the production record added by direct
+        if(productionPlan.getIsDirect()==true)
+        {
+            //change the status of batches as well
+
+            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+            batchDataList.forEach(e->{
+                e.setIsProductionPlanned(false);
+                batchDao.save(e);
+            });
+
+            productionPlanDao.deleteProductionById(productionPlan.getId());
+
+        }
+
     }
 
     public void updateJet(AddJet jetMast) throws Exception {
@@ -1105,5 +1178,17 @@ public class JetServiceImpl {
         else
             return false;
 
+    }
+
+    public void saveJetRecord(JetData jetData) {
+        jetDataDao.save(jetData);
+    }
+
+    public List<JetData> getAllProductionInTheQueue() {
+        return jetDataDao.getAllProductionInTheQueue();
+    }
+
+    public List<JetData> getAllProductionSuccessFromJet() {
+        return jetDataDao.getAllProductionSuccessFromJet();
     }
 }

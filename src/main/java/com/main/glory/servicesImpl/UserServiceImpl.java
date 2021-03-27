@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserServiceInterface {
             UserData x = userDao.saveAndFlush(userData);
 
             Long headId=Long.parseLong(headerId);
-            System.out.println(headId+":type:"+headId);
+            //System.out.println(headId+":type:"+headId);
             //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID
             if(x.getUserHeadId()==0)
             {
@@ -101,23 +101,16 @@ public class UserServiceImpl implements UserServiceInterface {
 
             if(user.getUserHeadId()==0)
             {
-                //data entry
-                if(x.getDataEntry()==true)
+                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = 0
+                if(userDataDto.getIsMaster()==false)
                 {
-                    userDao.updateUserHeadId(x.getId(),0l);
-                    return;
+                    userDao.updateUserHeadId(x.getId(), 0l);
+                }else {
+                    userDao.updateUserHeadId(x.getId(), x.getId());
                 }
-
-                //master
-              userDao.updateUserHeadId(x.getId(), x.getId());
-
             }
             //else
-            //remain the operator
-
-
-
-
+            //remain the operator or data entry operator
 
         } else {
             throw new Exception("User is already available with username:" + userData.getUserName());
@@ -320,7 +313,7 @@ public class UserServiceImpl implements UserServiceInterface {
             userData1.get().setDepartmentId(userData.getDepartmentId());
             userData1.get().setUserHeadId(userData.getUserHeadId());
             userData1.get().setUpdatedBy(userData.getUpdatedBy());
-            userData1.get().setDataEntry(userData.getDataEntry());
+            userData1.get().setIsMaster(userData.getIsMaster());
             userData1.get().setUserPermissionData(userData.getUserPermissionData());
 
             UserData x = userDao.save(userData1.get());

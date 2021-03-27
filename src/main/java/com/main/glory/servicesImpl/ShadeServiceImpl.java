@@ -5,6 +5,7 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -14,7 +15,9 @@ import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.ShadeServicesInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ import java.util.Optional;
 
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl {
+	QualityServiceImp qualityServiceImp;
 
 	@Autowired
 	QualityNameDao qualityNameDao;
@@ -97,7 +101,7 @@ public class ShadeServiceImpl {
 
 		//check that the shade add by data entry or what
 		UserData userData = userDao.getUserById(Long.parseLong(id));
-		if(userData.getDataEntry()==true) {
+		if(userData.getIsMaster()==false) {
 			//get the party record
 			Party party = partyDao.findByPartyId(shadeData.getPartyId());
 			shadeData.setUserHeadId(party.getUserHeadId());
@@ -324,9 +328,53 @@ public class ShadeServiceImpl {
 		return getAllShadesList;
 	}
 
-    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId) throws Exception{
+    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(Long qualityId, Long partyId, String id) throws Exception{
+
+		//get the user record first
+		Long userId = Long.parseLong(id);
+
+
+		UserData userData = userDao.getUserById(userId);
+		Long userHeadId=null;
+
+		UserPermission userPermission = userData.getUserPermissionData();
+		Permissions permissions = new Permissions(userPermission.getSh().intValue());
+
+
+
 		List<GetShadeByPartyAndQuality> list = new ArrayList<>();
-		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
+
+		//filter the record
+		if (permissions.getViewAll())
+		{
+			userId=null;
+			userHeadId=null;
+			shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+		}
+		else if (permissions.getViewGroup()) {
+			//check the user is master or not ?
+			//admin
+			if (userData.getUserHeadId() == 0) {
+				userId = null;
+				userHeadId = null;
+				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+			} else if (userData.getUserHeadId() > 0) {
+				//check weather master or operator
+				UserData userHead = userDao.getUserById(userData.getUserHeadId());
+				userId = userData.getId();
+				userHeadId = userHead.getId();
+				shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId,userId,userHeadId);
+
+			}
+		}
+		else if (permissions.getView()) {
+			userId = userData.getId();
+			userHeadId=null;
+			shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId,userId,userHeadId);
+		}
+
+
 
 
 		for(GetShadeByPartyAndQuality getShadeByPartyAndQuality : shadeByPartyAndQualities)
@@ -337,9 +385,9 @@ public class ShadeServiceImpl {
 
 			list.add(getShadeByPartyAndQuality);
 		}
-		if(list.isEmpty())
+		/*if(list.isEmpty())
 			throw new Exception("shade data not found");
-
+*/
 		return list;
 
     }
@@ -469,6 +517,47 @@ public class ShadeServiceImpl {
 
 	public List<ShadeMast> getAllShadeMastByProcessIdForDeleteProcess(Long id) {
 		List<ShadeMast> list = shadeMastDao.getAllShadeByProcessId(id);
+		return list;
+	}
+
+    public ShadeMast getShadeById(Long shadeId) {
+		return shadeMastDao.getShadeMastById(shadeId);
+    }
+
+	public List<GetShadeByPartyAndQuality> getShadeByPartyAndWithAndWithoutQuality(Long partyId, Long qualityId) throws Exception {
+
+
+		Party partyExist =partyDao.findByPartyId(partyId);
+		if (partyExist==null)
+			throw new Exception("no party record found");
+		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
+		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
+		if(qualityId==null)
+		{
+			List<Quality> qualityList = qualityDao.getQualityListByPartyIdId(partyId);
+			for(Quality quality:qualityList)
+			{
+				if(quality==null)
+					continue;
+				shadeByPartyAndQualities= shadeMastDao.findByQualityEntryIdAndPartyId(quality.getId(),partyId);
+				if(shadeByPartyAndQualities.isEmpty())
+					continue;
+				list.addAll(shadeByPartyAndQualities);
+			}
+
+
+		}
+		else
+		{
+			Optional<Quality> qualityExistWithParty = qualityDao.getQualityByEntryIdAndPartyId(qualityId,partyId);
+			if(qualityExistWithParty.isEmpty())
+				throw new Exception("quality not found");
+			list= shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
+
+		}
+
+
+
 		return list;
 	}
 }

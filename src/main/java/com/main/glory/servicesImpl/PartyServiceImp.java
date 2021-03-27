@@ -14,14 +14,12 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.PartyWithMasterName;
-import com.main.glory.model.party.request.AddParty;
-import com.main.glory.model.party.request.PartyWithName;
-import com.main.glory.model.party.request.PartyWithPartyCode;
-import com.main.glory.model.party.request.PartyWithUserHeadName;
+import com.main.glory.model.party.request.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -383,23 +381,13 @@ public class PartyServiceImp implements PartyServiceInterface {
                 }
                 else if(userData.getUserHeadId() > 0)
                 {
-                    //check weather master or operator
+                    //for master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
-
-                    if(userHead.getUserHeadId()==0)
-                    {
-                        //for master
                         userId=userData.getId();
-                        userHeadId=userData.getId();
+                        userHeadId=userHead.getId();
                         partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
 
-                    }
-                    else {
-                        //for operator
-                        userId=userData.getId();
-                        userHeadId=userData.getUserHeadId();
-                        partyAll = partyDao.getAllPartyByCreatedAndHead(userId,userHeadId);
-                    }
+
                 }
 
             }
@@ -458,5 +446,60 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         }
 
+    }
+
+    public PartyReport getPartyReportById(Long id, Long qualityId) throws Exception {
+        Party party = partyDao.findByPartyId(id);
+        if(party==null)
+            throw new Exception("no party found");
+
+
+        PartyReport partyReport =new PartyReport(party);
+
+        List<BatchDetail> batchDetailList=new ArrayList<>();
+
+        //if quality id is not coming then get all quality for the given party
+        if(qualityId==null)
+        {
+
+            List<Quality> qualityList = qualityServiceImp.getqualityListByPartyId(party.getId());
+            for(Quality quality : qualityList)
+            {
+                List<BatchDetail> list = stockBatchService.getBatchDetailForReport(party.getId(),quality.getId());
+                if(list.isEmpty())
+                    continue;
+                for(BatchDetail batchDetail:list)
+                {
+                    batchDetailList.add(batchDetail);
+                }
+
+
+            }
+            if(batchDetailList.isEmpty())
+                throw new Exception("no batch found");
+
+            partyReport.setBatchDetailList(batchDetailList);
+        }
+        else
+        {
+            //specific quality record
+
+            Quality qualityExist = qualityServiceImp.getQualityByEntryId(qualityId);
+            if(qualityExist==null)
+                throw new Exception("no quality found");
+
+            List<BatchDetail> list = stockBatchService.getBatchDetailForReport(party.getId(),qualityId);
+            if(list.isEmpty())
+                throw new Exception("no record found");
+            for(BatchDetail batchDetail:list)
+            {
+                batchDetailList.add(batchDetail);
+            }
+            partyReport.setBatchDetailList(batchDetailList);
+
+        }
+
+
+        return partyReport;
     }
 }

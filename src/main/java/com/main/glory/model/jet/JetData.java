@@ -44,4 +44,11 @@ public class JetData {
         this.productionId=to.getProductionId();
         this.status=JetStatus.inQueue;
     }
+
+    public JetData(ProductionPlan x, long l, JetMast jetMast) {
+        this.controlId = jetMast.getId();
+        this.sequence=l;
+        this.productionId = x.getId();
+        this.status=JetStatus.inQueue;
+    }
 }

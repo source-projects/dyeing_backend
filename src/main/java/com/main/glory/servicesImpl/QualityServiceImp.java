@@ -76,7 +76,7 @@ public class QualityServiceImp  {
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
         System.out.println(":"+user.getId());
-        if(user.getDataEntry()==true)
+        if(user.getIsMaster()==false)
         {
             Party party = partyDao.findByPartyId(qualityDto.getPartyId());
             quality.setUserHeadId(party.getUserHeadId());
@@ -275,8 +275,8 @@ public class QualityServiceImp  {
 
         Optional<List<Quality>> qualityList = qualityDao.findByPartyId(partyId);
 
-        Optional<Party> partName = partyDao.findById(partyId);
-        if (!partName.isPresent())
+        Party partName = partyDao.findByPartyId(partyId);
+        if (partName==null)
             throw new Exception("No such Party id available with id:" + partyId);
         if (!qualityList.isPresent()) {
             throw new Exception("Add Quality data for partyId:" + partyId);
@@ -293,7 +293,7 @@ public class QualityServiceImp  {
             if(qualityName.isEmpty())
                 continue;
 
-            qualityDataList.add(new QualityData(quality,qualityName.get()));
+            qualityDataList.add(new QualityData(quality,qualityName.get(),partName));
 
 
         }
@@ -301,7 +301,7 @@ public class QualityServiceImp  {
         partyQualityData.setPartyId(partyId);
 
 
-        partyQualityData.setPartyName(partName.get().getPartyName());
+        partyQualityData.setPartyName(partName.getPartyName());
 
 
         if (partyQualityData == null)
@@ -405,33 +405,18 @@ public class QualityServiceImp  {
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
             //admin
-            if(userData.getUserHeadId() == 0)
-            {
-                userId=null;
-                userHeadId=null;
-                qualities=qualityDao.getAllQuality();
-            }
-            else if(userData.getUserHeadId() > 0)
-            {
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                qualities = qualityDao.getAllQuality();
+            } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId, userHeadId);
 
-                if(userHead.getUserHeadId()==0)
-                {
-                    //for master
-                    userId=userData.getId();
-                    userHeadId=userData.getId();
-                    qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
-
-                }
-                else {
-                    //for operator
-                    userId=userData.getId();
-                    userHeadId=userData.getUserHeadId();
-                    qualities = qualityDao.getAllQualityWithIdAndUserHeadId(userId,userHeadId);
-                }
             }
-
         }
         else if (permissions.getView()) {
             userId = userData.getId();
@@ -501,5 +486,9 @@ public class QualityServiceImp  {
 
     public Quality getQualityByEntryId(Long qualityId) {
         return qualityDao.getqualityById(qualityId);
+    }
+
+    public Optional<Quality> getQualityEntryByIDAndPartyId(Long qualityId, Long partyId) {
+        return qualityDao.findByPartyIdAndQualityId(qualityId,partyId);
     }
 }

@@ -1,8 +1,11 @@
 package com.main.glory.Dao.productionPlan;
 
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +17,7 @@ import java.util.Optional;
 public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
-            "(select c.colorTone from ShadeMast c where c.id=p.shadeId) AS colorTone," +
+            "(select c.colorTone from ShadeMast c where c.id=p.shadeId AND p.shadeId IS NOT NULL) AS colorTone," +
             "(select c.qualityName from Quality c where c.id=p.qualityEntryId)AS qualityName," +
             "(select c.qualityId from Quality c where c.id=p.qualityEntryId)AS qualityId," +
             "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
@@ -24,6 +27,18 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
             "(select z.partyName from Party z where z.id=p.partyId) as partyName" +
             ") from ProductionPlan p where p.status=false")
     Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone();
+
+    @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
+            "(select c.colorTone from ShadeMast c where c.id=p.shadeId AND p.shadeId IS NOT NULL) AS colorTone," +
+            "(select c.qualityName from Quality c where c.id=p.qualityEntryId)AS qualityName," +
+            "(select c.qualityId from Quality c where c.id=p.qualityEntryId)AS qualityId," +
+            "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
+            "(select s.partyShadeNo from ShadeMast s where s.id=p.shadeId) AS partyShadeNo ," +
+            "(select SUM(b.wt) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId) AS WT," +
+            "(select SUM(b.mtr) from BatchData b where b.controlId=p.stockId AND b.batchId=p.batchId)AS MTR," +
+            "(select z.partyName from Party z where z.id=p.partyId) as partyName" +
+            ") from ProductionPlan p where p.status=false AND p.stockId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId)")
+    Optional<List<GetAllProductionWithShadeData>> getAllProductionWithColorTone(Long userId,Long userHeadId);
 
     @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p,(select c.colorTone from ShadeMast c where c.id=p.shadeId )) from ProductionPlan p ")
     Optional<List<GetAllProductionWithShadeData>> getAllProduction();
@@ -65,6 +80,15 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
     @Transactional
     @Query("delete from ProductionPlan p where p.id=:id")
     void deleteProductionById(Long id);
+
+    @Query("select p from Party p where p.id=(select pp.partyId from ProductionPlan pp where pp.id=:productionId)")
+    Party getPartyByProductionId(Long productionId);
+
+    @Query("select x from Quality x where x.id = (select p.qualityEntryId from ProductionPlan p where p.id=:productionId)")
+    Quality getQualityByProductionId(Long productionId);
+
+    @Query("select z from QualityName z where z.id = (select x.qualityNameId from Quality x where x.id = (select p.qualityEntryId from ProductionPlan p where p.id=:productionId))")
+    QualityName getQualityNameByProductionId(Long productionId);
 
    /* @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
             "(select c.colorTone from ShadeMast c where c.id=p.shadeId) AS colorTone," +

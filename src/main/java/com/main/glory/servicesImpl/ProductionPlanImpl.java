@@ -6,16 +6,31 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
+import com.main.glory.model.dyeingProcess.DyeingChemicalData;
+import com.main.glory.model.dyeingProcess.DyeingProcessData;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.jet.JetData;
+import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJetData;
+import com.main.glory.model.jet.responce.GetJetData;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
 import com.main.glory.model.productionPlan.request.GetAllProduction;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +43,13 @@ import java.util.Optional;
 public class ProductionPlanImpl {
 
     @Autowired
+    SupplierServiceImpl supplierService;
+
+    @Autowired
     DyeingProcessServiceImpl dyeingProcessService;
+
+    @Autowired
+    DyeingSlipServiceImpl dyeingSlipService;
     @Autowired
     ProductionPlanDao productionPlanDao;
     @Autowired
@@ -120,10 +141,53 @@ public class ProductionPlanImpl {
 
     }
 
-    public List<GetAllProductionWithShadeData> getAllProductionData() throws Exception{
+    public List<GetAllProductionWithShadeData> getAllProductionData(String id) throws Exception{
 
-        List<GetAllProductionWithShadeData> record=new ArrayList<>();
-        Optional<List<GetAllProductionWithShadeData>> list =productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+        //get the user record first
+        Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+        Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());
+
+
+        Optional<List<GetAllProductionWithShadeData>> list =null;
+        //filter the record
+        if (permissions.getViewAll())
+        {
+            userId=null;
+            userHeadId=null;
+            list =  productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+        }
+        else if (permissions.getViewGroup()) {
+            //check the user is master or not ?
+            //admin
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                list =  productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+            } else if (userData.getUserHeadId() > 0) {
+                //check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                list =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
+
+            }
+        }
+        else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId=null;
+            list  =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
+        }
+
+
+
+
+
         if(list.isEmpty())
               throw new Exception("no data found");
 
@@ -133,7 +197,7 @@ public class ProductionPlanImpl {
 
     }
 
-    public void updateProductionPlan(ProductionPlan productionPlan) throws Exception{
+    public void updateProductionPlan(ProductionPlan productionPlan, String id) throws Exception{
 
         Optional<ProductionPlan> productionPlanExist = productionPlanDao.findById(productionPlan.getId());
         if(productionPlanExist.isEmpty())
@@ -169,16 +233,23 @@ public class ProductionPlanImpl {
     public GetBatchDetailByProduction getBatchDetailByProductionAndBatchId(Long productionId, String batchId) throws Exception {
 
         ProductionPlan productionExist = productionPlanDao.getProductionByBatchAndProduction(batchId,productionId);
-
+        GetBatchDetailByProduction data;
         if(productionExist==null)
             throw new Exception("no data found");
 
         StockMast stockMast=stockBatchService.getStockByStockId(productionExist.getStockId());
-        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId());
         Double totalWt = batchDao.getAllBatchQtyByBatchIdAndStockId(productionExist.getBatchId(),productionExist.getStockId());
         Party party=partyServiceImp.getPartyDetailById(stockMast.getPartyId());
+        if(productionExist.getShadeId()==null)
+        {
+            data=new GetBatchDetailByProduction(party,totalWt,stockMast,batchId);
+        }
+        else
+        {
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId());
+            data=new GetBatchDetailByProduction(party,totalWt,shadeMast,stockMast,batchId);
+        }
 
-        GetBatchDetailByProduction data =new GetBatchDetailByProduction(party,totalWt,shadeMast.get(),stockMast,batchId);
 
         return data;
 
@@ -328,6 +399,136 @@ public class ProductionPlanImpl {
 
 
 
+    }
+
+    @Transactional
+    public Long saveDirectDyeingSlip(AddDirectBatchToJet record) throws Exception {
+        //store direct dyeing slip with jet and with shade or else shade colour
+
+        /*
+
+        1.check the record exist or not
+        2.create the production
+        3.add the record to the jet
+        4.create the dyeing slip for the batch
+        5.change the batch status
+
+         */
+
+        Double totalBatchCapacity = 0.0;
+
+        Long jetSequence=0l;
+
+        Double totalBatchWt = stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
+        //process type ::directDyeing
+
+        ProductionPlan productionPlan =new ProductionPlan(record);
+
+        /*if(productionPlan.getShadeId()==null && productionPlan.getColorName().isEmpty())
+            throw new Exception("please enter shade or color name");*/
+
+
+
+        //check the production is exist with batch and stock or not
+
+        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(record.getBatchId(),record.getStockId());
+        if(productionPlanExist!=null)
+            throw new Exception("batch and stock is already exist");
+
+
+
+        //jet capacity check and store the jet record
+        JetMast jetMast = jetService.getJetMastById(record.getJetId());
+        List<GetJetData> jetDataList = jetService.getJetRecordData(record.getJetId());
+
+
+        for(GetJetData getJetData : jetDataList)
+        {
+           ProductionPlan jetWithProduction = productionPlanDao.getByProductionId(getJetData.getProductionId());
+           totalBatchCapacity+=stockBatchService.getWtByControlAndBatchId(jetWithProduction.getStockId(),jetWithProduction.getBatchId());
+
+           if(jetSequence < getJetData.getSequence())
+           {
+               jetSequence=getJetData.getSequence();
+           }
+        }
+
+        if(totalBatchCapacity+totalBatchWt>jetMast.getCapacity())
+           throw new Exception("Batch WT is greater than Jet capacity please reduce or remove the Batch");
+
+        ProductionPlan x = productionPlanDao.save(productionPlan);
+
+        JetData jetData = new JetData(x,jetSequence+1,jetMast);
+        jetService.saveJetRecord(jetData);
+
+
+
+
+
+        //create the dyeing slip for the given dyeing record only
+
+        DyeingSlipMast dyeingSlipMast = new DyeingSlipMast(record,x);
+        List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
+        //dyeing slip record
+        dyeingSlipDataList.add(new DyeingSlipData(record.getDyeingSlipData()));
+
+        dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
+        dyeingSlipService.addDirectDyeingSlip(dyeingSlipMast);
+
+        //List<DyeingSlipItemData> dyeingSlipItemDataList  =new ArrayList<>();
+
+        //if shade id is not null then get the shade item as well
+        /*if(record.getShadeId()!=null) {
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(record.getShadeId());
+            for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
+                Optional<Supplier> supplier = supplierService.getSupplier(shadeData.getSupplierId());
+                SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
+                dyeingSlipItemDataList.add(new DyeingSlipItemData(shadeData, supplierRate, supplier.get(), totalBatchWt));
+            }
+        }*/
+
+
+
+        /*dyeingSlipItemDataList.addAll(dyeingSlipData.getDyeingSlipItemData());
+        dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);*/
+
+
+
+
+        //change the batch status
+
+        //update the status of  batches as well
+        List<BatchData> batchDataList = batchService.getBatchById(x.getBatchId(),x.getStockId());
+
+        //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
+
+        for(BatchData batchData:batchDataList)
+        {
+            if(batchData.getIsProductionPlanned()==false)
+                batchData.setIsProductionPlanned(true);
+            batchDao.save(batchData);
+        }
+
+        return x.getId();
+
+
+
+    }
+
+    public ProductionPlan getProductionDataById(Long productionId) {
+        return productionPlanDao.getByProductionId(productionId);
+    }
+
+    public Party getPartyDetailByProductionId(Long productionId) {
+        return productionPlanDao.getPartyByProductionId(productionId);
+    }
+
+    public Quality getQualityByProductionId(Long productionId) {
+        return productionPlanDao.getQualityByProductionId(productionId);
+    }
+
+    public QualityName getQualityNameByProductionId(Long productionId) {
+        return productionPlanDao.getQualityNameByProductionId(productionId);
     }
 
 /*

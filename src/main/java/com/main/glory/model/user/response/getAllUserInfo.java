@@ -26,7 +26,7 @@ public class getAllUserInfo {
     String company;
     String designation;
     Long createdBy;
-    Boolean dataEntry;
+    Boolean isMaster;
 
 
 
@@ -42,6 +42,6 @@ public class getAllUserInfo {
         this.createdBy=e.getCreatedBy();
         this.departmentId=department.getId();
         this.department=department.getName();
-        this.dataEntry=e.getDataEntry();
+        this.isMaster=e.getIsMaster();
     }
 }

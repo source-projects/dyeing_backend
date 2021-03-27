@@ -1,6 +1,8 @@
 package com.main.glory.model.dyeingSlip;
 
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
+import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,7 +52,7 @@ public class DyeingSlipMast {
         this.batchId=dyeingSlipMastExist.batchId;
     }
 
-    public DyeingSlipMast(AddAdditionDyeingSlipModel addAdditionDyeingSlipModel) {
+    /*public DyeingSlipMast(AddAdditionDyeingSlipModel addAdditionDyeingSlipModel) {
 
         this.createdBy = addAdditionDyeingSlipModel.getCreatedBy();
         this.updatedBy = addAdditionDyeingSlipModel.getUpdatedBy();
@@ -58,6 +60,17 @@ public class DyeingSlipMast {
 
         this.productionId = addAdditionDyeingSlipModel.getProductionId();
         this.batchId = addAdditionDyeingSlipModel.getBatchId();
+    }*/
+
+    public DyeingSlipMast(AddDirectBatchToJet record, ProductionPlan x) {
+        this.createdBy = record.getCreatedBy();
+        this.updatedBy = record.getUpdatedBy();
+        //this.userHeadId = record.getUserHeadId();
+
+        this.jetId = record.getJetId();
+        this.productionId = x.getId();
+        this.batchId = x.getBatchId();
+        this.stockId = x.getStockId();
     }
 
 

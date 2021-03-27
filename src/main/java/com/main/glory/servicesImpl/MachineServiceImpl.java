@@ -83,12 +83,30 @@ public class MachineServiceImpl {
 
         }
 
+        //get the last record of that machine
+        /*
         MachineRecord machineRecord =  new MachineRecord();
         machineRecord.setControlId(machineMast.get().getId());
         machineRecord.setSpeed(speed);
         machineRecord.setControlId(machineMast.get().getId());
 
+*/
+
+        MachineRecord machineRecordExist = machineRecordDao.getLastMachineRecordByControlId(machineMast.get().getId());
+
+        MachineRecord machineRecord;
+        if(machineRecordExist!=null)
+        {
+            machineRecord = new MachineRecord(machineMast.get(),machineRecordExist,speed);
+
+        }
+        else {
+            machineRecord =new MachineRecord(machineMast.get(),speed);
+        }
         machineRecordDao.save(machineRecord);
+
+
+
 
 
     }
@@ -152,21 +170,22 @@ public class MachineServiceImpl {
         machine.setId(machineMast.get().getId());
         machine.setMachineName(machineMast.get().getMachineName());
 
+        MachineRecord machineRecord = machineRecordDao.getLastMachineRecordByControlId(machineMast.get().getId());
+
         List<GetAllMachineRecord> getAllMachineRecordList = new ArrayList<>();
-        for(MachineRecord machineRecord : machineMast.get().getMachineRecords())
-        {
+
+        if(machineRecord==null)
+            throw new Exception("no record found");
             GetAllMachineRecord getAllMachineRecord=new GetAllMachineRecord();
             getAllMachineRecord.setId(machineRecord.getId());
             getAllMachineRecord.setControlId(machineRecord.getControlId());
             getAllMachineRecord.setSpeed(machineRecord.getSpeed());
             getAllMachineRecord.setUpdatedDate(machineRecord.getUpdatedDate());
             getAllMachineRecord.setCreatedDate(machineRecord.getCreatedDate());
-
-            Double mtr = machineRecord.getSpeed()/6;
-            getAllMachineRecord.setMtr(mtr);
+            getAllMachineRecord.setMtr(machineRecord.getTotalMtr());
             getAllMachineRecordList.add(getAllMachineRecord);
 
-        }
+
 
 
         machine.setGetAllMachineRecords(getAllMachineRecordList);

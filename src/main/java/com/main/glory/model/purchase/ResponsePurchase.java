@@ -1,4 +1,4 @@
-package com.main.glory.model.purchaseOrder;
+package com.main.glory.model.purchase;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

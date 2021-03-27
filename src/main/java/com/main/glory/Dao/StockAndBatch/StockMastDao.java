@@ -26,6 +26,10 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  @Query("select s from StockMast s where s.partyId=:partyId AND s.qualityId=:qualityId")
  List<StockMast> findByQualityIdAndPartyId(Long qualityId,Long partyId);
 
+ @Query("select s from StockMast s where s.partyId=:partyId AND s.qualityId=:qualityId AND (s.createdBy=:userId OR s.userHeadId=:userHeadId)")
+ List<StockMast> findByQualityIdAndPartyId(Long qualityId,Long partyId,Long userId,Long userHeadId);
+
+
  @Query("select sm from StockMast sm where userHeadId =:userHeadId OR createdBy =:userHeadId")
  List<StockMast> findByUserHeadId(Long userHeadId);
 
@@ -60,6 +64,10 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  @Query("select s from StockMast s where s.partyId=:id")
  List<StockMast> getAllStockByPartyId(Long id);
 
-    @Query("select s from StockMast s where s.qualityId=:id")
-    List<StockMast> getAllStockByQualityId(Long id);
+ @Query("select s from StockMast s where s.qualityId=:id")
+ List<StockMast> getAllStockByQualityId(Long id);
+
+
+ @Query("select sm from StockMast sm where sm.partyId=:partyId AND sm.qualityId=:qualityId")
+ List<StockMast> getAllStockByPartyIdAndQualityId(Long partyId, Long qualityId);
 }

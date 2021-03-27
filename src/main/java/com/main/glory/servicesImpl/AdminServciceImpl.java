@@ -1,15 +1,11 @@
 package com.main.glory.servicesImpl;
 
-import com.main.glory.Dao.admin.ApproveByDao;
-import com.main.glory.Dao.admin.CompanyDao;
-import com.main.glory.Dao.admin.DepartmentDao;
-import com.main.glory.Dao.admin.InvoiceSequenceDao;
+import com.main.glory.Dao.admin.*;
 import com.main.glory.Dao.quality.QualityNameDao;
-import com.main.glory.model.admin.ApprovedBy;
-import com.main.glory.model.admin.Company;
-import com.main.glory.model.admin.Department;
-import com.main.glory.model.admin.InvoiceSequence;
+import com.main.glory.model.admin.*;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.purchase.Purchase;
+import com.main.glory.model.purchase.response.PurchaseResponse;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.user.UserData;
@@ -21,6 +17,14 @@ import java.util.Optional;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
+    @Autowired
+    PurchaseImpl purchaseService;
+
+    @Autowired
+    ReceiverByDao receiverByDao;
+    @Autowired
+    BatchSequneceDao batchSequneceDao;
 
     @Autowired
     InvoiceSequenceDao invoiceSequenceDao;
@@ -302,5 +306,92 @@ public class AdminServciceImpl {
 
     public InvoiceSequence getInvoiceSequenceById(Long id) {
         return invoiceSequenceDao.getSequenceById(id);
+    }
+
+    public void addBatchSequence(BatchSequence record) throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+
+        if(batchSequence!=null)
+            throw new Exception("batch sequence found");
+
+        batchSequneceDao.save(record);
+
+    }
+
+    public BatchSequence getBatchSequence() throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+
+        batchSequence.setSequence(batchSequence.getSequence()+1);
+        BatchSequence x= batchSequneceDao.saveAndFlush(batchSequence);
+        if(batchSequence==null)
+            throw new Exception("no batch sequence found");
+        return x;
+
+    }
+
+    public BatchSequence getBatchSequenceById(Long id) throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequenceById(id);
+        if(batchSequence==null) {
+            throw new Exception("no batch sequence found");
+        }
+        return batchSequence;
+    }
+
+    public BatchSequence updateBatchSequence(BatchSequence record) throws Exception {
+        BatchSequence batchSequence = batchSequneceDao.getBatchSequenceById(record.getId());
+        if(batchSequence==null) {
+            throw new Exception("no batch sequence found");
+        }
+
+
+        //check is exiting batchsequence is < coming batch seqeunce
+
+        if(record.getSequence() < batchSequence.getSequence())
+            throw new Exception("please enter greater sequence");
+
+
+        BatchSequence batch = new BatchSequence(batchSequence,record);
+        batchSequneceDao.saveAndFlush(batch);
+        return batchSequneceDao.getBatchSequence();
+    }
+
+    public void addReceiver(ReceiverBy record) throws Exception {
+        ReceiverBy receiverExist = receiverByDao.getReceiverByNameExceptId(record.getName(),0l);
+
+        if(receiverExist!=null)
+            throw new Exception("receiver is already exist with name");
+
+        receiverByDao.save(record);
+    }
+
+    public void updateReceiver(ReceiverBy record) throws Exception {
+
+        ReceiverBy receiverByExistWithName = receiverByDao.getReceiverByNameExceptId(record.getName(),record.getId());
+        if(receiverByExistWithName!=null)
+            throw new Exception("receiver exist with name");
+
+        receiverByDao.save(record);
+
+    }
+
+    public List<ReceiverBy> getAllReceiver() {
+        return receiverByDao.getAllReceiver();
+    }
+
+    public ReceiverBy getReceiverById(Long id) {
+        return receiverByDao.getReceiverById(id);
+    }
+
+    public void deleteReceiverById(Long id) throws Exception {
+        ReceiverBy receiverByExist = receiverByDao.getReceiverById(id);
+        if(receiverByExist==null)
+            throw new Exception("no record found");
+
+        List<Purchase> list = purchaseService.getPurchaseByReceiverId(id);
+
+        if(!list.isEmpty())
+            throw new Exception("remove the purchase record first");
+
+        receiverByDao.deleteByReceiverId(id);
     }
 }

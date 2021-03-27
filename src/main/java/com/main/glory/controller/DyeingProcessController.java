@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -57,12 +58,16 @@ public class DyeingProcessController extends ControllerConfig{
     }
 
     @GetMapping("/dyeingProcess/all")
-    public ResponseEntity<GeneralResponse<List<GetAllDyeingProcessList>>> getAllDyeingProcess(){
+    public ResponseEntity<GeneralResponse<List<GetAllDyeingProcessList>>> getAllDyeingProcess(@RequestHeader Map<String, String> headers){
         GeneralResponse<List<GetAllDyeingProcessList>> result=null;
         try{
-            List<GetAllDyeingProcessList> list = dyeingProcessService.getAllDyeingProcess();
+            List<GetAllDyeingProcessList> list = dyeingProcessService.getAllDyeingProcess(headers.get("id"));
             if(!list.isEmpty()){
                 result = new GeneralResponse<>(list, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                result = new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,13 +27,20 @@ public class GetBatchDetailByProduction {
 
 
 
-    public GetBatchDetailByProduction(Party party, Double totalWt, ShadeMast shadeMast, StockMast stockMast, String batchId) {
+    public GetBatchDetailByProduction(Party party, Double totalWt, Optional<ShadeMast> shadeMast, StockMast stockMast, String batchId) {
         this.partyName=party.getPartyName();
-        this.partyShadeNo=shadeMast.getPartyShadeNo();
-        this.colorName=shadeMast.getColorName();
+        this.partyShadeNo=(shadeMast.isPresent())?shadeMast.get().getPartyShadeNo():null;
+        this.colorName=shadeMast.isPresent()?shadeMast.get().getColorName():null;
         this.batchId=batchId;
         this.stockId=stockMast.getId();
-        this.colorTone=shadeMast.getColorTone();
+        this.colorTone=shadeMast.isPresent()?shadeMast.get().getColorTone():null;
+        this.totalWt=totalWt;
+    }
+
+    public GetBatchDetailByProduction(Party party, Double totalWt, StockMast stockMast, String batchId) {
+        this.partyName=party.getPartyName();
+        this.batchId=batchId;
+        this.stockId=stockMast.getId();
         this.totalWt=totalWt;
     }
 }

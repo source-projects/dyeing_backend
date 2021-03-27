@@ -103,17 +103,19 @@ public class PaymentTermImpl {
 
             Double amt=0.0;
 
-            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPrefix()+dispatchMast.getPostfix());
+            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPostfix().toString());
             if(data==null)
                 continue;
             for(QualityBillByInvoiceNumber p:data.getQualityList())
             {
                 amt+=p.getAmt();
+
+
             }
             GetPendingDispatch getPendingDispatch=new GetPendingDispatch();
             getPendingDispatch.setAmt(amt);
             getPendingDispatch.setDate(dispatchMast.getCreatedDate().toString());
-            getPendingDispatch.setInvoicNo(dispatchMast.getPrefix()+dispatchMast.getPostfix());
+            getPendingDispatch.setInvoicNo(dispatchMast.getPostfix().toString());
             list.add(getPendingDispatch);
 
         }

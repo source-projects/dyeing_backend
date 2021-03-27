@@ -5,14 +5,10 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
-import com.main.glory.model.StockDataBatchData.request.MergeSplitBatch;
-import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
+import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
-import com.sun.source.tree.LabeledStatementTree;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,17 +47,16 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PostMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> createBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) throws Exception {
-        GeneralResponse<Boolean> result;
+    public ResponseEntity<GeneralResponse<Long>> createBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) throws Exception {
+        GeneralResponse<Long> result = null;
         try {
-            Boolean flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
-            if (flag == true)
-                result = new GeneralResponse<>(true, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            else
-                result= new GeneralResponse<>(false, "Stock batch not created because quality in not availble", false, System.currentTimeMillis(), HttpStatus.OK);
+            Long flag = stockBatchService.saveStockBatch(stockMast,headers.get("id"));
+            if (flag != null)
+                result = new GeneralResponse<>(flag, "Stock batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -79,6 +74,8 @@ public class StockBatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+
 
     @GetMapping("/stockBatch/batch/ByQualityAndParty/{qualityId}/{partyId}")
     public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchById(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
@@ -201,12 +198,12 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/ByQualityAndPartyWithoutProductionPlan/{qualityId}/{partyId}")
-    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> ByQualityAndPartyWithoutProducctionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId) {
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> ByQualityAndPartyWithoutProductionPlan(@PathVariable(value = "qualityId") Long qualityId, @PathVariable(value = "partyId") Long partyId,@RequestHeader Map<String, String> headers) {
 
         GeneralResponse<List<GetAllBatch>> result;
         try {
             if (qualityId != null && partyId != null) {
-                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId);
+                List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId,headers.get("id"));
 
                 result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -261,11 +258,11 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/all")
-    public ResponseEntity<GeneralResponse<List<BatchToPartyAndQuality>>> getAllBatch() {
+    public ResponseEntity<GeneralResponse<List<BatchToPartyAndQuality>>> getAllBatch(@RequestHeader Map<String, String> headers) {
         GeneralResponse<List<BatchToPartyAndQuality>> result;
         try {
 
-            List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail();
+            List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail(headers.get("id"));
 
             result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -363,14 +360,14 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Boolean>> updateStockBatch(@RequestBody AddStockBatch stockMast) {
-        GeneralResponse<Boolean> result;
+    public ResponseEntity<GeneralResponse<Long>> updateStockBatch(@RequestBody AddStockBatch stockMast,@RequestHeader Map<String, String> headers) {
+        GeneralResponse<Long> result;
         try {
-            stockBatchService.updateBatch(stockMast);
-            result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            stockBatchService.updateBatch(stockMast,headers.get("id"));
+            result = new GeneralResponse<>(stockMast.getId(), "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -448,11 +445,11 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/getAllBatchForFinishMtr")
-    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>>> getAllBatchWithoutBillGenerated() {
+    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>>> getAllBatchWithoutBillGenerated(@RequestHeader Map<String, String> headers) {
         GeneralResponse<List<GetAllBatchWithProduction>> response;
 
         try {
-            List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated();
+            List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated(headers.get("id"));
 
             if (!flag.isEmpty())
                 response= new GeneralResponse<>(flag, "Batch fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -468,4 +465,129 @@ public class StockBatchController extends ControllerConfig {
     }
 
 
+
+
+    //gt the job card detail by batch and stock Id
+    @GetMapping("/stockBatch/get/getJobCardBy")
+    public ResponseEntity<GeneralResponse<JobCard>> getJobCardByStockIdAndBatchId(@RequestParam(name = "batchId")String batchId, @RequestParam(name = "stockId")Long stockId) throws Exception {
+        GeneralResponse<JobCard> result;
+        try {
+            if(batchId.isEmpty() || stockId==null)
+                throw new Exception("null id passed");
+
+            JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(stockId,batchId);
+
+            result= new GeneralResponse<>(qty, "Job card fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+    //get all batch for additional slip
+    @GetMapping("/stockBatch/batch/forAdditionalSlip")
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForAdditionalSlip(@RequestHeader Map<String, String> headers) {
+        GeneralResponse<List<GetAllBatch>> result;
+        try {
+
+                List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip(headers.get("id"));
+
+                result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+    }
+
+
+    //get all batch for additional slip
+    @GetMapping("/stockBatch/batch/forRedyeingSlip")
+    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> getBatchForReDyeingByPartyAndQualityId(@RequestHeader Map<String, String> headers) {
+        GeneralResponse<List<GetAllBatch>> result;
+        try {
+
+            List<GetAllBatch> batchData = stockBatchService.getAllBatchForRedyeingSlip(headers.get("id"));
+
+            result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+    }
+
+
+    //create the merge batch list
+    @PostMapping("/stockBatch/create/mergeBatchList")
+    public ResponseEntity<GeneralResponse<Boolean>> createMergeBatchListBatch(@RequestBody CreateMergeBatch record, @RequestHeader Map<String, String> headers) throws Exception {
+        GeneralResponse<Boolean> result = null;
+        try {
+               stockBatchService.createMergeBatchList(record);
+                result = new GeneralResponse<>(true, "Merge batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping("/stockBatch/update/mergeBatchList")
+    public ResponseEntity<GeneralResponse<Boolean>> updateMergeBatchListBatch(@RequestBody CreateMergeBatch record, @RequestHeader Map<String, String> headers) throws Exception {
+        GeneralResponse<Boolean> result = null;
+        try {
+            stockBatchService.updateMergeBatchList(record);
+            result = new GeneralResponse<>(true, "Merge batch updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @GetMapping("/stockBatch/get/mergeBatchList")
+    public ResponseEntity<GeneralResponse<List<MergeBatchId>>> getAllMergeBatchId() throws Exception {
+        GeneralResponse<List<MergeBatchId>> result = null;
+        try {
+            List<MergeBatchId> list = stockBatchService.getAllMergeBatchId();
+
+            if(!list.isEmpty())
+            result = new GeneralResponse<>(list, "Merge batch fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @GetMapping("/stockBatch/get/mergeBatchListBy")
+    public ResponseEntity<GeneralResponse<CreateMergeBatch>> getMergeBatchByMergeBatchId(@RequestParam(name = "mergeBatchId")String mergeBatchId) throws Exception {
+        GeneralResponse<CreateMergeBatch> result = null;
+        try {
+            CreateMergeBatch list = stockBatchService.getMergeBatchByMergeBatchId(mergeBatchId);
+
+            if(list!=null)
+                result = new GeneralResponse<>(list, "Merge batch fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            else
+                result = new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 }
