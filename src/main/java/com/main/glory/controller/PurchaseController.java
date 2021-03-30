@@ -52,6 +52,7 @@ public class PurchaseController extends ControllerConfig {
             result= new GeneralResponse<>(true, "Purchase record added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -71,6 +72,7 @@ public class PurchaseController extends ControllerConfig {
             result= new GeneralResponse<>(list, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -93,6 +95,7 @@ public class PurchaseController extends ControllerConfig {
                 result= new GeneralResponse<>(list, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -110,6 +113,7 @@ public class PurchaseController extends ControllerConfig {
             result= new GeneralResponse<>(true, "record updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         } catch (Exception e) {
+            e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
