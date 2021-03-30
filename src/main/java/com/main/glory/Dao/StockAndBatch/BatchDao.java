@@ -44,8 +44,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
 
     //get the data for batch without extra batches
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IS NOT NULL GROUP BY p.batchId,p.controlId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IS NOT NULL AND p.mergeBatchId IS NULL GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchId();
+
+    //get the data for batch without extra batches
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId, p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND p.controlId IS NOT NULL GROUP BY p.mergeBatchId")
+    List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchIdAndMergeBatchId();
 
 
     //fetch the list of extra batch based on bill not generated
@@ -194,7 +198,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     boolean isFinishMtrSave(String batchId, Long stockId);
 
     //get the data for batch without extra batches
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId) GROUP BY p.batchId,p.controlId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.mergeBatchId IS NULL AND p.controlId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId) GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(Long userId, Long userHeadId);
 
     @Query(value = "select * from batch_data as b where b.merge_batch_id=:batchId LIMIT 1",nativeQuery = true)
@@ -219,6 +223,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select x from BatchData x where x.mergeBatchId = :mergeBatchId")
     List<BatchData> getMergeBatchDataByMergeBatchId(String mergeBatchId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND  p.controlId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId) GROUP BY p.mergeBatchId ")
+    List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(Long userId, Long userHeadId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IS NOT NULL AND p.mergeBatchId =:mergeBatchId GROUP BY p.batchId,p.controlId ")
+    List<GetBatchWithControlId> getBatcheAndStockIdByMergeBatchId(String mergeBatchId);
 /*
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where GROUP BY b.controlId, b.batchId")
     List<GetAllBatch> getAllBatchWithoutBillGeneratedAndFinishMtrSave();*/
