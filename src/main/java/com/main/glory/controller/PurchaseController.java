@@ -101,7 +101,7 @@ public class PurchaseController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @PutMapping("/purchase/update/{id}/{flag}")
+    @GetMapping("/purchase/update/{id}/{flag}")
     public ResponseEntity<GeneralResponse<Boolean>> updatePurchaseStatus(@PathVariable(name = "id") Long id,@PathVariable(name = "flag") Boolean flag,@RequestHeader Map<String, String> headers){
         GeneralResponse<Boolean> result;
         try{
