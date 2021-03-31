@@ -72,7 +72,7 @@ public class PurchaseImpl {
             throw new Exception("no approved by found");
 
         //check the record updated by admin or user
-        UserData userDataExist = userService.getUserById(Long.parseLong("id"));
+        UserData userDataExist = userService.getUserById(Long.parseLong(id));
         if(userDataExist==null)
             throw new Exception("no user record found");
 
