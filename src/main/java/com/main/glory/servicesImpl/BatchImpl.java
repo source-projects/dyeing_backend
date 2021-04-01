@@ -54,7 +54,7 @@ public class BatchImpl {
 
         Long controlId = batchDataList.get(0).getControlId();
         String batchId = batchDataList.get(0).getBatchId();
-        String mergeBatchId = batchDataList.get(0).getBatchId();
+        String mergeBatchId = batchDataList.get(0).getMergeBatchId()==null?null:batchDataList.get(0).getMergeBatchId();
 
         if(mergeBatchId==null) {
 

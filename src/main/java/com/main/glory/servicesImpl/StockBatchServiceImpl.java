@@ -1716,7 +1716,7 @@ public class StockBatchServiceImpl {
 
 
             if(getAllBatch.getControlId()!=null)
-                list.add(getAllBatch);;
+                list.add(getAllBatch);
 
 
 

@@ -72,7 +72,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     void updateBillStatus(Long key);
 
     //get the totat grey mtr based on stock id and batchId
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId=:stockId AND p.batchId = :batchId AND p.isProductionPlanned = true AND p.isFinishMtrSave=true GROUP BY p.batchId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId=:stockId AND p.batchId = :batchId AND p.isProductionPlanned = true AND p.isFinishMtrSave=true ")
     GetBatchWithControlId findByBatchIdAndControId(String batchId, Long stockId);
 
 
@@ -92,7 +92,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     BatchData findByBatchEntryId(Long batchEntryId);
 
     //get Batch List with stockID
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId = :id AND p.isProductionPlanned = false GROUP BY p.batchId,p.controlId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId = :id AND p.isProductionPlanned = false GROUP BY p.batchId ")
     List<GetBatchWithControlId> getBatchAndStockListWithoutProductionPlanByStockId(Long id);
 
     @Query("select SUM(b.wt) from BatchData b where b.controlId=:controlId AND b.batchId=:batchId GROUP BY b.batchId,b.controlId")
@@ -187,12 +187,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<BatchDetail> getBatchDetailByStockId(Long id);
 
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId GROUP BY b.batchId")
-    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(Long stockId, String batchId);
+    /*@Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.mergeBatchId IS NULL b.batchId=:batchId GROUP BY b.batchId,b.controlId")
+    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(String batchId);
 
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.controlId=:stockId AND b.batchId=:batchId AND b.controlId =(select ss.id from StockMast ss where (ss.createdBy=:userId OR ss.userHeadId=:userHeadId) AND ss.id=:stockId) GROUP BY b.batchId,p.controlId")
-    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(Long stockId, String batchId,Long userId,Long userHeadId);
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.batchId=:batchId AND b.mergeBatchId IS NULL AND b.controlId =(select ss.id from StockMast ss where (ss.createdBy=:userId OR ss.userHeadId=:userHeadId) AND ss.id=:stockId) GROUP BY b.batchId,b.controlId")
+    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(String batchId,Long userId,Long userHeadId);*/
 
     @Query("select b.isFinishMtrSave from BatchData b where b.batchId=:batchId AND b.controlId=:stockId GROUP BY b.controlId,b.batchId,b.isFinishMtrSave")
     boolean isFinishMtrSave(String batchId);
