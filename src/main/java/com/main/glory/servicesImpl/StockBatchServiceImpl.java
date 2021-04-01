@@ -1690,7 +1690,8 @@ public class StockBatchServiceImpl {
             {
                 userId=null;
                 userHeadId=null;
-                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+
+                getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -1698,25 +1699,23 @@ public class StockBatchServiceImpl {
                 if (userData.getUserHeadId() == 0) {
                     userId = null;
                     userHeadId = null;
-                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                    getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
                 } else if (userData.getUserHeadId() > 0) {
                     //check weather master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
                     userId = userData.getId();
                     userHeadId = userHead.getId();
-                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                    getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
 
                 }
             }
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
-                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
             }
 
 
-            if(getAllBatch.getControlId()!=null)
-                list.add(getAllBatch);
 
 
 
