@@ -1264,8 +1264,6 @@ public class DispatchMastImpl {
             Double totalMtr=0.0; //;= batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
             Double totalFinishMtr=0.0;// = batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
             Long totalPcs=0l;// = batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
-            qualityBillByInvoiceNumberList.add(new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast));
-
 
 
             //batch record
@@ -1276,6 +1274,10 @@ public class DispatchMastImpl {
                 totalPcs++;
                 totalMtr+=batchData.getMtr();
             }
+
+            qualityBillByInvoiceNumberList.add(new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast));
+
+
             batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
 
 
