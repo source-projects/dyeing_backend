@@ -143,7 +143,7 @@ public class DyeingSlipServiceImpl {
         //AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
 
         //check the begore the master dyeing slip is exit or not
-            DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+            DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByBatchId(addAdditionDyeingSlipModel.getBatchId());
             if(dyeingSlipMast==null) {
                 throw new Exception("no dyeing slip found for given batch or production");
             }
