@@ -1223,7 +1223,7 @@ public class StockBatchServiceImpl {
             for(GetBatchByInvoice g:batchAndStockList)
             {
                 //check the batch is done with produciton or not
-                ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(g.getBatchId(),g.getStockId());
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getBatchId());
                 if(productionPlan.getStatus()==false)
                     continue;
 
@@ -1237,6 +1237,35 @@ public class StockBatchServiceImpl {
 
             }
         }
+
+
+
+        //gt the mege batch as well by stock id
+        for(StockMast stockMast:stockMastList)
+        {
+            List<GetBatchByInvoice> batchAndStockList = batchDao.getMergeBatcheByStockIdWithoutBillGenerated(stockMast.getId());
+            for(GetBatchByInvoice g:batchAndStockList)
+            {
+                //check the batch is done with produciton or not
+                if (g.getMergeBatchId()==null)
+                    continue;
+
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getMergeBatchId());
+                if(productionPlan.getStatus()==false)
+                    continue;
+
+                JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+                if(jetData.getStatus()==JetStatus.success)
+                {
+                    GetAllBatch getAllBatch=new GetAllBatch(g,party,quality);
+                    getAllBatch.setBatchId(g.getBatchId()==null?g.getBatchId():g.getMergeBatchId()+"-"+g.getBatchId());
+                    list.add(getAllBatch);
+                }
+
+
+            }
+        }
+
 
 
         //List<GetAllBatch> getAllBatchList = batchDao.getAllBatchWithoutBillGeneratedByPartyIdAndQualityId(partyId,qualityId);
