@@ -25,7 +25,6 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -791,8 +790,10 @@ public class StockBatchServiceImpl {
                 Optional<StockMast> stockMast=stockMastDao.findById(batchByMergeBatch.getControlId());
                 if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
                 {
+
                     Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
 
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
                     Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
                     //check that the process and party shade is exist or not
@@ -815,14 +816,19 @@ public class StockBatchServiceImpl {
                         batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
                         batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
                     }*/
+
                     batchToPartyAndQuality.setPartyName(batchToPartyAndQuality.getPartyName()==null?party.get().getPartyName():batchToPartyAndQuality.getPartyName()+","+party.get().getPartyName());
                     batchToPartyAndQuality.setQualityId(batchToPartyAndQuality.getQualityId()==null?quality.get().getQualityId():batchToPartyAndQuality.getQualityId()+","+quality.get().getQualityId());
                     batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
                     batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
-
+                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
 
 
                 }
+                Double totalMtr = batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
+                Double totalWt = batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
+                batchToPartyAndQuality.setTotalMtr(totalMtr);
+                batchToPartyAndQuality.setTotalWt(totalWt);
 
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
@@ -1418,12 +1424,15 @@ public class StockBatchServiceImpl {
         UserPermission userPermission = userData.getUserPermissionData();
         Permissions permissions = new Permissions(userPermission.getSb().intValue());
 
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;//get all batch for based on mrge batch id
         //filter the record
         if (permissions.getViewAll())
         {
             userId=null;
             userHeadId=null;
             dataList =  batchDao.getAllBatchWithoutBillGenerated();
+            batchDataForMergeBatch=batchDao.getAllMergeBatchWithoutBillGenrated();
+            
         }
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
@@ -1432,25 +1441,23 @@ public class StockBatchServiceImpl {
                 userId = null;
                 userHeadId = null;
                 dataList =  batchDao.getAllBatchWithoutBillGenerated();
+                batchDataForMergeBatch=batchDao.getAllMergeBatchWithoutBillGenrated();
+
             } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
                 userId = userData.getId();
                 userHeadId = userHead.getId();
                 dataList =  batchDao.getAllBatchWithoutBillGenerated(userId,userHeadId);
-
+                batchDataForMergeBatch= batchDao.getAllMergeBatchWithoutBillGenrated(userId,userHeadId);
             }
         }
         else if (permissions.getView()) {
             userId = userData.getId();
             userHeadId=null;
             dataList =  batchDao.getAllBatchWithoutBillGenerated(userId,userHeadId);
+            batchDataForMergeBatch= batchDao.getAllMergeBatchWithoutBillGenrated(userId,userHeadId);
         }
-
-
-
-
-
 
 
 
@@ -1460,7 +1467,7 @@ public class StockBatchServiceImpl {
         //filter the data if the batch is done with jet
         for(GetAllBatch getAllBatch:dataList)
         {
-            ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(getAllBatch.getBatchId(),getAllBatch.getControlId());
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
 
             if(productionPlan==null)
                 continue;
@@ -1474,7 +1481,40 @@ public class StockBatchServiceImpl {
             //System.out.println(jetData.getStatus());
             if(jetData.getStatus()== JetStatus.success)
             {
+
                 list.add(new GetAllBatchWithProduction(getAllBatch,productionPlan.getId()));
+            }
+
+
+        }
+
+        //filter the data if the batch is done with jet
+        for(GetBatchWithControlId getAllBatch:batchDataForMergeBatch)
+        {
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getMergeBatchId());
+
+            if(productionPlan==null)
+                continue;
+
+            if(productionPlan.getStatus()==false)
+                continue;
+            // System.out.println(productionPlan.getId());
+            JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+            if(jetData==null)
+                continue;
+            //System.out.println(jetData.getStatus());
+            if(jetData.getStatus()== JetStatus.success)
+            {
+                List<GetBatchWithControlId> listOfBatch = batchDao.getBatchesByMergeBatchId(getAllBatch.getMergeBatchId());
+
+                for(GetBatchWithControlId batch:listOfBatch)
+                {
+                    GetAllBatchWithProduction batchDetail = new GetAllBatchWithProduction(batch,productionPlan.getId());
+                    batchDetail.setBatchId(getAllBatch.getMergeBatchId()+"-"+batchDetail.getBatchId());
+                    batchDetail.setProductionPlanned(true);
+                    list.add(batchDetail);
+                }
+
             }
 
 
@@ -1621,7 +1661,7 @@ public class StockBatchServiceImpl {
             {
                 userId=null;
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -1629,20 +1669,20 @@ public class StockBatchServiceImpl {
                 if (userData.getUserHeadId() == 0) {
                     userId = null;
                     userHeadId = null;
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
                 } else if (userData.getUserHeadId() > 0) {
                     //check weather master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
                     userId = userData.getId();
                     userHeadId = userHead.getId();
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
 
                 }
             }
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
             }
 
 
@@ -1685,7 +1725,7 @@ public class StockBatchServiceImpl {
                 continue;
 
             //check the batch bill is generated or not
-            if(batchDao.isFinishMtrSave(productionPlan.getBatchId(),productionPlan.getStockId()))
+            if(batchDao.isFinishMtrSave(productionPlan.getBatchId()))
             continue;
             //GetAllBatch getAllBatch=null;
             //filter the record
@@ -1693,7 +1733,7 @@ public class StockBatchServiceImpl {
             {
                 userId=null;
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -1701,20 +1741,20 @@ public class StockBatchServiceImpl {
                 if (userData.getUserHeadId() == 0) {
                     userId = null;
                     userHeadId = null;
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
                 } else if (userData.getUserHeadId() > 0) {
                     //check weather master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
                     userId = userData.getId();
                     userHeadId = userHead.getId();
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
 
                 }
             }
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
             }
             if(getAllBatch.getControlId()!=null)
                 list.add(getAllBatch);

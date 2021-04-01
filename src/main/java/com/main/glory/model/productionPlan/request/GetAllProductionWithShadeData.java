@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class GetAllProductionWithShadeData extends ProductionPlan {
 
+    String partyId;
+    String qualityEntryId;
     String colorTone;
     String qualityName;
     String qualityId;
@@ -50,7 +52,15 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
     public GetAllProductionWithShadeData(GetAllProductionWithShadeData g)
     {
         super(g);
-        this.colorTone=g.getColorTone();
+        this.colorTone = g.getColorTone();
+        this.qualityName = this.getQualityName()==null?g.getQualityName():this.getQualityName()+","+g.getQualityName();
+        this.qualityId = this.getQualityId()==null?g.getQualityId():this.getQualityId()+","+g.getQualityId();
+        this.processName = g.getProcessName();
+        this.partyShadeNo = g.getPartyShadeNo();
+        this.totalWt += g.getTotalWt();
+        this.totalMtr += g.getTotalMtr();
+        this.partyName = this.getPartyName()==null?g.getPartyName():this.getPartyName()+","+g.getPartyName();
+
     }
 
     public GetAllProductionWithShadeData(ProductionPlan data, ShadeMast shadeMast, GetQualityResponse quality, DyeingProcessMast dyeingProcessMast, Double wt, Double mtr) {

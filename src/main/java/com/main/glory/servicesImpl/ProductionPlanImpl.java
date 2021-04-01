@@ -6,10 +6,9 @@ import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
-import com.main.glory.model.dyeingProcess.DyeingChemicalData;
-import com.main.glory.model.dyeingProcess.DyeingProcessData;
+import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
-import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
@@ -23,11 +22,7 @@ import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
-import com.main.glory.model.quality.response.GetQualityResponse;
-import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.supplier.Supplier;
-import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -77,18 +72,18 @@ public class ProductionPlanImpl {
 
     public Long saveProductionPlan(ProductionPlan productionPlan) throws Exception {
 
-        Optional<Quality> qualityIsExist= qualityServiceImp.getQualityByIDAndPartyId(productionPlan.getQualityEntryId(),productionPlan.getPartyId());
+        //Optional<Quality> qualityIsExist= qualityServiceImp.getQualityByIDAndPartyId(productionPlan.getQualityEntryId(),productionPlan.getPartyId());
 
         Optional<ShadeMast> shadeMastExist=shadeService.getShadeMastById(productionPlan.getShadeId());
 
-        if(qualityIsExist.isPresent() && shadeMastExist.isPresent())
+        if(shadeMastExist.isPresent())
         {
             //check already batch and stock is exist or not
-            ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(productionPlan.getBatchId(),productionPlan.getStockId());
+            ProductionPlan productionPlanExist = productionPlanDao.getProductionDetailByBatchId(productionPlan.getBatchId(),false);
             if(productionPlanExist!=null)
                 throw new Exception("already stock and batch is exist");
 
-            List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
+            List<BatchData> batchDataList = batchService.getBatchByBatchIdId(productionPlan.getBatchId());
             if(batchDataList.isEmpty())
                 throw new Exception("No batch data found");
 
@@ -131,7 +126,7 @@ public class ProductionPlanImpl {
         throw new Exception("production is already planned with Jet");
 
         //change the status of batch if all the condition are
-        List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(productionPlan.getStockId(),productionPlan.getBatchId());
+        List<BatchData> batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
         for(BatchData batchData: batchDataList)
         {
             batchDao.updateProductionPlanned(batchData.getId(),false);
@@ -153,14 +148,43 @@ public class ProductionPlanImpl {
         UserPermission userPermission = userData.getUserPermissionData();
         Permissions permissions = new Permissions(userPermission.getSb().intValue());
 
+        List<String> batchId = new ArrayList<>();
 
-        Optional<List<GetAllProductionWithShadeData>> list =null;
+
+        List<GetAllProductionWithShadeData> list =new ArrayList<>();
         //filter the record
         if (permissions.getViewAll())
         {
             userId=null;
             userHeadId=null;
-            list =  productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+
+
+            batchId = productionPlanDao.getAllBatchWithoutMergeBatch();
+            //List<GetAllProductionWithShadeData> finalList = list;
+
+
+            for(String e:batchId)
+            {
+                GetAllProductionWithShadeData record = getProductionWithColorToneByBatchId(e);
+                if(record!=null)
+                    list.add(record);
+
+            }
+
+            //get batches of merge batch
+            batchId = productionPlanDao.getAllProductionBasedOnMergeBatchId();
+            for(String e:batchId)
+            {
+
+                GetAllProductionWithShadeData record = getProductionWithColorToneByBatchId(e);
+                if(record!=null)
+                list.add(record);
+
+            }
+
+            
+
+
         }
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
@@ -168,20 +192,34 @@ public class ProductionPlanImpl {
             if (userData.getUserHeadId() == 0) {
                 userId = null;
                 userHeadId = null;
-                list =  productionPlanDao.getAllProductionWithColorTone();//new ArrayList<>();
+                batchId = productionPlanDao.getAllBatchWithoutMergeBatch();
+                //List<GetAllProductionWithShadeData> finalList = list;
+
+                for(String e:batchId)
+                {
+                    Long stockId = batchDao.getControlIdByBatchId(e);
+                    StockMast stockMast = stockBatchService.getStockByStockId(stockId);
+                    if(stockMast!=null)
+                    {
+                        GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e,stockMast.getPartyId(),stockMast.getQualityId());
+                        if(data!=null)
+                            list.add(data);
+                    }
+
+                }
             } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
                 userId = userData.getId();
                 userHeadId = userHead.getId();
-                list =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
+                //list =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
 
             }
         }
         else if (permissions.getView()) {
             userId = userData.getId();
             userHeadId=null;
-            list  =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
+            //list  =  productionPlanDao.getAllProductionWithColorTone(userId,userHeadId);//new ArrayList<>();
         }
 
 
@@ -192,8 +230,68 @@ public class ProductionPlanImpl {
               throw new Exception("no data found");
 
 
-        return list.get();
+        return list;
 
+
+    }
+
+    public GetAllProductionWithShadeData getProductionWithColorToneByBatchId(String e) throws Exception {
+
+        GetAllProductionWithShadeData record = new GetAllProductionWithShadeData();
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;
+        //check the batch id is merge or simple
+        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchId(e);
+        if(productionPlanExist!=null)
+        {
+
+            if(productionPlanExist.getIsMergeBatchId()==true)
+            {
+                //if true then process for multiple batch
+                record.setId(productionPlanDao.getProductionIdByBatchId(e));
+                record.setShadeId(productionPlanDao.getShadeIdByBatchId(e));
+                record.setBatchId(e);
+                batchDataForMergeBatch = batchDao.getAllBatchByMergeBatchId(e);
+                for(GetBatchWithControlId batchRespone:batchDataForMergeBatch)
+                {
+                    //Long stockId = batchDao.getControlIdByBatchId(e);
+                    StockMast stockMast = stockBatchService.getStockByStockId(batchRespone.getControlId());
+                    Party party = partyServiceImp.getPartyById(stockMast.getPartyId());
+                    Quality quality = qualityServiceImp.getQualityByEntryId(stockMast.getQualityId());
+                    Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
+
+                    record.setPartyId(record.getPartyId()==null?party.getId().toString():record.getPartyId()+","+party.getId().toString());
+                    record.setQualityEntryId(record.getQualityEntryId()==null?quality.getId().toString(): record.getQualityEntryId()+","+quality.getId().toString());
+                    record.setPartyName(record.getPartyName()==null?party.getPartyName():record.getPartyName()+","+party.getPartyName());
+                    record.setQualityId(record.getQualityId()==null?quality.getQualityId():record.getQualityId()+","+quality.getQualityId());
+                    record.setQualityName(record.getQualityName()==null?qualityName.get().getQualityName():record.getQualityName()+","+qualityName.get().getQualityName());
+                }
+                record.setIsMergeBatchId(true);
+                DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(productionPlanDao.getDyeingProcessByBatchId(e));
+                record.setPartyShadeNo(productionPlanDao.getPartyShadenoByBatchId(e));
+                record.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(e));
+                record.setTotalWt(batchDao.getTotalWtByMergeBatchId(e));
+                record.setColorTone(productionPlanDao.getColorToneByBatchId(e));
+                record.setProcessName(dyeingProcessMast.getProcessName());
+                return record;
+            }
+            else
+            {
+                //else process for single batch
+                Long stockId = batchDao.getControlIdByBatchId(e);
+                StockMast stockMast = stockBatchService.getStockByStockId(stockId);
+                if(stockMast!=null)
+                {
+                    GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e,stockMast.getPartyId(),stockMast.getQualityId());
+                    data.setPartyId(stockMast.getPartyId().toString());
+                    data.setQualityEntryId(stockMast.getQualityId().toString());
+                    if(data!=null)
+                        return data;
+                }
+
+            }
+        }
+
+            return null;
 
     }
 
@@ -220,21 +318,21 @@ public class ProductionPlanImpl {
 
     //list of production who are not added yet into the jet
     public List<ProductionPlan> getAllProductionListByPartyAndQuality(Long partyId, Long qualityEntryId) {
-        List<ProductionPlan> list = productionPlanDao.getProductionByPartyAndQuality(partyId,qualityEntryId);
+        List<ProductionPlan> list = null;//productionPlanDao.getProductionByPartyAndQuality(partyId,qualityEntryId);
         return list;
 
     }
 
     public ProductionPlan getProductionDataByBatchAndStock(String batchId, Long controlId) {
-        ProductionPlan productionPlan=productionPlanDao.getProductionByBatchAndStockId(batchId,controlId);
+        ProductionPlan productionPlan=null;//productionPlanDao.getProductionByBatchAndStockId(batchId,controlId);
         return productionPlan;
     }
 
     public GetBatchDetailByProduction getBatchDetailByProductionAndBatchId(Long productionId, String batchId) throws Exception {
 
         ProductionPlan productionExist = productionPlanDao.getProductionByBatchAndProduction(batchId,productionId);
-        GetBatchDetailByProduction data;
-        if(productionExist==null)
+        GetBatchDetailByProduction data=null;
+        /*if(productionExist==null)
             throw new Exception("no data found");
 
         StockMast stockMast=stockBatchService.getStockByStockId(productionExist.getStockId());
@@ -248,7 +346,7 @@ public class ProductionPlanImpl {
         {
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionExist.getShadeId());
             data=new GetBatchDetailByProduction(party,totalWt,shadeMast,stockMast,batchId);
-        }
+        }*/
 
 
         return data;
@@ -259,7 +357,7 @@ public class ProductionPlanImpl {
         List<GetAllProduction> dataList = new ArrayList<>();
         Optional<List<GetAllProductionWithShadeData>> list = productionPlanDao.getAllProduction();
 
-        if(list.isEmpty())
+       /* if(list.isEmpty())
             throw new Exception("no data found");
 
         for(GetAllProductionWithShadeData g:list.get())
@@ -273,7 +371,7 @@ public class ProductionPlanImpl {
                 continue;
 
             dataList.add(new GetAllProduction(g,party,quality));
-        }
+        }*/
 
         return dataList;
     }
@@ -283,21 +381,24 @@ public class ProductionPlanImpl {
     }
 
     public List<ProductionPlan> getProductionByQualityId(Long id) {
-        List<ProductionPlan> list = productionPlanDao.getAllProductionByQualityId(id);
+        List<ProductionPlan> list =null;// productionPlanDao.getAllProductionByQualityId(id);
         return list;
     }
 
     public List<ProductionPlan>getAllProductinByPartyId(Long id) {
-        return productionPlanDao.getAllProuctionByPartyId(id);
+        return null;//productionPlanDao.getAllProuctionByPartyId(id);
     }
 
     public List<ProductionPlan> getProductionByStockId(Long id) {
-        List<ProductionPlan> productionPlans = productionPlanDao.getProductionByStockId(id);
+        List<ProductionPlan> productionPlans =null;// productionPlanDao.getProductionByStockId(id);
         return productionPlans;
     }
 
     @Transactional
     public Long saveProductionPlanWithJet(AddProductionWithJet productionPlan) throws Exception {
+        //check first the batch id is coming batch or merge batch id
+        BatchData isMergeBatchId = batchDao.getIsMergeBatchId(productionPlan.getBatchId());//if data is not null then it is merge batch id
+        BatchData isBatchId = batchDao.getIsBatchId(productionPlan.getBatchId());
 
         //if production id is 0 then create the record with shade or jet
 
@@ -306,57 +407,127 @@ public class ProductionPlanImpl {
             //create the record
 
 
-            // first of all we have to store the infor of production any how
-            //then process for the jet if the jet id is not null
-            ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(productionPlan.getBatchId(),productionPlan.getStockId());
-            if(productionPlanExist!=null)
-                throw new Exception("same production available with batch and stock");
+                //perform all the record based on merge batchID
+                // first of all we have to store the infor of production any how
+                //then process for the jet if the jet id is not null
+                ProductionPlan productionPlanExistWithMergeBatchId = productionPlanDao.getProductionDetailByBatchId(productionPlan.getBatchId(),true);
+                if(productionPlanExistWithMergeBatchId!=null)
+                    throw new Exception("same production available with batch ");
 
 
 
-            //update the status of  batches as well
-            List<BatchData> batchDataList = batchService.getBatchById(productionPlan.getBatchId(),productionPlan.getStockId());
-            if(batchDataList.isEmpty())
-                throw new Exception("No batch data found");
+                //update the status of  batches as well
+                List<BatchData> batchDataList;
+                if(isMergeBatchId!=null)
+                {
+                    batchDataList = batchService.getBatchByMergeBatchId(productionPlan.getBatchId());
+                }
+                else
+                {
+                    batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
+                }
+                if(batchDataList.isEmpty())
+                    throw new Exception("No batch data found");
 
-            //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
+                //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
-            for(BatchData batchData:batchDataList)
-            {
-                if(batchData.getIsProductionPlanned()==false)
-                    batchData.setIsProductionPlanned(true);
-                batchDao.save(batchData);
-            }
-            productionPlanExist = new ProductionPlan(productionPlan);
-            ProductionPlan x = productionPlanDao.save(productionPlanExist);
+                for(BatchData batchData:batchDataList)
+                {
+                    if(batchData.getIsProductionPlanned()==false)
+                        batchData.setIsProductionPlanned(true);
+                    batchDao.save(batchData);
+                }
+                productionPlanExistWithMergeBatchId = new ProductionPlan(productionPlan);
+                if(isMergeBatchId!=null) {
+                    productionPlanExistWithMergeBatchId.setIsMergeBatchId(true);
+                }
+                else {
+                    productionPlanExistWithMergeBatchId.setIsMergeBatchId(false);
+                }
+                productionPlanExistWithMergeBatchId.setIsDirect(false);
+                ProductionPlan x = productionPlanDao.save(productionPlanExistWithMergeBatchId);
 
 
 
 
-            //now check that the jet id is null or not
-            if(productionPlan.getJetId()==0 || productionPlan.getJetId()==null)
-            {
-                return x.getId();
-            }
+                //now check that the jet id is null or not
+                if(productionPlan.getJetId()==0 || productionPlan.getJetId()==null)
+                {
+                    return x.getId();
+                }
+                else
+                {
+                    //we have to add the same data with jet as well
+                    List<AddJetData> jetDataList = new ArrayList<>();
+                    AddJetData addJetData = new AddJetData();
+                    addJetData.setProductionId(x.getId());
+                    addJetData.setControlId(productionPlan.getJetId());
+                    addJetData.setSequence(12l);
+                    jetDataList.add(addJetData);
+
+                    jetService.saveJetData(jetDataList);
+                    return x.getId();
+                }
+            /*
             else
             {
-                //we have to add the same data with jet as well
-                List<AddJetData> jetDataList = new ArrayList<>();
-                AddJetData addJetData = new AddJetData();
-                addJetData.setProductionId(x.getId());
-                addJetData.setControlId(productionPlan.getJetId());
-                addJetData.setSequence(12l);
-                jetDataList.add(addJetData);
+                //perform the set of action based on batch ids
+                // first of all we have to store the infor of production any how
+                //then process for the jet if the jet id is not null
+                ProductionPlan productionPlanExist = productionPlanDao.getProductionDetailByBatchId(productionPlan.getBatchId(),false);
+                if(productionPlanExist!=null)
+                    throw new Exception("same production available with batch and stock");
 
-                jetService.saveJetData(jetDataList);
-                return x.getId();
+
+
+                //update the status of  batches as well
+                List<BatchData> batchDataList = batchService.getBatchByBatchIdId(productionPlan.getBatchId());
+                if(batchDataList.isEmpty())
+                    throw new Exception("No batch data found");
+
+                //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
+
+                for(BatchData batchData:batchDataList)
+                {
+                    if(batchData.getIsProductionPlanned()==false)
+                        batchData.setIsProductionPlanned(true);
+                    batchDao.save(batchData);
+                }
+                productionPlanExist = new ProductionPlan(productionPlan);
+                productionPlanExist.setIsMergeBatchId(false);
+                ProductionPlan x = productionPlanDao.save(productionPlanExist);
+
+
+
+
+                //now check that the jet id is null or not
+                if(productionPlan.getJetId()==0 || productionPlan.getJetId()==null)
+                {
+                    return x.getId();
+                }
+                else
+                {
+                    //we have to add the same data with jet as well
+                    List<AddJetData> jetDataList = new ArrayList<>();
+                    AddJetData addJetData = new AddJetData();
+                    addJetData.setProductionId(x.getId());
+                    addJetData.setControlId(productionPlan.getJetId());
+                    //addJetData.setSequence(12l);
+                    jetDataList.add(addJetData);
+
+                    jetService.saveJetData(jetDataList);
+                    return x.getId();
+                }
             }
+*/
+
 
 
         }
         else
         {
             //update the record of only shade , if jet is not assign and check the status as well
+
 
             //check the production is already added in jet or not
             ProductionPlan productionPlanExist = productionPlanDao.getByProductionId(productionPlan.getProductionId());
@@ -371,6 +542,14 @@ public class ProductionPlanImpl {
 
             productionPlanExist=new ProductionPlan(productionPlan);
 
+            if(isMergeBatchId!=null)
+            {
+                productionPlanExist.setIsMergeBatchId(true);
+            }
+            else {
+            productionPlanExist.setIsMergeBatchId(false);
+            }
+            productionPlanExist.setIsDirect(false);
             ProductionPlan x = productionPlanDao.save(productionPlanExist);
             //check now that the jet is coming or not
 
@@ -415,14 +594,27 @@ public class ProductionPlanImpl {
 
          */
 
+        //check first the batch id is coming batch or merge batch id
+        BatchData isMergeBatchId = batchDao.getIsMergeBatchId(record.getBatchId());//if data is not null then it is merge batch id
+        BatchData isBatchId = batchDao.getIsBatchId(record.getBatchId());
         Double totalBatchCapacity = 0.0;
 
         Long jetSequence=0l;
 
-        Double totalBatchWt = stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
+        Double totalBatchWt = 0.0;//stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
         //process type ::directDyeing
 
         ProductionPlan productionPlan =new ProductionPlan(record);
+
+        if(isMergeBatchId!=null)
+        {
+            totalBatchWt=batchDao.getTotalWtByMergeBatchId(record.getBatchId());
+            productionPlan.setIsMergeBatchId(true);
+        }
+        else {
+            totalBatchWt=batchDao.getTotalWtByBatchId(record.getBatchId());
+            productionPlan.setIsMergeBatchId(false);
+        }
 
         /*if(productionPlan.getShadeId()==null && productionPlan.getColorName().isEmpty())
             throw new Exception("please enter shade or color name");*/
@@ -431,7 +623,7 @@ public class ProductionPlanImpl {
 
         //check the production is exist with batch and stock or not
 
-        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchAndStockId(record.getBatchId(),record.getStockId());
+        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchId(record.getBatchId());
         if(productionPlanExist!=null)
             throw new Exception("batch and stock is already exist");
 
@@ -445,7 +637,7 @@ public class ProductionPlanImpl {
         for(GetJetData getJetData : jetDataList)
         {
            ProductionPlan jetWithProduction = productionPlanDao.getByProductionId(getJetData.getProductionId());
-           totalBatchCapacity+=stockBatchService.getWtByControlAndBatchId(jetWithProduction.getStockId(),jetWithProduction.getBatchId());
+           //totalBatchCapacity+=stockBatchService.getWtByControlAndBatchId(jetWithProduction.getStockId(),jetWithProduction.getBatchId());
 
            if(jetSequence < getJetData.getSequence())
            {
@@ -498,7 +690,17 @@ public class ProductionPlanImpl {
         //change the batch status
 
         //update the status of  batches as well
-        List<BatchData> batchDataList = batchService.getBatchById(x.getBatchId(),x.getStockId());
+        List<BatchData> batchDataList =null;
+
+        if(isMergeBatchId!=null)
+        {
+            batchDataList = batchService.getBatchByMergeBatchId(x.getBatchId());
+
+        }
+        else {
+            batchDataList = batchService.getBatchByBatchIdId(x.getBatchId());
+        }
+
 
         //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
@@ -520,15 +722,23 @@ public class ProductionPlanImpl {
     }
 
     public Party getPartyDetailByProductionId(Long productionId) {
-        return productionPlanDao.getPartyByProductionId(productionId);
+        return null;//productionPlanDao.getPartyByProductionId(productionId);
     }
 
     public Quality getQualityByProductionId(Long productionId) {
-        return productionPlanDao.getQualityByProductionId(productionId);
+        return null;//productionPlanDao.getQualityByProductionId(productionId);
     }
 
     public QualityName getQualityNameByProductionId(Long productionId) {
-        return productionPlanDao.getQualityNameByProductionId(productionId);
+        return null;//productionPlanDao.getQualityNameByProductionId(productionId);
+    }
+
+    public ProductionPlan getById(Long productionId) {
+        return productionPlanDao.getById(productionId);
+    }
+
+    public ProductionPlan getProductionByBatchId(String batchId) {
+        return productionPlanDao.getProductionByBatchId(batchId);
     }
 
 /*

@@ -54,7 +54,7 @@ public class BatchFinishMtrController extends ControllerConfig {
     }
 
     @GetMapping("/batch/{controlId}/{batchId}")
-    public ResponseEntity<GeneralResponse<List<BatchData>>> getFinishMtrBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") Long controlId){
+    public ResponseEntity<GeneralResponse<List<BatchData>>> getFinishMtrBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") String controlId){
 
         GeneralResponse<List<BatchData>> result;
         try{
@@ -63,7 +63,6 @@ public class BatchFinishMtrController extends ControllerConfig {
 
                 if(!batchData.isEmpty())
                 result = new GeneralResponse<>(batchData, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-
                 else
                     result = new GeneralResponse<>(batchData,"no data found",false,System.currentTimeMillis(),HttpStatus.OK);
             }

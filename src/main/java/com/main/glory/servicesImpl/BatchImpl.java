@@ -101,9 +101,23 @@ public class BatchImpl {
 
     }
 
-    public List<BatchData> getBatchById(String batchId, Long controlId) throws Exception{
+    public List<BatchData> getBatchById(String batchId, String controlId) throws Exception{
         try {
-            List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId, batchId);
+            List<BatchData> batchData=null;
+            if(batchId.contains("-"))
+            {
+                batchData  = batchDao.getBatchByBatchIdWithMergeBatchId(batchId.split("-")[1],batchId.split("-")[0]);
+                /*for(BatchData batch:batchDataList)
+                {
+                    batch.setBatchId(batch.getMergeBatchId()+"-s"+batch.getBatchId());
+                    batchData.add(batch);
+                }*/
+            }
+            else
+            {
+                batchData = batchDao.getBatchByBatchId(batchId);
+            }
+
             if (batchData.isEmpty())
                 throw new Exception("Batch is not available for batchId:" + batchId);
 
@@ -178,5 +192,13 @@ public class BatchImpl {
             throw new Exception("Batch not found");
 
         batchDao.deleteById(id);
+    }
+
+    public List<BatchData> getBatchByBatchIdId(String batchId) {
+        return batchDao.getBatchByBatchId(batchId);
+    }
+
+    public List<BatchData> getBatchByMergeBatchId(String batchId) {
+        return batchDao.getBatchByMergeBatchId(batchId);
     }
 }

@@ -101,7 +101,7 @@ public class PurchaseController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @PutMapping("/purchase/update/{id}/{flag}")
+    @GetMapping("/purchase/update/{id}/{flag}")
     public ResponseEntity<GeneralResponse<Boolean>> updatePurchaseStatus(@PathVariable(name = "id") Long id,@PathVariable(name = "flag") Boolean flag,@RequestHeader Map<String, String> headers){
         GeneralResponse<Boolean> result;
         try{
@@ -115,6 +115,27 @@ public class PurchaseController extends ControllerConfig {
         } catch (Exception e) {
             e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping("/purchase/status")
+    public ResponseEntity<GeneralResponse<List<PurchaseResponse>>> getPurchaseListBasedOnStatus(@RequestParam(name = "flag") Boolean flag,@RequestHeader Map<String, String> headers){
+        GeneralResponse<List<PurchaseResponse>> result;
+        try{
+
+
+            List<PurchaseResponse> list = purchaseService.getAllPurchaseRecordBasedOnFlag(flag,headers.get("id"));
+            if (list.isEmpty())
+            {
+                result = new GeneralResponse<>(list, "record not found ", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else {
+                result = new GeneralResponse<>(list, "record fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

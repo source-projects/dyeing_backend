@@ -12,9 +12,10 @@ import lombok.Setter;
 public class AddProductionWithJet {
     Long productionId;
     String batchId;
-    Long stockId;
+    /*Long stockId;
     Long partyId;
     Long qualityEntryId;
+    */
     Long shadeId;
     Long jetId;
 }
