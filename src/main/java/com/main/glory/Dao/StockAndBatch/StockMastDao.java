@@ -72,6 +72,6 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
  @Query("select sm from StockMast sm where sm.partyId=:partyId AND sm.qualityId=:qualityId")
  List<StockMast> getAllStockByPartyIdAndQualityId(Long partyId, Long qualityId);
 
-    @Query("select q from Quality q where q.id=(select s.qualityId from StockBatch s where s.id=:stockId)")
-    Quality getQualityByStockId(Long stockId);
+    /*@Query("select q from Quality q where q.id=(select s.qualityId from StockBatch s where s.id=:stockId)")
+    Quality getQualityByStockId(Long stockId);*/
 }
