@@ -149,7 +149,10 @@ public class DyeingSlipServiceImpl {
             }
 
 
-            //check the dyeing slip already exist with batch or not
+            //check the additonal dyeing slip already exist with batch or not
+            DyeingSlipData dyeingSlipDataExist = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
+            if(dyeingSlipDataExist!=null)
+                throw new Exception("already additonal dyeing slip found");
 
            /* DyeingSlipData dyeingSlipDataExistWithAdditional = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
             if(dyeingSlipDataExistWithAdditional!=null)
