@@ -54,49 +54,85 @@ public class BatchImpl {
 
         Long controlId = batchDataList.get(0).getControlId();
         String batchId = batchDataList.get(0).getBatchId();
+        String mergeBatchId = batchDataList.get(0).getBatchId();
 
+        if(mergeBatchId==null) {
 
-        //getting the extra batch who's invoice is not created
-        List<BatchData> extraBatchList = batchDao.findByControlIdAndBatchIdWithExtraBatch(controlId,batchId);
+            //getting the extra batch who's invoice is not created
+            List<BatchData> extraBatchList = batchDao.findByBatchIdWithoutBillGenerated( batchId);
 
-        for(BatchData batchData: extraBatchList)
-        {
-            extraBatch.put(batchData.getId(),false);
-        }
-
-        for(BatchData batchData:batchDataList)
-        {
-
-            //if it extra batch then create it
-            if(batchData.getId()==0) {
-                batchData.setIsExtra(true);
-                batchData.setMtr(0.0);
+            for (BatchData batchData : extraBatchList) {
+                extraBatch.put(batchData.getId(), false);
             }
-            else
-            {
-                //if it is already available then replace the flag from the hash map
-                if(batchData.getIsExtra()==true)
-                    extraBatch.replace(batchData.getId(),true);
-                //save the extra batch
+
+            for (BatchData batchData : batchDataList) {
+
+                //if it extra batch then create it
+                if (batchData.getId() == 0) {
+                    batchData.setIsExtra(true);
+                    batchData.setMtr(0.0);
+                } else {
+                    //if it is already available then replace the flag from the hash map
+                    if (batchData.getIsExtra() == true)
+                        extraBatch.replace(batchData.getId(), true);
+                    //save the extra batch
+                }
+                batchData.setIsFinishMtrSave(true);
+                batchData.setIsProductionPlanned(true);
+
+                batchDao.save(batchData);
             }
-            batchData.setIsFinishMtrSave(true);
-            batchData.setIsProductionPlanned(true);
-            batchDao.save(batchData);
-        }
 
-        //##Iterate the loop and delete the record who flag is false in extra batch
-        for(Map.Entry<Long,Boolean> entry:extraBatch.entrySet())
-        {
-            System.out.println(entry.getKey()+":"+entry.getValue());
-            if(entry.getValue()==false)
-            {
-                //delete the extra batch gr who's the invoice is not created
-                batchDao.deleteById(entry.getKey());
+            //##Iterate the loop and delete the record who flag is false in extra batch
+            for (Map.Entry<Long, Boolean> entry : extraBatch.entrySet()) {
+                System.out.println(entry.getKey() + ":" + entry.getValue());
+                if (entry.getValue() == false) {
+                    //delete the extra batch gr who's the invoice is not created
+                    batchDao.deleteById(entry.getKey());
+                }
             }
+
+            //update the flag
+
         }
+        else {
 
-        //update the flag
+            //getting the extra batch who's invoice is not created
+            List<BatchData> extraBatchList = batchDao.findByMergeBatchIdWithoutBillGenerated(mergeBatchId,batchId);
 
+            for (BatchData batchData : extraBatchList) {
+                extraBatch.put(batchData.getId(), false);
+            }
+
+            for (BatchData batchData : batchDataList) {
+
+                //if it extra batch then create it
+                if (batchData.getId() == 0) {
+                    batchData.setIsExtra(true);
+                    batchData.setMtr(0.0);
+                } else {
+                    //if it is already available then replace the flag from the hash map
+                    if (batchData.getIsExtra() == true)
+                        extraBatch.replace(batchData.getId(), true);
+                    //save the extra batch
+                }
+                batchData.setIsFinishMtrSave(true);
+                batchData.setIsProductionPlanned(true);
+                batchData.setMergeBatchId(mergeBatchId);
+                batchDao.save(batchData);
+            }
+
+            //##Iterate the loop and delete the record who flag is false in extra batch
+            for (Map.Entry<Long, Boolean> entry : extraBatch.entrySet()) {
+                System.out.println(entry.getKey() + ":" + entry.getValue());
+                if (entry.getValue() == false) {
+                    //delete the extra batch gr who's the invoice is not created
+                    batchDao.deleteById(entry.getKey());
+                }
+            }
+
+            //update the flag
+        }
 
 
     }
