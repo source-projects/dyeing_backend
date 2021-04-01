@@ -1891,7 +1891,7 @@ public class StockBatchServiceImpl {
     }
 
 
-    public Quality getQualityByStockId(Long stockId) {
+   /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);
-    }
+    }*/
 }
