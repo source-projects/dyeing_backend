@@ -1716,6 +1716,9 @@ public class StockBatchServiceImpl {
                 getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
             }
 
+            if(getAllBatch.getBatchId()!=null)
+                list.add(getAllBatch);
+
 
 
 
