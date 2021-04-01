@@ -27,7 +27,6 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -326,13 +325,13 @@ public class DispatchMastImpl {
 
         //iterate and change the status
         for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
-            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(createDispatch.getBatchId());
 
 
             //get the shade detail
             ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(createDispatch.getBatchId(), createDispatch.getStockId());
-            if(productionPlan==null)
-                throw new Exception("no production plan found for batch");
+            /*if(productionPlan==null)
+                throw new Exception("no production plan found for batch");*/
 
             ShadeMast shadeMast = null;
             if(productionPlan.getShadeId()!=null)
@@ -1235,7 +1234,7 @@ public class DispatchMastImpl {
 
             //check the stock is exist with batch or not
 
-            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
             if(batchDataList.isEmpty())
                 throw new Exception("no batch record found with stock");
 
