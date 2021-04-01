@@ -92,7 +92,7 @@ public class DyeingSlipServiceImpl {
         SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
-        GetQualityResponse quality=qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
+        GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
         Double wt = stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
         if(productionPlan.getShadeId()!=null)
         {

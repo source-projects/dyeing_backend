@@ -70,7 +70,7 @@ public class DyeingSlipMast {
         this.jetId = record.getJetId();
         this.productionId = x.getId();
         this.batchId = x.getBatchId();
-        this.stockId = x.getStockId();
+        //this.stockId = x.getStockId();
     }
 
 

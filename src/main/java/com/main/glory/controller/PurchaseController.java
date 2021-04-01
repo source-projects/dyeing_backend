@@ -119,6 +119,27 @@ public class PurchaseController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping("/purchase/status")
+    public ResponseEntity<GeneralResponse<List<PurchaseResponse>>> getPurchaseListBasedOnStatus(@RequestParam(name = "flag") Boolean flag,@RequestHeader Map<String, String> headers){
+        GeneralResponse<List<PurchaseResponse>> result;
+        try{
+
+
+            List<PurchaseResponse> list = purchaseService.getAllPurchaseRecordBasedOnFlag(flag,headers.get("id"));
+            if (list.isEmpty())
+            {
+                result = new GeneralResponse<>(list, "record not found ", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else {
+                result = new GeneralResponse<>(list, "record fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 
 }

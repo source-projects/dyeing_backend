@@ -79,6 +79,12 @@ public class GetAllBatch {
         this.qualityType=getAllBatch.qualityType;
 
     }
+    public GetAllBatch(GetBatchWithControlId getAllBatch) {
+        this.totalWt=getAllBatch.getWT();
+        this.batchId=getAllBatch.getBatchId();
+
+
+    }
 
     public GetAllBatch(Double totalWt, Long controlId, String batchId, Long partyId, String partyName, Long qualityEntryId, String qualityId, String qualityName, String qualityType) {
         this.totalWt = totalWt;

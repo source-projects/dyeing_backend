@@ -131,6 +131,15 @@ public class PurchaseImpl {
 
     }
 
+    public List<PurchaseResponse> getAllPurchaseRecordBasedOnFlag(Boolean flag, String id) {
+        if(flag==null)
+            return purchaseDao.getAllPurchaseRecord();
+        else {
+            return purchaseDao.getAllPurchaseRecordBasedOnFlag(flag);
+        }
+
+    }
+
 
 
     /*public Boolean addPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
