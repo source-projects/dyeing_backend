@@ -334,7 +334,7 @@ public class DispatchMastImpl {
                 throw new Exception("no production plan found for batch");*/
 
             ShadeMast shadeMast = null;
-            if(productionPlan.getShadeId()!=null)
+            if(productionPlan!=null && productionPlan.getShadeId()!=null)
             {
                 shadeMast=shadeService.getShadeById(productionPlan.getShadeId());
                 if(shadeMast==null)
@@ -1261,15 +1261,21 @@ public class DispatchMastImpl {
 //            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = batchDao.getQualityBillByStockAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
 
 
-            Double totalMtr = batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
-            Double totalFinishMtr = batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
-            Long totalPcs = batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            Double totalMtr=0.0; //;= batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            Double totalFinishMtr=0.0;// = batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+            Long totalPcs=0l;// = batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
             qualityBillByInvoiceNumberList.add(new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast));
 
 
 
             //batch record
-            List<BatchData> batchDataList = batchDao.getBatchRecordByBillGeneratedFlag(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
+            for(BatchData batchData:batchDataList)
+            {
+                totalFinishMtr+=batchData.getFinishMtr();
+                totalPcs++;
+                totalMtr+=batchData.getMtr();
+            }
             batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
 
 
