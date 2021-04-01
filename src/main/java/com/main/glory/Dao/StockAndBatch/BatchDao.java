@@ -267,7 +267,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     /*@Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.mergeBatchId=:e AND p.controlId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId) GROUP BY p.batchId ")
     List<GetBatchWithControlId> getAllBatchByMergeBatchId(String e);
     */
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.mergeBatchId=:e GROUP BY p.batchId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.mergeBatchId=:e GROUP BY p.batchId,p.controlId")
     List<GetBatchWithControlId> getAllBatchByMergeBatchId(String e);
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = true AND  p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND  p.controlId IS NOT NULL GROUP BY p.mergeBatchId ")
