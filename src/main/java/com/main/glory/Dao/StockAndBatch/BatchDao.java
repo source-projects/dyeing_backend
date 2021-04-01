@@ -117,7 +117,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
 
     //batches by stock id
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(b.id)as wt,b.batchId,b.controlId) from BatchData b where b.isProductionPlanned=true AND b.isBillGenrated=false AND b.controlId=:id GROUP BY b.batchId,b.controlId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(b.id)as wt,b.batchId,b.controlId) from BatchData b where b.isProductionPlanned=true AND b.isBillGenrated=false AND b.controlId=:id AND b.mergeBatchId IS NULL GROUP BY b.batchId,b.controlId")
     List<GetBatchByInvoice> getBatcheByStockIdWithoutBillGenerated(Long id);
 
 
@@ -287,6 +287,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select x from BatchData x where x.batchId=:batchId AND x.mergeBatchId =:mergeBatchId AND x.isBillGenrated=false AND x.batchId=:batchId")
     List<BatchData> findByMergeBatchIdWithoutBillGenerated(String mergeBatchId,String batchId);
+
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(b.id)as wt,b.batchId,b.controlId,b.mergeBatchId) from BatchData b where b.isProductionPlanned=true AND b.isBillGenrated=false AND b.controlId=:id AND b.mergeBatchId IS NOT NULL GROUP BY b.batchId,b.controlId")
+    List<GetBatchByInvoice> getMergeBatcheByStockIdWithoutBillGenerated(Long id);
 
 
 /*
