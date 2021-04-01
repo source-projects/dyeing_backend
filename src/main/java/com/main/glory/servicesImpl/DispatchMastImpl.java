@@ -342,7 +342,8 @@ public class DispatchMastImpl {
             }
 
 
-            Quality quality =stockBatchService.getQualityByStockId(createDispatch.getStockId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+            StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
+            Quality quality =qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
 
             if(quality==null)
                 throw new Exception("no quality found");
