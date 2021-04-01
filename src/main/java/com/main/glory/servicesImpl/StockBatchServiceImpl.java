@@ -1684,7 +1684,7 @@ public class StockBatchServiceImpl {
             if(productionPlan==null)
                 continue;
 
-            GetAllBatch getAllBatch=null;
+            GetAllBatch getAllBatch=new GetAllBatch();
             //filter the record
             if (permissions.getViewAll())
             {
