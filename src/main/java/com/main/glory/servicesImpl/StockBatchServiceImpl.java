@@ -1878,4 +1878,12 @@ public class StockBatchServiceImpl {
         return createMergeBatch;
 
     }
+
+    public Double getWtByBatchId(String batchId) {
+        return batchDao.getTotalWtByBatchId(batchId);
+    }
+
+    public Double getWtByMergeBatchId(String batchId) {
+        return batchDao.getTotalWtByMergeBatchId(batchId);
+    }
 }

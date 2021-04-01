@@ -4,6 +4,7 @@ import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
@@ -13,6 +14,7 @@ import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -93,7 +95,14 @@ public class DyeingSlipServiceImpl {
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
         GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
-        Double wt = stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+        Double wt = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+        if(productionPlan.getIsMergeBatchId()==true)
+        {
+            wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
+        }
+        else {
+            wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
+        }
         if(productionPlan.getShadeId()!=null)
         {
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
@@ -110,9 +119,10 @@ public class DyeingSlipServiceImpl {
 
 
 
+        GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
         slipFormatData.setTotalWt(wt);
-        slipFormatData.setQualityId(quality.getQualityId());
-        slipFormatData.setQualityEntryId(quality.getId());
+        slipFormatData.setQualityId(record.getQualityId());
+        //slipFormatData.setQualityEntryId(quality.getId());
 
         slipFormatData.setDyeingSlipDataList(dyeingSlipMastExist.getDyeingSlipDataList());
 
