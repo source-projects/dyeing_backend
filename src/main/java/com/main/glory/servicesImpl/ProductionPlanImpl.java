@@ -248,7 +248,6 @@ public class ProductionPlanImpl {
             {
                 //if true then process for multiple batch
                 record.setId(productionPlanDao.getProductionIdByBatchId(e));
-                record.setShadeId(productionPlanDao.getShadeIdByBatchId(e));
                 record.setBatchId(e);
                 batchDataForMergeBatch = batchDao.getAllBatchByMergeBatchId(e);
                 for(GetBatchWithControlId batchRespone:batchDataForMergeBatch)
@@ -266,12 +265,24 @@ public class ProductionPlanImpl {
                     record.setQualityName(record.getQualityName()==null?qualityName.get().getQualityName():record.getQualityName()+","+qualityName.get().getQualityName());
                 }
                 record.setIsMergeBatchId(true);
-                DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(productionPlanDao.getDyeingProcessByBatchId(e));
-                record.setPartyShadeNo(productionPlanDao.getPartyShadenoByBatchId(e));
+
+                //if it is direct then store diffrent record
+                if(productionPlanExist.getIsDirect()==false)
+                {
+                    DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(productionPlanDao.getDyeingProcessByBatchId(e));
+                    record.setShadeId(productionPlanDao.getShadeIdByBatchId(e));
+                    record.setProcessName(dyeingProcessMast.getProcessName());
+                    record.setPartyShadeNo(productionPlanDao.getPartyShadenoByBatchId(e));
+                    record.setColorTone(productionPlanDao.getColorToneByBatchId(e));
+                }
+
                 record.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(e));
                 record.setTotalWt(batchDao.getTotalWtByMergeBatchId(e));
-                record.setColorTone(productionPlanDao.getColorToneByBatchId(e));
-                record.setProcessName(dyeingProcessMast.getProcessName());
+
+
+
+
+
                 return record;
             }
             else
