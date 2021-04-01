@@ -192,8 +192,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.batchId=:batchId AND b.mergeBatchId IS NULL AND b.controlId =(select ss.id from StockMast ss where (ss.createdBy=:userId OR ss.userHeadId=:userHeadId) AND ss.id=:stockId) GROUP BY b.batchId,b.controlId")
-    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(String batchId,Long userId,Long userHeadId);*/
-
+    GetAllBatch getBatchForAdditionalSlipByBatchAndStock(String batchId,Long userId,Long userHeadId);
+*/
     @Query("select b.isFinishMtrSave from BatchData b where b.batchId=:batchId AND b.controlId=:stockId GROUP BY b.controlId,b.batchId,b.isFinishMtrSave")
     boolean isFinishMtrSave(String batchId);
 
