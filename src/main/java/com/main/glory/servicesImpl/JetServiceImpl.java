@@ -249,7 +249,7 @@ public class JetServiceImpl {
             List<JetData> exstingJetData = jetDataDao.findByControlId(jetMastExist.get().getId());
             for(JetData jetData:exstingJetData)
             {
-                ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
+                ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
                 if (productionPlanExits!=null)
                 {
 
