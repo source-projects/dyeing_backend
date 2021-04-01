@@ -1889,4 +1889,9 @@ public class StockBatchServiceImpl {
     public Double getWtByMergeBatchId(String batchId) {
         return batchDao.getTotalWtByMergeBatchId(batchId);
     }
+
+
+    public Quality getQualityByStockId(Long stockId) {
+        return stockMastDao.getQualityByStockId(stockId);
+    }
 }
