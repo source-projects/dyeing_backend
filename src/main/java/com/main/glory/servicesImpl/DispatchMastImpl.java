@@ -334,7 +334,7 @@ public class DispatchMastImpl {
                 throw new Exception("no production plan found for batch");*/
 
             ShadeMast shadeMast = null;
-            if(productionPlan.getShadeId()!=null)
+            if(productionPlan!=null && productionPlan.getShadeId()!=null)
             {
                 shadeMast=shadeService.getShadeById(productionPlan.getShadeId());
                 if(shadeMast==null)
@@ -1269,7 +1269,7 @@ public class DispatchMastImpl {
 
 
             //batch record
-            List<BatchData> batchDataList = batchDao.getBatchRecordByBillGeneratedFlag(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
             batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
 
 
