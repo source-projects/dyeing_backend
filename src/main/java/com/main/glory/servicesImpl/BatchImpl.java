@@ -71,20 +71,21 @@ public class BatchImpl {
                 if (batchData.getId() == 0) {
                     batchData.setIsExtra(true);
                     batchData.setMtr(0.0);
-                    batchData.setIsFinishMtrSave(true);
-                    batchData.setIsProductionPlanned(true);
 
-                    batchDao.save(batchData);
                 } else {
                     //if it is already available then replace the flag from the hash map
                     if (batchData.getIsExtra() == true)
                         extraBatch.replace(batchData.getId(), true);
                     //save the extra batch
                 }
+                batchData.setIsFinishMtrSave(true);
+                batchData.setIsProductionPlanned(true);
+
+                batchDao.save(batchData);
 
             }
 
-            //##Iterate the loop and delete the record who flag is false in extra batch
+            //##Iterate the loop and delete the record who flag is true in extra batch
             for (Map.Entry<Long, Boolean> entry : extraBatch.entrySet()) {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
                 if (entry.getValue() == true) {
@@ -111,20 +112,22 @@ public class BatchImpl {
                 if (batchData.getId() == 0) {
                     batchData.setIsExtra(true);
                     batchData.setMtr(0.0);
-                    batchData.setIsFinishMtrSave(true);
-                    batchData.setIsProductionPlanned(true);
-                    batchData.setMergeBatchId(mergeBatchId);
-                    batchDao.save(batchData);
+
+
                 } else {
                     //if it is already available then replace the flag from the hash map
                     if (batchData.getIsExtra() == true)
                         extraBatch.replace(batchData.getId(), true);
                     //save the extra batch
                 }
+                batchData.setIsFinishMtrSave(true);
+                batchData.setIsProductionPlanned(true);
+                batchData.setMergeBatchId(mergeBatchId);
+                batchDao.save(batchData);
 
             }
 
-            //##Iterate the loop and delete the record who flag is false in extra batch
+            //##Iterate the loop and delete the record who flag is true in extra batch
             for (Map.Entry<Long, Boolean> entry : extraBatch.entrySet()) {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
                 if (entry.getValue() == true) {
