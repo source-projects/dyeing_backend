@@ -785,7 +785,7 @@ public class StockBatchServiceImpl {
                 userId = null;
                 userHeadId = null;
                 batchData = batchDao.findAllBasedOnControlIdAndBatchId();
-                batchDataForMergeBatch = batchDao.findAllBasedOnControlIdAndBatchIdAndMergeBatchId();
+                batchDataForMergeBatch = batchDao.findAllMergeBatch();
 
             } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
