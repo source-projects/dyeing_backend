@@ -1594,7 +1594,7 @@ public class StockBatchServiceImpl {
                 continue;
             for(BatchDetail batchDetail:batchDetails)
             {
-                if(batchDetail.getIsProductionPlanned())
+                if(batchDetail.getIsProductionPlanned()==true)
                 {
                     ProductionPlan productionPlan= productionPlanService.getProductionDataByBatchAndStock(batchDetail.getBatchId(),batchDetail.getControlId());
                     ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
