@@ -883,6 +883,7 @@ public class DispatchMastImpl {
 
             List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
 
+            String isMergeBatchId="";
             for(DispatchData invoiceBatch:dispatchDataList)
             {
                 //System.out.println("invoic entry:"+invoiceBatch.getBatchEntryId());
@@ -892,16 +893,17 @@ public class DispatchMastImpl {
                     finishMtr += batchData.getFinishMtr();
                     pcs++;
                 }
-
+               
             }
 
-            //get the shade rate as well
+            /*//get the shade rate as well
             ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.getBatchId(),batch.getStockId());
             if(productionPlan==null)
                 continue;
-           /* Optional<ShadeMast> shadeMast = null;
+           *//* Optional<ShadeMast> shadeMast = null;
             if(productionPlan.getShadeId()!=null)
-            shadeService.getShadeMastById(productionPlan.getShadeId());*/
+            shadeService.getShadeMastById(productionPlan.getShadeId());*//*
+            */
 
             Double shadeRate=0.0;
             /*if(shadeMast.isPresent())
