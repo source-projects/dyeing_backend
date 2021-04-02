@@ -43,6 +43,7 @@ public class MappingPermission {
         mapping.put("ds","dyeingSlip");
         mapping.put("emp","employee");
         mapping.put("attnds","attendance");
+        mapping.put("po","purchase");
 
 
     }
