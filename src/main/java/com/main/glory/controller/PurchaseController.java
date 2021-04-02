@@ -78,7 +78,7 @@ public class PurchaseController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping("/purchase/delete/{id}")
+    @DeleteMapping("/purchase/delete/{id}")
     public ResponseEntity<GeneralResponse<Boolean>> deletePurchaseById(@PathVariable(name = "id")Long id){
         GeneralResponse<Boolean> result;
         try{
