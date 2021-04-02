@@ -27,13 +27,14 @@ public class BatchDetail {
     Double totalMtr;
     Double totalFinish;
     Date receiveDate;
+    String mergeBatchId;
     String partyShadeNo;
     String colorName;
     String colorTone;
 
 
 
-    public BatchDetail(Long controlId, String batchId, Boolean isProductionPlanned, Boolean isBillGenrated, Boolean isFinishMtrSave, Long pcs, Double totalMtr,Double totalFinish, Date receiveDate) {
+    public BatchDetail(Long controlId, String batchId, Boolean isProductionPlanned, Boolean isBillGenrated, Boolean isFinishMtrSave, Long pcs, Double totalMtr,Double totalFinish, Date receiveDate,String mergeBatchId) {
         this.controlId = controlId;
         this.batchId = batchId;
         this.isProductionPlanned = isProductionPlanned;

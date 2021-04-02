@@ -97,4 +97,11 @@ public class GetAllBatch {
         this.qualityName = qualityName;
         this.qualityType = qualityType;
     }
+
+    public GetAllBatch(GetBatchByInvoice g) {
+        this.productionPlanned=true;//because it is already getting the data who;s flag is true
+        this.isBillGenerated=false;
+        this.batchId = g.getBatchId();
+
+    }
 }
