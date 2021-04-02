@@ -181,6 +181,7 @@ public class BasicController extends ControllerConfig {
                 result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
@@ -205,6 +206,7 @@ public class BasicController extends ControllerConfig {
                 result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
