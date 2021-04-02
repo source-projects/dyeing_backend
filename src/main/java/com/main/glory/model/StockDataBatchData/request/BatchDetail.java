@@ -44,6 +44,7 @@ public class BatchDetail {
         this.totalMtr = totalMtr;
         this.totalFinish=totalFinish;
         this.receiveDate = receiveDate;
+        this.mergeBatchId = mergeBatchId;
     }
 
     public BatchDetail(BatchDetail batchDetail, Quality quality, QualityName qualityName) {
