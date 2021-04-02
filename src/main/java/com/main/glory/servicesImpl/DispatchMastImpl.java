@@ -329,7 +329,7 @@ public class DispatchMastImpl {
 
 
             //get the shade detail
-            ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(createDispatch.getBatchId(), createDispatch.getStockId());
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
             /*if(productionPlan==null)
                 throw new Exception("no production plan found for batch");*/
 
@@ -893,7 +893,7 @@ public class DispatchMastImpl {
                     finishMtr += batchData.getFinishMtr();
                     pcs++;
                 }
-               
+
             }
 
             /*//get the shade rate as well
