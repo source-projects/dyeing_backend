@@ -32,8 +32,8 @@ public class GetBatchWithControlId {
     }
     public GetBatchWithControlId(String mergeBatchId,  Double WT, Double MTR) {
         this.mergeBatchId = mergeBatchId;
-        this.batchId = batchId;
-        this.controlId = controlId;
+       /* this.batchId = batchId;
+        this.controlId = controlId;*/
         this.WT = WT;
         this.MTR = MTR;
     }
@@ -54,4 +54,9 @@ public class GetBatchWithControlId {
     //    this.isProductionPlanned=getBatchWithControlIdData.isProductionPlanned;
     }
 
+   /* public GetBatchWithControlId(String mergeBatchId, Double WT, Double MTR) {
+        this.mergeBatchId = mergeBatchId;
+        this.MTR=MTR;
+        this.WT=WT;
+    }*/
 }
