@@ -92,7 +92,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     BatchData findByBatchEntryId(Long batchEntryId);
 
     //get Batch List with stockID
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId = :id AND p.isProductionPlanned = false AND p.mergeBatchId IS NULL GROUP BY p.batchId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.controlId = :id AND p.isProductionPlanned = false AND p.mergeBatchId IS NULL GROUP BY p.batchId,p.controlId")
     List<GetBatchWithControlId> getBatchAndStockListWithoutProductionPlanByStockId(Long id);
 
     @Query("select SUM(b.wt) from BatchData b where b.controlId=:controlId AND b.batchId=:batchId GROUP BY b.batchId,b.controlId")

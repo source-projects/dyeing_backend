@@ -56,6 +56,26 @@ public class UserController extends ControllerConfig {
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+    @GetMapping("/user/getByDepartmentId")
+    public ResponseEntity<GeneralResponse<List<UserData>>> getUserByDepartmentId(@RequestParam(name = "departmentId") Long departmentId)
+    {
+        GeneralResponse<List<UserData>> result;
+        if(departmentId!=null)
+        {
+            List<UserData> userObj=userService.getAllUserByDepartmentId(departmentId);
+            if(userObj!=null)
+            {
+                result = new GeneralResponse<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result = new GeneralResponse<>(null, "No such record found", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        else
+            result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
+
+
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
     @GetMapping("/user/getAllOperator/all")
     public ResponseEntity<GeneralResponse<List<GetAllOperator>>> getAllOperator() throws Exception {
 
