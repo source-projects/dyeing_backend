@@ -32,4 +32,9 @@ public interface PurchaseDao extends JpaRepository<Purchase,Long> {
 
     @Query("select new com.main.glory.model.purchase.response.PurchaseResponse(p,(select d.name from Department d where d.id=p.departmentId) as deptName,(select d.name from ReceiverBy d where d.id=p.receiverById) as rname,(select d.name from ApprovedBy d where d.id=p.approvedById) as aname) from Purchase p where p.checked=:flag")
     List<PurchaseResponse> getAllPurchaseRecordBasedOnFlag(Boolean flag);
+
+    @Modifying
+    @Transactional
+    @Query("delete from Purchase p where p.id=:id")
+    void deleteByPurchaseId(Long id);
 }

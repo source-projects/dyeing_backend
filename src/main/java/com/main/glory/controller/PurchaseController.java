@@ -78,6 +78,20 @@ public class PurchaseController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping("/purchase/delete/{id}")
+    public ResponseEntity<GeneralResponse<Boolean>> deletePurchaseById(@PathVariable(name = "id")Long id){
+        GeneralResponse<Boolean> result;
+        try{
+
+            purchaseService.deleteRecordById(id);
+            result= new GeneralResponse<>(true, "data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
     @GetMapping("/purchase/get/{id}")
     public ResponseEntity<GeneralResponse<PurchaseResponse>> getPurchaseById(@PathVariable(name = "id") Long id){
         GeneralResponse<PurchaseResponse> result;

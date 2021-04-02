@@ -140,6 +140,14 @@ public class PurchaseImpl {
 
     }
 
+    public void deleteRecordById(Long id) throws Exception {
+        Purchase purchaseExit=purchaseDao.getPurchaseById(id);
+        if(purchaseExit==null)
+            throw new Exception("no record found");
+
+        purchaseDao.deleteByPurchaseId(id);
+    }
+
 
 
     /*public Boolean addPurchaseOrder(PurchaseOrder purchaseOrder) throws Exception{
