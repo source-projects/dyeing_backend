@@ -128,7 +128,7 @@ public class PurchaseController extends ControllerConfig {
             List<PurchaseResponse> list = purchaseService.getAllPurchaseRecordBasedOnFlag(flag,headers.get("id"));
             if (list.isEmpty())
             {
-                result = new GeneralResponse<>(list, "record not found ", false, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(list, "record not found ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             else {
                 result = new GeneralResponse<>(list, "record fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
