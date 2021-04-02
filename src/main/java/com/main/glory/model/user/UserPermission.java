@@ -40,6 +40,7 @@ public class UserPermission {
 
     Long emp;
     Long attnds;
+    Long po;
 
 
 
