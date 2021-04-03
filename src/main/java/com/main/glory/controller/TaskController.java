@@ -62,7 +62,7 @@ public class TaskController extends ControllerConfig {
                 result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-            result =  new GeneralResponse<>(taskResponse, "Task Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -90,7 +90,7 @@ public class TaskController extends ControllerConfig {
                 result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-                result =  new GeneralResponse<>(taskResponse, "Task Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)

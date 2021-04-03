@@ -14,4 +14,7 @@ public interface TaskMastDao extends JpaRepository<TaskMast,Long> {
 
     @Query("select x from TaskMast x")
     List<TaskMast> getAllTask();
+
+    @Query("select x from TaskMast x where x.reportId=:reportId")
+    List<TaskMast> getTaskByReportId(Long reportId);
 }
