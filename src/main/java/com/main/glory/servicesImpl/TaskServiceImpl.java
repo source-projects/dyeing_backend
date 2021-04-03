@@ -96,13 +96,13 @@ public class TaskServiceImpl {
             case "Weekly":
                 cal = Calendar.getInstance();
                 cal.setTime(record.getStartDate());
-                /*for(date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.DATE,7))
+                for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.DATE,7))
                 {
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
                     taskDataDao.save(taskData);
 
-                }*/
+                }
                 break;
             case "Once":
                     TaskData taskData =new TaskData(taskMast);
