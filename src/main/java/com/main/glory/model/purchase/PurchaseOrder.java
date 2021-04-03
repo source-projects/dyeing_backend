@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/*
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
@@ -37,3 +38,4 @@ public class PurchaseOrder {
         this.createdBy = p.createdBy;
     }
 }
+*/

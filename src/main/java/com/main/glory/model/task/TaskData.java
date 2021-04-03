@@ -27,6 +27,15 @@ public class TaskData {
     Date taskCompletedDate;
     Date createdDate;
     String reportUrl;
+    List<TaskDataImage> taskDataImageList;
+
+    public TaskData(TaskMast taskMast) {
+        this.controlId = taskMast.getId();
+        this.assignUserId =taskMast.assignUserId;
+        this.isCompleted=false;
+        this.approved=false;
+
+    }
 
     @PrePersist
     public void onCreate()

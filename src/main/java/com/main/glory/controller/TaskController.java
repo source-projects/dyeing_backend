@@ -5,14 +5,15 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.task.TaskMast;
+import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.servicesImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -22,23 +23,109 @@ public class TaskController extends ControllerConfig {
     TaskServiceImpl taskService;
 
     @PostMapping(value="/task/add")
-    public GeneralResponse<Boolean> saveJet(@RequestBody TaskMast record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> saveTask(@RequestBody TaskMast record) throws Exception {
+        GeneralResponse<Boolean> result;
         if(record==null)
         {
-            return new GeneralResponse<Boolean>(false, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(false, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             taskService.saveTask(record);
-            return new GeneralResponse<Boolean>(null, "Task Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, "Task Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            e.printStackTrace();
+            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/task/getBy")
+    public ResponseEntity<GeneralResponse<TaskResponse>> getTaskById(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<TaskResponse> result;
+        if(id==null)
+        {
+            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            TaskResponse taskResponse = taskService.getTaskById(id);
+            if(taskResponse==null)
+            {
+                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            result =  new GeneralResponse<>(taskResponse, "Task Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/task/get")
+    public ResponseEntity<GeneralResponse<List<TaskResponse>>> getAllTask(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<List<TaskResponse>> result;
+        if(id==null)
+        {
+            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            List<TaskResponse> taskResponse = taskService.getAllTask();
+            if(taskResponse.isEmpty())
+            {
+                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result =  new GeneralResponse<>(taskResponse, "Task Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @DeleteMapping(value="/task/deleteBy")
+    public ResponseEntity<GeneralResponse<Boolean>> deleteTaskById(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<Boolean> result;
+        if(id==null)
+        {
+            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            flag = taskService.deleteTaskById(id);
+            if(flag==true)
+            {
+                result =  new GeneralResponse<>(true, "Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result =  new GeneralResponse<>(false, "Unable to remove the record", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 }
