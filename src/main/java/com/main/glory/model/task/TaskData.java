@@ -27,6 +27,9 @@ public class TaskData {
     Date taskCompletedDate;
     Date createdDate;
     String reportUrl;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<TaskDataImage> taskDataImageList;
 
     public TaskData(TaskMast taskMast) {
