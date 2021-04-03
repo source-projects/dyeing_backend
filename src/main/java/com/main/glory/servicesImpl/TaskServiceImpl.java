@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -61,16 +62,57 @@ public class TaskServiceImpl {
         TaskMast taskMast = taskMastDao.save(record);
 
         //List<TaskData> taskDataList=new ArrayList<>();
-        TaskData taskData =new TaskData(taskMast);
-        taskDataDao.save(taskData);
 
+        //create the task as per the days
 
-        //Long differenceInDays = record.getEndDate() - record.getStartDate();
+        switch(record.getTaskType())
+        {
+            case "Daily":
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(record.getStartDate());
+                for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.DATE,1))
+                {
+                    TaskData taskData =new TaskData(taskMast);
+                    taskData.setTaskDate(date);
+                    taskDataDao.save(taskData);
 
+                }
+                break;
 
+            case "Monthly":
+                cal = Calendar.getInstance();
+                cal.setTime(record.getStartDate());
+                for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.MONTH,1))
+                {
+                    if(cal.getActualMaximum(Calendar.DAY_OF_MONTH)==record.getStartDate().getDate()) {
+                        TaskData taskData = new TaskData(taskMast);
+                        taskData.setTaskDate(date);
+                        taskDataDao.save(taskData);
+                    }
 
+                }
+                break;
 
+            case "Weekly":
+                cal = Calendar.getInstance();
+                cal.setTime(record.getStartDate());
+                /*for(date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.DATE,7))
+                {
+                    TaskData taskData =new TaskData(taskMast);
+                    taskData.setTaskDate(date);
+                    taskDataDao.save(taskData);
 
+                }*/
+                break;
+            case "Once":
+                    TaskData taskData =new TaskData(taskMast);
+                    taskData.setTaskDate(record.getStartDate());
+                    taskDataDao.save(taskData);
+                break;
+            default:
+                throw new Exception("task type not found");
+
+        }
 
 
 
