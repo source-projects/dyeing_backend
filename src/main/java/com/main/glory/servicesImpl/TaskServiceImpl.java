@@ -135,4 +135,8 @@ public class TaskServiceImpl {
         return true;
 
     }
+
+    public List<TaskMast> getTaskByReportId(Long reportId) {
+        return taskMastDao.getTaskByReportId(reportId);
+    }
 }

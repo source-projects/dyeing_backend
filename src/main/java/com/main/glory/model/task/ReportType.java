@@ -15,10 +15,19 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Entity
-public class Report {
+public class ReportType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String formName;
     String url;
+
+
+    public ReportType(ReportType record) {
+        this.id=record.id;
+        this.formName=record.formName;
+        this.url=record.url;
+    }
+
+
 }
