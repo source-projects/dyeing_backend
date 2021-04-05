@@ -11,6 +11,7 @@ import com.main.glory.model.admin.Department;
 import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.request.TaskDetail;
+import com.main.glory.model.task.request.TaskFilter;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,7 @@ public class TaskServiceImpl {
                     System.out.println(simpleDateFormat.format(date));
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
+                    taskData.setTaskStatus("NotStarted");
                     taskDataDao.save(taskData);
 
                     cal.add(Calendar.DATE,1);
@@ -95,6 +97,7 @@ public class TaskServiceImpl {
                     if(record.getStartDate().getDate() <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                         TaskData taskData = new TaskData(taskMast);
                         taskData.setTaskDate(date);
+                        taskData.setTaskStatus("NotStarted");
                         taskDataDao.save(taskData);
 
                     }
@@ -117,7 +120,9 @@ public class TaskServiceImpl {
                     System.out.println(simpleDateFormat.format(date));
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
+                    taskData.setTaskStatus("NotStarted");
                     taskDataDao.save(taskData);
+
                     cal.add(Calendar.DATE,7);
                     date=cal.getTime();
 
@@ -126,6 +131,7 @@ public class TaskServiceImpl {
             case "Once":
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(record.getStartDate());
+                    taskData.setTaskStatus("NotStarted");
                     taskDataDao.save(taskData);
                 break;
             default:
@@ -201,8 +207,16 @@ public class TaskServiceImpl {
         return taskMastDao.getTaskByReportId(reportId);
     }
 
-    public List<TaskDetail> getAllTaskByDateAndStatus(Date date, String status) {
-        return taskDataDao.getTaskDetailByDateAndStatus(date,status);
+    public List<TaskDetail> getAllTaskByDateAndStatus(TaskFilter record) {
+        if(record.getDate()==null && record.getStatus().isEmpty())
+        return taskDataDao.getTaskDetail();
+        else if(!record.getStatus().isEmpty() && record.getDate()!=null)
+            return taskDataDao.getTaskDetailByDateAndStatus(record.getDate(),record.getStatus());
+        else if(record.getDate()!=null)
+            return taskDataDao.getTaskDetailByDate(record.getDate());
+        else
+            return taskDataDao.getTaskDetailByStatus( record.getStatus());
+
 
     }
 }
