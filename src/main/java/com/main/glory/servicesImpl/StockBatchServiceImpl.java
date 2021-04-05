@@ -393,7 +393,7 @@ public class StockBatchServiceImpl {
 
     public List<BatchData> getBatchById(String batchId,Long controlId) throws Exception{
 
-        List<BatchData> batchData = batchDao.findByControlIdAndBatchIdAndIsExtra(controlId,batchId,false);
+        List<BatchData> batchData = batchDao.getBatchByBatchId(batchId);
 
 
         if(batchData.isEmpty())
