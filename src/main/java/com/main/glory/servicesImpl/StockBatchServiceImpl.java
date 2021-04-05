@@ -2016,6 +2016,25 @@ public class StockBatchServiceImpl {
         return batchDao.getTotalWtByMergeBatchId(batchId);
     }
 
+    public void deleteMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
+        BatchData mergeBatchIdExist = batchDao.getMergeBatchExist(mergeBatchId);
+        if(mergeBatchIdExist==null)
+            throw new Exception("no record found");
+
+        //check that the merge batch is production planned??
+        if(mergeBatchIdExist.getIsProductionPlanned()==true)
+            throw new Exception("unable to delete because production planned");
+
+        List<BatchData> batchDataList = batchDao.getMergeBatchDataByMergeBatchId(mergeBatchId);
+
+        for(BatchData batchData:batchDataList)
+        {
+            batchDao.updateMergeIdByBatchEntryId(batchData.getId(),null);
+        }
+
+
+    }
+
 
    /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);

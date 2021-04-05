@@ -80,4 +80,21 @@ public class MergeBatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @DeleteMapping("/stockBatch/delete/mergeBatchListBy")
+    public ResponseEntity<GeneralResponse<Boolean>> deleteMergeBatchByMergeBatchId(@RequestParam(name = "mergeBatchId")String mergeBatchId) throws Exception {
+        GeneralResponse<Boolean> result = null;
+        try {
+            if(mergeBatchId==null)
+                throw new Exception("null id passed");
+
+            stockBatchService.deleteMergeBatchByMergeBatchId(mergeBatchId);
+            result = new GeneralResponse<>(true, "Merge batch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 }
