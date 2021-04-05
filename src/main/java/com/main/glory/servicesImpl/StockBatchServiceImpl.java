@@ -2003,7 +2003,7 @@ public class StockBatchServiceImpl {
         {
             //get batches based on batch id and stock id by mergebatchId
 
-            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
+            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchIdWithoutFilter(batch.getMergeBatchId());
             BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
             for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
             {
