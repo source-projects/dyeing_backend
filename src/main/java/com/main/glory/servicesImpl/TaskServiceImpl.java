@@ -73,13 +73,14 @@ public class TaskServiceImpl {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(record.getStartDate());
                 Date date=cal.getTime();
-                for(;date.before(record.getEndDate());cal.add(Calendar.DATE,1))
+                for(;date.getTime()<=record.getEndDate().getTime();)
                 {
                     System.out.println(simpleDateFormat.format(date));
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
                     taskDataDao.save(taskData);
 
+                    cal.add(Calendar.DATE,1);
                     date=cal.getTime();
                 }
                 break;
@@ -98,7 +99,9 @@ public class TaskServiceImpl {
 
                     }
                     cal.add(Calendar.MONTH,1);
+
                     date=cal.getTime();
+                    date.setDate(record.getStartDate().getDate());
 
 
 
@@ -109,13 +112,14 @@ public class TaskServiceImpl {
                 cal = Calendar.getInstance();
                 cal.setTime(record.getStartDate());
                 date=cal.getTime();
-                for(;date.before(record.getEndDate());cal.add(Calendar.DATE,7))
+                for(;date.before(record.getEndDate());)
                 {
+                    System.out.println(simpleDateFormat.format(date));
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
                     taskDataDao.save(taskData);
+                    cal.add(Calendar.DATE,7);
                     date=cal.getTime();
-
 
                 }
                 break;
