@@ -45,6 +45,7 @@ public class MappingPermission {
         mapping.put("attnds","attendance");
         mapping.put("po","purchase");
         mapping.put("mg","mergeBatch");
+        //mapping.put("rpt","mergeBatch");
 
 
     }

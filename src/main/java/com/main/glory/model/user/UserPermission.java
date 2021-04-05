@@ -42,6 +42,7 @@ public class UserPermission {
     Long attnds;
     Long po;
     Long mg;
+    Long rpt;
 
 
 
