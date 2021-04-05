@@ -725,6 +725,7 @@ public class StockBatchServiceImpl {
                     continue;
 
                 System.out.println("mergebatch:"+g.getMergeBatchId());
+                System.out.println("batch:"+g.getBatchId());
                 ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getMergeBatchId());
                 if(productionPlan!=null && productionPlan.getStatus()==true)
                     continue;
@@ -733,7 +734,7 @@ public class StockBatchServiceImpl {
                 if(jetData.getStatus()==JetStatus.success)
                 {
                     GetAllBatch getAllBatch=new GetAllBatch(g);
-                    getAllBatch.setBatchId(g.getBatchId()==null?g.getBatchId():g.getMergeBatchId()+"-"+g.getBatchId());
+                    getAllBatch.setBatchId(g.getMergeBatchId()+"-"+g.getBatchId());
                     list.add(getAllBatch);
                 }
 
