@@ -21,6 +21,8 @@ public class TaskData {
     Long controlId;
     Long assignUserId;
     String remark;
+    @Column(columnDefinition = "varchar(255) default 'NotStarted'")
+    String taskStatus;
     Boolean isCompleted;
     Boolean approved;
     Date taskDate;
