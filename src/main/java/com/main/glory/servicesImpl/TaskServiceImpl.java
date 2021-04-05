@@ -84,7 +84,8 @@ public class TaskServiceImpl {
                 cal.setTime(record.getStartDate());
                 for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.MONTH,1))
                 {
-                    if(cal.getActualMaximum(Calendar.DAY_OF_MONTH)==record.getStartDate().getDate()) {
+                    System.out.println("max day of month:"+record.getStartDate().getDate());
+                    if(record.getStartDate().getDate() <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                         TaskData taskData = new TaskData(taskMast);
                         taskData.setTaskDate(date);
                         taskDataDao.save(taskData);
