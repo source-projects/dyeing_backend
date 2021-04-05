@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.task.TaskMast;
+import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.servicesImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,5 +128,35 @@ public class TaskController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+
+    //filter task api
+    /*@GetMapping(value="/task/get")
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskDetailByDateAndStatus(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<List<TaskDetail>> result;
+        if(id==null)
+        {
+            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            List<TaskResponse> taskResponse = taskService.getAllTask();
+            if(taskResponse.isEmpty())
+            {
+                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }*/
 
 }

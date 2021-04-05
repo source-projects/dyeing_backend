@@ -1989,22 +1989,158 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<MergeBatchId> getAllMergeBatchId() {
+    public List<BatchToPartyAndQuality> getAllMergeBatchId() {
        // List<GetAllMergeBatchId> list = new ArrayList<>();
 
+        List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
         List<MergeBatchId> record = batchDao.getAllMergeBatchId();
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;
 
-        return record;
+        batchDataForMergeBatch = batchDao.findAllMergeBatchWithoutFilter();
+
+        //merge batch filter api
+        for(GetBatchWithControlId batch : batchDataForMergeBatch)
+        {
+            //get batches based on batch id and stock id by mergebatchId
+
+            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
+            BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
+            {
+                //System.out.println("stockId:"+batchByMergeBatch.getControlId());
+
+                Optional<StockMast> stockMast=stockMastDao.findById(batchByMergeBatch.getControlId());
+                if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
+                {
+
+                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+                    Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
+
+                    //check that the process and party shade is exist or not
+                    //if not then set the detail by null
+                    /*ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batchByMergeBatch.getBatchId(),batchByMergeBatch.getControlId());
+                    if(productionPlan==null) {
+                        batchToPartyAndQuality.setPartyShadeNo(null);
+                        batchToPartyAndQuality.setProcessName(null);
+                    }
+                    else
+                    {
+                        //get the shade and process
+                        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+                        if(dyeingProcessMast==null || shadeMast.isEmpty())
+                            continue;
+
+
+                        batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+                        batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
+                    }*/
+
+                    batchToPartyAndQuality.setPartyName(batchToPartyAndQuality.getPartyName()==null?party.get().getPartyName():batchToPartyAndQuality.getPartyName()+","+party.get().getPartyName());
+                    batchToPartyAndQuality.setQualityId(batchToPartyAndQuality.getQualityId()==null?quality.get().getQualityId():batchToPartyAndQuality.getQualityId()+","+quality.get().getQualityId());
+                    batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
+                    batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
+                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
+
+
+                }
+                Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
+                Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
+                batchToPartyAndQuality.setTotalMtr(totalMtr);
+                batchToPartyAndQuality.setTotalWt(totalWt);
+
+            }
+            batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+            batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
+            //add the record
+            getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+        }
+        return getAllBatchWithPartyAndQualities;
     }
 
-    public CreateMergeBatch getMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
-        MergeBatchId record = batchDao.getMergeBatchByMergeBatchId(mergeBatchId);
-        if(record==null)
-            throw new Exception("no record found");
-        List<BatchData> batchData  = batchDao.getMergeBatchDataByMergeBatchId(mergeBatchId);
+    public BatchToPartyQualityWithGr getMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
+        BatchToPartyQualityWithGr batchToPartyAndQuality =new BatchToPartyQualityWithGr();
+        BatchData mergeBatchExist = batchDao.getMergeBatchExist(mergeBatchId);
 
-        CreateMergeBatch createMergeBatch = new CreateMergeBatch(record,batchData);
-        return createMergeBatch;
+        List<BatchData> batchDataList = new ArrayList<>();
+        if(mergeBatchExist==null)
+            throw new Exception("no record found");
+
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;
+
+        batchDataForMergeBatch = batchDao.findAllMergeBatchWithoutFilterByMergeBatchId(mergeBatchId);
+
+        //merge batch filter api
+        for(GetBatchWithControlId batch : batchDataForMergeBatch)
+        {
+            //get batches based on batch id and stock id by mergebatchId
+
+            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
+            //BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
+            {
+                //System.out.println("stockId:"+batchByMergeBatch.getControlId());
+
+                Optional<StockMast> stockMast=stockMastDao.findById(batchByMergeBatch.getControlId());
+                if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
+                {
+
+                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+                    Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
+
+                    //check that the process and party shade is exist or not
+                    //if not then set the detail by null
+                    /*ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batchByMergeBatch.getBatchId(),batchByMergeBatch.getControlId());
+                    if(productionPlan==null) {
+                        batchToPartyAndQuality.setPartyShadeNo(null);
+                        batchToPartyAndQuality.setProcessName(null);
+                    }
+                    else
+                    {
+                        //get the shade and process
+                        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+                        if(dyeingProcessMast==null || shadeMast.isEmpty())
+                            continue;
+
+
+                        batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+                        batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
+                    }*/
+
+                    batchToPartyAndQuality.setPartyName(batchToPartyAndQuality.getPartyName()==null?party.get().getPartyName():batchToPartyAndQuality.getPartyName()+","+party.get().getPartyName());
+                    batchToPartyAndQuality.setQualityId(batchToPartyAndQuality.getQualityId()==null?quality.get().getQualityId():batchToPartyAndQuality.getQualityId()+","+quality.get().getQualityId());
+                    batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
+                    batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
+                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
+
+                    batchDataList.addAll(batchDao.getBatchByBatchIdWithMergeBatchId(batch.getBatchId(),mergeBatchId));
+
+                }
+                Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
+                Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
+                batchToPartyAndQuality.setTotalMtr(totalMtr);
+                batchToPartyAndQuality.setTotalWt(totalWt);
+
+
+            }
+            batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+            batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
+            //add the record
+            //getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+            batchToPartyAndQuality.setBatchDataList(batchDataList);
+
+        }
+
+
+        return batchToPartyAndQuality;
 
     }
 

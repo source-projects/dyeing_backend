@@ -3,6 +3,8 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.CreateMergeBatch;
+import com.main.glory.model.StockDataBatchData.response.BatchToPartyAndQuality;
+import com.main.glory.model.StockDataBatchData.response.BatchToPartyQualityWithGr;
 import com.main.glory.model.StockDataBatchData.response.MergeBatchId;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +51,10 @@ public class MergeBatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/stockBatch/get/mergeBatchList")
-    public ResponseEntity<GeneralResponse<List<MergeBatchId>>> getAllMergeBatchId() throws Exception {
-        GeneralResponse<List<MergeBatchId>> result = null;
+    public ResponseEntity<GeneralResponse<List<BatchToPartyAndQuality>>> getAllMergeBatchId() throws Exception {
+        GeneralResponse<List<BatchToPartyAndQuality>> result = null;
         try {
-            List<MergeBatchId> list = stockBatchService.getAllMergeBatchId();
+            List<BatchToPartyAndQuality> list = stockBatchService.getAllMergeBatchId();
 
             if(!list.isEmpty())
                 result = new GeneralResponse<>(list, "Merge batch fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -66,10 +68,10 @@ public class MergeBatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/stockBatch/get/mergeBatchListBy")
-    public ResponseEntity<GeneralResponse<CreateMergeBatch>> getMergeBatchByMergeBatchId(@RequestParam(name = "mergeBatchId")String mergeBatchId) throws Exception {
-        GeneralResponse<CreateMergeBatch> result = null;
+    public ResponseEntity<GeneralResponse<BatchToPartyQualityWithGr>> getMergeBatchByMergeBatchId(@RequestParam(name = "mergeBatchId")String mergeBatchId) throws Exception {
+        GeneralResponse<BatchToPartyQualityWithGr> result = null;
         try {
-            CreateMergeBatch list = stockBatchService.getMergeBatchByMergeBatchId(mergeBatchId);
+            BatchToPartyQualityWithGr list = stockBatchService.getMergeBatchByMergeBatchId(mergeBatchId);
 
             if(list!=null)
                 result = new GeneralResponse<>(list, "Merge batch fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK);
