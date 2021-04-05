@@ -2079,13 +2079,13 @@ public class StockBatchServiceImpl {
         {
             //get batches based on batch id and stock id by mergebatchId
 
-            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
-            //BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            //List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
+          /*  //BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
             for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
-            {
+            {*/
                 //System.out.println("stockId:"+batchByMergeBatch.getControlId());
 
-                Optional<StockMast> stockMast=stockMastDao.findById(batchByMergeBatch.getControlId());
+                Optional<StockMast> stockMast=stockMastDao.findById(batch.getControlId());
                 if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
                 {
 
@@ -2121,23 +2121,25 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
 
-                    batchDataList.addAll(batchDao.getBatchByBatchIdWithMergeBatchId(batch.getBatchId(),mergeBatchId));
+
 
                 }
-                Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
+                /*Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
                 Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
                 batchToPartyAndQuality.setTotalMtr(totalMtr);
                 batchToPartyAndQuality.setTotalWt(totalWt);
+*/
 
-
-            }
+           // }
+            batchDataList.addAll(batchDao.getBatchByBatchIdWithMergeBatchId(batch.getBatchId(),mergeBatchId));
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
             batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
             //add the record
             //getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
-            batchToPartyAndQuality.setBatchDataList(batchDataList);
+
 
         }
+        batchToPartyAndQuality.setBatchDataList(batchDataList);
 
 
         return batchToPartyAndQuality;
