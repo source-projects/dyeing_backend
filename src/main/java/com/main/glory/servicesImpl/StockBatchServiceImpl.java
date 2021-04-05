@@ -724,6 +724,7 @@ public class StockBatchServiceImpl {
                 if (g.getMergeBatchId()==null)
                     continue;
 
+                System.out.println("mergebatch:"+g.getMergeBatchId());
                 ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getMergeBatchId());
                 if(productionPlan!=null && productionPlan.getStatus()==true)
                     continue;
