@@ -725,7 +725,7 @@ public class StockBatchServiceImpl {
                     continue;
 
                 ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getMergeBatchId());
-                if(productionPlan!=null && productionPlan.getStatus()==false)
+                if(productionPlan!=null && productionPlan.getStatus()==true)
                     continue;
 
                 JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
