@@ -10,6 +10,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.Department;
 import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskMast;
+import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class TaskServiceImpl {
         //check the user and department is exit aur not
 
         Department departmentExist =departmentDao.getDepartmentById(record.getDepartmentId());
-        UserData userDataExist = userService.getUserById(record.getId());
+        UserData userDataExist = userService.getUserById(record.getAssignUserId());
 
         if(departmentExist==null || userDataExist==null)
             throw new Exception("no department or user found");
@@ -64,32 +65,42 @@ public class TaskServiceImpl {
         //List<TaskData> taskDataList=new ArrayList<>();
 
         //create the task as per the days
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         switch(record.getTaskType())
         {
             case "Daily":
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(record.getStartDate());
-                for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.DATE,1))
+                Date date=cal.getTime();
+                for(;date.before(record.getEndDate());cal.add(Calendar.DATE,1))
                 {
+                    System.out.println(simpleDateFormat.format(date));
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
                     taskDataDao.save(taskData);
 
+                    date=cal.getTime();
                 }
                 break;
 
             case "Monthly":
                 cal = Calendar.getInstance();
                 cal.setTime(record.getStartDate());
-                for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.MONTH,1))
+                date=cal.getTime();
+                for(;date.before(record.getEndDate());cal.add(Calendar.MONTH,1))
                 {
-                    System.out.println("max day of month:"+record.getStartDate().getDate());
+                    System.out.println("max day of month:"+cal.getActualMaximum(Calendar.DAY_OF_MONTH));
                     if(record.getStartDate().getDate() <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                         TaskData taskData = new TaskData(taskMast);
                         taskData.setTaskDate(date);
                         taskDataDao.save(taskData);
+
+
                     }
+                    date=cal.getTime();
+
+
 
                 }
                 break;
@@ -97,11 +108,14 @@ public class TaskServiceImpl {
             case "Weekly":
                 cal = Calendar.getInstance();
                 cal.setTime(record.getStartDate());
-                for(Date date=cal.getTime();date.before(record.getEndDate());cal.add(Calendar.DATE,7))
+                date=cal.getTime();
+                for(;date.before(record.getEndDate());cal.add(Calendar.DATE,7))
                 {
                     TaskData taskData =new TaskData(taskMast);
                     taskData.setTaskDate(date);
                     taskDataDao.save(taskData);
+                    date=cal.getTime();
+
 
                 }
                 break;
@@ -181,5 +195,10 @@ public class TaskServiceImpl {
 
     public List<TaskMast> getTaskByReportId(Long reportId) {
         return taskMastDao.getTaskByReportId(reportId);
+    }
+
+    public List<TaskDetail> getAllTaskByDateAndStatus(Date date, String status) {
+        return taskDataDao.getTaskDetailByDateAndStatus(date,status);
+
     }
 }

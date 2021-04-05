@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -131,18 +132,14 @@ public class TaskController extends ControllerConfig {
 
 
     //filter task api
-    /*@GetMapping(value="/task/get")
-    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskDetailByDateAndStatus(@RequestParam(name = "id")Long id) throws Exception {
+    @GetMapping(value="/task/getByDateAndStatus")
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskDetailByDateAndStatus(@RequestParam(name = "date") Date date, @RequestParam(name = "status")String status) throws Exception {
         GeneralResponse<List<TaskDetail>> result;
-        if(id==null)
-        {
-            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-        }
 
         boolean flag;
         try {
 
-            List<TaskResponse> taskResponse = taskService.getAllTask();
+            List<TaskDetail> taskResponse = taskService.getAllTaskByDateAndStatus(date,status);
             if(taskResponse.isEmpty())
             {
                 result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
@@ -157,6 +154,6 @@ public class TaskController extends ControllerConfig {
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }*/
+    }
 
 }

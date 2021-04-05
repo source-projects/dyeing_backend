@@ -896,10 +896,9 @@ public class StockBatchServiceImpl {
 
 
                 }
-                Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
-                Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
-                batchToPartyAndQuality.setTotalMtr(totalMtr);
-                batchToPartyAndQuality.setTotalWt(totalWt);
+
+                batchToPartyAndQuality.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId()));
+                batchToPartyAndQuality.setTotalWt(batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId()));
 
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
@@ -2045,16 +2044,17 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
 
+                    batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batch.getBatchId());
 
                 }
-                Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
+               /* Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
                 Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
                 batchToPartyAndQuality.setTotalMtr(totalMtr);
-                batchToPartyAndQuality.setTotalWt(totalWt);
+                batchToPartyAndQuality.setTotalWt(totalWt);*/
 
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
-            batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
+
             //add the record
             getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
 

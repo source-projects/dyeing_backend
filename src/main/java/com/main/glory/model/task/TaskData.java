@@ -42,6 +42,20 @@ public class TaskData {
 
     }
 
+    public TaskData(TaskData taskData) {
+        this.id=taskData.getId();
+        this.controlId = taskData.getControlId();
+        this.assignUserId = taskData.getAssignUserId();
+        this.remark=taskData.getRemark();
+        this.taskStatus=taskData.getTaskStatus();
+        this.isCompleted = taskData.getIsCompleted();
+        this.approved=taskData.getApproved();
+        this.taskDate = taskData.getTaskDate();
+        this.taskCompletedDate = taskData.getTaskCompletedDate();
+        this.createdDate = taskData.getCreatedDate();
+        this.reportUrl = taskData.getReportUrl();
+    }
+
     @PrePersist
     public void onCreate()
     {
