@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.request.TaskDetail;
+import com.main.glory.model.task.request.TaskFilter;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.servicesImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,14 +133,14 @@ public class TaskController extends ControllerConfig {
 
 
     //filter task api
-    @GetMapping(value="/task/getByDateAndStatus")
-    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskDetailByDateAndStatus(@RequestParam(name = "date") Date date, @RequestParam(name = "status")String status) throws Exception {
+    @PostMapping(value="/task/getByDateAndStatus")
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskDetailByDateAndStatus(@RequestBody TaskFilter record) throws Exception {
         GeneralResponse<List<TaskDetail>> result;
 
         boolean flag;
         try {
 
-            List<TaskDetail> taskResponse = taskService.getAllTaskByDateAndStatus(date,status);
+            List<TaskDetail> taskResponse = taskService.getAllTaskByDateAndStatus(record);
             if(taskResponse.isEmpty())
             {
                 result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
