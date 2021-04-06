@@ -312,6 +312,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.batchId IS NOT NULL AND p.controlId IS NOT NULL AND p.mergeBatchId =:mergeBatchId GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> getBatcheAndStockIdByMergeBatchIdWithoutFilter(String mergeBatchId);
 
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityId,(select q.qualityName from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.isBillGenrated=false AND b.isProductionPlanned=true AND b.mergeBatchId IS NULL AND b.controlId =:id AND b.batchId IS NOT NULL GROUP BY b.batchId,b.controlId")
+    List<GetAllBatch> getAllBatchWithoutBillGeneratedByStockId(Long id);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = true AND  p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND  p.controlId=:id GROUP BY p.mergeBatchId ")
+    List<GetBatchWithControlId> getAllMergeBatchWithoutBillGenratedByStockId(Long id);
+
 
 
 /*
