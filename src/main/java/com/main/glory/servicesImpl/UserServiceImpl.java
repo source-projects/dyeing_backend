@@ -6,6 +6,7 @@ import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
@@ -58,7 +59,7 @@ public class UserServiceImpl implements UserServiceInterface {
     public void createUser(UserAddRequest userDataDto, String headerId) throws Exception {
         //company and designation check
 
-        Department departmentExist =departmentDao.getDepartmentById(userDataDto.getDepartmentId());
+        DepartmentResponse departmentExist =departmentDao.getDepartmentResponseById(userDataDto.getDepartmentId());
         if(departmentExist==null)
             throw new Exception("department not found");
 
@@ -96,18 +97,15 @@ public class UserServiceImpl implements UserServiceInterface {
                 return;
             }
 
+            // ======else user is added by admin==========
+
             //identify the user recently added was master/oprator or data-entry from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
 
             if(user.getUserHeadId()==0)
             {
-                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = 0
-                if(userDataDto.getIsMaster()==false)
-                {
-                    userDao.updateUserHeadId(x.getId(), 0l);
-                }else {
-                    userDao.updateUserHeadId(x.getId(), x.getId());
-                }
+                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = usr id
+                userDao.updateUserHeadId(x.getId(), x.getId());
             }
             //else
             //remain the operator or data entry operator
