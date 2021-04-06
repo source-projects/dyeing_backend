@@ -97,6 +97,8 @@ public class UserServiceImpl implements UserServiceInterface {
                 return;
             }
 
+            // ======else user is added by admin==========
+
             //identify the user recently added was master/oprator or data-entry from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
 
