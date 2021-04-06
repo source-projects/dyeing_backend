@@ -455,61 +455,19 @@ public class StockBatchServiceImpl {
 
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
-        List<String> batchName =new ArrayList<>();
-        List<Boolean> productionPlanned =new ArrayList<>();
-        List<Boolean> isBillGenerated =new ArrayList<>();
-        List<Long> controlId =new ArrayList<>();
 
-        GetAllBatch getAllBatch;
+
+        List<GetAllBatch> getAllBatch;
 
         for(StockMast stockMast1:stockMast)
         {
 
-            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
+            getAllBatch = batchDao.getBatchResponseByStockIdWithoutProductionPlan(stockMast1.getId());
 
-            for(BatchData batchData : batch)
-            {
-                if(batchData.getIsProductionPlanned()==false) {
-                    //Take another arraylist because it is not working with Object arrayList
-                    if (!batchName.contains(batchData.getBatchId())) {
-                        batchName.add(batchData.getBatchId());
-                        controlId.add(batchData.getControlId());
-                        productionPlanned.add(batchData.getIsProductionPlanned());
-                        isBillGenerated.add(batchData.getIsBillGenrated());
-                    } else if (!controlId.contains(batchData.getControlId())) {
-                        batchName.add(batchData.getBatchId());
-                        controlId.add(batchData.getControlId());
-                        productionPlanned.add(batchData.getIsProductionPlanned());
-                        isBillGenerated.add(batchData.getIsBillGenrated());
-                    }
-                }
-
-            }
-
-
-
+            if(!getAllBatch.isEmpty())
+                getAllBatchList.addAll(getAllBatch);
         }
-        Optional<Party> party=partyDao.findById(partyId);
-        Optional<Quality> quality =qualityDao.findById(qualityId);
 
-        //storing all the data of batchName to object
-        for(int x=0;x<controlId.size();x++)
-        {
-            if(quality.get()!=null&&party.get()!=null )
-            {
-                if(!quality.isPresent() && !party.isPresent())
-                    continue;
-
-                getAllBatch=new GetAllBatch(party.get(),quality.get());
-                getAllBatch.setBatchId(batchName.get(x));
-                getAllBatch.setControlId(controlId.get(x));
-                getAllBatch.setProductionPlanned(productionPlanned.get(x));
-                getAllBatch.setIsBillGenerated(isBillGenerated.get(x));
-                getAllBatchList.add(getAllBatch);
-
-            }
-
-        }
 
 
         if(getAllBatchList.isEmpty())
