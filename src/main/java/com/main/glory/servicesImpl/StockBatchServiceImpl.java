@@ -628,7 +628,7 @@ public class StockBatchServiceImpl {
         Permissions permissions = new Permissions(userPermission.getSb().intValue());*/
 
         List<GetBatchWithControlId> batchDataForMergeBatch = null;//get all batch for based on mrge batch id
-
+        HashSet<String> mergeBatchIdExistList = new HashSet<>();
 
         for(StockMast stockMast:stockMastList) {
 
@@ -673,14 +673,21 @@ public class StockBatchServiceImpl {
                     List<GetBatchWithControlId> listOfBatch = batchDao.getBatchesByMergeBatchId(getAllBatch.getMergeBatchId());
 
                     for (GetBatchWithControlId batch : listOfBatch) {
+
                         GetAllBatchWithProduction batchDetail = new GetAllBatchWithProduction(batch, productionPlan.getId());
                         List<BatchData> batchDataList = batchDao.getBatchByMergeBatchIdAndBatchIdForFinishMtrSave(batch.getBatchId(), getAllBatch.getMergeBatchId());
                         if (batchDataList.isEmpty())
                             continue;
                         batchDetail.setBatchId(getAllBatch.getMergeBatchId() + "-" + batchDetail.getBatchId());
                         batchDetail.setProductionPlanned(true);
-                        if(!list.contains(batchDetail))
-                        list.add(batchDetail);
+
+
+                        if(!mergeBatchIdExistList.contains(batchDetail.getBatchId()))
+                        {
+                            mergeBatchIdExistList.add(batchDetail.getBatchId());
+                            list.add(batchDetail);
+                        }
+
                     }
 
                 }
