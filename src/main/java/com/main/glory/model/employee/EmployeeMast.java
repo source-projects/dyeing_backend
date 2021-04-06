@@ -32,6 +32,7 @@ public class EmployeeMast {
     Long updatedBy;
     Date createdDate;
     Date updatedDate;
+    Long empId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")

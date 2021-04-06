@@ -21,7 +21,7 @@ public class EmployeeSequence {
     Long id;
     Long empId;
 
-    public EmployeeSequence(long l) {
+    public EmployeeSequence(Long l) {
         this.empId = l;
     }
 }
