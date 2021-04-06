@@ -47,28 +47,7 @@ public class EmployeeServiceImpl {
              throw new Exception("employee document can't be null");
 
 
-        /*EmployeeMast employeeMastExistWithAdhar = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
-
-        if(employeeMastExistWithAdhar!=null)
-            throw new Exception("employee exist with aadhaar number");*/
-
-
-      /*  //process the image and store to the cloudniary
-
-      onlye the image name is coming from FE process that record
-        record.getEmployeeDataList().forEach(e->{
-
-        });
-
-*//*
-
-        //set the file url and store in system
-        record.getEmployeeDataList().forEach(e->{
-            FileUpload fileUpload = new FileUpload();
-            String url = fileUpload.uploadFile(e.getFile());
-        });*/
-
-        record.setId(employeeSequenceExist.getEmpId());
+        record.setEmpId(employeeSequenceExist.getEmpId());
         EmployeeMast x = employeeMastDao.saveAndFlush(record);
 
         //employeeDataDao.saveAll(record.getEmployeeDocumentList());
@@ -76,7 +55,7 @@ public class EmployeeServiceImpl {
         //update the employee sequnce
         employeeSequenceExist.setEmpId(employeeSequenceExist.getId()+1);
         employeeSequenceDao.saveAndFlush(employeeSequenceExist);
-        return x.getId();
+        return x.getEmpId();
     }
 
 
