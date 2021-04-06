@@ -38,7 +38,8 @@ public class EmployeeServiceImpl {
         if(employeeSequenceExist==null)
         {
             EmployeeSequence employeeSequence = new EmployeeSequence(1l);
-            employeeSequenceExist = employeeSequenceDao.getEmployeeSequence();
+            employeeSequenceExist =  employeeSequenceDao.save(employeeSequence);
+
         }
 
 
@@ -67,7 +68,7 @@ public class EmployeeServiceImpl {
             String url = fileUpload.uploadFile(e.getFile());
         });*/
 
-        record.setId(employeeSequenceExist.getId());
+        record.setId(employeeSequenceExist.getEmpId());
         EmployeeMast x = employeeMastDao.saveAndFlush(record);
 
         //employeeDataDao.saveAll(record.getEmployeeDocumentList());
