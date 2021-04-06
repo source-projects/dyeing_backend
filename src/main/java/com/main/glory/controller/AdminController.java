@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.*;
+import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.swagger.schema.ApiModelProperties;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -407,14 +409,15 @@ public class AdminController extends ControllerConfig {
     }
 
     @GetMapping(value="/admin/get/department")
-    public ResponseEntity<GeneralResponse<List<Department>>> getAllDepartment() throws Exception {
+    public ResponseEntity<GeneralResponse<List<DepartmentResponse>>> getAllDepartment(@RequestHeader Map<String, String> headers) throws Exception {
 
-        GeneralResponse<List<Department>> result;
+        GeneralResponse<List<DepartmentResponse>> result;
 
         boolean flag;
         try {
 
-            List<Department> list = adminServcice.getAllDepartmentList();
+
+            List<DepartmentResponse> list = adminServcice.getAllDepartmentListByHeaderId(headers.get("id"));
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
@@ -423,19 +426,20 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value="/admin/get/department/{id}")
-    public ResponseEntity<GeneralResponse<Department>> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<DepartmentResponse>> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Department> result;
+        GeneralResponse<DepartmentResponse> result;
 
         boolean flag;
         try {
 
-            Department list = adminServcice.getDepartmentById(id);
+            DepartmentResponse list = adminServcice.getDepartmentById(id);
             result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
