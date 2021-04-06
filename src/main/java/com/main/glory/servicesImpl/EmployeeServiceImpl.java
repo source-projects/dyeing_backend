@@ -53,7 +53,7 @@ public class EmployeeServiceImpl {
         //employeeDataDao.saveAll(record.getEmployeeDocumentList());
 
         //update the employee sequnce
-        employeeSequenceExist.setEmpId(employeeSequenceExist.getId()+1);
+        employeeSequenceExist.setEmpId(employeeSequenceExist.getEmpId()+1);
         employeeSequenceDao.saveAndFlush(employeeSequenceExist);
         return x.getEmpId();
     }
