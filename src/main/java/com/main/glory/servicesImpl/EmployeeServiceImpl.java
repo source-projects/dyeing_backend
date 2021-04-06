@@ -1,8 +1,10 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.admin.EmployeeSequenceDao;
 import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.Dao.employee.EmployeeDataDao;
 import com.main.glory.Dao.employee.EmployeeMastDao;
+import com.main.glory.model.admin.EmployeeSequence;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
@@ -25,8 +27,19 @@ public class EmployeeServiceImpl {
     @Autowired
     AttendanceDao attendanceDao;
 
+    @Autowired
+    EmployeeSequenceDao employeeSequenceDao;
+
     @Transactional
     public Long addEmployeeRecord(EmployeeMast record) throws Exception {
+
+        //employee id should in within 4 digit for qr code so maintain the employee id
+        EmployeeSequence employeeSequenceExist = employeeSequenceDao.getEmployeeSequence();
+        if(employeeSequenceExist==null)
+        {
+            EmployeeSequence employeeSequence = new EmployeeSequence(1l);
+            employeeSequenceExist = employeeSequenceDao.getEmployeeSequence();
+        }
 
 
          if(record.getEmployeeDocumentList().isEmpty())
@@ -54,9 +67,14 @@ public class EmployeeServiceImpl {
             String url = fileUpload.uploadFile(e.getFile());
         });*/
 
-        EmployeeMast x = employeeMastDao.save(record);
+        record.setId(employeeSequenceExist.getId());
+        EmployeeMast x = employeeMastDao.saveAndFlush(record);
 
         //employeeDataDao.saveAll(record.getEmployeeDocumentList());
+
+        //update the employee sequnce
+        employeeSequenceExist.setEmpId(employeeSequenceExist.getId()+1);
+        employeeSequenceDao.saveAndFlush(employeeSequenceExist);
         return x.getId();
     }
 
