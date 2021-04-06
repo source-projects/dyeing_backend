@@ -605,142 +605,89 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<GetAllBatch> getAllBatchByMaster(Long userHeadId) throws Exception{
+    public List<GetAllBatchWithProduction> getAllBatchByMaster(Long userHeadId) throws Exception{
 
-
-        List<StockMast> stockMastList = stockMastDao.findByUserHeadId(userHeadId);
-        /*if(stockMast==null)
-        {
-            throw new Exception("No such batch is available for master:"+userHeadId);
-        }
-
-        List<GetAllBatch> getAllBatchList =new ArrayList<>();
-        List<String> batchName =new ArrayList<>();
-        List<Boolean> productionPlanned =new ArrayList<>();
-        List<Long> controlId =new ArrayList<>();
-
-        GetAllBatch getAllBatch;
-
-        for(StockMast stockMast1:stockMast)
-        {
-
-            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
-
-            for(BatchData batchData : batch)
-            {
-                if(batchData.getIsBillGenrated()==true)
-                    continue;
-
-                //Take another arraylist because it is not working with Object arrayList
-                if(!batchName.contains(batchData.getBatchId()))
-                {
-                    batchName.add(batchData.getBatchId());
-                    controlId.add(batchData.getControlId());
-                    productionPlanned.add(batchData.getIsProductionPlanned());
-                }
-                else if(!controlId.contains(batchData.getControlId()))
-                {
-                    batchName.add(batchData.getBatchId());
-                    controlId.add(batchData.getControlId());
-                    productionPlanned.add(batchData.getIsProductionPlanned());
-                }
-
-            }
-
-
-
-        }
-
-        //storing all the data of batchName to object
-        for(int x=0;x<batchName.size();x++)
-        {
-            getAllBatch=new GetAllBatch();
-               getAllBatch.setBatchId(batchName.get(x));
-            getAllBatch.setControlId(controlId.get(x));
-            getAllBatch.setProductionPlanned(productionPlanned.get(x));
-
-            Optional<StockMast> stockMast1 = stockMastDao.findById(controlId.get(x));
-            Optional<Party> party = partyDao.findById(stockMast1.get().getPartyId());
-            Optional<Quality> quality = qualityDao.findById(stockMast1.get().getQualityId());
-
-            getAllBatch.setPartyId(party.get().getId());
-            getAllBatch.setPartyName(party.get().getPartyName());
-            getAllBatch.setQualityEntryId(quality.get().getId());
-            getAllBatch.setQualityId(quality.get().getQualityId());
-            getAllBatch.setQualityName(quality.get().getQualityName());
-            getAllBatch.setQualityType(quality.get().getQualityType());
-
-            getAllBatchList.add(getAllBatch);
-        }
-
-
-        if(getAllBatchList.isEmpty())
-            throw new Exception("May all batches planned or not available ");
-        return getAllBatchList;
-*/
-        List<GetAllBatch> list =new ArrayList<>();
-        //List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
+        List<StockMast> stockMastList = stockMastDao.getAllStockByUserHeadId(userHeadId);
         if(stockMastList.isEmpty())
-        {
-            throw new Exception("No batch found");
-        }
+            throw new Exception("no record found");
 
-      /*  Party party=partyDao.findByPartyId(partyId);
-        Optional<Quality> quality=qualityDao.findById(qualityId);*/
+        List<GetAllBatchWithProduction> list=new ArrayList<>();
+        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
 
-        //get the batch which are remain to be the part of invoice by party and quality
 
-        for(StockMast stockMast:stockMastList)
-        {
 
-            List<GetBatchByInvoice> batchAndStockList = batchDao.getBatcheByStockIdWithoutBillGenerated(stockMast.getId());
-            for(GetBatchByInvoice g:batchAndStockList)
-            {
-                //check the batch is done with produciton or not
-                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getBatchId());
-                if(productionPlan!=null && productionPlan.getStatus()==false)
+       /* //filter the batch
+        //get the user record first
+        //Long userId = Long.parseLong(id);
+
+
+        UserData userData = userDao.getUserById(userId);
+       // Long userHeadId=null;
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());*/
+
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;//get all batch for based on mrge batch id
+
+
+        for(StockMast stockMast:stockMastList) {
+
+            dataList = batchDao.getAllBatchWithoutBillGeneratedByStockId(stockMast.getId());
+            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenratedByStockId(stockMast.getId());
+
+
+            //filter the data if the batch is done with jet
+            for (GetAllBatch getAllBatch : dataList) {
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
+
+                if (productionPlan == null || productionPlan.getStatus() == false)
+                    continue;
+                // System.out.println(productionPlan.getId());
+                JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+                if (jetData == null)
+                    continue;
+                //System.out.println(jetData.getStatus());
+                if (jetData.getStatus() == JetStatus.success) {
+
+                    list.add(new GetAllBatchWithProduction(getAllBatch, productionPlan.getId()));
+                }
+
+
+            }
+
+            //filter the data if the batch is done with jet
+            for (GetBatchWithControlId getAllBatch : batchDataForMergeBatch) {
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getMergeBatchId());
+
+                if (productionPlan == null)
                     continue;
 
+                if (productionPlan.getStatus() == false)
+                    continue;
+                // System.out.println(productionPlan.getId());
                 JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
-                if(jetData.getStatus()==JetStatus.success)
-                {
-                    GetAllBatch getAllBatch=new GetAllBatch(g);
-                    list.add(getAllBatch);
+                if (jetData == null)
+                    continue;
+                //System.out.println(jetData.getStatus());
+                if (jetData.getStatus() == JetStatus.success) {
+                    List<GetBatchWithControlId> listOfBatch = batchDao.getBatchesByMergeBatchId(getAllBatch.getMergeBatchId());
+
+                    for (GetBatchWithControlId batch : listOfBatch) {
+                        GetAllBatchWithProduction batchDetail = new GetAllBatchWithProduction(batch, productionPlan.getId());
+                        List<BatchData> batchDataList = batchDao.getBatchByMergeBatchIdAndBatchIdForFinishMtrSave(batch.getBatchId(), getAllBatch.getMergeBatchId());
+                        if (batchDataList.isEmpty())
+                            continue;
+                        batchDetail.setBatchId(getAllBatch.getMergeBatchId() + "-" + batchDetail.getBatchId());
+                        batchDetail.setProductionPlanned(true);
+                        list.add(batchDetail);
+                    }
+
                 }
 
 
             }
         }
 
-
-
-        //gt the mege batch as well by stock id
-        for(StockMast stockMast:stockMastList)
-        {
-            List<GetBatchByInvoice> batchAndStockList = batchDao.getMergeBatcheByStockIdWithoutBillGenerated(stockMast.getId());
-            for(GetBatchByInvoice g:batchAndStockList)
-            {
-                //check the batch is done with produciton or not
-                if (g.getMergeBatchId()==null)
-                    continue;
-
-                System.out.println("mergebatch:"+g.getMergeBatchId());
-                System.out.println("batch:"+g.getBatchId());
-                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getMergeBatchId());
-                if(productionPlan!=null && productionPlan.getStatus()==true)
-                    continue;
-
-                JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
-                if(jetData.getStatus()==JetStatus.success)
-                {
-                    GetAllBatch getAllBatch=new GetAllBatch(g);
-                    getAllBatch.setBatchId(g.getMergeBatchId()+"-"+g.getBatchId());
-                    list.add(getAllBatch);
-                }
-
-
-            }
-        }
 
 
 
