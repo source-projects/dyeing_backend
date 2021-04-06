@@ -13,7 +13,9 @@ import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
 import com.main.glory.model.task.response.TaskResponse;
+import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
+import com.main.glory.model.user.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
@@ -218,5 +220,30 @@ public class TaskServiceImpl {
             return taskDataDao.getTaskDetailByStatus( record.getStatus());
 
 
+    }
+
+    public List<TaskDetail> getAllTaskDetail(String getBy, Long id, String headerId) throws Exception {
+        List<TaskDetail> taskDetailList = null;
+
+        UserData userData = userService.getUserById(id);
+
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getTt().intValue());
+
+        if(id==null)
+        {
+
+            taskDetailList = taskDataDao.getTaskDetail();
+        }
+        else if(getBy.equals("assignAndCreated"))
+        {
+            taskDetailList = taskDataDao.getTaskDetailByCreatedByAssignById(id,id);
+        }
+        else if (getBy.equals("assign"))
+        {
+            taskDetailList = taskDataDao.getTaskDetailAssignBy(id);
+        }
+
+        return taskDetailList;
     }
 }
