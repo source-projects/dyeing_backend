@@ -3,6 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.request.TaskDetail;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -156,6 +158,52 @@ public class TaskController extends ControllerConfig {
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    //get task by filte
+    @GetMapping("/task/all/{getBy}/{id}")
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id,@RequestHeader Map<String, String> headers) throws Exception {
+
+        GeneralResponse<List<TaskDetail>> result;
+
+        try {
+            List<TaskDetail> record = null;
+            switch (getBy) {
+                case "assign":
+                    record = taskService.getAllTaskDetail(getBy, id,headers.get("id"));
+                    if (record == null) {
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
+                    } else {
+                        result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                    }
+                    break;
+
+                case "assignAndCreated":
+                    record = taskService.getAllTaskDetail(getBy, id,headers.get("id"));
+                    if (record == null) {
+                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
+                    } else {
+                        result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                    }
+                    break;
+
+                case "all":
+                    record = taskService.getAllTaskDetail(null, null,headers.get("id"));
+                    if (record == null) {
+                        result= new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK);
+                    } else {
+                        result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                    }
+                    break;
+                default:
+                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
 }
