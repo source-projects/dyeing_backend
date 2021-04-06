@@ -679,6 +679,7 @@ public class StockBatchServiceImpl {
                             continue;
                         batchDetail.setBatchId(getAllBatch.getMergeBatchId() + "-" + batchDetail.getBatchId());
                         batchDetail.setProductionPlanned(true);
+                        if(!list.contains(batchDetail))
                         list.add(batchDetail);
                     }
 
