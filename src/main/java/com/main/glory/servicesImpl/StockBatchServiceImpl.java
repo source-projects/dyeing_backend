@@ -2045,13 +2045,14 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
                     batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
-                    batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batch.getBatchId());
+
+                    System.out.println("batch id for merge batch:"+batch.getBatchId());
+                    batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batchByMergeBatch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batchByMergeBatch.getBatchId());
 
                 }
-               /* Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
-                Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
-                batchToPartyAndQuality.setTotalMtr(totalMtr);
-                batchToPartyAndQuality.setTotalWt(totalWt);*/
+                batchToPartyAndQuality.setTotalMtr(batch.getMTR());
+                batchToPartyAndQuality.setTotalWt(batch.getWT());
+                batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
 
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
