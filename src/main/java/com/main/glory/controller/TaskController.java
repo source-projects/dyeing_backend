@@ -162,8 +162,8 @@ public class TaskController extends ControllerConfig {
 
 
     //get task by filte
-    @GetMapping("/task/all/{getBy}/{id}")
-    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id,@RequestHeader Map<String, String> headers) throws Exception {
+    @GetMapping("/task/all")
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllStockBatch(@RequestParam(name = "getBy") String getBy, @RequestParam(name = "id") Long id,@RequestHeader Map<String, String> headers) throws Exception {
 
         GeneralResponse<List<TaskDetail>> result;
 
