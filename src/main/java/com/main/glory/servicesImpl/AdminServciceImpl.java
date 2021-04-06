@@ -4,6 +4,7 @@ import com.main.glory.Dao.admin.*;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.task.ReportTypeDao;
 import com.main.glory.model.admin.*;
+import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.purchase.Purchase;
 import com.main.glory.model.quality.Quality;
@@ -197,8 +198,8 @@ public class AdminServciceImpl {
         return approvedByExist;
     }
 
-    public Department getDepartmentById(Long id) throws Exception {
-        Department department = departmentDao.getDepartmentById(id);
+    public DepartmentResponse getDepartmentById(Long id) throws Exception {
+        DepartmentResponse department = departmentDao.getDepartmentResponseById(id);
         if(department==null) {
             throw new Exception("no data found");
         }
@@ -453,5 +454,18 @@ public class AdminServciceImpl {
         reportTypeDao.deleteReportTypeById(id);
 
 
+    }
+
+    public List<DepartmentResponse> getAllDepartmentListByHeaderId(String id) {
+
+        UserData userData = userService.getUserById(Long.parseLong(id));
+        if(userData.getUserHeadId()==0)
+        {
+            return departmentDao.getDepartmentResponse();
+        }
+        else {
+
+            return departmentDao.getDepartmentResponseByUserId(userData.getId());
+        }
     }
 }

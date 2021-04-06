@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,9 +17,12 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String name;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isMaster;
 
     public Department(Department c) {
         this.id=c.getId();
         this.name=c.getName();
+        this.isMaster = c.getIsMaster();
     }
 }
