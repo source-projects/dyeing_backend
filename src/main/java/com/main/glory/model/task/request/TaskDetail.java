@@ -27,6 +27,8 @@ public class TaskDetail extends TaskData {
     String lastName;
     String departmentName;
     String formName;
+    String taskName;
+    Long completedDays;
 
 
 
