@@ -234,8 +234,9 @@ public class TaskServiceImpl {
             UserData userData = userService.getUserById(e.getAssignUserId());
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
-
-            //e.setFormName(userData.getFirstName());
+            System.out.println("assign:"+e.getAssignUserId());
+            System.out.println("user:"+userData.getId()+"-dept:"+userData.getDepartmentId());
+            e.setFirstName(userData.getFirstName());
             e.setLastName(userData.getLastName());
             e.setDepartmentName(department.getName());
             if(reportType!=null)
