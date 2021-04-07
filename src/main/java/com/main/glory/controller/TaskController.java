@@ -9,6 +9,7 @@ import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
+import com.main.glory.model.task.response.TaskMastResponse;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.servicesImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class TaskController extends ControllerConfig {
     }
 
     @GetMapping(value="/task/getBy")
-    public ResponseEntity<GeneralResponse<TaskResponse>> getTaskById(@RequestParam(name = "id")Long id) throws Exception {
-        GeneralResponse<TaskResponse> result;
+    public ResponseEntity<GeneralResponse<TaskMastResponse>> getTaskById(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<TaskMastResponse> result;
         if(id==null)
         {
             result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
@@ -62,7 +63,7 @@ public class TaskController extends ControllerConfig {
         boolean flag;
         try {
 
-            TaskResponse taskResponse = taskService.getTaskById(id);
+            TaskMastResponse taskResponse = taskService.getTaskById(id);
             if(taskResponse==null)
             {
                 result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
@@ -79,13 +80,13 @@ public class TaskController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/task/get")
+    /*@GetMapping(value="/task/get")
     public ResponseEntity<GeneralResponse<List<TaskResponse>>> getAllTask() throws Exception {
         GeneralResponse<List<TaskResponse>> result;
-       /* if(id==null)
+       *//* if(id==null)
         {
             result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-        }*/
+        }*//*
 
         boolean flag;
         try {
@@ -105,7 +106,7 @@ public class TaskController extends ControllerConfig {
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }
+    }*/
     @DeleteMapping(value="/task/deleteBy")
     public ResponseEntity<GeneralResponse<Boolean>> deleteTaskById(@RequestParam(name = "id")Long id) throws Exception {
         GeneralResponse<Boolean> result;

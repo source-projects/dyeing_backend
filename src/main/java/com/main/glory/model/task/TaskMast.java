@@ -41,6 +41,27 @@ public class TaskMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<TaskImage> taskImageList;
 
+    public TaskMast(TaskMast taskMast) {
+        this.id=taskMast.getId();
+        this.taskName = taskMast.getTaskName();
+        this.detail = taskMast.getDetail();
+        this.taskPriority = taskMast.getTaskPriority();
+        this.taskType = taskMast.getTaskType();
+        this.startDate = taskMast.getStartDate();
+        this.endDate=taskMast.getEndDate();
+        this.completedDays = taskMast.getCompletedDays();
+        this.remark = taskMast.getRemark();
+        this.reportId =taskMast.getReportId();
+        this.notify = taskMast.getNotify();
+        this.isCompleted=taskMast.getIsCompleted();
+        this.departmentId=taskMast.getDepartmentId();
+        this.assignUserId=taskMast.getAssignUserId();
+        this. createdBy=taskMast.getCreatedBy();
+        this. createdDate=taskMast.getCreatedDate();
+        this. updatedDate=taskMast.getUpdatedDate();
+        this. completedDate=taskMast.getCompletedDate();
+    }
+
 
     @PrePersist
     public void onCreate()

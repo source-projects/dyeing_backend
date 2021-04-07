@@ -14,4 +14,5 @@ import java.util.Date;
 public class TaskFilter {
     Date date;
     String status;
+    Long id;
 }
