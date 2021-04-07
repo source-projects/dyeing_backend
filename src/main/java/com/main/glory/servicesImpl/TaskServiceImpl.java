@@ -232,7 +232,7 @@ public class TaskServiceImpl {
 
             TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
             UserData userData = userService.getUserById(e.getAssignUserId());
-            Department department = departmentDao.getDepartmentById(userData.getDepartmentId());
+            Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
 
             e.setFormName(userData.getFirstName());
