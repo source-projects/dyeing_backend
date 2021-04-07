@@ -1,8 +1,11 @@
 package com.main.glory.model.task.request;
 
+import com.main.glory.model.admin.Department;
+import com.main.glory.model.task.ReportType;
 import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskDataImage;
 import com.main.glory.model.task.TaskMast;
+import com.main.glory.model.user.UserData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +23,10 @@ public class TaskDetail extends TaskData {
     String detail;
     String taskPriority;
     String taskType;
+    String firstName;
+    String lastName;
+    String departmentName;
+    String formName;
 
 
 
@@ -35,5 +42,16 @@ public class TaskDetail extends TaskData {
         this.detail = taskMast.getDetail();
         this.taskPriority = taskMast.getTaskPriority();
         this.taskType = taskMast.getTaskType();
+    }
+
+    public TaskDetail(TaskData taskData,TaskMast taskMast, UserData userData, Department department, ReportType reportType) {
+        super(taskData);
+        this.detail = taskMast.getDetail();
+        this.taskPriority = taskMast.getTaskPriority();
+        this.taskType = taskMast.getTaskType();
+        this.firstName=userData.getFirstName();
+        this.lastName=userData.getLastName();
+        this.departmentName = department.getName();
+        this.formName = reportType.getFormName();
     }
 }
