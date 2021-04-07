@@ -236,6 +236,9 @@ public class TaskServiceImpl {
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
             System.out.println("assign:"+e.getAssignUserId());
             System.out.println("user:"+userData.getId()+"-dept:"+userData.getDepartmentId());
+
+            e.setTaskName(taskMast.getTaskName());
+            e.setCompletedDays(taskMast.getCompletedDays());
             e.setFirstName(userData.getFirstName());
             e.setLastName(userData.getLastName());
             e.setDepartmentName(department.getName());
