@@ -235,7 +235,7 @@ public class TaskServiceImpl {
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
 
-            e.setFormName(userData.getFirstName());
+            //e.setFormName(userData.getFirstName());
             e.setLastName(userData.getLastName());
             e.setDepartmentName(department.getName());
             if(reportType!=null)
