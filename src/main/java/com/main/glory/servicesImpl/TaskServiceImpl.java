@@ -238,6 +238,7 @@ public class TaskServiceImpl {
             e.setFormName(userData.getFirstName());
             e.setLastName(userData.getLastName());
             e.setDepartmentName(department.getName());
+            if(reportType!=null)
             e.setFormName(reportType.getFormName());
 
         });
