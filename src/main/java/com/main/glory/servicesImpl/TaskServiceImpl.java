@@ -2,8 +2,6 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.task.*;
-import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.Department;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.model.task.TaskData;
@@ -11,11 +9,11 @@ import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.TaskStatus;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
+import com.main.glory.model.task.response.TaskMastResponse;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
-import org.aspectj.internal.lang.annotation.ajcPrivileged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
@@ -149,20 +147,24 @@ public class TaskServiceImpl {
 
     }
 
-    public TaskResponse getTaskById(Long id) {
-        TaskMast taskMast = taskMastDao.getTaskMastById(id);
+    public TaskMastResponse getTaskById(Long id) {
+        TaskData taskData = taskDataDao.getTaskDetailById(id);
+        TaskMast taskMast = taskMastDao.getTaskMastById(taskData.getId());
 
-        TaskResponse taskResponse =null;
-        if(taskMast!=null) {
+        ReportType reportType=reportTypeDao.getReportTypeById(taskMast.getReportId());
+        UserData userData = userService.getUserById(taskMast.getAssignUserId());
+        Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
 
-            List<TaskData> taskDataList = taskDataDao.getTaskDataByControlId(taskMast.getId());
-             taskResponse = new TaskResponse(taskMast, taskDataList);
-
-        }
+        TaskMastResponse taskResponse = new TaskMastResponse(taskMast);
+        taskResponse.setFirstName(userData.getFirstName());
+        taskResponse.setLastName(userData.getLastName());
+        taskResponse.setFormName(reportType.getFormName());
+        taskResponse.setUrlName(reportType.getUrl());
+        taskResponse.setDepartmentName(department.getName());
         return taskResponse;
     }
 
-    public List<TaskResponse> getAllTask() {
+    /*public List<TaskResponse> getAllTask() {
         List<TaskMast> taskMastList = taskMastDao.getAllTask();
         List<TaskResponse> taskResponseList = new ArrayList<>();
         for(TaskMast taskMast:taskMastList)
@@ -177,7 +179,7 @@ public class TaskServiceImpl {
 
 
     }
-
+*/
     public boolean deleteTaskById(Long id) throws Exception {
         TaskMast taskMastExist = taskMastDao.getTaskMastById(id);
         if(taskMastExist==null)
@@ -213,14 +215,15 @@ public class TaskServiceImpl {
 
     public List<TaskDetail> getAllTaskByDateAndStatus(TaskFilter record) {
         List<TaskDetail> taskDetailList = null;
+
         if(record.getDate()==null && record.getStatus().isEmpty())
-            taskDetailList =taskDataDao.getTaskDetail();
+            taskDetailList =taskDataDao.getTaskDetailByUserId(record.getId());
         else if(!record.getStatus().isEmpty() && record.getDate()!=null)
-            taskDetailList =taskDataDao.getTaskDetailByDateAndStatus(record.getDate(),record.getStatus());
+            taskDetailList =taskDataDao.getTaskDetailByDateAndStatusWithUserId(record.getDate(),record.getStatus(),record.getId());
         else if(record.getDate()!=null)
-            taskDetailList =taskDataDao.getTaskDetailByDate(record.getDate());
+            taskDetailList =taskDataDao.getTaskDetailByDateWithUserId(record.getDate(),record.getId());
         else
-            taskDetailList =  taskDataDao.getTaskDetailByStatus( record.getStatus());
+            taskDetailList =  taskDataDao.getTaskDetailByStatusWithUserId( record.getStatus(),record.getId());
 
         taskDetailList = taskDetailResponse(taskDetailList);
         return taskDetailList;

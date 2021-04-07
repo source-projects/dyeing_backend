@@ -22,17 +22,17 @@ public interface TaskDataDao extends JpaRepository<TaskData,Long> {
     void deleteTaskDataById(Long id);
 
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status AND Date(t.taskDate)=Date(:date)")
-    List<TaskDetail> getTaskDetailByDateAndStatus(@Param("date") Date date,@Param("status") String status);
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status AND Date(t.taskDate)=Date(:date) AND t.assignUserId=:userId")
+    List<TaskDetail> getTaskDetailByDateAndStatusWithUserId( Date date, String status, Long userId);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t ")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t")
     List<TaskDetail> getTaskDetail();
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where Date(t.taskDate)=Date(:date)")
-    List<TaskDetail> getTaskDetailByDate(Date date);
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where Date(t.taskDate)=Date(:date) AND t.assignUserId=:userId")
+    List<TaskDetail> getTaskDetailByDateWithUserId(Date date, Long userId);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status")
-    List<TaskDetail> getTaskDetailByStatus(String status);
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status AND t.assignUserId=:userId")
+    List<TaskDetail> getTaskDetailByStatusWithUserId(String status,Long userId);
 
     @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.controlId IN (select tt.id from TaskMast tt where tt.assignUserId=:assignId OR tt.createdBy=:createdById)")
     List<TaskDetail> getTaskDetailByCreatedByAssignById(Long assignId, Long createdById);
@@ -53,4 +53,7 @@ public interface TaskDataDao extends JpaRepository<TaskData,Long> {
 
     @Query("select x from TaskData x where x.id=:id")
     TaskData getTaskDetailById(Long id);
+
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.assignUserId=:userId")
+    List<TaskDetail> getTaskDetailByUserId(Long userId);
 }
