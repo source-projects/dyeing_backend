@@ -80,12 +80,12 @@ public class TaskController extends ControllerConfig {
     }
 
     @GetMapping(value="/task/get")
-    public ResponseEntity<GeneralResponse<List<TaskResponse>>> getAllTask(@RequestParam(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<List<TaskResponse>>> getAllTask() throws Exception {
         GeneralResponse<List<TaskResponse>> result;
-        if(id==null)
+       /* if(id==null)
         {
             result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-        }
+        }*/
 
         boolean flag;
         try {

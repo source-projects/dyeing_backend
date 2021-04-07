@@ -239,6 +239,7 @@ public class ProductionPlanImpl {
 
         GetAllProductionWithShadeData record = new GetAllProductionWithShadeData();
         List<GetBatchWithControlId> batchDataForMergeBatch = null;
+        GetAllProductionWithShadeData data;
         //check the batch id is merge or simple
         ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchId(e);
         if(productionPlanExist!=null)
@@ -279,11 +280,6 @@ public class ProductionPlanImpl {
                 record.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(e));
                 record.setTotalWt(batchDao.getTotalWtByMergeBatchId(e));
 
-
-
-
-
-                return record;
             }
             else
             {
@@ -292,17 +288,20 @@ public class ProductionPlanImpl {
                 StockMast stockMast = stockBatchService.getStockByStockId(stockId);
                 if(stockMast!=null)
                 {
-                    GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e,stockMast.getPartyId(),stockMast.getQualityId());
-                    data.setBatchId(e);
-                    data.setPartyId(stockMast.getPartyId().toString());
-                    data.setQualityEntryId(stockMast.getQualityId().toString());
-                    if(data!=null)
-                        return data;
+                    record = productionPlanDao.getProductionWithColorToneByBatchId(e,stockMast.getPartyId(),stockMast.getQualityId());
+                    record.setBatchId(e);
+                    record.setPartyId(stockMast.getPartyId().toString());
+                    record.setQualityEntryId(stockMast.getQualityId().toString());
+
                 }
 
             }
         }
 
+
+        if(record!=null)
+            return record;
+        else
             return null;
 
     }
