@@ -1,13 +1,11 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.admin.DepartmentDao;
-import com.main.glory.Dao.task.TaskDataDao;
-import com.main.glory.Dao.task.TaskDataImageDao;
-import com.main.glory.Dao.task.TaskImageDao;
-import com.main.glory.Dao.task.TaskMastDao;
+import com.main.glory.Dao.task.*;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.task.ReportType;
 import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.TaskStatus;
@@ -30,6 +28,9 @@ import java.util.List;
 
 @Service("taskServiceImpl")
 public class TaskServiceImpl {
+
+    @Autowired
+    ReportTypeDao reportTypeDao;
 
     @Autowired
     TaskDataImageDao taskDataImageDao;
@@ -175,7 +176,6 @@ public class TaskServiceImpl {
         return taskResponseList;
 
 
-
     }
 
     public boolean deleteTaskById(Long id) throws Exception {
@@ -212,16 +212,36 @@ public class TaskServiceImpl {
     }
 
     public List<TaskDetail> getAllTaskByDateAndStatus(TaskFilter record) {
+        List<TaskDetail> taskDetailList = null;
         if(record.getDate()==null && record.getStatus().isEmpty())
-        return taskDataDao.getTaskDetail();
+            taskDetailList =taskDataDao.getTaskDetail();
         else if(!record.getStatus().isEmpty() && record.getDate()!=null)
-            return taskDataDao.getTaskDetailByDateAndStatus(record.getDate(),record.getStatus());
+            taskDetailList =taskDataDao.getTaskDetailByDateAndStatus(record.getDate(),record.getStatus());
         else if(record.getDate()!=null)
-            return taskDataDao.getTaskDetailByDate(record.getDate());
+            taskDetailList =taskDataDao.getTaskDetailByDate(record.getDate());
         else
-            return taskDataDao.getTaskDetailByStatus( record.getStatus());
+            taskDetailList =  taskDataDao.getTaskDetailByStatus( record.getStatus());
 
+        taskDetailList = taskDetailResponse(taskDetailList);
+        return taskDetailList;
 
+    }
+
+    private List<TaskDetail> taskDetailResponse(List<TaskDetail> taskDetailList) {
+        taskDetailList.forEach(e->{
+
+            TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
+            UserData userData = userService.getUserById(e.getAssignUserId());
+            Department department = departmentDao.getDepartmentById(userData.getDepartmentId());
+            ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
+
+            e.setFormName(userData.getFirstName());
+            e.setLastName(userData.getLastName());
+            e.setDepartmentName(department.getName());
+            e.setFormName(reportType.getFormName());
+
+        });
+        return taskDetailList;
     }
 
     public List<TaskDetail> getAllTaskDetail(String getBy, Long id, String headerId) throws Exception {
@@ -244,7 +264,7 @@ public class TaskServiceImpl {
         {
             taskDetailList = taskDataDao.getTaskDetailAssignBy(id);
         }
-
+        taskDetailList =taskDetailResponse(taskDetailList);
         return taskDetailList;
     }
 
@@ -269,6 +289,7 @@ public class TaskServiceImpl {
             taskDetailList = taskDataDao.getTaskDetailByApprovedAndAssignId(id,approvedFlag);
         }
 
+        taskDetailList =taskDetailResponse(taskDetailList);
         return taskDetailList;
     }
 

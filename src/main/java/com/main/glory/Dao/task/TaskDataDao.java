@@ -22,28 +22,28 @@ public interface TaskDataDao extends JpaRepository<TaskData,Long> {
     void deleteTaskDataById(Long id);
 
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where t.taskStatus=:status AND Date(t.taskDate)=Date(:date)")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status AND Date(t.taskDate)=Date(:date)")
     List<TaskDetail> getTaskDetailByDateAndStatus(@Param("date") Date date,@Param("status") String status);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t ")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t ")
     List<TaskDetail> getTaskDetail();
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where Date(t.taskDate)=Date(:date)")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where Date(t.taskDate)=Date(:date)")
     List<TaskDetail> getTaskDetailByDate(Date date);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where t.taskStatus=:status")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status")
     List<TaskDetail> getTaskDetailByStatus(String status);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where t.controlId IN (select tt.id from TaskMast tt where tt.assignUserId=:assignId OR tt.createdBy=:createdById)")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.controlId IN (select tt.id from TaskMast tt where tt.assignUserId=:assignId OR tt.createdBy=:createdById)")
     List<TaskDetail> getTaskDetailByCreatedByAssignById(Long assignId, Long createdById);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where t.controlId IN  (select tt.id from TaskMast tt where tt.assignUserId=:assignId)")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.controlId IN (select tt.id from TaskMast tt where tt.assignUserId=:assignId)")
     List<TaskDetail> getTaskDetailAssignBy(Long assignId);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where t.approved=:approvedFlag")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.approved=:approvedFlag")
     List<TaskDetail> getTaskDetailByApproved(Boolean approvedFlag);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast,(select u from UserData u where u.id=t.assignUserId) as userData,(select d from Department d where d.id=(select u.departmentId from UserData u where u.id=t.assignUserId)) as deptData,(select r from ReportType r where r.id=(select tt.reportId from TaskMast tt where tt.id=t.controlId))as reportData) from TaskData t where t.approved=:approvedFlag AND t.assignUserId=:id")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.approved=:approvedFlag AND t.assignUserId=:id")
     List<TaskDetail> getTaskDetailByApprovedAndAssignId(Long id, Boolean approvedFlag);
 
     @Modifying
