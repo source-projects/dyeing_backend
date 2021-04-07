@@ -10,12 +10,14 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.Department;
 import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskMast;
+import com.main.glory.model.task.TaskStatus;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
 import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import org.aspectj.internal.lang.annotation.ajcPrivileged;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
@@ -187,7 +189,7 @@ public class TaskServiceImpl {
         //check the any task is completed
         for(TaskData taskData:taskDataList)
         {
-            if(taskData.getIsCompleted())
+            if(taskData.getTaskStatus().equals(TaskStatus.Completed))
             {
                 throw new Exception("remove the task which are completed");
             }
@@ -242,6 +244,30 @@ public class TaskServiceImpl {
         else if (getBy.equals("assign"))
         {
             taskDetailList = taskDataDao.getTaskDetailAssignBy(id);
+        }
+
+        return taskDetailList;
+    }
+
+    public List<TaskDetail> getAllApprovedOrNot(Long id, Boolean approvedFlag) {
+        List<TaskDetail> taskDetailList = null;
+
+
+        if(id==null && approvedFlag==null) {
+            taskDetailList = taskDataDao.getTaskDetail();
+        }
+        else if(id==null && approvedFlag!=null)
+        {
+            taskDetailList = taskDataDao.getTaskDetailByApproved(approvedFlag);
+        }
+        else if(id!=null && approvedFlag==null)
+        {
+            taskDetailList = taskDataDao.getTaskDetailAssignBy(id);
+        }
+        else
+        {
+            //id is not null and flag is not null
+            taskDetailList = taskDataDao.getTaskDetailByApprovedAndAssignId(id,approvedFlag);
         }
 
         return taskDetailList;
