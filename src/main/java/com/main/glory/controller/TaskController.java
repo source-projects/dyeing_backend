@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.jet.request.AddJet;
+import com.main.glory.model.task.TaskData;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
@@ -219,10 +220,9 @@ public class TaskController extends ControllerConfig {
             {
                 result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
-            else
-
-                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-
+            else {
+                result = new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
         }
         catch(Exception e)
         {
@@ -253,6 +253,30 @@ public class TaskController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    //filter task api
+    @PutMapping(value="/task/update")
+    public ResponseEntity<GeneralResponse<Boolean>> updateTaskDate(@RequestBody TaskData taskData) throws Exception {
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            if(taskData==null)
+                throw new Exception("null record passed");
+
+            taskService.updateTaskData(taskData);
+            result =  new GeneralResponse<>(true, "Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 
 

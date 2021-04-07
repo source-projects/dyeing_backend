@@ -311,4 +311,12 @@ public class TaskServiceImpl {
     public List<TaskMast> getTaskByCreatedByAndAssignUserId(Long id, Long id1) {
         return taskMastDao.getAllTaskByCreatedByAndUserHeadId(id,id1);
     }
+
+    public void updateTaskData(TaskData taskData) throws Exception {
+        TaskData taskDataExist = taskDataDao.getTaskDetailById(taskData.getId());
+        if(taskDataExist==null)
+            throw new Exception("no record found");
+
+        taskDataDao.saveAndFlush(taskData);
+    }
 }
