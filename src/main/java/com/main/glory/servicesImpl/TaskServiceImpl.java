@@ -225,7 +225,7 @@ public class TaskServiceImpl {
     public List<TaskDetail> getAllTaskDetail(String getBy, Long id, String headerId) throws Exception {
         List<TaskDetail> taskDetailList = null;
 
-        UserData userData = userService.getUserById(id);
+        UserData userData = userService.getUserById(Long.parseLong(headerId));
 
         UserPermission userPermission = userData.getUserPermissionData();
         Permissions permissions = new Permissions(userPermission.getTt().intValue());
