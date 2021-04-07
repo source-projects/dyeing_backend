@@ -23,7 +23,7 @@ public class TaskData {
     String remark;
     @Column(columnDefinition = "varchar(255) default 'NotStarted'")
     String taskStatus;
-    Boolean isCompleted;
+    //Boolean isCompleted;
     Boolean approved;
     Date taskDate;
     Date taskCompletedDate;
@@ -37,7 +37,7 @@ public class TaskData {
     public TaskData(TaskMast taskMast) {
         this.controlId = taskMast.getId();
         this.assignUserId =taskMast.assignUserId;
-        this.isCompleted=false;
+        //this.isCompleted=false;
         this.approved=false;
 
     }
@@ -48,7 +48,7 @@ public class TaskData {
         this.assignUserId = taskData.getAssignUserId();
         this.remark=taskData.getRemark();
         this.taskStatus=taskData.getTaskStatus();
-        this.isCompleted = taskData.getIsCompleted();
+        //this.isCompleted = taskData.getIsCompleted();
         this.approved=taskData.getApproved();
         this.taskDate = taskData.getTaskDate();
         this.taskCompletedDate = taskData.getTaskCompletedDate();

@@ -172,7 +172,7 @@ public class TaskController extends ControllerConfig {
             switch (getBy) {
                 case "assign":
                     record = taskService.getAllTaskDetail(getBy, id,headers.get("id"));
-                    if (record == null) {
+                    if (record.isEmpty()) {
                         result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
                         result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -181,7 +181,7 @@ public class TaskController extends ControllerConfig {
 
                 case "assignAndCreated":
                     record = taskService.getAllTaskDetail(getBy, id,headers.get("id"));
-                    if (record == null) {
+                    if (record.isEmpty()) {
                         result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
                         result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -190,7 +190,7 @@ public class TaskController extends ControllerConfig {
 
                 case "all":
                     record = taskService.getAllTaskDetail(null, null,headers.get("id"));
-                    if (record == null) {
+                    if (record.isEmpty()) {
                         result= new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK);
                     } else {
                         result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -205,5 +205,34 @@ public class TaskController extends ControllerConfig {
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    //filter task api
+    @PostMapping(value="/task/get/approved")
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskApprovedFlagWithId(@RequestParam(name = "id")Long id,@RequestParam(name = "approved") Boolean approvedFlag) throws Exception {
+        GeneralResponse<List<TaskDetail>> result;
+
+        boolean flag;
+        try {
+
+            List<TaskDetail> taskResponse = taskService.getAllApprovedOrNot(id,approvedFlag);
+            if(taskResponse.isEmpty())
+            {
+                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+
+                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
 
 }
