@@ -234,7 +234,6 @@ public class TaskServiceImpl {
 
         if(id==null)
         {
-
             taskDetailList = taskDataDao.getTaskDetail();
         }
         else if(getBy.equals("assignAndCreated"))
@@ -271,5 +270,15 @@ public class TaskServiceImpl {
         }
 
         return taskDetailList;
+    }
+
+    public void updateTaskByIdAndFlag(Long id, Boolean approvedFlag) throws Exception {
+        TaskData taskDataExist = taskDataDao.getTaskDetailById(id);
+        if(taskDataExist==null) {
+            throw new Exception("no record found");
+        }
+
+        taskDataDao.updateTaskWithIdAndFlag(id,approvedFlag);
+
     }
 }
