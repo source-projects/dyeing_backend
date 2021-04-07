@@ -233,6 +233,31 @@ public class TaskController extends ControllerConfig {
     }
 
 
+    //task update by id and status
+    //filter task api
+    @GetMapping(value="/task/update/approved")
+    public ResponseEntity<GeneralResponse<Boolean>> updateTaskApprovedStatus(@RequestParam(name = "id")Long id,@RequestParam(name = "approved") Boolean approvedFlag) throws Exception {
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            taskService.updateTaskByIdAndFlag(id,approvedFlag);
+            result =  new GeneralResponse<>(true, "Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+
+
 
 
 }
