@@ -130,11 +130,11 @@ public class GetJetData {
         this.partyId=data.getPartyId();
         this.partyName=data.getPartyName();
         this.qualityEntryId=data.getQualityEntryId();
-        this. qualityId=data.getQualityId();
-        this. qualityName=data.getQualityName();
-        this. totalWt=data.getTotalWt();
-        this. totalMtr=data.getTotalMtr();
-        this. processName=dyeingProcessMast.getProcessName()==null?null:dyeingProcessMast.getProcessName();
+        this.qualityId=data.getQualityId();
+        this.qualityName=data.getQualityName();
+        this.totalWt=data.getTotalWt();
+        this.totalMtr=data.getTotalMtr();
+        this.processName=dyeingProcessMast.getProcessName()==null?null:dyeingProcessMast.getProcessName();
         this.partyShadeNo=colorTone.getPartyShadeNo()==null?null:colorTone.getPartyShadeNo();
         //Long stockId;
     }
