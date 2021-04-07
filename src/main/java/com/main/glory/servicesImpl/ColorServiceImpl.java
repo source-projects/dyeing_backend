@@ -384,4 +384,8 @@ public class ColorServiceImpl {
 
         return list;
     }
+
+    public List<ColorMast> getColorByCreatedAndUserHeadId(Long id, Long id1) {
+        return colorMastDao.getAllByCreatedByAndHeadId(id,id1);
+    }
 }

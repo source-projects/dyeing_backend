@@ -240,22 +240,23 @@ public class UserController extends ControllerConfig {
 
 
     @DeleteMapping(value="/user/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> deleteUserDetailsByID(@PathVariable(value = "id") Long id)
-    {
+    public ResponseEntity<GeneralResponse<Boolean>> deleteUserDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
         GeneralResponse<Boolean> result;
-        if(id!=null)
-        {
-            boolean flag=userService.deleteUserById(id);
-            if(flag)
-            {
-                result = new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }else{
-                result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
-            }
+        try {
+            if (id != null) {
+                boolean flag = userService.deleteUserById(id);
+                if (flag) {
+                    result = new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                } else {
+                    result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
+                }
+            } else
+                result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        else
-        result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
-
+        catch (Exception e)
+        {
+            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 

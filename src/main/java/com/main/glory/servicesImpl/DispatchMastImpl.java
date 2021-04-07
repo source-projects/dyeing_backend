@@ -1302,4 +1302,8 @@ public class DispatchMastImpl {
 
 
     }
+
+    public List<DispatchMast> getDispatchByCreatedByAndUserHeadId(Long id, Long id1) {
+        return dispatchMastDao.getDispatchByCreatedByAndUserHeadId(id,id1);
+    }
 }
