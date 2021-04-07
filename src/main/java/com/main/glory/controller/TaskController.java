@@ -256,7 +256,7 @@ public class TaskController extends ControllerConfig {
 
     //filter task api
     @PutMapping(value="/task/update")
-    public ResponseEntity<GeneralResponse<Boolean>> updateTaskDate(@RequestBody TaskData taskData) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean>> updateTaskData(@RequestBody TaskData taskData) throws Exception {
         GeneralResponse<Boolean> result;
 
         boolean flag;
