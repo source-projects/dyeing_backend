@@ -2088,6 +2088,10 @@ public class StockBatchServiceImpl {
 
     }
 
+    public Optional<List<GetAllStockWithPartyNameResponse>> getStockByCreatedOrUserHeadId(Long id) {
+        return stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
+    }
+
 
    /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);

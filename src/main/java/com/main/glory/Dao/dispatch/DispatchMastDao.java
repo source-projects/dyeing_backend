@@ -34,4 +34,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
 
     @Query("select d from DispatchMast d where d.partyId=:id")
     List<DispatchMast> getDipatchByPartyId(Long id);
+
+    @Query("select d from DispatchMast d where d.createdBy=:id OR d.userHeadId=:id1")
+    List<DispatchMast> getDispatchByCreatedByAndUserHeadId(Long id, Long id1);
 }

@@ -388,4 +388,8 @@ public class SupplierServiceImpl {
     public ItemListForDirectDyeing getSupplierWithItemByItemId(Long supplierItemId) {
         return supplierRateDao.getSupplierWithItemByItemId(supplierItemId) ;
     }
+
+    public List<Supplier> getSupplierByCreatedAndUserHeadId(Long id, Long id1) {
+        return supplierDao.getSupplierByCreatedAndUserHeadId(id,id1);
+    }
 }

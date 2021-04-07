@@ -601,4 +601,8 @@ public class ShadeServiceImpl {
 
 		return list;
 	}
+
+    public List<ShadeMast> getShadeByCreatedByAndUserHeadId(Long id) {
+		return shadeMastDao.getAllShadeByCreatedByAndUserHeadId(id,id);
+    }
 }

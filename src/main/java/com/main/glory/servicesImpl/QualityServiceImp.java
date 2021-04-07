@@ -491,4 +491,8 @@ public class QualityServiceImp  {
     public Optional<Quality> getQualityEntryByIDAndPartyId(Long qualityId, Long partyId) {
         return qualityDao.findByPartyIdAndQualityId(qualityId,partyId);
     }
+
+    public List<Quality> getQualityByCreatedByAndUserHeadId(Long id) {
+        return qualityDao.getAllQualityWithIdAndUserHeadId(id,id);
+    }
 }

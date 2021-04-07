@@ -304,4 +304,8 @@ public class TaskServiceImpl {
         taskDataDao.updateTaskWithIdAndFlag(id,approvedFlag);
 
     }
+
+    public List<TaskMast> getTaskByCreatedByAndAssignUserId(Long id, Long id1) {
+        return taskMastDao.getAllTaskByCreatedByAndUserHeadId(id,id1);
+    }
 }
