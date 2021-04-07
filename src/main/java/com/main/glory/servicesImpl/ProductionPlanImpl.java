@@ -293,6 +293,7 @@ public class ProductionPlanImpl {
                 if(stockMast!=null)
                 {
                     GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e,stockMast.getPartyId(),stockMast.getQualityId());
+                    data.setBatchId(e);
                     data.setPartyId(stockMast.getPartyId().toString());
                     data.setQualityEntryId(stockMast.getQualityId().toString());
                     if(data!=null)
