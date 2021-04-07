@@ -207,7 +207,7 @@ public class TaskController extends ControllerConfig {
     }
 
     //filter task api
-    @PostMapping(value="/task/get/approved")
+    @GetMapping(value="/task/get/approved")
     public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskApprovedFlagWithId(@RequestParam(name = "id")Long id,@RequestParam(name = "approved") Boolean approvedFlag) throws Exception {
         GeneralResponse<List<TaskDetail>> result;
 

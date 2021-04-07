@@ -44,14 +44,4 @@ public class TaskDetail extends TaskData {
         this.taskType = taskMast.getTaskType();
     }
 
-    public TaskDetail(TaskData taskData,TaskMast taskMast, UserData userData, Department department, ReportType reportType) {
-        super(taskData);
-        this.detail = taskMast.getDetail();
-        this.taskPriority = taskMast.getTaskPriority();
-        this.taskType = taskMast.getTaskType();
-        this.firstName=userData.getFirstName();
-        this.lastName=userData.getLastName();
-        this.departmentName = department.getName();
-        this.formName = reportType.getFormName();
-    }
 }
