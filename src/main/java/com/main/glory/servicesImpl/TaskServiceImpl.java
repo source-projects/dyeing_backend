@@ -149,7 +149,7 @@ public class TaskServiceImpl {
 
     public TaskMastResponse getTaskById(Long id) {
         TaskData taskData = taskDataDao.getTaskDetailById(id);
-        TaskMast taskMast = taskMastDao.getTaskMastById(taskData.getId());
+        TaskMast taskMast = taskMastDao.getTaskMastById(taskData.getControlId());
 
         ReportType reportType=reportTypeDao.getReportTypeById(taskMast.getReportId());
         UserData userData = userService.getUserById(taskMast.getAssignUserId());
