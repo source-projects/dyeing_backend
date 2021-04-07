@@ -245,6 +245,11 @@ public class TaskServiceImpl {
             if(reportType!=null)
             e.setFormName(reportType.getFormName());
 
+            if(taskMast.getAssignUserId()==taskMast.getCreatedBy())
+                e.setAssignBySameUser(true);
+            else
+                e.setAssignBySameUser(false);
+
         });
         return taskDetailList;
     }
