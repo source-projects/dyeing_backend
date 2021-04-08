@@ -332,4 +332,8 @@ public class TaskServiceImpl {
 
         taskDataDao.saveAndFlush(taskData);
     }
+
+    public TaskData getTaskDataById(Long id) {
+        return taskDataDao.getTaskDetailById(id);
+    }
 }
