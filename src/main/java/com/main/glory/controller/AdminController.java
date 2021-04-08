@@ -285,7 +285,7 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteCompanyById(id);
             if(flag)
-            result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -359,7 +359,7 @@ public class AdminController extends ControllerConfig {
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -376,8 +376,8 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-                adminServcice.updateApprovedBy(approvedBy);
-                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            adminServcice.updateApprovedBy(approvedBy);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -648,9 +648,9 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-                Boolean list = adminServcice.deleteApprovedById(id);
+            Boolean list = adminServcice.deleteApprovedById(id);
 
-                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -739,7 +739,7 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
             if(invoiceSequence!=null)
-            result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -901,7 +901,7 @@ public class AdminController extends ControllerConfig {
                 result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -1061,7 +1061,7 @@ public class AdminController extends ControllerConfig {
             if(record==null)
                 throw new Exception("null record passed");
 
-             flag = adminServcice.updateReportType(record);
+            flag = adminServcice.updateReportType(record);
 
             if(flag==false)
             {

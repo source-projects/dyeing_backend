@@ -52,8 +52,8 @@ public class TaskController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/task/getBy")
-    public ResponseEntity<GeneralResponse<TaskMastResponse>> getTaskById(@RequestParam(name = "id")Long id) throws Exception {
+    @GetMapping(value="/task/taskMast/getBy")
+    public ResponseEntity<GeneralResponse<TaskMastResponse>> getTaskMastById(@RequestParam(name = "taskDataId")Long id) throws Exception {
         GeneralResponse<TaskMastResponse> result;
         if(id==null)
         {
@@ -70,6 +70,33 @@ public class TaskController extends ControllerConfig {
             }
             else
             result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @GetMapping(value="/task/taskData/getBy")
+    public ResponseEntity<GeneralResponse<TaskData>> getTaskDataById(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<TaskData> result;
+        if(id==null)
+        {
+            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            TaskData taskResponse = taskService.getTaskDataById(id);
+            if(taskResponse==null)
+            {
+                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -256,7 +283,7 @@ public class TaskController extends ControllerConfig {
     }
 
     //filter task api
-    @PutMapping(value="/task/update")
+    @PutMapping(value="/task/taskData/update")
     public ResponseEntity<GeneralResponse<Boolean>> updateTaskData(@RequestBody TaskData taskData) throws Exception {
         GeneralResponse<Boolean> result;
 
