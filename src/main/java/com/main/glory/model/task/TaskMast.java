@@ -60,6 +60,7 @@ public class TaskMast {
         this. createdDate=taskMast.getCreatedDate();
         this. updatedDate=taskMast.getUpdatedDate();
         this. completedDate=taskMast.getCompletedDate();
+        this.taskImageList = taskMast.getTaskImageList();
     }
 
 

@@ -156,10 +156,11 @@ public class TaskServiceImpl {
         Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
 
         TaskMastResponse taskResponse = new TaskMastResponse(taskMast);
+
         taskResponse.setFirstName(userData.getFirstName());
         taskResponse.setLastName(userData.getLastName());
-
         taskResponse.setDepartmentName(department.getName());
+
         if(taskMast.getReportId()!=null) {
             ReportType reportType=reportTypeDao.getReportTypeById(taskMast.getReportId());
             taskResponse.setFormName(reportType.getFormName());
@@ -241,9 +242,9 @@ public class TaskServiceImpl {
             UserData userData = userService.getUserById(e.getAssignUserId());
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
-            System.out.println("assign:"+e.getAssignUserId());
+           /* System.out.println("assign:"+e.getAssignUserId());
             System.out.println("user:"+userData.getId()+"-dept:"+userData.getDepartmentId());
-
+*/
             e.setTaskName(taskMast.getTaskName());
             e.setCompletedDays(taskMast.getCompletedDays());
             e.setFirstName(userData.getFirstName());
