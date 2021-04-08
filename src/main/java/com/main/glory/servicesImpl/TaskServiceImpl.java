@@ -151,7 +151,7 @@ public class TaskServiceImpl {
         TaskData taskData = taskDataDao.getTaskDetailById(id);
         TaskMast taskMast = taskMastDao.getTaskMastById(taskData.getControlId());
 
-        ReportType reportType=reportTypeDao.getReportTypeById(taskMast.getReportId());
+
         UserData userData = userService.getUserById(taskMast.getAssignUserId());
         Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
 
@@ -160,7 +160,8 @@ public class TaskServiceImpl {
         taskResponse.setLastName(userData.getLastName());
 
         taskResponse.setDepartmentName(department.getName());
-        if(reportType!=null) {
+        if(taskMast.getReportId()!=null) {
+            ReportType reportType=reportTypeDao.getReportTypeById(taskMast.getReportId());
             taskResponse.setFormName(reportType.getFormName());
             taskResponse.setUrlName(reportType.getUrl());
         }
