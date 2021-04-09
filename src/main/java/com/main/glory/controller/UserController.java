@@ -11,15 +11,12 @@ import com.main.glory.model.user.UserRequest;
 import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.LoginResponse;
 import com.main.glory.model.user.response.getAllUserInfo;
-import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.UserServiceImpl;
 import com.main.glory.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -32,8 +29,7 @@ public class UserController extends ControllerConfig {
     //@Value("${spring.application.debugAll}")
     Boolean debugAll=false;
 
-    @Autowired
-    LogServiceImpl logService;
+
 
     @Autowired
     HttpServletRequest request;
@@ -65,7 +61,7 @@ public class UserController extends ControllerConfig {
         else
         result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
 
-        logService.saveRequestResponse(request,result,headers,userObj);
+        ///logService.saveRequestResponse(request,result,headers,userObj);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/getByDepartmentId")
@@ -135,7 +131,7 @@ public class UserController extends ControllerConfig {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        logService.saveRequestResponse(request,result,headers,null);
+
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
@@ -191,13 +187,12 @@ public class UserController extends ControllerConfig {
         try{
             userService.createUser(userData,headers.get("id"));
             result = new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            if(debugAll==true)
-                logService.saveRequestResponse(request,result,headers, userData);
+
             }
         catch (Exception e){
             e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
-            logService.saveRequestResponse(request,result,headers,userData);
+
         }
 
 
