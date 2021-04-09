@@ -11,20 +11,32 @@ import com.main.glory.model.user.UserRequest;
 import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.LoginResponse;
 import com.main.glory.model.user.response.getAllUserInfo;
+import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.UserServiceImpl;
 import com.main.glory.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class UserController extends ControllerConfig {
+
+    @Value("${spring.application.debugAll}")
+    String debugAll;
+
+    @Autowired
+    LogServiceImpl logService;
+
+    @Autowired
+    HttpServletRequest request;
 
     private UserServiceImpl userService;
 
@@ -184,12 +196,15 @@ public class UserController extends ControllerConfig {
             e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+
+
+        logService.saveRequestResponse(request,result,headers,userData);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<GeneralResponse<LoginResponse>> login(@RequestBody UserRequest userData) throws Exception{
+    public ResponseEntity<GeneralResponse<LoginResponse>> login(@RequestBody UserRequest userData, @RequestHeader Map<String, String> headers) throws Exception{
 
         GeneralResponse<LoginResponse> result;
         try{
@@ -201,6 +216,10 @@ public class UserController extends ControllerConfig {
                 token = jwtUtil.generateToken(user, "refreshToken");
                 loginResponse.setRefreshToken(token);
                 result = new GeneralResponse<>(loginResponse,"successfully logged in", true, System.currentTimeMillis(), HttpStatus.OK);
+                /*System.out.println(headers.toString());
+                System.out.println(request.getRequestURL());*/
+                //logService.saveRequestResponse(request,result,headers,null);
+
             }
             else
             {
