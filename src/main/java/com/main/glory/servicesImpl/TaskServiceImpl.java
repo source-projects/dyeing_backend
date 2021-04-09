@@ -256,6 +256,7 @@ public class TaskServiceImpl {
         {
             TaskDetail taskDetail = new TaskDetail(e);
             TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
+            System.out.println("user:"+e.getAssignUserId());
             UserData userData = userService.getUserById(e.getAssignUserId());
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());

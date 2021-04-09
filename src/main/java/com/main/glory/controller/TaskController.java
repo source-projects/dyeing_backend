@@ -219,7 +219,7 @@ public class TaskController extends ControllerConfig {
 
     //get task by filte
     @GetMapping("/task/all")
-    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllStockBatch(@RequestParam(name = "getBy") String getBy, @RequestParam(name = "id") Long id,@RequestHeader Map<String, String> headers) throws Exception {
+    public ResponseEntity<GeneralResponse<List<TaskDetail>>> getAllTaskDetail(@RequestParam(name = "getBy") String getBy, @RequestParam(name = "id") Long id,@RequestHeader Map<String, String> headers) throws Exception {
 
         GeneralResponse<List<TaskDetail>> result;
 
