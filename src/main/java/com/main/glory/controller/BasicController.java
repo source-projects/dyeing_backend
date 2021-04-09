@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityParty;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
@@ -127,10 +128,10 @@ public class BasicController extends ControllerConfig {
 
     //get all batch who's dipatch is not created yet
     @GetMapping("/batch/ByMaster/{userHeadId}")
-    public ResponseEntity<GeneralResponse<List<GetAllBatch>>> GetBatchByMaster(@PathVariable(value = "userHeadId") Long userHeadId) {
-        GeneralResponse<List<GetAllBatch>> result;
+    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>>> GetBatchByMaster(@PathVariable(value = "userHeadId") Long userHeadId) {
+        GeneralResponse<List<GetAllBatchWithProduction>> result;
         try {
-            List<GetAllBatch> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
+            List<GetAllBatchWithProduction> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
             if (batchDataList != null) {
                 result =  new GeneralResponse<>(batchDataList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
@@ -181,6 +182,7 @@ public class BasicController extends ControllerConfig {
                 result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
@@ -205,6 +207,7 @@ public class BasicController extends ControllerConfig {
                 result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
 

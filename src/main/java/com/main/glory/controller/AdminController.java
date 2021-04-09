@@ -4,10 +4,12 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.*;
+import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.task.ReportType;
 import com.main.glory.servicesImpl.AdminServciceImpl;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.swagger.schema.ApiModelProperties;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -282,7 +285,7 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteCompanyById(id);
             if(flag)
-            result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -356,7 +359,7 @@ public class AdminController extends ControllerConfig {
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -373,8 +376,8 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-                adminServcice.updateApprovedBy(approvedBy);
-                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            adminServcice.updateApprovedBy(approvedBy);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -406,14 +409,15 @@ public class AdminController extends ControllerConfig {
     }
 
     @GetMapping(value="/admin/get/department")
-    public ResponseEntity<GeneralResponse<List<Department>>> getAllDepartment() throws Exception {
+    public ResponseEntity<GeneralResponse<List<DepartmentResponse>>> getAllDepartment(@RequestHeader Map<String, String> headers) throws Exception {
 
-        GeneralResponse<List<Department>> result;
+        GeneralResponse<List<DepartmentResponse>> result;
 
         boolean flag;
         try {
 
-            List<Department> list = adminServcice.getAllDepartmentList();
+
+            List<DepartmentResponse> list = adminServcice.getAllDepartmentListByHeaderId(headers.get("id"));
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
@@ -422,19 +426,20 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value="/admin/get/department/{id}")
-    public ResponseEntity<GeneralResponse<Department>> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<DepartmentResponse>> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Department> result;
+        GeneralResponse<DepartmentResponse> result;
 
         boolean flag;
         try {
 
-            Department list = adminServcice.getDepartmentById(id);
+            DepartmentResponse list = adminServcice.getDepartmentById(id);
             result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
@@ -643,9 +648,9 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-                Boolean list = adminServcice.deleteApprovedById(id);
+            Boolean list = adminServcice.deleteApprovedById(id);
 
-                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -734,7 +739,7 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
             if(invoiceSequence!=null)
-            result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
             else
                 result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
 
@@ -896,7 +901,7 @@ public class AdminController extends ControllerConfig {
                 result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
             else
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         catch(Exception e)
@@ -955,6 +960,154 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PostMapping(value="/admin/add/reportType")
+    public ResponseEntity<GeneralResponse<Boolean>> addReportType(@RequestBody ReportType record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+
+            if(record == null)
+                throw new Exception("null data passed");
+
+            adminServcice.addReportType(record);
+
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/reportType")
+    public ResponseEntity<GeneralResponse<List<ReportType>>> getAllReportType() throws Exception {
+
+        GeneralResponse<List<ReportType>> result;
+
+        boolean flag;
+        try {
+
+
+            List<ReportType> reportTypeList = adminServcice.getAllReportType();
+
+            if(reportTypeList.isEmpty())
+            {
+                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/reportTypeBy")
+    public ResponseEntity<GeneralResponse<ReportType>> getReportTypeById(@RequestParam(name = "id")Long id) throws Exception {
+
+        GeneralResponse<ReportType> result;
+
+        boolean flag;
+        try {
+
+
+            if(id==null)
+                throw new Exception("null id passed");
+
+            ReportType reportTypeList = adminServcice.getReportTypeById(id);
+
+            if(reportTypeList==null)
+            {
+                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/update/reportType")
+    public ResponseEntity<GeneralResponse<Boolean>> getReportTypeById(@RequestBody ReportType record) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            if(record==null)
+                throw new Exception("null record passed");
+
+            flag = adminServcice.updateReportType(record);
+
+            if(flag==false)
+            {
+                result= new GeneralResponse<>(false, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+            {
+                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @DeleteMapping(value="/admin/delete/reportTypeBy")
+    public ResponseEntity<GeneralResponse<Boolean>> deleteReportTypeById(@RequestParam(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean> result;
+
+        boolean flag;
+        try {
+
+            if(id==null)
+                throw new Exception("null record passed");
+
+            adminServcice.deleteReportTypeById(id);
+            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 
 

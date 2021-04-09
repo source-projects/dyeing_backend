@@ -4,6 +4,7 @@ import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
+import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
@@ -13,6 +14,7 @@ import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -92,8 +94,15 @@ public class DyeingSlipServiceImpl {
         SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
-        GetQualityResponse quality=qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
-        Double wt = stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+        GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
+        Double wt = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+        if(productionPlan.getIsMergeBatchId()==true)
+        {
+            wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
+        }
+        else {
+            wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
+        }
         if(productionPlan.getShadeId()!=null)
         {
             Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
@@ -110,9 +119,10 @@ public class DyeingSlipServiceImpl {
 
 
 
+        GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
         slipFormatData.setTotalWt(wt);
-        slipFormatData.setQualityId(quality.getQualityId());
-        slipFormatData.setQualityEntryId(quality.getId());
+        slipFormatData.setQualityId(record.getQualityId());
+        //slipFormatData.setQualityEntryId(quality.getId());
 
         slipFormatData.setDyeingSlipDataList(dyeingSlipMastExist.getDyeingSlipDataList());
 
@@ -133,13 +143,16 @@ public class DyeingSlipServiceImpl {
         //AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
 
         //check the begore the master dyeing slip is exit or not
-            DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
+            DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByBatchId(addAdditionDyeingSlipModel.getBatchId());
             if(dyeingSlipMast==null) {
                 throw new Exception("no dyeing slip found for given batch or production");
             }
 
 
-            //check the dyeing slip already exist with batch or not
+            //check the additonal dyeing slip already exist with batch or not
+            DyeingSlipData dyeingSlipDataExist = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
+            if(dyeingSlipDataExist!=null)
+                throw new Exception("already additonal dyeing slip found");
 
            /* DyeingSlipData dyeingSlipDataExistWithAdditional = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
             if(dyeingSlipDataExistWithAdditional!=null)

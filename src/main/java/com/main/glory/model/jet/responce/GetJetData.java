@@ -5,6 +5,7 @@ import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.ShadeMast;
@@ -28,9 +29,9 @@ public class GetJetData {
     String batchId;
     String colorTone;
 
-    Long partyId;
+    String partyId;
     String partyName;
-    Long qualityEntryId;
+    String qualityEntryId;
     String qualityId;
     String qualityName;
     Double totalWt;
@@ -66,14 +67,14 @@ public class GetJetData {
         this.status=jetData.getStatus().toString();
         this.sequence=jetData.getSequence();
         this.productionId=jetData.getProductionId();
-        this.partyId = party.getId();
+        this.partyId = party.getId().toString();
         this.partyName=party.getPartyName();
-        this.qualityEntryId = quality.getId();
+        this.qualityEntryId = quality.getId().toString();
         this.qualityId=quality.getQualityId();
         this.qualityName=qualityName.getQualityName();
         this.totalMtr=totalMtr;
         this.totalWt=totalWt;
-        this.stockId=productionPlan.getStockId();
+        //this.stockId=productionPlan.getStockId();
         this.colorTone=(color.getColorTone()==null)?"not mention":color.getColorTone();
     }
 
@@ -83,14 +84,14 @@ public class GetJetData {
         this.status=jetData.getStatus().toString();
         this.sequence=jetData.getSequence();
         this.productionId=jetData.getProductionId();
-        this.partyId = party.getId();
+        this.partyId = party.getId().toString();
         this.partyName=party.getPartyName();
-        this.qualityEntryId = quality.getId();
+        this.qualityEntryId = quality.getId().toString();
         this.qualityId=quality.getQualityId();
         this.qualityName=qualityName.getQualityName();
         this.totalMtr=totalMtr;
         this.totalWt=totalWt;
-        this.stockId=productionPlan.getStockId();
+        //this.stockId=productionPlan.getStockId();
         this.processName=dyeingProcessMast.getProcessName();
         this.batchId=productionPlan.getBatchId();
         this.colorTone=colorTone.getColorTone();
@@ -105,14 +106,55 @@ public class GetJetData {
         this.sequence=jetData.getSequence();
         this.productionId=jetData.getProductionId();
         this.batchId = productionPlan.getBatchId();
-        this.partyId = party.getId();
+        this.partyId = party.getId().toString();
         this.partyName=party.getPartyName();
-        this.qualityEntryId = quality.getId();
+        this.qualityEntryId = quality.getId().toString();
         this.qualityId=quality.getQualityId();
         this.qualityName=qualityName.getQualityName();
         this.totalMtr=totalMtr;
         this.totalWt=totalWt;
-        this.stockId=productionPlan.getStockId();
+        //this.stockId=productionPlan.getStockId();
 
+    }
+
+
+
+    public GetJetData(GetAllProductionWithShadeData data, JetData jetData, ShadeMast colorTone, DyeingProcessMast dyeingProcessMast) {
+        this.id=jetData.getId();
+        this.controlId=jetData.getControlId();
+        this.status=jetData.getStatus().toString();
+        this.sequence=jetData.getSequence();
+        this.productionId=jetData.getProductionId();
+        this.batchId=data.getBatchId();
+        this.colorTone=colorTone.getColorTone()==null?null:colorTone.getColorTone();
+        this.partyId=data.getPartyId();
+        this.partyName=data.getPartyName();
+        this.qualityEntryId=data.getQualityEntryId();
+        this.qualityId=data.getQualityId();
+        this.qualityName=data.getQualityName();
+        this.totalWt=data.getTotalWt();
+        this.totalMtr=data.getTotalMtr();
+        this.processName=dyeingProcessMast.getProcessName()==null?null:dyeingProcessMast.getProcessName();
+        this.partyShadeNo=colorTone.getPartyShadeNo()==null?null:colorTone.getPartyShadeNo();
+        //Long stockId;
+    }
+
+    public GetJetData(JetData jetData, GetAllProductionWithShadeData data) {
+        this.id=jetData.getId();
+        this.controlId=jetData.getControlId();
+        this.status=jetData.getStatus().toString();
+        this.sequence=jetData.getSequence();
+        this.productionId=jetData.getProductionId();
+        this.batchId=data.getBatchId();
+        //this.colorTone=colorTone.getColorTone()==null?null:colorTone.getColorTone();
+        this.partyId=data.getPartyId();
+        this.partyName=data.getPartyName();
+        this.qualityEntryId=data.getQualityEntryId();
+        this. qualityId=data.getQualityId();
+        this. qualityName=data.getQualityName();
+        this. totalWt=data.getTotalWt();
+        this. totalMtr=data.getTotalMtr();
+        //this. processName=dyeingProcessMast.getProcessName()==null?null:dyeingProcessMast.getProcessName();
+        //this.partyShadeNo=colorTone.getPartyShadeNo()==null?null:colorTone.getPartyShadeNo();
     }
 }

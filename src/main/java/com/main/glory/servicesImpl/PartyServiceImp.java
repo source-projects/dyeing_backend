@@ -502,4 +502,8 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         return partyReport;
     }
+
+    public List<Party> getPartyByCreatedAndUserHeadId(Long id) {
+        return partyDao.getAllPartyByCreatedAndHead(id,id);
+    }
 }

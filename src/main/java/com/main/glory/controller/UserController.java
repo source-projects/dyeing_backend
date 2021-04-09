@@ -17,14 +17,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class UserController extends ControllerConfig {
+
+    //@Value("${spring.application.debugAll}")
+    Boolean debugAll=false;
+
+
+
+    @Autowired
+    HttpServletRequest request;
 
     private UserServiceImpl userService;
 
@@ -37,12 +45,12 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<GeneralResponse<UserData>> getUserById(@PathVariable(value = "id") Long id)
-    {
+    public ResponseEntity<GeneralResponse<UserData>> getUserById(@PathVariable(value = "id") Long id,@RequestHeader Map<String,String> headers) throws IllegalAccessException {
+        UserData userObj=null;
         GeneralResponse<UserData> result;
         if(id!=null)
         {
-            var userObj=userService.getUserById(id);
+            userObj=userService.getUserById(id);
             if(userObj!=null)
             {
                 result = new GeneralResponse<UserData>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -52,6 +60,26 @@ public class UserController extends ControllerConfig {
         }
         else
         result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        ///logService.saveRequestResponse(request,result,headers,userObj);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @GetMapping("/user/getByDepartmentId")
+    public ResponseEntity<GeneralResponse<List<UserData>>> getUserByDepartmentId(@RequestParam(name = "departmentId") Long departmentId)
+    {
+        GeneralResponse<List<UserData>> result;
+        if(departmentId!=null)
+        {
+            List<UserData> userObj=userService.getAllUserByDepartmentId(departmentId);
+            if(userObj!=null)
+            {
+                result = new GeneralResponse<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result = new GeneralResponse<>(null, "No such record found", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        else
+            result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
 
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -89,8 +117,7 @@ public class UserController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/{username}/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id)
-    {
+    public ResponseEntity<GeneralResponse<Boolean>> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id,@RequestHeader Map<String,String> headers) throws IllegalAccessException {
         GeneralResponse<Boolean> result;
         try {
             Boolean data = userService.getUserNameExist(username,id);
@@ -104,6 +131,7 @@ public class UserController extends ControllerConfig {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
@@ -159,17 +187,22 @@ public class UserController extends ControllerConfig {
         try{
             userService.createUser(userData,headers.get("id"));
             result = new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+
             }
         catch (Exception e){
             e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+
         }
+
+
+
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<GeneralResponse<LoginResponse>> login(@RequestBody UserRequest userData) throws Exception{
+    public ResponseEntity<GeneralResponse<LoginResponse>> login(@RequestBody UserRequest userData, @RequestHeader Map<String, String> headers) throws Exception{
 
         GeneralResponse<LoginResponse> result;
         try{
@@ -181,6 +214,10 @@ public class UserController extends ControllerConfig {
                 token = jwtUtil.generateToken(user, "refreshToken");
                 loginResponse.setRefreshToken(token);
                 result = new GeneralResponse<>(loginResponse,"successfully logged in", true, System.currentTimeMillis(), HttpStatus.OK);
+                /*System.out.println(headers.toString());
+                System.out.println(request.getRequestURL());*/
+                //logService.saveRequestResponse(request,result,headers,null);
+
             }
             else
             {
@@ -220,22 +257,23 @@ public class UserController extends ControllerConfig {
 
 
     @DeleteMapping(value="/user/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> deleteUserDetailsByID(@PathVariable(value = "id") Long id)
-    {
+    public ResponseEntity<GeneralResponse<Boolean>> deleteUserDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
         GeneralResponse<Boolean> result;
-        if(id!=null)
-        {
-            boolean flag=userService.deleteUserById(id);
-            if(flag)
-            {
-                result = new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-            }else{
-                result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
-            }
+        try {
+            if (id != null) {
+                boolean flag = userService.deleteUserById(id);
+                if (flag) {
+                    result = new GeneralResponse<Boolean>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                } else {
+                    result = new GeneralResponse<Boolean>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK);
+                }
+            } else
+                result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
         }
-        else
-        result = new GeneralResponse<Boolean>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK);
-
+        catch (Exception e)
+        {
+            result = new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 

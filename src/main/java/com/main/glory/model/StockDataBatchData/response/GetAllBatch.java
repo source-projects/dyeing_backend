@@ -40,6 +40,7 @@ public class GetAllBatch {
         this.qualityId=quality.getQualityId();
     }
 
+
     public GetAllBatch(Party party, GetQualityResponse quality, GetBatchWithControlId batch) {
         this.controlId=batch.getControlId();
         this.batchId=batch.getBatchId();
@@ -79,11 +80,37 @@ public class GetAllBatch {
         this.qualityType=getAllBatch.qualityType;
 
     }
+    public GetAllBatch(GetBatchWithControlId getAllBatch) {
+        this.totalWt=getAllBatch.getWT();
+        this.batchId=getAllBatch.getBatchId();
+
+
+    }
 
     public GetAllBatch(Double totalWt, Long controlId, String batchId, Long partyId, String partyName, Long qualityEntryId, String qualityId, String qualityName, String qualityType) {
         this.totalWt = totalWt;
         this.controlId = controlId;
         this.batchId = batchId;
+        this.partyId = partyId;
+        this.partyName = partyName;
+        this.qualityEntryId = qualityEntryId;
+        this.qualityId = qualityId;
+        this.qualityName = qualityName;
+        this.qualityType = qualityType;
+    }
+
+    public GetAllBatch(GetBatchByInvoice g) {
+        this.productionPlanned=true;//because it is already getting the data who;s flag is true
+        this.isBillGenerated=false;
+        this.batchId = g.getBatchId();
+
+    }
+
+    public GetAllBatch(Double totalWt, Long controlId, String batchId, Boolean productionPlanned, Long partyId, String partyName, Long qualityEntryId, String qualityId, String qualityName, String qualityType) {
+        this.totalWt = totalWt;
+        this.controlId = controlId;
+        this.batchId = batchId;
+        this.productionPlanned = productionPlanned;
         this.partyId = partyId;
         this.partyName = partyName;
         this.qualityEntryId = qualityEntryId;

@@ -2,12 +2,15 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.admin.*;
 import com.main.glory.Dao.quality.QualityNameDao;
+import com.main.glory.Dao.task.ReportTypeDao;
 import com.main.glory.model.admin.*;
+import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.purchase.Purchase;
-import com.main.glory.model.purchase.response.PurchaseResponse;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.task.ReportType;
+import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,12 @@ import java.util.Optional;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
+    @Autowired
+    TaskServiceImpl taskService;
+
+    @Autowired
+    ReportTypeDao reportTypeDao;
 
     @Autowired
     PurchaseImpl purchaseService;
@@ -189,8 +198,8 @@ public class AdminServciceImpl {
         return approvedByExist;
     }
 
-    public Department getDepartmentById(Long id) throws Exception {
-        Department department = departmentDao.getDepartmentById(id);
+    public DepartmentResponse getDepartmentById(Long id) throws Exception {
+        DepartmentResponse department = departmentDao.getDepartmentResponseById(id);
         if(department==null) {
             throw new Exception("no data found");
         }
@@ -393,5 +402,70 @@ public class AdminServciceImpl {
             throw new Exception("remove the purchase record first");
 
         receiverByDao.deleteByReceiverId(id);
+    }
+
+    public void addReportType(ReportType record) throws Exception {
+        ReportType reportTypeExist = reportTypeDao.getReportFormExist(record.getFormName());
+        if(reportTypeExist!=null)
+            throw new Exception("report form is already exist");
+        reportTypeExist = new ReportType(record);
+
+    }
+
+    public List<ReportType> getAllReportType() {
+        return reportTypeDao.getAllReportType();
+    }
+
+    public ReportType getReportTypeById(Long id) {
+        return reportTypeDao.getReportTypeById(id);
+    }
+
+    public boolean updateReportType(ReportType record) {
+        try {
+            ReportType reportTypExist = reportTypeDao.getReportTypeById(record.getId());
+
+            if (reportTypExist == null) {
+                return false;
+            }
+            else
+            {
+                reportTypeDao.saveAndFlush(record);
+                return true;
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
+    public void deleteReportTypeById(Long id) throws Exception {
+        ReportType reportTypeExist = reportTypeDao.getReportTypeById(id);
+        if(reportTypeExist==null)
+            throw new Exception("no data found");
+
+        //check the report is assigned to any task or not
+        List<TaskMast> taskMastListByReport = taskService.getTaskByReportId(id);
+        if(!taskMastListByReport.isEmpty())
+            throw new Exception("remove the task first");
+
+        reportTypeDao.deleteReportTypeById(id);
+
+
+    }
+
+    public List<DepartmentResponse> getAllDepartmentListByHeaderId(String id) {
+
+        UserData userData = userService.getUserById(Long.parseLong(id));
+        if(userData.getUserHeadId()==0)
+        {
+            return departmentDao.getDepartmentResponse();
+        }
+        else {
+
+            return departmentDao.getDepartmentResponseByUserId(userData.getId());
+        }
     }
 }

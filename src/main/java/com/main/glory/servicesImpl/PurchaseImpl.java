@@ -3,10 +3,12 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.admin.ReceiverByDao;
+import com.main.glory.Dao.purchase.MaterialPhotosDao;
 import com.main.glory.Dao.purchase.PurchaseDao;
 import com.main.glory.model.admin.ApprovedBy;
 import com.main.glory.model.admin.Department;
 import com.main.glory.model.admin.ReceiverBy;
+import com.main.glory.model.purchase.MaterialPhotos;
 import com.main.glory.model.purchase.Purchase;
 
 import com.main.glory.model.purchase.response.PurchaseResponse;
@@ -28,6 +30,10 @@ public class PurchaseImpl {
 
     @Autowired
     PurchaseDao purchaseDao;
+
+
+    @Autowired
+    MaterialPhotosDao materialPhotosDao;
 
     @Autowired
     SupplierServiceImpl supplierService;
@@ -72,7 +78,7 @@ public class PurchaseImpl {
             throw new Exception("no approved by found");
 
         //check the record updated by admin or user
-        UserData userDataExist = userService.getUserById(Long.parseLong("id"));
+        UserData userDataExist = userService.getUserById(Long.parseLong(id));
         if(userDataExist==null)
             throw new Exception("no user record found");
 
@@ -129,6 +135,34 @@ public class PurchaseImpl {
 
 
 
+    }
+
+    public List<PurchaseResponse> getAllPurchaseRecordBasedOnFlag(Boolean flag, String id) {
+        if(flag==null)
+            return purchaseDao.getAllPurchaseRecord();
+        else {
+            return purchaseDao.getAllPurchaseRecordBasedOnFlag(flag);
+        }
+
+    }
+
+    public void deleteRecordById(Long id) throws Exception {
+        Purchase purchaseExit = purchaseDao.getPurchaseById(id);
+        if (purchaseExit == null)
+            throw new Exception("no record found");
+
+        if (purchaseExit.getChecked() == true)
+            throw new Exception("can't delete the record because status is checked");
+
+        List<MaterialPhotos> materialPhotosList = purchaseExit.getMaterialPhotosList();
+        purchaseDao.deleteByPurchaseId(id);
+        if (!materialPhotosList.isEmpty())
+        {
+            for(MaterialPhotos materialPhotos:materialPhotosList)
+            {
+                materialPhotosDao.deleteByMaterialId(materialPhotos.getId());
+            }
+        }
     }
 
 

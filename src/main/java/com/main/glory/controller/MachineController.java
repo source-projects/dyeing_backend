@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.main.glory.config.ControllerConfig;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class MachineController extends ControllerConfig {
 
+    @Autowired
+    HttpServletRequest request;
 
     @Autowired
     private MachineServiceImpl machineService;

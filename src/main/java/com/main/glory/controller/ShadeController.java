@@ -149,7 +149,7 @@ public class ShadeController extends ControllerConfig {
 	}
 
 	@GetMapping("/shade/{qualityId}/{partyId}")
-	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") Long qualityId,@PathVariable(value = "partyId") Long partyId,@RequestHeader Map<String, String> headers){
+	public ResponseEntity<GeneralResponse<List<GetShadeByPartyAndQuality>>> getShadesByQualityAndPartyId(@PathVariable(value = "qualityId") String qualityId,@PathVariable(value = "partyId") String partyId,@RequestHeader Map<String, String> headers){
 		GeneralResponse<List<GetShadeByPartyAndQuality>> result;
 		try{
 			List<GetShadeByPartyAndQuality> shadeMastList = shadeService.getShadesByQualityAndPartyId(qualityId,partyId, headers.get("id"));

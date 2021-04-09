@@ -27,7 +27,6 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -326,16 +325,16 @@ public class DispatchMastImpl {
 
         //iterate and change the status
         for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
-            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(createDispatch.getBatchId());
 
 
             //get the shade detail
-            ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(createDispatch.getBatchId(), createDispatch.getStockId());
-            if(productionPlan==null)
-                throw new Exception("no production plan found for batch");
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
+            /*if(productionPlan==null)
+                throw new Exception("no production plan found for batch");*/
 
             ShadeMast shadeMast = null;
-            if(productionPlan.getShadeId()!=null)
+            if(productionPlan!=null && productionPlan.getShadeId()!=null)
             {
                 shadeMast=shadeService.getShadeById(productionPlan.getShadeId());
                 if(shadeMast==null)
@@ -343,7 +342,8 @@ public class DispatchMastImpl {
             }
 
 
-            Quality quality = qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+            StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
+            Quality quality =qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
 
             if(quality==null)
                 throw new Exception("no quality found");
@@ -883,6 +883,7 @@ public class DispatchMastImpl {
 
             List<DispatchData> dispatchDataList=dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(),batch.getBatchId(), invoiceNo);
 
+            String isMergeBatchId="";
             for(DispatchData invoiceBatch:dispatchDataList)
             {
                 //System.out.println("invoic entry:"+invoiceBatch.getBatchEntryId());
@@ -895,13 +896,14 @@ public class DispatchMastImpl {
 
             }
 
-            //get the shade rate as well
+            /*//get the shade rate as well
             ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.getBatchId(),batch.getStockId());
             if(productionPlan==null)
                 continue;
-           /* Optional<ShadeMast> shadeMast = null;
+           *//* Optional<ShadeMast> shadeMast = null;
             if(productionPlan.getShadeId()!=null)
-            shadeService.getShadeMastById(productionPlan.getShadeId());*/
+            shadeService.getShadeMastById(productionPlan.getShadeId());*//*
+            */
 
             Double shadeRate=0.0;
             /*if(shadeMast.isPresent())
@@ -1235,7 +1237,7 @@ public class DispatchMastImpl {
 
             //check the stock is exist with batch or not
 
-            List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
             if(batchDataList.isEmpty())
                 throw new Exception("no batch record found with stock");
 
@@ -1262,15 +1264,23 @@ public class DispatchMastImpl {
 //            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = batchDao.getQualityBillByStockAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
 
 
-            Double totalMtr = batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
-            Double totalFinishMtr = batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
-            Long totalPcs = batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
-            qualityBillByInvoiceNumberList.add(new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast));
-
+            Double totalMtr=0.0; //;= batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            Double totalFinishMtr=0.0;// = batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+            Long totalPcs=0l;// = batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
 
 
             //batch record
-            List<BatchData> batchDataList = batchDao.getBatchRecordByBillGeneratedFlag(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
+            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
+            for(BatchData batchData:batchDataList)
+            {
+                totalFinishMtr+=batchData.getFinishMtr();
+                totalPcs++;
+                totalMtr+=batchData.getMtr();
+            }
+
+            qualityBillByInvoiceNumberList.add(new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast));
+
+
             batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
 
 
@@ -1291,5 +1301,9 @@ public class DispatchMastImpl {
         return partyDataByInvoiceNumber;
 
 
+    }
+
+    public List<DispatchMast> getDispatchByCreatedByAndUserHeadId(Long id, Long id1) {
+        return dispatchMastDao.getDispatchByCreatedByAndUserHeadId(id,id1);
     }
 }

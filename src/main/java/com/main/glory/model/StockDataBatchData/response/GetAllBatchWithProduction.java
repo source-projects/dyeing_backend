@@ -20,4 +20,9 @@ public class GetAllBatchWithProduction extends GetAllBatch{
         this.productionId=id;
 
     }
+
+    public GetAllBatchWithProduction(GetBatchWithControlId getAllBatch, Long id) {
+        super(getAllBatch);
+        this.productionId=id;
+    }
 }

@@ -1,8 +1,10 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.admin.EmployeeSequenceDao;
 import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.Dao.employee.EmployeeDataDao;
 import com.main.glory.Dao.employee.EmployeeMastDao;
+import com.main.glory.model.admin.EmployeeSequence;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
@@ -25,39 +27,35 @@ public class EmployeeServiceImpl {
     @Autowired
     AttendanceDao attendanceDao;
 
+    @Autowired
+    EmployeeSequenceDao employeeSequenceDao;
+
     @Transactional
     public Long addEmployeeRecord(EmployeeMast record) throws Exception {
+
+        //employee id should in within 4 digit for qr code so maintain the employee id
+        EmployeeSequence employeeSequenceExist = employeeSequenceDao.getEmployeeSequence();
+        if(employeeSequenceExist==null)
+        {
+            EmployeeSequence employeeSequence = new EmployeeSequence(1001l);
+            employeeSequenceExist =  employeeSequenceDao.save(employeeSequence);
+
+        }
 
 
          if(record.getEmployeeDocumentList().isEmpty())
              throw new Exception("employee document can't be null");
 
 
-        /*EmployeeMast employeeMastExistWithAdhar = employeeMastDao.getEmployeeByAadhaarExceptId(record.getAadhaar(),record.getId());
-
-        if(employeeMastExistWithAdhar!=null)
-            throw new Exception("employee exist with aadhaar number");*/
-
-
-      /*  //process the image and store to the cloudniary
-
-      onlye the image name is coming from FE process that record
-        record.getEmployeeDataList().forEach(e->{
-
-        });
-
-*//*
-
-        //set the file url and store in system
-        record.getEmployeeDataList().forEach(e->{
-            FileUpload fileUpload = new FileUpload();
-            String url = fileUpload.uploadFile(e.getFile());
-        });*/
-
-        EmployeeMast x = employeeMastDao.save(record);
+        record.setEmpId(employeeSequenceExist.getEmpId());
+        EmployeeMast x = employeeMastDao.saveAndFlush(record);
 
         //employeeDataDao.saveAll(record.getEmployeeDocumentList());
-        return x.getId();
+
+        //update the employee sequnce
+        employeeSequenceExist.setEmpId(employeeSequenceExist.getEmpId()+1);
+        employeeSequenceDao.saveAndFlush(employeeSequenceExist);
+        return x.getEmpId();
     }
 
 

@@ -13,8 +13,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddDirectBatchToJet {
-    Long partyId;
-    Long qualityEntryId;
+    String partyId;
+    String qualityEntryId;
     Long shadeId;
     //String colorName;
     String batchId;

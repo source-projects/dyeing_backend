@@ -4,9 +4,20 @@ import com.main.glory.Dao.admin.CompanyDao;
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
+import com.main.glory.model.admin.request.DepartmentResponse;
+import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.designation.Designation;
+import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
@@ -25,6 +36,34 @@ import java.util.Optional;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserServiceInterface {
+
+    @Autowired
+    ColorServiceImpl colorService;
+
+    @Autowired
+    SupplierServiceImpl supplierService;
+
+    @Autowired
+    DyeingProcessServiceImpl dyeingProcessService;
+
+    @Autowired
+    StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    PartyServiceImp partyServiceImp;
+
+    @Autowired
+    QualityServiceImp qualityServiceImp;
+
+    @Autowired
+    ShadeServiceImpl shadeService;
+
+    @Autowired
+    DispatchMastImpl dispatchMastService;
+
+    @Autowired
+    TaskServiceImpl taskService;
+
 
     @Autowired
     DepartmentDao departmentDao;
@@ -58,7 +97,7 @@ public class UserServiceImpl implements UserServiceInterface {
     public void createUser(UserAddRequest userDataDto, String headerId) throws Exception {
         //company and designation check
 
-        Department departmentExist =departmentDao.getDepartmentById(userDataDto.getDepartmentId());
+        DepartmentResponse departmentExist =departmentDao.getDepartmentResponseById(userDataDto.getDepartmentId());
         if(departmentExist==null)
             throw new Exception("department not found");
 
@@ -96,18 +135,15 @@ public class UserServiceImpl implements UserServiceInterface {
                 return;
             }
 
+            // ======else user is added by admin==========
+
             //identify the user recently added was master/oprator or data-entry from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
 
             if(user.getUserHeadId()==0)
             {
-                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = 0
-                if(userDataDto.getIsMaster()==false)
-                {
-                    userDao.updateUserHeadId(x.getId(), 0l);
-                }else {
-                    userDao.updateUserHeadId(x.getId(), x.getId());
-                }
+                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = usr id
+                userDao.updateUserHeadId(x.getId(), x.getId());
             }
             //else
             //remain the operator or data entry operator
@@ -175,12 +211,51 @@ public class UserServiceImpl implements UserServiceInterface {
         return userHeads;
     }
 
-    public boolean deleteUserById(Long id) {
+    public boolean deleteUserById(Long id) throws Exception {
         var userIndex = userDao.findById(id);
         if (!userIndex.isPresent())
             return false;
-        else
+        else {
+            //check the record is exist or not
+            Optional<List<GetAllStockWithPartyNameResponse>> stockMastList = stockBatchService.getStockByCreatedOrUserHeadId(id);
+            if(stockMastList.isPresent())
+                throw new Exception("remove the stock record first");
+
+            List<Party> parties = partyServiceImp.getPartyByCreatedAndUserHeadId(id);
+            if(!parties.isEmpty())
+                throw new Exception("remove the party record first");
+
+            List<Quality> qualityList = qualityServiceImp.getQualityByCreatedByAndUserHeadId(id);
+
+            if(!qualityList.isEmpty())
+                throw new Exception("remove the quality name");
+
+            List<ShadeMast> shadeMastList = shadeService.getShadeByCreatedByAndUserHeadId(id);
+            if(!shadeMastList.isEmpty())
+                throw new Exception("remove the shade first");
+
+            List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByCreatedByAndUserHeadId(id,id);
+            if(!dispatchMastList.isEmpty())
+                throw new Exception("remove the dispatch record first");
+
+            List<TaskMast> taskMastList = taskService.getTaskByCreatedByAndAssignUserId(id,id);
+            if(!taskMastList.isEmpty())
+                throw new Exception("remove the task record first");
+
+            List<ColorMast> colorMasts =colorService.getColorByCreatedAndUserHeadId(id,id);
+            if (!colorMasts.isEmpty())
+                throw new Exception("remove the color record first");
+
+            List<DyeingProcessMast> dyeingProcessMastList = dyeingProcessService.dyeingProcessMastDao.getAllDyeingProcessByCreatedAndHead(id,id);
+            if(!dyeingProcessMastList.isEmpty())
+                throw new Exception("remove the dyeing process record first");
+
+            List<Supplier> supplierList = supplierService.getSupplierByCreatedAndUserHeadId(id,id);
+            if(!supplierList.isEmpty())
+                throw new Exception("remove the supplier record first");
+
             userDao.deleteById(id);
+        }
         return true;
 
     }

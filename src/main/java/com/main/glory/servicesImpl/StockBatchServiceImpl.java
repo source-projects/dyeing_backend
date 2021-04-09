@@ -25,7 +25,6 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -394,7 +393,7 @@ public class StockBatchServiceImpl {
 
     public List<BatchData> getBatchById(String batchId,Long controlId) throws Exception{
 
-        List<BatchData> batchData = batchDao.findByControlIdAndBatchIdAndIsExtra(controlId,batchId,false);
+        List<BatchData> batchData = batchDao.getBatchByBatchId(batchId);
 
 
         if(batchData.isEmpty())
@@ -456,61 +455,19 @@ public class StockBatchServiceImpl {
 
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
-        List<String> batchName =new ArrayList<>();
-        List<Boolean> productionPlanned =new ArrayList<>();
-        List<Boolean> isBillGenerated =new ArrayList<>();
-        List<Long> controlId =new ArrayList<>();
 
-        GetAllBatch getAllBatch;
+
+        List<GetAllBatch> getAllBatch;
 
         for(StockMast stockMast1:stockMast)
         {
 
-            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
+            getAllBatch = batchDao.getBatchResponseByStockIdWithoutProductionPlan(stockMast1.getId());
 
-            for(BatchData batchData : batch)
-            {
-                if(batchData.getIsProductionPlanned()==false) {
-                    //Take another arraylist because it is not working with Object arrayList
-                    if (!batchName.contains(batchData.getBatchId())) {
-                        batchName.add(batchData.getBatchId());
-                        controlId.add(batchData.getControlId());
-                        productionPlanned.add(batchData.getIsProductionPlanned());
-                        isBillGenerated.add(batchData.getIsBillGenrated());
-                    } else if (!controlId.contains(batchData.getControlId())) {
-                        batchName.add(batchData.getBatchId());
-                        controlId.add(batchData.getControlId());
-                        productionPlanned.add(batchData.getIsProductionPlanned());
-                        isBillGenerated.add(batchData.getIsBillGenrated());
-                    }
-                }
-
-            }
-
-
-
+            if(!getAllBatch.isEmpty())
+                getAllBatchList.addAll(getAllBatch);
         }
-        Optional<Party> party=partyDao.findById(partyId);
-        Optional<Quality> quality =qualityDao.findById(qualityId);
 
-        //storing all the data of batchName to object
-        for(int x=0;x<controlId.size();x++)
-        {
-            if(quality.get()!=null&&party.get()!=null )
-            {
-                if(!quality.isPresent() && !party.isPresent())
-                    continue;
-
-                getAllBatch=new GetAllBatch(party.get(),quality.get());
-                getAllBatch.setBatchId(batchName.get(x));
-                getAllBatch.setControlId(controlId.get(x));
-                getAllBatch.setProductionPlanned(productionPlanned.get(x));
-                getAllBatch.setIsBillGenerated(isBillGenerated.get(x));
-                getAllBatchList.add(getAllBatch);
-
-            }
-
-        }
 
 
         if(getAllBatchList.isEmpty())
@@ -606,78 +563,106 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<GetAllBatch> getAllBatchByMaster(Long userHeadId) throws Exception{
+    public List<GetAllBatchWithProduction> getAllBatchByMaster(Long userHeadId) throws Exception{
+
+        List<StockMast> stockMastList = stockMastDao.getAllStockByUserHeadId(userHeadId);
+        if(stockMastList.isEmpty())
+            throw new Exception("no record found");
+
+        List<GetAllBatchWithProduction> list=new ArrayList<>();
+        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
 
 
-        List<StockMast> stockMast = stockMastDao.findByUserHeadId(userHeadId);
-        if(stockMast==null)
-        {
-            throw new Exception("No such batch is available for master:"+userHeadId);
-        }
 
-        List<GetAllBatch> getAllBatchList =new ArrayList<>();
-        List<String> batchName =new ArrayList<>();
-        List<Boolean> productionPlanned =new ArrayList<>();
-        List<Long> controlId =new ArrayList<>();
+       /* //filter the batch
+        //get the user record first
+        //Long userId = Long.parseLong(id);
 
-        GetAllBatch getAllBatch;
 
-        for(StockMast stockMast1:stockMast)
-        {
+        UserData userData = userDao.getUserById(userId);
+       // Long userHeadId=null;
 
-            List<BatchData> batch = batchDao.findByControlId(stockMast1.getId());
+        UserPermission userPermission = userData.getUserPermissionData();
+        Permissions permissions = new Permissions(userPermission.getSb().intValue());*/
 
-            for(BatchData batchData : batch)
-            {
-                if(batchData.getIsBillGenrated()==true)
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;//get all batch for based on mrge batch id
+        HashSet<String> mergeBatchIdExistList = new HashSet<>();
+
+        for(StockMast stockMast:stockMastList) {
+
+            dataList = batchDao.getAllBatchWithoutBillGeneratedByStockId(stockMast.getId());
+            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenratedByStockId(stockMast.getId());
+
+
+            //filter the data if the batch is done with jet
+            for (GetAllBatch getAllBatch : dataList) {
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
+
+                if (productionPlan == null || productionPlan.getStatus() == false)
                     continue;
+                // System.out.println(productionPlan.getId());
+                JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+                if (jetData == null)
+                    continue;
+                //System.out.println(jetData.getStatus());
+                if (jetData.getStatus() == JetStatus.success) {
 
-                //Take another arraylist because it is not working with Object arrayList
-                if(!batchName.contains(batchData.getBatchId()))
-                {
-                    batchName.add(batchData.getBatchId());
-                    controlId.add(batchData.getControlId());
-                    productionPlanned.add(batchData.getIsProductionPlanned());
+                    list.add(new GetAllBatchWithProduction(getAllBatch, productionPlan.getId()));
                 }
-                else if(!controlId.contains(batchData.getControlId()))
-                {
-                    batchName.add(batchData.getBatchId());
-                    controlId.add(batchData.getControlId());
-                    productionPlanned.add(batchData.getIsProductionPlanned());
-                }
+
 
             }
 
+            //filter the data if the batch is done with jet
+            for (GetBatchWithControlId getAllBatch : batchDataForMergeBatch) {
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getMergeBatchId());
+
+                if (productionPlan == null)
+                    continue;
+
+                if (productionPlan.getStatus() == false)
+                    continue;
+                // System.out.println(productionPlan.getId());
+                JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+                if (jetData == null)
+                    continue;
+                //System.out.println(jetData.getStatus());
+                if (jetData.getStatus() == JetStatus.success) {
+                    List<GetBatchWithControlId> listOfBatch = batchDao.getBatchesByMergeBatchId(getAllBatch.getMergeBatchId());
+
+                    for (GetBatchWithControlId batch : listOfBatch) {
+
+                        GetAllBatchWithProduction batchDetail = new GetAllBatchWithProduction(batch, productionPlan.getId());
+                        List<BatchData> batchDataList = batchDao.getBatchByMergeBatchIdAndBatchIdForFinishMtrSave(batch.getBatchId(), getAllBatch.getMergeBatchId());
+                        if (batchDataList.isEmpty())
+                            continue;
+                        batchDetail.setBatchId(getAllBatch.getMergeBatchId() + "-" + batchDetail.getBatchId());
+                        batchDetail.setProductionPlanned(true);
 
 
+                        if(!mergeBatchIdExistList.contains(batchDetail.getBatchId()))
+                        {
+                            mergeBatchIdExistList.add(batchDetail.getBatchId());
+                            list.add(batchDetail);
+                        }
+
+                    }
+
+                }
+
+
+            }
         }
 
-        //storing all the data of batchName to object
-        for(int x=0;x<batchName.size();x++)
-        {
-            getAllBatch=new GetAllBatch();
-               getAllBatch.setBatchId(batchName.get(x));
-            getAllBatch.setControlId(controlId.get(x));
-            getAllBatch.setProductionPlanned(productionPlanned.get(x));
-
-            Optional<StockMast> stockMast1 = stockMastDao.findById(controlId.get(x));
-            Optional<Party> party = partyDao.findById(stockMast1.get().getPartyId());
-            Optional<Quality> quality = qualityDao.findById(stockMast1.get().getQualityId());
-
-            getAllBatch.setPartyId(party.get().getId());
-            getAllBatch.setPartyName(party.get().getPartyName());
-            getAllBatch.setQualityEntryId(quality.get().getId());
-            getAllBatch.setQualityId(quality.get().getQualityId());
-            getAllBatch.setQualityName(quality.get().getQualityName());
-            getAllBatch.setQualityType(quality.get().getQualityType());
-
-            getAllBatchList.add(getAllBatch);
-        }
 
 
-        if(getAllBatchList.isEmpty())
-            throw new Exception("May all batches planned or not available ");
-        return getAllBatchList;
+
+        //List<GetAllBatch> getAllBatchList = batchDao.getAllBatchWithoutBillGeneratedByPartyIdAndQualityId(partyId,qualityId);
+        if(list.isEmpty())
+            throw new Exception("no data found");
+
+
+        return list;
 
 
     }
@@ -694,6 +679,8 @@ public class StockBatchServiceImpl {
         UserPermission userPermission = userData.getUserPermissionData();
         Permissions permissions = new Permissions(userPermission.getSb().intValue());
         List<GetBatchWithControlId> batchData = null;
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;//get all batch for based on mrge batch id
+
         List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
 
         //filter the record
@@ -702,6 +689,9 @@ public class StockBatchServiceImpl {
             userId=null;
             userHeadId=null;
             batchData = batchDao.findAllBasedOnControlIdAndBatchId();
+            batchDataForMergeBatch = batchDao.findAllMergeBatch();
+
+
         }
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
@@ -710,12 +700,16 @@ public class StockBatchServiceImpl {
                 userId = null;
                 userHeadId = null;
                 batchData = batchDao.findAllBasedOnControlIdAndBatchId();
+                batchDataForMergeBatch = batchDao.findAllMergeBatch();
+
             } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
                 userId = userData.getId();
                 userHeadId = userHead.getId();
                 batchData = batchDao.findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(userId,userHeadId);
+                batchDataForMergeBatch = batchDao.findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(userId,userHeadId);
+
 
             }
         }
@@ -723,8 +717,10 @@ public class StockBatchServiceImpl {
             userId = userData.getId();
             userHeadId=null;
             batchData = batchDao.findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(userId,userHeadId);
+            batchDataForMergeBatch = batchDao.findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(userId,userHeadId);
         }
 
+        //batchData.addAll(batchDataForMergeBatch);
 
 
 
@@ -764,6 +760,68 @@ public class StockBatchServiceImpl {
                 getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
             }
         }
+
+
+        //merge batch filter api
+        for(GetBatchWithControlId batch : batchDataForMergeBatch)
+        {
+            //get batches based on batch id and stock id by mergebatchId
+
+            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
+            BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
+            {
+                //System.out.println("stockId:"+batchByMergeBatch.getControlId());
+
+                Optional<StockMast> stockMast=stockMastDao.findById(batchByMergeBatch.getControlId());
+                if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
+                {
+
+                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+                    Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
+
+                    //check that the process and party shade is exist or not
+                    //if not then set the detail by null
+                    /*ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batchByMergeBatch.getBatchId(),batchByMergeBatch.getControlId());
+                    if(productionPlan==null) {
+                        batchToPartyAndQuality.setPartyShadeNo(null);
+                        batchToPartyAndQuality.setProcessName(null);
+                    }
+                    else
+                    {
+                        //get the shade and process
+                        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+                        if(dyeingProcessMast==null || shadeMast.isEmpty())
+                            continue;
+
+
+                        batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+                        batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
+                    }*/
+
+                    batchToPartyAndQuality.setPartyName(batchToPartyAndQuality.getPartyName()==null?party.get().getPartyName():batchToPartyAndQuality.getPartyName()+","+party.get().getPartyName());
+                    batchToPartyAndQuality.setQualityId(batchToPartyAndQuality.getQualityId()==null?quality.get().getQualityId():batchToPartyAndQuality.getQualityId()+","+quality.get().getQualityId());
+                    batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
+                    batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
+                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
+
+
+                }
+
+                batchToPartyAndQuality.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId()));
+                batchToPartyAndQuality.setTotalWt(batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId()));
+
+            }
+            batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+            batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
+            //add the record
+            getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+        }
         if(getAllBatchWithPartyAndQualities.isEmpty())
             throw new Exception("no data found");
 
@@ -786,9 +844,9 @@ public class StockBatchServiceImpl {
             throw new Exception("Quality not found for batchId:"+batchId);
 
         BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
-        batchToPartyAndQuality.setPartyId(party.get().getId());
+        batchToPartyAndQuality.setPartyId(party.get().getId().toString());
         batchToPartyAndQuality.setPartyName(party.get().getPartyName());
-        batchToPartyAndQuality.setQualityEntryId(quality.get().getId());
+        batchToPartyAndQuality.setQualityEntryId(quality.get().getId().toString());
         batchToPartyAndQuality.setQualityId(quality.get().getQualityId());
         batchToPartyAndQuality.setQualityName(quality.get().getQualityName());
         batchToPartyAndQuality.setBatchId(batchId);
@@ -1076,7 +1134,23 @@ public class StockBatchServiceImpl {
 
                     list.add(getAllBatch);
                 }
+            }
 
+            //by mrg batch id
+            //batch list based on stock id with mergebatchId
+            for(StockMast stockMast:stockMastList)
+            {
+                List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
+                GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality);
+                for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
+                {
+
+                    getAllBatch.setProductionPlanned(false);
+                    getAllBatch.setIsBillGenerated(false);
+                    getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+
+                    list.add(getAllBatch);
+                }
             }
 
 
@@ -1120,6 +1194,23 @@ public class StockBatchServiceImpl {
                 list.add(getAllBatch);
             }
 
+
+        }
+        //by mrg batch id
+        //batch list based on stock id with mergebatchId
+        for(StockMast stockMast:stockMastList)
+        {
+            List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
+            GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get());
+            for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
+            {
+
+                getAllBatch.setProductionPlanned(false);
+                getAllBatch.setIsBillGenerated(false);
+                getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+
+                list.add(getAllBatch);
+            }
         }
 
 
@@ -1150,7 +1241,7 @@ public class StockBatchServiceImpl {
             for(GetBatchByInvoice g:batchAndStockList)
             {
                 //check the batch is done with produciton or not
-                ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(g.getBatchId(),g.getStockId());
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getBatchId());
                 if(productionPlan.getStatus()==false)
                     continue;
 
@@ -1164,6 +1255,35 @@ public class StockBatchServiceImpl {
 
             }
         }
+
+
+
+        //gt the mege batch as well by stock id
+        for(StockMast stockMast:stockMastList)
+        {
+            List<GetBatchByInvoice> batchAndStockList = batchDao.getMergeBatcheByStockIdWithoutBillGenerated(stockMast.getId());
+            for(GetBatchByInvoice g:batchAndStockList)
+            {
+                //check the batch is done with produciton or not
+                if (g.getMergeBatchId()==null)
+                    continue;
+
+                ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getMergeBatchId());
+                if(productionPlan.getStatus()==false)
+                    continue;
+
+                JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+                if(jetData.getStatus()==JetStatus.success)
+                {
+                    GetAllBatch getAllBatch=new GetAllBatch(g,party,quality);
+                    getAllBatch.setBatchId(g.getBatchId()==null?g.getBatchId():g.getMergeBatchId()+"-"+g.getBatchId());
+                    list.add(getAllBatch);
+                }
+
+
+            }
+        }
+
 
 
         //List<GetAllBatch> getAllBatchList = batchDao.getAllBatchWithoutBillGeneratedByPartyIdAndQualityId(partyId,qualityId);
@@ -1351,12 +1471,15 @@ public class StockBatchServiceImpl {
         UserPermission userPermission = userData.getUserPermissionData();
         Permissions permissions = new Permissions(userPermission.getSb().intValue());
 
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;//get all batch for based on mrge batch id
         //filter the record
         if (permissions.getViewAll())
         {
             userId=null;
             userHeadId=null;
             dataList =  batchDao.getAllBatchWithoutBillGenerated();
+            batchDataForMergeBatch=batchDao.getAllMergeBatchWithoutBillGenrated();
+            
         }
         else if (permissions.getViewGroup()) {
             //check the user is master or not ?
@@ -1365,25 +1488,23 @@ public class StockBatchServiceImpl {
                 userId = null;
                 userHeadId = null;
                 dataList =  batchDao.getAllBatchWithoutBillGenerated();
+                batchDataForMergeBatch=batchDao.getAllMergeBatchWithoutBillGenrated();
+
             } else if (userData.getUserHeadId() > 0) {
                 //check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
                 userId = userData.getId();
                 userHeadId = userHead.getId();
                 dataList =  batchDao.getAllBatchWithoutBillGenerated(userId,userHeadId);
-
+                batchDataForMergeBatch= batchDao.getAllMergeBatchWithoutBillGenrated(userId,userHeadId);
             }
         }
         else if (permissions.getView()) {
             userId = userData.getId();
             userHeadId=null;
             dataList =  batchDao.getAllBatchWithoutBillGenerated(userId,userHeadId);
+            batchDataForMergeBatch= batchDao.getAllMergeBatchWithoutBillGenrated(userId,userHeadId);
         }
-
-
-
-
-
 
 
 
@@ -1393,7 +1514,7 @@ public class StockBatchServiceImpl {
         //filter the data if the batch is done with jet
         for(GetAllBatch getAllBatch:dataList)
         {
-            ProductionPlan productionPlan = productionPlanService.getProductionDataByBatchAndStock(getAllBatch.getBatchId(),getAllBatch.getControlId());
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
 
             if(productionPlan==null)
                 continue;
@@ -1407,7 +1528,43 @@ public class StockBatchServiceImpl {
             //System.out.println(jetData.getStatus());
             if(jetData.getStatus()== JetStatus.success)
             {
+
                 list.add(new GetAllBatchWithProduction(getAllBatch,productionPlan.getId()));
+            }
+
+
+        }
+
+        //filter the data if the batch is done with jet
+        for(GetBatchWithControlId getAllBatch:batchDataForMergeBatch)
+        {
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getMergeBatchId());
+
+            if(productionPlan==null)
+                continue;
+
+            if(productionPlan.getStatus()==false)
+                continue;
+            // System.out.println(productionPlan.getId());
+            JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
+            if(jetData==null)
+                continue;
+            //System.out.println(jetData.getStatus());
+            if(jetData.getStatus()== JetStatus.success)
+            {
+                List<GetBatchWithControlId> listOfBatch = batchDao.getBatchesByMergeBatchId(getAllBatch.getMergeBatchId());
+
+                for(GetBatchWithControlId batch:listOfBatch)
+                {
+                    GetAllBatchWithProduction batchDetail = new GetAllBatchWithProduction(batch,productionPlan.getId());
+                    List<BatchData> batchDataList = batchDao.getBatchByMergeBatchIdAndBatchIdForFinishMtrSave(batch.getBatchId(),getAllBatch.getMergeBatchId());
+                    if(batchDataList.isEmpty())
+                        continue;
+                    batchDetail.setBatchId(getAllBatch.getMergeBatchId()+"-"+batchDetail.getBatchId());
+                    batchDetail.setProductionPlanned(true);
+                    list.add(batchDetail);
+                }
+
             }
 
 
@@ -1458,18 +1615,37 @@ public class StockBatchServiceImpl {
                 continue;
             for(BatchDetail batchDetail:batchDetails)
             {
-                if(batchDetail.getIsProductionPlanned())
+                if(batchDetail.getIsProductionPlanned()==true)
                 {
-                    ProductionPlan productionPlan= productionPlanService.getProductionDataByBatchAndStock(batchDetail.getBatchId(),batchDetail.getControlId());
-                    ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
-                    if(productionPlan==null || shadeMast==null)
-                        continue;
-                    BatchDetail batchDetail1 = new BatchDetail(batchDetail,quality,qualityName.get());
-                    batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
-                    batchDetail1.setColorName(shadeMast.getColorName());
-                    batchDetail1.setColorTone(shadeMast.getColorTone());
-                    batchDetailList.add(batchDetail1);
+                    if(batchDetail.getMergeBatchId()==null) {
+                        ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(batchDetail.getBatchId());
 
+                        if (productionPlan == null)
+                            continue;
+                        ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
+                        if (shadeMast == null)
+                            continue;
+                        BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName.get());
+                        batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
+                        batchDetail1.setColorName(shadeMast.getColorName());
+                        batchDetail1.setColorTone(shadeMast.getColorTone());
+                        batchDetailList.add(batchDetail1);
+
+                    }
+                    else
+                    {
+                        ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(batchDetail.getMergeBatchId());
+                        if (productionPlan == null)
+                            continue;
+                        ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
+                        if (shadeMast == null)
+                            continue;
+                        BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName.get());
+                        batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
+                        batchDetail1.setColorName(shadeMast.getColorName());
+                        batchDetail1.setColorTone(shadeMast.getColorTone());
+                        batchDetailList.add(batchDetail1);
+                    }
                 }
                 else {
 
@@ -1548,13 +1724,15 @@ public class StockBatchServiceImpl {
             if(productionPlan==null)
                 continue;
 
-            GetAllBatch getAllBatch=null;
+            System.out.println(productionPlan.getBatchId());
+            GetAllBatch getAllBatch=new GetAllBatch();
             //filter the record
             if (permissions.getViewAll())
             {
                 userId=null;
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+
+                getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -1562,25 +1740,26 @@ public class StockBatchServiceImpl {
                 if (userData.getUserHeadId() == 0) {
                     userId = null;
                     userHeadId = null;
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                    getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
                 } else if (userData.getUserHeadId() > 0) {
                     //check weather master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
                     userId = userData.getId();
                     userHeadId = userHead.getId();
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                    getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
 
                 }
             }
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                getAllBatch.setBatchId(productionPlan.getBatchId());//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
             }
 
+            if(getAllBatch.getBatchId()!=null)
+                list.add(getAllBatch);
 
-            if(getAllBatch.getControlId()!=null)
-                list.add(getAllBatch);;
+
 
 
 
@@ -1618,7 +1797,7 @@ public class StockBatchServiceImpl {
                 continue;
 
             //check the batch bill is generated or not
-            if(batchDao.isFinishMtrSave(productionPlan.getBatchId(),productionPlan.getStockId()))
+            if(batchDao.isFinishMtrSave(productionPlan.getBatchId()))
             continue;
             //GetAllBatch getAllBatch=null;
             //filter the record
@@ -1626,7 +1805,7 @@ public class StockBatchServiceImpl {
             {
                 userId=null;
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
             }
             else if (permissions.getViewGroup()) {
                 //check the user is master or not ?
@@ -1634,20 +1813,20 @@ public class StockBatchServiceImpl {
                 if (userData.getUserHeadId() == 0) {
                     userId = null;
                     userHeadId = null;
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
+                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId());
                 } else if (userData.getUserHeadId() > 0) {
                     //check weather master or operator
                     UserData userHead = userDao.getUserById(userData.getUserHeadId());
                     userId = userData.getId();
                     userHeadId = userHead.getId();
-                    getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                    getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
 
                 }
             }
             else if (permissions.getView()) {
                 userId = userData.getId();
                 userHeadId=null;
-                getAllBatch=batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
+                getAllBatch=null;//batchDao.getBatchForAdditionalSlipByBatchAndStock(productionPlan.getStockId(),productionPlan.getBatchId(),userId,userHeadId);
             }
             if(getAllBatch.getControlId()!=null)
                 list.add(getAllBatch);
@@ -1724,22 +1903,197 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<MergeBatchId> getAllMergeBatchId() {
+    public List<BatchToPartyAndQuality> getAllMergeBatchId() {
        // List<GetAllMergeBatchId> list = new ArrayList<>();
 
+        List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
         List<MergeBatchId> record = batchDao.getAllMergeBatchId();
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;
 
-        return record;
+        batchDataForMergeBatch = batchDao.findAllMergeBatchWithoutFilter();
+
+        //merge batch filter api
+        for(GetBatchWithControlId batch : batchDataForMergeBatch)
+        {
+            //get batches based on batch id and stock id by mergebatchId
+
+            List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchIdWithoutFilter(batch.getMergeBatchId());
+            BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
+            {
+                //System.out.println("stockId:"+batchByMergeBatch.getControlId());
+
+                Optional<StockMast> stockMast=stockMastDao.findById(batchByMergeBatch.getControlId());
+                if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
+                {
+
+                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+                    Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
+
+                    //check that the process and party shade is exist or not
+                    //if not then set the detail by null
+                    /*ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batchByMergeBatch.getBatchId(),batchByMergeBatch.getControlId());
+                    if(productionPlan==null) {
+                        batchToPartyAndQuality.setPartyShadeNo(null);
+                        batchToPartyAndQuality.setProcessName(null);
+                    }
+                    else
+                    {
+                        //get the shade and process
+                        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+                        if(dyeingProcessMast==null || shadeMast.isEmpty())
+                            continue;
+
+
+                        batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+                        batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
+                    }*/
+
+                    batchToPartyAndQuality.setPartyName(batchToPartyAndQuality.getPartyName()==null?party.get().getPartyName():batchToPartyAndQuality.getPartyName()+","+party.get().getPartyName());
+                    batchToPartyAndQuality.setQualityId(batchToPartyAndQuality.getQualityId()==null?quality.get().getQualityId():batchToPartyAndQuality.getQualityId()+","+quality.get().getQualityId());
+                    batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
+                    batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
+                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
+
+                    System.out.println("batch id for merge batch:"+batch.getBatchId());
+                    batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batchByMergeBatch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batchByMergeBatch.getBatchId());
+
+                }
+                batchToPartyAndQuality.setTotalMtr(batch.getMTR());
+                batchToPartyAndQuality.setTotalWt(batch.getWT());
+                batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+
+            }
+            batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+
+            //add the record
+            getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+        }
+        return getAllBatchWithPartyAndQualities;
     }
 
-    public CreateMergeBatch getMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
-        MergeBatchId record = batchDao.getMergeBatchByMergeBatchId(mergeBatchId);
-        if(record==null)
+    public BatchToPartyQualityWithGr getMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
+        BatchToPartyQualityWithGr batchToPartyAndQuality =new BatchToPartyQualityWithGr();
+        BatchData mergeBatchExist = batchDao.getMergeBatchExist(mergeBatchId);
+
+        List<BatchData> batchDataList = new ArrayList<>();
+        if(mergeBatchExist==null)
             throw new Exception("no record found");
-        List<BatchData> batchData  = batchDao.getMergeBatchDataByMergeBatchId(mergeBatchId);
 
-        CreateMergeBatch createMergeBatch = new CreateMergeBatch(record,batchData);
-        return createMergeBatch;
+        List<GetBatchWithControlId> batchDataForMergeBatch = null;
+
+        batchDataForMergeBatch = batchDao.findAllMergeBatchWithoutFilterByMergeBatchId(mergeBatchId);
+
+        //merge batch filter api
+        for(GetBatchWithControlId batch : batchDataForMergeBatch)
+        {
+            //get batches based on batch id and stock id by mergebatchId
+
+            //List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchId(batch.getMergeBatchId());
+          /*  //BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
+            {*/
+                //System.out.println("stockId:"+batchByMergeBatch.getControlId());
+
+                Optional<StockMast> stockMast=stockMastDao.findById(batch.getControlId());
+                if(stockMast.get().getQualityId()!=null && stockMast.get().getPartyId()!=null)
+                {
+
+                    Optional<Quality> quality=qualityDao.findById(stockMast.get().getQualityId());
+
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+                    Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
+
+                    //check that the process and party shade is exist or not
+                    //if not then set the detail by null
+                    /*ProductionPlan productionPlan=productionPlanService.getProductionDataByBatchAndStock(batchByMergeBatch.getBatchId(),batchByMergeBatch.getControlId());
+                    if(productionPlan==null) {
+                        batchToPartyAndQuality.setPartyShadeNo(null);
+                        batchToPartyAndQuality.setProcessName(null);
+                    }
+                    else
+                    {
+                        //get the shade and process
+                        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+
+                        if(dyeingProcessMast==null || shadeMast.isEmpty())
+                            continue;
+
+
+                        batchToPartyAndQuality.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+                        batchToPartyAndQuality.setProcessName(dyeingProcessMast.getProcessName());
+                    }*/
+
+                    batchToPartyAndQuality.setPartyName(batchToPartyAndQuality.getPartyName()==null?party.get().getPartyName():batchToPartyAndQuality.getPartyName()+","+party.get().getPartyName());
+                    batchToPartyAndQuality.setQualityId(batchToPartyAndQuality.getQualityId()==null?quality.get().getQualityId():batchToPartyAndQuality.getQualityId()+","+quality.get().getQualityId());
+                    batchToPartyAndQuality.setPartyId(batchToPartyAndQuality.getPartyId()==null?party.get().getId().toString():batchToPartyAndQuality.getPartyId()+","+party.get().getId().toString());
+                    batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
+                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
+
+                    batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batch.getBatchId());
+
+
+                }
+                //Double totalMtr = batch.getMTR();//batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId());
+                //Double totalWt = batch.getWT();//batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId());
+                batchToPartyAndQuality.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId()));
+                batchToPartyAndQuality.setTotalWt(batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId()));
+
+           // }
+            batchDataList.addAll(batchDao.getBatchByBatchIdWithMergeBatchId(batch.getBatchId(),mergeBatchId));
+            batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+            //batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
+            //add the record
+            //getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+
+        }
+        batchToPartyAndQuality.setBatchDataList(batchDataList);
+
+
+        return batchToPartyAndQuality;
 
     }
+
+    public Double getWtByBatchId(String batchId) {
+        return batchDao.getTotalWtByBatchId(batchId);
+    }
+
+    public Double getWtByMergeBatchId(String batchId) {
+        return batchDao.getTotalWtByMergeBatchId(batchId);
+    }
+
+    public void deleteMergeBatchByMergeBatchId(String mergeBatchId) throws Exception {
+        BatchData mergeBatchIdExist = batchDao.getMergeBatchExist(mergeBatchId);
+        if(mergeBatchIdExist==null)
+            throw new Exception("no record found");
+
+        //check that the merge batch is production planned??
+        if(mergeBatchIdExist.getIsProductionPlanned()==true)
+            throw new Exception("unable to delete because production planned");
+
+        List<BatchData> batchDataList = batchDao.getMergeBatchDataByMergeBatchId(mergeBatchId);
+
+        for(BatchData batchData:batchDataList)
+        {
+            batchDao.updateMergeIdByBatchEntryId(batchData.getId(),null);
+        }
+
+
+    }
+
+    public Optional<List<GetAllStockWithPartyNameResponse>> getStockByCreatedOrUserHeadId(Long id) {
+        return stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
+    }
+
+
+   /* public Quality getQualityByStockId(Long stockId) {
+        return qualityDao.getQualityByStockId(stockId);
+    }*/
 }
