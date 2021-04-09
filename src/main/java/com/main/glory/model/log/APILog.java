@@ -41,8 +41,9 @@ public class APILog<T> {
     public <T> APILog(HttpServletRequest request, GeneralResponse<T> result, Map<String, String> headers) {
         this.apiUrl = request.getRequestURI();
         this.device = headers.get("user-agent");
-        this.responseBody = result.getData().toString();
+        this.responseBody = result.getData()==null?null:result.getData().toString();
         this.responseMsg=result.getMsg();
+
     }
     //Date updatedDate;
 
