@@ -29,7 +29,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController extends ControllerConfig {
 
-    @Value("${spring.application.debugAll}")
+    //@Value("${spring.application.debugAll}")
     String debugAll;
 
     @Autowired
