@@ -56,4 +56,13 @@ public interface TaskDataDao extends JpaRepository<TaskData,Long> {
 
     @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.assignUserId=:userId")
     List<TaskDetail> getTaskDetailByUserId(Long userId);
+
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where Date(t.taskDate)=Date(:date) AND t.taskStatus=:status ")
+    List<TaskDetail> getTaskDetailByDateAndStatus(Date date, String status);
+
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where Date(t.taskDate)=Date(:date)")
+    List<TaskDetail> getTaskDetailByDate(Date date);
+
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.taskStatus=:status ")
+    List<TaskDetail> getTaskDetailByStatus(String status);
 }

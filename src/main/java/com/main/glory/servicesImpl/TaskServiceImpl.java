@@ -221,15 +221,28 @@ public class TaskServiceImpl {
     public List<TaskDetail> getAllTaskByDateAndStatus(TaskFilter record) {
         List<TaskDetail> taskDetailList = null;
 
-        if(record.getDate()==null && record.getStatus().isEmpty())
-            taskDetailList =taskDataDao.getTaskDetailByUserId(record.getId());
-        else if(!record.getStatus().isEmpty() && record.getDate()!=null)
-            taskDetailList =taskDataDao.getTaskDetailByDateAndStatusWithUserId(record.getDate(),record.getStatus(),record.getId());
-        else if(record.getDate()!=null)
-            taskDetailList =taskDataDao.getTaskDetailByDateWithUserId(record.getDate(),record.getId());
-        else
-            taskDetailList =  taskDataDao.getTaskDetailByStatusWithUserId( record.getStatus(),record.getId());
+        if(record.getId()!=null) {
+            if (record.getDate() == null && record.getStatus().isEmpty())
+                taskDetailList = taskDataDao.getTaskDetailByUserId(record.getId());
+            else if (!record.getStatus().isEmpty() && record.getDate() != null)
+                taskDetailList = taskDataDao.getTaskDetailByDateAndStatusWithUserId(record.getDate(), record.getStatus(), record.getId());
+            else if (record.getDate() != null)
+                taskDetailList = taskDataDao.getTaskDetailByDateWithUserId(record.getDate(), record.getId());
+            else
+                taskDetailList = taskDataDao.getTaskDetailByStatusWithUserId(record.getStatus(), record.getId());
 
+        }
+        else
+        {
+            if(record.getDate()==null && record.getStatus().isEmpty())
+                taskDetailList =taskDataDao.getTaskDetail();
+            else if(!record.getStatus().isEmpty() && record.getDate()!=null)
+                taskDetailList =taskDataDao.getTaskDetailByDateAndStatus(record.getDate(),record.getStatus());
+            else if(record.getDate()!=null)
+                taskDetailList =taskDataDao.getTaskDetailByDate(record.getDate());
+            else
+                taskDetailList =  taskDataDao.getTaskDetailByStatus( record.getStatus());
+        }
         taskDetailList = taskDetailResponse(taskDetailList);
         return taskDetailList;
 
