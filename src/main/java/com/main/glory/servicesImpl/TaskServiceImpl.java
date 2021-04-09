@@ -3,10 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.task.*;
 import com.main.glory.model.admin.Department;
-import com.main.glory.model.task.ReportType;
-import com.main.glory.model.task.TaskData;
-import com.main.glory.model.task.TaskMast;
-import com.main.glory.model.task.TaskStatus;
+import com.main.glory.model.task.*;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
 import com.main.glory.model.task.response.TaskMastResponse;
@@ -202,6 +199,7 @@ public class TaskServiceImpl {
             }
         }
 
+
         for(TaskData taskData:taskDataList)
         {
             taskDataDao.deleteTaskDataById(taskData.getId());
@@ -209,6 +207,10 @@ public class TaskServiceImpl {
             taskDataImageDao.deleteTaskDataImageByControlId(taskData.getId());
 
         }
+
+
+        //remove the task and images
+        taskMastDao.deleteById(id);
 
         return true;
 
@@ -249,30 +251,30 @@ public class TaskServiceImpl {
     }
 
     private List<TaskDetail> taskDetailResponse(List<TaskDetail> taskDetailList) {
-        taskDetailList.forEach(e->{
-
+        List<TaskDetail> detailList = new ArrayList<>();
+        for(TaskDetail e:taskDetailList)
+        {
+            TaskDetail taskDetail = new TaskDetail(e);
             TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
             UserData userData = userService.getUserById(e.getAssignUserId());
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
-           /* System.out.println("assign:"+e.getAssignUserId());
-            System.out.println("user:"+userData.getId()+"-dept:"+userData.getDepartmentId());
-*/
-            e.setTaskName(taskMast.getTaskName());
-            e.setCompletedDays(taskMast.getCompletedDays());
-            e.setFirstName(userData.getFirstName());
-            e.setLastName(userData.getLastName());
-            e.setDepartmentName(department.getName());
+            taskDetail.setTaskName(taskMast.getTaskName());
+            taskDetail.setCompletedDays(taskMast.getCompletedDays());
+            taskDetail.setFirstName(userData.getFirstName());
+            taskDetail.setLastName(userData.getLastName());
+            taskDetail.setDepartmentName(department.getName());
             if(reportType!=null)
-            e.setFormName(reportType.getFormName());
+                taskDetail.setFormName(reportType.getFormName());
 
             if(taskMast.getAssignUserId()==taskMast.getCreatedBy())
-                e.setAssignBySameUser(true);
+                taskDetail.setAssignBySameUser(true);
             else
-                e.setAssignBySameUser(false);
+                taskDetail.setAssignBySameUser(false);
 
-        });
-        return taskDetailList;
+            detailList.add(taskDetail);
+        }
+        return detailList;
     }
 
     public List<TaskDetail> getAllTaskDetail(String getBy, Long id, String headerId) throws Exception {
@@ -348,5 +350,15 @@ public class TaskServiceImpl {
 
     public TaskData getTaskDataById(Long id) {
         return taskDataDao.getTaskDetailById(id);
+    }
+
+    public boolean deleteTaskDataById(Long id) throws Exception {
+        TaskData taskDataExist = taskDataDao.getTaskDetailById(id);
+        if(taskDataExist==null)
+            throw new Exception("no record found");
+
+        taskDataDao.deleteTaskDataById(id);
+        return true;
+
     }
 }

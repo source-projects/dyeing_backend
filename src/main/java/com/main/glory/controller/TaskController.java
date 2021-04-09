@@ -134,7 +134,7 @@ public class TaskController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }*/
-    @DeleteMapping(value="/task/deleteBy")
+    @DeleteMapping(value="/task/taskMast/deleteBy")
     public ResponseEntity<GeneralResponse<Boolean>> deleteTaskById(@RequestParam(name = "id")Long id) throws Exception {
         GeneralResponse<Boolean> result;
         if(id==null)
@@ -146,6 +146,33 @@ public class TaskController extends ControllerConfig {
         try {
 
             flag = taskService.deleteTaskById(id);
+            if(flag==true)
+            {
+                result =  new GeneralResponse<>(true, "Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            }
+            else
+                result =  new GeneralResponse<>(false, "Unable to remove the record", false, System.currentTimeMillis(), HttpStatus.OK);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @DeleteMapping(value="/task/taskData/deleteBy")
+    public ResponseEntity<GeneralResponse<Boolean>> deleteTaskDataById(@RequestParam(name = "id")Long id) throws Exception {
+        GeneralResponse<Boolean> result;
+        if(id==null)
+        {
+            result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            flag = taskService.deleteTaskDataById(id);
             if(flag==true)
             {
                 result =  new GeneralResponse<>(true, "Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);

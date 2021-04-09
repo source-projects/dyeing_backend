@@ -47,4 +47,17 @@ public class TaskDetail extends TaskData {
         this.taskType = taskMast.getTaskType();
     }
 
+    public TaskDetail(TaskDetail taskData) {
+        this.setId(taskData.getId());
+        this.setControlId(taskData.getControlId());
+        this.setAssignUserId(taskData.getAssignUserId());
+        this.setRemark(taskData.getRemark());
+        this.setTaskStatus(taskData.getTaskStatus());
+        //this.isCompleted = taskData.getIsCompleted();
+        this.setApproved(taskData.getApproved());
+        this.setTaskDate(taskData.getTaskDate());
+        this.setTaskCompletedDate(taskData.getTaskCompletedDate());
+        this.setCreatedDate(taskData.getCreatedDate());
+        this.setReportUrl(taskData.getReportUrl());
+    }
 }

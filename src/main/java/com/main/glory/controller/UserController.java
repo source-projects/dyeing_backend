@@ -30,7 +30,7 @@ import java.util.Map;
 public class UserController extends ControllerConfig {
 
     //@Value("${spring.application.debugAll}")
-    String debugAll;
+    Boolean debugAll=false;
 
     @Autowired
     LogServiceImpl logService;
@@ -49,12 +49,12 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<GeneralResponse<UserData>> getUserById(@PathVariable(value = "id") Long id)
-    {
+    public ResponseEntity<GeneralResponse<UserData>> getUserById(@PathVariable(value = "id") Long id,@RequestHeader Map<String,String> headers) throws IllegalAccessException {
+        UserData userObj=null;
         GeneralResponse<UserData> result;
         if(id!=null)
         {
-            var userObj=userService.getUserById(id);
+            userObj=userService.getUserById(id);
             if(userObj!=null)
             {
                 result = new GeneralResponse<UserData>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -65,7 +65,7 @@ public class UserController extends ControllerConfig {
         else
         result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK);
 
-
+        logService.saveRequestResponse(request,result,headers,userObj);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/getByDepartmentId")
@@ -121,8 +121,7 @@ public class UserController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/{username}/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id)
-    {
+    public ResponseEntity<GeneralResponse<Boolean>> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id,@RequestHeader Map<String,String> headers) throws IllegalAccessException {
         GeneralResponse<Boolean> result;
         try {
             Boolean data = userService.getUserNameExist(username,id);
@@ -136,6 +135,7 @@ public class UserController extends ControllerConfig {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
         }
+        logService.saveRequestResponse(request,result,headers,null);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
@@ -191,14 +191,17 @@ public class UserController extends ControllerConfig {
         try{
             userService.createUser(userData,headers.get("id"));
             result = new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            if(debugAll==true)
+                logService.saveRequestResponse(request,result,headers, userData);
             }
         catch (Exception e){
             e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            logService.saveRequestResponse(request,result,headers,userData);
         }
 
 
-        logService.saveRequestResponse(request,result,headers,userData);
+
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
     }
