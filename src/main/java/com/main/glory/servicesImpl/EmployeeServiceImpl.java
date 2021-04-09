@@ -37,7 +37,7 @@ public class EmployeeServiceImpl {
         EmployeeSequence employeeSequenceExist = employeeSequenceDao.getEmployeeSequence();
         if(employeeSequenceExist==null)
         {
-            EmployeeSequence employeeSequence = new EmployeeSequence(1l);
+            EmployeeSequence employeeSequence = new EmployeeSequence(1001l);
             employeeSequenceExist =  employeeSequenceDao.save(employeeSequence);
 
         }
