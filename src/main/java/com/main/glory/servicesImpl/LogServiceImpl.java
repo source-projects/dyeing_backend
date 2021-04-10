@@ -16,7 +16,14 @@ public class LogServiceImpl<T,D> {
     @Autowired
     APILogDao apiLogDao;
 
-    public void saveLog(GeneralResponse<T, D> result, HttpServletRequest request,Boolean debugAll) {
+    public void saveLog(GeneralResponse<T> result, HttpServletRequest request,Boolean debugAll) {
+        if(debugAll==true) {
+            APILog apiLog = new APILog(result, request);
+            //System.out.println(result.getRequestBody().toString());
+            apiLogDao.save(apiLog);
+        }
+    }
+    public void saveLog(DemoGeneral<T, D> result, HttpServletRequest request,Boolean debugAll) {
         if(debugAll==true) {
             APILog apiLog = new APILog(result, request);
             System.out.println(result.getRequestBody().toString());

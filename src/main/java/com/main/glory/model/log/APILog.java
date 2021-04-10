@@ -38,7 +38,18 @@ public class APILog<T> {
     String method;
     Date createdDate;
 
-    public <T, D> APILog(GeneralResponse<T,D> result, HttpServletRequest request) {
+    public <T> APILog(GeneralResponse<T> result, HttpServletRequest request) {
+        this.apiUrl = request.getRequestURI();
+        this.apiUrl =  request.getRequestURI();
+        this.deviceType = request.getHeader("User-Agent");
+        this.userId = request.getHeader("id")==null?null:request.getHeader("id").toString() ;
+        this.method = request.getMethod();
+        this.responseMsg = result.getMsg();
+        this.responseBody = result.getData()==null?null:result.getData().toString();
+        //this.requestBody = result.getRequestBody().toString();
+    }
+
+    public <T, D> APILog(DemoGeneral<T,D> result, HttpServletRequest request) {
         this.apiUrl = request.getRequestURI();
         this.apiUrl =  request.getRequestURI();
         this.deviceType = request.getHeader("User-Agent");
