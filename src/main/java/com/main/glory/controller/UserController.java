@@ -29,8 +29,8 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController extends ControllerConfig {
 
-    @Value("${spring.application.debugAll}")
-    Boolean debugAll;
+    //@Value("${spring.application.debugAll}")
+    Boolean debugAll=true;
 
 
     @Autowired
