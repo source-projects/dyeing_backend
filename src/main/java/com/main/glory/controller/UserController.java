@@ -3,7 +3,7 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.DemoGeneral;
-import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.DemoGeneral;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
@@ -51,23 +51,23 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<GeneralResponse<UserData,String>> getUserById(@PathVariable(value = "id") Long id, @RequestHeader Map<String,String> headers) throws IllegalAccessException {
+    public ResponseEntity<DemoGeneral<UserData,String>> getUserById(@PathVariable(value = "id") Long id, @RequestHeader Map<String,String> headers) throws IllegalAccessException {
         UserData userObj=null;
-        GeneralResponse<UserData,String> result;
+        DemoGeneral<UserData,String> result;
         if(id!=null)
         {
             userObj=userService.getUserById(id);
             if(userObj!=null)
             {
-                result = new GeneralResponse<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
+                result = new DemoGeneral<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
 
             }
             else
-            result = new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
+            result = new DemoGeneral<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
             logService.saveLog(result,request,debugAll);
         }
         else {
-            result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            result = new DemoGeneral<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -75,78 +75,78 @@ public class UserController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/getByDepartmentId")
-    public ResponseEntity<GeneralResponse<List<UserData>,String>> getUserByDepartmentId(@RequestParam(name = "departmentId") Long departmentId)
+    public ResponseEntity<DemoGeneral<List<UserData>,String>> getUserByDepartmentId(@RequestParam(name = "departmentId") Long departmentId)
     {
-        GeneralResponse<List<UserData>,String> result;
+        DemoGeneral<List<UserData>,String> result;
         if(departmentId!=null)
         {
             List<UserData> userObj=userService.getAllUserByDepartmentId(departmentId);
             if(userObj!=null)
             {
-                result = new GeneralResponse<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result = new GeneralResponse<>(null, "No such record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(null, "No such record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         else {
-            result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new DemoGeneral<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/getAllOperator/all")
-    public ResponseEntity<GeneralResponse<List<GetAllOperator>,String>> getAllOperator() throws Exception {
+    public ResponseEntity<DemoGeneral<List<GetAllOperator>,String>> getAllOperator() throws Exception {
 
-        GeneralResponse<List<GetAllOperator>,String> result;
+        DemoGeneral<List<GetAllOperator>,String> result;
         List<GetAllOperator> userObj=userService.getAllOperator();
             if(userObj!=null)
             {
-                result = new GeneralResponse<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(userObj, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 logService.saveLog(result,request,debugAll);
             }
             else {
-                result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 logService.saveLog(result,request,true);
             }
             return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/userHead")
-    public ResponseEntity<GeneralResponse<List<getAllUserInfo>,String>> getAllHead(@RequestHeader Map<String, String> headers)
+    public ResponseEntity<DemoGeneral<List<getAllUserInfo>,String>> getAllHead(@RequestHeader Map<String, String> headers)
     {
-        GeneralResponse<List<getAllUserInfo>,String> result;
+        DemoGeneral<List<getAllUserInfo>,String> result;
         try {
             var data = userService.getAllHeadUser(headers.get("id"));
             if (data != null) {
-                result = new GeneralResponse<>(data, "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(data, "User Head Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
         {
-            result = new GeneralResponse<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new DemoGeneral<>(null, "User Head Not Available ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/user/{username}/{id}")
-    public ResponseEntity<GeneralResponse<Boolean,String>> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id,@RequestHeader Map<String,String> headers) throws IllegalAccessException {
-        GeneralResponse<Boolean,String> result;
+    public ResponseEntity<DemoGeneral<Boolean,String>> getUserNameExist(@PathVariable(name = "username")String username,@PathVariable(name = "id")Long id,@RequestHeader Map<String,String> headers) throws IllegalAccessException {
+        DemoGeneral<Boolean,String> result;
         try {
             Boolean data = userService.getUserNameExist(username,id);
             if (data) {
-                result = new GeneralResponse<>(data, "Username found", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(data, "Username found", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(null, "Username not found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(null, "Username not found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new DemoGeneral<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -155,9 +155,9 @@ public class UserController extends ControllerConfig {
     }
 
     @GetMapping("/user/AllUsers/{getBy}/{id}")
-    public ResponseEntity<GeneralResponse<List<getAllUserInfo>,String>> getAllUser(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id,@RequestHeader Map<String, String> headers)
+    public ResponseEntity<DemoGeneral<List<getAllUserInfo>,String>> getAllUser(@PathVariable(value = "getBy")String getBy, @PathVariable(value = "id")Long id,@RequestHeader Map<String, String> headers)
     {
-        GeneralResponse<List<getAllUserInfo>,String> result;
+        DemoGeneral<List<getAllUserInfo>,String> result;
         List<getAllUserInfo> users = null;
         try{
             switch (getBy) {
@@ -165,9 +165,9 @@ public class UserController extends ControllerConfig {
 
                         users = userService.getAllUser(getBy, id,headers.get("id"));
                         if(!users.isEmpty())
-                            result = new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new DemoGeneral<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                         else
-                            result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new DemoGeneral<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                         break;
 
@@ -175,44 +175,44 @@ public class UserController extends ControllerConfig {
 
                         users = userService.getAllUser(getBy, id,headers.get("id"));
                         if(!users.isEmpty())
-                            result = new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new DemoGeneral<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                         else
-                            result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new DemoGeneral<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
                         break;
                 case "all":
                         users = userService.getAllUser(null, null,headers.get("id"));
                         if(!users.isEmpty())
-                            result = new GeneralResponse<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new DemoGeneral<>(users, "User Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                         else
-                            result = new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new DemoGeneral<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                         break;
 
                 default:
-                    result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new DemoGeneral<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     logService.saveLog(result,request,debugAll);
             }
         }catch(Exception e){
-            result = new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new DemoGeneral<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping("/user")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> createUser(@RequestBody UserAddRequest userData,@RequestHeader Map<String, String> headers) throws Exception{
+    public ResponseEntity<DemoGeneral<Boolean,Object>> createUser(@RequestBody UserAddRequest userData,@RequestHeader Map<String, String> headers) throws Exception{
 
-        GeneralResponse<Boolean,Object> result;
+        DemoGeneral<Boolean,Object> result;
         try{
             userService.createUser(userData,headers.get("id"));
-            result = new GeneralResponse<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new DemoGeneral<>(true,"User created successfully", true, System.currentTimeMillis(), HttpStatus.OK,userData);
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new DemoGeneral<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
 
             logService.saveLog(result,request,true);
         }
@@ -225,9 +225,9 @@ public class UserController extends ControllerConfig {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<GeneralResponse<LoginResponse,Object>> login(@RequestBody UserRequest userData, @RequestHeader Map<String, String> headers) throws Exception{
+    public ResponseEntity<DemoGeneral<LoginResponse,Object>> login(@RequestBody UserRequest userData, @RequestHeader Map<String, String> headers) throws Exception{
 
-        GeneralResponse<LoginResponse,Object> result;
+        DemoGeneral<LoginResponse,Object> result;
         try{
             var user = userService.checkUser(userData.getUserName(),userData.getPassword());
             if(user!=null){
@@ -236,7 +236,7 @@ public class UserController extends ControllerConfig {
                 loginResponse.setAccessToken(token);
                 token = jwtUtil.generateToken(user, "refreshToken");
                 loginResponse.setRefreshToken(token);
-                result = new GeneralResponse<>(loginResponse,"successfully logged in", true, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new DemoGeneral<>(loginResponse,"successfully logged in", true, System.currentTimeMillis(), HttpStatus.OK,userData);
                 /*System.out.println(headers.toString());
                 System.out.println(request.getRequestURL());*/
                 //logService.saveRequestResponse(request,result,headers,null);
@@ -244,13 +244,13 @@ public class UserController extends ControllerConfig {
             }
             else
             {
-                result = new GeneralResponse<>(null,"Wrong Creds", false, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new DemoGeneral<>(null,"Wrong Creds", false, System.currentTimeMillis(), HttpStatus.OK,userData);
             }
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new DemoGeneral<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -259,24 +259,24 @@ public class UserController extends ControllerConfig {
 
 
     @PutMapping("/user")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateUser(@RequestBody UserUpdateRequest userData) throws Exception{
+    public ResponseEntity<DemoGeneral<Boolean,Object>> updateUser(@RequestBody UserUpdateRequest userData) throws Exception{
 
-        GeneralResponse<Boolean,Object> result;
+        DemoGeneral<Boolean,Object> result;
         try{
             int flag = userService.isAvailable(userData);
 
             if(flag==1){
-                result = new GeneralResponse<>(true,"User Updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new DemoGeneral<>(true,"User Updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,userData);
             }
             else
             {
-                result = new GeneralResponse<>(true,"User not Updated ", true, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new DemoGeneral<>(true,"User not Updated ", true, System.currentTimeMillis(), HttpStatus.OK,userData);
             }
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new DemoGeneral<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -284,23 +284,23 @@ public class UserController extends ControllerConfig {
 
 
     @DeleteMapping(value="/user/{id}")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteUserDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<DemoGeneral<Boolean,Object>> deleteUserDetailsByID(@PathVariable(value = "id") Long id) throws Exception {
+        DemoGeneral<Boolean,Object> result;
         try {
             if (id != null) {
                 boolean flag = userService.deleteUserById(id);
                 if (flag) {
-                    result = new GeneralResponse<>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new DemoGeneral<>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result = new GeneralResponse<>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new DemoGeneral<>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             } else
-                result = new GeneralResponse<>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new DemoGeneral<>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new DemoGeneral<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -309,19 +309,19 @@ public class UserController extends ControllerConfig {
 
     //identify the user
     @GetMapping(value="/user/getUserHeadDetailById/{id}")
-    public ResponseEntity<GeneralResponse<UserIdentification,Object>> getUserHeadDetailById(@PathVariable(value = "id") Long id)
+    public ResponseEntity<DemoGeneral<UserIdentification,Object>> getUserHeadDetailById(@PathVariable(value = "id") Long id)
     {
-        GeneralResponse<UserIdentification,Object> response;
+        DemoGeneral<UserIdentification,Object> response;
         try {
 
             UserIdentification userIdentification = userService.getUserHeadDetail(id);
-            response= new GeneralResponse<>(userIdentification, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            response= new DemoGeneral<>(userIdentification, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(response,request,debugAll);
 
         }
         catch (Exception e)
         {
-            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            response = new DemoGeneral<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(response,request,true);
         }
         return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
