@@ -44,13 +44,13 @@ public class Permissions {
 		}if(binary.charAt(4) == '1'){
 			viewGroup = true;
 		}if(binary.charAt(5) == '1'){
-			viewAll = true;
-		}if(binary.charAt(6) == '1'){
 			editGroup = true;
-		}if(binary.charAt(7) == '1'){
-			editAll = true;
-		}if(binary.charAt(8) == '1'){
+		}if(binary.charAt(6) == '1'){
 			deleteGroup = true;
+		}if(binary.charAt(7) == '1'){
+			viewAll = true;
+		}if(binary.charAt(8) == '1'){
+			editAll = true;
 		}if(binary.charAt(9) == '1'){
 			deleteAll = true;
 		}
