@@ -106,4 +106,7 @@ public class EmployeeServiceImpl {
     }
 
 
+    public EmployeeMast getEmployeeByEmpId(Long id) {
+        return employeeMastDao.getEmployeeByEmpId(id);
+    }
 }

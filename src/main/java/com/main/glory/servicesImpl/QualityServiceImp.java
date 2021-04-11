@@ -69,6 +69,7 @@ public class QualityServiceImp  {
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
+        Party party = partyDao.findByPartyId(qualityDto.getPartyId());
         Quality quality = new Quality(qualityDto);
 
         System.out.println("header:"+id);
@@ -76,9 +77,8 @@ public class QualityServiceImp  {
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
         System.out.println(":"+user.getId());
-        if(user.getIsMaster()==false)
+        if(user.getIsMaster()==false || qualityDto.getUserHeadId()==0)
         {
-            Party party = partyDao.findByPartyId(qualityDto.getPartyId());
             quality.setUserHeadId(party.getUserHeadId());
         }
 
@@ -90,7 +90,8 @@ public class QualityServiceImp  {
         if(quality.getUnit().equals("weight"))
             quality.setWtPer100m(1.0);
 
-        qualityDao.save(quality);
+        Quality x = qualityDao.save(quality);
+
         return 1;
     }
 

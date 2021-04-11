@@ -18,9 +18,15 @@ public interface AttendanceDao extends JpaRepository<Attendance,Long> {
     @Query("select s from Attendance s where s.id=:id")
     Attendance getAttendanceById(Long id);
 
-    @Query(value = "select * from attendance as a where a.control_id=:id ORDER BY a.created_date DESC LIMIT 1",nativeQuery = true)
+    @Query(value = "select * from attendance as a where a.control_id = :id AND shift=false ORDER BY a.created_date DESC LIMIT 1",nativeQuery = true)
     Attendance getLatestAttendanceRecordByEmployeeId(@RequestParam(name = "id") Long id);
 
     @Query("select new com.main.glory.model.employee.response.EmployeeAttendanceResponse(a.shift,sum(a.id)) from Attendance a where a.controlId=:id AND a.createdDate >=:fromDate OR a.createdDate <= :toDate GROUP BY a.shift")
     EmployeeAttendanceResponse getAttendanceBasedOnFilter(Long id, Date fromDate, Date toDate);
+
+    @Query(value = "select * from attendance as a where a.control_id=:controlId and a.shift=:shift ORDER BY Date(a.created_date)=Date(GETDATE()) LIMIT 1",nativeQuery = true)
+    Attendance getAttendanceByIdAndShift(@RequestParam("controlId") Long controlId, @RequestParam("shift") Boolean shift);
+
+    @Query(value = "select * from attendance as a where a.control_id=:id and a.shift=:shift ORDER BY Date(a.created_date)=Date(:date) LIMIT 1",nativeQuery = true)
+    Attendance getAttendanceByIdDateAndShift(Long id, Boolean shift, Date date);
 }

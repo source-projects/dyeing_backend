@@ -4,6 +4,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.request.FilterAttendance;
+import com.main.glory.model.employee.request.GetLatestAttendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
 import com.main.glory.model.employee.response.EmployeeWithAttendance;
 import com.main.glory.servicesImpl.AttendanceServiceImpl;
@@ -105,6 +106,35 @@ public class AttendanceController extends ControllerConfig {
 
 
             EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeId(id);
+            //System.out.println("har::"+headers.get("id"));
+            //System.out.println(id);
+            if(list==null)
+            {
+                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+
+            }
+            else {
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @PostMapping(value="/attendance/latest/byEmployeeIdDateAndShift")
+    public ResponseEntity<GeneralResponse<EmployeeWithAttendance>> getLatestAttendanceByEmployeeIdDateAndShift(@RequestBody GetLatestAttendance record)
+    {
+        GeneralResponse<EmployeeWithAttendance> result;
+        try {
+            if(record==null)
+                throw new Exception("record can't be null");
+
+
+            EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeIdDateAndShift(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
             if(list==null)
