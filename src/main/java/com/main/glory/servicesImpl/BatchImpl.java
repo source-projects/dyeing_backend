@@ -62,7 +62,7 @@ public class BatchImpl {
             List<BatchData> extraBatchList = batchDao.findByBatchIdWithoutBillGenerated( batchId);
 
             for (BatchData batchData : extraBatchList) {
-                extraBatch.put(batchData.getId(), false);
+                extraBatch.put(batchData.getId(), true);
             }
 
             for (BatchData batchData : batchDataList) {
@@ -74,8 +74,9 @@ public class BatchImpl {
 
                 } else {
                     //if it is already available then replace the flag from the hash map
-                    if (batchData.getIsExtra() == true)
-                        extraBatch.replace(batchData.getId(), true);
+
+                        extraBatch.replace(batchData.getId(), false);
+
                     //save the extra batch
                 }
                 batchData.setIsFinishMtrSave(true);
@@ -90,7 +91,7 @@ public class BatchImpl {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
                 if (entry.getValue() == true) {
                     //delete the extra batch gr who's the invoice is not created
-                    batchDao.deleteById(entry.getKey());
+                    batchDao.deleteByIdWithExtraFlag(entry.getKey(),true);
                 }
             }
 
@@ -103,7 +104,7 @@ public class BatchImpl {
             List<BatchData> extraBatchList = batchDao.findByMergeBatchIdWithoutBillGenerated(mergeBatchId,batchId);
 
             for (BatchData batchData : extraBatchList) {
-                extraBatch.put(batchData.getId(), false);
+                extraBatch.put(batchData.getId(), true);
             }
 
             for (BatchData batchData : batchDataList) {
@@ -116,8 +117,8 @@ public class BatchImpl {
 
                 } else {
                     //if it is already available then replace the flag from the hash map
-                    if (batchData.getIsExtra() == true)
-                        extraBatch.replace(batchData.getId(), true);
+
+                        extraBatch.replace(batchData.getId(), false);
                     //save the extra batch
                 }
                 batchData.setIsFinishMtrSave(true);
@@ -132,7 +133,7 @@ public class BatchImpl {
                 System.out.println(entry.getKey() + ":" + entry.getValue());
                 if (entry.getValue() == true) {
                     //delete the extra batch gr who's the invoice is not created
-                    batchDao.deleteById(entry.getKey());
+                    batchDao.deleteByIdWithExtraFlag(entry.getKey(),true);
                 }
             }
 
@@ -147,7 +148,7 @@ public class BatchImpl {
             List<BatchData> batchData=null;
             if(batchId.contains("-"))
             {
-                batchData  = batchDao.getBatchByBatchIdWithMergeBatchId(batchId.split("-")[1],batchId.split("-")[0]);
+                batchData  = batchDao.getBatchByMergeBatchIdAndBatchIdForFinishMtrSave((batchId.split("-")[1]),batchId.split("-")[0]);
                 /*for(BatchData batch:batchDataList)
                 {
                     batch.setBatchId(batch.getMergeBatchId()+"-s"+batch.getBatchId());
@@ -156,7 +157,7 @@ public class BatchImpl {
             }
             else
             {
-                batchData = batchDao.getBatchByBatchId(batchId);
+                batchData = batchDao.getBatchForFinishMtrByBatchId(batchId);
             }
 
             if (batchData.isEmpty())
