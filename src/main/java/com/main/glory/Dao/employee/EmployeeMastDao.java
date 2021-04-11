@@ -26,6 +26,6 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
     @Query("delete from EmployeeMast w where w.id=:id")
     void deleteByEmployeeId(Long id);
 
-    @Query("select x from EmployeeMast x where x.empId=:empIds")
+    @Query("select x from EmployeeMast x where x.empId=:empId")
     EmployeeMast getEmployeeByEmpId(Long empId);
 }
