@@ -176,7 +176,7 @@ public class EmployeeController extends ControllerConfig {
                 throw new Exception("null data passed");
 
 
-            EmployeeMast employeeMast= employeeService.getEmployeeById(id);
+            EmployeeMast employeeMast= employeeService.getEmployeeByEmpId(id);
 
             if(employeeMast!=null)
                 result= new GeneralResponse<>(true, " Data found successfully", true, System.currentTimeMillis(), HttpStatus.OK);
