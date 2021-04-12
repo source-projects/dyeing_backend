@@ -16,17 +16,35 @@ import java.util.List;
 @Service("attendanceServiceImpl")
 public class AttendanceServiceImpl {
 
+    /*
+
+        * always get the record entry id by EmpId coming from FE and then map entry with child record attendance record
+
+
+     */
 
     @Autowired
     EmployeeServiceImpl employeeService;
     @Autowired
     AttendanceDao attendanceDao;
 
-    public void saveAttendance(Attendance record) {
-        attendanceDao.save(record);
+    public Attendance saveAttendance(Attendance record) throws Exception {
+        EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
+        if(employeeMast==null)
+            throw new Exception("no record found");
+
+        record.setControlId(employeeMast.getId());
+        Attendance attendance = attendanceDao.save(record);
+        return attendance;
     }
 
-    public void updateAttendance(Attendance record) throws Exception {
+    public Attendance updateAttendance(Attendance record) throws Exception {
+
+        EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
+        if(employeeMast==null)
+            throw new Exception("no record found");
+
+        record.setControlId(employeeMast.getId());
 
         Attendance attendanceExist = attendanceDao.getAttendanceById(record.getId());
         /*if(attendanceExist==null)
@@ -35,7 +53,8 @@ public class AttendanceServiceImpl {
         if(attendanceExist.getShift()!=record.getShift())
             throw new Exception("please select right shift");*/
 
-        attendanceDao.saveAndFlush(record);
+        Attendance x= attendanceDao.saveAndFlush(record);
+        return x;
 
     }
 
@@ -81,6 +100,7 @@ public class AttendanceServiceImpl {
 
 
 
+
         if(filterAttendance.getControlId()==null)
         {
             List<EmployeeMast> employeeMastList = employeeService.getAllEmployee();
@@ -95,7 +115,7 @@ public class AttendanceServiceImpl {
         {
             //check the employee is exist or not
 
-            EmployeeMast employeeMastExist = employeeService.getEmployeeById(filterAttendance.getControlId());
+            EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(filterAttendance.getControlId());
             if(employeeMastExist==null)
                 throw new Exception("no employee record found");
 
