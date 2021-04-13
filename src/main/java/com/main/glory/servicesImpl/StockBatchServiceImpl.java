@@ -103,6 +103,9 @@ public class StockBatchServiceImpl {
     @Transactional
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
 
+        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        if(party==null)
+            throw new Exception("no party found");
         Long max=0l,batchId=0l;
         Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
@@ -131,7 +134,7 @@ public class StockBatchServiceImpl {
                 if(userData.getIsMaster()==false)
                 {
                     //fetch the party record to set the usert head
-                    Party party = partyDao.findByPartyId(stockMast.getPartyId());
+                    party = partyDao.findByPartyId(stockMast.getPartyId());
                     stockMast.setUserHeadId(party.getUserHeadId());
                 }
                 //check the invoice sequence
@@ -147,10 +150,15 @@ public class StockBatchServiceImpl {
 
                 //add record
                 StockMast x =new StockMast(stockMast);
-                stockMastDao.save(x);
+                StockMast create  = stockMastDao.save(x);
 
                 //update the quality wt per 100 as well
                 qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
+                if(create.getUserHeadId()==0)
+                {
+                    create.setUserHeadId(party.getUserHeadId());
+                    stockMastDao.saveAndFlush(create);
+                }
                 return x.getId();
 
 
@@ -342,7 +350,7 @@ public class StockBatchServiceImpl {
 
             //for data entry user
             UserData userData = userDao.getUserById(Long.parseLong(id));
-            if(userData.getIsMaster()==false)
+            if(userData.getIsMaster()==false || stockMast.getUserHeadId()==0)
             {
                 //fetch the party record to set the usert head
                 Party party = partyDao.findByPartyId(stockMast.getPartyId());
@@ -1680,7 +1688,7 @@ public class StockBatchServiceImpl {
         Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
 
-       /* System.out.println(stockMast.getId());
+      /*  System.out.println(stockMast.getId());
         System.out.println(party.getId());
         System.out.println(quality.getId());
         System.out.println(qualityName.get().getId());
