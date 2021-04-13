@@ -306,21 +306,16 @@ public class TaskServiceImpl {
         List<TaskDetail> taskDetailList = null;
 
 
-        if(id==null && approvedFlag==null) {
-            taskDetailList = taskDataDao.getTaskDetail();
-        }
-        else if(id==null && approvedFlag!=null)
+        if(id!=null)
         {
-            taskDetailList = taskDataDao.getTaskDetailByApproved(approvedFlag);
-        }
-        else if(id!=null && approvedFlag==null)
-        {
-            taskDetailList = taskDataDao.getTaskDetailAssignBy(id);
+            taskDetailList = taskDataDao.getTaskDetailByApprovedAndAssignId(id,approvedFlag);
+
         }
         else
         {
             //id is not null and flag is not null
-            taskDetailList = taskDataDao.getTaskDetailByApprovedAndAssignId(id,approvedFlag);
+
+            taskDetailList = taskDataDao.getAllTaskDetailApprovedWithoutId(approvedFlag);
         }
 
         taskDetailList =taskDetailResponse(taskDetailList);

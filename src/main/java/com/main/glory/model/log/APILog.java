@@ -1,6 +1,7 @@
 package com.main.glory.model.log;
 
 import com.google.gson.JsonObject;
+import com.main.glory.model.DemoGeneral;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.user.response.LoginResponse;
 import lombok.AllArgsConstructor;
@@ -28,23 +29,46 @@ public class APILog<T> {
     String userType;
     String deviceType;
     String device;
-    Long userId;
+    String userId;
     @Column(columnDefinition = "varchar(10000)")
     String requestBody;
     @Column(columnDefinition = "varchar(10000)")
     String responseBody;
     String responseMsg;
+    String method;
     Date createdDate;
 
+    public <T> APILog(GeneralResponse<T> result, HttpServletRequest request) {
+        this.apiUrl = request.getRequestURI();
+        this.apiUrl =  request.getRequestURI();
+        this.deviceType = request.getHeader("User-Agent");
+        this.userId = request.getHeader("id")==null?null:request.getHeader("id").toString() ;
+        this.method = request.getMethod();
+        this.responseMsg = result.getMsg();
+        this.responseBody = result.getData()==null?null:result.getData().toString();
+        //this.requestBody = result.getRequestBody().toString();
+    }
+
+    public <T, D> APILog(DemoGeneral<T,D> result, HttpServletRequest request) {
+        this.apiUrl = request.getRequestURI();
+        this.apiUrl =  request.getRequestURI();
+        this.deviceType = request.getHeader("User-Agent");
+        this.userId = request.getHeader("id")==null?null:request.getHeader("id").toString() ;
+        this.method = request.getMethod();
+        this.responseMsg = result.getMsg();
+        this.responseBody = result.getData()==null?null:result.getData().toString();
+        this.requestBody = result.getRequestBody().toString();
+    }
 
 
-    public <T> APILog(HttpServletRequest request, GeneralResponse<T> result, Map<String, String> headers) {
+
+  /*  public <T> APILog(HttpServletRequest request, GeneralResponse<T> result, Map<String, String> headers) {
         this.apiUrl = request.getRequestURI();
         this.device = headers.get("user-agent");
         this.responseBody = result.getData()==null?null:result.getData().toString();
         this.responseMsg=result.getMsg();
 
-    }
+    }*/
     //Date updatedDate;
 
     @PrePersist

@@ -89,7 +89,7 @@ public class EmployeeServiceImpl {
     }
 
     public void deleteEmployeeById(Long id) throws Exception {
-        EmployeeMast employeeMast = employeeMastDao.getEmployeeById(id);
+        EmployeeMast employeeMast = employeeMastDao.getEmployeeByEmpId(id);
         if(employeeMast==null)
             throw new Exception("no employee found");
 
@@ -106,4 +106,7 @@ public class EmployeeServiceImpl {
     }
 
 
+    public EmployeeMast getEmployeeByEmpId(Long id) {
+        return employeeMastDao.getEmployeeByEmpId(id);
+    }
 }

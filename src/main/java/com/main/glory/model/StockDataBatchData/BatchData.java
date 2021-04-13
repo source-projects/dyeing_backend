@@ -38,11 +38,11 @@ public class BatchData {
     Boolean isFinishMtrSave=false;
     String mergeBatchId;
 
-    @ApiModelProperty(hidden = true)
+   /* @ApiModelProperty(hidden = true)
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "batchEntryId", referencedColumnName = "id")
-    List<DispatchData> dispatchData;
+    List<DispatchData> dispatchData;*/
 
     public BatchData(BatchData other) {
         this.id=other.id;

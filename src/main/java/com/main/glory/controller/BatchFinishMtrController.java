@@ -29,7 +29,7 @@ public class BatchFinishMtrController extends ControllerConfig {
         GeneralResponse<Boolean> result;
         try {
             batchImpl.updateFinishMtrBatch(batchData);
-            result = new GeneralResponse<>(true, "Job card created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(true, "Finish Meter Stored successfully", true, System.currentTimeMillis(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);

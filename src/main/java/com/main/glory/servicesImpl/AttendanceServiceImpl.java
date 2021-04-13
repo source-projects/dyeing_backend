@@ -4,6 +4,7 @@ import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.request.FilterAttendance;
+import com.main.glory.model.employee.request.GetLatestAttendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
 import com.main.glory.model.employee.response.EmployeeWithAttendance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,37 +16,57 @@ import java.util.List;
 @Service("attendanceServiceImpl")
 public class AttendanceServiceImpl {
 
+    /*
+
+        * always get the record entry id by EmpId coming from FE and then map entry with child record attendance record
+
+
+     */
 
     @Autowired
     EmployeeServiceImpl employeeService;
     @Autowired
     AttendanceDao attendanceDao;
 
-    public void saveAttendance(Attendance record) {
-        attendanceDao.save(record);
+    public Attendance saveAttendance(Attendance record) throws Exception {
+        EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
+        if(employeeMast==null)
+            throw new Exception("no record found");
+
+        record.setControlId(employeeMast.getId());
+        Attendance attendance = attendanceDao.save(record);
+        return attendance;
     }
 
-    public void updateAttendance(Attendance record) throws Exception {
+    public Attendance updateAttendance(Attendance record) throws Exception {
+
+        EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
+        if(employeeMast==null)
+            throw new Exception("no record found");
+
+        record.setControlId(employeeMast.getId());
+
         Attendance attendanceExist = attendanceDao.getAttendanceById(record.getId());
-        if(attendanceExist==null)
+        /*if(attendanceExist==null)
             throw new Exception("no record found");
 
         if(attendanceExist.getShift()!=record.getShift())
-            throw new Exception("please select right shift");
+            throw new Exception("please select right shift");*/
 
-        attendanceDao.saveAndFlush(record);
+        Attendance x= attendanceDao.saveAndFlush(record);
+        return x;
 
     }
 
     public List<Attendance> getAttendanceByEmployeeId(Long id) throws Exception {
         //check the employee exist
 
-        EmployeeMast employeeMast =employeeService.getEmployeeById(id);
+        EmployeeMast employeeMast =employeeService.getEmployeeByEmpId(id);
 
         if(employeeMast==null)
             throw new Exception("no employee found");
 
-        return attendanceDao.getAllAttendanceByEmployeeId(id);
+        return attendanceDao.getAllAttendanceByEmployeeId(employeeMast.getId());
 
 
     }
@@ -56,11 +77,11 @@ public class AttendanceServiceImpl {
 
     public EmployeeWithAttendance getLatestAttendanceRecordByEmployeeId(Long id) throws Exception {
         EmployeeWithAttendance employeeWithAttendance=null;
-        EmployeeMast employeeMastExist = employeeService.getEmployeeById(id);
+        EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(id);
         if(employeeMastExist==null)
             throw new Exception("no employee record");
 
-        Attendance attendance = attendanceDao.getLatestAttendanceRecordByEmployeeId(id);
+        Attendance attendance = attendanceDao.getLatestAttendanceRecordByEmployeeId(employeeMastExist.getId());
 
         if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
         {
@@ -79,6 +100,7 @@ public class AttendanceServiceImpl {
 
 
 
+
         if(filterAttendance.getControlId()==null)
         {
             List<EmployeeMast> employeeMastList = employeeService.getAllEmployee();
@@ -93,7 +115,7 @@ public class AttendanceServiceImpl {
         {
             //check the employee is exist or not
 
-            EmployeeMast employeeMastExist = employeeService.getEmployeeById(filterAttendance.getControlId());
+            EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(filterAttendance.getControlId());
             if(employeeMastExist==null)
                 throw new Exception("no employee record found");
 
@@ -104,5 +126,24 @@ public class AttendanceServiceImpl {
         }
 
         return list;
+    }
+
+    public EmployeeWithAttendance getLatestAttendanceRecordByEmployeeIdDateAndShift(GetLatestAttendance record) throws Exception {
+        EmployeeWithAttendance employeeWithAttendance=null;
+        EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(record.getId());
+        if(employeeMastExist==null)
+            throw new Exception("no employee record");
+
+        Attendance attendance = attendanceDao.getAttendanceByIdDateAndShift(employeeMastExist.getId(),record.getShift(),record.getDate());
+
+        if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
+        {
+            employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,new Attendance());
+        }
+        else
+        {
+            employeeWithAttendance=new EmployeeWithAttendance(employeeMastExist,attendance);
+        }
+        return  employeeWithAttendance;
     }
 }
