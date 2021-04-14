@@ -30,12 +30,17 @@ public class BatchData {
     Double wt;
     String batchId;
     Long controlId;
-    Boolean isProductionPlanned=false;
-    Boolean isExtra=false;
-    Long sequenceId=0l;
-    Double finishMtr=0.0;
-    Boolean isBillGenrated=false;
-    Boolean isFinishMtrSave=false;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isProductionPlanned;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isExtra;
+    @Column(columnDefinition = "integer default 0")
+    Long sequenceId;
+    Double finishMtr;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isBillGenrated;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isFinishMtrSave;
     String mergeBatchId;
 
    /* @ApiModelProperty(hidden = true)
