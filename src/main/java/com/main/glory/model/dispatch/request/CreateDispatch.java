@@ -15,5 +15,8 @@ public class CreateDispatch {
     Long createdBy;
     Long userHeadId;
     Long updatedBy;
+    Double discount;
+    Double cgst;
+    Double sgst;
     List<BatchAndStockId> batchAndStockIdList;
 }

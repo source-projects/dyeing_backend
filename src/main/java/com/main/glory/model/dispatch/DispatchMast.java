@@ -29,6 +29,12 @@ public class DispatchMast {
     Long userHeadId;
     Long updatedBy;
     Long partyId;
+    @Column(columnDefinition = "double default 3")
+    Double discount;
+    @Column(columnDefinition = "double default 2.5")
+    Double cgst;
+    @Column(columnDefinition = "double default 2.5")
+    Double sgst;
 
 
     @PrePersist
