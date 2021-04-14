@@ -102,7 +102,7 @@ public class StockBatchServiceImpl {
 
     @Transactional
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
-
+        List<BatchData> batchDataList = new ArrayList<>();
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
         if(party==null)
             throw new Exception("no party found");
@@ -127,6 +127,7 @@ public class StockBatchServiceImpl {
                     {
                         max=batchId;
                     }
+                    batchDataList.add(batchData);
                 }
 
                 //for data entry user
@@ -150,7 +151,9 @@ public class StockBatchServiceImpl {
 
                 //add record
                 StockMast x =new StockMast(stockMast);
+                x.setBatchData(batchDataList);
                 StockMast create  = stockMastDao.save(x);
+
 
                 //update the quality wt per 100 as well
                 qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
