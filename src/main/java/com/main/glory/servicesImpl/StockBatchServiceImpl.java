@@ -326,6 +326,10 @@ public class StockBatchServiceImpl {
                 if (batchGr.containsKey(batch.getId())) {
                     batchGr.replace(batch.getId(), true);
                 }
+                else
+                {
+                    batch=new BatchData(batch);
+                }
                 batchId = Long.parseLong(batch.getBatchId());
                 if (batchId > max) {
                     max = batchId;
