@@ -47,6 +47,7 @@ public class StockMast {
     @ApiModelProperty(hidden = true)
     Date updatedDate;
     String remark;
+    Double wtPer100m;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -82,7 +83,7 @@ public class StockMast {
         this.stockInType = sm.getStockInType();
         this.createdDate = sm.getCreatedDate();
         this.updatedDate = sm.getUpdatedDate();
-        this.batchData = sm.getBatchData();
+        //this.batchData = sm.getBatchData();
         this.partyId = sm.getPartyId();
         this.qualityId = sm.getQualityId();
         this.chlDate = sm.getChlDate();
@@ -93,7 +94,7 @@ public class StockMast {
         this.updatedBy = sm.getUpdatedBy();
         this.userHeadId= sm.getUserHeadId();
         this.receiveDate=sm.getReceiveDate();
-        this.batchData =sm.getBatchData();
+        //this.batchData =sm.getBatchData();
 
     }
 

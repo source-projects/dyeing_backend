@@ -287,10 +287,11 @@ public class StockBatchServiceImpl {
                 throw new Exception ("no data found for StockId: "+id);
     }
 
-    @Transactional
+
     public void updateBatch(AddStockBatch stockMast,String id) throws Exception {
         //first check the batch id is null or not
         try {
+            List<BatchData> batchDataList = new ArrayList<>();
             Long batchId = 0l, max = 0l;
 
             Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
@@ -326,7 +327,10 @@ public class StockBatchServiceImpl {
                 if (batchId > max) {
                     max = batchId;
                 }
+                batch.setControlId(stockMast.getId());
+                batchDataList.add(batch);
             }
+
 
             //##Iterate the loop first for check the record that are production plan true or not and then delete the record who flag is false
             for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
@@ -359,7 +363,7 @@ public class StockBatchServiceImpl {
             //update record
             StockMast x = new StockMast(stockMast);
             stockMastDao.save(x);
-
+            batchDao.saveAll(batchDataList);
             //update the quality wt per 100 as well
             qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
 
