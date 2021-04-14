@@ -55,12 +55,12 @@ public class BatchData {
         this.wt=other.wt;
         this.batchId=other.batchId;
         this.controlId=other.controlId;
-        this.isProductionPlanned = other.getIsProductionPlanned()==null?false:true;
-        this.isExtra=other.isExtra==null?false:true;
+        this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
+        this.isExtra=other.isExtra==null?false:other.getIsExtra();
         this.sequenceId=other.sequenceId==null?0l:other.getSequenceId();
         this.finishMtr=other.finishMtr;
-        this.isBillGenrated=other.isBillGenrated==null?false:true;;
-        this.isFinishMtrSave = other.isFinishMtrSave==null?false:true;
+        this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();;
+        this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
 
 
     }
