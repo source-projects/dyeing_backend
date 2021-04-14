@@ -344,8 +344,6 @@ public class StockBatchServiceImpl {
             for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
                 //System.out.println(entry.getKey()+":"+entry.getValue());
                 if (entry.getValue() == false) {
-                    BatchData batchDataProductionPlan = batchDao.getBatchDataById(entry.getKey());
-                    if (batchDataProductionPlan.getIsProductionPlanned())
                         batchGr.replace(entry.getKey(), true);
                     //throw new Exception("remove the production first of batch:"+batchDataProductionPlan.getBatchId());
 
@@ -370,8 +368,9 @@ public class StockBatchServiceImpl {
             }
             //update record
             StockMast x = new StockMast(stockMast);
+            x.setBatchData(batchDataList);
             stockMastDao.save(x);
-            batchDao.saveAll(batchDataList);
+            //batchDao.saveAll(batchDataList);
             //update the quality wt per 100 as well
             qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
 
