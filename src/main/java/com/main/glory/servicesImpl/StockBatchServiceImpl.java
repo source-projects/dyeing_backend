@@ -324,6 +324,7 @@ public class StockBatchServiceImpl {
                     throw new Exception("batch id can't be null");
                 //System.out.println("coming:"+batch.getId());
                 if (batchGr.containsKey(batch.getId())) {
+                    batch=new BatchData(batch);
                     batchGr.replace(batch.getId(), true);
                 }
                 else
