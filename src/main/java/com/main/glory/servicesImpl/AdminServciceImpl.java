@@ -130,6 +130,9 @@ public class AdminServciceImpl {
             throw new Exception("department already exist");
 
         Department d=new Department(c);
+        if(c.getIsMaster()==null)
+            throw new Exception("is master can't be null");
+
         departmentDao.save(d);
 
 

@@ -93,6 +93,7 @@ public class StockMast {
         this.updatedBy = sm.getUpdatedBy();
         this.userHeadId= sm.getUserHeadId();
         this.receiveDate=sm.getReceiveDate();
+        this.batchData =sm.getBatchData();
 
     }
 
