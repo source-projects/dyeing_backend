@@ -81,9 +81,9 @@ public class SupplierController extends ControllerConfig {
         try{
             Boolean flag = supplierService.supplierRateExist(name,id);
             if(flag) {
-                result= new GeneralResponse<Boolean>(true, "Supplier rate found", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(true, "Supplier rate found", true, System.currentTimeMillis(), HttpStatus.OK);
             } else {
-                result= new GeneralResponse<Boolean>(false, "supplier rate not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(false, "supplier rate not found", false, System.currentTimeMillis(), HttpStatus.OK);
             }
         } catch (Exception e) {
             result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);

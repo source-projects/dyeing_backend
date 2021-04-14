@@ -398,7 +398,7 @@ public class SupplierServiceImpl {
             throw new Exception("null value passed");
 
         SupplierRate rate =  supplierRateDao.getSupplierRateByNameAndExceptId(name,id);
-        if(rate==null)
+        if(rate!=null)
             return true;
         else
             return false;
