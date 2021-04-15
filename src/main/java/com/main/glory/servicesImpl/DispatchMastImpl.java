@@ -393,7 +393,7 @@ public class DispatchMastImpl {
         //increament the invoice number to dispatch mast
 
 
-        DispatchMast dispatchMast =new DispatchMast();
+        DispatchMast dispatchMast =new DispatchMast(dispatchList);
         dispatchMast.setPrefix("inv");
         dispatchMast.setPartyId(party.get().getId());
         dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
