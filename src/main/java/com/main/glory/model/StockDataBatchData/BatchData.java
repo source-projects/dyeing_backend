@@ -59,7 +59,7 @@ public class BatchData {
         this.isExtra=other.isExtra==null?false:other.getIsExtra();
         this.sequenceId=other.sequenceId==null?0l:other.getSequenceId();
         this.finishMtr=other.finishMtr;
-        this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();;
+        this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();
         this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
 
 
