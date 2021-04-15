@@ -74,6 +74,23 @@ public class SupplierController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping("/supplier/rates/exist")
+    public ResponseEntity<GeneralResponse<Boolean>> getSupplierRateExist(@RequestParam(name = "name") String name,@RequestParam(name = "id") Long id){
+
+        GeneralResponse<Boolean> result;
+        try{
+            Boolean flag = supplierService.supplierRateExist(name,id);
+            if(flag) {
+                result= new GeneralResponse<>(true, "Supplier rate found", true, System.currentTimeMillis(), HttpStatus.OK);
+            } else {
+                result= new GeneralResponse<>(false, "supplier rate not found", false, System.currentTimeMillis(), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
     @GetMapping("/supplier/rate/{id}")
     public ResponseEntity<GeneralResponse<Object>> getSupplierAlongWithRates(@PathVariable("id") Long id){

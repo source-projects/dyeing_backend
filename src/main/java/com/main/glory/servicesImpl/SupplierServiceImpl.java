@@ -392,4 +392,16 @@ public class SupplierServiceImpl {
     public List<Supplier> getSupplierByCreatedAndUserHeadId(Long id, Long id1) {
         return supplierDao.getSupplierByCreatedAndUserHeadId(id,id1);
     }
+
+    public Boolean supplierRateExist(String name, Long id) throws Exception {
+        if(name==null || id==null)
+            throw new Exception("null value passed");
+
+        SupplierRate rate =  supplierRateDao.getSupplierRateByNameAndExceptId(name,id);
+        if(rate!=null)
+            return true;
+        else
+            return false;
+
+    }
 }

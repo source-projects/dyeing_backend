@@ -30,12 +30,17 @@ public class BatchData {
     Double wt;
     String batchId;
     Long controlId;
-    Boolean isProductionPlanned=false;
-    Boolean isExtra=false;
-    Long sequenceId=0l;
-    Double finishMtr=0.0;
-    Boolean isBillGenrated=false;
-    Boolean isFinishMtrSave=false;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isProductionPlanned;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isExtra;
+    @Column(columnDefinition = "integer default 0")
+    Long sequenceId;
+    Double finishMtr;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isBillGenrated;
+    @Column(columnDefinition = "boolean default false")
+    Boolean isFinishMtrSave;
     String mergeBatchId;
 
    /* @ApiModelProperty(hidden = true)
@@ -45,15 +50,17 @@ public class BatchData {
     List<DispatchData> dispatchData;*/
 
     public BatchData(BatchData other) {
-        this.id=other.id;
+        this.id=other.id==null?0:other.id;
         this.mtr=other.mtr;
         this.wt=other.wt;
         this.batchId=other.batchId;
         this.controlId=other.controlId;
-        this.isExtra=other.isExtra;
-        this.sequenceId=other.sequenceId;
+        this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
+        this.isExtra=other.isExtra==null?false:other.getIsExtra();
+        this.sequenceId=other.sequenceId==null?0l:other.getSequenceId();
         this.finishMtr=other.finishMtr;
-        this.isBillGenrated=other.isBillGenrated;
+        this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();
+        this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
 
 
     }

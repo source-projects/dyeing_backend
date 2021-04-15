@@ -850,7 +850,7 @@ public class DispatchMastImpl {
 
         List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList= new ArrayList<>();
 
-
+        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(invoiceNo));
         String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
         if(invoiceExist == null || invoiceExist=="")
             throw new Exception("no data found");
@@ -977,7 +977,7 @@ public class DispatchMastImpl {
         StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
         Optional<Party> party=partyDao.findById(stockMast.getPartyId());
 
-        PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party.get(),qualityBillByInvoiceNumberList,batchWithGrList);
+        PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party.get(),qualityBillByInvoiceNumberList,batchWithGrList,dispatchMast);
 
 
         if(partyDataByInvoiceNumber==null)

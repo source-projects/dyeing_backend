@@ -59,4 +59,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
 
     @Query("select new com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing(s.id,s.itemName,s.supplierId,(select ss.supplierName from Supplier ss where ss.id=s.supplierId)as name) from SupplierRate s where s.id=:supplierItemId")
     ItemListForDirectDyeing getSupplierWithItemByItemId(Long supplierItemId);
+
+    @Query("select x from SupplierRate x where x.itemName=:name AND x.supplierId!=:id")
+    SupplierRate getSupplierRateByNameAndExceptId(String name, Long id);
 }
