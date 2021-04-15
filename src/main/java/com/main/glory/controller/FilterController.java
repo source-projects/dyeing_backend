@@ -10,12 +10,14 @@ import com.main.glory.model.dispatch.request.GetInvoiceBasedOnFilter;
 import com.main.glory.model.dispatch.request.InvoiceWithBatch;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.DispatchMastImpl;
+import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -32,21 +34,34 @@ public class FilterController extends ControllerConfig {
     private StockBatchServiceImpl stockBatchService;
 
 
+    @Autowired
+    LogServiceImpl logService;
+
+    @Autowired
+    HttpServletRequest request;
+
+    //@Value("${spring.application.debugAll}")
+    Boolean debugAll=true;
+
+
+
     //get batches without production plan
     @GetMapping("/stockBatch/batch/withoutProductionPlan/all")
-    public ResponseEntity<GeneralResponse<List<GetBatchWithControlId>>> getAllBatchWithoutProductionPlan(){
-        GeneralResponse<List<GetBatchWithControlId>> result;
+    public ResponseEntity<GeneralResponse<List<GetBatchWithControlId>,Object>> getAllBatchWithoutProductionPlan(){
+        GeneralResponse<List<GetBatchWithControlId>,Object> result;
         try{
 
             List<GetBatchWithControlId> stockMast = stockBatchService.getAllBatchWithoutProductionPlan();
             if(!stockMast.isEmpty()){
-                result = new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }else{
-                result = new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
+            logService.saveLog(result,request,debugAll);
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -54,19 +69,21 @@ public class FilterController extends ControllerConfig {
 
     //get stock without batches
     @GetMapping("/stockBatch/batch/stockWithoutBatches/all")
-    public ResponseEntity<GeneralResponse<List<GetAllStockWithoutBatches>>> stockWithoutBatches(){
-        GeneralResponse<List<GetAllStockWithoutBatches>> result;
+    public ResponseEntity<GeneralResponse<List<GetAllStockWithoutBatches>,Object>> stockWithoutBatches(){
+        GeneralResponse<List<GetAllStockWithoutBatches>,Object> result;
         try{
 
             List<GetAllStockWithoutBatches> stockMast = stockBatchService.getStockListWithoutBatches();
             if(!stockMast.isEmpty()){
-                result = new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }else{
-                result = new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(null, "no data found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
+            logService.saveLog(result,request,debugAll);
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
@@ -74,18 +91,21 @@ public class FilterController extends ControllerConfig {
 
     //get stock based on filter
     @PostMapping("/stockBatch/getStockBasedOnFilter")
-    public ResponseEntity<GeneralResponse<List<StockMast>>> getStockBasedOnFilter(@RequestBody GetStockBasedOnFilter filter){
-        GeneralResponse<List<StockMast>> result;
+    public ResponseEntity<GeneralResponse<List<StockMast>,Object>> getStockBasedOnFilter(@RequestBody GetStockBasedOnFilter filter){
+        GeneralResponse<List<StockMast>,Object> result;
         try{
 
             List<StockMast> stockFiltersData = stockBatchService.getStockBasedOnFilter(filter);
             if(!stockFiltersData.isEmpty())
-                result = new GeneralResponse<>(stockFiltersData, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(stockFiltersData, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,filter);
+
+            logService.saveLog(result,request,debugAll);
 
         }catch(Exception e){
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 

@@ -10,11 +10,14 @@ import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
 import com.main.glory.model.employee.response.EmployeeWithAttendance;
 import com.main.glory.servicesImpl.AttendanceServiceImpl;
 import com.main.glory.servicesImpl.EmployeeServiceImpl;
+import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.ObjectName;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -25,13 +28,22 @@ public class AttendanceController extends ControllerConfig {
     EmployeeServiceImpl employeeService;
 
     @Autowired
+    LogServiceImpl logService;
+
+    //@Value("${spring.application.debugAll}")
+    Boolean debugAll=true;
+
+    @Autowired
+    HttpServletRequest request;
+
+    @Autowired
     AttendanceServiceImpl attendanceService;
 
 
     @PostMapping(value="/attendance")
-    public ResponseEntity<GeneralResponse<Long>> saveAttendance(@RequestBody Attendance record)
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody Attendance record)
     {
-        GeneralResponse<Long> result;
+        GeneralResponse<Boolean,Object> result;
         try {
             if(record==null)
                 throw new Exception("record can't be null");
@@ -39,19 +51,25 @@ public class AttendanceController extends ControllerConfig {
             Attendance attendance= attendanceService.saveAttendance(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
-            result = new GeneralResponse<>(attendance.getId(), "Attendance Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+            result = new GeneralResponse<>(true, "Attendance Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
+
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
     @PutMapping(value="/attendance")
-    public ResponseEntity<GeneralResponse<Long>> updateAttendance(@RequestBody Attendance record)
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateAttendance(@RequestBody Attendance record)
     {
-        GeneralResponse<Long> result;
+        GeneralResponse<Boolean,Object> result;
         try {
             if(record==null)
                 throw new Exception("record can't be null");
@@ -60,20 +78,25 @@ public class AttendanceController extends ControllerConfig {
             Attendance x = attendanceService.updateAttendance(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
-            result = new GeneralResponse<>(x.getId(), "Date updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+
+            result = new GeneralResponse<>(true, "Date updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
+
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
+
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/attendance/byEmployeeId")
-    public ResponseEntity<GeneralResponse<List<Attendance>>> getAttendanceByEmployeeId(@RequestParam(name = "id") Long id)
+    public ResponseEntity<GeneralResponse<List<Attendance>, Object>> getAttendanceByEmployeeId(@RequestParam(name = "id") Long id)
     {
-        GeneralResponse<List<Attendance>> result;
+        GeneralResponse<List<Attendance>,Object> result;
         try {
             if(id==null)
                 throw new Exception("record can't be null");
@@ -83,26 +106,29 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
             if(list.isEmpty())
-            {result = new GeneralResponse<>(list, "Attendance Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+            {
+                result = new GeneralResponse<>(list, "Attendance Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else {
-                result = new GeneralResponse<>(list, "Date fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Date fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
+            logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/attendance/latest/byEmployeeId")
-    public ResponseEntity<GeneralResponse<EmployeeWithAttendance>> getLatestAttendanceByEmployeeId(@RequestParam(name = "id") Long id)
+    public ResponseEntity<GeneralResponse<EmployeeWithAttendance,Object>> getLatestAttendanceByEmployeeId(@RequestParam(name = "id") Long id)
     {
-        GeneralResponse<EmployeeWithAttendance> result;
+        GeneralResponse<EmployeeWithAttendance,Object> result;
         try {
             if(id==null)
                 throw new Exception("record can't be null");
@@ -113,25 +139,28 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else {
-                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
+            logService.saveLog(result,request,debugAll);
+
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping(value="/attendance/latest/byEmployeeIdDateAndShift")
-    public ResponseEntity<GeneralResponse<EmployeeWithAttendance>> getLatestAttendanceByEmployeeIdDateAndShift(@RequestBody GetLatestAttendance record)
+    public ResponseEntity<GeneralResponse<EmployeeWithAttendance,Object>> getLatestAttendanceByEmployeeIdDateAndShift(@RequestBody GetLatestAttendance record)
     {
-        GeneralResponse<EmployeeWithAttendance> result;
+        GeneralResponse<EmployeeWithAttendance,Object> result;
         try {
             if(record==null)
                 throw new Exception("record can't be null");
@@ -142,26 +171,29 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,record);
 
             }
             else {
-                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
 
+
+            logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/attendance")
-    public ResponseEntity<GeneralResponse<Attendance>> getAttendanceById(@RequestParam(name = "id") Long id)
+    public ResponseEntity<GeneralResponse<Attendance,Object>> getAttendanceById(@RequestParam(name = "id") Long id)
     {
-        GeneralResponse<Attendance> result;
+        GeneralResponse<Attendance,Object> result;
         try {
             if(id==null)
                 throw new Exception("record can't be null");
@@ -172,18 +204,20 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, "Attendance Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Attendance Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else {
-                result = new GeneralResponse<>(list, "Attendance Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Attendance Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
+            logService.saveLog(result,request,debugAll);
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -191,9 +225,9 @@ public class AttendanceController extends ControllerConfig {
 
     //filter api
     @PostMapping(value="/attendance/get/filter")
-    public ResponseEntity<GeneralResponse<List<EmployeeAttendanceResponse>>> getEmployeeAttendanceByFilter(@RequestBody FilterAttendance filterAttendance)
+    public ResponseEntity<GeneralResponse<List<EmployeeAttendanceResponse>,Object>> getEmployeeAttendanceByFilter(@RequestBody FilterAttendance filterAttendance)
     {
-        GeneralResponse<List<EmployeeAttendanceResponse>> result;
+        GeneralResponse<List<EmployeeAttendanceResponse>,Object> result;
         try {
             if(filterAttendance==null)
                 throw new Exception("record can't be null");
@@ -204,18 +238,20 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list.isEmpty())
             {
-                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, " Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
 
             }
             else {
-                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED);
+                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
             }
 
+            logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }

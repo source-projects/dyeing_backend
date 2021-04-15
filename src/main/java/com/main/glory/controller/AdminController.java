@@ -12,12 +12,14 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.servicesImpl.AdminServciceImpl;
 import com.main.glory.servicesImpl.JetServiceImpl;
+import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.swagger.schema.ApiModelProperties;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -31,365 +33,436 @@ public class AdminController extends ControllerConfig {
     @Autowired
     AdminServciceImpl adminServcice;
 
+    //@Value("${spring.application.debugAll}")
+    Boolean debugAll=true;
+
+    @Autowired
+    HttpServletRequest request;
+
+    @Autowired
+    LogServiceImpl logService;
 
 
 
     @PostMapping(value="/admin/jet/addJet")
-    public GeneralResponse<Boolean> saveJet(@RequestBody AddJet jetMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveJet(@RequestBody AddJet jetMast) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
         if(jetMast==null)
         {
-            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
 
         boolean flag;
         try {
 
             jetService.saveJet(jetMast);
-            return new GeneralResponse<Boolean>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,jetMast);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,jetMast);
+            logService.saveLog(result,request,true);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping(value="/admin/quality/add/qualityName/")
-    public GeneralResponse<Boolean> saveQualityName(@RequestBody QualityName qualityName) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQualityName(@RequestBody QualityName qualityName) throws Exception {
+       GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
-            return new GeneralResponse<Boolean>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveQualityName(qualityName);
-            return new GeneralResponse<Boolean>(null, "Quality Name Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, "Quality Name Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result =new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            logService.saveLog(result,request,true);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping(value="/admin/quality/update/qualityName/")
-    public GeneralResponse<Boolean> updateQualityName(@RequestBody QualityName qualityName) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityName(@RequestBody QualityName qualityName) throws Exception {
+        GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
-            return new GeneralResponse<Boolean>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.updateQualityName(qualityName);
-            return new GeneralResponse<Boolean>(null, "Quality Name Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, "Quality Name Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
 
+            logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            logService.saveLog(result,request,true);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @DeleteMapping(value="/admin/quality/delete/qualityName/{id}")
-    public GeneralResponse<Boolean> deleteQualityName(@PathVariable(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteQualityName(@PathVariable(name = "id") Long id) throws Exception {
+        GeneralResponse<Boolean,Object> result;
         if(id==null)
         {
-            return new GeneralResponse<Boolean>(false, "id info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, "id info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.deleteQualityNameById(id);
-            return new GeneralResponse<Boolean>(null, "Quality name deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, "Quality name deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @PutMapping(value="/admin/jet/updateJet")
-    public GeneralResponse<Boolean> updateJet(@RequestBody AddJet jetMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateJet(@RequestBody AddJet jetMast) throws Exception {
+        GeneralResponse<Boolean,Object> result;
         if(jetMast==null)
         {
-            return new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             jetService.updateJet(jetMast);
-            return new GeneralResponse<Boolean>(null, "Jet updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, "Jet updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,jetMast);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,jetMast);
+            logService.saveLog(result,request,debugAll);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
     @GetMapping(value="/admin/jet/getJetById/{id}")
-    public GeneralResponse<JetMast> getJetMast(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<JetMast,Object>> getJetMast(@PathVariable(name = "id")Long id) throws Exception {
+       GeneralResponse<JetMast,Object> result;
         if(id==null)
         {
-            return new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             JetMast jetMast = jetService.getJetMastById(id);
-            return new GeneralResponse<>(jetMast, "Jet data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(jetMast, "Jet data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @PostMapping(value="/admin/add/company/")
-    public GeneralResponse<Boolean> saveCompany(@RequestBody Company c) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveCompany(@RequestBody Company c) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveCompanyName(c);
-            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,c);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,c);
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value="/admin/get/company/{id}")
-    public GeneralResponse<Company> getCompanyById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Company,Object>> getCompanyById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Company> result;
+        GeneralResponse<Company,Object> result;
         if(id==null)
         {
-            result= new GeneralResponse<>(null, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             Company c  = adminServcice.getCompanyById(id);
-            result= new GeneralResponse<>(c, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(c, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping(value="/admin/update/company/")
-    public GeneralResponse<Boolean> updateCompany(@RequestBody Company company) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateCompany(@RequestBody Company company) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
         if(company==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.updateCompany(company);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,company);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,company);
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    @PutMapping(value="/admin/update/department/")
-    public GeneralResponse<Boolean> updateDepartMent(@RequestBody Department department) throws Exception {
 
-        GeneralResponse<Boolean> result;
+    @PutMapping(value="/admin/update/department/")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDepartMent(@RequestBody Department department) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
         if(department==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.updateDepartment(department);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,department);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,department);
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
 
     @PostMapping(value="/admin/add/department/")
-    public GeneralResponse<Boolean> saveDepartment(@RequestBody Department c) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveDepartment(@RequestBody Department c) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveDepartment(c);
-            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,c);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,c);
+            logService.saveLog(result,request,debugAll);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @DeleteMapping(value="/admin/delete/companyBy/{id}")
-    public GeneralResponse<Boolean> deleteCompany(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteCompany(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result=null;
+        GeneralResponse<Boolean,Object> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             flag = adminServcice.deleteCompanyById(id);
-            if(flag)
-                result= new GeneralResponse<Boolean>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-
+            if(flag) {
+                result = new GeneralResponse<>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                logService.saveLog(result,request,debugAll);
+            }
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @DeleteMapping(value="/admin/delete/department/{id}")
-    public GeneralResponse<Boolean> deleteDepartment(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteDepartment(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result=null;
+        GeneralResponse<Boolean,Object> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             flag = adminServcice.deleteDepartmentById(id);
-            if(flag)
-                result= new GeneralResponse<>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
-
+            if(flag) {
+                result = new GeneralResponse<>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                logService.saveLog(result,request,true);
+            }
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @PostMapping(value="/admin/add/approvedBy/")
-    public GeneralResponse<Boolean> saveApprovedBy(@RequestBody ApprovedBy data) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveApprovedBy(@RequestBody ApprovedBy data) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
         if(data==null)
         {
-            result= new GeneralResponse<Boolean>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveApprovedBy(data);
-            result= new GeneralResponse<Boolean>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,data);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<Boolean>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,data);
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping(value="/admin/get/approvedBy")
-    public GeneralResponse<List<ApprovedBy>> getAllApproved() throws Exception {
+    public ResponseEntity<GeneralResponse<List<ApprovedBy>,Object>> getAllApproved() throws Exception {
 
-        GeneralResponse<List<ApprovedBy>> result;
+        GeneralResponse<List<ApprovedBy>,Object> result;
 
         boolean flag;
         try {
 
             List<ApprovedBy> list = adminServcice.getApprovedByList();
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping(value="/admin/update/approvedBy/")
-    public GeneralResponse<Boolean> updateApproved(@RequestBody ApprovedBy approvedBy) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateApproved(@RequestBody ApprovedBy approvedBy) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
 
             adminServcice.updateApprovedBy(approvedBy);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,approvedBy);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,approvedBy);
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value="/admin/get/approvedBy/{id}")
-    public GeneralResponse<ApprovedBy> getApprovedById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<ApprovedBy,Object>> getApprovedById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<ApprovedBy> result;
+        GeneralResponse<ApprovedBy,Object> result;
 
         boolean flag;
         try {
@@ -398,20 +471,22 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("data can't be null");
 
             ApprovedBy data =adminServcice.getApprovedById(id);
-            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
-        return result;
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/department")
-    public ResponseEntity<GeneralResponse<List<DepartmentResponse>>> getAllDepartment(@RequestHeader Map<String, String> headers) throws Exception {
+    public ResponseEntity<GeneralResponse<List<DepartmentResponse>,Object>> getAllDepartment(@RequestHeader Map<String, String> headers) throws Exception {
 
-        GeneralResponse<List<DepartmentResponse>> result;
+        GeneralResponse<List<DepartmentResponse>,Object> result;
 
         boolean flag;
         try {
@@ -419,34 +494,39 @@ public class AdminController extends ControllerConfig {
 
             List<DepartmentResponse> list = adminServcice.getAllDepartmentListByHeaderId(headers.get("id"));
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
+            logService.saveLog(result,request,true);
         }
+
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value="/admin/get/department/{id}")
-    public ResponseEntity<GeneralResponse<DepartmentResponse>> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<DepartmentResponse,Object>> getDepartmentById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<DepartmentResponse> result;
+        GeneralResponse<DepartmentResponse,Object> result;
 
         boolean flag;
         try {
 
             DepartmentResponse list = adminServcice.getDepartmentById(id);
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
+            logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -469,152 +549,169 @@ public class AdminController extends ControllerConfig {
         return result;
     }*/
     @GetMapping(value="/admin/get/allJet")
-    public ResponseEntity<GeneralResponse<List<AddJet>>> getAllJet() throws Exception {
+    public ResponseEntity<GeneralResponse<List<AddJet>,Object>> getAllJet() throws Exception {
 
-        GeneralResponse<List<AddJet>> result;
+        GeneralResponse<List<AddJet>,Object> result;
 
         boolean flag;
         try {
 
             List<AddJet> list = jetService.getAllJet();
             if(list.isEmpty())
-                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/jet/deleteTable/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> isJetDeletable(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> isJetDeletable(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         try {
 
             Boolean flag = jetService.getJetIsDeletable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/approvedBy/deleteTable/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> isApprovedByDeletable(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> isApprovedByDeletable(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         try {
 
             Boolean flag = adminServcice.getApprovedByDeletable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/department/deleteTable/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> isDepartMentDeletable(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> isDepartMentDeletable(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         try {
 
             Boolean flag = adminServcice.getDepartmentIsDelatable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/company/deletable/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> isCompanyDeletable(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> isCompanyDeletable(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         try {
 
             Boolean flag = adminServcice.getCompanyIsDelatable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping(value="/admin/get/allCompany")
-    public ResponseEntity<GeneralResponse<List<Company>>> getAllCompany() throws Exception {
+    public ResponseEntity<GeneralResponse<List<Company>,Object>> getAllCompany() throws Exception {
 
-        GeneralResponse<List<Company>> result;
+        GeneralResponse<List<Company>,Object> result;
 
         boolean flag;
         try {
 
             List<Company> list = adminServcice.getAllCompany();
             if(list.isEmpty())
-                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
+            logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @DeleteMapping(value="/admin/delete/jet/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> deleteJetById(@PathVariable(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteJetById(@PathVariable(name = "id") Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
 
             Boolean list = jetService.deleteJetMastByJetId(id);
             if(list==false)
-                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -641,29 +738,31 @@ public class AdminController extends ControllerConfig {
     }*/
 
     @DeleteMapping(value="/admin/delete/approved/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> deleteApprovedById(@PathVariable(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteApprovedById(@PathVariable(name = "id") Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
 
             Boolean list = adminServcice.deleteApprovedById(id);
 
-            result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping(value="/admin/add/invoiceSequence/")
-    public ResponseEntity<GeneralResponse<Boolean>> addInvoiceSequence(@RequestBody InvoiceSequence record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addInvoiceSequence(@RequestBody InvoiceSequence record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -674,21 +773,23 @@ public class AdminController extends ControllerConfig {
 
             adminServcice.addInvoiceSequence(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/invoiceSequence/")
-    public ResponseEntity<GeneralResponse<InvoiceSequence>> getInvoiceSequence() throws Exception {
+    public ResponseEntity<GeneralResponse<InvoiceSequence,Object>> getInvoiceSequence() throws Exception {
 
-        GeneralResponse<InvoiceSequence> result=null;
+        GeneralResponse<InvoiceSequence,Object> result=null;
 
         boolean flag;
         try {
@@ -696,41 +797,45 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequence();
             if(invoiceSequence!=null)
-                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping(value="/admin/update/invoiceSequence/")
-    public ResponseEntity<GeneralResponse<Boolean>> updateInvoiceSequence(@RequestBody InvoiceSequence invoiceSequence) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateInvoiceSequence(@RequestBody InvoiceSequence invoiceSequence) throws Exception {
 
-        GeneralResponse<Boolean> result=null;
+        GeneralResponse<Boolean,Object> result=null;
 
         boolean flag;
         try {
 
 
             adminServcice.updateInvoiceSequence(invoiceSequence);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,invoiceSequence);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,invoiceSequence);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PutMapping(value="/admin/get/invoiceSequence/{id}")
-    public ResponseEntity<GeneralResponse<InvoiceSequence>> getInvoiceSequenceById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<InvoiceSequence,Object>> getInvoiceSequenceById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<InvoiceSequence> result=null;
+        GeneralResponse<InvoiceSequence,Object> result=null;
 
         boolean flag;
         try {
@@ -739,23 +844,26 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
             if(invoiceSequence!=null)
-                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping(value="/admin/add/batchSequence/")
-    public ResponseEntity<GeneralResponse<Boolean>> addBatchSequence(@RequestBody BatchSequence record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addBatchSequence(@RequestBody BatchSequence record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -766,22 +874,24 @@ public class AdminController extends ControllerConfig {
 
             adminServcice.addBatchSequence(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
 
+            logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @PutMapping(value="/admin/update/batchSequence/")
-    public ResponseEntity<GeneralResponse<BatchSequence>> updateBatchSequence(@RequestBody BatchSequence record) throws Exception {
+    public ResponseEntity<GeneralResponse<BatchSequence,Object>> updateBatchSequence(@RequestBody BatchSequence record) throws Exception {
 
-        GeneralResponse<BatchSequence> result;
+        GeneralResponse<BatchSequence,Object> result;
 
         boolean flag;
         try {
@@ -792,41 +902,45 @@ public class AdminController extends ControllerConfig {
 
             BatchSequence id = adminServcice.updateBatchSequence(record);
 
-            result= new GeneralResponse<>(id, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(id, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/batchSequence/")
-    public ResponseEntity<GeneralResponse<BatchSequence>> getBatchSequence() throws Exception {
+    public ResponseEntity<GeneralResponse<BatchSequence,Object>> getBatchSequence() throws Exception {
 
-        GeneralResponse<BatchSequence> result;
+        GeneralResponse<BatchSequence,Object> result;
 
         boolean flag;
         try {
 
             BatchSequence batchSequence = adminServcice.getBatchSequence();
-            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
+            logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/batchSequence/{id}")
-    public ResponseEntity<GeneralResponse<BatchSequence>> getBatchSequenceById(@PathVariable(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<BatchSequence,Object>> getBatchSequenceById(@PathVariable(name = "id")Long id) throws Exception {
 
-        GeneralResponse<BatchSequence> result;
+        GeneralResponse<BatchSequence,Object> result;
 
         boolean flag;
         try {
@@ -834,20 +948,22 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("null id passed");
 
             BatchSequence batchSequence = adminServcice.getBatchSequenceById(id);
-            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping(value="/admin/add/receiver")
-    public ResponseEntity<GeneralResponse<Boolean>> addReceiver(@RequestBody ReceiverBy record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addReceiver(@RequestBody ReceiverBy record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -855,21 +971,23 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("null record passed");
 
             adminServcice.addReceiver(record);
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PutMapping(value="/admin/update/receiver")
-    public ResponseEntity<GeneralResponse<Boolean>> updateReceiver(@RequestBody ReceiverBy record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateReceiver(@RequestBody ReceiverBy record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -877,20 +995,22 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("null record passed");
 
             adminServcice.updateReceiver(record);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping(value="/admin/get/receiver")
-    public ResponseEntity<GeneralResponse<List<ReceiverBy>>> getAllReceiver() throws Exception {
+    public ResponseEntity<GeneralResponse<List<ReceiverBy>,Object>> getAllReceiver() throws Exception {
 
-        GeneralResponse<List<ReceiverBy>> result;
+        GeneralResponse<List<ReceiverBy>,Object> result;
 
         boolean flag;
         try {
@@ -898,24 +1018,28 @@ public class AdminController extends ControllerConfig {
             List<ReceiverBy> list = adminServcice.getAllReceiver();
             if(list.isEmpty())
             {
-                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
             }
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/receiver/{id}")
-    public ResponseEntity<GeneralResponse<ReceiverBy>> getReceiverById(@PathVariable(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<ReceiverBy,Object>> getReceiverById(@PathVariable(name = "id") Long id) throws Exception {
 
-        GeneralResponse<ReceiverBy> result;
+        GeneralResponse<ReceiverBy,Object> result;
 
         boolean flag;
         try {
@@ -925,23 +1049,25 @@ public class AdminController extends ControllerConfig {
             ReceiverBy list = adminServcice.getReceiverById(id);
             if(list==null)
             {
-                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @DeleteMapping(value="/admin/delete/receiver/{id}")
-    public ResponseEntity<GeneralResponse<Boolean>> deleteReceiverById(@PathVariable(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteReceiverById(@PathVariable(name = "id") Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -949,21 +1075,23 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("null record passed");
 
             adminServcice.deleteReceiverById(id);
-            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @PostMapping(value="/admin/add/reportType")
-    public ResponseEntity<GeneralResponse<Boolean>> addReportType(@RequestBody ReportType record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addReportType(@RequestBody ReportType record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -974,21 +1102,23 @@ public class AdminController extends ControllerConfig {
 
             adminServcice.addReportType(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/reportType")
-    public ResponseEntity<GeneralResponse<List<ReportType>>> getAllReportType() throws Exception {
+    public ResponseEntity<GeneralResponse<List<ReportType>,Object>> getAllReportType() throws Exception {
 
-        GeneralResponse<List<ReportType>> result;
+        GeneralResponse<List<ReportType>,Object> result;
 
         boolean flag;
         try {
@@ -998,12 +1128,13 @@ public class AdminController extends ControllerConfig {
 
             if(reportTypeList.isEmpty())
             {
-                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
+            logService.saveLog(result,request,debugAll);
 
 
 
@@ -1011,15 +1142,16 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/get/reportTypeBy")
-    public ResponseEntity<GeneralResponse<ReportType>> getReportTypeById(@RequestParam(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<ReportType,Object>> getReportTypeById(@RequestParam(name = "id")Long id) throws Exception {
 
-        GeneralResponse<ReportType> result;
+        GeneralResponse<ReportType,Object> result;
 
         boolean flag;
         try {
@@ -1032,28 +1164,30 @@ public class AdminController extends ControllerConfig {
 
             if(reportTypeList==null)
             {
-                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
+            logService.saveLog(result,request,debugAll);
 
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping(value="/admin/update/reportType")
-    public ResponseEntity<GeneralResponse<Boolean>> getReportTypeById(@RequestBody ReportType record) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> getReportTypeById(@RequestBody ReportType record) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -1065,28 +1199,30 @@ public class AdminController extends ControllerConfig {
 
             if(flag==false)
             {
-                result= new GeneralResponse<>(false, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(false, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
+            logService.saveLog(result,request,debugAll);
 
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @DeleteMapping(value="/admin/delete/reportTypeBy")
-    public ResponseEntity<GeneralResponse<Boolean>> deleteReportTypeById(@RequestParam(name = "id")Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteReportTypeById(@RequestParam(name = "id")Long id) throws Exception {
 
-        GeneralResponse<Boolean> result;
+        GeneralResponse<Boolean,Object> result;
 
         boolean flag;
         try {
@@ -1095,7 +1231,8 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("null record passed");
 
             adminServcice.deleteReportTypeById(id);
-            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
 
 
 
@@ -1104,7 +1241,8 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
