@@ -19,7 +19,7 @@ public class WaterJetController extends ControllerConfig {
 
     @Autowired
     WaterJetServiceImpl waterJetService;
-
+/*
     @PostMapping("/waterJet")
     public ResponseEntity<GeneralResponse<Boolean>> saveWaterJet(@RequestBody WaterJet waterJetData) throws Exception{
 
@@ -96,5 +96,5 @@ public class WaterJetController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
-    }
+    }*/
 }

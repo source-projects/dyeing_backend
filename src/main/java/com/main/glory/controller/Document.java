@@ -19,7 +19,7 @@ public class Document extends ControllerConfig {
     @Autowired
     DocumentImpl documentService;
 
-    @GetMapping("/party/")
+    /*@GetMapping("/party/")
     public ResponseEntity<GeneralResponse<Boolean>> GetBatchByMaster(@RequestBody GetDocumentModel documentModel){
         GeneralResponse<Boolean> result;
         try{
@@ -33,7 +33,7 @@ public class Document extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
-    }
+    }*/
 
 
 }

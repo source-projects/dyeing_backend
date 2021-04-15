@@ -255,16 +255,22 @@ public class TaskServiceImpl {
         for(TaskDetail e:taskDetailList)
         {
             TaskDetail taskDetail = new TaskDetail(e);
+
             TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
+
             System.out.println("user:"+e.getAssignUserId());
+
             UserData userData = userService.getUserById(e.getAssignUserId());
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());
             ReportType reportType =reportTypeDao.getReportTypeById(taskMast.getReportId());
+
+            taskDetail.setCreatedBy(taskMast.getCreatedBy());
             taskDetail.setTaskName(taskMast.getTaskName());
             taskDetail.setCompletedDays(taskMast.getCompletedDays());
             taskDetail.setFirstName(userData.getFirstName());
             taskDetail.setLastName(userData.getLastName());
             taskDetail.setDepartmentName(department.getName());
+
             if(reportType!=null)
                 taskDetail.setFormName(reportType.getFormName());
 

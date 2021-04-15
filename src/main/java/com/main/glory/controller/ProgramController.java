@@ -24,7 +24,7 @@ public class ProgramController extends ControllerConfig {
     @Autowired
     private ProgramServiceImpl programServiceImpl;
 
-    @PostMapping(value="/program")
+   /* @PostMapping(value="/program")
     public GeneralResponse<Boolean> saveProgram(@RequestBody AddProgramWithProgramRecord program) throws Exception {
         if(program==null)
         {
@@ -186,7 +186,7 @@ public class ProgramController extends ControllerConfig {
        }
         return null;
     }
-
+*/
 
 
 }

@@ -6,10 +6,13 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchGrDetail;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.servicesImpl.BatchServiceImpl;
+import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -17,10 +20,19 @@ import java.util.List;
 public class BatchController extends ControllerConfig {
 
     @Autowired
+    LogServiceImpl logService;
+
+    //@Value("${spring.application.debugAll}")
+    Boolean debugAll=true;
+
+    @Autowired
+    HttpServletRequest request;
+
+    @Autowired
     private BatchServiceImpl batchService;
 
-    @PostMapping("/batch")
-    public GeneralResponse<Boolean> createBatch(@RequestBody BatchMast batchMast) throws Exception{
+   /* @PostMapping("/batch")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> createBatch(@RequestBody BatchMast batchMast) throws Exception{
         try{
             batchService.createBatch(batchMast);
             return new GeneralResponse<>(true,"batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK);
@@ -79,5 +91,5 @@ public class BatchController extends ControllerConfig {
         }
 
     }
-
+*/
 }

@@ -22,7 +22,7 @@ public class TestingController extends ControllerConfig {
     @Autowired
     TestingDao testingDao;
 
-    @PutMapping("/testing/{records}")
+    /*@PutMapping("/testing/{records}")
     public GeneralResponse<Boolean> createRecord(@PathVariable(name = "records") Long records) throws Exception{
         GeneralResponse<Boolean> result;
         for(int i=0;i<records;i++)
@@ -68,13 +68,13 @@ public class TestingController extends ControllerConfig {
 
     }
 
-    /*@GetMapping("/testing/")
+    *//*@GetMapping("/testing/")
     public GeneralResponse<Boolean> callThePdf() throws Exception{
         GeneralResponse<Boolean> result;
 
         result= new GeneralResponse<>(true, "done", true, System.currentTimeMillis(), HttpStatus.OK);
 
         return result;
-    }*/
-
+    }*//*
+*/
 }
