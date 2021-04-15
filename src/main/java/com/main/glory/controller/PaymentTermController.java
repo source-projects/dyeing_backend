@@ -9,6 +9,7 @@ import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
+import com.main.glory.model.paymentTerm.request.GetAllBank;
 import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.PaymentTermImpl;
@@ -143,6 +144,30 @@ public class PaymentTermController extends ControllerConfig {
                 throw new Exception("id can't be null");
 
             List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    //get the bank list distinct
+    @GetMapping(value="/paymentTerm/getAllBank")
+    public ResponseEntity<GeneralResponse<List<GetAllBank>,Object>> getAllBankName()
+    {
+        GeneralResponse<List<GetAllBank>,Object> result;
+        try {
+
+
+            List<GetAllBank> list = paymentTermService.getAllBankName();
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else

@@ -18,5 +18,7 @@ public class CreateDispatch {
     Double discount;
     Double cgst;
     Double sgst;
+    Double taxAmt;
+    Double netAmt;
     List<BatchAndStockId> batchAndStockIdList;
 }

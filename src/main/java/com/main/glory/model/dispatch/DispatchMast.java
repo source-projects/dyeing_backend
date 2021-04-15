@@ -1,6 +1,7 @@
 package com.main.glory.model.dispatch;
 
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.dispatch.request.CreateDispatch;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,12 +30,20 @@ public class DispatchMast {
     Long userHeadId;
     Long updatedBy;
     Long partyId;
-    @Column(columnDefinition = "double default 3")
     Double discount;
-    @Column(columnDefinition = "double default 2.5")
     Double cgst;
-    @Column(columnDefinition = "double default 2.5")
     Double sgst;
+    Double taxAmt;
+    Double netAmt;
+
+    public DispatchMast(CreateDispatch dispatchList) {
+        //for storing the tax amoutt
+        this.discount= dispatchList.getDiscount();
+        this.cgst = dispatchList.getCgst();
+        this.sgst =dispatchList.getSgst();
+        this.taxAmt = dispatchList.getTaxAmt();
+        this.netAmt = dispatchList.getNetAmt();
+    }
 
 
     @PrePersist
