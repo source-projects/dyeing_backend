@@ -81,23 +81,8 @@ public class EmployeeServiceImpl {
 
     }
 
-    public List<EmployeeMast> getEmployeeById(String id) {
-        //check that the id is id or name
-        List<EmployeeMast> employeeMastList=new ArrayList<>();
-        try
-        {
-            EmployeeMast employeeMast = employeeMastDao.getEmployeeById(Long.parseLong(id));
-            if(employeeMast!=null)
-            employeeMastList.add(employeeMast);
-
-            return employeeMastList;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            employeeMastList = employeeMastDao.getEmployeeByName(id);
-            return employeeMastList;
-        }
+    public EmployeeMast getEmployeeById(Long id) {
+        return employeeMastDao.getEmployeeById(id);
     }
 
     public List<EmployeeMast> getAllEmployee() {
@@ -124,5 +109,24 @@ public class EmployeeServiceImpl {
 
     public EmployeeMast getEmployeeByEmpId(Long id) {
         return employeeMastDao.getEmployeeByEmpId(id);
+    }
+
+    public List<EmployeeMast> getEmployeeByEmpIdOrName(String id) {
+        //check that the id is id or name
+        List<EmployeeMast> employeeMastList=new ArrayList<>();
+        try
+        {
+            EmployeeMast employeeMast = employeeMastDao.getEmployeeByEmpId(Long.parseLong(id));
+            if(employeeMast!=null)
+                employeeMastList.add(employeeMast);
+
+            return employeeMastList;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            employeeMastList = employeeMastDao.getEmployeeByName(id);
+            return employeeMastList;
+        }
     }
 }

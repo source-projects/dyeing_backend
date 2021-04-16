@@ -110,18 +110,18 @@ public class EmployeeController extends ControllerConfig {
     }
 
     @GetMapping(value = "/employee")
-    public ResponseEntity<GeneralResponse<List<EmployeeMast>,Object>> getEmployeeById(@RequestParam(name = "id") String id) throws Exception {
+    public ResponseEntity<GeneralResponse<EmployeeMast,Object>> getEmployeeById(@RequestParam(name = "id") Long id) throws Exception {
 
-        GeneralResponse<List<EmployeeMast>,Object> result;
+        GeneralResponse<EmployeeMast,Object> result;
         boolean flag;
         try {
             if(id == null)
                 throw new Exception("null data passed");
 
 
-            List<EmployeeMast> employeeMast= employeeService.getEmployeeById(id);
+            EmployeeMast employeeMast= employeeService.getEmployeeById(id);
 
-            if(!employeeMast.isEmpty())
+            if(employeeMast!=null)
             result= new GeneralResponse<>(employeeMast, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
             result= new GeneralResponse<>(null, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -192,21 +192,21 @@ public class EmployeeController extends ControllerConfig {
 
 
     @GetMapping(value = "/employee/exist")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> getEmployeeExistById(@RequestParam(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<List<EmployeeMast>,Object>> getEmployeeExistById(@RequestParam(name = "id") String id) throws Exception {
 
-        GeneralResponse<Boolean,Object> result;
+        GeneralResponse<List<EmployeeMast>,Object> result;
         boolean flag;
         try {
             if(id == null)
                 throw new Exception("null data passed");
 
 
-            EmployeeMast employeeMast= employeeService.getEmployeeByEmpId(id);
+            List<EmployeeMast> employeeMast= employeeService.getEmployeeByEmpIdOrName(id);
 
-            if(employeeMast!=null)
-                result= new GeneralResponse<>(true, " Data found successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            if(!employeeMast.isEmpty())
+                result= new GeneralResponse<>(employeeMast, " Data found successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(false, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
