@@ -116,9 +116,7 @@ public class EmployeeServiceImpl {
         List<EmployeeMast> employeeMastList=new ArrayList<>();
         try
         {
-            EmployeeMast employeeMast = employeeMastDao.getEmployeeByEmpId(Long.parseLong(id));
-            if(employeeMast!=null)
-                employeeMastList.add(employeeMast);
+            employeeMastList = employeeMastDao.getEmployeeByLikeEmpId(Long.parseLong(id));
 
             return employeeMastList;
         }
