@@ -110,7 +110,7 @@ public class EmployeeController extends ControllerConfig {
     }
 
     @GetMapping(value = "/employee")
-    public ResponseEntity<GeneralResponse<EmployeeMast,Object>> getEmployeeById(@RequestParam(name = "empId") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<EmployeeMast,Object>> getEmployeeById(@RequestParam(name = "id") Long id) throws Exception {
 
         GeneralResponse<EmployeeMast,Object> result;
         boolean flag;
@@ -119,7 +119,7 @@ public class EmployeeController extends ControllerConfig {
                 throw new Exception("null data passed");
 
 
-            EmployeeMast employeeMast= employeeService.getEmployeeByEmpId(id);
+            EmployeeMast employeeMast= employeeService.getEmployeeById(id);
 
             if(employeeMast!=null)
             result= new GeneralResponse<>(employeeMast, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
