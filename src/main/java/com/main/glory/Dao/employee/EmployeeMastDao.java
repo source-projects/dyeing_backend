@@ -33,6 +33,6 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
     @Query("select x from EmployeeMast x where x.name LIKE :id%")
     List<EmployeeMast> getEmployeeByName(String id);
 
-    @Query(value = "select * from employee_mast as x where x.emp_id LIKE ':empId%' ",nativeQuery = true)
-    List<EmployeeMast> getEmployeeByLikeEmpId(@RequestParam("empId") Long empId);
+    @Query(value = "select * from employee_mast as x where x.emp_id LIKE :empId% ",nativeQuery = true)
+    List<EmployeeMast> getEmployeeByLikeEmpId(@RequestParam("empId") String empId);
 }
