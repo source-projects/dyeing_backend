@@ -12,6 +12,7 @@ import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
 import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.AdvancePayment;
+import com.main.glory.model.paymentTerm.GetAllPayment;
 import com.main.glory.model.paymentTerm.PaymentData;
 import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.*;
@@ -204,6 +205,27 @@ public class PaymentTermImpl {
     }
 
     public List<GetAllBank> getAllBankName() {
-        return null;
+
+        List<String> getAllBanks =  paymentDataDao.getAllBankOfPaymentData();
+        List<GetAllBank> getAllBankList = getAllBanksResponse(getAllBanks);
+        return getAllBankList;
+    }
+
+    private List<GetAllBank> getAllBanksResponse(List<String> getAllBanks) {
+        List<GetAllBank> getAllBankList = new ArrayList<>();
+
+        List<String> getAllBankName=new ArrayList<>();
+        getAllBanks.forEach(e->{
+            if(!getAllBankName.contains(e))
+            {
+                getAllBankName.add(e);
+                getAllBankList.add(new GetAllBank(e));
+            }
+        });
+        return getAllBankList;
+    }
+
+    public List<GetAllPayment> getAllPaymentWithPartyName() {
+        return paymentMastDao.getAllPaymentWithPartyName();
     }
 }

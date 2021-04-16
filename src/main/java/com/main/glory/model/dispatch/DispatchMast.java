@@ -26,7 +26,7 @@ public class DispatchMast {
     Long createdBy;
     String prefix;
     Long postfix;
-    Long paymentBunchId;
+    Long paymentBunchId;//payment mast id
     Long userHeadId;
     Long updatedBy;
     Long partyId;
