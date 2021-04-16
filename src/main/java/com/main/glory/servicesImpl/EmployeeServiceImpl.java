@@ -116,6 +116,7 @@ public class EmployeeServiceImpl {
         List<EmployeeMast> employeeMastList=new ArrayList<>();
         try
         {
+            Long numberConvertable =Long.parseLong(id);
             employeeMastList = employeeMastDao.getEmployeeByLikeEmpId(id);
 
             return employeeMastList;
