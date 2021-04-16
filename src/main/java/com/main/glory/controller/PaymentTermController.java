@@ -183,6 +183,29 @@ public class PaymentTermController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    //get the bank list distinct
+    @GetMapping(value="/paymentTerm/advancePayment/getAllBank")
+    public ResponseEntity<GeneralResponse<List<GetAllBank>,Object>> getAllAdvancePaymentBank()
+    {
+        GeneralResponse<List<GetAllBank>,Object> result;
+        try {
+
+
+            List<GetAllBank> list = paymentTermService.getAllAdvanceBankName();
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     //get payment mast list by party
     @GetMapping(value="/paymentTerm/getPaymentBunchListByPartyId/{partyId}")
     public ResponseEntity<GeneralResponse<List<PaymentMast>,Object>> getPaymentMastByPartyId(@PathVariable(name = "partyId") Long partyId)

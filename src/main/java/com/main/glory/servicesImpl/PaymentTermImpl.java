@@ -205,9 +205,11 @@ public class PaymentTermImpl {
     }
 
     public List<GetAllBank> getAllBankName() {
-
         List<String> getAllBanks =  paymentDataDao.getAllBankOfPaymentData();
-        List<GetAllBank> getAllBankList = getAllBanksResponse(getAllBanks);
+        List<GetAllBank> getAllBankList = new ArrayList<>();
+        getAllBanks.forEach(e->{
+            getAllBankList.add(new GetAllBank(e));
+        });
         return getAllBankList;
     }
 
@@ -227,5 +229,16 @@ public class PaymentTermImpl {
 
     public List<GetAllPayment> getAllPaymentWithPartyName() {
         return paymentMastDao.getAllPaymentWithPartyName();
+    }
+
+    public List<GetAllBank> getAllAdvanceBankName() {
+
+        List<String> getAllBanks =  advancePaymentDao.getAllBankOfAdvancePaymentData();
+        List<GetAllBank> getAllBankList = new ArrayList<>();
+        getAllBanks.forEach(e->{
+            getAllBankList.add(new GetAllBank(e));
+        });
+
+        return getAllBankList;
     }
 }

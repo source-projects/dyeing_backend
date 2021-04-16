@@ -23,6 +23,7 @@ public class GetAllDispatch {
     Date date;
     String partyName;
     Long partyId;
+    Double netAmt;
     List<BatchWithTotalMTRandFinishMTR> batchList;
 
     public GetAllDispatch(DispatchData dispatchData) {
