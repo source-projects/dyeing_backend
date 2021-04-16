@@ -47,7 +47,6 @@ public class PaymentMast {
     private List<PaymentData> paymentData;
 
     public PaymentMast(AddPaymentMast paymentMast) {
-
         this.partyId=paymentMast.getPartyId();
         this.totalBill=paymentMast.getTotalBill();
         this.GstAmt=paymentMast.getGstAmt();
@@ -65,6 +64,10 @@ public class PaymentMast {
     }
 
     public PaymentMast(PaymentMast paymentMast) {
+        this.id=paymentMast.getId();
+        this.diffDetail = paymentMast.getDiffDetail();
+        this.rdDetail = paymentMast.getRdDetail();
+        this.createdDate = paymentMast.getCreatedDate();
         this.partyId=paymentMast.getPartyId();
         this.totalBill=paymentMast.getTotalBill();
         this.GstAmt=paymentMast.getGstAmt();
