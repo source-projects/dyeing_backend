@@ -43,7 +43,7 @@ public interface TaskDataDao extends JpaRepository<TaskData,Long> {
     @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.approved=:approvedFlag AND t.taskStatus='Completed'")
     List<TaskDetail> getTaskDetailByApproved(Boolean approvedFlag);
 
-    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.approved=:approvedFlag AND t.assignUserId=:id AND t.taskStatus='Completed'")
+    @Query("select new com.main.glory.model.task.request.TaskDetail(t,(select tt from TaskMast tt where tt.id=t.controlId) as taskMast) from TaskData t where t.approved=:approvedFlag AND (t.assignUserId=:id OR t.controlId IN(select tx.id from TaskMast tx where tx.createdBy=:id)) AND t.taskStatus='Completed' ")
     List<TaskDetail> getTaskDetailByApprovedAndAssignId(Long id, Boolean approvedFlag);
 
     @Modifying

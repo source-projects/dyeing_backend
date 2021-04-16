@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.paymentTerm.AdvancePayment;
+import com.main.glory.model.paymentTerm.GetAllPayment;
 import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
@@ -227,6 +228,29 @@ public class PaymentTermController extends ControllerConfig {
         {
             e.printStackTrace();
            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
+    }
+
+
+    @GetMapping(value="/paymentTerm/getAllPayment")
+    public ResponseEntity<GeneralResponse<List<GetAllPayment>,Object>> getAllPayment()
+    {
+        GeneralResponse<List<GetAllPayment>,Object> result;
+        try {
+
+            List<GetAllPayment> list = paymentTermService.getAllPaymentWithPartyName();
+            if(list!=null)
+                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
