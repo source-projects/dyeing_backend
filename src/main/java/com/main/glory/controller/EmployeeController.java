@@ -110,21 +110,21 @@ public class EmployeeController extends ControllerConfig {
     }
 
     @GetMapping(value = "/employee")
-    public ResponseEntity<GeneralResponse<EmployeeMast,Object>> getEmployeeById(@RequestParam(name = "id") Long id) throws Exception {
+    public ResponseEntity<GeneralResponse<List<EmployeeMast>,Object>> getEmployeeById(@RequestParam(name = "id") String id) throws Exception {
 
-        GeneralResponse<EmployeeMast,Object> result;
+        GeneralResponse<List<EmployeeMast>,Object> result;
         boolean flag;
         try {
             if(id == null)
                 throw new Exception("null data passed");
 
 
-            EmployeeMast employeeMast= employeeService.getEmployeeById(id);
+            List<EmployeeMast> employeeMast= employeeService.getEmployeeById(id);
 
-            if(employeeMast!=null)
+            if(!employeeMast.isEmpty())
             result= new GeneralResponse<>(employeeMast, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-            result= new GeneralResponse<>(employeeMast, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 

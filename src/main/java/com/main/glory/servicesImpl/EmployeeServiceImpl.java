@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("employeeServiceImpl")
@@ -80,8 +81,23 @@ public class EmployeeServiceImpl {
 
     }
 
-    public EmployeeMast getEmployeeById(Long id) {
-        return employeeMastDao.getEmployeeById(id);
+    public List<EmployeeMast> getEmployeeById(String id) {
+        //check that the id is id or name
+        List<EmployeeMast> employeeMastList=new ArrayList<>();
+        try
+        {
+            EmployeeMast employeeMast = employeeMastDao.getEmployeeById(Long.parseLong(id));
+            if(employeeMast!=null)
+            employeeMastList.add(employeeMast);
+
+            return employeeMastList;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            employeeMastList = employeeMastDao.getEmployeeByName(id);
+            return employeeMastList;
+        }
     }
 
     public List<EmployeeMast> getAllEmployee() {

@@ -12,6 +12,6 @@ import java.util.List;
 @EnableJpaRepositories
 public interface PaymentDataDao extends JpaRepository<PaymentData,Long> {
 
-    @Query("select x.bank from PaymentData x")
+    @Query("select DISTINCT x.bank from PaymentData x")
     List<String> getAllBankOfPaymentData();
 }

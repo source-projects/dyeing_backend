@@ -10,4 +10,7 @@ public interface AdvancePaymentDao extends JpaRepository<AdvancePayment,Long> {
 
     @Query("select p from AdvancePayment p where p.partyId=:partyId AND (p.paymentBunchId IS NULL OR p.paymentBunchId=0)")
     List<AdvancePayment> findAdvancePaymentByPartyId(Long partyId);
+
+    @Query("select DISTINCT x.bank from AdvancePayment x")
+    List<String> getAllBankOfAdvancePaymentData();
 }
