@@ -472,10 +472,15 @@ public class DispatchMastImpl {
                 getAllDispatch.setPartyName(party.getPartyName());
                 getAllDispatch.setBatchList(batchList);
                 getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
-                batchList.forEach(e->{
-                    getAllDispatch.setTotalMtr(e.getMTR());
-                    getAllDispatch.setFinishMtr(e.getTotalFinishMtr());
-                });
+                Double mtr=0.0;
+                Double finish=0.0;
+                for(BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR:batchList)
+                {
+                    mtr += batchWithTotalMTRandFinishMTR.getMTR();
+                    finish+=batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
+                }
+                getAllDispatch.setTotalMtr(mtr);
+                getAllDispatch.setFinishMtr(finish);
 
                 dispatchDataList.add(getAllDispatch);
             }
