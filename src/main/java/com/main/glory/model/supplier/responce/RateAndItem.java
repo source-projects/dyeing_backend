@@ -20,6 +20,6 @@ public class RateAndItem {
     {
         this.id=other.getId();
         this.itemName=other.getItemName();
-        this.rate=other.getRate();
+        this.rate=other.getGstRate();
     }
 }

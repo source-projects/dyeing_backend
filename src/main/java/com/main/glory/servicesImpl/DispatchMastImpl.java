@@ -472,6 +472,11 @@ public class DispatchMastImpl {
                 getAllDispatch.setPartyName(party.getPartyName());
                 getAllDispatch.setBatchList(batchList);
                 getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
+                batchList.forEach(e->{
+                    getAllDispatch.setTotalMtr(e.getMTR());
+                    getAllDispatch.setFinishMtr(e.getTotalFinishMtr());
+                });
+
                 dispatchDataList.add(getAllDispatch);
             }
 
