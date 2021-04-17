@@ -329,6 +329,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("delete from BatchData x where x.isExtra=:b AND x.id=:key")
     void deleteByIdWithExtraFlag(Long key, boolean b);
 
+    @Query("select SUM(x.wt) from BatchData x where x.mergeBatchId=:batchId AND x.isProductionPlanned=true")
+    Double getTotalWtByMergeBatchIdWithProduction(String batchId);
+
+    @Query("select SUM(x.wt) from BatchData x where x.batchId=:batchId AND x.mergeBatchId IS NULL AND x.isProductionPlanned=true")
+    Double getTotalWtByBatchIdWithProduction(String batchId);
+
 
 
 /*
