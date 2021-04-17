@@ -13,6 +13,7 @@ import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.spel.ast.OperatorBetween;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class DispatchController extends ControllerConfig {
     @Autowired
     HttpServletRequest request;
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
     @Autowired

@@ -11,6 +11,7 @@ import com.main.glory.model.jet.responce.*;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class JetController extends ControllerConfig {
     @Autowired
     HttpServletRequest request;
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
 

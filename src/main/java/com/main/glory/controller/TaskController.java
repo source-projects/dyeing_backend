@@ -14,6 +14,7 @@ import com.main.glory.model.task.response.TaskResponse;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.TaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.config.Task;
@@ -37,7 +38,7 @@ public class TaskController extends ControllerConfig {
     @Autowired
     HttpServletRequest request;
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
 
@@ -284,13 +285,14 @@ public class TaskController extends ControllerConfig {
                 default:
                     result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
-                    logService.saveLog(result,request,debugAll);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
+        logService.saveLog(result,request,debugAll);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 

@@ -12,6 +12,7 @@ import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
 import com.main.glory.servicesImpl.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +31,7 @@ public class BasicController extends ControllerConfig {
     @Autowired
     LogServiceImpl logService;
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
     @Autowired
