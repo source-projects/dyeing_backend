@@ -796,12 +796,14 @@ public class JetServiceImpl {
                         if(colorTone!=null) {
                             DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
                             getJetData = new GetJetData(data,jetData,colorTone,dyeingProcessMast);
+                            getJetData.setBatchId(productionPlan.getBatchId());
                             jetDataList.add(getJetData);
                         }
                     }
                     else
                     {
                         getJetData=new GetJetData(jetData,data);
+                        getJetData.setBatchId(productionPlan.getBatchId());
                         getJetData.setProcessName("directDyeing");
                         jetDataList.add(getJetData);
                     }
