@@ -1786,7 +1786,7 @@ public class StockBatchServiceImpl {
             if(getAllBatch.getBatchId()!=null)
             {
                 DyeingSlipMast dyeingSlipMast=dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
-                GetAllAdditionalDyeingSlip additionalExist =dyeingSlipService.getAdditionalDyeingSlipById(dyeingSlipMast.getId());
+                DyeingSlipData additionalExist =dyeingSlipService.dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
                 if(additionalExist==null)
                 {
                     list.add(getAllBatch);
