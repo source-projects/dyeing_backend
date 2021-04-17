@@ -12,6 +12,7 @@ import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class DyeingSlipController extends ControllerConfig {
     @Autowired
     HttpServletRequest request;
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
     @PutMapping("/dyeingSlip")

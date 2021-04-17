@@ -29,7 +29,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController extends ControllerConfig {
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
 
@@ -192,12 +192,13 @@ public class UserController extends ControllerConfig {
 
                 default:
                     result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-                    logService.saveLog(result,request,debugAll);
+
             }
         }catch(Exception e){
             result = new GeneralResponse<>(null, "Internal Server Error", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
+        logService.saveLog(result,request,debugAll);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 

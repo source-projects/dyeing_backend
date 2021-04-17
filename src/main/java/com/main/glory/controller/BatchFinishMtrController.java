@@ -9,6 +9,7 @@ import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -24,7 +25,7 @@ public class BatchFinishMtrController extends ControllerConfig {
     @Autowired
     LogServiceImpl logService;
 
-    //@Value("${spring.application.debugAll}")
+    @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
     @Autowired

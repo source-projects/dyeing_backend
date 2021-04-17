@@ -8,6 +8,7 @@ import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.ShadeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class ShadeController extends ControllerConfig {
 	@Autowired
 	HttpServletRequest request;
 
-	//@Value("${spring.application.debugAll}")
+	@Value("${spring.application.debugAll}")
 	Boolean debugAll=true;
 
 	@PostMapping("/shade")
@@ -118,13 +119,14 @@ public class ShadeController extends ControllerConfig {
 					break;
 				default:
 					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-					logService.saveLog(result,request,debugAll);
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
+		logService.saveLog(result,request,debugAll);
 		return new ResponseEntity<>(result ,HttpStatus.valueOf(result .getStatusCode()));
 	}
 
