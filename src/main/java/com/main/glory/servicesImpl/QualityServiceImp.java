@@ -496,4 +496,8 @@ public class QualityServiceImp  {
     public List<Quality> getQualityByCreatedByAndUserHeadId(Long id) {
         return qualityDao.getAllQualityWithIdAndUserHeadId(id,id);
     }
+
+    public Quality getQualityByStockId(Long controlId) {
+        return qualityDao.getQualityByStockId(controlId);
+    }
 }

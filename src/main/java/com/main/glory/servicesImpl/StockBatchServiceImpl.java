@@ -14,6 +14,9 @@ import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.admin.BatchSequence;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.model.dyeingSlip.DyeingSlipData;
+import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.party.Party;
@@ -1781,7 +1784,15 @@ public class StockBatchServiceImpl {
             }
 
             if(getAllBatch.getBatchId()!=null)
-                list.add(getAllBatch);
+            {
+                DyeingSlipMast dyeingSlipMast=dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
+                GetAllAdditionalDyeingSlip additionalExist =dyeingSlipService.getAdditionalDyeingSlipById(dyeingSlipMast.getId());
+                if(additionalExist==null)
+                {
+                    list.add(getAllBatch);
+                }
+            }
+
 
 
 

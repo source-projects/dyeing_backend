@@ -7,6 +7,7 @@ import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
+import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.servicesImpl.DyeingSlipServiceImpl;
@@ -171,6 +172,28 @@ public class DyeingSlipController extends ControllerConfig {
                 throw new Exception("null record passed");
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getAdditionalDyeingSlipById(id);
+            if(data!=null)
+                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result = new GeneralResponse<>(data, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    //get addition dyeing slip
+    @GetMapping("/dyeingSlip/getAdditionalDyeingSlipByForPrint")
+    public ResponseEntity<GeneralResponse<BatchResponseWithSlip,Object>> getAdditionalDyeingSlipByForPrint(@RequestParam(name = "id") Long id){
+        GeneralResponse<BatchResponseWithSlip,Object> result;
+        try {
+            if(id ==null)
+                throw new Exception("null record passed");
+
+            BatchResponseWithSlip data = dyeingSlipService.getAdditionalDyeingSlipForPrintById(id);
             if(data!=null)
                 result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
