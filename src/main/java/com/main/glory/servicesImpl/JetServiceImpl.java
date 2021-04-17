@@ -788,13 +788,6 @@ public class JetServiceImpl {
                     ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
                     if(productionPlan==null)
                         continue;
-                    /*Party party = productionPlanService.getPartyDetailByProductionId(jetData.getProductionId());
-                    Quality quality = productionPlanService.getQualityByProductionId(jetData.getProductionId());
-                    QualityName qualityName = productionPlanService.getQualityNameByProductionId(jetData.getProductionId());
-                    //ProductionPlan productionPlan =productionPlanService.getProductionData(jetData.getProductionId());
-                    Double totalWt = batchDao.getTotalWtByBatchId(productionPlan.getBatchId());
-                    Double totalMtr = batchDao.getTotalMtrByBatchId(productionPlan.getBatchId());*/
-
                     GetAllProductionWithShadeData data=productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
                     GetJetData getJetData=null;
                     if(productionPlan.getIsDirect()==false)
