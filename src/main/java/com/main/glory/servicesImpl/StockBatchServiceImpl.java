@@ -130,6 +130,7 @@ public class StockBatchServiceImpl {
                     {
                         max=batchId;
                     }
+                    batchData=new BatchData(batchData);
                     batchDataList.add(batchData);
                 }
 
@@ -1555,7 +1556,6 @@ public class StockBatchServiceImpl {
             //System.out.println(jetData.getStatus());
             if(jetData.getStatus()== JetStatus.success)
             {
-
                 list.add(new GetAllBatchWithProduction(getAllBatch,productionPlan.getId()));
             }
 
