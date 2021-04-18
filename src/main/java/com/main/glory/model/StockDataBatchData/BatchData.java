@@ -58,7 +58,7 @@ public class BatchData {
         this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
         this.isExtra=other.isExtra==null?false:other.getIsExtra();
         this.sequenceId=other.sequenceId==null?0l:other.getSequenceId();
-        this.finishMtr=other.finishMtr;
+        this.finishMtr=other.finishMtr==null?0:other.getFinishMtr();
         this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();
         this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
 
