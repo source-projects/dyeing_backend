@@ -916,15 +916,15 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/admin/get/batchSequence/")
-    public ResponseEntity<GeneralResponse<BatchSequence,Object>> getBatchSequence() throws Exception {
+    @GetMapping(value="/admin/get/batchSequence")
+    public ResponseEntity<GeneralResponse<BatchSequence,Object>> getBatchSequence(@RequestParam(name = "update")Boolean update) throws Exception {
 
         GeneralResponse<BatchSequence,Object> result;
 
         boolean flag;
         try {
 
-            BatchSequence batchSequence = adminServcice.getBatchSequence();
+            BatchSequence batchSequence = adminServcice.getBatchSequence(update);
             result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);

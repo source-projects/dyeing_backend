@@ -31,6 +31,11 @@ public class EmployeeServiceImpl {
     @Autowired
     EmployeeSequenceDao employeeSequenceDao;
 
+    /*
+
+    *We are getting empId from FE always not id
+
+     */
     @Transactional
     public Long addEmployeeRecord(EmployeeMast record) throws Exception {
 
@@ -101,9 +106,16 @@ public class EmployeeServiceImpl {
         employeeMastDao.deleteByEmployeeId(id);
     }
 
-    public Long addEmployeeDataRecord(EmployeeData record) {
+    public Long addEmployeeDataRecord(EmployeeData record) throws Exception {
+        //we are getting empId not id from the FE
+        //check the empId is exist
+        EmployeeMast employeeMastExist = employeeMastDao.getEmployeeByEmpId(record.getControlId());
+        if(employeeMastExist==null)
+            throw new Exception("no record found");
+
+        record.setControlId(employeeMastExist.getId());
         EmployeeData employeeData = employeeDataDao.saveAndFlush(record);
-        return employeeData.getId() ;
+        return employeeData.getId();
     }
 
 
