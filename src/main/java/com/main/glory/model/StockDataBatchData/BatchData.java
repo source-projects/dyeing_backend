@@ -55,7 +55,7 @@ public class BatchData {
         this.mtr=other.mtr;
         this.wt=other.wt;
         this.batchId=other.batchId;
-        this.controlId=other.controlId==null?null:other.getControlId();
+        this.controlId=other.controlId==null?0:other.getControlId();
         this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
         this.isExtra=other.isExtra==null?false:other.getIsExtra();
         this.sequenceId=other.sequenceId==null?0l:other.getSequenceId();
