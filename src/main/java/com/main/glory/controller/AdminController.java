@@ -1368,7 +1368,7 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/admin/delete/authorize")
+    @DeleteMapping(value="/admin/delete/authorize")
     public ResponseEntity<GeneralResponse<Boolean,Object>> deleteAuthorizeById(@RequestParam(name = "id")Long id) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
