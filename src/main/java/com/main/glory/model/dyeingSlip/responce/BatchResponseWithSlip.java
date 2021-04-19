@@ -28,9 +28,11 @@ public class BatchResponseWithSlip {
         this.dyeingSlipData = data;
         this.totalWt = totalWt;
         this.qualityId=qualityId;
-        this.colorName=shadeMast.getColorName()==null?null:shadeMast.getColorName() ;
-        this.colorTone=shadeMast.getColorTone()==null?null:shadeMast.getColorTone() ;
-        this.partyShadeNo=shadeMast.getPartyShadeNo()==null?null:shadeMast.getPartyShadeNo() ;
+        if(shadeMast!=null) {
+            this.colorName = shadeMast.getColorName() == null ? "" : shadeMast.getColorName();
+            this.colorTone = shadeMast.getColorTone() == null ? "" : shadeMast.getColorTone();
+            this.partyShadeNo = shadeMast.getPartyShadeNo() == null ? "" : shadeMast.getPartyShadeNo();
+        }
         this.batchCount = batchCount;
     }
 }

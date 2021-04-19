@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,16 +31,16 @@ public class BatchData {
     Double wt;
     String batchId;
     Long controlId;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isProductionPlanned;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isExtra;
-    @Column(columnDefinition = "integer default 0")
+    @ColumnDefault("0")
     Long sequenceId;
     Double finishMtr;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isBillGenrated;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isFinishMtrSave;
     String mergeBatchId;
 

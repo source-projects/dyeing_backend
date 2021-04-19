@@ -120,19 +120,18 @@ public class StockBatchServiceImpl {
             }
             else
             {
-
                 for(BatchData batchData:stockMast.getBatchData())
                 {
                     if(batchData.getBatchId()==null)
                         throw new Exception("batch id can't be null");
-                    batchId=Long.parseLong(batchData.getBatchId());
-                    if(batchId > max)
-                    {
-                        max=batchId;
-                    }
+
                     batchData=new BatchData(batchData);
                     batchDataList.add(batchData);
                 }
+
+                //stockMast.setBatchData(batchDataList);
+
+
 
                 //for data entry user
                 UserData userData = userDao.getUserById(Long.parseLong(id));
@@ -155,9 +154,13 @@ public class StockBatchServiceImpl {
 
                 //add record
                 StockMast x =new StockMast(stockMast);
-                x.setBatchData(batchDataList);
-                StockMast create  = stockMastDao.save(x);
 
+                StockMast create  = stockMastDao.saveAndFlush(x);
+                for(BatchData batchData:batchDataList)
+                {
+                    batchData.setControlId(create.getId());
+                    batchDao.save(batchData);
+                }
 
                 //update the quality wt per 100 as well
                 qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(),stockMast.getWtPer100m(),100/stockMast.getWtPer100m());
