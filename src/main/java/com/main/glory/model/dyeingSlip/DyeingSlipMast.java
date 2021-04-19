@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class DyeingSlipMast {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
