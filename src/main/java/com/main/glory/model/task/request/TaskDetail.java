@@ -49,7 +49,7 @@ public class TaskDetail extends TaskData {
         this.createdBy = taskMast.getCreatedBy();
     }
 
-    public TaskDetail(TaskDetail taskData) {
+    public TaskDetail(TaskDetail taskData,TaskMast taskMast) {
         //this.setCreatedBy(taskData.getCreatedBy());
         this.setId(taskData.getId());
         this.setControlId(taskData.getControlId());
@@ -62,5 +62,9 @@ public class TaskDetail extends TaskData {
         this.setTaskCompletedDate(taskData.getTaskCompletedDate());
         this.setCreatedDate(taskData.getCreatedDate());
         this.setReportUrl(taskData.getReportUrl());
+        this.detail = taskMast.getDetail();
+        this.taskPriority = taskMast.getTaskPriority();
+        this.taskType = taskMast.getTaskType();
+        this.createdBy = taskMast.getCreatedBy();
     }
 }

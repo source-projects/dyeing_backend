@@ -290,6 +290,7 @@ public class StockBatchServiceImpl {
     @Transactional
     public Optional<StockMast> getStockBatchById(Long id) throws Exception{
             Optional<StockMast> data = stockMastDao.findById(id);
+            //List<BatchData> batchDataList = batchDao.findByControlId(data.get().getId());
             if(data.isPresent()){
                 return data;
             }
@@ -365,7 +366,8 @@ public class StockBatchServiceImpl {
             for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
                 //System.out.println(entry.getKey()+":"+entry.getValue());
                 if (entry.getValue() == false) {
-                    batchDao.deleteById(entry.getKey());
+                    //remove the batch id and only if the production is not plan
+                    batchDao.deleteByIdWithProduction(entry.getKey());
                 }
             }
 
