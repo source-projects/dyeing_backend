@@ -290,7 +290,9 @@ public class StockBatchServiceImpl {
     @Transactional
     public Optional<StockMast> getStockBatchById(Long id) throws Exception{
             Optional<StockMast> data = stockMastDao.findById(id);
-            //List<BatchData> batchDataList = batchDao.findByControlId(data.get().getId());
+            List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.get().getId(),false);
+
+            data.get().setBatchData(batchDataList);
             if(data.isPresent()){
                 return data;
             }
