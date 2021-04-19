@@ -340,6 +340,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("delete from BatchData x where x.id=:key AND x.isProductionPlanned=false ")
     void deleteByIdWithProduction(Long key);
 
+    @Query("select x from BatchData x where x.controlId=:id And x.isExtra=:b")
+    List<BatchData> findByControlIdWithExtraBatch(Long id, boolean b);
+
 
 
 /*
