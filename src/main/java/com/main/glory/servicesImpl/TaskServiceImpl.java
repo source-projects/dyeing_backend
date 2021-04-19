@@ -254,9 +254,10 @@ public class TaskServiceImpl {
         List<TaskDetail> detailList = new ArrayList<>();
         for(TaskDetail e:taskDetailList)
         {
-            TaskDetail taskDetail = new TaskDetail(e);
+
 
             TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
+            TaskDetail taskDetail = new TaskDetail(e,taskMast);
 
             System.out.println("user:"+e.getAssignUserId());
 
