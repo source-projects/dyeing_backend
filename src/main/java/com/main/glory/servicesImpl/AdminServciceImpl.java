@@ -22,6 +22,9 @@ import java.util.Optional;
 public class AdminServciceImpl {
 
     @Autowired
+    AuthorizeDao authorizeDao;
+
+    @Autowired
     TaskServiceImpl taskService;
 
     @Autowired
@@ -30,8 +33,8 @@ public class AdminServciceImpl {
     @Autowired
     PurchaseImpl purchaseService;
 
-    @Autowired
-    ReceiverByDao receiverByDao;
+   /* @Autowired
+    ReceiverByDao receiverByDao;*/
     @Autowired
     BatchSequneceDao batchSequneceDao;
 
@@ -53,9 +56,9 @@ public class AdminServciceImpl {
     @Autowired
     CompanyDao companyDao;
 
-    @Autowired
+   /* @Autowired
     ApproveByDao approveByDao;
-
+*/
     @Autowired
     UserServiceImpl userService;
 
@@ -74,16 +77,16 @@ public class AdminServciceImpl {
 
     }
 
-    public void saveApprovedBy(ApprovedBy data) throws Exception {
+   /* public void saveApprovedBy(ApprovedBy data) throws Exception {
 
         ApprovedBy approvedBy = approveByDao.findByApprovedByName(data.getName());
         if(approvedBy!=null)
             throw new Exception("already data exist");
         approveByDao.save(data);
     }
-
-    public List<ApprovedBy> getApprovedByList() {
-        return approveByDao.getAll();
+*/
+    public List<Authorize> getApprovedByList() {
+        return authorizeDao.getAllAuthorizeByType("approve");
     }
 
     public List<Company> getAllCompany() {
@@ -108,21 +111,6 @@ public class AdminServciceImpl {
 
     }
 
-    public Boolean deleteApprovedById(Long id) throws Exception {
-
-            ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
-            if (approvedByExist == null)
-                throw new Exception("no data found");
-
-            List<DyeingSlipMast> dyeingSlipMasts =dyeingSlipService.getDyeingSlipByApprovedId(id);
-            if(!dyeingSlipMasts.isEmpty())
-                throw new Exception("can't delete this record");
-
-            approveByDao.deleteApprovedById(id);
-            return true;
-
-    }
-
     public void saveDepartment(Department c) throws Exception {
 
         Department exist = departmentDao.getDepartmentByName(c.getName());
@@ -137,6 +125,21 @@ public class AdminServciceImpl {
 
 
     }
+
+    /*public Boolean deleteApprovedById(Long id) throws Exception {
+
+        ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
+        if (approvedByExist == null)
+            throw new Exception("no data found");
+
+        List<DyeingSlipMast> dyeingSlipMasts =dyeingSlipService.getDyeingSlipByApprovedId(id);
+        if(!dyeingSlipMasts.isEmpty())
+            throw new Exception("can't delete this record");
+
+        approveByDao.deleteApprovedById(id);
+        return true;
+
+    }*/
 
     public boolean deleteDepartmentById(Long id) throws Exception {
 
@@ -179,7 +182,7 @@ public class AdminServciceImpl {
 
     }
 
-    public void updateApprovedBy(ApprovedBy approvedBy) throws Exception {
+   /* public void updateApprovedBy(ApprovedBy approvedBy) throws Exception {
         ApprovedBy approvedExist = approveByDao.getApprovedById(approvedBy.getId());
         if (approvedExist==null)
             throw new Exception("no record found");
@@ -192,14 +195,14 @@ public class AdminServciceImpl {
             dyeingSlipService.updateDyeingSlipWithApproveById(approvedBy.getId(),dyeingSlipMast.getId());
         }
 
-    }
+    }*/
 
-    public ApprovedBy getApprovedById(Long id) throws Exception {
+   /* public ApprovedBy getApprovedById(Long id) throws Exception {
         ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
         if(approvedByExist==null)
             throw new Exception("no data found");
         return approvedByExist;
-    }
+    }*/
 
     public DepartmentResponse getDepartmentById(Long id) throws Exception {
         DepartmentResponse department = departmentDao.getDepartmentResponseById(id);
@@ -218,7 +221,7 @@ public class AdminServciceImpl {
 
     }
 
-    public Boolean getApprovedByDeletable(Long id) throws Exception {
+    /*public Boolean getApprovedByDeletable(Long id) throws Exception {
         ApprovedBy approvedByExist = approveByDao.getApprovedById(id);
         if (approvedByExist==null)
             throw new Exception("no approvedBy found");
@@ -228,7 +231,7 @@ public class AdminServciceImpl {
             return true;
         else
             return false;
-    }
+    }*/
 
     public Boolean getDepartmentIsDelatable(Long id) throws Exception {
         Department departmentExist = departmentDao.getDepartmentById(id);
@@ -369,16 +372,16 @@ public class AdminServciceImpl {
         return batchSequneceDao.getBatchSequence();
     }
 
-    public void addReceiver(ReceiverBy record) throws Exception {
+   /* public void addReceiver(ReceiverBy record) throws Exception {
         ReceiverBy receiverExist = receiverByDao.getReceiverByNameExceptId(record.getName(),0l);
 
         if(receiverExist!=null)
             throw new Exception("receiver is already exist with name");
 
         receiverByDao.save(record);
-    }
+    }*/
 
-    public void updateReceiver(ReceiverBy record) throws Exception {
+    /*public void updateReceiver(ReceiverBy record) throws Exception {
 
         ReceiverBy receiverByExistWithName = receiverByDao.getReceiverByNameExceptId(record.getName(),record.getId());
         if(receiverByExistWithName!=null)
@@ -386,12 +389,12 @@ public class AdminServciceImpl {
 
         receiverByDao.save(record);
 
-    }
+    }*/
 
-    public List<ReceiverBy> getAllReceiver() {
-        return receiverByDao.getAllReceiver();
+    public List<Authorize> getAllReceiver() {
+        return authorizeDao.getAllAuthorizeByType("receive");
     }
-
+/*
     public ReceiverBy getReceiverById(Long id) {
         return receiverByDao.getReceiverById(id);
     }
@@ -407,7 +410,7 @@ public class AdminServciceImpl {
             throw new Exception("remove the purchase record first");
 
         receiverByDao.deleteByReceiverId(id);
-    }
+    }*/
 
     public void addReportType(ReportType record) throws Exception {
         ReportType reportTypeExist = reportTypeDao.getReportFormExist(record.getFormName());
@@ -415,6 +418,7 @@ public class AdminServciceImpl {
             throw new Exception("report form is already exist");
         reportTypeExist = new ReportType(record);
 
+        reportTypeDao.save(reportTypeExist);
     }
 
     public List<ReportType> getAllReportType() {
@@ -472,5 +476,44 @@ public class AdminServciceImpl {
 
             return departmentDao.getDepartmentResponseByUserId(userData.getId());
         }
+    }
+
+    public void addAuthorize(Authorize authorize) throws Exception {
+        //check the authorize exist with same name
+        Authorize authorizeExist=authorizeDao.getAuthorizeByName(authorize.getName());
+        if(authorizeExist!=null)
+            throw new Exception("user exist with name");
+
+        authorizeDao.save(authorize);
+    }
+
+    public void updateAuthorize(Authorize authorize) throws Exception {
+        Authorize authorizeExist = authorizeDao.getAuthorizeById(authorize.getId());
+        if(authorizeExist==null)
+            throw new Exception("no record found");
+
+        authorizeDao.save(authorize);
+    }
+
+    public List<Authorize> getAllAuthorize() {
+        return authorizeDao.getAllAuthorize();
+    }
+
+    public Authorize getAuthorizeById(Long id) {
+        return authorizeDao.getAuthorizeById(id);
+    }
+
+    public void deleteAuthorizeById(Long id) throws Exception {
+
+        //check the purchase record exist
+        List<Purchase> purchaseList = purchaseService.getPurchaseByReceiverId(id);
+        if(!purchaseList.isEmpty())
+            throw new Exception("remove the purchase record first");
+
+        List<DyeingSlipMast> dyeingSlipMasts = dyeingSlipService.getDyeingSlipByApprovedId(id);
+        if(!dyeingSlipMasts.isEmpty())
+            throw new Exception("remove the dyeingSlip first");
+
+        authorizeDao.deleteByAuthorizeId(id);
     }
 }

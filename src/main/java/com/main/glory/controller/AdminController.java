@@ -388,7 +388,7 @@ public class AdminController extends ControllerConfig {
     }
 
 
-    @PostMapping(value="/admin/add/approvedBy/")
+    /*@PostMapping(value="/admin/add/approvedBy/")
     public ResponseEntity<GeneralResponse<Boolean,Object>> saveApprovedBy(@RequestBody ApprovedBy data) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
@@ -415,16 +415,16 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-
+*/
     @GetMapping(value="/admin/get/approvedBy")
-    public ResponseEntity<GeneralResponse<List<ApprovedBy>,Object>> getAllApproved() throws Exception {
+    public ResponseEntity<GeneralResponse<List<Authorize>,Object>> getAllApproved() throws Exception {
 
-        GeneralResponse<List<ApprovedBy>,Object> result;
+        GeneralResponse<List<Authorize>,Object> result;
 
         boolean flag;
         try {
 
-            List<ApprovedBy> list = adminServcice.getApprovedByList();
+            List<Authorize> list = adminServcice.getApprovedByList();
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
@@ -440,7 +440,7 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    @PutMapping(value="/admin/update/approvedBy/")
+  /*  @PutMapping(value="/admin/update/approvedBy/")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateApproved(@RequestBody ApprovedBy approvedBy) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
@@ -482,7 +482,7 @@ public class AdminController extends ControllerConfig {
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }
+    }*/
 
     @GetMapping(value="/admin/get/department")
     public ResponseEntity<GeneralResponse<List<DepartmentResponse>,Object>> getAllDepartment(@RequestHeader Map<String, String> headers) throws Exception {
@@ -598,7 +598,7 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/admin/approvedBy/deleteTable/{id}")
+   /* @GetMapping(value="/admin/approvedBy/deleteTable/{id}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> isApprovedByDeletable(@PathVariable(name = "id")Long id) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
@@ -620,7 +620,7 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-
+*/
     @GetMapping(value="/admin/department/deleteTable/{id}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> isDepartMentDeletable(@PathVariable(name = "id")Long id) throws Exception {
 
@@ -738,7 +738,7 @@ public class AdminController extends ControllerConfig {
         return result;
     }*/
 
-    @DeleteMapping(value="/admin/delete/approved/{id}")
+    /*@DeleteMapping(value="/admin/delete/approved/{id}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> deleteApprovedById(@PathVariable(name = "id") Long id) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
@@ -759,7 +759,7 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-
+*/
     @PostMapping(value="/admin/add/invoiceSequence/")
     public ResponseEntity<GeneralResponse<Boolean,Object>> addInvoiceSequence(@RequestBody InvoiceSequence record) throws Exception {
 
@@ -961,7 +961,7 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    @PostMapping(value="/admin/add/receiver")
+    /*@PostMapping(value="/admin/add/receiver")
     public ResponseEntity<GeneralResponse<Boolean,Object>> addReceiver(@RequestBody ReceiverBy record) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
@@ -1007,16 +1007,16 @@ public class AdminController extends ControllerConfig {
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }
+    }*/
     @GetMapping(value="/admin/get/receiver")
-    public ResponseEntity<GeneralResponse<List<ReceiverBy>,Object>> getAllReceiver() throws Exception {
+    public ResponseEntity<GeneralResponse<List<Authorize>,Object>> getAllReceiver() throws Exception {
 
-        GeneralResponse<List<ReceiverBy>,Object> result;
+        GeneralResponse<List<Authorize>,Object> result;
 
         boolean flag;
         try {
 
-            List<ReceiverBy> list = adminServcice.getAllReceiver();
+            List<Authorize> list = adminServcice.getAllReceiver();
             if(list.isEmpty())
             {
                 result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -1037,7 +1037,7 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/admin/get/receiver/{id}")
+    /*@GetMapping(value="/admin/get/receiver/{id}")
     public ResponseEntity<GeneralResponse<ReceiverBy,Object>> getReceiverById(@PathVariable(name = "id") Long id) throws Exception {
 
         GeneralResponse<ReceiverBy,Object> result;
@@ -1088,7 +1088,7 @@ public class AdminController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-
+*/
     @PostMapping(value="/admin/add/reportType")
     public ResponseEntity<GeneralResponse<Boolean,Object>> addReportType(@RequestBody ReportType record) throws Exception {
 
@@ -1243,6 +1243,155 @@ public class AdminController extends ControllerConfig {
         {
             e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping(value="/admin/add/authorize")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addAuthorize(@RequestBody Authorize authorize) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
+
+        boolean flag;
+        try {
+
+            if(authorize==null)
+                throw new Exception("null record passed");
+
+            adminServcice.addAuthorize(authorize);
+            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping(value="/admin/update/authorize")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateAuthorize(@RequestBody Authorize authorize) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
+
+        boolean flag;
+        try {
+
+            if(authorize==null)
+                throw new Exception("null record passed");
+
+            adminServcice.updateAuthorize(authorize);
+            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,debugAll);
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/authorize/all")
+    public ResponseEntity<GeneralResponse<List<Authorize>,Object>> getAllAuthorize() throws Exception {
+
+        GeneralResponse<List<Authorize>,Object> result;
+
+        boolean flag;
+        try {
+
+
+
+            List<Authorize> list = adminServcice.getAllAuthorize();
+            if(!list.isEmpty())
+            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result= new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+
+            logService.saveLog(result,request,debugAll);
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/authorize")
+    public ResponseEntity<GeneralResponse<Authorize,Object>> getAuthorizeById(@RequestParam(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Authorize,Object> result;
+
+        boolean flag;
+        try {
+
+
+
+            Authorize list = adminServcice.getAuthorizeById(id);
+            if(list!=null)
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result= new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+
+            logService.saveLog(result,request,debugAll);
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/delete/authorize")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteAuthorizeById(@RequestParam(name = "id")Long id) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
+
+        boolean flag;
+        try {
+
+
+
+            adminServcice.deleteAuthorizeById(id);
+
+            result= new GeneralResponse<>(true, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

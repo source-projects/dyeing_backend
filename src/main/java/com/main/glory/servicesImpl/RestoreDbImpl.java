@@ -4,7 +4,6 @@ import com.main.glory.Dao.*;
 import com.main.glory.Dao.Jet.JetDataDao;
 import com.main.glory.Dao.Jet.JetMastDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
-import com.main.glory.Dao.admin.ApproveByDao;
 import com.main.glory.Dao.batch.BatchDataDao;
 import com.main.glory.Dao.color.ColorBoxDao;
 import com.main.glory.Dao.color.ColorDataDao;
@@ -128,8 +127,6 @@ public class RestoreDbImpl {
     @Autowired
     ColorBoxDao colorBoxDao;
 
-    @Autowired
-    ApproveByDao approveByDao;
 
     @Autowired
     APCDao apcDao;

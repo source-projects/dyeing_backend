@@ -15,11 +15,13 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Entity
-public class ReceiverBy {
+public class Authorize {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String name;
     String contact;
     String email;
+    String type;//receive by and approved
+
 }

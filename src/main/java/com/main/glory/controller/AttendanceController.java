@@ -42,9 +42,9 @@ public class AttendanceController extends ControllerConfig {
 
 
     @PostMapping(value="/attendance")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody Attendance record)
+    public ResponseEntity<GeneralResponse<Long,Object>> saveParty(@RequestBody Attendance record)
     {
-        GeneralResponse<Boolean,Object> result;
+        GeneralResponse<Long,Object> result;
         try {
             if(record==null)
                 throw new Exception("record can't be null");
@@ -53,7 +53,7 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
 
-            result = new GeneralResponse<>(true, "Attendance Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(attendance.getId(), "Attendance Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
