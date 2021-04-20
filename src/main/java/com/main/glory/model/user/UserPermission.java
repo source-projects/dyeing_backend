@@ -35,7 +35,7 @@ public class UserPermission {
 
     //Long wt;
 
-    Long ad;
+    //Long ad;
     Long ds;
 
     Long emp;
