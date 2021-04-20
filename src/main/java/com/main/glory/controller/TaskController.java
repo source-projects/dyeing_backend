@@ -234,7 +234,7 @@ public class TaskController extends ControllerConfig {
             else
                 result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
 
-            logService.saveLog(result,request,debugAll);
+         logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)

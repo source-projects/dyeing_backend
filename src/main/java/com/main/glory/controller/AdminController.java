@@ -2,10 +2,10 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.*;
 import com.main.glory.model.admin.request.DepartmentResponse;
-import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.quality.QualityName;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.swagger.schema.ApiModelProperties;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -27,6 +26,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class AdminController extends ControllerConfig {
+
+    CommonMessage commonMessage;
+
 
     @Autowired
     JetServiceImpl jetService;
@@ -51,15 +53,15 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(jetMast==null)
         {
-            result =  new GeneralResponse<>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,debugAll);
+            result =  new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //logService.saveLog(result,request,debugAll);
         }
 
         boolean flag;
         try {
 
             jetService.saveJet(jetMast);
-            result= new GeneralResponse<>(null, "Jet Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,jetMast);
+            result= new GeneralResponse<>(null, commonMessage.Jet_Added, true, System.currentTimeMillis(), HttpStatus.OK,jetMast);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -75,15 +77,15 @@ public class AdminController extends ControllerConfig {
        GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
-            result =  new GeneralResponse<>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,true);
+            result =  new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveQualityName(qualityName);
-            result= new GeneralResponse<>(null, "Quality Name Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            result= new GeneralResponse<>(null, commonMessage.Quality_Name_Added, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -99,15 +101,15 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
-            result = new GeneralResponse<>(false, "qualityName info is null", false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.updateQualityName(qualityName);
-            result =  new GeneralResponse<>(null, "Quality Name Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
+            result =  new GeneralResponse<>(true, commonMessage.Quality_Name_Updated, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -124,15 +126,15 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, "id info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,true);
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.deleteQualityNameById(id);
-            result =  new GeneralResponse<>(null, "Quality name deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(true, commonMessage.Quality_Name_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -151,15 +153,15 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(jetMast==null)
         {
-            result =  new GeneralResponse<>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,true);
+            result =  new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             jetService.updateJet(jetMast);
-            result =  new GeneralResponse<>(null, "Jet updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,jetMast);
+            result =  new GeneralResponse<>(null, commonMessage.Jet_Updated, true, System.currentTimeMillis(), HttpStatus.OK,jetMast);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -176,15 +178,15 @@ public class AdminController extends ControllerConfig {
        GeneralResponse<JetMast,Object> result;
         if(id==null)
         {
-            result =  new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,true);
+            result =  new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             JetMast jetMast = jetService.getJetMastById(id);
-            result= new GeneralResponse<>(jetMast, "Jet data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(jetMast, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -203,15 +205,15 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,true);
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
             adminServcice.saveCompanyName(c);
-            result= new GeneralResponse<>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,c);
+            result= new GeneralResponse<>(null, commonMessage.Company_Added, true, System.currentTimeMillis(), HttpStatus.OK,c);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -229,7 +231,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Company,Object> result;
         if(id==null)
         {
-            result= new GeneralResponse<>(null, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -237,7 +239,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             Company c  = adminServcice.getCompanyById(id);
-            result= new GeneralResponse<>(c, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(c, commonMessage.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
 
         }
@@ -255,7 +257,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(company==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -263,7 +265,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             adminServcice.updateCompany(company);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,company);
+            result= new GeneralResponse<>(true, commonMessage.Company_Updated, true, System.currentTimeMillis(), HttpStatus.OK,company);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -282,7 +284,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(department==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -290,7 +292,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             adminServcice.updateDepartment(department);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,department);
+            result= new GeneralResponse<>(true, commonMessage.Department_Updated, true, System.currentTimeMillis(), HttpStatus.OK,department);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -311,7 +313,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -319,7 +321,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             adminServcice.saveDepartment(c);
-            result= new GeneralResponse<>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,c);
+            result= new GeneralResponse<>(null, commonMessage.Department_Added, true, System.currentTimeMillis(), HttpStatus.OK,c);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -337,7 +339,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -346,7 +348,7 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteCompanyById(id);
             if(flag) {
-                result = new GeneralResponse<>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.Company_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 logService.saveLog(result,request,debugAll);
             }
         }
@@ -365,7 +367,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -374,7 +376,7 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteDepartmentById(id);
             if(flag) {
-                result = new GeneralResponse<>(null, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.Department_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 logService.saveLog(result,request,true);
             }
         }
@@ -426,9 +428,9 @@ public class AdminController extends ControllerConfig {
 
             List<Authorize> list = adminServcice.getApprovedByList();
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, commonMessage.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -495,9 +497,9 @@ public class AdminController extends ControllerConfig {
 
             List<DepartmentResponse> list = adminServcice.getAllDepartmentListByHeaderId(headers.get("id"));
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, commonMessage.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,true);
         }
@@ -519,7 +521,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             DepartmentResponse list = adminServcice.getDepartmentById(id);
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(list, commonMessage.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -559,9 +561,9 @@ public class AdminController extends ControllerConfig {
 
             List<AddJet> list = jetService.getAllJet();
             if(list.isEmpty())
-                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -583,9 +585,9 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = jetService.getJetIsDeletable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, commonMessage.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -630,9 +632,9 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = adminServcice.getDepartmentIsDelatable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, commonMessage.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, commonMessage.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -653,9 +655,9 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = adminServcice.getCompanyIsDelatable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, commonMessage.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, commonMessage.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -678,9 +680,9 @@ public class AdminController extends ControllerConfig {
 
             List<Company> list = adminServcice.getAllCompany();
             if(list.isEmpty())
-                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -702,9 +704,9 @@ public class AdminController extends ControllerConfig {
 
             Boolean list = jetService.deleteJetMastByJetId(id);
             if(list==false)
-                result= new GeneralResponse<>(list, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Jet_Record_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -770,11 +772,11 @@ public class AdminController extends ControllerConfig {
 
 
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             adminServcice.addInvoiceSequence(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(true, commonMessage.Invoice_Sequence_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -798,7 +800,7 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequence();
             if(invoiceSequence!=null)
-                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(invoiceSequence, commonMessage.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -820,7 +822,7 @@ public class AdminController extends ControllerConfig {
 
 
             adminServcice.updateInvoiceSequence(invoiceSequence);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,invoiceSequence);
+            result= new GeneralResponse<>(true, commonMessage.Invoice_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,invoiceSequence);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -841,13 +843,13 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
             if(id==null)
-                throw new Exception("id can't null");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
             if(invoiceSequence!=null)
-                result= new GeneralResponse<>(invoiceSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(invoiceSequence, commonMessage.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(invoiceSequence, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(invoiceSequence, commonMessage.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -871,11 +873,11 @@ public class AdminController extends ControllerConfig {
 
 
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             adminServcice.addBatchSequence(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(true, commonMessage.Batch_Sequence_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -899,11 +901,11 @@ public class AdminController extends ControllerConfig {
 
 
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             BatchSequence id = adminServcice.updateBatchSequence(record);
 
-            result= new GeneralResponse<>(id, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, commonMessage.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -925,7 +927,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             BatchSequence batchSequence = adminServcice.getBatchSequence(update);
-            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(batchSequence, commonMessage.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -946,10 +948,10 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
             if(id==null)
-                throw new Exception("null id passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             BatchSequence batchSequence = adminServcice.getBatchSequenceById(id);
-            result= new GeneralResponse<>(batchSequence, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(batchSequence, commonMessage.Batch_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -1019,11 +1021,11 @@ public class AdminController extends ControllerConfig {
             List<Authorize> list = adminServcice.getAllReceiver();
             if(list.isEmpty())
             {
-                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -1099,11 +1101,11 @@ public class AdminController extends ControllerConfig {
 
 
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             adminServcice.addReportType(record);
 
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(true, commonMessage.Report_Type_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -1129,11 +1131,11 @@ public class AdminController extends ControllerConfig {
 
             if(reportTypeList.isEmpty())
             {
-                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, commonMessage.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, commonMessage.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -1159,17 +1161,17 @@ public class AdminController extends ControllerConfig {
 
 
             if(id==null)
-                throw new Exception("null id passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             ReportType reportTypeList = adminServcice.getReportTypeById(id);
 
             if(reportTypeList==null)
             {
-                result= new GeneralResponse<>(reportTypeList, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, commonMessage.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result= new GeneralResponse<>(reportTypeList, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, commonMessage.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
             logService.saveLog(result,request,debugAll);
@@ -1194,17 +1196,17 @@ public class AdminController extends ControllerConfig {
         try {
 
             if(record==null)
-                throw new Exception("null record passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             flag = adminServcice.updateReportType(record);
 
             if(flag==false)
             {
-                result= new GeneralResponse<>(false, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(false, commonMessage.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, commonMessage.Report_Type_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
             logService.saveLog(result,request,debugAll);
@@ -1229,10 +1231,10 @@ public class AdminController extends ControllerConfig {
         try {
 
             if(id==null)
-                throw new Exception("null record passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             adminServcice.deleteReportTypeById(id);
-            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, commonMessage.Report_Type_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
 
@@ -1257,10 +1259,10 @@ public class AdminController extends ControllerConfig {
         try {
 
             if(authorize==null)
-                throw new Exception("null record passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             adminServcice.addAuthorize(authorize);
-            result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, commonMessage.Authorize_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
 
@@ -1285,10 +1287,10 @@ public class AdminController extends ControllerConfig {
         try {
 
             if(authorize==null)
-                throw new Exception("null record passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             adminServcice.updateAuthorize(authorize);
-            result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, commonMessage.Authorize_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
 
@@ -1316,9 +1318,9 @@ public class AdminController extends ControllerConfig {
 
             List<Authorize> list = adminServcice.getAllAuthorize();
             if(!list.isEmpty())
-            result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(list, commonMessage.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
             logService.saveLog(result,request,debugAll);
@@ -1348,9 +1350,9 @@ public class AdminController extends ControllerConfig {
 
             Authorize list = adminServcice.getAuthorizeById(id);
             if(list!=null)
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, commonMessage.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
             logService.saveLog(result,request,debugAll);

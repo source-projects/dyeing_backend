@@ -8,9 +8,9 @@ import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
@@ -22,12 +22,9 @@ import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.responce.*;
-import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.qty.QuantityRange;
-import com.main.glory.model.quality.Quality;
-import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -95,12 +92,13 @@ public class JetServiceImpl {
     @Autowired
     BatchDao batchDao;
 
+    CommonMessage commonMessage;
     public void saveJet(AddJet jetMast) throws Exception {
 
 
         Optional<JetMast> jetExist = jetMastDao.findByName(jetMast.getName());
         if(jetExist.isPresent()) {
-            throw new Exception("jet is avaialble with name");
+            throw new Exception(commonMessage.Jet_Exist_With_Name);
         }
         JetMast newJet=new JetMast(jetMast);
         jetMastDao.save(newJet);
@@ -1020,11 +1018,11 @@ public class JetServiceImpl {
 
             Optional<JetMast> jetMast  =jetMastDao.getJetById(id);
             if(jetMast.isEmpty())
-                throw new Exception("no data found");
+                throw new Exception(commonMessage.Jet_Not_Found);
 
             //check the child record available for the jet or not
             if(!jetMast.get().getJetDataList().isEmpty())
-                throw new Exception("remove the jet record first");
+                throw new Exception(commonMessage.Jet_Record_Exist);
 
             jetMastDao.deleteByJetId(id);
             return true;
@@ -1045,7 +1043,7 @@ public class JetServiceImpl {
         List<JetMast> jetMastList=jetMastDao.getAll();
 
         if(jetMastList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.Jet_Not_Found);
 
         for(JetMast jetMast:jetMastList)
         {
@@ -1167,14 +1165,14 @@ public class JetServiceImpl {
     public void updateJet(AddJet jetMast) throws Exception {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetMast.getId());
         if(jetMastExist.isEmpty())
-            throw new Exception("jet data not found");
+            throw new Exception(commonMessage.Jet_Not_Found);
 
         JetMast jetToUpdate = new JetMast(jetMast);
         jetToUpdate.setId(jetMast.getId());
         List<JetData> jetDataList = jetDataDao.findByControlId(jetMast.getId());
 
         if(jetMast.getCapacity()<jetMastExist.get().getCapacity())
-            throw new Exception("jet capacity can't be update because already batch availble with that capacity");
+            throw new Exception("jet capacity can't be update because already batch available with that capacity");
 
         jetMastDao.save(jetToUpdate);
         for(JetData jetData:jetDataList)
@@ -1188,14 +1186,14 @@ public class JetServiceImpl {
     public JetMast getJetMastById(Long id) throws Exception {
         Optional<JetMast> jetMast = jetMastDao.getJetById(id);
         if(jetMast.isEmpty())
-            throw new Exception("no jet data found");
+            throw new Exception(commonMessage.Jet_Not_Found);
         return jetMast.get();
     }
 
     public Boolean getJetIsDeletable(Long id) throws Exception {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(id);
         if(jetMastExist.isEmpty())
-            throw new Exception("no jet found");
+            throw new Exception(commonMessage.Jet_Not_Found);
 
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
         if(jetDataList.isEmpty())
