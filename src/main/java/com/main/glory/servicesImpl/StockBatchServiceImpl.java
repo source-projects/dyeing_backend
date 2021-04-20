@@ -1166,7 +1166,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
                     getAllBatch.setControlId(getBatchWithControlId.getControlId());
-
+                    getAllBatch.setTotalWt(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId()));
+                    getAllBatch.setTotalMtr(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId()));
                     list.add(getAllBatch);
                 }
             }
@@ -1225,7 +1226,8 @@ public class StockBatchServiceImpl {
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
                 getAllBatch.setControlId(getBatchWithControlId.getControlId());
-
+                getAllBatch.setTotalMtr(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId()));
+                getAllBatch.setTotalWt(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId()));
                 list.add(getAllBatch);
             }
 

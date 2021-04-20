@@ -18,9 +18,12 @@ import java.util.Optional;
 @ToString
 public class GetAllBatch {
 
-    @ApiModelProperty(hidden = true)
+
     Double totalWt;
     Long controlId;
+
+
+    Double totalMtr;
     String batchId;
     Boolean productionPlanned;
     Boolean isBillGenerated;
@@ -31,6 +34,19 @@ public class GetAllBatch {
     String qualityName;
     String qualityType;
 
+    public GetAllBatch(Double totalWt, Long controlId, String batchId, Boolean productionPlanned, Boolean isBillGenerated, Long partyId, String partyName, Long qualityEntryId, String qualityId, String qualityName, String qualityType) {
+        this.totalWt = totalWt;
+        this.controlId = controlId;
+        this.batchId = batchId;
+        this.productionPlanned = productionPlanned;
+        this.isBillGenerated = isBillGenerated;
+        this.partyId = partyId;
+        this.partyName = partyName;
+        this.qualityEntryId = qualityEntryId;
+        this.qualityId = qualityId;
+        this.qualityName = qualityName;
+        this.qualityType = qualityType;
+    }
     public GetAllBatch(Party party, Quality quality) {
         this.partyId=party.getId();
         this.partyName=party.getPartyName();
