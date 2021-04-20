@@ -21,8 +21,6 @@ public class GetAllBatch {
 
     Double totalWt;
     Long controlId;
-
-
     Double totalMtr;
     String batchId;
     Boolean productionPlanned;
