@@ -6,6 +6,7 @@ import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
@@ -46,6 +47,8 @@ public class ColorServiceImpl {
     @Autowired
     SupplierDao supplierDao;
 
+    CommonMessage commonMessage;
+
     @Transactional
     public void addColor(ColorMast colorMast,String id) throws Exception {
 
@@ -56,7 +59,7 @@ public class ColorServiceImpl {
         {
             Optional<Supplier> supplier = supplierDao.getSupplierById(colorMast.getSupplierId());
             if(supplier.isEmpty())
-                throw new Exception("no supplier found");
+                throw new Exception(commonMessage.Supplier_Found);
             colorMast.setUserHeadId(supplier.get().getUserHeadId());
         }
 
@@ -169,7 +172,7 @@ public class ColorServiceImpl {
 
     }
 		if(colorMastDetails.isEmpty())
-                throw new Exception("no data found");
+                throw new Exception(commonMessage.Color_Not_Found);
 
 		return colorMastDetails;
 }
@@ -194,7 +197,7 @@ public class ColorServiceImpl {
         Optional<ColorMast> original = colorMastDao.findById(colorMast.getId());
 
         if (original.isEmpty()) {
-            throw new Exception("No such color data present with id:" + colorMast.getId());
+            throw new Exception(commonMessage.Color_Not_Found + colorMast.getId());
         }
         colorMastDao.save(colorMast);
         colorDataDao.deleteColorWhichIsNull();
@@ -208,7 +211,7 @@ public class ColorServiceImpl {
 
         // check if this is present in the database
         if (colorMast.isEmpty()) {
-            throw new Exception("color data does not exist with id:" + id);
+            throw new Exception(commonMessage.Color_Not_Found + id);
         }
 
         colorMastDao.deleteById(id);
@@ -226,19 +229,19 @@ public class ColorServiceImpl {
     public List<ColorBox> getAllBox(Boolean issued) throws Exception {
         List<ColorBox> colorBoxes = colorBoxDao.findByIssued(issued);
         if (colorBoxes.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.Color_Not_Found);
         return colorBoxes;
     }
 
     public void issueBox(IssueBoxRequest issueBoxRequest) throws Exception {
         Optional<ColorBox> colorBox = colorBoxDao.findById(issueBoxRequest.getBoxId());
         if (colorBox.isEmpty()) {
-            throw new Exception("No such box found");
+            throw new Exception(commonMessage.Color_Not_Found);
         }
 
 
         if (colorBox.get().getIssued() == true)
-            throw new Exception("Box issued already at:" + colorBox.get().getIssuedDate());
+            throw new Exception(commonMessage.Color_Already_Issue + colorBox.get().getIssuedDate());
 
         ColorBox colorBox1 = colorBox.get();
         colorBox1.setIssued(true);
@@ -290,7 +293,7 @@ public class ColorServiceImpl {
         }
 
         if(list.isEmpty())
-            throw new Exception("no color box is found");
+            throw new Exception(commonMessage.Color_Not_Found);
         return list;
 
     }
@@ -380,7 +383,7 @@ public class ColorServiceImpl {
             }
         }
 	    if(list.isEmpty())
-            throw new Exception("no record found");
+            throw new Exception(commonMessage.Color_Not_Found);
 
         return list;
     }

@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.Filter;
@@ -28,6 +29,8 @@ import java.util.Objects;
 public class DispatchController extends ControllerConfig {
 
 
+    CommonMessage commonMessage;
+
     @Autowired
     LogServiceImpl logService;
 
@@ -45,7 +48,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<Long,Object> result;
         try{
             Long flag = dispatchMastService.saveDispatch(dispatchMast);
-            result= new GeneralResponse<>(flag,"Invoice data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,dispatchMast);
+            result= new GeneralResponse<>(flag,commonMessage.Dispatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,dispatchMast);
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
@@ -62,9 +65,9 @@ public class DispatchController extends ControllerConfig {
         try{
             List<GetConsolidatedBill> list = dispatchMastService.getDispatchByFilter(filter);
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result= new GeneralResponse<>(list,commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null,commonMessage.Dispatch_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -80,9 +83,9 @@ public class DispatchController extends ControllerConfig {
         try{
             List<GetBill> list = dispatchMastService.getDispatchBillByFilter(filter);
             if(!list.isEmpty())
-                result =  new GeneralResponse<>(list,"Invoice data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result =  new GeneralResponse<>(list,commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result =  new GeneralResponse<>(null,"Invoice not created", false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result =  new GeneralResponse<>(null,commonMessage.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -101,10 +104,10 @@ public class DispatchController extends ControllerConfig {
         try{
             if(partyId!=null) {
                 List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getBatchByParty(partyId);
-                result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result= new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null,commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -121,10 +124,10 @@ public class DispatchController extends ControllerConfig {
         try{
             if(invoiceNo!=null) {
                 PartyWithBatchByInvoice x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
-                result = new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result = new GeneralResponse<>(null,"party id can't be null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null,commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -142,7 +145,7 @@ public class DispatchController extends ControllerConfig {
         try{
 
             List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
-            result = new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
@@ -160,7 +163,7 @@ public class DispatchController extends ControllerConfig {
 
             Boolean flag = dispatchMastService.updateDispatch(updateInvoice);
             if(flag==true)
-            result= new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
+            result= new GeneralResponse<>(true, commonMessage.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
             else
                 result= new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
             logService.saveLog(result,request,debugAll);
@@ -178,7 +181,7 @@ public class DispatchController extends ControllerConfig {
 
             Boolean flag = dispatchMastService.updateDispatchStatus(invoiceNo);
             if(flag==true)
-                result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, commonMessage.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
                 result = new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
@@ -197,7 +200,7 @@ public class DispatchController extends ControllerConfig {
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchBy(id);
 
-                result= new GeneralResponse<>(x, "Invoice fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
                 result= new GeneralResponse<>(null,"Invoice id can't be null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -317,10 +320,10 @@ public class DispatchController extends ControllerConfig {
             if(createDispatch!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchByBatchesAndStockId(createDispatch);
 
-                result= new GeneralResponse<>(x, "Invoice receipt successfully", true, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
+                result= new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
             }
             else
-                result= new GeneralResponse<>(null,"Invoice record can't be null", false, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
+                result= new GeneralResponse<>(null,commonMessage.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.designation.DesignationDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.DesignationServiceInterface;
@@ -18,6 +19,8 @@ public class DesignationServiceImpl implements DesignationServiceInterface
 
     @Autowired
     DesignationDao designationDao;
+
+    CommonMessage commonMessage;
 
     public int createDesignation(Designation designationData) {
 
@@ -55,11 +58,11 @@ public class DesignationServiceImpl implements DesignationServiceInterface
 
             Designation designationExist = designationDao.getDesignationById(id);
             if (designationExist == null)
-                throw new Exception("no designation found");
+                throw new Exception(commonMessage.Designation_Found);
 
             List<UserData> userDataList  = userService.getUserByDesignation(id);
             if(!userDataList.isEmpty())
-                throw new Exception("designation can't delete");
+                throw new Exception(commonMessage.User_Data_Exist);
 
 
             designationDao.deleteDesignationById(id);
@@ -81,7 +84,7 @@ public class DesignationServiceImpl implements DesignationServiceInterface
     public Boolean getDesignationIsDelatable(Long id) throws Exception {
         Designation designationExist = designationDao.getDesignationById(id);
         if(designationExist==null)
-            throw new Exception("no designation found");
+            throw new Exception(commonMessage.Designation_Not_Found);
 
         List<UserData> userDataList = userService.getUserByDesignation(designationExist.getId());
         if(userDataList.isEmpty())

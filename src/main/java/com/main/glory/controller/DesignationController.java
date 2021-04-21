@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.UserData;
@@ -25,6 +26,8 @@ public class DesignationController extends ControllerConfig {
     @Autowired
     LogServiceImpl logService;
 
+    CommonMessage commonMessage;
+
     @Autowired
     HttpServletRequest request;
 
@@ -41,11 +44,11 @@ public class DesignationController extends ControllerConfig {
         try{
             int flag = designationService.createDesignation(designationData);
             if(flag==1){
-                result = new GeneralResponse<>(true,"Designation created successfully", true, System.currentTimeMillis(), HttpStatus.OK,designationData);
+                result = new GeneralResponse<>(true,commonMessage.Designation_Added, true, System.currentTimeMillis(), HttpStatus.OK,designationData);
             }
             else
             {
-                result = new GeneralResponse<>(true,"Designation not created successfully", true, System.currentTimeMillis(), HttpStatus.OK,designationData);
+                result = new GeneralResponse<>(true,commonMessage.Designation_Not_Added, true, System.currentTimeMillis(), HttpStatus.OK,designationData);
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -65,9 +68,9 @@ public class DesignationController extends ControllerConfig {
 
             Boolean flag = designationService.getDesignationIsDelatable(id);
             if(flag)
-                result = new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, commonMessage.User_Data_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, commonMessage.Designation_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -87,11 +90,11 @@ public class DesignationController extends ControllerConfig {
         try{
             List<Designation> flag = designationService.getDesignation();
             if(flag!=null){
-                result = new GeneralResponse<>(flag,"Designation Fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag,commonMessage.Designation_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result = new GeneralResponse<>(flag,"Designation not Fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag,commonMessage.Designation_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -109,11 +112,11 @@ public class DesignationController extends ControllerConfig {
         try{
             Boolean flag = designationService.deleteDesignationById(id);
             if(flag){
-                result = new GeneralResponse<>(flag,"Designation deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag,commonMessage.Designation_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result = new GeneralResponse<>(flag,"Designation not found ", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag,commonMessage.Designation_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -132,7 +135,7 @@ public class DesignationController extends ControllerConfig {
         try{
 
             designationService.updateDesignation(designation);
-            result = new GeneralResponse<>(true,"Designation updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,designation);
+            result = new GeneralResponse<>(true,commonMessage.Designation_Updated, true, System.currentTimeMillis(), HttpStatus.OK,designation);
 
             logService.saveLog(result,request,debugAll);
 
