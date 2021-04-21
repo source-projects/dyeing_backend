@@ -6,6 +6,7 @@ import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
@@ -34,6 +35,8 @@ import java.util.*;
 
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
+
+    CommonMessage commonMessage;
 
     @Autowired
     ProductionPlanImpl productionPlanService;
@@ -277,7 +280,7 @@ public class DispatchMastImpl {
         //check the invoice sequece exist or not
         InvoiceSequence invoiceSequenceExist =invoiceSequenceDao.getSequence();
         if(invoiceSequenceExist==null)
-            throw new Exception("no sequence found");
+            throw new Exception(commonMessage.Invoice_Sequence_Not_Found );
 
 
         //invoice process
@@ -319,7 +322,7 @@ public class DispatchMastImpl {
             List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
 
             if (batchDataList.isEmpty())
-                throw new Exception("no batch data found");
+                throw new Exception(commonMessage.Batch_Data_Not_Found);
         }
 
 
@@ -393,7 +396,7 @@ public class DispatchMastImpl {
         //increament the invoice number to dispatch mast
 
 
-        DispatchMast dispatchMast =new DispatchMast();
+        DispatchMast dispatchMast =new DispatchMast(dispatchList);
         dispatchMast.setPrefix("inv");
         dispatchMast.setPartyId(party.get().getId());
         dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
@@ -471,6 +474,16 @@ public class DispatchMastImpl {
                 getAllDispatch.setPartyId(party.getId());
                 getAllDispatch.setPartyName(party.getPartyName());
                 getAllDispatch.setBatchList(batchList);
+                getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
+                Double mtr=0.0;
+                Double finish=0.0;
+                for(BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR:batchList)
+                {
+                    mtr += batchWithTotalMTRandFinishMTR.getMTR();
+                    finish+=batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
+                }
+                getAllDispatch.setTotalMtr(mtr);
+                getAllDispatch.setFinishMtr(finish);
 
                 dispatchDataList.add(getAllDispatch);
             }

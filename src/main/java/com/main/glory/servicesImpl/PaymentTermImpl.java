@@ -12,12 +12,10 @@ import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
 import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.AdvancePayment;
+import com.main.glory.model.paymentTerm.GetAllPayment;
 import com.main.glory.model.paymentTerm.PaymentData;
 import com.main.glory.model.paymentTerm.PaymentType;
-import com.main.glory.model.paymentTerm.request.AddPaymentMast;
-import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
-import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
-import com.main.glory.model.paymentTerm.request.PendingInvoice;
+import com.main.glory.model.paymentTerm.request.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,10 +107,8 @@ public class PaymentTermImpl {
             for(QualityBillByInvoiceNumber p:data.getQualityList())
             {
                 amt+=p.getAmt();
-
-
             }
-            GetPendingDispatch getPendingDispatch=new GetPendingDispatch();
+            GetPendingDispatch getPendingDispatch=new GetPendingDispatch(dispatchMast);
             getPendingDispatch.setAmt(amt);
             getPendingDispatch.setDate(dispatchMast.getCreatedDate().toString());
             getPendingDispatch.setInvoicNo(dispatchMast.getPostfix().toString());
@@ -206,5 +202,43 @@ public class PaymentTermImpl {
     public List<PaymentMast> getAllPaymentByPartyId(Long id) {
         List<PaymentMast> list = paymentMastDao.findByPartyId(id);
         return list;
+    }
+
+    public List<GetAllBank> getAllBankName() {
+        List<String> getAllBanks =  paymentDataDao.getAllBankOfPaymentData();
+        List<GetAllBank> getAllBankList = new ArrayList<>();
+        getAllBanks.forEach(e->{
+            getAllBankList.add(new GetAllBank(e));
+        });
+        return getAllBankList;
+    }
+
+    private List<GetAllBank> getAllBanksResponse(List<String> getAllBanks) {
+        List<GetAllBank> getAllBankList = new ArrayList<>();
+
+        List<String> getAllBankName=new ArrayList<>();
+        getAllBanks.forEach(e->{
+            if(!getAllBankName.contains(e))
+            {
+                getAllBankName.add(e);
+                getAllBankList.add(new GetAllBank(e));
+            }
+        });
+        return getAllBankList;
+    }
+
+    public List<GetAllPayment> getAllPaymentWithPartyName() {
+        return paymentMastDao.getAllPaymentWithPartyName();
+    }
+
+    public List<GetAllBank> getAllAdvanceBankName() {
+
+        List<String> getAllBanks =  advancePaymentDao.getAllBankOfAdvancePaymentData();
+        List<GetAllBank> getAllBankList = new ArrayList<>();
+        getAllBanks.forEach(e->{
+            getAllBankList.add(new GetAllBank(e));
+        });
+
+        return getAllBankList;
     }
 }

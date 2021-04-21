@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,16 +31,16 @@ public class BatchData {
     Double wt;
     String batchId;
     Long controlId;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isProductionPlanned;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isExtra;
-    @Column(columnDefinition = "integer default 0")
+    @ColumnDefault("0")
     Long sequenceId;
     Double finishMtr;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isBillGenrated;
-    @Column(columnDefinition = "boolean default false")
+    @ColumnDefault("false")
     Boolean isFinishMtrSave;
     String mergeBatchId;
 
@@ -54,11 +55,11 @@ public class BatchData {
         this.mtr=other.mtr;
         this.wt=other.wt;
         this.batchId=other.batchId;
-        this.controlId=other.controlId;
+        this.controlId=other.controlId==null?0:other.getControlId();
         this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
         this.isExtra=other.isExtra==null?false:other.getIsExtra();
         this.sequenceId=other.sequenceId==null?0l:other.getSequenceId();
-        this.finishMtr=other.finishMtr;
+        this.finishMtr=other.finishMtr==null?0:other.getFinishMtr();
         this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();
         this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
 

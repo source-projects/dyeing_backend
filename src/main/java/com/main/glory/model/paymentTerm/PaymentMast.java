@@ -42,26 +42,11 @@ public class PaymentMast {
     Date updatedDate;
 
 
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "paymentBunchId", referencedColumnName = "id")
-    private List<DispatchMast> dispatchMastList;
-
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "paymentBunchId", referencedColumnName = "id")
-    private List<AdvancePayment> advancePayList;
-
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<PaymentData> paymentData;
 
     public PaymentMast(AddPaymentMast paymentMast) {
-
         this.partyId=paymentMast.getPartyId();
         this.totalBill=paymentMast.getTotalBill();
         this.GstAmt=paymentMast.getGstAmt();
@@ -76,6 +61,26 @@ public class PaymentMast {
         this.createdBy=paymentMast.getCreatedBy();
         this.updatedBy=paymentMast.getUpdatedBy();
 
+    }
+
+    public PaymentMast(PaymentMast paymentMast) {
+        this.id=paymentMast.getId();
+        this.diffDetail = paymentMast.getDiffDetail();
+        this.rdDetail = paymentMast.getRdDetail();
+        this.createdDate = paymentMast.getCreatedDate();
+        this.partyId=paymentMast.getPartyId();
+        this.totalBill=paymentMast.getTotalBill();
+        this.GstAmt=paymentMast.getGstAmt();
+        this.rdAmt=paymentMast.getRdAmt();
+        this.rdDetail=paymentMast.getRdDetail();
+        this.cdAmt=paymentMast.getCdAmt();
+        this.cdDetail=paymentMast.getCdDetail();
+        this.amtToPay=paymentMast.getAmtToPay();
+        this.amtPaid=paymentMast.getAmtPaid();
+        this.otherDiff=paymentMast.getOtherDiff();
+        this.diffDetail=paymentMast.getDiffDetail();
+        this.createdBy=paymentMast.getCreatedBy();
+        this.updatedBy=paymentMast.getUpdatedBy();
     }
 
     @PrePersist

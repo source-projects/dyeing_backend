@@ -31,7 +31,7 @@ public class QualityProcessController extends ControllerConfig {
 	@Autowired
 	ModelMapper modelMapper;
 
-	@PostMapping("/qualityprocess")
+	/*@PostMapping("/qualityprocess")
 	public GeneralResponse<Boolean> addQualityProcess(@RequestBody QualityProcessMast qualityProcessMast){
 		try{
 			if(qualityProcessMast == null){
@@ -129,5 +129,5 @@ public class QualityProcessController extends ControllerConfig {
 			return  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
 		}
 	}
-
+*/
 }

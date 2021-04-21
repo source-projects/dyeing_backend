@@ -24,7 +24,7 @@ public class AdvancePayment {
     Double amt;
     Long partyId;
     Long creditId;
-    Long paymentBunchId;
+    Long paymentBunchId;//payment mast id
     String remark;
     Long payTypeId;
     String bank;

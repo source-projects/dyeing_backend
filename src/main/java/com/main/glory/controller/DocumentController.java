@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class DocumentController extends ControllerConfig {
     @Autowired
     DocumentImpl documentService;
-
+/*
     @PostMapping("/Document/")
     public ResponseEntity<GeneralResponse<Boolean>> GetDocument(@RequestBody GetDocumentModel documentModel){
         GeneralResponse<Boolean> result;
@@ -31,5 +31,5 @@ public class DocumentController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
-    }
+    }*/
 }

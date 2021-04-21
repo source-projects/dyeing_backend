@@ -30,6 +30,7 @@ public class TaskDetail extends TaskData {
     String taskName;
     Long completedDays;
     Boolean assignBySameUser;
+    Long createdBy;
 
 
 
@@ -45,9 +46,11 @@ public class TaskDetail extends TaskData {
         this.detail = taskMast.getDetail();
         this.taskPriority = taskMast.getTaskPriority();
         this.taskType = taskMast.getTaskType();
+        this.createdBy = taskMast.getCreatedBy();
     }
 
-    public TaskDetail(TaskDetail taskData) {
+    public TaskDetail(TaskDetail taskData,TaskMast taskMast) {
+        //this.setCreatedBy(taskData.getCreatedBy());
         this.setId(taskData.getId());
         this.setControlId(taskData.getControlId());
         this.setAssignUserId(taskData.getAssignUserId());
@@ -59,5 +62,9 @@ public class TaskDetail extends TaskData {
         this.setTaskCompletedDate(taskData.getTaskCompletedDate());
         this.setCreatedDate(taskData.getCreatedDate());
         this.setReportUrl(taskData.getReportUrl());
+        this.detail = taskMast.getDetail();
+        this.taskPriority = taskMast.getTaskPriority();
+        this.taskType = taskMast.getTaskType();
+        this.createdBy = taskMast.getCreatedBy();
     }
 }

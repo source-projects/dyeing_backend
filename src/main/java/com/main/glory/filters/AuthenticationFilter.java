@@ -57,8 +57,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			/*if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
-			}
-*/
+			}*/
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
 			method = request.getMethod();
@@ -66,7 +65,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if( path.startsWith("login")  || request.getRequestURI().contains("machine") || request.getRequestURI().contains("db") || request.getRequestURI().contains("task") || request.getRequestURI().contains("testing")){
+		if( path.startsWith("login")  || path.startsWith("admin")  || request.getRequestURI().contains("machine") || request.getRequestURI().contains("db") || request.getRequestURI().contains("task") || request.getRequestURI().contains("testing")){
 			chain.doFilter(request, response);
 			return;
 		}

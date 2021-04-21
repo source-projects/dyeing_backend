@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("employeeServiceImpl")
@@ -30,6 +31,11 @@ public class EmployeeServiceImpl {
     @Autowired
     EmployeeSequenceDao employeeSequenceDao;
 
+    /*
+
+    *We are getting empId from FE always not id
+
+     */
     @Transactional
     public Long addEmployeeRecord(EmployeeMast record) throws Exception {
 
@@ -100,13 +106,38 @@ public class EmployeeServiceImpl {
         employeeMastDao.deleteByEmployeeId(id);
     }
 
-    public Long addEmployeeDataRecord(EmployeeData record) {
+    public Long addEmployeeDataRecord(EmployeeData record) throws Exception {
+        //we are getting empId not id from the FE
+        //check the empId is exist
+        EmployeeMast employeeMastExist = employeeMastDao.getEmployeeByEmpId(record.getControlId());
+        if(employeeMastExist==null)
+            throw new Exception("no record found");
+
+        record.setControlId(employeeMastExist.getId());
         EmployeeData employeeData = employeeDataDao.saveAndFlush(record);
-        return employeeData.getId() ;
+        return employeeData.getId();
     }
 
 
     public EmployeeMast getEmployeeByEmpId(Long id) {
         return employeeMastDao.getEmployeeByEmpId(id);
+    }
+
+    public List<EmployeeMast> getEmployeeByEmpIdOrName(String id) {
+        //check that the id is id or name
+        List<EmployeeMast> employeeMastList=new ArrayList<>();
+        try
+        {
+            Long numberConvertable =Long.parseLong(id);
+            employeeMastList = employeeMastDao.getEmployeeByLikeEmpId(id);
+
+            return employeeMastList;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            employeeMastList = employeeMastDao.getEmployeeByName(id);
+            return employeeMastList;
+        }
     }
 }

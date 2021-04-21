@@ -121,11 +121,11 @@ public class GetJetData {
 
     public GetJetData(GetAllProductionWithShadeData data, JetData jetData, ShadeMast colorTone, DyeingProcessMast dyeingProcessMast) {
         this.id=jetData.getId();
+        this.batchId=data.getBatchId();
         this.controlId=jetData.getControlId();
         this.status=jetData.getStatus().toString();
         this.sequence=jetData.getSequence();
         this.productionId=jetData.getProductionId();
-        this.batchId=data.getBatchId();
         this.colorTone=colorTone.getColorTone()==null?null:colorTone.getColorTone();
         this.partyId=data.getPartyId();
         this.partyName=data.getPartyName();

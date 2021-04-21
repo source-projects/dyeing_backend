@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
@@ -35,6 +36,8 @@ import com.main.glory.services.QualityServiceInterface;
 
 @Service("qualityServiceImp")
 public class QualityServiceImp  {
+
+    CommonMessage commonMessage;
 
     @Autowired
     ProgramServiceImpl programService;
@@ -255,7 +258,7 @@ public class QualityServiceImp  {
 
 
         if (!qualityLists.isPresent())
-            throw new Exception("No quality found");
+            throw new Exception(commonMessage.Quality_Data_Not_Found);
 
 
         QualityParty qualityParties = new QualityParty(qualityLists.get());
@@ -278,10 +281,10 @@ public class QualityServiceImp  {
 
         Party partName = partyDao.findByPartyId(partyId);
         if (partName==null)
-            throw new Exception("No such Party id available with id:" + partyId);
-        if (!qualityList.isPresent()) {
+            throw new Exception(commonMessage.Party_Data_Not_Found + partyId);
+       /* if (!qualityList.isPresent()) {
             throw new Exception("Add Quality data for partyId:" + partyId);
-        }
+        }*/
         PartyQuality partyQualityData = new PartyQuality();
 
         List<QualityData> qualityDataList = new ArrayList<>();
@@ -306,7 +309,7 @@ public class QualityServiceImp  {
 
 
         if (partyQualityData == null)
-            throw new Exception("no data faund");
+            throw new Exception(commonMessage.Quality_Data_Not_Found);
 
         return partyQualityData;
 
@@ -335,11 +338,11 @@ public class QualityServiceImp  {
         Optional<List<Quality>> QualityList = qualityDao.findByUserHeadId(userHeadId);
 
         if (!QualityList.isPresent()) {
-            throw new Exception("No quality found for master:" + userHeadId);
+            throw new Exception(commonMessage.Quality_Data_Not_Found_ByMaster + userHeadId);
         }
         List<PartyWithMasterName> partyList = partyDao.findByUserHeadId(userHeadId);
         if (partyList.isEmpty()) {
-            throw new Exception("No party found for master:" + userHeadId);
+            throw new Exception(commonMessage.Party_Data_Found_ByMaster + userHeadId);
         }
 
         List<PartyQuality> partyQualityList = new ArrayList<>();
@@ -495,5 +498,9 @@ public class QualityServiceImp  {
 
     public List<Quality> getQualityByCreatedByAndUserHeadId(Long id) {
         return qualityDao.getAllQualityWithIdAndUserHeadId(id,id);
+    }
+
+    public Quality getQualityByStockId(Long controlId) {
+        return qualityDao.getQualityByStockId(controlId);
     }
 }

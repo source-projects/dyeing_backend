@@ -1,20 +1,24 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
+import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
+import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -27,6 +31,8 @@ import java.util.*;
 @Service("dyeingSlipServiceImpl")
 public class DyeingSlipServiceImpl {
 
+    @Autowired
+    BatchDao batchDao;
     @Autowired
     SupplierServiceImpl supplierService;
 
@@ -433,5 +439,57 @@ public class DyeingSlipServiceImpl {
         }
 
         return list;
+    }
+
+    public BatchResponseWithSlip getAdditionalDyeingSlipForPrintById(Long id) throws Exception {
+        DyeingSlipData data = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(id);
+        if(data==null)
+            throw new Exception("no additional process found");
+
+        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
+
+        BatchResponseWithSlip dyeingSlipMast =null;
+        ProductionPlan productionPlan = productionPlanService.getById(dyeingSlipMastExist.getProductionId());
+        String qualityId=null;
+        Double totalWt;
+        ShadeMast shadeMast=null;
+        Long batchCount=0l;
+        if(productionPlan.getIsMergeBatchId()==true)
+        {
+            totalWt = batchDao.getTotalWtByMergeBatchIdWithProduction(productionPlan.getBatchId());
+            if(productionPlan.getIsDirect()==false)
+            {
+                shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
+                batchCount++;
+            }
+
+            //multi quality
+            List<GetBatchWithControlId> batchWithControlIdList = batchDao.getBatchesByMergeBatchId(productionPlan.getBatchId());
+            for(GetBatchWithControlId batch:batchWithControlIdList)
+            {
+               Quality quality = qualityServiceImp.getQualityByStockId(batch.getControlId());
+               qualityId=(qualityId==null?quality.getQualityId():qualityId+","+quality.getQualityId());
+            }
+        }
+        else
+        {
+            totalWt = batchDao.getTotalWtByBatchIdWithProduction(productionPlan.getBatchId());
+            if(productionPlan.getIsDirect()==false)
+            {
+                shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
+            }
+            Long stockId = batchDao.getControlIdByBatchId(productionPlan.getBatchId());
+            Quality quality = qualityServiceImp.getQualityByStockId(stockId);
+
+            batchCount=1l;
+        }
+
+
+        dyeingSlipMast=new BatchResponseWithSlip(data,shadeMast,totalWt,qualityId,batchCount);
+
+
+        return dyeingSlipMast;
+
+
     }
 }
