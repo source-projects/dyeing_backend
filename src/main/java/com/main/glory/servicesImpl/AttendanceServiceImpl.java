@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.employee.AttendanceDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.request.FilterAttendance;
@@ -23,6 +24,8 @@ public class AttendanceServiceImpl {
 
      */
 
+    CommonMessage commonMessage;
+
     @Autowired
     EmployeeServiceImpl employeeService;
     @Autowired
@@ -31,7 +34,7 @@ public class AttendanceServiceImpl {
     public Attendance saveAttendance(Attendance record) throws Exception {
         EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
         if(employeeMast==null)
-            throw new Exception("no record found");
+            throw new Exception(commonMessage.Employee_Not_Found);
 
         record.setControlId(employeeMast.getId());
         Attendance attendance = attendanceDao.save(record);
@@ -42,7 +45,7 @@ public class AttendanceServiceImpl {
 
         EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
         if(employeeMast==null)
-            throw new Exception("no record found");
+            throw new Exception(commonMessage.Employee_Not_Found);
 
         record.setControlId(employeeMast.getId());
 
@@ -64,7 +67,7 @@ public class AttendanceServiceImpl {
         EmployeeMast employeeMast =employeeService.getEmployeeByEmpId(id);
 
         if(employeeMast==null)
-            throw new Exception("no employee found");
+            throw new Exception(commonMessage.Employee_Not_Found);
 
         return attendanceDao.getAllAttendanceByEmployeeId(employeeMast.getId());
 
@@ -79,7 +82,7 @@ public class AttendanceServiceImpl {
         EmployeeWithAttendance employeeWithAttendance=null;
         EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(id);
         if(employeeMastExist==null)
-            throw new Exception("no employee record");
+            throw new Exception(commonMessage.Employee_Not_Found);
 
         Attendance attendance = attendanceDao.getLatestAttendanceRecordByEmployeeId(employeeMastExist.getId());
 
@@ -117,7 +120,7 @@ public class AttendanceServiceImpl {
 
             EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(filterAttendance.getControlId());
             if(employeeMastExist==null)
-                throw new Exception("no employee record found");
+                throw new Exception(commonMessage.Employee_Not_Found);
 
             EmployeeAttendanceResponse employeeAttendanceResponse = attendanceDao.getAttendanceBasedOnFilter(employeeMastExist.getId(),filterAttendance.getFromDate(),filterAttendance.getToDate());
             if(employeeAttendanceResponse!=null)
@@ -132,7 +135,7 @@ public class AttendanceServiceImpl {
         EmployeeWithAttendance employeeWithAttendance=null;
         EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(record.getId());
         if(employeeMastExist==null)
-            throw new Exception("no employee record");
+            throw new Exception(commonMessage.Employee_Not_Found);
 
         Attendance attendance = attendanceDao.getAttendanceByIdDateAndShift(employeeMastExist.getId(),record.getShift(),record.getDate());
 

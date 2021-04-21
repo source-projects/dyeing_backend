@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.batch.BatchMast;
 import com.main.glory.model.color.ColorBox;
@@ -31,8 +32,8 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ColorController extends ControllerConfig {
 
-	@Autowired
-	BoilerRecordImpl boilerRecordService;
+
+	CommonMessage commonMessage;
 
 	@Autowired
 	LogServiceImpl logService;
@@ -55,10 +56,10 @@ public class ColorController extends ControllerConfig {
 		try {
 			Optional<Supplier> supplier = supplierDao.findById(colorMast.getSupplierId());
 			if(supplier.isEmpty())
-				result= new GeneralResponse<>(null, "No supplier found with id: "+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				result= new GeneralResponse<>(null, commonMessage.Supplier_Not_Found+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 			else {
 				colorService.addColor(colorMast,headers.get("id"));
-				result = new GeneralResponse<>(true, "Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				result = new GeneralResponse<>(true, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 
 			}
 			logService.saveLog(result,request,debugAll);
@@ -84,9 +85,9 @@ public class ColorController extends ControllerConfig {
 					//System.out.println(obj);
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
-						result = new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(obj, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {
-						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 
 
@@ -94,22 +95,22 @@ public class ColorController extends ControllerConfig {
 				case "group":
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
-						result = new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(obj, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {
-						result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 					break;
 				case "all":
 					obj = colorService.getAll(null,null);
 					if(!obj.isEmpty()){
-						result = new GeneralResponse<>(obj, "Data Fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(obj, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {
-						result = new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 
 					break;
 				default:
-					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result = new GeneralResponse<>(null, commonMessage.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
 			}
@@ -128,7 +129,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try {
 			colorService.updateColor(colorMast);
-			result = new GeneralResponse<>(true, "color updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+			result = new GeneralResponse<>(true, commonMessage.Color_Updated, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
@@ -144,7 +145,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try{
 			colorService.deleteColorById(id);
-			result = new GeneralResponse<>(true, "deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(true, commonMessage.Color_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -160,12 +161,12 @@ public class ColorController extends ControllerConfig {
 		if (id != null) {
 			var colorData = colorService.getColorById(id);
 			if (colorData!=null) {
-				result = new GeneralResponse<>(colorData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(colorData.get(), commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			} else
-				result = new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} else {
-			result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+			result = new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -176,7 +177,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<ColorBox>,Object> result;
 		try {
 			List<ColorBox> colorBoxes = colorService.getAllBox(issued);
-			result = new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(colorBoxes, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -191,7 +192,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<GetAllBox>,Object> result;
 		try {
 			List<GetAllBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId,issued);
-			result = new GeneralResponse<>(colorBoxes, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(colorBoxes, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -207,9 +208,9 @@ public class ColorController extends ControllerConfig {
 		try {
 			List<SupplierItemWithLeftColorQty> records = colorService.getSupplierItemWithAvailableStock();
 			if(records.isEmpty())
-				result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			else
-			result = new GeneralResponse<>(records, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(records, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -225,7 +226,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try {
 			colorService.issueBox(issueBoxRequest);
-			result = new GeneralResponse<>(true, "Box issued successfully", true, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
+			result = new GeneralResponse<>(true, commonMessage.Color_Issue, true, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
@@ -240,7 +241,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<GetAllBox>,Object> response;
 		try {
 			List<GetAllBox> list = colorService.getAllColorBoxes();
-			response= new GeneralResponse<>(list, "Box issued successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			response= new GeneralResponse<>(list, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(response,request,debugAll);
 		} catch (Exception e) {
 			response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());

@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatch;
@@ -27,6 +28,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class BasicController extends ControllerConfig {
+
+    CommonMessage commonMessage;
 
     @Autowired
     LogServiceImpl logService;
@@ -63,9 +66,9 @@ public class BasicController extends ControllerConfig {
             // String quality="sndkjabn";
             QualityParty qualityParties = qualityServiceImp.getAllQualityWithParty(id);
             if (qualityParties != null) {
-                result = new GeneralResponse<>(qualityParties, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityParties, commonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(null, "No data found for given id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.Quality_Data_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -85,9 +88,9 @@ public class BasicController extends ControllerConfig {
             // String quality="sndkjabn";
             PartyQuality partyQualities = qualityServiceImp.getAllPartyWithQuality(partyId);
             if (partyQualities != null) {
-                result= new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(partyQualities, commonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(null, "No data found for given id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, commonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -106,9 +109,9 @@ public class BasicController extends ControllerConfig {
 
             List<PartyQuality> partyQualities = qualityServiceImp.getAllPartyWithQualityByMaster(userHeadId);
             if (partyQualities != null) {
-                result= new GeneralResponse<>(partyQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(partyQualities,commonMessage.PartyQuality_Data_Found , true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result =  new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(null, commonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -148,9 +151,9 @@ public class BasicController extends ControllerConfig {
         try {
             List<GetAllBatchWithProduction> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
             if (batchDataList != null) {
-                result =  new GeneralResponse<>(batchDataList, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(batchDataList, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result =  new GeneralResponse<>(null, "No data found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(null, commonMessage.StockBatch_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -169,9 +172,9 @@ public class BasicController extends ControllerConfig {
         try {
             List<GetShadeByPartyAndQuality> shadeListByPartyAndQualities = shadeService.getAllShadeByPartyAndQuality(partyId, qualityId);
             if (shadeListByPartyAndQualities != null) {
-                result= new GeneralResponse<>(shadeListByPartyAndQualities, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(shadeListByPartyAndQualities, commonMessage.StockBatch_Found_ByPartyQuality, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result =  new GeneralResponse<>(null, "No shade data found for given id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(null, commonMessage.StockBatch_Not_Found_ByMaster, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -193,14 +196,14 @@ public class BasicController extends ControllerConfig {
             if (partyId != null) {
                 List<GetAllBatch> stockMast = stockBatchService.getBatchListByPartyWithoutProductionPlan(partyId);
                 if (stockMast != null) {
-                    result =  new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result =  new GeneralResponse<>(stockMast, commonMessage.StockBatch_Found_ByParty, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result = new GeneralResponse<>(null, "no data found for party: " + partyId, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, commonMessage.StockBatch_Not_Found_ByParty + partyId, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
 
                 logService.saveLog(result,request,debugAll);
             } else {
-                result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 logService.saveLog(result,request,true);
             }
 
@@ -223,13 +226,13 @@ public class BasicController extends ControllerConfig {
             if (qualityId != null) {
                 List<GetAllBatch> stockMast = stockBatchService.getBatchListByQualityWithoutProductionPlan(qualityId);
                 if (stockMast != null) {
-                    result = new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(stockMast, commonMessage.Quality_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result= new GeneralResponse<>(null, "no data found for quality id: " + qualityId, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null,commonMessage.Quality_Data_Not_Found + qualityId, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
                 logService.saveLog(result,request,debugAll);
             } else {
-                result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 logService.saveLog(result,request,true);
             }
         } catch (Exception e) {
@@ -248,9 +251,9 @@ public class BasicController extends ControllerConfig {
         try {
             List<StockMast> stockMast = stockBatchService.getAllStockWithoutPlan();
             if (stockMast != null) {
-                result =  new GeneralResponse<>(stockMast, "Fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(stockMast, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(null, "no data found  "  , false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.StockBatch_Not_Found  , false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
             logService.saveLog(result,request,debugAll);

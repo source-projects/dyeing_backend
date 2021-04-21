@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.BoilerMachineRecord;
@@ -35,20 +36,22 @@ public class BoilerController extends ControllerConfig {
     @Autowired
     HttpServletRequest request;
 
+    CommonMessage commonMessage;
+
     @PostMapping(value="/machine/boilerRecord")
     public ResponseEntity<GeneralResponse<Boolean,Object>> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
         if(boilerMachineRecord==null)
         {
-            result = new GeneralResponse<>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
         }
 
         boolean flag;
         try {
 
             boilerRecordService.saveMachine(boilerMachineRecord);
-            result = new GeneralResponse<>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,boilerMachineRecord);
+            result = new GeneralResponse<>(null, commonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,boilerMachineRecord);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -66,7 +69,7 @@ public class BoilerController extends ControllerConfig {
         GeneralResponse<List<BoilerMachineRecord>,Object> result;
         if(filter==null)
         {
-            result = new GeneralResponse<>(null, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -75,9 +78,9 @@ public class BoilerController extends ControllerConfig {
 
             List<BoilerMachineRecord> list = boilerRecordService.getBoilerRecordBasedOnFilter(filter);
             if(list!=null)
-            result = new GeneralResponse<>(list, "Machine fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            result = new GeneralResponse<>(list, commonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null, commonMessage.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
@@ -99,10 +102,10 @@ public class BoilerController extends ControllerConfig {
             List<BoilerMachineRecord> machineMasts = boilerRecordService.getAllMachineRecord();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result = new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, commonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -124,10 +127,10 @@ public class BoilerController extends ControllerConfig {
             List<BoilerFilter> machineRecord = boilerRecordService.getDataBasedOnFilter(record);
             if(machineRecord.isEmpty())
             {
-                result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(null, commonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-            result = new GeneralResponse<>(machineRecord, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(machineRecord, commonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
 
@@ -153,10 +156,10 @@ public class BoilerController extends ControllerConfig {
             flag = boilerRecordService.updateRecord(record);
             if(flag==true)
             {
-                result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(true, commonMessage.Machine_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-            result = new GeneralResponse<>(false, "Data not updated", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(false, commonMessage.Machine_Data_Not_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }

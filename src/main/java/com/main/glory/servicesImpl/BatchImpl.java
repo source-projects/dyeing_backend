@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetCompleteFinishMtrDetail;
@@ -29,6 +30,8 @@ public class BatchImpl {
     PartyServiceImp partyServiceImp;
     @Autowired
     QualityServiceImp qualityServiceImp;
+
+    CommonMessage commonMessage;
 
     public boolean isBatchIdExists(String name, Long id){
 
@@ -161,7 +164,7 @@ public class BatchImpl {
             }
 
             if (batchData.isEmpty())
-                throw new Exception("Batch is not available for batchId:" + batchId);
+                throw new Exception(commonMessage.StockBatch_Not_Found + batchId);
 
             return batchData;
         }catch (Exception e)
@@ -231,7 +234,7 @@ public class BatchImpl {
     public void deleteBatch(Long id) throws Exception {
         Optional<BatchData> batchData = batchDao.findById(id);
         if(!batchData.isPresent())
-            throw new Exception("Batch not found");
+            throw new Exception(commonMessage.Batch_Data_Not_Found);
 
         batchDao.deleteById(id);
     }
