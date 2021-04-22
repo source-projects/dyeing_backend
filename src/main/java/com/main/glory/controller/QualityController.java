@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.QualityName;
@@ -54,14 +55,14 @@ public class QualityController extends ControllerConfig {
 
             Optional<Party> party = partyDao.findById(quality.getPartyId());
             if(party.isEmpty()){
-                throw new Exception("No party present with id:"+quality.getPartyId());
+                throw new Exception(CommonMessage.Party_Not_Exist);
             }
 
             int flag = qualityServiceImp.saveQuality(quality,headers.get("id"));
             if (flag == 1)
-                result= new GeneralResponse<>(null, "Quality Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.CREATED,quality);
+                result= new GeneralResponse<>(null, CommonMessage.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,quality);
             else
-                result= new GeneralResponse<>(null, "Please Enter Valid Data", false, System.currentTimeMillis(), HttpStatus.OK,quality);
+                result= new GeneralResponse<>(null, CommonMessage.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,quality);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,23 +81,23 @@ public class QualityController extends ControllerConfig {
                 case "own":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        result =  new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result =  new GeneralResponse<>(x, CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     else
-                        result = new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result = new GeneralResponse<>(x, CommonMessage.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     break;
                 case "group":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     else
-                        result= new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, CommonMessage.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     break;
                 case "all":
                     x = qualityServiceImp.getAllQuality(null, null);
                     if(!x.isEmpty())
-                        result= new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     else
-                        result= new GeneralResponse<>(x, "No quality added yet", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, CommonMessage.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                     break;
                 default:
@@ -120,18 +121,18 @@ public class QualityController extends ControllerConfig {
         try {
             Optional<Party> party = partyDao.findById(quality.getPartyId());
             if(party.isEmpty()){
-                throw new Exception("No party present with id:"+quality.getPartyId());
+                throw new Exception(CommonMessage.Party_Not_Exist+quality.getPartyId());
             }
             if (quality.getId() != null) {
                 boolean flag = qualityServiceImp.updateQuality(quality);
                 if (flag) {
-                    result= new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(true, CommonMessage.Quality_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result = new GeneralResponse<>(false, "No such id found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(false, CommonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             }
             else {
-                result = new GeneralResponse<>(false, "Null quality Object", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch(Exception e){
@@ -151,11 +152,11 @@ public class QualityController extends ControllerConfig {
             if (id != null) {
                 var qualityData = qualityServiceImp.getQualityByID(id);
                 if (qualityData == null) {
-                    result = new GeneralResponse<>(null, "No quality data found ", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(null, CommonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 } else
-                    result = new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(qualityData, CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             } else
-                result = new GeneralResponse<>(null, "Null Id Passed!", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }catch (Exception e)
@@ -175,9 +176,9 @@ public class QualityController extends ControllerConfig {
         try {
             var qualityData = qualityServiceImp.getAllQualityNameData();
             if (qualityData.isEmpty()) {
-                result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else
-                result = new GeneralResponse<>(qualityData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityData.get(), CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
@@ -195,13 +196,13 @@ public class QualityController extends ControllerConfig {
 
         try {
             if (id == null)
-                throw new Exception("null id passed");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             var qualityData = qualityServiceImp.getQualityNameDataById(id);
             if (qualityData.isEmpty()) {
-                result = new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else
-                result = new GeneralResponse<>(qualityData.get(), "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityData.get(), CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -222,11 +223,11 @@ public class QualityController extends ControllerConfig {
 
             List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityDataWithHeaderId(headers.get("id"));
             if (qualityData == null) {
-                result =  new GeneralResponse<>(null, "No quality found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(null, CommonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else {
 
-                result = new GeneralResponse<>(qualityData, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityData, CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
@@ -260,12 +261,12 @@ public class QualityController extends ControllerConfig {
             if (quality_id != null) {
                 Boolean flag = qualityServiceImp.getQualityIsExist(quality_id, id);
                 if (flag) {
-                    result = new GeneralResponse<>(true, "found successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(true, CommonMessage.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 } else
-                    result = new GeneralResponse<>(false, "quality id not found", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(false, CommonMessage.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 logService.saveLog(result, request, debugAll);
             } else
-                result = new GeneralResponse<>(false, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -284,13 +285,13 @@ public class QualityController extends ControllerConfig {
             if (id != null) {
                 boolean flag = qualityServiceImp.deleteQualityById(id);
                 if (flag) {
-                    result =  new GeneralResponse<>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result =  new GeneralResponse<>(true, CommonMessage.Quality_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result= new GeneralResponse<>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(false, CommonMessage.Quality_Data_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             }
             else {
-                result = new GeneralResponse<>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
             logService.saveLog(result, request, debugAll);

@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
@@ -36,6 +37,8 @@ public class EmployeeController extends ControllerConfig {
     @Autowired
     EmployeeServiceImpl employeeService;
 
+    CommonMessage commonMessage;
+
     @PostMapping(value = "/employee/add")
     public ResponseEntity<GeneralResponse<Long,Object>> addEmployee(@RequestBody EmployeeMast record) throws Exception {
 
@@ -43,12 +46,12 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
 
             Long id= employeeService.addEmployeeRecord(record);
 
-            result= new GeneralResponse<>(id, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -67,12 +70,12 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
 
             Long id= employeeService.addEmployeeDataRecord(record);
 
-            result= new GeneralResponse<>(id, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, commonMessage.Employee_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -92,12 +95,12 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(record == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
 
             Long id= employeeService.updateEmployeeRecord(record);
 
-            result= new GeneralResponse<>(id, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, commonMessage.Employee_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -117,15 +120,15 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(id == null)
-                throw new Exception("null data passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
 
             EmployeeMast employeeMast= employeeService.getEmployeeById(id);
 
             if(employeeMast!=null)
-            result= new GeneralResponse<>(employeeMast, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-            result= new GeneralResponse<>(null, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -151,9 +154,9 @@ public class EmployeeController extends ControllerConfig {
             List<EmployeeMast> employeeMast= employeeService.getAllEmployee();
 
             if(employeeMast.size()>0)
-                result= new GeneralResponse<>(employeeMast, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(employeeMast, " Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -174,10 +177,10 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(id==null)
-                throw new Exception("null id passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
 
             employeeService.deleteEmployeeById(id);
-            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, commonMessage.Employee_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }

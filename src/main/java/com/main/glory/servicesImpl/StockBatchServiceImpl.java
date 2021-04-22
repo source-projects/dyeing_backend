@@ -17,7 +17,6 @@ import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
-import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.party.Party;
@@ -111,7 +110,7 @@ public class StockBatchServiceImpl {
         List<BatchData> batchDataList = new ArrayList<>();
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
         if(party==null)
-            throw new Exception("no party found");
+            throw new Exception(CommonMessage.Party_Not_Exist);
         Long max=0l,batchId=0l;
         Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
@@ -119,14 +118,14 @@ public class StockBatchServiceImpl {
         Optional<Quality> quality=qualityDao.findById(stockMast.getQualityId());
 
             if (!quality.isPresent()) {
-                throw new Exception("Insert Quality first");
+                throw new Exception(CommonMessage.Quality_Data_Not_Found);
             }
             else
             {
                 for(BatchData batchData:stockMast.getBatchData())
                 {
                     if(batchData.getBatchId()==null)
-                        throw new Exception("batch id can't be null");
+                        throw new Exception(CommonMessage.Null_Record_Passed);
 
                     batchData=new BatchData(batchData);
                     batchDataList.add(batchData);
@@ -147,7 +146,7 @@ public class StockBatchServiceImpl {
                 //check the invoice sequence
                 BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
                 if(batchSequence==null)
-                    throw new Exception("add batch sequence first");
+                    throw new Exception(CommonMessage.Batch_Sequence_Not_Exist);
 
                 if(max >= batchSequence.getSequence())
                 {
@@ -312,7 +311,7 @@ public class StockBatchServiceImpl {
 
             Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
             if (original.isEmpty()) {
-                throw new Exception("No such batch present with id:" + stockMast.getId());
+                throw new Exception(CommonMessage.StockBatch_Not_Found+ stockMast.getId());
             }
 
             // Validate, if batch is not given to the production planning then throw the exception
@@ -411,7 +410,7 @@ public class StockBatchServiceImpl {
     public void deleteStockBatch(Long id) throws Exception{
         Optional<StockMast> stockMast = stockMastDao.findById(id);
         if(stockMast.isEmpty()){
-            throw new Exception("No such stock batch present with id:"+id);
+            throw new Exception(CommonMessage.StockBatch_Not_Found+id);
         }
 
         if(Objects.equals(stockMast.get().getIsProductionPlanned(),true)){
@@ -435,7 +434,7 @@ public class StockBatchServiceImpl {
 
 
         if(batchData.isEmpty())
-            throw new Exception("Batch is not available for batchId:"+batchId);
+            throw new Exception(CommonMessage.Batch_Data_Not_Found+batchId);
 
 
         return  batchData;
@@ -488,7 +487,7 @@ public class StockBatchServiceImpl {
 
         if(stockMast.isEmpty())
         {
-            throw new Exception("No batch found");
+            throw new Exception(CommonMessage.StockBatch_Not_Found);
         }
 
 
@@ -861,7 +860,7 @@ public class StockBatchServiceImpl {
 
         }
         if(getAllBatchWithPartyAndQualities.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.StockBatch_Not_Found);
 
         return  getAllBatchWithPartyAndQualities;
     }
@@ -870,16 +869,16 @@ public class StockBatchServiceImpl {
         Optional<StockMast> stockMast = stockMastDao.findById(controlId);
 
         if(!stockMast.isPresent())
-            throw new Exception("Stock is not found for batchId:"+batchId);
+            throw new Exception(CommonMessage.Batch_Data_Not_Found+batchId);
 
         Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
         if(!party.isPresent())
-            throw new Exception("Party not found for batchId:"+batchId);
+            throw new Exception(CommonMessage.Party_Not_Exist+" for "+batchId);
 
         Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
 
         if(!quality.isPresent())
-            throw new Exception("Quality not found for batchId:"+batchId);
+            throw new Exception(CommonMessage.Quality_Data_Not_Found+" for :"+batchId);
 
         BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
         batchToPartyAndQuality.setPartyId(party.get().getId().toString());
@@ -896,7 +895,7 @@ public class StockBatchServiceImpl {
 
         List<BatchData> batchData = batchDao.findByControlIdAndBatchId(controlId,batchId);
         if(batchData.isEmpty())
-            throw new Exception("Batch not found for id:"+batchId);
+            throw new Exception(CommonMessage.Batch_Data_Not_Found+batchId);
         for(BatchData batch:batchData)
         {
             batchDao.deleteById(batch.getId());
@@ -909,7 +908,7 @@ public class StockBatchServiceImpl {
     public void deleteBatchGr(Long id) throws Exception{
         Optional<BatchData> batchData = batchDao.findById(id);
         if(!batchData.isPresent())
-            throw new Exception("batch gr not found");
+            throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
         batchDao.deleteById(batchData.get().getId());
 
@@ -1016,7 +1015,7 @@ public class StockBatchServiceImpl {
 
         }
         if(getAllStockWithoutBatchesList.isEmpty())
-            throw new Exception("no stock is available with empty batch");
+            throw new Exception(CommonMessage.StockBatch_Without_Batch);
 
         return getAllStockWithoutBatchesList;
     }
@@ -1101,7 +1100,7 @@ public class StockBatchServiceImpl {
 
         Optional<Quality> qualityExist=qualityDao.findById(qualityId);
         if(qualityExist.isEmpty())
-            throw new Exception("no quality found for id:"+qualityId);
+            throw new Exception(CommonMessage.Quality_Data_Not_Found+qualityId);
         List<StockMast> stockMastList=stockMastDao.findByQualityId(qualityId);
 
         for(StockMast stockMast:stockMastList)
@@ -1134,7 +1133,7 @@ public class StockBatchServiceImpl {
 
         List<StockMast> stockMasts=stockMastDao.findByPartyIdAndQualityId(partyId,qualityId);
         if(stockMasts.isEmpty()) {
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.StockBatch_Not_Found);
         }
 
         return stockMasts;
@@ -1148,7 +1147,7 @@ public class StockBatchServiceImpl {
 
         Optional<Party> partyExist=partyDao.findById(partyId);
         if(partyExist.isEmpty())
-            throw new Exception(commonMessage.Party_Data_Found);
+            throw new Exception(commonMessage.Party_Found);
 
         Optional<List<Quality>> qualityListByParty=qualityDao.findByPartyId(partyId);
 
@@ -1277,7 +1276,7 @@ public class StockBatchServiceImpl {
         List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
         if(stockMastList.isEmpty())
         {
-            throw new Exception("No batch found");
+            throw new Exception(CommonMessage.StockBatch_Found);
         }
 
         Party party=partyDao.findByPartyId(partyId);
@@ -1338,7 +1337,7 @@ public class StockBatchServiceImpl {
 
         //List<GetAllBatch> getAllBatchList = batchDao.getAllBatchWithoutBillGeneratedByPartyIdAndQualityId(partyId,qualityId);
         if(list.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.StockBatch_Found);
 
 
         return list;
@@ -1350,7 +1349,7 @@ public class StockBatchServiceImpl {
         List<StockMast> stockMast = stockMastDao.findByQualityIdAndPartyId(qualityId,partyId);
         if(stockMast.isEmpty())
         {
-            throw new Exception("No batch found");
+            throw new Exception(CommonMessage.Batch_Data_Not_Found);
         }
 
 
@@ -1460,7 +1459,7 @@ public class StockBatchServiceImpl {
 
         }
         if(list.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.StockBatch_Not_Found);
         return list;
     }
 
@@ -1629,7 +1628,7 @@ public class StockBatchServiceImpl {
     public WTByStockAndBatch getWtByStockAndBatchId(Long stockId, String batchId) throws Exception {
         WTByStockAndBatch data = batchDao.getWtByStockAndBatchId(batchId,stockId);
         if(data==null)
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.StockBatch_Not_Found);
         return data;
     }
 
@@ -1714,7 +1713,7 @@ public class StockBatchServiceImpl {
 
         List<BatchData> batchData = batchDao.findByControlIdAndBatchId(stockId,batchId);
         if(batchData.isEmpty())
-            throw new Exception("no batch record found");
+            throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
 
 
@@ -1824,7 +1823,7 @@ public class StockBatchServiceImpl {
 
 
         if(list.isEmpty())
-            throw new Exception("no record found");
+            throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
         return list;
     }
@@ -1892,7 +1891,7 @@ public class StockBatchServiceImpl {
 
 
         if(list.isEmpty())
-            throw new Exception("no record found");
+            throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
         return list;
 
@@ -1906,7 +1905,7 @@ public class StockBatchServiceImpl {
         {
             BatchData batchExist = batchDao.getBatchDataById(batchData.getId());
             if(batchExist==null)
-                throw new Exception("batch record not found");
+                throw new Exception(CommonMessage.Shade_Not_Found);
 
             batchExist.setMergeBatchId(record.getMergeBatchId());
             batchDataRecordList.add(batchExist);
@@ -1925,7 +1924,7 @@ public class StockBatchServiceImpl {
         //check the merge batch record is exit or not
         BatchData batchDataExist = batchDao.getMergeBatchExist(record.getMergeBatchId());
         if(batchDataExist==null)
-            throw new Exception("no merge batch record found");
+            throw new Exception(CommonMessage.MergeBatch_Not_Found);
 
         //existing batches record with mergeBatchId
         //List<BatchData> existingBatchRecord =batchDao.getMergeBatchListByMergeBatchId(record.getMergeBatchId());
@@ -1935,7 +1934,7 @@ public class StockBatchServiceImpl {
         {
             BatchData batchExist = batchDao.getBatchDataById(batchData.getId());
             if(batchExist==null)
-                throw new Exception("batch record not found");
+                throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
             batchExist.setMergeBatchId(record.getMergeBatchId());
 
@@ -2040,7 +2039,7 @@ public class StockBatchServiceImpl {
 
         List<BatchData> batchDataList = new ArrayList<>();
         if(mergeBatchExist==null)
-            throw new Exception("no record found");
+            throw new Exception(CommonMessage.MergeBatch_Not_Found);
 
         List<GetBatchWithControlId> batchDataForMergeBatch = null;
 

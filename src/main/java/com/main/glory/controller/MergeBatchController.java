@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.CreateMergeBatch;
 import com.main.glory.model.StockDataBatchData.response.BatchToPartyAndQuality;
@@ -41,7 +42,7 @@ public class MergeBatchController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result = null;
         try {
             stockBatchService.createMergeBatchList(record);
-            result = new GeneralResponse<>(true, "Merge batch created successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(true, CommonMessage.MergeBatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -57,7 +58,7 @@ public class MergeBatchController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result = null;
         try {
             stockBatchService.updateMergeBatchList(record);
-            result = new GeneralResponse<>(true, "Merge batch updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(true, CommonMessage.MergeBatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -75,9 +76,9 @@ public class MergeBatchController extends ControllerConfig {
             List<BatchToPartyAndQuality> list = stockBatchService.getAllMergeBatchId();
 
             if(!list.isEmpty())
-                result = new GeneralResponse<>(list, "Merge batch fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -95,9 +96,9 @@ public class MergeBatchController extends ControllerConfig {
             BatchToPartyQualityWithGr list = stockBatchService.getMergeBatchByMergeBatchId(mergeBatchId);
 
             if(list!=null)
-                result = new GeneralResponse<>(list, "Merge batch fetch successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(list, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -114,10 +115,10 @@ public class MergeBatchController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result = null;
         try {
             if(mergeBatchId==null)
-                throw new Exception("null id passed");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             stockBatchService.deleteMergeBatchByMergeBatchId(mergeBatchId);
-            result = new GeneralResponse<>(true, "Merge batch deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, CommonMessage.MergeBatch_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {

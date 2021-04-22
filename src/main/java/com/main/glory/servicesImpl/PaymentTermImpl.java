@@ -6,6 +6,7 @@ import com.main.glory.Dao.paymentTerm.AdvancePaymentDao;
 import com.main.glory.Dao.paymentTerm.PaymentDataDao;
 import com.main.glory.Dao.paymentTerm.PaymentMastDao;
 import com.main.glory.Dao.paymentTerm.PaymentTypeDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
@@ -178,7 +179,7 @@ public class PaymentTermImpl {
 
         PaymentType paymentTypeExist=paymentTypeDao.getPaymentTypeByName(type);
         if(paymentTypeExist!=null)
-            throw new Exception("payment type is already exist");
+            throw new Exception(CommonMessage.ProductionType_Exist);
         PaymentType paymentType=new PaymentType(type);
         paymentTypeDao.save(paymentType);
         return true;
@@ -187,7 +188,7 @@ public class PaymentTermImpl {
     public List<PaymentType> getAllPayementType() throws Exception {
         List<PaymentType> paymentTypeList = paymentTypeDao.getAllPaymentType();
         if(paymentTypeList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.Payment_Not_Found);
         else
             return paymentTypeList;
     }
@@ -195,7 +196,7 @@ public class PaymentTermImpl {
     public List<PaymentMast> getAllPaymentMast(Long partyId) throws Exception {
         List<PaymentMast> list = paymentMastDao.findByPartyId(partyId);
         if(list.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.Payment_Not_Found);
         return list;
     }
 

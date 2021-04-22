@@ -62,7 +62,7 @@ public class DesignationServiceImpl implements DesignationServiceInterface
 
             List<UserData> userDataList  = userService.getUserByDesignation(id);
             if(!userDataList.isEmpty())
-                throw new Exception(commonMessage.User_Data_Exist);
+                throw new Exception(commonMessage.User_Exist);
 
 
             designationDao.deleteDesignationById(id);
