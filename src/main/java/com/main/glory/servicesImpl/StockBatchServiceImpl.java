@@ -260,28 +260,22 @@ public class StockBatchServiceImpl {
 
         }
 
-       /* if(data.isEmpty()) throw new Exception("no data found");
-        else
-        {
-            for(GetAllStockWithPartyNameResponse stockMast : data.get())
+        list.forEach(stock->{
+            int count=0;//count the production plan gr
+            //check the batches is produciton plan
+            for(BatchData batchData:stock.getBatchData())
             {
 
-                List<BatchData> batchDataList = new ArrayList<>();
-                for(BatchData b:stockMast.getBatchData())
-                {
-                    if(!b.getIsProductionPlanned())
-                    {
-                        planned=false;
-                    }
+                if(batchData.getIsProductionPlanned()==true)
+                    count++;
+            }
 
-                }
-                if(planned)
-                {
-                    stockMast.setIsProductionPlanned(true);
-                }
-                else
-                    stockMast.setIsProductionPlanned(false);
-            }*/
+            if(count == stock.getBatchData().size())
+                stock.setIsProductionPlanned(true);
+            else
+                stock.setIsProductionPlanned(false);
+
+        });
             return list;
 
 
@@ -296,6 +290,20 @@ public class StockBatchServiceImpl {
 
             data.get().setBatchData(batchDataList);
             if(data.isPresent()){
+                int count=0;//count the production plan gr
+                //check the batches is produciton plan
+                for(BatchData batchData:batchDataList)
+                {
+
+                    if(batchData.getIsProductionPlanned()==true)
+                        count++;
+                }
+
+                if(count == batchDataList.size())
+                    data.get().setIsProductionPlanned(true);
+                else
+                    data.get().setIsProductionPlanned(false);
+
                 return data;
             }
             else
