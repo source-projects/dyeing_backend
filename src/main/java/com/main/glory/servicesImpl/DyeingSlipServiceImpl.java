@@ -5,6 +5,7 @@ import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
@@ -31,6 +32,7 @@ import java.util.*;
 @Service("dyeingSlipServiceImpl")
 public class DyeingSlipServiceImpl {
 
+    CommonMessage commonMessage;
     @Autowired
     BatchDao batchDao;
     @Autowired
@@ -140,7 +142,7 @@ public class DyeingSlipServiceImpl {
 
         List<DyeingSlipMast> dyeingSlipMast = dyeingSlipMastDao.getAllDyeingSlip();
         if(dyeingSlipMast.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found );
         return dyeingSlipMast;
     }
 
@@ -151,14 +153,14 @@ public class DyeingSlipServiceImpl {
         //check the begore the master dyeing slip is exit or not
             DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByBatchId(addAdditionDyeingSlipModel.getBatchId());
             if(dyeingSlipMast==null) {
-                throw new Exception("no dyeing slip found for given batch or production");
+                throw new Exception(commonMessage.DyeingSlip_Not_Found);
             }
 
 
             //check the additonal dyeing slip already exist with batch or not
             DyeingSlipData dyeingSlipDataExist = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
             if(dyeingSlipDataExist!=null)
-                throw new Exception("already additonal dyeing slip found");
+                throw new Exception(commonMessage.Additional_DyeingSlip_Exist);
 
            /* DyeingSlipData dyeingSlipDataExistWithAdditional = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
             if(dyeingSlipDataExistWithAdditional!=null)
@@ -191,7 +193,7 @@ public class DyeingSlipServiceImpl {
             resultList.add(new GetAllAdditionalDyeingSlip(ad,additionalDyeingSlip));
         }
         if(resultList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found);
         return resultList;
     }
 
@@ -199,7 +201,7 @@ public class DyeingSlipServiceImpl {
 
         DyeingSlipData data = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(id);
         if(data==null)
-            throw new Exception("no additional process found");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found);
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
 
@@ -228,10 +230,10 @@ public class DyeingSlipServiceImpl {
 
            DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
             if(dyeingSlipMast==null) {
-                throw new Exception("no dyeing slip found for given batch or production");
+                throw new Exception(commonMessage.DyeingSlip_Exist_Without_Production);
             }
             if(!addAdditionDyeingSlipModel.getDyeingSlipData().getProcessType().equals("addition"))
-                throw new Exception("process type is not found");
+                throw new Exception(commonMessage.DyeingSlip_Not_Found);
 
             addAdditionDyeingSlipModel.getDyeingSlipData().setControlId(dyeingSlipMast.getId());
             dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
@@ -244,7 +246,7 @@ public class DyeingSlipServiceImpl {
 
         DyeingSlipMast existingDyeingSlip = dyeingSlipMastDao.getAdditionalDyeingSlipById(id);
         if(existingDyeingSlip==null)
-            throw new Exception("no additonal slip found");
+            throw new Exception(commonMessage.Additional_DyeingSlip_Not_Found);
 
         dyeingSlipItemDataDao.deleteByDyeingSlipId(id);
         dyeingSlipDataDao.deleteAdditionalSlipDataByDyeingSlipId(id);
@@ -305,7 +307,7 @@ public class DyeingSlipServiceImpl {
     public void addDirectDyeingSlip(DyeingSlipMast dyeingSlipMast) throws Exception {
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipByProductionId(dyeingSlipMast.getProductionId());
         if(dyeingSlipMastExist!=null)
-            throw new Exception("already dyeing slip exist for the production");
+            throw new Exception(commonMessage.Additional_DyeingSlip_Exist);
         dyeingSlipMastDao.save(dyeingSlipMast);
 
     }
@@ -321,14 +323,14 @@ public class DyeingSlipServiceImpl {
             resultList.add(new GetAllAdditionalDyeingSlip(ad,directDyeingSlip));
         }
         if(resultList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found);
         return resultList;
     }
 
     public GetAllAdditionalDyeingSlip getDirectDyeingSlipById(Long id) throws Exception {
         DyeingSlipData data = dyeingSlipDataDao.getOnlyDirectSlipMastById(id);
         if(data==null)
-            throw new Exception("no direct slip found");
+            throw new Exception(commonMessage.Direct_DyeingSlip_Not_Found);
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
 
@@ -355,10 +357,10 @@ public class DyeingSlipServiceImpl {
     public void updateDirectDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
         DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
         if(dyeingSlipMast==null) {
-            throw new Exception("no dyeing slip found for given batch or production");
+            throw new Exception(commonMessage.Direct_DyeingSlip_Not_Found);
         }
         if(!addAdditionDyeingSlipModel.getDyeingSlipData().getProcessType().equals("directDyeing"))
-            throw new Exception("process type is not found");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found);
 
         addAdditionDyeingSlipModel.getDyeingSlipData().setControlId(dyeingSlipMast.getId());
         dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
@@ -376,14 +378,14 @@ public class DyeingSlipServiceImpl {
             resultList.add(new GetAllAdditionalDyeingSlip(ad,directDyeingSlip));
         }
         if(resultList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found);
         return resultList;
     }
 
     public GetAllAdditionalDyeingSlip getReDyeingSlipById(Long id) throws Exception {
         DyeingSlipData data = dyeingSlipDataDao.getOnlyReDyeingSlipMastById(id);
         if(data==null)
-            throw new Exception("no re direct slip found");
+            throw new Exception(commonMessage.Re_DyeingSlip_Not_Found);
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
 
@@ -410,10 +412,10 @@ public class DyeingSlipServiceImpl {
     public void updateReDyeingSlip(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
         DyeingSlipMast dyeingSlipMast = dyeingSlipMastDao.getDyeingSlipByProductionId(addAdditionDyeingSlipModel.getProductionId());
         if(dyeingSlipMast==null) {
-            throw new Exception("no dyeing slip found for given batch or production");
+            throw new Exception(commonMessage.DyeingSlip_Not_Found);
         }
         if(!addAdditionDyeingSlipModel.getDyeingSlipData().getProcessType().equals("Re-Dyeing"))
-            throw new Exception("process type is not found");
+            throw new Exception(commonMessage.Re_DyeingSlip_Not_Found);
 
         addAdditionDyeingSlipModel.getDyeingSlipData().setControlId(dyeingSlipMast.getId());
         dyeingSlipDataDao.save(addAdditionDyeingSlipModel.getDyeingSlipData());
@@ -426,7 +428,7 @@ public class DyeingSlipServiceImpl {
         Double totalBatchWt =stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
         Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
         if(shadeMastExist.isEmpty())
-            throw new Exception("no shade data found");
+            throw new Exception(commonMessage.Shade_Not_Found);
 
         for(ShadeData shadeData:shadeMastExist.get().getShadeDataList())
         {
@@ -444,7 +446,7 @@ public class DyeingSlipServiceImpl {
     public BatchResponseWithSlip getAdditionalDyeingSlipForPrintById(Long id) throws Exception {
         DyeingSlipData data = dyeingSlipDataDao.getOnlyAdditionalSlipMastById(id);
         if(data==null)
-            throw new Exception("no additional process found");
+            throw new Exception(commonMessage.Additional_DyeingSlip_Not_Found);
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.getDyeingSlipById(id);
 

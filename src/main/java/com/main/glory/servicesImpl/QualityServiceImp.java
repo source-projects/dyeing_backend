@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.model.quality.Quality;
-import com.main.glory.services.QualityServiceInterface;
 
 @Service("qualityServiceImp")
 public class QualityServiceImp  {
@@ -281,7 +280,7 @@ public class QualityServiceImp  {
 
         Party partName = partyDao.findByPartyId(partyId);
         if (partName==null)
-            throw new Exception(commonMessage.Party_Data_Not_Found + partyId);
+            throw new Exception(commonMessage.Party_Not_Found + partyId);
        /* if (!qualityList.isPresent()) {
             throw new Exception("Add Quality data for partyId:" + partyId);
         }*/
@@ -342,7 +341,7 @@ public class QualityServiceImp  {
         }
         List<PartyWithMasterName> partyList = partyDao.findByUserHeadId(userHeadId);
         if (partyList.isEmpty()) {
-            throw new Exception(commonMessage.Party_Data_Found_ByMaster + userHeadId);
+            throw new Exception(commonMessage.Party_Found_ByMaster + userHeadId);
         }
 
         List<PartyQuality> partyQualityList = new ArrayList<>();

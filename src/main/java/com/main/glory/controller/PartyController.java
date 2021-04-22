@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.AddParty;
@@ -47,7 +48,7 @@ public class PartyController extends ControllerConfig {
 		    partyServiceImp.saveParty(party);
 			//System.out.println("har::"+headers.get("id"));
 			//System.out.println(id);
-			result = new GeneralResponse<>(true, "Party Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,party);
+			result = new GeneralResponse<>(true, CommonMessage.Party_Added, true, System.currentTimeMillis(), HttpStatus.OK,party);
 			logService.saveLog(result,request,debugAll);
 		}
 		catch (Exception e)
@@ -68,11 +69,11 @@ public class PartyController extends ControllerConfig {
 
 			if(flag)
 			{
-				result = new GeneralResponse<>(false, "name not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(false, CommonMessage.Party_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			}
 			else
 			{
-				result = new GeneralResponse<>(true, "name found successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(true, CommonMessage.Party_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			}
 
 			logService.saveLog(result,request,debugAll);
@@ -98,33 +99,33 @@ public class PartyController extends ControllerConfig {
 				case "own":
 					var x = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x.isEmpty()) {
-						result = new GeneralResponse<>(x, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(x, CommonMessage.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 					else {
-						result = new GeneralResponse<>(x, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(x, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 					break;
 				case "group":
 					var x1 = partyServiceImp.getAllPartyDetails(id, getBy);
 					if (!x1.isEmpty())
 					{
-						result = new GeneralResponse<>(x1, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(x1, CommonMessage.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 					else {
-						result = new GeneralResponse<>(x1, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(x1, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 					break;
 				case "all":
 					var x2 = partyServiceImp.getAllPartyDetails(null, null);
 					if (!x2.isEmpty()) {
 						//throw new ResponseStatusException(HttpStatus.OK,x2.toString());
-						result = new GeneralResponse<>(x2, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(x2, CommonMessage.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 						//result = ResponseEntity.status(HttpStatus.OK).body(result);
 					}
 					else {
 
 						//response.getHeaders().add("status","404");
-						result = new GeneralResponse<>(x2, "No party added yet", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(x2, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 						//throw new Exception("no");
 						//result = ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
 					}
@@ -155,13 +156,13 @@ public class PartyController extends ControllerConfig {
 			if (id != null) {
 				PartyWithUserHeadName partyObject = partyServiceImp.getPartyDetailById(id);
 				if (partyObject != null) {
-					result = new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+					result = new GeneralResponse<>(partyObject, CommonMessage.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 				} else
-					result = new GeneralResponse<>(null, "No such id", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+					result = new GeneralResponse<>(null, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 
 				logService.saveLog(result, request, debugAll);
 			} else {
-				throw new Exception("null record passed");
+				throw new Exception(CommonMessage.Null_Record_Passed);
 
 			}
 		}catch (Exception e)
@@ -183,9 +184,9 @@ public class PartyController extends ControllerConfig {
 		try {
 			List<PartyWithName> partyObject = partyServiceImp.getAllPartyNameWithHeaderId(headers.get("id"));
 			if (!partyObject.isEmpty()) {
-				result = new GeneralResponse<>(partyObject, "Fetch Success", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+				result = new GeneralResponse<>(partyObject, CommonMessage.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 			} else {
-				result = new GeneralResponse<>(null, "No Party found!", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+				result = new GeneralResponse<>(null, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 			}
 			logService.saveLog(result, request, debugAll);
 		}
@@ -205,15 +206,15 @@ public class PartyController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try {
 			if (partyCode == null) {
-				throw new Exception("null record passed");
+				throw new Exception(CommonMessage.Null_Record_Passed);
 				//result = new GeneralResponse<>(null, "Code can't be null", true, System.currentTimeMillis(), HttpStatus.OK);
 			}
 
 			Boolean partyCodeExistOrNot = partyServiceImp.partyCodeExistOrNot(partyCode, id);
 			if (partyCodeExistOrNot == true)
-				result = new GeneralResponse<>(true, "Party code not found ", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(true, CommonMessage.Party_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			else
-				result = new GeneralResponse<>(false, "Party code found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(false, CommonMessage.Party_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 			logService.saveLog(result, request, debugAll);
 		}catch (Exception e)
@@ -235,13 +236,13 @@ public class PartyController extends ControllerConfig {
 			if (party != null) {
 				boolean flag = partyServiceImp.editPartyDetails(party);
 				if (flag) {
-					result = new GeneralResponse<>(true, "updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,party);
+					result = new GeneralResponse<>(true, CommonMessage.Party_Updated, true, System.currentTimeMillis(), HttpStatus.OK,party);
 				} else {
-					result = new GeneralResponse<>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK,party);
+					result = new GeneralResponse<>(false, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,party);
 				}
 			}
 			else {
-				result=new GeneralResponse<>(false,"NUll id passed",false,System.currentTimeMillis(),HttpStatus.OK,party);
+				result=new GeneralResponse<>(false,CommonMessage.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,party);
 			}
 			logService.saveLog(result, request, debugAll);
 
@@ -261,13 +262,13 @@ public class PartyController extends ControllerConfig {
 			if (id != null) {
 				boolean flag = partyServiceImp.deletePartyById(id);
 				if (flag) {
-					result =  new GeneralResponse<>(true, "Deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result =  new GeneralResponse<>(true, CommonMessage.Party_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 				} else {
-					result= new GeneralResponse<>(false, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result= new GeneralResponse<>(false, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 				}
 			}
 			else {
-				result = new GeneralResponse<>(false, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			}
 			logService.saveLog(result, request, debugAll);
 		}catch (Exception e )
@@ -286,13 +287,13 @@ public class PartyController extends ControllerConfig {
 			if (id != null ||qualityId!=null) {
 				PartyReport flag = partyServiceImp.getPartyReportById(id,qualityId);
 				if (flag!=null) {
-					result =  new GeneralResponse<>(flag, "fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result =  new GeneralResponse<>(flag, CommonMessage.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 				} else {
-					result= new GeneralResponse<>(null, "no such id found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result= new GeneralResponse<>(null, CommonMessage.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 				}
 			}
 			else {
-				result = new GeneralResponse<>(null, "Null party object", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			}
 			logService.saveLog(result, request, debugAll);
 		}catch (Exception e )

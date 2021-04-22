@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
 import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
@@ -46,7 +47,7 @@ public class ProductionPlanController extends ControllerConfig {
         GeneralResponse<Long,Object> result =null;
         try {
             Long id = productionPlanService.saveProductionPlan(productionPlan);
-            result= new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
+            result= new GeneralResponse<>(id, CommonMessage.Production_Added, true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -65,7 +66,7 @@ public class ProductionPlanController extends ControllerConfig {
         GeneralResponse<Long,Object> result =null;
         try {
             Long id  = productionPlanService.saveDirectDyeingSlip(productionPlan);
-            result= new GeneralResponse<>(id, "Direct dyeing slip data Saved Successfully ", true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
+            result= new GeneralResponse<>(id, CommonMessage.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -84,7 +85,7 @@ public class ProductionPlanController extends ControllerConfig {
         GeneralResponse<Long,Object> result;
         try {
             Long id = productionPlanService.saveProductionPlanWithJet(productionPlan);
-            result= new GeneralResponse<>(id, "Production Data Saved Successfully with id:"+id, true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
+            result= new GeneralResponse<>(id, CommonMessage.Production_Added, true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -104,9 +105,9 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             GetBatchDetailByProduction data = productionPlanService.getBatchDetailByProductionAndBatchId(productionId,batchId);
             if(data!=null)
-                result = new GeneralResponse<>(data, " Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(data, " data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, CommonMessage.Production_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -126,7 +127,7 @@ public class ProductionPlanController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             productionPlanService.updateProductionPlan(productionPlan,headers.get("id"));
-            result = new GeneralResponse<>(null, "updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
+            result = new GeneralResponse<>(null, CommonMessage.Production_Updated, true, System.currentTimeMillis(), HttpStatus.OK,productionPlan);
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -145,7 +146,7 @@ public class ProductionPlanController extends ControllerConfig {
         GeneralResponse<ProductionPlan,Object> result;
         try {
             ProductionPlan productionPlanRecord = productionPlanService.getProductionData(id);
-            result =  new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -164,9 +165,9 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData(headers.get("id"));
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data found");
+                throw new Exception(CommonMessage.Production_Not_Found);
 
-            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -185,9 +186,9 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionDataWithAndWithoutPlan();
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data faund");
+                throw new Exception(CommonMessage.Production_Not_Found);
 
-            result = new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -208,9 +209,9 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<GetAllProduction> productionPlanRecord = productionPlanService.getAllProductionWithoutFilter();
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data found");
+                throw new Exception(CommonMessage.Production_Not_Found);
 
-            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -230,9 +231,9 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<ProductionPlan> productionPlanRecord = productionPlanService.getAllProductionListByPartyAndQuality(partyId,qualityEntryId);
             if(productionPlanRecord.isEmpty())
-                throw new Exception("no data faund");
+                throw new Exception(CommonMessage.Production_Not_Found);
 
-            result= new GeneralResponse<>(productionPlanRecord, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -252,9 +253,9 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             Boolean flag = productionPlanService.deleteById(id);
             if(flag)
-            result =  new GeneralResponse<>(true, "Data deleted Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(true, CommonMessage.Production_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(true, "Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, CommonMessage.Production_Unable_Deleted, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }

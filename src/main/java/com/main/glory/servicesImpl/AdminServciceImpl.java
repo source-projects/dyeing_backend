@@ -106,7 +106,7 @@ public class AdminServciceImpl {
 
             List<UserData> userData = userService.getUserByCompanyId(companyExist.getId());
             if(!userData.isEmpty())
-                throw new Exception(commonMessage.User_Data_Exist);
+                throw new Exception(commonMessage.User_Exist);
 
             companyDao.deleteByCompanyId(id);
             return true;
@@ -150,7 +150,7 @@ public class AdminServciceImpl {
                 throw new Exception(commonMessage.Department_Not_Found);
             List<UserData> userDataList = userService.getAllUserByDepartmentId(exist.getId());
             if(!userDataList.isEmpty())
-                throw new Exception(commonMessage.User_Data_Exist);
+                throw new Exception(commonMessage.User_Exist);
 
 
             departmentDao.deleteDepartmentById(id);

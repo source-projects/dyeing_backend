@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
@@ -37,15 +38,17 @@ public class DyeingSlipController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
+    CommonMessage commonMessage;
+
     @PutMapping("/dyeingSlip")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateDyeingSlip(@RequestBody DyeingSlipMast data){
         GeneralResponse<Boolean,Object> result;
         try {
             if(data == null){
-                result = new GeneralResponse<>(false, "No data passed, please send valid data", false, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
             }else {
                 dyeingSlipService.updateDyeingSlip(data);
-                result = new GeneralResponse<>(true, "Data updated Successfully", true, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(true, commonMessage.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,data);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -61,14 +64,14 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<SlipFormatData,Object> result;
         try {
             if(batchId == null || productionId == null){
-                throw new Exception("null values passed");
+                throw new Exception(commonMessage.Null_Record_Passed);
             }else {
 
                 SlipFormatData data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
                 if(data!=null)
-                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, commonMessage.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 else
-                    result = new GeneralResponse<>(null, "data not found for given id", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, commonMessage.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -86,9 +89,9 @@ public class DyeingSlipController extends ControllerConfig {
 
                 List<DyeingSlipMast> data = dyeingSlipService.getAllDyeingSlip();
                 if(data!=null)
-                    result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(data, commonMessage.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 else
-                    result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, commonMessage.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -106,9 +109,9 @@ public class DyeingSlipController extends ControllerConfig {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllAdditionalDyeingSlip();
             if(!data.isEmpty())
-                result = new GeneralResponse<>(data, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, commonMessage.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(null, "data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, commonMessage.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -125,10 +128,10 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-            result = new GeneralResponse<>(false,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(false,commonMessage.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
 
             dyeingSlipService.addAdditionalSlipData(addAdditionDyeingSlipModel);
-            result = new GeneralResponse<>(true, "Data added Successfully", true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, commonMessage.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
 
             logService.saveLog(result,request,debugAll);
 

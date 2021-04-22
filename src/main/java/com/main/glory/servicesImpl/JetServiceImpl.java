@@ -575,7 +575,7 @@ public class JetServiceImpl {
         List<GetJetData> getJetDataList=new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
         if(jetDataList.isEmpty())
-            throw new Exception("No data found");
+            throw new Exception(CommonMessage.Jet_Not_Found);
 
         for(JetData jetData:jetDataList)
         {
@@ -750,7 +750,7 @@ public class JetServiceImpl {
         List<GetJetData> getJetDataList=new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
         if(jetDataList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.Jet_Not_Found);
 
         //fetch the data which are in Queue
         for(JetData jetData:jetDataList)
@@ -761,7 +761,7 @@ public class JetServiceImpl {
         }
 
         if(getJetDataList.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(commonMessage.Jet_Not_Found);
         return getJetDataList;
     }
 
@@ -771,7 +771,7 @@ public class JetServiceImpl {
         List<GetAllJetMast> getAllJetMast=new ArrayList<>();
 
         if(jetMastList.isEmpty())
-            throw new Exception("not data found");
+            throw new Exception(CommonMessage.Jet_Not_Found);
 
         int i=0;
         for(JetMast jetMast:jetMastList)
@@ -943,12 +943,12 @@ public class JetServiceImpl {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetId);
 
         if(jetMastExist.isEmpty())
-            throw new Exception("no jet found");
+            throw new Exception(CommonMessage.Jet_Not_Found);
 
         Optional<JetData> jetExistWithProduction = jetDataDao.findByControlIdAndProductionId(jetId,productionId);
 
         if(jetExistWithProduction.isEmpty())
-            throw new Exception("no production found with jet");
+            throw new Exception(CommonMessage.Jet_Exist_Without_Production);
 
         Double wt = batchDao.getTotalWtByBatchId(productionPlanExist.getBatchId());
 
@@ -957,7 +957,7 @@ public class JetServiceImpl {
         GetQualityResponse quality =null;//qualityServiceImp.getQualityByID(stockMast.getQualityId());
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExist.getShadeId());
         if (shadeMast.isEmpty())
-            throw new Exception("no shade data found ");
+            throw new Exception(commonMessage.Shade_Not_Found);
 
         //basic data
         data.setColorTone(shadeMast.get().getColorTone());
@@ -1063,7 +1063,7 @@ public class JetServiceImpl {
         //check first the prodution is already in jet or not
         JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId,productionId);
         if(jetDataExist==null)
-            throw new Exception("jet data with production not found");
+            throw new Exception(CommonMessage.Jet_Exist_Without_Production);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(productionId);
 

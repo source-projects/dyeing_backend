@@ -143,8 +143,11 @@ public class MachineController extends ControllerConfig {
         try {
 
             var x = machineService.getAllCategory();
-            result = new GeneralResponse<>(x, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-
+            if(x!=null) {
+                result = new GeneralResponse<>(x, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            }
+            else
+                result = new GeneralResponse<>(x, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)

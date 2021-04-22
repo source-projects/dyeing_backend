@@ -3,6 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
@@ -60,8 +61,6 @@ public class SupplierServiceImpl {
     @Transactional
     public Boolean addSupplier(Supplier supplier,String id) {
         try {
-
-
             supplierDao.save(supplier);
             return true;
         } catch (Exception e) {
@@ -185,19 +184,19 @@ public class SupplierServiceImpl {
                     //if coming list not containe the record of existing data then check in
                     List<DyeingChemicalData> chemicalDataList = dyeingProcessService.getDyeingProcessChemicalDataByItemId(e);
                     if(!chemicalDataList.isEmpty())
-                        throw new Exception("can't remove because item,because it is in chemical process record");
+                        throw new Exception(CommonMessage.DyeingProcess_Data_Exist);
 
                     List<ShadeData> shadeData = shadeService.getShadDataByItemId(e);
                     if(!shadeData.isEmpty())
-                        throw new Exception("can't not remove the item, because item is already in shade data");
+                        throw new Exception(CommonMessage.Shade_Exist);
 
                     List<DyeingSlipItemData> dyeingSlipDataList = dyeingSlipService.getDyeingItemDataByItemId(e);
                     if(!dyeingSlipDataList.isEmpty())
-                        throw new Exception("can't remove record, because item is in dyeing slip");
+                        throw new Exception(CommonMessage.Dyeing_Slip_Data_Exist);
 
                     List<ColorData> colorData =colorService.colorDataDao.getAllColorDataByItemId(e);
                     if(!colorData.isEmpty())
-                        throw new Exception("can't remove the record because color stock is added for the item");
+                        throw new Exception(CommonMessage.Color_Data_Exist);
 
                     //change the hash map values for delete the item later because the item is not coming from
                     toDeleteItem.replace(e,true);
@@ -301,7 +300,7 @@ public class SupplierServiceImpl {
         List<GetAllSupplierWithName> s = supplierDao.findAllName();
 
         if (s.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.Supplier_Not_Found);
         return s;
     }
 
@@ -395,7 +394,7 @@ public class SupplierServiceImpl {
 
     public Boolean supplierRateExist(String name, Long id) throws Exception {
         if(name==null || id==null)
-            throw new Exception("null value passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
 
         SupplierRate rate =  supplierRateDao.getSupplierRateByNameAndExceptId(name,id);
         if(rate!=null)

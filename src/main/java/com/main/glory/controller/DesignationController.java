@@ -5,8 +5,6 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.designation.Designation;
-import com.main.glory.model.user.UserData;
-import com.main.glory.services.DesignationServiceInterface;
 import com.main.glory.servicesImpl.DesignationServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -68,7 +65,7 @@ public class DesignationController extends ControllerConfig {
 
             Boolean flag = designationService.getDesignationIsDelatable(id);
             if(flag)
-                result = new GeneralResponse<>(flag, commonMessage.User_Data_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, commonMessage.User_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
                 result = new GeneralResponse<>(flag, commonMessage.Designation_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 

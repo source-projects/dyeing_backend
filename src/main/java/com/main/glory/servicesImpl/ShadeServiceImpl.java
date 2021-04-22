@@ -5,6 +5,7 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
@@ -75,7 +76,7 @@ public class ShadeServiceImpl {
 		Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
 		if(!quality.isPresent())
 		{
-			throw new Exception("Quality Not Found with QualityId:"+shadeMast.getQualityId());
+			throw new Exception(CommonMessage.Quality_Data_Not_Found +shadeMast.getQualityId());
 		}
 
 		//check the dyeing process for the shade is available or not
@@ -118,7 +119,7 @@ public class ShadeServiceImpl {
 	public List<ShadeMast> getAllShadeMast() throws Exception{
 		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeMast();
 		if(shadeMastList.isEmpty())
-			throw new Exception("no party shade found");
+			throw new Exception(CommonMessage.Shade_Not_Found);
 		else{
 			return shadeMastList;
 		}
@@ -169,12 +170,12 @@ public class ShadeServiceImpl {
 		Optional<ShadeMast> shadeMast = shadeMastDao.findById(id);
 		// check if this is present in the database
 		if(shadeMast.isEmpty()){
-			throw new Exception("shade data does not exist with id:"+id);
+			throw new Exception(CommonMessage.Shade_Not_Exist+id);
 		}
 		//check the production is avialble or not
 		List<ProductionPlan> productionPlans = productionPlanDao.getAllProductionByShadeId(id);
 		if(!productionPlans.isEmpty())
-			throw new Exception("remove the production first");
+			throw new Exception(CommonMessage.Production_Record_Exist);
 		shadeMastDao.deleteById(id);
 
 		return true;
@@ -451,7 +452,7 @@ public class ShadeServiceImpl {
 
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
 		if(shadeByPartyAndQualities.isEmpty())
-			throw new Exception("shade data not found");
+			throw new Exception(CommonMessage.Shade_Not_Found);
 
 		return shadeByPartyAndQualities;
 

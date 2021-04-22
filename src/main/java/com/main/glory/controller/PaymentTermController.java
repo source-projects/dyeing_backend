@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 import com.google.api.Http;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 
 import com.main.glory.model.PaymentMast;
@@ -46,9 +47,9 @@ public class PaymentTermController extends ControllerConfig {
         try {
             Boolean flag = paymentTermService.savePayment(paymentMast);
             if (flag) {
-                result = new GeneralResponse<>(true, "Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
+                result = new GeneralResponse<>(true, CommonMessage.Payment_Added, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
             } else {
-                result = new GeneralResponse<>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
+                result = new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -65,7 +66,7 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             Boolean flag = paymentTermService.savePaymentType(type);
-            result = new GeneralResponse<>(true, "Payment Type Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, CommonMessage.Payment_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +81,7 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<List<PaymentType>,Object> result;
         try {
             List<PaymentType> flag = paymentTermService.getAllPayementType();
-            result= new GeneralResponse<>(flag, "Payment Type Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(flag, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,9 +98,9 @@ public class PaymentTermController extends ControllerConfig {
         try {
             Boolean flag = paymentTermService.addAdvancePayment(paymentMast);
             if (flag) {
-                result= new GeneralResponse<>(true, "Advance Payment Data Saved Successfully", true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
+                result= new GeneralResponse<>(true, CommonMessage.Payment_Added, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
             } else {
-                result= new GeneralResponse<>(null, "Data Not added", true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
+                result= new GeneralResponse<>(null, CommonMessage.Payment_Not_Added, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -119,13 +120,13 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<List<GetPendingDispatch>,Object> result;
         try {
             if(partyId==null)
-                throw new Exception("id can't be null");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             List<GetPendingDispatch> list = paymentTermService.getPendingBillByPartyId(partyId);
             if(!list.isEmpty())
-                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -144,13 +145,13 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<List<GetAdvancePayment>,Object> result;
         try {
             if(partyId==null)
-                throw new Exception("id can't be null");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -172,9 +173,9 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAllBank> list = paymentTermService.getAllBankName();
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -195,9 +196,9 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAllBank> list = paymentTermService.getAllAdvanceBankName();
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, CommonMessage.Bank_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, CommonMessage.Bank_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -215,13 +216,13 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<List<PaymentMast>,Object> result;
         try {
             if(partyId==null)
-                throw new Exception("id can't be null");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             List<PaymentMast> list = paymentTermService.getAllPaymentMast(partyId);
             if(!list.isEmpty())
-                result = new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -240,13 +241,13 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<PaymentMast,Object> result;
         try {
             if(paymentBunchId==null)
-                throw new Exception("id can't be null");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             PaymentMast list = paymentTermService.getPaymentDetailById(paymentBunchId);
             if(list!=null)
-                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
@@ -267,9 +268,9 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAllPayment> list = paymentTermService.getAllPaymentWithPartyName();
             if(list!=null)
-                result= new GeneralResponse<>(list, "Data fetched Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(null, "no data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
