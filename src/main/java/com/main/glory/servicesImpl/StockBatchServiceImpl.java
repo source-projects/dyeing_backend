@@ -298,6 +298,7 @@ public class StockBatchServiceImpl {
                     if(batchData.getIsProductionPlanned()==true)
                         count++;
                 }
+                // https://MohanGloryAutotech@github.com/gloryautotech/dyeing_backend.git
 
                 if(count == batchDataList.size())
                     data.get().setIsProductionPlanned(true);
