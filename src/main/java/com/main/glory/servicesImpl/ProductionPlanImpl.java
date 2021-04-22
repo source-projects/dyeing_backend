@@ -3,6 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
@@ -111,7 +112,7 @@ public class ProductionPlanImpl {
         ProductionPlan productionPlan = productionPlanDao.getByProductionId(id);
 
         if(productionPlan==null)
-            throw new Exception("data not found for production:");
+            throw new Exception(CommonMessage.Production_Not_Found);
 
         return productionPlan;
 
@@ -123,7 +124,7 @@ public class ProductionPlanImpl {
             return false;
 
         if(productionPlan.getStatus()==true)
-        throw new Exception("production is already planned with Jet");
+        throw new Exception(CommonMessage.Jet_Exist_With_Production);
 
         //change the status of batch if all the condition are
         List<BatchData> batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
@@ -310,7 +311,7 @@ public class ProductionPlanImpl {
 
         Optional<ProductionPlan> productionPlanExist = productionPlanDao.findById(productionPlan.getId());
         if(productionPlanExist.isEmpty())
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.Production_Not_Found);
 
         productionPlanDao.save(productionPlan);
 

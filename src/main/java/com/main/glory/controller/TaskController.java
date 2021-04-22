@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.jet.request.AddJet;
@@ -48,14 +49,14 @@ public class TaskController extends ControllerConfig {
         if(record==null)
         {
             //result =  new GeneralResponse<>(false, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             taskService.saveTask(record);
-            result =  new GeneralResponse<>(null, "Task Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result =  new GeneralResponse<>(null, CommonMessage.Task_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -74,7 +75,7 @@ public class TaskController extends ControllerConfig {
         if(id==null)
         {
             //result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
         }
 
         boolean flag;
@@ -83,10 +84,10 @@ public class TaskController extends ControllerConfig {
             TaskMastResponse taskResponse = taskService.getTaskById(id);
             if(taskResponse==null)
             {
-                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -104,7 +105,7 @@ public class TaskController extends ControllerConfig {
         if(id==null)
         {
             //result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
         }
 
         boolean flag;
@@ -113,10 +114,10 @@ public class TaskController extends ControllerConfig {
             TaskData taskResponse = taskService.getTaskDataById(id);
             if(taskResponse==null)
             {
-                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -162,7 +163,7 @@ public class TaskController extends ControllerConfig {
         if(id==null)
         {
             //result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
         }
 
         boolean flag;
@@ -171,10 +172,10 @@ public class TaskController extends ControllerConfig {
             flag = taskService.deleteTaskById(id);
             if(flag==true)
             {
-                result =  new GeneralResponse<>(true, "Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(true, CommonMessage.Task_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result =  new GeneralResponse<>(false, "Unable to remove the record", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(false, CommonMessage.Task_Unable_Delete, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -191,7 +192,7 @@ public class TaskController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(id==null)
         {
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
             // result =  new GeneralResponse<>(null, "info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
@@ -201,10 +202,10 @@ public class TaskController extends ControllerConfig {
             flag = taskService.deleteTaskDataById(id);
             if(flag==true)
             {
-                result =  new GeneralResponse<>(true, "Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(true, CommonMessage.Task_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result =  new GeneralResponse<>(false, "Unable to remove the record", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(false, CommonMessage.Task_Unable_Delete, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -229,10 +230,10 @@ public class TaskController extends ControllerConfig {
             List<TaskDetail> taskResponse = taskService.getAllTaskByDateAndStatus(record);
             if(taskResponse.isEmpty())
             {
-                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK,record);
+                result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-                result =  new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
          logService.saveLog(result,request,debugAll);
 
@@ -259,31 +260,31 @@ public class TaskController extends ControllerConfig {
                 case "assign":
                     record = taskService.getAllTaskDetail(getBy, id,headers.get("id"));
                     if (record.isEmpty()) {
-                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     } else {
-                        result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(record, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     }
                     break;
 
                 case "assignAndCreated":
                     record = taskService.getAllTaskDetail(getBy, id,headers.get("id"));
                     if (record.isEmpty()) {
-                        result= new GeneralResponse<>(null, "No data found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     } else {
-                        result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(record, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     }
                     break;
 
                 case "all":
                     record = taskService.getAllTaskDetail(null, null,headers.get("id"));
                     if (record.isEmpty()) {
-                        result= new GeneralResponse<>(null, "No data added yet", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     } else {
-                        result= new GeneralResponse<>(record, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(record, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     }
                     break;
                 default:
-                    result= new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null, CommonMessage.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
             }
@@ -307,10 +308,10 @@ public class TaskController extends ControllerConfig {
             List<TaskDetail> taskResponse = taskService.getAllApprovedOrNot(id,approvedFlag);
             if(taskResponse.isEmpty())
             {
-                result =  new GeneralResponse<>(taskResponse, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(taskResponse, CommonMessage.Task_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else {
-                result = new GeneralResponse<>(taskResponse, "Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(taskResponse, CommonMessage.Task_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -334,7 +335,7 @@ public class TaskController extends ControllerConfig {
         try {
 
             taskService.updateTaskByIdAndFlag(id,approvedFlag);
-            result =  new GeneralResponse<>(true, "Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(true, CommonMessage.Task_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -356,10 +357,10 @@ public class TaskController extends ControllerConfig {
         try {
 
             if(taskData==null)
-                throw new Exception("null record passed");
+                throw new Exception(CommonMessage.Null_Record_Passed);
 
             taskService.updateTaskData(taskData);
-            result =  new GeneralResponse<>(true, "Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,taskData);
+            result =  new GeneralResponse<>(true, CommonMessage.Task_Updated, true, System.currentTimeMillis(), HttpStatus.OK,taskData);
             logService.saveLog(result,request,debugAll);
 
         }
