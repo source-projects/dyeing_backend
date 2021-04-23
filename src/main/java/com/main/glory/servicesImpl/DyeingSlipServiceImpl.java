@@ -491,7 +491,7 @@ public class DyeingSlipServiceImpl {
             }
             Long stockId = batchDao.getControlIdByBatchId(productionPlan.getBatchId());
             Quality quality = qualityServiceImp.getQualityByStockId(stockId);
-
+            qualityId =quality.getQualityId();
             batchCount=1l;
         }
 

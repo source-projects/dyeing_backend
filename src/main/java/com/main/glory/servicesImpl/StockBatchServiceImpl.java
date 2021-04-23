@@ -2024,7 +2024,7 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
 
-                    System.out.println("batch id for merge batch:"+batch.getBatchId());
+                    //System.out.println("batch id for merge batch:"+batch.getBatchId());
                     batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batchByMergeBatch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batchByMergeBatch.getBatchId());
 
                 }
