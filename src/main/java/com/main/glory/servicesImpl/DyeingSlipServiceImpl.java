@@ -6,6 +6,7 @@ import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
 import com.main.glory.model.CommonMessage;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
@@ -434,21 +435,40 @@ public class DyeingSlipServiceImpl {
     public List<ItemListForDirectDyeing> getItemListByShadeAndBatch(GetItemByShadeAndBatch record) throws Exception {
         List<ItemListForDirectDyeing> list =new ArrayList<>();
 
-        Double totalBatchWt =stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
-        Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
-        if(shadeMastExist.isEmpty())
-            throw new Exception(commonMessage.Shade_Not_Found);
+        BatchData isBatchId = batchDao.getIsBatchId(record.getBatchId());
+        if(isBatchId!=null) {
+            Double totalBatchWt = stockBatchService.getWtByBatchId(record.getBatchId());
+            Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
+            if (shadeMastExist.isEmpty())
+                throw new Exception(commonMessage.Shade_Not_Found);
 
-        for(ShadeData shadeData:shadeMastExist.get().getShadeDataList())
-        {
-            ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
-            if(item==null)
-                continue;
+            for (ShadeData shadeData : shadeMastExist.get().getShadeDataList()) {
+                ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
+                if (item == null)
+                    continue;
 
-            list.add(new ItemListForDirectDyeing(item,shadeData,totalBatchWt));
+                list.add(new ItemListForDirectDyeing(item, shadeData, totalBatchWt));
+
+            }
 
         }
+        else
+        {
+            //it is merge batch id
+            Double totalBatchWt = stockBatchService.getWtByMergeBatchId(record.getBatchId());
+            Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
+            if (shadeMastExist.isEmpty())
+                throw new Exception(commonMessage.Shade_Not_Found);
 
+            for (ShadeData shadeData : shadeMastExist.get().getShadeDataList()) {
+                ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
+                if (item == null)
+                    continue;
+
+                list.add(new ItemListForDirectDyeing(item, shadeData, totalBatchWt));
+
+            }
+        }
         return list;
     }
 
