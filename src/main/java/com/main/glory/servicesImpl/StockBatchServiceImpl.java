@@ -1730,7 +1730,7 @@ public class StockBatchServiceImpl {
         Double totalWt = batchDao.getTotalWtByControlIdAndBatchId(stockId,batchId);
         Double totalMtr = batchDao.getTotalMtrByControlIdAndBatchId(stockId,batchId);
         Double totalFinish = batchDao.getTotalFinishMtrByBatchAndStock(batchId,stockId);
-        Long totalPcs= batchDao.getTotalPcsByBatchAndStockId(stockId,batchId);
+        Long totalPcs= batchDao.getTotalPcsByBatchAndStockIdWithoutFilter(stockId,batchId);
         StockMast stockMast = stockMastDao.findByStockId(stockId);
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
         UserData userData = userDao.getUserById(stockMast.getUserHeadId());

@@ -23,6 +23,7 @@ public class CommonMessage {
     public static String Jet_Not_Found = "Data not found";
     public static String Jet_Updated = "Data updated successfully";
     public static String Jet_Exist_With_Name = "jet exist with name";
+    public static String Jet_Not_Exist_With_Name = "jet not exist";
     public static String Jet_Exist_With_Production = "Production exist with jet";
     public static String Jet_Exist_Without_Production = "Production not exist with jet";
     public static String Jet_Deleted = "Data deleted successfully";

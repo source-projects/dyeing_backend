@@ -10,6 +10,7 @@ import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
+import com.main.glory.model.employee.response.GetAllEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +92,7 @@ public class EmployeeServiceImpl {
         return employeeMastDao.getEmployeeById(id);
     }
 
-    public List<EmployeeMast> getAllEmployee() {
+    public List<GetAllEmployee> getAllEmployee() {
         return employeeMastDao.getAllEmployee();
     }
 
@@ -127,7 +128,9 @@ public class EmployeeServiceImpl {
     public List<EmployeeMast> getEmployeeByEmpIdOrName(String id) {
         //check that the id is id or name
         List<EmployeeMast> employeeMastList=new ArrayList<>();
-        try
+        employeeMastList.add(employeeMastDao.getEmployeeByEmpId(Long.parseLong(id)));
+
+        /*try
         {
             Long numberConvertable =Long.parseLong(id);
             employeeMastList = employeeMastDao.getEmployeeByLikeEmpId(id);
@@ -139,6 +142,7 @@ public class EmployeeServiceImpl {
             e.printStackTrace();
             employeeMastList = employeeMastDao.getEmployeeByName(id);
             return employeeMastList;
-        }
+        }*/
+        return employeeMastList;
     }
 }

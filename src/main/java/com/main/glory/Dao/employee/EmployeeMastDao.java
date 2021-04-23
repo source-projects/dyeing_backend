@@ -2,6 +2,7 @@
 package com.main.glory.Dao.employee;
 
 import com.main.glory.model.employee.EmployeeMast;
+import com.main.glory.model.employee.response.GetAllEmployee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,8 +20,8 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
     @Query("select s from EmployeeMast s where s.id=:id")
     EmployeeMast getEmployeeById(Long id);
 
-    @Query("select s from EmployeeMast s ORDER BY s.id DESC")
-    List<EmployeeMast> getAllEmployee();
+    @Query("select new com.main.glory.model.employee.response.GetAllEmployee(s,(select d.name from Department d where d.id=s.departmentId)) from EmployeeMast s ORDER BY s.id DESC")
+    List<GetAllEmployee> getAllEmployee();
 
     @Modifying
     @Transactional
