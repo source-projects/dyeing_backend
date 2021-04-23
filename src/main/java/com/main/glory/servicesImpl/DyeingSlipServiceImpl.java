@@ -6,6 +6,7 @@ import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
 import com.main.glory.model.CommonMessage;
+import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.response.GetAllBatchWithProduction;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
@@ -17,6 +18,7 @@ import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
+import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.Quality;
@@ -33,8 +35,13 @@ import java.util.*;
 public class DyeingSlipServiceImpl {
 
     CommonMessage commonMessage;
+
+    @Autowired
+    JetServiceImpl jetService;
+
     @Autowired
     BatchDao batchDao;
+
     @Autowired
     SupplierServiceImpl supplierService;
 
@@ -83,7 +90,7 @@ public class DyeingSlipServiceImpl {
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
         if(dyeingSlipMastExist==null)
-            throw new Exception("no dyeing slip found");
+            throw new Exception(CommonMessage.DyeingSlip_Not_Found);
 
         //set the color flag
         int i=0;
@@ -131,7 +138,10 @@ public class DyeingSlipServiceImpl {
         slipFormatData.setTotalWt(wt);
         slipFormatData.setQualityId(record.getQualityId());
         //slipFormatData.setQualityEntryId(quality.getId());
-
+        JetMast jetMast =jetService.getJetMastById(slipFormatData.getJetId());
+        if(jetMast==null)
+            throw new Exception(CommonMessage.Jet_Not_Exist_With_Name);
+        slipFormatData.setJetName(jetMast.getName());
         slipFormatData.setDyeingSlipDataList(dyeingSlipMastExist.getDyeingSlipDataList());
 
 
@@ -425,21 +435,40 @@ public class DyeingSlipServiceImpl {
     public List<ItemListForDirectDyeing> getItemListByShadeAndBatch(GetItemByShadeAndBatch record) throws Exception {
         List<ItemListForDirectDyeing> list =new ArrayList<>();
 
-        Double totalBatchWt =stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
-        Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
-        if(shadeMastExist.isEmpty())
-            throw new Exception(commonMessage.Shade_Not_Found);
+        BatchData isBatchId = batchDao.getIsBatchId(record.getBatchId());
+        if(isBatchId!=null) {
+            Double totalBatchWt = stockBatchService.getWtByBatchId(record.getBatchId());
+            Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
+            if (shadeMastExist.isEmpty())
+                throw new Exception(commonMessage.Shade_Not_Found);
 
-        for(ShadeData shadeData:shadeMastExist.get().getShadeDataList())
-        {
-            ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
-            if(item==null)
-                continue;
+            for (ShadeData shadeData : shadeMastExist.get().getShadeDataList()) {
+                ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
+                if (item == null)
+                    continue;
 
-            list.add(new ItemListForDirectDyeing(item,shadeData,totalBatchWt));
+                list.add(new ItemListForDirectDyeing(item, shadeData, totalBatchWt));
+
+            }
 
         }
+        else
+        {
+            //it is merge batch id
+            Double totalBatchWt = stockBatchService.getWtByMergeBatchId(record.getBatchId());
+            Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(record.getShadeId());
+            if (shadeMastExist.isEmpty())
+                throw new Exception(commonMessage.Shade_Not_Found);
 
+            for (ShadeData shadeData : shadeMastExist.get().getShadeDataList()) {
+                ItemListForDirectDyeing item = supplierService.getSupplierWithItemByItemId(shadeData.getSupplierItemId());
+                if (item == null)
+                    continue;
+
+                list.add(new ItemListForDirectDyeing(item, shadeData, totalBatchWt));
+
+            }
+        }
         return list;
     }
 
@@ -482,7 +511,7 @@ public class DyeingSlipServiceImpl {
             }
             Long stockId = batchDao.getControlIdByBatchId(productionPlan.getBatchId());
             Quality quality = qualityServiceImp.getQualityByStockId(stockId);
-
+            qualityId =quality.getQualityId();
             batchCount=1l;
         }
 

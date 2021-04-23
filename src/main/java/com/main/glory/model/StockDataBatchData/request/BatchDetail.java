@@ -47,6 +47,19 @@ public class BatchDetail {
         this.mergeBatchId = mergeBatchId;
     }
 
+    public BatchDetail(Long controlId, String batchId, Boolean isProductionPlanned, Boolean isBillGenrated, Boolean isFinishMtrSave, Long pcs, Double totalMtr,Double totalFinish, Date receiveDate) {
+        this.controlId = controlId;
+        this.batchId = batchId;
+        this.isProductionPlanned = isProductionPlanned;
+        this.isBillGenrated = isBillGenrated;
+        this.isFinishMtrSave = isFinishMtrSave;
+        this.pcs = pcs;
+        this.totalMtr = totalMtr;
+        this.totalFinish=totalFinish;
+        this.receiveDate = receiveDate;
+
+    }
+
     public BatchDetail(BatchDetail batchDetail, Quality quality, QualityName qualityName) {
         this.controlId = batchDetail.controlId;
         this.batchId = batchDetail.batchId;

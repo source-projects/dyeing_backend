@@ -170,6 +170,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
     Long getTotalPcsByBatchAndStockId(Long stockId, String batchId);
+    @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId")
+    Long getTotalPcsByBatchAndStockIdWithoutFilter(Long stockId, String batchId);
 
 
     /*//for party report batch detail
@@ -181,9 +183,14 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<BatchDetail> getBatchDetailForReportByPartyIdAndQualityId(Long partyId, Long qualityId);
 */
 
-    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave," +
+   /* @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave," +
             "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)," +
             "b.mergeBatchId) from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id GROUP BY b.batchId,b.controlId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave,b.mergeBatchId")
+    List<BatchDetail> getBatchDetailByStockId(Long id);*/
+
+    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave," +
+            "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)" +
+            ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id GROUP BY b.batchId,b.controlId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave")
     List<BatchDetail> getBatchDetailByStockId(Long id);
 
 

@@ -660,6 +660,9 @@ public class ProductionPlanImpl {
         if(totalBatchCapacity+totalBatchWt>jetMast.getCapacity())
            throw new Exception("Batch WT is greater than Jet capacity please reduce or remove the Batch");
 
+
+        //don't save the shade id with produciton because it is direct dyeing shade id is just fore refrecnce
+        productionPlan.setShadeId(null);
         ProductionPlan x = productionPlanDao.save(productionPlan);
 
         JetData jetData = new JetData(x,jetSequence+1,jetMast);

@@ -1635,7 +1635,21 @@ public class StockBatchServiceImpl {
     }
 
     public WTByStockAndBatch getWtByStockAndBatchId(Long stockId, String batchId) throws Exception {
-        WTByStockAndBatch data = batchDao.getWtByStockAndBatchId(batchId,stockId);
+        //wt bay batch id
+        //first get batch is batchId orMergeBatchId
+
+        Double wt;
+        BatchData isBatchId = batchDao.getIsBatchId(batchId);
+        if(isBatchId==null)
+        {
+             wt = batchDao.getTotalWtByMergeBatchId(batchId);
+        }
+        else {
+            wt = batchDao.getTotalWtByBatchId(batchId);
+        }
+
+        WTByStockAndBatch data=new WTByStockAndBatch(wt);
+        data.setBatchId(batchId);
         if(data==null)
             throw new Exception(CommonMessage.StockBatch_Not_Found);
         return data;
@@ -1730,7 +1744,7 @@ public class StockBatchServiceImpl {
         Double totalWt = batchDao.getTotalWtByControlIdAndBatchId(stockId,batchId);
         Double totalMtr = batchDao.getTotalMtrByControlIdAndBatchId(stockId,batchId);
         Double totalFinish = batchDao.getTotalFinishMtrByBatchAndStock(batchId,stockId);
-        Long totalPcs= batchDao.getTotalPcsByBatchAndStockId(stockId,batchId);
+        Long totalPcs= batchDao.getTotalPcsByBatchAndStockIdWithoutFilter(stockId,batchId);
         StockMast stockMast = stockMastDao.findByStockId(stockId);
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
         UserData userData = userDao.getUserById(stockMast.getUserHeadId());
@@ -2024,7 +2038,7 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setQualityEntryId(batchToPartyAndQuality.getQualityEntryId()==null?quality.get().getId().toString():batchToPartyAndQuality.getQualityEntryId()+","+quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName()==null?qualityName.get().getQualityName():batchToPartyAndQuality.getQualityName()+","+qualityName.get().getQualityName());
 
-                    System.out.println("batch id for merge batch:"+batch.getBatchId());
+                    //System.out.println("batch id for merge batch:"+batch.getBatchId());
                     batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId()==null?batchByMergeBatch.getBatchId():batchToPartyAndQuality.getBatchId()+","+batchByMergeBatch.getBatchId());
 
                 }

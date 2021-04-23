@@ -8,6 +8,7 @@ import com.main.glory.model.employee.request.FilterAttendance;
 import com.main.glory.model.employee.request.GetLatestAttendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
 import com.main.glory.model.employee.response.EmployeeWithAttendance;
+import com.main.glory.model.employee.response.GetAllEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,7 +107,7 @@ public class AttendanceServiceImpl {
 
         if(filterAttendance.getControlId()==null)
         {
-            List<EmployeeMast> employeeMastList = employeeService.getAllEmployee();
+            List<GetAllEmployee> employeeMastList = employeeService.getAllEmployee();
             for(EmployeeMast employeeMast:employeeMastList)
             {
                 EmployeeAttendanceResponse employeeAttendanceResponse = attendanceDao.getAttendanceBasedOnFilter(employeeMast.getId(),filterAttendance.getFromDate(),filterAttendance.getToDate());
