@@ -170,7 +170,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
     Long getTotalPcsByBatchAndStockId(Long stockId, String batchId);
-    @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
+    @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.controlId=:stockId")
     Long getTotalPcsByBatchAndStockIdWithoutFilter(Long stockId, String batchId);
 
 
