@@ -1635,7 +1635,21 @@ public class StockBatchServiceImpl {
     }
 
     public WTByStockAndBatch getWtByStockAndBatchId(Long stockId, String batchId) throws Exception {
-        WTByStockAndBatch data = batchDao.getWtByStockAndBatchId(batchId,stockId);
+        //wt bay batch id
+        //first get batch is batchId orMergeBatchId
+
+        Double wt;
+        BatchData isBatchId = batchDao.getIsBatchId(batchId);
+        if(isBatchId==null)
+        {
+             wt = batchDao.getTotalWtByMergeBatchId(batchId);
+        }
+        else {
+            wt = batchDao.getTotalWtByBatchId(batchId);
+        }
+
+        WTByStockAndBatch data=new WTByStockAndBatch(wt);
+        data.setBatchId(batchId);
         if(data==null)
             throw new Exception(CommonMessage.StockBatch_Not_Found);
         return data;
