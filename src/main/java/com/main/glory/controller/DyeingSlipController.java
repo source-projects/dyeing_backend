@@ -407,7 +407,7 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<List<ItemListForDirectDyeing>,Object> result;
         try {
             if (record == null)
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
 
             List<ItemListForDirectDyeing> list  = dyeingSlipService.getItemListByShadeAndBatch(record);
 
