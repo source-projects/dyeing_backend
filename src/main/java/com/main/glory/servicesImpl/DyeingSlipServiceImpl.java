@@ -17,6 +17,7 @@ import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
+import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.Quality;
@@ -33,8 +34,13 @@ import java.util.*;
 public class DyeingSlipServiceImpl {
 
     CommonMessage commonMessage;
+
+    @Autowired
+    JetServiceImpl jetService;
+
     @Autowired
     BatchDao batchDao;
+
     @Autowired
     SupplierServiceImpl supplierService;
 
@@ -83,7 +89,7 @@ public class DyeingSlipServiceImpl {
 
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
         if(dyeingSlipMastExist==null)
-            throw new Exception("no dyeing slip found");
+            throw new Exception(CommonMessage.DyeingSlip_Not_Found);
 
         //set the color flag
         int i=0;
@@ -131,7 +137,10 @@ public class DyeingSlipServiceImpl {
         slipFormatData.setTotalWt(wt);
         slipFormatData.setQualityId(record.getQualityId());
         //slipFormatData.setQualityEntryId(quality.getId());
-
+        JetMast jetMast =jetService.getJetMastById(slipFormatData.getJetId());
+        if(jetMast==null)
+            throw new Exception(CommonMessage.Jet_Not_Exist_With_Name);
+        slipFormatData.setJetName(jetMast.getName());
         slipFormatData.setDyeingSlipDataList(dyeingSlipMastExist.getDyeingSlipDataList());
 
 

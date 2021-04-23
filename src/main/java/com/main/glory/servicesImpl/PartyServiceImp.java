@@ -452,7 +452,7 @@ public class PartyServiceImp implements PartyServiceInterface {
     public PartyReport getPartyReportById(Long id, Long qualityId) throws Exception {
         Party party = partyDao.findByPartyId(id);
         if(party==null)
-            throw new Exception("no party found");
+            throw new Exception(CommonMessage.Party_Not_Found);
 
 
         PartyReport partyReport =new PartyReport(party);

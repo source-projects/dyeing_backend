@@ -33,11 +33,28 @@ public class EmployeeMast {
     Date createdDate;
     Date updatedDate;
     Long empId;
+    Long departmentId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<EmployeeData> employeeDocumentList;
 
+    public EmployeeMast(EmployeeMast e) {
+
+        this.id=e.getId();
+        this.name=e.getName();
+        this.contact=e.getContact();
+        this.aadhaar=e.getAadhaar();
+        this.remark=e.getRemark();
+        this. remark2=e.getRemark2();
+        this.remark3=e.getRemark3();
+        this.createdBy=e.getCreatedBy();
+        this.updatedBy=e.getUpdatedBy();
+        this.createdDate=e.getCreatedDate();
+        this.updatedDate=e.getUpdatedDate();
+        this.empId=e.getEmpId();
+        this.departmentId=e.getDepartmentId();
+    }
 
 
     @PrePersist

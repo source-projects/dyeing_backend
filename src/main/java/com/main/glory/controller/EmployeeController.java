@@ -6,6 +6,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.request.AddEmployee;
+import com.main.glory.model.employee.response.GetAllEmployee;
 import com.main.glory.servicesImpl.EmployeeServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,13 +146,13 @@ public class EmployeeController extends ControllerConfig {
 
 
     @GetMapping(value = "/employee/all")
-    public ResponseEntity<GeneralResponse<List<EmployeeMast>,Object>> getEmployeAll() throws Exception {
+    public ResponseEntity<GeneralResponse<List<GetAllEmployee>,Object>> getEmployeAll() throws Exception {
 
-        GeneralResponse<List<EmployeeMast>,Object> result;
+        GeneralResponse<List<GetAllEmployee>,Object> result;
         boolean flag;
         try {
 
-            List<EmployeeMast> employeeMast= employeeService.getAllEmployee();
+            List<GetAllEmployee> employeeMast= employeeService.getAllEmployee();
 
             if(employeeMast.size()>0)
                 result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());

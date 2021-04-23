@@ -22,6 +22,7 @@ import java.util.Optional;
 @Setter
 public class JobCard {
     Long partyId;
+    String partyCode;
     String partyName;
     String masterName;
     Long userHeadId;
@@ -51,5 +52,6 @@ public class JobCard {
         this.totalMtr=totalMtr;
         this.totalWt=totalWt;
         this.totalPcs=totalPcs;
+        this.partyCode=party.getPartyCode();
     }
 }
