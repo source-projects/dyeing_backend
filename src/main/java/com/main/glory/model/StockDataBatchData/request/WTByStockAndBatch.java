@@ -19,4 +19,12 @@ public class WTByStockAndBatch {
         this.stockId = stockId;
         this.Totalwt = totalwt;
     }
+    public WTByStockAndBatch(String batchId,  Double totalwt) {
+        this.batchId = batchId;
+        this.Totalwt = totalwt;
+    }
+
+    public WTByStockAndBatch(Double wt) {
+        this.Totalwt =wt;
+    }
 }
