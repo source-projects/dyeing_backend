@@ -124,7 +124,12 @@ public class PartyServiceImp implements PartyServiceInterface {
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
 
-            if(userData.getUserHeadId().equals(userData.getId())) {
+            if(userData.getUserHeadId()==0)
+            {
+                //fr admin
+                partyDetailsList = partyDao.getAllParty();
+            }
+            else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,id);
             }
@@ -138,8 +143,10 @@ public class PartyServiceImp implements PartyServiceInterface {
         } else if (getBy.equals("own")) {
             partyDetailsList = partyDao.findByCreatedBy(id);
         }
+
         if (partyDetailsList.isEmpty())
             throw new Exception(CommonMessage.Party_Not_Found);
+
         return partyDetailsList;
     }
 

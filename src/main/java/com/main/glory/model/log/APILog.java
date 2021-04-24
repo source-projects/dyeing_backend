@@ -37,6 +37,11 @@ public class APILog<T> {
     String responseMsg;
     String method;
     Date createdDate;
+    Date requestDate;
+    Date responseDate;
+    Long serveInMicroSec;
+    Long serveInSec;
+
 
     public <T,D> APILog(GeneralResponse<T,D> result, HttpServletRequest request) {
         this.apiUrl = request.getRequestURI();

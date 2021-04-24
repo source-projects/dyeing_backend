@@ -1,6 +1,7 @@
 package com.main.glory.controller;
 
 import com.google.api.Http;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
@@ -51,20 +52,22 @@ public class MachineController extends ControllerConfig {
         if(machine==null)
         {
             //result = new GeneralResponse<>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             machineService.saveMachine(machine);
-            result = new GeneralResponse<>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,machine);
+            result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,machine);
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -76,14 +79,14 @@ public class MachineController extends ControllerConfig {
         try {
 
             machineService.addTempMachineRecord(name,date);
-            result = new GeneralResponse<>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -94,20 +97,21 @@ public class MachineController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(machine==null)
         {
-            throw new Exception("null record passed");//result = new GeneralResponse<>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             machineService.saveMachineCategory(machine);
-            result = new GeneralResponse<>(null, "Machine Category added successfully", true, System.currentTimeMillis(), HttpStatus.OK,machine);
+            result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,machine);
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,machine);
+            e.printStackTrace();
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,machine);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -118,20 +122,22 @@ public class MachineController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(name==null && speed == null)
         {
-            throw new Exception("null record passed");
+            throw new Exception(CommonMessage.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             machineService.saveMachineRecord(name,speed);
-            result = new GeneralResponse<>(null, "Machine Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -144,15 +150,16 @@ public class MachineController extends ControllerConfig {
 
             var x = machineService.getAllCategory();
             if(x!=null) {
-                result = new GeneralResponse<>(x, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(x, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             }
             else
-                result = new GeneralResponse<>(x, "Data not found", false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(x, CommonMessage.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -166,13 +173,14 @@ public class MachineController extends ControllerConfig {
         try {
 
             var x = machineService.getAllMachineByCategory(id);
-            result = new GeneralResponse<>(x, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(x, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -188,17 +196,18 @@ public class MachineController extends ControllerConfig {
             List<GetAllMachine> machineMasts = machineService.getAllMachine();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result = new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -214,15 +223,15 @@ public class MachineController extends ControllerConfig {
 
             if(id==null)
             {
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             GetAllMachine machineMasts = machineService.getMachineById(id);
             if(machineMasts ==null)
             {   
-                result = new GeneralResponse<>(null, "Machine Data not found ", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result = new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -230,7 +239,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -250,10 +259,10 @@ public class MachineController extends ControllerConfig {
             GetAllMachine machineMasts = machineService.getMachineByIdWithFilter(getMachine);
             if(machineMasts ==null)
             {
-                result = new GeneralResponse<>(null, "Machine Data not found ", false, System.currentTimeMillis(), HttpStatus.OK,getMachine);
+                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,getMachine);
             }
             else
-            result = new GeneralResponse<>(machineMasts, "Machine Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,getMachine);
+            result = new GeneralResponse<>(machineMasts, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,getMachine);
 
             logService.saveLog(result,request,debugAll);
 
@@ -261,7 +270,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,getMachine);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,getMachine);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -276,17 +285,18 @@ public class MachineController extends ControllerConfig {
 
             if(id==null)
             {
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             flag = machineService.deleteMachineById(id);
             if(flag ==true)
-            result = new GeneralResponse<>(true, "Machine Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, CommonMessage.Machine_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
 
         }
@@ -301,18 +311,20 @@ public class MachineController extends ControllerConfig {
 
             if(id==null)
             {
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             flag = machineService.deleteMachineCategoryById(id);
             if(flag ==true)
-                result = new GeneralResponse<>(true, "Machine category deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, CommonMessage.Machine_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -326,17 +338,18 @@ public class MachineController extends ControllerConfig {
 
             if(machineCategory==null)
             {
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             flag = machineService.updateMachineCategory(machineCategory);
             if(flag ==true)
-                result = new GeneralResponse<>(true, "Machine category updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,machineCategory);
+                result = new GeneralResponse<>(true, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,machineCategory);
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,machineCategory);
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,machineCategory);
             logService.saveLog(result,request,true);
 
         }
@@ -351,19 +364,20 @@ public class MachineController extends ControllerConfig {
 
             if(id==null)
             {
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             flag = machineService.getCategoryIsDeletble(id);
             if(flag ==true)
-                result = new GeneralResponse<>(true, "Machine category deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, CommonMessage.Machine_Data_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(false, "Machine not deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, CommonMessage.Machine_Data_Not_Deletable, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
 
         }
@@ -379,13 +393,13 @@ public class MachineController extends ControllerConfig {
 
             if(id==null)
             {
-                throw new Exception("null record passed");//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             flag = machineService.getMachineIsDeletable(id);
             if(flag ==true)
-                result = new GeneralResponse<>(true, "Machine deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, CommonMessage.Machine_Data_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(false, "Machine is not deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, CommonMessage.Machine_Data_Not_Deletable, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -393,7 +407,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
 
         }
@@ -410,18 +424,18 @@ public class MachineController extends ControllerConfig {
 
             if(machineMast==null)
             {
-                throw new Exception("null record passed");//esult = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(CommonMessage.Null_Record_Passed);//esult = new GeneralResponse<>(null, "Machine Data can't be null ", true, System.currentTimeMillis(), HttpStatus.OK);
             }
             flag = machineService.updateMachineMast(machineMast);
             if(flag ==true)
-                result = new GeneralResponse<>(true, "Machine category updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,machineMast);
+                result = new GeneralResponse<>(true, CommonMessage.Machine_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,machineMast);
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,machineMast);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,machineMast);
             logService.saveLog(result,request,true);
 
         }

@@ -67,9 +67,9 @@ public class ColorController extends ControllerConfig {
 			String msg = e.getMessage();
 			String cause = e.getCause().getMessage();
 			if(cause.equals("BR") || msg.contains("null"))
-				result = new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				result = new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,colorMast);
 			else
-			result =new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+			result =new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,colorMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -116,7 +116,8 @@ public class ColorController extends ControllerConfig {
 			}
 
 		} catch (Exception e) {
-			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		logService.saveLog(result,request,debugAll);
@@ -132,7 +133,8 @@ public class ColorController extends ControllerConfig {
 			result = new GeneralResponse<>(true, commonMessage.Color_Updated, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
-			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+			e.printStackTrace();
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,colorMast);
 			logService.saveLog(result,request,true);
 
 
@@ -148,7 +150,8 @@ public class ColorController extends ControllerConfig {
 			result = new GeneralResponse<>(true, commonMessage.Color_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
-			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			e.printStackTrace();
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -158,16 +161,23 @@ public class ColorController extends ControllerConfig {
 	public ResponseEntity<GeneralResponse<ColorMast,Object>> getColorDataById(@PathVariable(value = "id") Long id) {
 
 		GeneralResponse<ColorMast,Object> result;
-		if (id != null) {
-			var colorData = colorService.getColorById(id);
-			if (colorData!=null) {
-				result = new GeneralResponse<>(colorData.get(), commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-			} else
-				result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-			logService.saveLog(result,request,debugAll);
-		} else {
-			result = new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
-			logService.saveLog(result,request,true);
+		try {
+			if (id != null) {
+				var colorData = colorService.getColorById(id);
+				if (colorData != null) {
+					result = new GeneralResponse<>(colorData.get(), commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+				} else
+					result = new GeneralResponse<>(null, commonMessage.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+				logService.saveLog(result, request, debugAll);
+			} else {
+				result = new GeneralResponse<>(null, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+				logService.saveLog(result, request, true);
+			}
+		}catch (Exception e)
+		{
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+			logService.saveLog(result, request, true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -180,7 +190,8 @@ public class ColorController extends ControllerConfig {
 			result = new GeneralResponse<>(colorBoxes, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
-			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -195,7 +206,8 @@ public class ColorController extends ControllerConfig {
 			result = new GeneralResponse<>(colorBoxes, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
-			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -214,7 +226,7 @@ public class ColorController extends ControllerConfig {
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -229,7 +241,8 @@ public class ColorController extends ControllerConfig {
 			result = new GeneralResponse<>(true, commonMessage.Color_Issue, true, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
+			e.printStackTrace();
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,issueBoxRequest);
 			logService.saveLog(result,request,true);
 		}
 		return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -244,7 +257,8 @@ public class ColorController extends ControllerConfig {
 			response= new GeneralResponse<>(list, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(response,request,debugAll);
 		} catch (Exception e) {
-			response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			e.printStackTrace();
+			response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(response,request,true);
 		}
 		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));

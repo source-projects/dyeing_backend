@@ -106,7 +106,7 @@ public class QualityServiceImp  {
             qualityListobject = qualityDao.findAllWithPartyName();
 
 
-            for(QualityWithPartyName data :qualityListobject)
+           /* for(QualityWithPartyName data :qualityListobject)
             {
 
                 Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
@@ -116,53 +116,46 @@ public class QualityServiceImp  {
 
                 quality.add(new GetQualityResponse(data));
                 //System.out.println("rate:"+data.getRate() );
-            }
+            }*/
 
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(id);
 
-            if(userData.getUserHeadId().equals(userData.getId())) {
+            if(userData.getUserHeadId()==0)
+            {
+                //for admin
+                qualityListobject = qualityDao.findAllWithPartyName();
+
+            }
+            else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 qualityListobject = qualityDao.findAllWithPartyByCreatedAndHeadId(id,id);
-                for(QualityWithPartyName data :qualityListobject)
-                {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-                    if(qualityName.isEmpty())
-                        continue;
-                    data.setQualityName(qualityName.get().getQualityName());
-                    quality.add(new GetQualityResponse(data));
-                }
+
             }
             else
             {
                 UserData userOperator = userDao.getUserById(id);
                 qualityListobject = qualityDao.findQualityByUserHeadId(userOperator.getUserHeadId());
-                for(QualityWithPartyName data :qualityListobject)
-                {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-                    if(qualityName.isEmpty())
-                        continue;
-                    data.setQualityName(qualityName.get().getQualityName());
-                    quality.add(new GetQualityResponse(data));
-                }
+
             }
 
 
 
         } else if (getBy.equals("own")) {
             qualityListobject = qualityDao.findAllWithPartyNameByCreatedBy(id);
-            for(QualityWithPartyName data :qualityListobject)
-            {
-                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-                if(qualityName.isEmpty())
-                    continue;
-                data.setQualityName(qualityName.get().getQualityName());
-                quality.add(new GetQualityResponse(data));
-            }
+
+        }
+        for(QualityWithPartyName data :qualityListobject)
+        {
+            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
+            if(qualityName.isEmpty())
+                continue;
+            data.setQualityName(qualityName.get().getQualityName());
+            quality.add(new GetQualityResponse(data));
         }
 
         if (quality.isEmpty())
-            throw new Exception("quality not added yet");
+            throw new Exception(CommonMessage.Quality_Data_Not_Added);
         return quality;
     }
 
