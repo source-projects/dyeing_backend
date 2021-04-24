@@ -25,11 +25,11 @@ public class QualityBillByInvoiceNumber {
     Double totalMtr;
     Double finishMtr;
     Long pcs;
-    Long pChalNo;
+    String pChalNo;
     Double amt;
     Double amtWt;
 
-    public QualityBillByInvoiceNumber(String qualityId, String qualityName, String hsn, Double rate, String batchId, Double totalMtr, Double finishMtr, Long pcs, Long pChalNo) {
+    public QualityBillByInvoiceNumber(String qualityId, String qualityName, String hsn, Double rate, String batchId, Double totalMtr, Double finishMtr, Long pcs, String pChalNo) {
         this.qualityId = qualityId;
         this.qualityName = qualityName;
         this.hsn = hsn;
