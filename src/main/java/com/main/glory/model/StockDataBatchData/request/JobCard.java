@@ -28,7 +28,7 @@ public class JobCard {
     Long userHeadId;
     Date receiveDate;
     String batchId;
-    Long chalNo;
+    String chalNo;
     String qualityName;
     String qualityId;
     Long qualiyEntryId;

@@ -23,7 +23,7 @@ public class AddStockBatch {
     Long partyId;
     String billNo;
     Date billDate;
-    Long chlNo;
+    String chlNo;
     Date chlDate;
     String unit;
     Long updatedBy;
