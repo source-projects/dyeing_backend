@@ -120,8 +120,8 @@ public class AdminServciceImpl {
             throw new Exception(commonMessage.Department_Name_Exist);
 
         Department d=new Department(c);
-        if(c.getIsMaster()==null)
-            c.setIsMaster(false);
+      /*  if(c.getIsMaster()==null)
+            c.setIsMaster(false);*/
 
         departmentDao.save(d);
 

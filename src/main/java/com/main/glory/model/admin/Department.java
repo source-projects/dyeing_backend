@@ -23,6 +23,6 @@ public class Department {
     public Department(Department c) {
         this.id=c.getId();
         this.name=c.getName();
-        this.isMaster = c.getIsMaster();
+        this.isMaster = c.getIsMaster()==null?false:c.getIsMaster();
     }
 }
