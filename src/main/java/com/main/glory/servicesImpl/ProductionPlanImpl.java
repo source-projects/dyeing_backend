@@ -422,7 +422,7 @@ public class ProductionPlanImpl {
                 //perform all the record based on merge batchID
                 // first of all we have to store the infor of production any how
                 //then process for the jet if the jet id is not null
-                ProductionPlan productionPlanExistWithMergeBatchId = productionPlanDao.getProductionDetailByBatchId(productionPlan.getBatchId(),true);
+                ProductionPlan productionPlanExistWithMergeBatchId = productionPlanDao.getProductionByBatchId(productionPlan.getBatchId());
                 if(productionPlanExistWithMergeBatchId!=null)
                     throw new Exception(CommonMessage.Production_Record_Exist);
 
