@@ -80,13 +80,13 @@ public class ProductionPlanImpl {
         if(shadeMastExist.isPresent())
         {
             //check already batch and stock is exist or not
-            ProductionPlan productionPlanExist = productionPlanDao.getProductionDetailByBatchId(productionPlan.getBatchId(),false);
+            ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchId(productionPlan.getBatchId());
             if(productionPlanExist!=null)
-                throw new Exception("already stock and batch is exist");
+                throw new Exception(CommonMessage.Production_Record_Exist);
 
             List<BatchData> batchDataList = batchService.getBatchByBatchIdId(productionPlan.getBatchId());
             if(batchDataList.isEmpty())
-                throw new Exception("No batch data found");
+                throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
             //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
@@ -424,7 +424,7 @@ public class ProductionPlanImpl {
                 //then process for the jet if the jet id is not null
                 ProductionPlan productionPlanExistWithMergeBatchId = productionPlanDao.getProductionDetailByBatchId(productionPlan.getBatchId(),true);
                 if(productionPlanExistWithMergeBatchId!=null)
-                    throw new Exception("same production available with batch ");
+                    throw new Exception(CommonMessage.Production_Record_Exist);
 
 
 
@@ -439,7 +439,7 @@ public class ProductionPlanImpl {
                     batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
                 }
                 if(batchDataList.isEmpty())
-                    throw new Exception("No batch data found");
+                    throw new Exception(CommonMessage.Batch_Data_Not_Found);
 
                 //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
@@ -544,13 +544,13 @@ public class ProductionPlanImpl {
             //check the production is already added in jet or not
             ProductionPlan productionPlanExist = productionPlanDao.getByProductionId(productionPlan.getProductionId());
             if(productionPlanExist.getStatus()==true)
-                throw new Exception("production is already in jet");
+                throw new Exception(CommonMessage.Production_With_Jet);
 
 
             //change the status of production
             Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(productionPlan.getShadeId());
             if(shadeMastExist.isEmpty())
-                throw new Exception("no shade found");
+                throw new Exception(CommonMessage.Shade_Not_Found);
 
             productionPlanExist=new ProductionPlan(productionPlan);
 
@@ -606,6 +606,7 @@ public class ProductionPlanImpl {
 
          */
 
+
         //check first the batch id is coming batch or merge batch id
         BatchData isMergeBatchId = batchDao.getIsMergeBatchId(record.getBatchId());//if data is not null then it is merge batch id
         BatchData isBatchId = batchDao.getIsBatchId(record.getBatchId());
@@ -615,6 +616,13 @@ public class ProductionPlanImpl {
 
         Double totalBatchWt = 0.0;//stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
         //process type ::directDyeing
+
+
+        //check that the production is already exist or not
+
+        ProductionPlan productionPlanExistWithBatch = productionPlanDao.getProductionByBatchId(record.getBatchId());
+        if(productionPlanExistWithBatch==null)
+            throw new Exception(CommonMessage.Production_Record_Exist);
 
         ProductionPlan productionPlan =new ProductionPlan(record);
 

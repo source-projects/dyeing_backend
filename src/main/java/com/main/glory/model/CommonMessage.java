@@ -32,6 +32,7 @@ public class CommonMessage {
 
     //production
     public static String Production_Found = "Data found";
+    public static String Production_With_Jet = "Production is already in jet";
     public static String ProductionType_Exist = "Data Exist";
     public static String Production_Added = "Data added successfully";
     public static String Production_Not_Found = "Data not found";
