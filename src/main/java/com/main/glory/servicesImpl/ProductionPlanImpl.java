@@ -621,7 +621,7 @@ public class ProductionPlanImpl {
         //check that the production is already exist or not
 
         ProductionPlan productionPlanExistWithBatch = productionPlanDao.getProductionByBatchId(record.getBatchId());
-        if(productionPlanExistWithBatch==null)
+        if(productionPlanExistWithBatch!=null)
             throw new Exception(CommonMessage.Production_Record_Exist);
 
         ProductionPlan productionPlan =new ProductionPlan(record);
