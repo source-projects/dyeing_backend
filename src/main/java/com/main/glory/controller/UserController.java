@@ -68,7 +68,7 @@ public class UserController extends ControllerConfig {
             logService.saveLog(result,request,debugAll);
         }
         else {
-            result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -79,20 +79,23 @@ public class UserController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<List<UserData>,String>> getUserByDepartmentId(@RequestParam(name = "departmentId") Long departmentId)
     {
         GeneralResponse<List<UserData>,String> result;
-        if(departmentId!=null)
-        {
-            List<UserData> userObj=userService.getAllUserByDepartmentId(departmentId);
-            if(userObj!=null)
-            {
-                result = new GeneralResponse<>(userObj, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+        try {
+
+            if (departmentId != null) {
+                List<UserData> userObj = userService.getAllUserByDepartmentId(departmentId);
+                if (userObj != null) {
+                    result = new GeneralResponse<>(userObj, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                } else
+                    result = new GeneralResponse<>(null, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                logService.saveLog(result, request, debugAll);
+            } else {
+               throw new Exception(CommonMessage.Null_Record_Passed);
             }
-            else
-                result = new GeneralResponse<>(null, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,debugAll);
-        }
-        else {
-            result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-            logService.saveLog(result,request,true);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
         }
 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -101,16 +104,21 @@ public class UserController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<List<GetAllOperator>,String>> getAllOperator() throws Exception {
 
         GeneralResponse<List<GetAllOperator>,String> result;
-        List<GetAllOperator> userObj=userService.getAllOperator();
-            if(userObj!=null)
-            {
-                result = new GeneralResponse<>(userObj, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-                logService.saveLog(result,request,debugAll);
+        try {
+            List<GetAllOperator> userObj = userService.getAllOperator();
+            if (userObj != null) {
+                result = new GeneralResponse<>(userObj, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                logService.saveLog(result, request, debugAll);
+            } else {
+                throw new Exception(CommonMessage.Null_Record_Passed);
             }
-            else {
-                result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
-                logService.saveLog(result,request,true);
-            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
             return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
@@ -128,7 +136,8 @@ public class UserController extends ControllerConfig {
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
         {
-            result = new GeneralResponse<>(null, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -197,7 +206,7 @@ public class UserController extends ControllerConfig {
             }
         }catch(Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         logService.saveLog(result,request,debugAll);
@@ -215,7 +224,7 @@ public class UserController extends ControllerConfig {
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,userData);
 
             logService.saveLog(result,request,true);
         }
@@ -253,7 +262,7 @@ public class UserController extends ControllerConfig {
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,userData);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -276,7 +285,7 @@ public class UserController extends ControllerConfig {
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,userData);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -295,13 +304,14 @@ public class UserController extends ControllerConfig {
                     result = new GeneralResponse<>(false, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             } else
-                result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                throw new Exception(CommonMessage.Null_Record_Passed);
+                //result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -322,7 +332,8 @@ public class UserController extends ControllerConfig {
         }
         catch (Exception e)
         {
-            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(response,request,true);
         }
         return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));

@@ -1,10 +1,6 @@
 package com.main.glory.model.StockDataBatchData;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.main.glory.model.dispatch.DispatchData;
-import com.main.glory.model.dispatch.DispatchMast;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
