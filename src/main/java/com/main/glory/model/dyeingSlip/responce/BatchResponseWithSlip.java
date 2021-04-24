@@ -24,6 +24,7 @@ public class BatchResponseWithSlip {
     String colorName;
 
 
+
     public BatchResponseWithSlip(DyeingSlipData data, ShadeMast shadeMast, Double totalWt, String qualityId,Long batchCount) {
         this.dyeingSlipData = data;
         this.totalWt = totalWt;

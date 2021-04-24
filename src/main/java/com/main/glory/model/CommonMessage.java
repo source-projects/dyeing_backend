@@ -268,6 +268,8 @@ public class CommonMessage {
     public static String Machine_Data_Updated = "Data updated successfully";
     public static String Machine_Data_Not_Updated = "Data not updated successfully";
     public static String Machine_Data_Deleted = "Data deleted successfully";
+    public static String Machine_Data_Deletable = "Data is deletable";
+    public static String Machine_Data_Not_Deletable = "Data is not deletable";
     public static String Machine_Data_Found = "Data found";
     public static String Machine_Data_Not_Found = "Data not found";
 

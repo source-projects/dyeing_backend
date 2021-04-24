@@ -49,7 +49,7 @@ public class ShadeController extends ControllerConfig {
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,shadeMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -63,7 +63,7 @@ public class ShadeController extends ControllerConfig {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			return new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 		}
 	}
 	@GetMapping("/shade/apcExist/{number}")
@@ -80,7 +80,7 @@ public class ShadeController extends ControllerConfig {
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -119,12 +119,12 @@ public class ShadeController extends ControllerConfig {
 
 					break;
 				default:
-					result = new GeneralResponse<>(null, "GetBy string is wrong", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result = new GeneralResponse<>(null, CommonMessage.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 			}
 		}catch (Exception e){
 			e.printStackTrace();
-			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		logService.saveLog(result,request,debugAll);
@@ -144,7 +144,7 @@ public class ShadeController extends ControllerConfig {
 			logService.saveLog(result,request,debugAll);
 		}catch (Exception e){
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
@@ -165,7 +165,7 @@ public class ShadeController extends ControllerConfig {
 			logService.saveLog(result,request,debugAll);
 		}catch (Exception e){
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -184,7 +184,7 @@ public class ShadeController extends ControllerConfig {
 			logService.saveLog(result,request,debugAll);
 		}catch (Exception e){
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -205,13 +205,14 @@ public class ShadeController extends ControllerConfig {
 				}
 				logService.saveLog(result, request, debugAll);
 			} else
-				result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+				throw new Exception(CommonMessage.Null_Record_Passed);
+				//result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
 
 			logService.saveLog(result,request,debugAll);
 		}catch (Exception e)
 		{
 			e.printStackTrace();
-			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,shadeMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -227,7 +228,8 @@ public class ShadeController extends ControllerConfig {
 			result= new GeneralResponse<>(true, CommonMessage.Shade_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
-			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			e.printStackTrace();
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -246,13 +248,14 @@ public class ShadeController extends ControllerConfig {
 				}
 			}
 			else {
-				result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				throw new Exception(CommonMessage.Null_Record_Passed);
+				//result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			}
 			logService.saveLog(result,request,debugAll);
 		}catch (Exception e )
 		{
 			e.printStackTrace();
-			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

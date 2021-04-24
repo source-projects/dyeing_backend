@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class LogServiceImpl<T,D> {
     public void saveLog(GeneralResponse<T,D> result, HttpServletRequest request,Boolean debugAll)  {
         try {
 
+            Date requestDate = new Date(Long.parseLong(request.getAttribute("requestTime").toString()));
+            Date responseDate = new Date(System.currentTimeMillis());
             if (debugAll == true) {
                 ObjectMapper mapper = new ObjectMapper();
                 APILog apiLog = new APILog(result, request);
@@ -35,6 +38,10 @@ public class LogServiceImpl<T,D> {
                 jsonRequestString = mapper.writeValueAsString(result.getRequestBody());
                 apiLog.setRequestBody(jsonRequestString);
                 //System.out.println(result.getRequestBody().toString());
+                apiLog.setResponseDate(responseDate);
+                apiLog.setRequestDate(requestDate);
+                apiLog.setServeInMicroSec(responseDate.getTime()- requestDate.getTime());
+                apiLog.setServeInSec(((responseDate.getTime()- requestDate.getTime())/1000)%60);
                 apiLogDao.save(apiLog);
             }
         }catch (Exception e)
