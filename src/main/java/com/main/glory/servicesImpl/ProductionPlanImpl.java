@@ -606,6 +606,7 @@ public class ProductionPlanImpl {
 
          */
 
+
         //check first the batch id is coming batch or merge batch id
         BatchData isMergeBatchId = batchDao.getIsMergeBatchId(record.getBatchId());//if data is not null then it is merge batch id
         BatchData isBatchId = batchDao.getIsBatchId(record.getBatchId());
@@ -615,6 +616,13 @@ public class ProductionPlanImpl {
 
         Double totalBatchWt = 0.0;//stockBatchService.getWtByControlAndBatchId(record.getStockId(),record.getBatchId());
         //process type ::directDyeing
+
+
+        //check that the produciton is already exist or not
+
+        ProductionPlan productionPlanExistWithBatch = productionPlanDao.getProductionByBatchId(record.getBatchId());
+        if(productionPlanExistWithBatch==null)
+            throw new Exception(CommonMessage.Production_Record_Exist);
 
         ProductionPlan productionPlan =new ProductionPlan(record);
 
