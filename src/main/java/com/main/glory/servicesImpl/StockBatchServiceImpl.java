@@ -965,7 +965,10 @@ public class StockBatchServiceImpl {
 
         Optional<List<StockMast>> stockMasts = stockMastDao.findByPartyId(partyId);
 
-        return stockMasts.get();
+        if(stockMasts.isPresent())
+            return stockMasts.get();
+        else
+        return null;
     }
 
     public GetBatchWithControlId getBatchQTYById(String batchId, Long stockId) {
