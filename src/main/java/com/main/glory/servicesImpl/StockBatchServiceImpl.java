@@ -965,7 +965,6 @@ public class StockBatchServiceImpl {
 
         Optional<List<StockMast>> stockMasts = stockMastDao.findByPartyId(partyId);
 
-
         return stockMasts.get();
     }
 

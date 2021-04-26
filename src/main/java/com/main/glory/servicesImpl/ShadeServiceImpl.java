@@ -129,11 +129,12 @@ public class ShadeServiceImpl {
 	public Optional<ShadeMast> getShadeMastById(Long id) throws Exception {
 		Optional<ShadeMast> shadeMastList = shadeMastDao.findById(id);
 
-		if(shadeMastList.isPresent() && shadeMastList.get().getPartyId()!=null && shadeMastList.get().getQualityEntryId()!=null)
+		/*if(shadeMastList.isPresent() && shadeMastList.get().getPartyId()!=null && shadeMastList.get().getQualityEntryId()!=null)
 			return shadeMastList;
 		else{
 			throw new Exception("shade data not found");
-		}
+		}*/
+		return shadeMastList;
 	}
 
 	
@@ -324,8 +325,8 @@ public class ShadeServiceImpl {
 
 		}
 
-		if(getAllShadesList.isEmpty())
-			throw new Exception("no data found");
+		/*if(getAllShadesList.isEmpty())
+			throw new Exception("no data found");*/
 		return getAllShadesList;
 	}
 
@@ -571,7 +572,7 @@ public class ShadeServiceImpl {
 
 		Party partyExist =partyDao.findByPartyId(partyId);
 		if (partyExist==null)
-			throw new Exception("no party record found");
+			throw new Exception(CommonMessage.Party_Not_Exist);
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
 		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
 		if(qualityId==null)
