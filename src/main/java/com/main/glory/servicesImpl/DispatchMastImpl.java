@@ -415,10 +415,10 @@ public class DispatchMastImpl {
 
     public List<BatchWithTotalMTRandFinishMTR> getBatchByParty(Long partyId)throws Exception {
         List<BatchWithTotalMTRandFinishMTR> batchDataListByParty=new ArrayList<>();
-        List<StockMast> stockMastList = stockBatchService.getBatchByPartyId(partyId);
+        List<StockMast> stockMastList = stockBatchService.getStockListByParty(partyId);
 
-        if(stockMastList.size()<=0)
-            return batchDataListByParty;
+       /* if(stockMastList.size()<=0)
+            return batchDataListByParty;*/
 
         for(StockMast stockMast:stockMastList)
         {

@@ -961,14 +961,12 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<StockMast> getBatchByPartyId(Long partyId) {
+    public List<StockMast> getStockListByParty(Long partyId) {
 
-        Optional<List<StockMast>> stockMasts = stockMastDao.findByPartyId(partyId);
+        List<StockMast> stockMasts = stockMastDao.findByPartyId(partyId);
 
-        if(stockMasts.isPresent())
-            return stockMasts.get();
-        else
-        return null;
+
+        return stockMasts;
     }
 
     public GetBatchWithControlId getBatchQTYById(String batchId, Long stockId) {
@@ -1097,11 +1095,11 @@ public class StockBatchServiceImpl {
     }
 
     public List<StockMast> getStockByPartyId(Long partyId) throws Exception {
-        Optional<List<StockMast>> stockMastList = stockMastDao.findByPartyId(partyId);
-        if(stockMastList.isEmpty())
+        List<StockMast> stockMastList = stockMastDao.findByPartyId(partyId);
+      /*  if(stockMastList.isEmpty())
             throw new Exception("no record found");
-
-        return stockMastList.get();
+*/
+        return stockMastList;
 
     }
 
