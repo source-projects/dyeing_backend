@@ -104,7 +104,10 @@ public class DispatchController extends ControllerConfig {
         try{
             if(partyId!=null) {
                 List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getBatchByParty(partyId);
-                result= new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                if(x.isEmpty())
+                    result= new GeneralResponse<>(x, commonMessage.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                else
+                result= new GeneralResponse<>(x, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
                 result= new GeneralResponse<>(null,commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
