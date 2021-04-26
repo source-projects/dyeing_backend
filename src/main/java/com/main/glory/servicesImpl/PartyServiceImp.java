@@ -474,7 +474,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             for(Quality quality : qualityList)
             {
                 List<BatchDetail> list = stockBatchService.getBatchDetailForReport(party.getId(),quality.getId());
-                if(list.isEmpty())
+                if(list==null || list.isEmpty())
                     continue;
                 for(BatchDetail batchDetail:list)
                 {
@@ -483,8 +483,8 @@ public class PartyServiceImp implements PartyServiceInterface {
 
 
             }
-            if(batchDetailList.isEmpty())
-                throw new Exception("no batch found");
+           /* if(batchDetailList.isEmpty())
+                throw new Exception("no batch found");*/
 
             partyReport.setBatchDetailList(batchDetailList);
         }
@@ -494,11 +494,11 @@ public class PartyServiceImp implements PartyServiceInterface {
 
             Quality qualityExist = qualityServiceImp.getQualityByEntryId(qualityId);
             if(qualityExist==null)
-                throw new Exception("no quality found");
+                throw new Exception(CommonMessage.Quality_Data_Not_Found);
 
             List<BatchDetail> list = stockBatchService.getBatchDetailForReport(party.getId(),qualityId);
-            if(list.isEmpty())
-                throw new Exception("no record found");
+            /*if(list.isEmpty())
+                throw new Exception("no record found");*/
             for(BatchDetail batchDetail:list)
             {
                 batchDetailList.add(batchDetail);
