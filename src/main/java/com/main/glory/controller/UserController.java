@@ -127,8 +127,8 @@ public class UserController extends ControllerConfig {
     {
         GeneralResponse<List<getAllUserInfo>,String> result;
         try {
-            var data = userService.getAllHeadUser(headers.get("id"));
-            if (data != null) {
+            List<getAllUserInfo> data = userService.getAllHeadUser(headers.get("id"));
+            if (!data.isEmpty()) {
                 result = new GeneralResponse<>(data, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
                 result = new GeneralResponse<>(null, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -147,16 +147,16 @@ public class UserController extends ControllerConfig {
         GeneralResponse<Boolean,String> result;
         try {
             Boolean data = userService.getUserNameExist(username,id);
-            if (data) {
+            if (data==true) {
                 result = new GeneralResponse<>(data, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(null, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -326,6 +326,11 @@ public class UserController extends ControllerConfig {
         try {
 
             UserIdentification userIdentification = userService.getUserHeadDetail(id);
+            if(userIdentification==null)
+            {
+                response= new GeneralResponse<>(userIdentification, CommonMessage.User_Not_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            }
+            else
             response= new GeneralResponse<>(userIdentification, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(response,request,debugAll);
 

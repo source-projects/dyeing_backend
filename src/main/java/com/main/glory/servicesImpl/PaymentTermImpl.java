@@ -185,11 +185,11 @@ public class PaymentTermImpl {
         return true;
     }
 
-    public List<PaymentType> getAllPayementType() throws Exception {
+    public List<PaymentType> getAllPaymentType() throws Exception {
         List<PaymentType> paymentTypeList = paymentTypeDao.getAllPaymentType();
-        if(paymentTypeList.isEmpty())
+       /* if(paymentTypeList.isEmpty())
             throw new Exception(CommonMessage.Payment_Not_Found);
-        else
+        else*/
             return paymentTypeList;
     }
 

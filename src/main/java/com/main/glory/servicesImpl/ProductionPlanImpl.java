@@ -227,8 +227,8 @@ public class ProductionPlanImpl {
 
 
 
-        if(list.isEmpty())
-              throw new Exception("no data found");
+       /* if(list.isEmpty())
+              throw new Exception("no data found");*/
 
 
         return list;

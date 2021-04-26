@@ -310,6 +310,9 @@ public class StockBatchController extends ControllerConfig {
 
             List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail(headers.get("id"));
 
+            if(batchData.isEmpty())
+                result = new GeneralResponse<>(batchData, CommonMessage.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
             result = new GeneralResponse<>(batchData, CommonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
@@ -570,6 +573,9 @@ public class StockBatchController extends ControllerConfig {
 
                 List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip(headers.get("id"));
 
+                if(batchData.isEmpty())
+                    result = new GeneralResponse<>(batchData, CommonMessage.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                else
                 result = new GeneralResponse<>(batchData, CommonMessage.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 

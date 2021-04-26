@@ -27,4 +27,7 @@ public interface AuthorizeDao extends JpaRepository<Authorize,Long> {
 
     @Query("select x from Authorize x where x.type=:receive")
     List<Authorize> getAllAuthorizeByType(String receive);
+
+   /* @Query("select x from Authorize x wheere")
+    Authorize getAuthorizeByNameAndType(String name, String type);*/
 }

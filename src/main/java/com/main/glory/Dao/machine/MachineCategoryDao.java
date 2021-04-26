@@ -25,4 +25,7 @@ public interface MachineCategoryDao extends  JpaRepository<MachineCategory,Long>
     @Transactional
     @Query("delete from MachineCategory x where x.id=:id")
     void deleteCategoryById(Long id);
+
+    @Query("select x from MachineCategory x where LOWER(x.name)=LOWER(:name)")
+    MachineCategory getMachineCategoryExist(String name);
 }

@@ -446,8 +446,8 @@ public class DispatchMastImpl {
 
         List<String> invoiceNumber=new ArrayList<>();
 
-        if (dispatchList.isEmpty())
-            throw new Exception("no data found");
+       /* if (dispatchList.isEmpty())
+            throw new Exception("no data found");*/
         for(DispatchData dispatchData:dispatchList)
         {
             List<BatchWithTotalMTRandFinishMTR> batchList=new ArrayList<>();
@@ -499,8 +499,8 @@ public class DispatchMastImpl {
 
         List<GetBatchByInvoice> list = dispatchDataDao.findBatchAndStockByInvoice(invoiceNo);
 
-        if(list.isEmpty())
-            throw new Exception("no data found");
+       /* if(list.isEmpty())
+            throw new Exception("no data found");*/
 
         for(GetBatchByInvoice batch:list)
         {
@@ -545,7 +545,7 @@ public class DispatchMastImpl {
         Party party=partyDao.findByPartyId(stockMast.getPartyId());
 
         if(party==null)
-            throw new Exception("no data found");
+            throw new Exception(CommonMessage.Party_Not_Exist);
 
 
 

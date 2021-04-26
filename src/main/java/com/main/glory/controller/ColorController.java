@@ -254,7 +254,11 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<GetAllBox>,Object> response;
 		try {
 			List<GetAllBox> list = colorService.getAllColorBoxes();
+			if(!list.isEmpty())
 			response= new GeneralResponse<>(list, commonMessage.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			else
+				response= new GeneralResponse<>(list, commonMessage.Color_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
 			logService.saveLog(response,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();

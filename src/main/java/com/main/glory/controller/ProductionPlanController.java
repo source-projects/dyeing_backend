@@ -165,9 +165,12 @@ public class ProductionPlanController extends ControllerConfig {
         try {
             List<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionData(headers.get("id"));
             if(productionPlanRecord.isEmpty())
-                throw new Exception(CommonMessage.Production_Not_Found);
+                result = new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result = new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            //throw new Exception(CommonMessage.Production_Not_Found);
 
-            result = new GeneralResponse<>(productionPlanRecord, CommonMessage.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)

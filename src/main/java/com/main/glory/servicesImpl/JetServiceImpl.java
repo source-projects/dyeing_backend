@@ -760,8 +760,8 @@ public class JetServiceImpl {
             }
         }
 
-        if(getJetDataList.isEmpty())
-            throw new Exception(commonMessage.Jet_Not_Found);
+        /*if(getJetDataList.isEmpty())
+            throw new Exception(commonMessage.Jet_Not_Found);*/
         return getJetDataList;
     }
 
@@ -770,8 +770,8 @@ public class JetServiceImpl {
 
         List<GetAllJetMast> getAllJetMast=new ArrayList<>();
 
-        if(jetMastList.isEmpty())
-            throw new Exception(CommonMessage.Jet_Not_Found);
+        /*if(jetMastList.isEmpty())
+            return  jetMastList;*/
 
         int i=0;
         for(JetMast jetMast:jetMastList)
@@ -1043,7 +1043,7 @@ public class JetServiceImpl {
         List<JetMast> jetMastList=jetMastDao.getAll();
 
         if(jetMastList.isEmpty())
-            throw new Exception(commonMessage.Jet_Not_Found);
+            return list;
 
         for(JetMast jetMast:jetMastList)
         {

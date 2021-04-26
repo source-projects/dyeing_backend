@@ -259,7 +259,12 @@ public class SupplierController extends ControllerConfig {
 
             List<GetAllSupplierWithName> object =supplierService.getAllSupplierName();
 
-            result= new GeneralResponse<>(object, CommonMessage.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            if(!object.isEmpty()) {
+                result = new GeneralResponse<>(object, CommonMessage.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            }else
+            {
+                result = new GeneralResponse<>(object, CommonMessage.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            }
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
