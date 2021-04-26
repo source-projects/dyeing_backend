@@ -124,7 +124,10 @@ public class DispatchController extends ControllerConfig {
         try{
             if(invoiceNo!=null) {
                 PartyWithBatchByInvoice x =dispatchMastService.getDispatchByInvoiceNumber(invoiceNo);
+                if(x!=null)
                 result = new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                else
+                result = new GeneralResponse<>(x, commonMessage.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
                 result = new GeneralResponse<>(null,commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -145,7 +148,10 @@ public class DispatchController extends ControllerConfig {
         try{
 
             List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
+            if(!x.isEmpty())
             result = new GeneralResponse<>(x, commonMessage.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result = new GeneralResponse<>(x, commonMessage.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){

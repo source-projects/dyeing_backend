@@ -173,7 +173,7 @@ public class PurchaseController extends ControllerConfig {
             List<PurchaseResponse> list = purchaseService.getAllPurchaseRecordBasedOnFlag(flag,headers.get("id"));
             if (list.isEmpty())
             {
-                result = new GeneralResponse<>(list, CommonMessage.Purchase_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, CommonMessage.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else {
                 result = new GeneralResponse<>(list, CommonMessage.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());

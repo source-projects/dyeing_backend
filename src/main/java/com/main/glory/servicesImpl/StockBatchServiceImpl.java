@@ -868,8 +868,8 @@ public class StockBatchServiceImpl {
             getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
 
         }
-        if(getAllBatchWithPartyAndQualities.isEmpty())
-            throw new Exception(CommonMessage.StockBatch_Not_Found);
+       /* if(getAllBatchWithPartyAndQualities.isEmpty())
+            throw new Exception(CommonMessage.StockBatch_Not_Found);*/
 
         return  getAllBatchWithPartyAndQualities;
     }
@@ -1627,8 +1627,8 @@ public class StockBatchServiceImpl {
 
         }
 
-        if(list.isEmpty())
-            throw new Exception("no batch found");
+        /*if(list.isEmpty())
+            throw new Exception("no batch found");*/
 
         return list;
 
@@ -1844,9 +1844,9 @@ public class StockBatchServiceImpl {
 
         }
 
-
+/*
         if(list.isEmpty())
-            throw new Exception(CommonMessage.Batch_Data_Not_Found);
+            throw new Exception(CommonMessage.Batch_Data_Not_Found);*/
 
         return list;
     }

@@ -144,8 +144,8 @@ public class PartyServiceImp implements PartyServiceInterface {
             partyDetailsList = partyDao.findByCreatedBy(id);
         }
 
-        if (partyDetailsList.isEmpty())
-            throw new Exception(CommonMessage.Party_Not_Found);
+        /*if (partyDetailsList.isEmpty())
+            throw new Exception(CommonMessage.Party_Not_Found);*/
 
         return partyDetailsList;
     }

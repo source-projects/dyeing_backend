@@ -156,7 +156,10 @@ public class JetController extends ControllerConfig {
         try {
 
             List<GetAllJetMast> jetMastList = jetService.getAllJetData();
+            if(!jetMastList.isEmpty())
             result = new GeneralResponse<>(jetMastList, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+            result = new GeneralResponse<>(jetMastList, commonMessage.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -224,7 +227,10 @@ public class JetController extends ControllerConfig {
         try {
 
             List<GetJetData> jetDataList = jetService.getJetDataWithInQueueProdution(id);
+            if(!jetDataList.isEmpty())
             result =  new GeneralResponse<>(jetDataList, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result =  new GeneralResponse<>(jetDataList, commonMessage.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }

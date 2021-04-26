@@ -801,6 +801,8 @@ public class AdminController extends ControllerConfig {
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequence();
             if(invoiceSequence!=null)
                 result= new GeneralResponse<>(invoiceSequence, commonMessage.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+            result= new GeneralResponse<>(invoiceSequence, commonMessage.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -927,8 +929,11 @@ public class AdminController extends ControllerConfig {
         try {
 
             BatchSequence batchSequence = adminServcice.getBatchSequence(update);
-            result= new GeneralResponse<>(batchSequence, commonMessage.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
+            if(batchSequence!=null)
+            result= new GeneralResponse<>(batchSequence, commonMessage.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result= new GeneralResponse<>(batchSequence, commonMessage.Batch_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
@@ -1382,7 +1387,7 @@ public class AdminController extends ControllerConfig {
 
             adminServcice.deleteAuthorizeById(id);
 
-            result= new GeneralResponse<>(true, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, CommonMessage.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 

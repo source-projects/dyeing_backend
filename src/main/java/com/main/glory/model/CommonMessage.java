@@ -273,6 +273,9 @@ public class CommonMessage {
     public static String Machine_Data_Not_Deletable = "Data is not deletable";
     public static String Machine_Data_Found = "Data found";
     public static String Machine_Data_Not_Found = "Data not found";
+    public static String Machine_Category_Exist = "Machine category exist";
+    public static String Machine_Category_Added = "Machine category Added";
+    public static String Machine_Category_Updated = "Machine category Updated";
 
 
     //Color

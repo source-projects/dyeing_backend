@@ -48,8 +48,8 @@ public class DesignationServiceImpl implements DesignationServiceInterface
     public List<Designation> getDesignation() throws Exception {
 
         List<Designation> designationList=designationDao.findAllExceptAdmin();
-        if (designationList.isEmpty())
-            throw new Exception("no data found");
+        /*if (designationList.isEmpty())
+            throw new Exception("no data found");*/
 
         return designationList;
     }
@@ -57,8 +57,8 @@ public class DesignationServiceImpl implements DesignationServiceInterface
     public Boolean deleteDesignationById(Long id) throws Exception {
 
             Designation designationExist = designationDao.getDesignationById(id);
-            if (designationExist == null)
-                throw new Exception(commonMessage.Designation_Found);
+           /* if (designationExist == null)
+                throw new Exception(commonMessage.Department_Not_Found);*/
 
             List<UserData> userDataList  = userService.getUserByDesignation(id);
             if(!userDataList.isEmpty())
