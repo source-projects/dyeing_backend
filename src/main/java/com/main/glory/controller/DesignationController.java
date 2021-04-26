@@ -86,13 +86,13 @@ public class DesignationController extends ControllerConfig {
 
         GeneralResponse<List<Designation>,Object> result;
         try{
-            List<Designation> flag = designationService.getDesignation();
-            if(flag!=null){
-                result = new GeneralResponse<>(flag,commonMessage.Designation_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            List<Designation> data = designationService.getDesignation();
+            if(!data.isEmpty()){
+                result = new GeneralResponse<>(data,commonMessage.Designation_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result = new GeneralResponse<>(flag,commonMessage.Designation_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data,commonMessage.Designation_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }

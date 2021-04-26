@@ -205,8 +205,8 @@ public class UserServiceImpl implements UserServiceInterface {
 
         }
 
-        if(userHeads.isEmpty())
-            throw new Exception(CommonMessage.User_Not_Exist);
+       /* if(userHeads.isEmpty())
+            throw new Exception(CommonMessage.User_Not_Exist);*/
 
 
         return userHeads;

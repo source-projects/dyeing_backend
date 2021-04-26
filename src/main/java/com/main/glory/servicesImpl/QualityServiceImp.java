@@ -154,8 +154,8 @@ public class QualityServiceImp  {
             quality.add(new GetQualityResponse(data));
         }
 
-        if (quality.isEmpty())
-            throw new Exception(CommonMessage.Quality_Data_Not_Added);
+       /* if (quality.isEmpty())
+            throw new Exception(CommonMessage.Quality_Data_Not_Added);*/
         return quality;
     }
 
@@ -438,8 +438,8 @@ public class QualityServiceImp  {
             getAllQualtiy.setQualityNameId(qualityName.get().getId());
             getAllQualtiyList.add(getAllQualtiy);
         }
-        if (getAllQualtiyList.isEmpty())
-            throw new Exception("no data found");
+        /*if (getAllQualtiyList.isEmpty())
+            throw new Exception("no data found");*/
         return getAllQualtiyList;
     }
 

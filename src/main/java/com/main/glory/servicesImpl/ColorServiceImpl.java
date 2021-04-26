@@ -171,9 +171,9 @@ public class ColorServiceImpl {
 
 
     }
-		if(colorMastDetails.isEmpty())
+		/*if(colorMastDetails.isEmpty())
                 throw new Exception(commonMessage.Color_Not_Found);
-
+*/
 		return colorMastDetails;
 }
 
@@ -382,9 +382,9 @@ public class ColorServiceImpl {
                 }
             }
         }
-	    if(list.isEmpty())
+	   /* if(list.isEmpty())
             throw new Exception(commonMessage.Color_Not_Found);
-
+*/
         return list;
     }
 

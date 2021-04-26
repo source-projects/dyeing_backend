@@ -304,8 +304,8 @@ public class AdminServciceImpl {
 
     public InvoiceSequence getInvoiceSequence() throws Exception {
         InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
-        if(invoiceSequenceExist==null)
-            throw new Exception(commonMessage.Invoice_Sequence_Not_Found);
+       /* if(invoiceSequenceExist==null)
+            throw new Exception(commonMessage.Invoice_Sequence_Not_Found);*/
         return invoiceSequenceExist;
 
     }
@@ -338,7 +338,7 @@ public class AdminServciceImpl {
     public BatchSequence getBatchSequence(Boolean update) throws Exception {
         BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
             if(batchSequence==null)
-                throw new Exception(commonMessage.Batch_Sequence_Not_Found);
+                return null;
 
         if(update==true) {
             batchSequence.setSequence(batchSequence.getSequence() + 1);

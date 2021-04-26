@@ -1,6 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.machine.*;
+import com.main.glory.model.CommonMessage;
 import com.main.glory.model.machine.*;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
@@ -152,8 +153,8 @@ public class MachineServiceImpl {
             getAllMachines.add(getAllMachine);
         }
 
-        if(getAllMachines.isEmpty())
-            throw new Exception("no data found");
+        /*if(getAllMachines.isEmpty())
+            throw new Exception("no data found");*/
 
         return getAllMachines;
     }
@@ -163,7 +164,7 @@ public class MachineServiceImpl {
         Optional<MachineMast> machineMast = machineDao.findById(id);
         if(!machineMast.isPresent())
         {
-            throw new Exception("No machine found for id:"+id);
+           return null;
         }
         GetAllMachine machine = new GetAllMachine();
 
@@ -224,6 +225,11 @@ public class MachineServiceImpl {
 
         MachineCategory machineCategory=new MachineCategory();
         machineCategory.setName(machine.getName());
+        //check the machine category is exist
+
+        MachineCategory machineCategoryExist = machineCategoryDao.getMachineCategoryExist(machineCategory.getName());
+        if(machineCategoryExist!=null)
+            throw new Exception(CommonMessage.Machine_Category_Exist);
         machineCategoryDao.save(machineCategory);
     }
 
@@ -247,8 +253,8 @@ public class MachineServiceImpl {
     public List<GetAllMachine> getAllMachineByCategory(Long id) throws Exception{
 
         Optional<MachineCategory> machineCategory = machineCategoryDao.findById(id);
-        if(!machineCategory.isPresent())
-            throw new Exception("category not found with id:"+id);
+       /* if(!machineCategory.isPresent())
+            throw new Exception("category not found with id:"+id);*/
 
         List<GetAllMachine> getAllMachineList = new ArrayList<>();
         List<MachineMast> machineMast = machineDao.findByControlId(id);

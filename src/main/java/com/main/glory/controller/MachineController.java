@@ -104,7 +104,7 @@ public class MachineController extends ControllerConfig {
         try {
 
             machineService.saveMachineCategory(machine);
-            result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,machine);
+            result = new GeneralResponse<>(null, CommonMessage.Machine_Category_Added, true, System.currentTimeMillis(), HttpStatus.OK,machine);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -173,7 +173,11 @@ public class MachineController extends ControllerConfig {
         try {
 
             var x = machineService.getAllMachineByCategory(id);
+
+            if(!x.isEmpty())
             result = new GeneralResponse<>(x, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+            result = new GeneralResponse<>(x, CommonMessage.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -228,7 +232,7 @@ public class MachineController extends ControllerConfig {
             GetAllMachine machineMasts = machineService.getMachineById(id);
             if(machineMasts ==null)
             {   
-                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(machineMasts, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             result = new GeneralResponse<>(machineMasts, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());

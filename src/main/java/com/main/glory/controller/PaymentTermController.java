@@ -1,6 +1,5 @@
 package com.main.glory.controller;
 
-import com.google.api.Http;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.CommonMessage;
 import com.main.glory.model.GeneralResponse;
@@ -80,7 +79,11 @@ public class PaymentTermController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<List<PaymentType>,Object>> getAllPaymentType() {
         GeneralResponse<List<PaymentType>,Object> result;
         try {
-            List<PaymentType> flag = paymentTermService.getAllPayementType();
+            List<PaymentType> flag = paymentTermService.getAllPaymentType();
+
+            if(flag.isEmpty())
+                result= new GeneralResponse<>(flag, CommonMessage.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
             result= new GeneralResponse<>(flag, CommonMessage.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
