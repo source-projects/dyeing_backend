@@ -1197,6 +1197,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+                    getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
+                    getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
                     if(!batchId.contains(getAllBatch.getBatchId())) {
                         batchId.add(getAllBatch.getBatchId());
@@ -1220,12 +1222,12 @@ public class StockBatchServiceImpl {
         Optional<Quality> qualityExist=qualityDao.findById(qualityId);
 
         if(qualityExist.isEmpty())
-            throw new Exception("no quality found for id:"+qualityId);
+            throw new Exception(CommonMessage.Quality_Data_Not_Exist+qualityId);
 
 
         Optional<Party> party=partyDao.findById(qualityExist.get().getPartyId());
         if(party.isEmpty())
-            throw new Exception("party not found for quality:"+qualityId);
+            throw new Exception(CommonMessage.Party_Not_Exist+qualityId);
 
         List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(qualityId,qualityExist.get().getPartyId());
 
@@ -1263,6 +1265,8 @@ public class StockBatchServiceImpl {
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+                getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
+                getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
                 if(!batchId.contains(getAllBatch.getBatchId())) {
                     list.add(getAllBatch);
@@ -1272,9 +1276,9 @@ public class StockBatchServiceImpl {
         }
 
 
-        if(list.isEmpty()) {
+       /* if(list.isEmpty()) {
             throw new Exception("no batch found for quality:"+qualityId);
-        }
+        }*/
 
         return list;
     }
