@@ -704,8 +704,8 @@ public class StockBatchServiceImpl {
 
 
         //List<GetAllBatch> getAllBatchList = batchDao.getAllBatchWithoutBillGeneratedByPartyIdAndQualityId(partyId,qualityId);
-        if(list.isEmpty())
-            throw new Exception("no data found");
+       /* if(list.isEmpty())
+            throw new Exception("no data found");*/
 
 
         return list;
@@ -715,6 +715,7 @@ public class StockBatchServiceImpl {
 
     public List<BatchToPartyAndQuality> getAllBatchDetail(String id)  throws Exception{
 
+        List<String> batchIds=new ArrayList<>();
         //get the user record first
         Long userId = Long.parseLong(id);
 
@@ -804,6 +805,7 @@ public class StockBatchServiceImpl {
                 }
                 //add the record
                 getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+                batchIds.add(batchToPartyAndQuality.getBatchId());
             }
         }
 
@@ -864,8 +866,12 @@ public class StockBatchServiceImpl {
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
             batchToPartyAndQuality.setBatchId(batch.getMergeBatchId());
-            //add the record
-            getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+
+            if(!batchIds.contains(batchToPartyAndQuality.getBatchId())) {
+                //add the record
+                getAllBatchWithPartyAndQualities.add(batchToPartyAndQuality);
+                batchIds.add(batchToPartyAndQuality.getBatchId());
+            }
 
         }
        /* if(getAllBatchWithPartyAndQualities.isEmpty())
@@ -1200,8 +1206,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
                     getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
-                    if(!batchId.contains(getAllBatch.getBatchId())) {
-                        batchId.add(getAllBatch.getBatchId());
+                    if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
+                        batchId.add(getBatchWithControlId.getMergeBatchId());
                         list.add(getAllBatch);
                     }
                 }
@@ -1211,8 +1217,8 @@ public class StockBatchServiceImpl {
         }
 
 
-        if(list.isEmpty())
-            throw new Exception(commonMessage.StockBatch_Found_ByParty+partyId);
+        /*if(list.isEmpty())
+            throw new Exception(commonMessage.StockBatch_Found_ByParty+partyId);*/
         return list;
     }
 
@@ -1268,9 +1274,9 @@ public class StockBatchServiceImpl {
                 getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
                 getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
-                if(!batchId.contains(getAllBatch.getBatchId())) {
+                if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
                     list.add(getAllBatch);
-                    batchId.add(getAllBatch.getBatchId());
+                    batchId.add(getBatchWithControlId.getMergeBatchId());
                 }
             }
         }
