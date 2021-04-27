@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
@@ -1220,6 +1221,8 @@ public class StockBatchServiceImpl {
 
         }
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(batchId));
 
         /*if(list.isEmpty())
             throw new Exception(commonMessage.StockBatch_Found_ByParty+partyId);*/
