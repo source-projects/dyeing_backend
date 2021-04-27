@@ -21,4 +21,16 @@ public class GetAllEmployee extends EmployeeMast {
         super(e);
         this.departmentName = departmentName;
     }
+
+    public GetAllEmployee(GetAllEmployee e, List<Attendance> attendances) {
+        super(e);
+        this.departmentName = e.departmentName;
+        this.attendanceLists = attendances;
+    }
+
+   /* public GetAllEmployee(EmployeeMast e,String departmentName,List<Attendance> attendanceLists) {
+        super(e);
+        this.departmentName = departmentName;
+        this.attendanceLists = attendanceLists;
+    }*/
 }

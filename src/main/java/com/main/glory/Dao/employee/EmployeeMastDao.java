@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
@@ -37,4 +38,12 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
     @Query(value = "select * from employee_mast as x where x.emp_id LIKE :empId% ",nativeQuery = true)
     List<EmployeeMast> getEmployeeByLikeEmpId(@RequestParam("empId") String empId);
 
+   /* @Query("select new com.main.glory.model.employee.response.GetAllEmployee(s," +
+            "(select d.name from Department d where d.id=s.departmentId) as name," +
+            "(select x from Attendance x where Date(x.inTime)>=Date(:from) AND Date(x.outTime)<=Date(:to) AND x.controlId=s.id) as records" +
+            ") from EmployeeMast s ORDER BY s.id DESC")
+    List<GetAllEmployee> getAllEmployeeWithDateFilter(Date from, Date to);*/
+
+  /* @Query("select new com.main.glory.model.employee.response.GetAllEmployee(s,(select d.name from Department d where d.id=s.departmentId),(select x from Attendance x where Date(x.inTime)>=Date(:from) AND Date(x.outTime)<=Date(:to) AND x.controlId=s.id)) from EmployeeMast s ORDER BY s.id DESC")
+   List<GetAllEmployee> getAllEmployeeWithDateFilter(Date from,Date to);*/
 }
