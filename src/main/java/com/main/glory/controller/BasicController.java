@@ -150,7 +150,7 @@ public class BasicController extends ControllerConfig {
         GeneralResponse<List<GetAllBatchWithProduction>,Object> result;
         try {
             List<GetAllBatchWithProduction> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
-            if (batchDataList != null) {
+            if (!batchDataList.isEmpty()) {
                 result =  new GeneralResponse<>(batchDataList, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
                 result =  new GeneralResponse<>(null, commonMessage.StockBatch_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
