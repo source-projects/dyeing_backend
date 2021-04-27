@@ -1209,8 +1209,9 @@ public class StockBatchServiceImpl {
 
                     if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
                         System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
-                        batchId.add(getBatchWithControlId.getMergeBatchId());
+                        getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
                         list.add(getAllBatch);
+                        batchId.add(getBatchWithControlId.getMergeBatchId());
                     }
                 }
             }
@@ -1279,6 +1280,7 @@ public class StockBatchServiceImpl {
 
                 if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
                     System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
+                    getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
                     list.add(getAllBatch);
                     batchId.add(getBatchWithControlId.getMergeBatchId());
                 }
