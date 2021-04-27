@@ -1201,9 +1201,9 @@ public class StockBatchServiceImpl {
             for(StockMast stockMast:stockMastList)
             {
                 List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
-                GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality);
                 for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
                 {
+                    GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality);
 
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
@@ -1213,11 +1213,11 @@ public class StockBatchServiceImpl {
 
 
                     if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
-                        System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
-                        getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
-                        System.out.println(objectMapper.writeValueAsString(getAllBatch));
+                        //System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
+                        //getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+                        //System.out.println(objectMapper.writeValueAsString(getAllBatch));
                         list.add(getAllBatch);
-                        System.out.println("batch:"+getAllBatch.getBatchId());
+                        //System.out.println("batch:"+getAllBatch.getBatchId());
                         batchId.add(getBatchWithControlId.getMergeBatchId());
                     }
                 }
@@ -1226,7 +1226,7 @@ public class StockBatchServiceImpl {
 
         }
 
-        System.out.println(objectMapper.writeValueAsString(batchId));
+       // System.out.println(objectMapper.writeValueAsString(batchId));
         //System.out.println(objectMapper.writeValueAsString(list));
 
         /*if(list.isEmpty())
@@ -1277,10 +1277,10 @@ public class StockBatchServiceImpl {
         for(StockMast stockMast:stockMastList)
         {
             List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
-            GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get());
+
             for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
             {
-
+                GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get());
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
@@ -1288,8 +1288,8 @@ public class StockBatchServiceImpl {
                 getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
                 if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
-                    System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
-                    getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+                    //System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
+                    //getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
                     list.add(getAllBatch);
                     batchId.add(getBatchWithControlId.getMergeBatchId());
                 }
