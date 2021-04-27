@@ -1206,7 +1206,9 @@ public class StockBatchServiceImpl {
                     getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
                     getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
+
                     if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
+                        System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
                         batchId.add(getBatchWithControlId.getMergeBatchId());
                         list.add(getAllBatch);
                     }
@@ -1255,6 +1257,7 @@ public class StockBatchServiceImpl {
                 batchId.add(getAllBatch.getBatchId());
                 list.add(getAllBatch);
 
+
             }
 
 
@@ -1275,6 +1278,7 @@ public class StockBatchServiceImpl {
                 getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
 
                 if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
+                    System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
                     list.add(getAllBatch);
                     batchId.add(getBatchWithControlId.getMergeBatchId());
                 }
