@@ -232,7 +232,7 @@ public class SupplierServiceImpl {
     
     public List getAllSupplier(String getBy, Long id) throws Exception {
         List s = null;
-        if (id == null) {
+        /*if (id == null) {
             s = supplierDao.findAllWithoutRates();
         } else if (getBy.equals("own")) {
             s = supplierDao.findAllWithoutRatesByCreatedBy(id);
@@ -248,10 +248,11 @@ public class SupplierServiceImpl {
                 s = supplierDao.findAllWithoutRatesByUserHeadIdAndCreatedBy(userOperator.getUserHeadId(),userOperator.getUserHeadId());
             }
 
-        }
+        }*/
 /*
         if (s.isEmpty())
             throw new Exception("data not added yet");*/
+        s = supplierDao.findAllWithoutRates();
         return s;
     }
 
