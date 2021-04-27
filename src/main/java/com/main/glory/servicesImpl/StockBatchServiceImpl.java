@@ -1694,36 +1694,30 @@ public class StockBatchServiceImpl {
             {
                 if(batchDetail.getIsProductionPlanned()==true)
                 {
+                    ProductionPlan productionPlan;
+                    ShadeMast shadeMast = null;
                     BatchData mergeBatchIdByBatchId = batchDao.getMergeBatchIdBatchIdWithProductionPlanAndFinishMtr(batchDetail.getBatchId(),batchDetail.getIsProductionPlanned(),batchDetail.getIsFinishMtrSave());
                     if(mergeBatchIdByBatchId.getMergeBatchId()==null) {
-                        ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(batchDetail.getBatchId());
-
-                        if (productionPlan == null)
-                            continue;
-                        ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
-                        if (shadeMast == null)
-                            continue;
-                        BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName.get());
-                        batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
-                        batchDetail1.setColorName(shadeMast.getColorName());
-                        batchDetail1.setColorTone(shadeMast.getColorTone());
-                        batchDetailList.add(batchDetail1);
-
+                        productionPlan = productionPlanService.getProductionByBatchId(batchDetail.getBatchId());
                     }
                     else
                     {
-                        ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(mergeBatchIdByBatchId.getMergeBatchId());
-                        if (productionPlan == null)
-                            continue;
-                        ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
-                        if (shadeMast == null)
-                            continue;
-                        BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName.get());
+                        productionPlan = productionPlanService.getProductionByBatchId(mergeBatchIdByBatchId.getMergeBatchId());
+                    }
+                    if (productionPlan == null)
+                        continue;
+                    if(productionPlan.getIsDirect()!=true)
+                    shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
+
+                 /*   if (shadeMast == null)
+                        continue;*/
+                    BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName.get());
+                    if(shadeMast!=null) {
                         batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
                         batchDetail1.setColorName(shadeMast.getColorName());
                         batchDetail1.setColorTone(shadeMast.getColorTone());
-                        batchDetailList.add(batchDetail1);
                     }
+                    batchDetailList.add(batchDetail1);
                 }
                 else {
 
