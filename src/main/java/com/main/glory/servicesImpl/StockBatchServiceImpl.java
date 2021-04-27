@@ -1211,6 +1211,7 @@ public class StockBatchServiceImpl {
                         System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
                         getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
                         list.add(getAllBatch);
+                        System.out.println("batch:"+getAllBatch.getBatchId());
                         batchId.add(getBatchWithControlId.getMergeBatchId());
                     }
                 }
