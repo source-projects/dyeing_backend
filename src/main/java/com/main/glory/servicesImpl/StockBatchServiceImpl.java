@@ -1223,6 +1223,7 @@ public class StockBatchServiceImpl {
 
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(batchId));
+        System.out.println(objectMapper.writeValueAsString(list));
 
         /*if(list.isEmpty())
             throw new Exception(commonMessage.StockBatch_Found_ByParty+partyId);*/
