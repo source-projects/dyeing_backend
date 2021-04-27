@@ -143,7 +143,7 @@ public class EmployeeController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value = "/employee")
+    @GetMapping(value = "/employeeBy")
     public ResponseEntity<GeneralResponse<Boolean,Object>> getEmployeeByEmpId(@RequestParam(name = "empId") Long id) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
