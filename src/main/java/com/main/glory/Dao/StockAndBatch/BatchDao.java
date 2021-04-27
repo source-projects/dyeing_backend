@@ -193,6 +193,21 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
             ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id GROUP BY b.batchId,b.controlId,b.isProductionPlanned,b.isBillGenrated,b.isFinishMtrSave")
     List<BatchDetail> getBatchDetailByStockId(Long id);
 
+    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,false,false,false," +
+            "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)" +
+            ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id AND b.isProductionPlanned = false GROUP BY  batchId,b.controlId")
+    List<BatchDetail> getBatchDetailByStockIdWithoutProductionPlan(Long id);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,true,false,false," +
+            "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)" +
+            ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id AND b.isProductionPlanned = true AND b.isFinishMtrSave=false GROUP BY batchId,b.controlId")
+    List<BatchDetail> getBatchDetailByStockIdWithProductionPlanWithoutFinishMtrSave(Long id);
+
+
+    @Query("select new com.main.glory.model.StockDataBatchData.request.BatchDetail(b.controlId,b.batchId,true,false,true," +
+            "count(b.id),sum(b.mtr),sum(b.finishMtr),(select s.receiveDate from StockMast s where s.id=:id)" +
+            ") from BatchData b where b.batchId IS NOT NULL AND b.controlId = :id AND b.isProductionPlanned = true AND b.isFinishMtrSave=true GROUP BY batchId,b.controlId")
+    List<BatchDetail> getBatchDetailByStockIdWithProductionPlanWithFinishMtrSave(Long id);
 
     /*@Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualityType) from BatchData b where b.mergeBatchId IS NULL b.batchId=:batchId GROUP BY b.batchId,b.controlId")
     GetAllBatch getBatchForAdditionalSlipByBatchAndStock(String batchId);
@@ -349,6 +364,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select x from BatchData x where x.controlId=:id And x.isExtra=:b")
     List<BatchData> findByControlIdWithExtraBatch(Long id, boolean b);
+
+    @Query(value = "select * from batch_data where batch_id=:batchId LIMIT 1",nativeQuery = true)
+    BatchData getMergeBatchIdBatchId(@RequestParam("batchId") String batchId);
+
+    @Query(value = "select * from batch_data where batch_id=:batchId AND is_production_planned=:isProductionPlanned AND is_finish_mtr_save=:isFinishMtrSave LIMIT 1",nativeQuery = true)
+    BatchData getMergeBatchIdBatchIdWithProductionPlanAndFinishMtr(@RequestParam("batchId") String batchId, @RequestParam("isProductionPlanned") Boolean isProductionPlanned, @RequestParam("isFinishMtrSave")Boolean isFinishMtrSave);
 
 
 

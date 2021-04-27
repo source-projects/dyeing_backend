@@ -36,7 +36,7 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
 
  @Query("select sm from StockMast sm where sm.partyId =:partyId AND partyId IS NOT NULL")
- Optional<List<StockMast>> findByPartyId(Long partyId);
+ List<StockMast> findByPartyId(Long partyId);
 
  //Get all stock list
  @Query("select s from StockMast s")

@@ -242,6 +242,9 @@ public class StockBatchController extends ControllerConfig {
             if (qualityId != null && partyId != null) {
                 List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId,headers.get("id"));
 
+                if(batchData.isEmpty())
+                    result = new GeneralResponse<>(batchData, CommonMessage.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                else
                 result = new GeneralResponse<>(batchData, CommonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             } else {

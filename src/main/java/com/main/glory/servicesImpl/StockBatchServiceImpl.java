@@ -493,11 +493,11 @@ public class StockBatchServiceImpl {
         }
 
 
-
+/*
         if(stockMast.isEmpty())
         {
             throw new Exception(CommonMessage.StockBatch_Not_Found);
-        }
+        }*/
 
 
         List<GetAllBatch> getAllBatchList =new ArrayList<>();
@@ -516,8 +516,8 @@ public class StockBatchServiceImpl {
 
 
 
-        if(getAllBatchList.isEmpty())
-            throw new Exception("May all batches planned or not available ");
+        /*if(getAllBatchList.isEmpty())
+            throw new Exception("May all batches planned or not available ");*/
         return getAllBatchList;
 
 
@@ -961,12 +961,12 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<StockMast> getBatchByPartyId(Long partyId) {
+    public List<StockMast> getStockListByParty(Long partyId) {
 
-        Optional<List<StockMast>> stockMasts = stockMastDao.findByPartyId(partyId);
+        List<StockMast> stockMasts = stockMastDao.findByPartyId(partyId);
 
 
-        return stockMasts.get();
+        return stockMasts;
     }
 
     public GetBatchWithControlId getBatchQTYById(String batchId, Long stockId) {
@@ -1095,11 +1095,11 @@ public class StockBatchServiceImpl {
     }
 
     public List<StockMast> getStockByPartyId(Long partyId) throws Exception {
-        Optional<List<StockMast>> stockMastList = stockMastDao.findByPartyId(partyId);
-        if(stockMastList.isEmpty())
+        List<StockMast> stockMastList = stockMastDao.findByPartyId(partyId);
+      /*  if(stockMastList.isEmpty())
             throw new Exception("no record found");
-
-        return stockMastList.get();
+*/
+        return stockMastList;
 
     }
 
@@ -1671,6 +1671,7 @@ public class StockBatchServiceImpl {
 
     public List<BatchDetail> getBatchDetailForReport(Long partyId, Long qualityId) {
         List<BatchDetail> batchDetailList = new ArrayList<>();
+        //List<BatchDetail> batchDetailListBasedOnFlag = new ArrayList<>();
 
         List<StockMast> stockMastList = stockMastDao.getAllStockByPartyIdAndQualityId(partyId,qualityId);
 
@@ -1681,14 +1682,20 @@ public class StockBatchServiceImpl {
         }
         for(StockMast stockMast:stockMastList)
         {
-            List<BatchDetail> batchDetails = batchDao.getBatchDetailByStockId(stockMast.getId());
+            //batchDetailListBasedOnFlag =
+            List<BatchDetail> batchDetails =batchDao.getBatchDetailByStockIdWithoutProductionPlan(stockMast.getId());;
+            batchDetails.addAll(batchDao.getBatchDetailByStockIdWithProductionPlanWithoutFinishMtrSave(stockMast.getId()));
+            batchDetails.addAll(batchDao.getBatchDetailByStockIdWithProductionPlanWithFinishMtrSave(stockMast.getId()));
+
+            //getBatchDetailByStockIdWithProductionPlanWithoutFinishMtrSave
             if(batchDetails.isEmpty())
                 continue;
             for(BatchDetail batchDetail:batchDetails)
             {
                 if(batchDetail.getIsProductionPlanned()==true)
                 {
-                    if(batchDetail.getMergeBatchId()==null) {
+                    BatchData mergeBatchIdByBatchId = batchDao.getMergeBatchIdBatchIdWithProductionPlanAndFinishMtr(batchDetail.getBatchId(),batchDetail.getIsProductionPlanned(),batchDetail.getIsFinishMtrSave());
+                    if(mergeBatchIdByBatchId.getMergeBatchId()==null) {
                         ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(batchDetail.getBatchId());
 
                         if (productionPlan == null)
@@ -1705,7 +1712,7 @@ public class StockBatchServiceImpl {
                     }
                     else
                     {
-                        ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(batchDetail.getMergeBatchId());
+                        ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(mergeBatchIdByBatchId.getMergeBatchId());
                         if (productionPlan == null)
                             continue;
                         ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
@@ -1726,8 +1733,8 @@ public class StockBatchServiceImpl {
             }
         }
 
-        if(batchDetailList.isEmpty())
-            return null;
+       /* if(batchDetailList.isEmpty())
+            return null;*/
         return batchDetailList;
     }
 

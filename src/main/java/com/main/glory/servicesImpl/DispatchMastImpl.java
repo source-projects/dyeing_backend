@@ -415,11 +415,10 @@ public class DispatchMastImpl {
 
     public List<BatchWithTotalMTRandFinishMTR> getBatchByParty(Long partyId)throws Exception {
         List<BatchWithTotalMTRandFinishMTR> batchDataListByParty=new ArrayList<>();
-        List<StockMast> stockMastList = stockBatchService.getBatchByPartyId(partyId);
+        List<StockMast> stockMastList = stockBatchService.getStockListByParty(partyId);
 
-        if(stockMastList.isEmpty())
-            throw new Exception("stock not found for party:"+partyId);
-
+       /* if(stockMastList.size()<=0)
+            return batchDataListByParty;*/
 
         for(StockMast stockMast:stockMastList)
         {
@@ -433,8 +432,8 @@ public class DispatchMastImpl {
 
         }
 
-        if(batchDataListByParty.isEmpty())
-            throw new Exception("data not found for party:"+partyId);
+      /*  if(batchDataListByParty.isEmpty())
+            throw new Exception("data not found for party:"+partyId);*/
         return  batchDataListByParty;
     }
 

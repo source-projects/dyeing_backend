@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service("employeeServiceImpl")
@@ -93,7 +95,20 @@ public class EmployeeServiceImpl {
     }
 
     public List<GetAllEmployee> getAllEmployee() {
-        return employeeMastDao.getAllEmployee();
+        List<GetAllEmployee> getAllEmployeeList = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        Date to =cal.getTime();
+        cal.add(Calendar.DATE,-14);
+        Date from =cal.getTime();
+        List<GetAllEmployee> employeeList =  employeeMastDao.getAllEmployee();
+        employeeList.forEach(e->{
+            List<Attendance> attendances =attendanceDao.getAllAttendanceByControlIdIdWithDate(e.getId(),from,to);
+            GetAllEmployee getAllEmployee = new GetAllEmployee(e,attendances);
+            getAllEmployeeList.add(getAllEmployee);
+        });
+
+        return getAllEmployeeList;
+
     }
 
     public void deleteEmployeeById(Long id) throws Exception {

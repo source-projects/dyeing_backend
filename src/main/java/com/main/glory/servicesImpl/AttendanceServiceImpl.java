@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service("attendanceServiceImpl")
@@ -83,7 +84,7 @@ public class AttendanceServiceImpl {
         EmployeeWithAttendance employeeWithAttendance=null;
         EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(id);
         if(employeeMastExist==null)
-            throw new Exception(commonMessage.Employee_Not_Found);
+            throw new Exception(commonMessage.Employee_Not_Exist);
 
         Attendance attendance = attendanceDao.getLatestAttendanceRecordByEmployeeId(employeeMastExist.getId());
 
@@ -136,8 +137,16 @@ public class AttendanceServiceImpl {
         EmployeeWithAttendance employeeWithAttendance=null;
         EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(record.getId());
         if(employeeMastExist==null)
-            throw new Exception(commonMessage.Employee_Not_Found);
+            throw new Exception(commonMessage.Employee_Not_Exist);
 
+
+       /* if(record.getShift()==false)
+        {
+            Calendar cal =Calendar.getInstance();
+            cal.setTime(record.getDate());
+            cal.add(Calendar.DATE,-1);
+            record.setDate(cal.getTime());
+        }*/
         Attendance attendance = attendanceDao.getAttendanceByIdDateAndShift(employeeMastExist.getId(),record.getShift(),record.getDate());
 
         if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
