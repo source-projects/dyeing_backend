@@ -140,13 +140,13 @@ public class AttendanceServiceImpl {
             throw new Exception(commonMessage.Employee_Not_Exist);
 
 
-        if(record.getShift()==false)
+       /* if(record.getShift()==false)
         {
             Calendar cal =Calendar.getInstance();
             cal.setTime(record.getDate());
             cal.add(Calendar.DATE,-1);
             record.setDate(cal.getTime());
-        }
+        }*/
         Attendance attendance = attendanceDao.getAttendanceByIdDateAndShift(employeeMastExist.getId(),record.getShift(),record.getDate());
 
         if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
