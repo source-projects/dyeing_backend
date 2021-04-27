@@ -1158,6 +1158,8 @@ public class StockBatchServiceImpl {
     }
 
     public List<GetAllBatch> getBatchListByPartyWithoutProductionPlan(Long partyId) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
         List<GetAllBatch> list=new ArrayList<>();
         List<String> batchId = new ArrayList<>();
 
@@ -1188,6 +1190,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setTotalWt(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId()));
                     getAllBatch.setTotalMtr(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId()));
                     batchId.add(getAllBatch.getBatchId());
+                    //System.out.println();
+                    System.out.println(objectMapper.writeValueAsString(getAllBatch));
                     list.add(getAllBatch);
                 }
             }
@@ -1211,6 +1215,7 @@ public class StockBatchServiceImpl {
                     if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
                         System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
                         getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
+                        System.out.println(objectMapper.writeValueAsString(getAllBatch));
                         list.add(getAllBatch);
                         System.out.println("batch:"+getAllBatch.getBatchId());
                         batchId.add(getBatchWithControlId.getMergeBatchId());
@@ -1221,9 +1226,8 @@ public class StockBatchServiceImpl {
 
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(batchId));
-        System.out.println(objectMapper.writeValueAsString(list));
+        //System.out.println(objectMapper.writeValueAsString(list));
 
         /*if(list.isEmpty())
             throw new Exception(commonMessage.StockBatch_Found_ByParty+partyId);*/
