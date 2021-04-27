@@ -68,6 +68,7 @@ public class CommonMessage {
     public static String Employee_Updated = "Data updated successfully";
     public static String Employee_Deleted = "Data deleted successfully";
     public static String Employee_Exist = "Employee data exist";
+    public static String Employee_Not_Exist = "Employee data not exist";
 
 
 
