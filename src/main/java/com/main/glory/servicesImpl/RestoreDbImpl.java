@@ -1,5 +1,9 @@
 package com.main.glory.servicesImpl;
 
+import com.cloudinary.Cloudinary;
+
+import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.*;
 import com.main.glory.Dao.Jet.JetDataDao;
 import com.main.glory.Dao.Jet.JetMastDao;
@@ -25,14 +29,19 @@ import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.Dao.user.UserPermissionDao;
+import com.main.glory.schedulers.Singleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+
 
 @Service("restoreDbServiceImp")
 public class RestoreDbImpl {
@@ -131,6 +140,9 @@ public class RestoreDbImpl {
     @Autowired
     APCDao apcDao;
 
+   // private final Cloudinary cloudinary = Singleton.getCloudinary();
+
+
 
 
     @Value("${spring.datasource.username}")
@@ -171,11 +183,22 @@ public class RestoreDbImpl {
 
             process = Runtime.getRuntime().exec(command);
             int exitValue = process.waitFor();
+
+
+
+
+
+
+
             //System.out.println("exit value: " + exitValue);
-            if (exitValue == 0)
+            if (exitValue == 0) {
+
                 return true;
+            }
             else
                 return false;
+
+
 
         }catch (Exception e)
         {
@@ -191,14 +214,16 @@ public class RestoreDbImpl {
         if(!parent.exists())
             parent.mkdir();
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 
         File backupFile = new File(parent+"/"+simpleDateFormat.format(new Date())+".sql");
 
+        System.out.println("path:"+backupFile.getAbsolutePath());
 
         if(!backupFile.exists())
             backupFile.createNewFile();
-        String cmd="mysqldump --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
+        String cmd="mysqldump --column-statistics=0 --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
+        System.out.println(cmd);
 
 
         try {
@@ -208,8 +233,18 @@ public class RestoreDbImpl {
             int exitValue = process.waitFor();
 
 
-            if(exitValue==0)
+            if(exitValue==0) {
+                //run the cloudinary as well
+                //backup on the cloud
+               /* Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                        "cloud_name", "dvvqdgl3s",
+                        "api_key", "841845242494588",
+                        "api_secret", "E1owKNvkJZa131NBcDYEM6mdZSc"));
+                Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.emptyMap());
+                ObjectMapper objectMapper = new ObjectMapper();
+                System.out.println(objectMapper.writeValueAsString(uploadResult));*/
                 return true;
+            }
             else return false;
 
 
@@ -224,9 +259,10 @@ public class RestoreDbImpl {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
+            return false;
+
         }
 
-        return false;
 
     }
 

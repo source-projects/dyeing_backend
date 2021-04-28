@@ -1,3 +1,4 @@
+/*
 package com.main.glory.model.dyeingSlip;
 
 import lombok.AllArgsConstructor;
@@ -8,14 +9,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Entity
+
 public class AdditionDyeingProcessSlip {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     Long id;
     Long userHeadId;
     Long createdBy;
@@ -38,3 +34,4 @@ public class AdditionDyeingProcessSlip {
 
 
 }
+*/

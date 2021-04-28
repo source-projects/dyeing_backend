@@ -1,3 +1,4 @@
+/*
 package com.main.glory.Dao.dyeingSlip;
 
 import com.main.glory.model.dyeingSlip.AdditionDyeingProcessSlip;
@@ -15,3 +16,4 @@ public interface AdditionDyeingProcessSlipDao extends JpaRepository<AdditionDyei
     @Query("select c from AdditionDyeingProcessSlip c where c.id=:id")
     AdditionDyeingProcessSlip getAdditionalDyeingSlipById(Long id);
 }
+*/

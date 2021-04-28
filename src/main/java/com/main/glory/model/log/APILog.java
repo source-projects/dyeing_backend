@@ -28,11 +28,11 @@ public class APILog<T> {
     String apiUrl;
     String userType;
     String deviceType;
-    String device;
+    String deviceInfo;
     String userId;
-    @Column(columnDefinition = "varchar(10000)")
+    @Column(columnDefinition = "Text")
     String requestBody;
-    @Column(columnDefinition = "varchar(10000)")
+    @Column(columnDefinition = "Text")
     String responseBody;
     String responseMsg;
     String method;

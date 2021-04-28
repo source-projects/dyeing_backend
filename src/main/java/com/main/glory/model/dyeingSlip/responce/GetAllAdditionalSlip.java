@@ -1,3 +1,4 @@
+/*
 package com.main.glory.model.dyeingSlip.responce;
 
 import com.main.glory.model.dyeingSlip.AdditionDyeingProcessSlip;
@@ -33,3 +34,4 @@ public class GetAllAdditionalSlip {
         this.date=slip.getCreatedDate();
     }
 }
+*/
