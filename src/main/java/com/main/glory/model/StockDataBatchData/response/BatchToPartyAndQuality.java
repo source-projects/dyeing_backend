@@ -26,6 +26,7 @@ public class BatchToPartyAndQuality {
     String partyShadeNo;
 
 
+
     public BatchToPartyAndQuality(Quality quality, Party party, GetBatchWithControlId batch) {
         this.qualityEntryId=quality.getId().toString();
         this.qualityName=quality.getQualityName();
