@@ -150,7 +150,7 @@ public class BasicController extends ControllerConfig {
         GeneralResponse<List<GetAllBatchWithProduction>,Object> result;
         try {
             List<GetAllBatchWithProduction> batchDataList = stockBatchService.getAllBatchByMaster(userHeadId);
-            if (batchDataList != null) {
+            if (!batchDataList.isEmpty()) {
                 result =  new GeneralResponse<>(batchDataList, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
                 result =  new GeneralResponse<>(null, commonMessage.StockBatch_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
@@ -225,10 +225,10 @@ public class BasicController extends ControllerConfig {
         try {
             if (qualityId != null) {
                 List<GetAllBatch> stockMast = stockBatchService.getBatchListByQualityWithoutProductionPlan(qualityId);
-                if (stockMast != null) {
-                    result = new GeneralResponse<>(stockMast, commonMessage.Quality_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                if (!stockMast.isEmpty()) {
+                    result = new GeneralResponse<>(stockMast, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result= new GeneralResponse<>(null,commonMessage.Quality_Data_Not_Found + qualityId, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null,commonMessage.StockBatch_Not_Found + qualityId, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
                 logService.saveLog(result,request,debugAll);
             } else {

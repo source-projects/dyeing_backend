@@ -50,8 +50,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 		try{
 
-			/*// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+			// for swagger turn off the guards
+			/*if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
 			}*/

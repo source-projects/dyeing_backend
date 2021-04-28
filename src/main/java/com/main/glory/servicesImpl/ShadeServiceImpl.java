@@ -447,7 +447,7 @@ public class ShadeServiceImpl {
 
 		Optional<Quality> quality=qualityDao.findById(qualityId);
 		if(quality.isEmpty())
-			throw new Exception("no quality is found");
+			throw new Exception(CommonMessage.Quality_Data_Not_Found);
 
 		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
 

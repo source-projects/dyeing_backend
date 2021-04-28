@@ -278,7 +278,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select sum(b.wt) from BatchData b where b.isProductionPlanned =true And b.isFinishMtrSave=false AND b.mergeBatchId=:batchId")
     Double getBatchWithoutFinishMtrQTYByMergeId(String batchId);
 
-    @Query("select sum(b.mtr) from BatchData b where b.batchId=:batchId")
+    @Query("select sum(b.mtr) from BatchData b where b.batchId=:batchId AND b.mergeBatchId IS NULL")
     Double getTotalMtrByBatchId(String batchId);
 
     @Query(value = "select control_id from batch_data where batch_id =:e LIMIT 1",nativeQuery = true)
@@ -340,7 +340,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = true AND  p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND  p.controlId=:id GROUP BY p.mergeBatchId ")
     List<GetBatchWithControlId> getAllMergeBatchWithoutBillGenratedByStockId(Long id);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,b.isProductionPlanned,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualitytype) from BatchData b where b.isProductionPlanned=false AND b.mergeBatchId IS NULL AND b.controlId =:id AND b.batchId IS NOT NULL AND b.mergeBatchId IS NULL GROUP BY b.batchId,b.controlId,b.isProductionPlanned")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatch(SUM(b.wt)as WT,b.controlId as controlId,b.batchId,false,(select p.id from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId)) as partyId,(select p.partyName from Party p where p.id=(select s.partyId from StockMast s where s.id=b.controlId))as partyName,(select q.id from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityId from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId)) as qId,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select s.qualityId from StockMast s where s.id=b.controlId)))as qualityName,(select q.qualityType from Quality q where q.id=(select s.qualityId from StockMast s where s.id=b.controlId))as qualitytype) from BatchData b where b.isProductionPlanned=false AND b.mergeBatchId IS NULL AND b.controlId =:id AND b.batchId IS NOT NULL AND b.mergeBatchId IS NULL GROUP BY b.batchId,b.controlId")
     List<GetAllBatch> getBatchResponseByStockIdWithoutProductionPlan(Long id);
 
     @Query("select x from BatchData x where x.batchId=:batchId AND x.mergeBatchId IS NULL AND x.isBillGenrated=false AND x.isProductionPlanned=true")
@@ -370,6 +370,14 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query(value = "select * from batch_data where batch_id=:batchId AND is_production_planned=:isProductionPlanned AND is_finish_mtr_save=:isFinishMtrSave LIMIT 1",nativeQuery = true)
     BatchData getMergeBatchIdBatchIdWithProductionPlanAndFinishMtr(@RequestParam("batchId") String batchId, @RequestParam("isProductionPlanned") Boolean isProductionPlanned, @RequestParam("isFinishMtrSave")Boolean isFinishMtrSave);
+
+    @Query("select SUM(x.mtr) from BatchData x where x.mergeBatchId=:batchId AND x.isProductionPlanned=:b")
+    Double getTotalMtrByMergeBatchIdWithProductionFlag(String batchId, boolean b);
+
+    @Query("select SUM(x.wt) from BatchData x where x.mergeBatchId=:batchId AND x.isProductionPlanned=:b")
+    Double getTotalWtByMergeBatchIdWithProductionFlag(String batchId, boolean b);
+
+
 
 
 

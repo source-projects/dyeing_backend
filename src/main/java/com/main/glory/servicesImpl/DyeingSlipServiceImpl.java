@@ -1,7 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.StockAndBatch.BatchDao;
-import com.main.glory.Dao.dyeingSlip.AdditionDyeingProcessSlipDao;
+
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
@@ -51,8 +51,8 @@ public class DyeingSlipServiceImpl {
     @Autowired
     DyeingSlipItemDataDao dyeingSlipItemDataDao;
 
-    @Autowired
-    AdditionDyeingProcessSlipDao additionDyeingProcessSlipDao;
+  /*  @Autowired
+    AdditionDyeingProcessSlipDao additionDyeingProcessSlipDao;*/
 
     @Autowired
     ProductionPlanImpl productionPlanService;

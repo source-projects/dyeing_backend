@@ -129,7 +129,36 @@ public class EmployeeController extends ControllerConfig {
             if(employeeMast!=null)
             result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-            result= new GeneralResponse<>(null, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value = "/employeeBy")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> getEmployeeByEmpId(@RequestParam(name = "empId") Long id) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
+        boolean flag;
+        try {
+            if(id == null)
+                throw new Exception(commonMessage.Null_Record_Passed);
+
+
+            EmployeeMast employeeMast= employeeService.getEmployeeByEmpId(id);
+
+            if(employeeMast!=null)
+                result= new GeneralResponse<>(true, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else
+                result= new GeneralResponse<>(false, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
