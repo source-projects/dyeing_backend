@@ -236,13 +236,13 @@ public class RestoreDbImpl {
             if(exitValue==0) {
                 //run the cloudinary as well
                 //backup on the cloud
-               /* Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                         "cloud_name", "dvvqdgl3s",
                         "api_key", "841845242494588",
                         "api_secret", "E1owKNvkJZa131NBcDYEM6mdZSc"));
-                Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.emptyMap());
+                Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.asMap("resource_type","raw"));
                 ObjectMapper objectMapper = new ObjectMapper();
-                System.out.println(objectMapper.writeValueAsString(uploadResult));*/
+                System.out.println(objectMapper.writeValueAsString(uploadResult));
                 return true;
             }
             else return false;
