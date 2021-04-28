@@ -178,6 +178,7 @@ public class CommonMessage {
 
     //Quality
     public static String Quality_Data_Exist = "Quality data exist";
+    public static String Quality_Data_Exist_With_QualityId = "Quality data exist for qualityId";
     public static String Quality_Data_Not_Exist = "Quality data not exist";
     public static String Quality_Data_Found = "Data found";
     public static String Quality_Data_Not_Found = "Data not found ";
