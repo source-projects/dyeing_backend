@@ -153,6 +153,7 @@ public class AttendanceServiceImpl {
         ObjectMapper objectMapper =new ObjectMapper();
         if(attendance==null)
         {
+
             attendance  = new Attendance();
             System.out.println(objectMapper.writeValueAsString(attendance));
             employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,attendance);
