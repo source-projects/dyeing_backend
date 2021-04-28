@@ -160,6 +160,7 @@ public class AttendanceServiceImpl {
         {
             employeeWithAttendance=new EmployeeWithAttendance(employeeMastExist,attendance);
         }
+        System.out.println(objectMapper.writeValueAsString(employeeWithAttendance));
         return  employeeWithAttendance;
     }
 }
