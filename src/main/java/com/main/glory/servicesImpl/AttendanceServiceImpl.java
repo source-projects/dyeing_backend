@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.model.CommonMessage;
 import com.main.glory.model.employee.Attendance;
@@ -149,6 +150,8 @@ public class AttendanceServiceImpl {
         }*/
         Attendance attendance = attendanceDao.getAttendanceByIdDateAndShift(employeeMastExist.getId(),record.getShift(),record.getDate());
 
+        ObjectMapper objectMapper =new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(attendance));
         if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
         {
             employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,attendance);
@@ -157,6 +160,7 @@ public class AttendanceServiceImpl {
         {
             employeeWithAttendance=new EmployeeWithAttendance(employeeMastExist,attendance);
         }
+        System.out.println(objectMapper.writeValueAsString(employeeWithAttendance));
         return  employeeWithAttendance;
     }
 }
