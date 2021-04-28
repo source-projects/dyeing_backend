@@ -28,7 +28,7 @@ public interface AttendanceDao extends JpaRepository<Attendance,Long> {
     Attendance getAttendanceByIdAndShift(@RequestParam("controlId") Long controlId, @RequestParam("shift") Boolean shift);
 
     @Query(value = "select * from attendance as a where a.control_id=:id and a.shift=:shift AND Date(a.in_time)=Date(:date) LIMIT 1",nativeQuery = true)
-    Attendance getAttendanceByIdDateAndShift(Long id, Boolean shift, Date date);
+    Attendance getAttendanceByIdDateAndShift(@RequestParam("id") Long id,@RequestParam("shift") Boolean shift,@RequestParam("date") Date date);
 
     @Query("select x from Attendance x where Date(x.inTime)>=Date(:from) AND Date(x.outTime)<=Date(:to) AND x.controlId=:id")
     List<Attendance> getAllAttendanceByControlIdIdWithDate(Long id, Date from, Date to);
