@@ -151,13 +151,16 @@ public class AttendanceServiceImpl {
         Attendance attendance = attendanceDao.getAttendanceByIdDateAndShift(employeeMastExist.getId(),record.getShift(),record.getDate());
 
         ObjectMapper objectMapper =new ObjectMapper();
-        System.out.println(objectMapper.writeValueAsString(attendance));
-        if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
+        if(attendance==null)
         {
+
+            attendance  = new Attendance();
+            System.out.println(objectMapper.writeValueAsString(attendance));
             employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,attendance);
         }
         else
         {
+            System.out.println(objectMapper.writeValueAsString(attendance));
             employeeWithAttendance=new EmployeeWithAttendance(employeeMastExist,attendance);
         }
         System.out.println(objectMapper.writeValueAsString(employeeWithAttendance));
