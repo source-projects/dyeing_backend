@@ -85,9 +85,13 @@ public class QualityServiceImp  {
         }
 
         //elese remin the master
-        String quality1 = qualityDao.isQualityNameExist(qualityDto.getQualityId());
+        /*String quality1 = qualityDao.isQualityNameExist(qualityDto.getQualityId());
         if (quality1 != null)
-            throw new Exception("Quality id is already exist");
+            throw new Exception("Quality id is already exist");*/
+
+        Quality qualityExistWithId = qualityDao.getQualityById(qualityDto.getQualityId());
+        if(qualityExistWithId!=null)
+            throw new Exception(CommonMessage.Quality_Data_Exist_With_QualityId);
 
         if(quality.getUnit().equals("weight"))
             quality.setWtPer100m(1.0);
@@ -169,6 +173,12 @@ public class QualityServiceImp  {
             Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityDto.getQualityNameId());
             if(qualityNameExist.isEmpty())
                 throw new Exception("no quality name found");
+
+
+            //check the quality except the the given id
+            Quality qualityExistWithId = qualityDao.getQualityByIdWithExcept(qualityDto.getQualityId(),qualityDto.getId());
+            if(qualityExistWithId!=null)
+                throw new Exception(CommonMessage.Quality_Data_Exist_With_QualityId);
 
             qualityData.get().setPartyId(qualityDto.getPartyId());
             qualityData.get().setQualityId(qualityDto.getQualityId());
