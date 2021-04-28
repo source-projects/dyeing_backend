@@ -2008,10 +2008,10 @@ public class StockBatchServiceImpl {
 
     }
 
-    public List<BatchToPartyAndQuality> getAllMergeBatchId() {
+    public List<MergeBatchResponse> getAllMergeBatchId() {
        // List<GetAllMergeBatchId> list = new ArrayList<>();
 
-        List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities=new ArrayList<>();
+        List<MergeBatchResponse> getAllBatchWithPartyAndQualities=new ArrayList<>();
         List<MergeBatchId> record = batchDao.getAllMergeBatchId();
         List<GetBatchWithControlId> batchDataForMergeBatch = null;
 
@@ -2023,7 +2023,7 @@ public class StockBatchServiceImpl {
             //get batches based on batch id and stock id by mergebatchId
 
             List<GetBatchWithControlId> basedOnBatch = batchDao.getBatcheAndStockIdByMergeBatchIdWithoutFilter(batch.getMergeBatchId());
-            BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality();
+            MergeBatchResponse batchToPartyAndQuality=new MergeBatchResponse();
             for(GetBatchWithControlId batchByMergeBatch:basedOnBatch)
             {
                 //System.out.println("stockId:"+batchByMergeBatch.getControlId());
@@ -2071,6 +2071,13 @@ public class StockBatchServiceImpl {
                 batchToPartyAndQuality.setTotalMtr(batch.getMTR());
                 batchToPartyAndQuality.setTotalWt(batch.getWT());
                 batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
+
+                //set the production plag as well
+                BatchData isMergeBatch = batchDao.getIsMergeBatchId(batchToPartyAndQuality.getMergeBatchId());
+                if(isMergeBatch!=null)
+                {
+                    batchToPartyAndQuality.setIsProductionPlanned(isMergeBatch.getIsProductionPlanned());
+                }
 
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
