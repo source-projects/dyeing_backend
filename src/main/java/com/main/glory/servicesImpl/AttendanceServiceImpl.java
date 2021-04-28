@@ -151,7 +151,7 @@ public class AttendanceServiceImpl {
 
         if(attendance==null || (attendance.getInTime()!=null && attendance.getOutTime()!=null))
         {
-            employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,new Attendance());
+            employeeWithAttendance =new EmployeeWithAttendance(employeeMastExist,attendance);
         }
         else
         {
