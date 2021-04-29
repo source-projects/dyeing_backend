@@ -1,10 +1,9 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.Attendance;
-import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.request.FilterAttendance;
 import com.main.glory.model.employee.request.GetLatestAttendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.ObjectName;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -26,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class AttendanceController extends ControllerConfig {
 
-    CommonMessage commonMessage;
+    Constant constant;
 
     @Autowired
     EmployeeServiceImpl employeeService;
@@ -50,13 +48,13 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<Long,Object> result;
         try {
             if(record==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
             Attendance attendance= attendanceService.saveAttendance(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
 
-            result = new GeneralResponse<>(attendance.getId(), commonMessage.Attendance_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(attendance.getId(), constant.Attendance_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -76,14 +74,14 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if(record==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             Attendance x = attendanceService.updateAttendance(record);
             //System.out.println("har::"+headers.get("id"));
             //System.out.println(id);
 
-            result = new GeneralResponse<>(true, commonMessage.Attendance_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(true, constant.Attendance_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -103,7 +101,7 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<List<Attendance>,Object> result;
         try {
             if(id==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             List<Attendance> list = attendanceService.getAttendanceByEmployeeId(id);
@@ -111,11 +109,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list.isEmpty())
             {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constant.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constant.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
             logService.saveLog(result,request,debugAll);
@@ -135,7 +133,7 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<EmployeeWithAttendance,Object> result;
         try {
             if(id==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeId(id);
@@ -143,11 +141,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constant.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constant.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -167,7 +165,7 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<EmployeeWithAttendance,Object> result;
         try {
             if(record==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeIdDateAndShift(record);
@@ -175,11 +173,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(list, constant.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
 
             }
             else {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(list, constant.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
 
 
@@ -200,7 +198,7 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<Attendance,Object> result;
         try {
             if(id==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             Attendance list = attendanceService.getAttendanceById(id);
@@ -208,11 +206,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constant.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constant.Attendance_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -234,7 +232,7 @@ public class AttendanceController extends ControllerConfig {
         GeneralResponse<List<EmployeeAttendanceResponse>,Object> result;
         try {
             if(filterAttendance==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             List<EmployeeAttendanceResponse> list = attendanceService.getAttendanceRecordBasedOnFilter(filterAttendance);
@@ -242,11 +240,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list.isEmpty())
             {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
+                result = new GeneralResponse<>(list, constant.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
 
             }
             else {
-                result = new GeneralResponse<>(list, commonMessage.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
+                result = new GeneralResponse<>(list, constant.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,filterAttendance);
             }
 
             logService.saveLog(result,request,debugAll);
@@ -255,6 +253,40 @@ public class AttendanceController extends ControllerConfig {
         {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filterAttendance);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @PostMapping(value="/attendance/latest/byEmployeeIdDateAndSaveFlag")
+    public ResponseEntity<GeneralResponse<EmployeeWithAttendance,Object>> getLatestAttendanceByEmployeeIdDateAndSaveFlag(@RequestBody GetLatestAttendance record)
+    {
+        GeneralResponse<EmployeeWithAttendance,Object> result;
+        try {
+            if(record==null)
+                throw new Exception(constant.Null_Record_Passed);
+
+
+            EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeIdDateAndSaveFlag(record);
+            //System.out.println("har::"+headers.get("empId"));
+            //System.out.println(empId);
+            if(list==null)
+            {
+                result = new GeneralResponse<>(list, constant.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+
+            }
+            else {
+                result = new GeneralResponse<>(list, constant.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            }
+
+
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

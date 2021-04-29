@@ -3,7 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
@@ -82,11 +82,11 @@ public class ProductionPlanImpl {
             //check already batch and stock is exist or not
             ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchId(productionPlan.getBatchId());
             if(productionPlanExist!=null)
-                throw new Exception(CommonMessage.Production_Record_Exist);
+                throw new Exception(Constant.Production_Record_Exist);
 
             List<BatchData> batchDataList = batchService.getBatchByBatchIdId(productionPlan.getBatchId());
             if(batchDataList.isEmpty())
-                throw new Exception(CommonMessage.Batch_Data_Not_Found);
+                throw new Exception(Constant.Batch_Data_Not_Found);
 
             //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
@@ -112,7 +112,7 @@ public class ProductionPlanImpl {
         ProductionPlan productionPlan = productionPlanDao.getByProductionId(id);
 
         if(productionPlan==null)
-            throw new Exception(CommonMessage.Production_Not_Found);
+            throw new Exception(Constant.Production_Not_Found);
 
         return productionPlan;
 
@@ -124,7 +124,7 @@ public class ProductionPlanImpl {
             return false;
 
         if(productionPlan.getStatus()==true)
-        throw new Exception(CommonMessage.Jet_Exist_With_Production);
+        throw new Exception(Constant.Jet_Exist_With_Production);
 
         //change the status of batch if all the condition are
         List<BatchData> batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
@@ -311,7 +311,7 @@ public class ProductionPlanImpl {
 
         Optional<ProductionPlan> productionPlanExist = productionPlanDao.findById(productionPlan.getId());
         if(productionPlanExist.isEmpty())
-            throw new Exception(CommonMessage.Production_Not_Found);
+            throw new Exception(Constant.Production_Not_Found);
 
         productionPlanDao.save(productionPlan);
 
@@ -424,7 +424,7 @@ public class ProductionPlanImpl {
                 //then process for the jet if the jet id is not null
                 ProductionPlan productionPlanExistWithMergeBatchId = productionPlanDao.getProductionByBatchId(productionPlan.getBatchId());
                 if(productionPlanExistWithMergeBatchId!=null)
-                    throw new Exception(CommonMessage.Production_Record_Exist);
+                    throw new Exception(Constant.Production_Record_Exist);
 
 
 
@@ -439,7 +439,7 @@ public class ProductionPlanImpl {
                     batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
                 }
                 if(batchDataList.isEmpty())
-                    throw new Exception(CommonMessage.Batch_Data_Not_Found);
+                    throw new Exception(Constant.Batch_Data_Not_Found);
 
                 //ProductionPlan shadeAndStockIsExist = productionPlan.findByStockIdAndShadeId(productionPlan.)
 
@@ -544,13 +544,13 @@ public class ProductionPlanImpl {
             //check the production is already added in jet or not
             ProductionPlan productionPlanExist = productionPlanDao.getByProductionId(productionPlan.getProductionId());
             if(productionPlanExist.getStatus()==true)
-                throw new Exception(CommonMessage.Production_With_Jet);
+                throw new Exception(Constant.Production_With_Jet);
 
 
             //change the status of production
             Optional<ShadeMast> shadeMastExist = shadeService.getShadeMastById(productionPlan.getShadeId());
             if(shadeMastExist.isEmpty())
-                throw new Exception(CommonMessage.Shade_Not_Found);
+                throw new Exception(Constant.Shade_Not_Found);
 
             productionPlanExist=new ProductionPlan(productionPlan);
 
@@ -622,7 +622,7 @@ public class ProductionPlanImpl {
 
         ProductionPlan productionPlanExistWithBatch = productionPlanDao.getProductionByBatchId(record.getBatchId());
         if(productionPlanExistWithBatch!=null)
-            throw new Exception(CommonMessage.Production_Record_Exist);
+            throw new Exception(Constant.Production_Record_Exist);
 
         ProductionPlan productionPlan =new ProductionPlan(record);
 

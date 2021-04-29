@@ -4,8 +4,7 @@ import com.main.glory.Dao.admin.CompanyDao;
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.CommonMessage;
-import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.Constant;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
@@ -220,40 +219,40 @@ public class UserServiceImpl implements UserServiceInterface {
             //check the record is exist or not
             Optional<List<GetAllStockWithPartyNameResponse>> stockMastList = stockBatchService.getStockByCreatedOrUserHeadId(id);
             if(stockMastList.isPresent())
-                throw new Exception(CommonMessage.StockBatch_Exist);
+                throw new Exception(Constant.StockBatch_Exist);
 
             List<Party> parties = partyServiceImp.getPartyByCreatedAndUserHeadId(id);
             if(!parties.isEmpty())
-                throw new Exception(CommonMessage.Party_Exist);
+                throw new Exception(Constant.Party_Exist);
 
             List<Quality> qualityList = qualityServiceImp.getQualityByCreatedByAndUserHeadId(id);
 
             if(!qualityList.isEmpty())
-                throw new Exception(CommonMessage.Quality_Data_Exist);
+                throw new Exception(Constant.Quality_Data_Exist);
 
             List<ShadeMast> shadeMastList = shadeService.getShadeByCreatedByAndUserHeadId(id);
             if(!shadeMastList.isEmpty())
-                throw new Exception(CommonMessage.Shade_Exist);
+                throw new Exception(Constant.Shade_Exist);
 
             List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByCreatedByAndUserHeadId(id,id);
             if(!dispatchMastList.isEmpty())
-                throw new Exception(CommonMessage.Dispatch_Exit);
+                throw new Exception(Constant.Dispatch_Exit);
 
             List<TaskMast> taskMastList = taskService.getTaskByCreatedByAndAssignUserId(id,id);
             if(!taskMastList.isEmpty())
-                throw new Exception(CommonMessage.Task_Data_Exist);
+                throw new Exception(Constant.Task_Data_Exist);
 
             List<ColorMast> colorMasts =colorService.getColorByCreatedAndUserHeadId(id,id);
             if (!colorMasts.isEmpty())
-                throw new Exception(CommonMessage.Color_Data_Exist);
+                throw new Exception(Constant.Color_Data_Exist);
 
             List<DyeingProcessMast> dyeingProcessMastList = dyeingProcessService.dyeingProcessMastDao.getAllDyeingProcessByCreatedAndHead(id,id);
             if(!dyeingProcessMastList.isEmpty())
-                throw new Exception(CommonMessage.DyeingProcess_Data_Exist);
+                throw new Exception(Constant.DyeingProcess_Data_Exist);
 
             List<Supplier> supplierList = supplierService.getSupplierByCreatedAndUserHeadId(id,id);
             if(!supplierList.isEmpty())
-                throw new Exception(CommonMessage.Supplier_Exist);
+                throw new Exception(Constant.Supplier_Exist);
 
             userDao.deleteById(id);
         }
@@ -475,7 +474,7 @@ public class UserServiceImpl implements UserServiceInterface {
         UserData userData = userDao.getUserById(id);
         Designation designation = designationDao.getDesignationById(userData.getDesignationId().getId());
         if(userData==null)
-            throw new Exception(CommonMessage.User_Not_Exist);
+            throw new Exception(Constant.User_Not_Exist);
 
         if(userData.getUserHeadId()==0)
         {

@@ -2,9 +2,8 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.request.ChangeStatus;
 import com.main.glory.model.jet.request.UpdateJetData;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +36,7 @@ public class JetController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
-    CommonMessage commonMessage;
+    Constant constant;
 
     @PostMapping(value="/jet/addJetData")
     public ResponseEntity<GeneralResponse<Boolean,Object>> saveJetData(@RequestBody List<AddJetData> jetData) throws Exception {
@@ -48,14 +45,14 @@ public class JetController extends ControllerConfig {
         if(jetData==null)
         {
             //result = new GeneralResponse<>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception(commonMessage.Null_Record_Passed);
+            throw new Exception(constant.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             jetService.saveJetData(jetData);
-            result = new GeneralResponse<>(null, commonMessage.Jet_Added, true, System.currentTimeMillis(), HttpStatus.OK,jetData);
+            result = new GeneralResponse<>(null, constant.Jet_Added, true, System.currentTimeMillis(), HttpStatus.OK,jetData);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -75,14 +72,14 @@ public class JetController extends ControllerConfig {
         if(jetDataToUpdate==null)
         {
             //result = new GeneralResponse<>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception(commonMessage.Null_Record_Passed);
+            throw new Exception(constant.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             jetService.updateJetData(jetDataToUpdate);
-            result = new GeneralResponse<>(null, commonMessage.Jet_Updated, true, System.currentTimeMillis(), HttpStatus.OK,jetDataToUpdate);
+            result = new GeneralResponse<>(null, constant.Jet_Updated, true, System.currentTimeMillis(), HttpStatus.OK,jetDataToUpdate);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -101,7 +98,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(jetDataToUpdate==null)
         {
-            throw new Exception(commonMessage.Null_Record_Passed);
+            throw new Exception(constant.Null_Record_Passed);
             //result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
@@ -109,7 +106,7 @@ public class JetController extends ControllerConfig {
         try {
 
             jetService.updateProductionStatus(jetDataToUpdate,headers.get("id"));
-            result = new GeneralResponse<>(null, commonMessage.Jet_Updated, true, System.currentTimeMillis(), HttpStatus.OK,jetDataToUpdate);
+            result = new GeneralResponse<>(null, constant.Jet_Updated, true, System.currentTimeMillis(), HttpStatus.OK,jetDataToUpdate);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -128,14 +125,14 @@ public class JetController extends ControllerConfig {
         GeneralResponse<List<GetJetData>,Object> result;
         if(id==null)
         {
-            throw new Exception(commonMessage.Null_Record_Passed );//result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            throw new Exception(constant.Null_Record_Passed );//result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         boolean flag;
         try {
 
             List<GetJetData> jetDataList = jetService.getJetData(id);
-            result = new GeneralResponse<>(jetDataList, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(jetDataList, constant.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -157,9 +154,9 @@ public class JetController extends ControllerConfig {
 
             List<GetAllJetMast> jetMastList = jetService.getAllJetData();
             if(!jetMastList.isEmpty())
-            result = new GeneralResponse<>(jetMastList, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(jetMastList, constant.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-            result = new GeneralResponse<>(jetMastList, commonMessage.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(jetMastList, constant.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -179,7 +176,7 @@ public class JetController extends ControllerConfig {
         boolean flag;
         try {
             GetJetSlip slipData = jetService.getJetSlipData(jetId,productionId);
-            result = new GeneralResponse<>(slipData, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(slipData, constant.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -199,7 +196,7 @@ public class JetController extends ControllerConfig {
         boolean flag;
         try {
             jetService.removeProductionFromJet(jetId,productionId);
-            result = new GeneralResponse<>(true, commonMessage.Production_Removed, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, constant.Production_Removed, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -219,7 +216,7 @@ public class JetController extends ControllerConfig {
         GeneralResponse<List<GetJetData>,Object> result;
         if(id==null)
         {
-             throw new Exception(CommonMessage.Null_Record_Passed);
+             throw new Exception(Constant.Null_Record_Passed);
         }
 
 
@@ -228,9 +225,9 @@ public class JetController extends ControllerConfig {
 
             List<GetJetData> jetDataList = jetService.getJetDataWithInQueueProdution(id);
             if(!jetDataList.isEmpty())
-            result =  new GeneralResponse<>(jetDataList, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(jetDataList, constant.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result =  new GeneralResponse<>(jetDataList, commonMessage.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(jetDataList, constant.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -251,7 +248,7 @@ public class JetController extends ControllerConfig {
         try {
 
             List<GetStatus> jetDataList = jetService.getJetStatusList();
-            result = new GeneralResponse<>(jetDataList, commonMessage.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(jetDataList, constant.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -268,16 +265,16 @@ public class JetController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<Boolean,Object>> deleteJetDataByProductionId(@PathVariable(name = "id") Long id) throws Exception {
         GeneralResponse<Boolean,Object> result;
         if(id==null) {
-            throw new Exception(commonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "production info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            throw new Exception(constant.Null_Record_Passed);//result = new GeneralResponse<>(null, "production info is null", false, System.currentTimeMillis(), HttpStatus.OK);
 
         }
         try {
 
             Boolean flag = jetService.deleteJetDataByProductionId(id);
             if(flag==true)
-            result = new GeneralResponse<>(true, commonMessage.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, constant.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(false, commonMessage.Production_Unable_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, constant.Production_Unable_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
@@ -294,16 +291,16 @@ public class JetController extends ControllerConfig {
         GeneralResponse<Boolean, Object> result;
         if(id==null)
         {
-            throw new Exception(commonMessage.Null_Record_Passed);//result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+            throw new Exception(constant.Null_Record_Passed);//result = new GeneralResponse<>(null, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
         }
 
         try {
 
             Boolean flag = jetService.deleteJetMastByJetId(id);
             if(flag==true)
-                result = new GeneralResponse<>(true, commonMessage.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, constant.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(false, commonMessage.Jet_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, constant.Jet_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)

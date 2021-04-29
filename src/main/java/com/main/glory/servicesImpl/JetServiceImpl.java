@@ -8,7 +8,7 @@ import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
@@ -92,13 +92,13 @@ public class JetServiceImpl {
     @Autowired
     BatchDao batchDao;
 
-    CommonMessage commonMessage;
+    Constant constant;
     public void saveJet(AddJet jetMast) throws Exception {
 
 
         Optional<JetMast> jetExist = jetMastDao.findByName(jetMast.getName());
         if(jetExist.isPresent()) {
-            throw new Exception(commonMessage.Jet_Exist_With_Name);
+            throw new Exception(constant.Jet_Exist_With_Name);
         }
         JetMast newJet=new JetMast(jetMast);
         jetMastDao.save(newJet);
@@ -117,7 +117,7 @@ public class JetServiceImpl {
 
         ProductionPlan productionPlanExits = productionPlanService.getProductionData(productionId);
         if(productionPlanExits.getStatus())
-            throw new Exception("production is already added into jet");
+            throw new Exception(Constant.Production_With_Jet);
 
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
 
@@ -218,10 +218,10 @@ public class JetServiceImpl {
         for(AddJetData addJetData:jetDataList)
         {
             if(addJetData.getControlId()==null)
-                throw new Exception("control id can't be null ");
+                throw new Exception(Constant.Null_Record_Passed);
 
             if(addJetData.getProductionId()==null)
-                throw new Exception("pruduction id can't be null ");
+                throw new Exception(Constant.Null_Record_Passed);
 
             Optional<JetMast> jetMastExist = jetMastDao.findById(addJetData.getControlId());
 
@@ -236,7 +236,7 @@ public class JetServiceImpl {
                 throw new Exception("production data not found");
 
             if(jetDataExistWithProducton.isPresent())
-                throw new Exception("Production is already exist with jet");
+                throw new Exception(Constant.Production_With_Jet);
 
 
             //jetCapacity
@@ -424,10 +424,23 @@ public class JetServiceImpl {
                             amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
                         else {
 
-                            amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
-                            //function call to check in the range
-                            amtQty = getAmountInRange(amtQty);
-
+                            if(dyeingChemicalData.getByChemical().equals("L")) {
+                                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
+                                //function call to check in the range
+                                amtQty = getAmountInRange(amtQty);
+                            }
+                            else if(dyeingChemicalData.getByChemical().equals("W"))
+                            {
+                                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt ) / 100;
+                                //function call to check in the range
+                                amtQty = getAmountInRange(amtQty);
+                            }
+                            else if(dyeingChemicalData.getByChemical().equals("F"))
+                            {
+                                amtQty = dyeingChemicalData.getConcentration();
+                                //function call to check in the range
+                                amtQty = getAmountInRange(amtQty);
+                            }
                         }
                     }
 
@@ -575,7 +588,7 @@ public class JetServiceImpl {
         List<GetJetData> getJetDataList=new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
         if(jetDataList.isEmpty())
-            throw new Exception(CommonMessage.Jet_Not_Found);
+            throw new Exception(Constant.Jet_Not_Found);
 
         for(JetData jetData:jetDataList)
         {
@@ -750,7 +763,7 @@ public class JetServiceImpl {
         List<GetJetData> getJetDataList=new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
         if(jetDataList.isEmpty())
-            throw new Exception(commonMessage.Jet_Not_Found);
+            throw new Exception(constant.Jet_Not_Found);
 
         //fetch the data which are in Queue
         for(JetData jetData:jetDataList)
@@ -943,12 +956,12 @@ public class JetServiceImpl {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetId);
 
         if(jetMastExist.isEmpty())
-            throw new Exception(CommonMessage.Jet_Not_Found);
+            throw new Exception(Constant.Jet_Not_Found);
 
         Optional<JetData> jetExistWithProduction = jetDataDao.findByControlIdAndProductionId(jetId,productionId);
 
         if(jetExistWithProduction.isEmpty())
-            throw new Exception(CommonMessage.Jet_Exist_Without_Production);
+            throw new Exception(Constant.Jet_Exist_Without_Production);
 
         Double wt = batchDao.getTotalWtByBatchId(productionPlanExist.getBatchId());
 
@@ -957,7 +970,7 @@ public class JetServiceImpl {
         GetQualityResponse quality =null;//qualityServiceImp.getQualityByID(stockMast.getQualityId());
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExist.getShadeId());
         if (shadeMast.isEmpty())
-            throw new Exception(commonMessage.Shade_Not_Found);
+            throw new Exception(constant.Shade_Not_Found);
 
         //basic data
         data.setColorTone(shadeMast.get().getColorTone());
@@ -1018,11 +1031,11 @@ public class JetServiceImpl {
 
             Optional<JetMast> jetMast  =jetMastDao.getJetById(id);
             if(jetMast.isEmpty())
-                throw new Exception(commonMessage.Jet_Not_Found);
+                throw new Exception(constant.Jet_Not_Found);
 
             //check the child record available for the jet or not
             if(!jetMast.get().getJetDataList().isEmpty())
-                throw new Exception(commonMessage.Jet_Record_Exist);
+                throw new Exception(constant.Jet_Record_Exist);
 
             jetMastDao.deleteByJetId(id);
             return true;
@@ -1063,7 +1076,7 @@ public class JetServiceImpl {
         //check first the prodution is already in jet or not
         JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId,productionId);
         if(jetDataExist==null)
-            throw new Exception(CommonMessage.Jet_Exist_Without_Production);
+            throw new Exception(Constant.Jet_Exist_Without_Production);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(productionId);
 
@@ -1165,7 +1178,7 @@ public class JetServiceImpl {
     public void updateJet(AddJet jetMast) throws Exception {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetMast.getId());
         if(jetMastExist.isEmpty())
-            throw new Exception(commonMessage.Jet_Not_Found);
+            throw new Exception(constant.Jet_Not_Found);
 
         JetMast jetToUpdate = new JetMast(jetMast);
         jetToUpdate.setId(jetMast.getId());
@@ -1186,14 +1199,14 @@ public class JetServiceImpl {
     public JetMast getJetMastById(Long id) throws Exception {
         Optional<JetMast> jetMast = jetMastDao.getJetById(id);
         if(jetMast.isEmpty())
-            throw new Exception(commonMessage.Jet_Not_Found);
+            throw new Exception(constant.Jet_Not_Found);
         return jetMast.get();
     }
 
     public Boolean getJetIsDeletable(Long id) throws Exception {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(id);
         if(jetMastExist.isEmpty())
-            throw new Exception(commonMessage.Jet_Not_Found);
+            throw new Exception(constant.Jet_Not_Found);
 
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
         if(jetDataList.isEmpty())

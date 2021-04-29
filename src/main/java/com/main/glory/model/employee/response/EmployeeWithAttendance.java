@@ -18,4 +18,8 @@ public class EmployeeWithAttendance {
         this.attendanceLatest=attendance;
 
     }
+
+    public EmployeeWithAttendance(EmployeeMast employeeMast) {
+        this.employeeMast = employeeMast;
+    }
 }

@@ -12,8 +12,9 @@ import java.util.Date;
 @Getter
 @Setter
 public class GetLatestAttendance {
-    Long id;
+    Long empId;
     Date date;
-    Boolean shift;
+    Boolean saveFlag;
+    String url;
 
 }

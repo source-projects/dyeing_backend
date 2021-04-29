@@ -1,17 +1,15 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddThermopackInfo;
 import com.main.glory.model.machine.Thermopack;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
 import com.main.glory.model.machine.request.ThermopackRecordBasedOnShift;
-import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.model.machine.response.ThermopackFilterRecord;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.ThermopackImpl;
-import jdk.javadoc.doclet.Reporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -43,14 +41,14 @@ public class ThermopackController extends ControllerConfig {
         if(thermopackRecord==null)
         {
             //result =  new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception(CommonMessage.Null_Record_Passed);
+            throw new Exception(Constant.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             thermopackService.saveThermopackRecord(thermopackRecord);
-            result =new GeneralResponse<>(null, CommonMessage.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =new GeneralResponse<>(null, Constant.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -73,10 +71,10 @@ public class ThermopackController extends ControllerConfig {
             List<Thermopack> machineMasts = thermopackService.getAllMachineRecord();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, Constant.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result = new GeneralResponse<>(machineMasts, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, Constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -99,10 +97,10 @@ public class ThermopackController extends ControllerConfig {
             List<ThermopackFilterRecord> machineRecord = thermopackService.getDataBasedOnFilter(record);
             if(machineRecord.isEmpty())
             {
-                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(null, Constant.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else {
-                result = new GeneralResponse<>(machineRecord, CommonMessage.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(machineRecord, Constant.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -127,10 +125,10 @@ public class ThermopackController extends ControllerConfig {
             List<Thermopack> machineRecord = thermopackService.getRecordBasedOnShift(record);
             if(machineRecord.isEmpty())
             {
-                result = new GeneralResponse<>(null, CommonMessage.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(null, Constant.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-            result = new GeneralResponse<>(machineRecord, CommonMessage.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(machineRecord, Constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }

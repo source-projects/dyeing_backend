@@ -32,4 +32,7 @@ public interface AttendanceDao extends JpaRepository<Attendance,Long> {
 
     @Query("select x from Attendance x where Date(x.inTime)>=Date(:from) AND Date(x.outTime)<=Date(:to) AND x.controlId=:id")
     List<Attendance> getAllAttendanceByControlIdIdWithDate(Long id, Date from, Date to);
+
+    @Query(value = "select * from attendance as x where x.control_id=:id AND Date(x.in_time)=Date(:date) ORDER by x.id DESC LIMIT 1",nativeQuery = true)
+    Attendance getAttendanceByDateAndIdDescendingOrder(@RequestParam("date") Date date, @RequestParam("id") Long id);
 }

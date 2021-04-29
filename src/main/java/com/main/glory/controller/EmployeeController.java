@@ -1,11 +1,10 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
-import com.main.glory.model.employee.request.AddEmployee;
 import com.main.glory.model.employee.response.GetAllEmployee;
 import com.main.glory.servicesImpl.EmployeeServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -14,11 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.Multipart;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.List;
 
 @RestController
@@ -38,7 +34,7 @@ public class EmployeeController extends ControllerConfig {
     @Autowired
     EmployeeServiceImpl employeeService;
 
-    CommonMessage commonMessage;
+    Constant constant;
 
     @PostMapping(value = "/employee/add")
     public ResponseEntity<GeneralResponse<Long,Object>> addEmployee(@RequestBody EmployeeMast record) throws Exception {
@@ -47,12 +43,12 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(record == null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             Long id= employeeService.addEmployeeRecord(record);
 
-            result= new GeneralResponse<>(id, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, constant.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -71,12 +67,12 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(record == null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             Long id= employeeService.addEmployeeDataRecord(record);
 
-            result= new GeneralResponse<>(id, commonMessage.Employee_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, constant.Employee_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -96,12 +92,12 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(record == null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             Long id= employeeService.updateEmployeeRecord(record);
 
-            result= new GeneralResponse<>(id, commonMessage.Employee_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(id, constant.Employee_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }
@@ -121,15 +117,15 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(id == null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             EmployeeMast employeeMast= employeeService.getEmployeeById(id);
 
             if(employeeMast!=null)
-            result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(employeeMast, constant.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-            result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(employeeMast, constant.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -150,15 +146,15 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(id == null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
 
             EmployeeMast employeeMast= employeeService.getEmployeeByEmpId(id);
 
             if(employeeMast!=null)
-                result= new GeneralResponse<>(true, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, constant.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(false, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(false, constant.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -184,9 +180,9 @@ public class EmployeeController extends ControllerConfig {
             List<GetAllEmployee> employeeMast= employeeService.getAllEmployee();
 
             if(employeeMast.size()>0)
-                result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, constant.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(employeeMast, commonMessage.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, constant.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -207,10 +203,10 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(id==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constant.Null_Record_Passed);
 
             employeeService.deleteEmployeeById(id);
-            result= new GeneralResponse<>(true, commonMessage.Employee_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, constant.Employee_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -232,15 +228,15 @@ public class EmployeeController extends ControllerConfig {
         boolean flag;
         try {
             if(id == null)
-                throw new Exception(CommonMessage.Null_Record_Passed);
+                throw new Exception(Constant.Null_Record_Passed);
 
 
             List<EmployeeMast> employeeMast= employeeService.getEmployeeByEmpIdOrName(id);
 
             if(!employeeMast.isEmpty())
-                result= new GeneralResponse<>(employeeMast, CommonMessage.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, Constant.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result= new GeneralResponse<>(null, CommonMessage.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, Constant.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
