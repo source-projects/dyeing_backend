@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.Constant;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
@@ -36,7 +36,7 @@ import com.main.glory.model.quality.Quality;
 @Service("qualityServiceImp")
 public class QualityServiceImp  {
 
-    CommonMessage commonMessage;
+    Constant constant;
 
     @Autowired
     ProgramServiceImpl programService;
@@ -91,7 +91,7 @@ public class QualityServiceImp  {
 
         Quality qualityExistWithId = qualityDao.getQualityById(qualityDto.getQualityId());
         if(qualityExistWithId!=null)
-            throw new Exception(CommonMessage.Quality_Data_Exist_With_QualityId);
+            throw new Exception(Constant.Quality_Data_Exist_With_QualityId);
 
         if(quality.getUnit().equals("weight"))
             quality.setWtPer100m(1.0);
@@ -178,7 +178,7 @@ public class QualityServiceImp  {
             //check the quality except the the given id
             Quality qualityExistWithId = qualityDao.getQualityByIdWithExcept(qualityDto.getQualityId(),qualityDto.getId());
             if(qualityExistWithId!=null)
-                throw new Exception(CommonMessage.Quality_Data_Exist_With_QualityId);
+                throw new Exception(Constant.Quality_Data_Exist_With_QualityId);
 
             qualityData.get().setPartyId(qualityDto.getPartyId());
             qualityData.get().setQualityId(qualityDto.getQualityId());
@@ -260,7 +260,7 @@ public class QualityServiceImp  {
 
 
         if (!qualityLists.isPresent())
-            throw new Exception(commonMessage.Quality_Data_Not_Found);
+            throw new Exception(constant.Quality_Data_Not_Found);
 
 
         QualityParty qualityParties = new QualityParty(qualityLists.get());
@@ -283,7 +283,7 @@ public class QualityServiceImp  {
 
         Party partName = partyDao.findByPartyId(partyId);
         if (partName==null)
-            throw new Exception(commonMessage.Party_Not_Found + partyId);
+            throw new Exception(constant.Party_Not_Found + partyId);
        /* if (!qualityList.isPresent()) {
             throw new Exception("Add Quality data for partyId:" + partyId);
         }*/
@@ -311,7 +311,7 @@ public class QualityServiceImp  {
 
 
         if (partyQualityData == null)
-            throw new Exception(commonMessage.Quality_Data_Not_Found);
+            throw new Exception(constant.Quality_Data_Not_Found);
 
         return partyQualityData;
 
@@ -340,11 +340,11 @@ public class QualityServiceImp  {
         Optional<List<Quality>> QualityList = qualityDao.findByUserHeadId(userHeadId);
 
         if (!QualityList.isPresent()) {
-            throw new Exception(commonMessage.Quality_Data_Not_Found_ByMaster + userHeadId);
+            throw new Exception(constant.Quality_Data_Not_Found_ByMaster + userHeadId);
         }
         List<PartyWithMasterName> partyList = partyDao.findByUserHeadId(userHeadId);
         if (partyList.isEmpty()) {
-            throw new Exception(commonMessage.Party_Found_ByMaster + userHeadId);
+            throw new Exception(constant.Party_Found_ByMaster + userHeadId);
         }
 
         List<PartyQuality> partyQualityList = new ArrayList<>();

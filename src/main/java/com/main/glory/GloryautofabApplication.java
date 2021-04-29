@@ -16,18 +16,6 @@ import java.util.Map;
 @SpringBootApplication
 public class GloryautofabApplication {
 	public static void main(String[] args) {
-
-		/*// Set Cloudinary instance
-		//backup on the cloud
-		Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-				"cloud_name", "dvvqdgl3s",
-				"api_key", "841845242494588",
-				"api_secret", "E1owKNvkJZa131NBcDYEM6mdZSc"));
-		SingletonManager manager = new SingletonManager();
-		manager.setCloudinary(cloudinary);
-		manager.init();
-
-*/
-		SpringApplication.run(GloryautofabApplication.class, args);
+				SpringApplication.run(GloryautofabApplication.class, args);
 	}
 }

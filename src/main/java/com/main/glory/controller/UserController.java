@@ -2,8 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
-import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.Constant;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
@@ -60,15 +59,15 @@ public class UserController extends ControllerConfig {
             userObj=userService.getUserById(id);
             if(userObj!=null)
             {
-                result = new GeneralResponse<>(userObj, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
+                result = new GeneralResponse<>(userObj, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
 
             }
             else
-            result = new GeneralResponse<>(null, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
+            result = new GeneralResponse<>(null, Constant.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI().toString());
             logService.saveLog(result,request,debugAll);
         }
         else {
-            result = new GeneralResponse<>(null, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            result = new GeneralResponse<>(null, Constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -84,12 +83,12 @@ public class UserController extends ControllerConfig {
             if (departmentId != null) {
                 List<UserData> userObj = userService.getAllUserByDepartmentId(departmentId);
                 if (userObj != null) {
-                    result = new GeneralResponse<>(userObj, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(userObj, Constant.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 } else
-                    result = new GeneralResponse<>(null, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(null, Constant.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 logService.saveLog(result, request, debugAll);
             } else {
-               throw new Exception(CommonMessage.Null_Record_Passed);
+               throw new Exception(Constant.Null_Record_Passed);
             }
         }catch (Exception e)
         {
@@ -107,10 +106,10 @@ public class UserController extends ControllerConfig {
         try {
             List<GetAllOperator> userObj = userService.getAllOperator();
             if (userObj != null) {
-                result = new GeneralResponse<>(userObj, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(userObj, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 logService.saveLog(result, request, debugAll);
             } else {
-                throw new Exception(CommonMessage.Null_Record_Passed);
+                throw new Exception(Constant.Null_Record_Passed);
             }
         }
         catch (Exception e)
@@ -129,9 +128,9 @@ public class UserController extends ControllerConfig {
         try {
             List<getAllUserInfo> data = userService.getAllHeadUser(headers.get("id"));
             if (!data.isEmpty()) {
-                result = new GeneralResponse<>(data, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(null, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, Constant.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
@@ -148,9 +147,9 @@ public class UserController extends ControllerConfig {
         try {
             Boolean data = userService.getUserNameExist(username,id);
             if (data==true) {
-                result = new GeneralResponse<>(data, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, Constant.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result = new GeneralResponse<>(data, CommonMessage.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, Constant.User_Not_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
@@ -175,9 +174,9 @@ public class UserController extends ControllerConfig {
 
                         users = userService.getAllUser(getBy, id,headers.get("id"));
                         if(!users.isEmpty())
-                            result = new GeneralResponse<>(users, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new GeneralResponse<>(users, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                         else
-                            result = new GeneralResponse<>(null, CommonMessage.User_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new GeneralResponse<>(null, Constant.User_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                         break;
 
@@ -185,23 +184,23 @@ public class UserController extends ControllerConfig {
 
                         users = userService.getAllUser(getBy, id,headers.get("id"));
                         if(!users.isEmpty())
-                            result = new GeneralResponse<>(users, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new GeneralResponse<>(users, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                         else
-                            result = new GeneralResponse<>(null, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new GeneralResponse<>(null, Constant.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
                         break;
                 case "all":
                         users = userService.getAllUser(null, null,headers.get("id"));
                         if(!users.isEmpty())
-                            result = new GeneralResponse<>(users, CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new GeneralResponse<>(users, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                         else
-                            result = new GeneralResponse<>(null, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                            result = new GeneralResponse<>(null, Constant.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                         break;
 
                 default:
-                    result = new GeneralResponse<>(null, CommonMessage.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, Constant.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
         }catch(Exception e){
@@ -219,7 +218,7 @@ public class UserController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try{
             userService.createUser(userData,headers.get("id"));
-            result = new GeneralResponse<>(true,CommonMessage.User_Added, true, System.currentTimeMillis(), HttpStatus.OK,userData);
+            result = new GeneralResponse<>(true, Constant.User_Added, true, System.currentTimeMillis(), HttpStatus.OK,userData);
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e){
@@ -248,7 +247,7 @@ public class UserController extends ControllerConfig {
                 loginResponse.setAccessToken(token);
                 token = jwtUtil.generateToken(user, "refreshToken");
                 loginResponse.setRefreshToken(token);
-                result = new GeneralResponse<>(loginResponse,CommonMessage.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new GeneralResponse<>(loginResponse, Constant.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,userData);
                 /*System.out.println(headers.toString());
                 System.out.println(request.getRequestURL());*/
                 //logService.saveRequestResponse(request,result,headers,null);
@@ -256,7 +255,7 @@ public class UserController extends ControllerConfig {
             }
             else
             {
-                result = new GeneralResponse<>(null,CommonMessage.User_Wrong_cred, false, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new GeneralResponse<>(null, Constant.User_Wrong_cred, false, System.currentTimeMillis(), HttpStatus.OK,userData);
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -278,7 +277,7 @@ public class UserController extends ControllerConfig {
             int flag = userService.isAvailable(userData);
 
             if(flag==1){
-                result = new GeneralResponse<>(true,CommonMessage.User_Updated, true, System.currentTimeMillis(), HttpStatus.OK,userData);
+                result = new GeneralResponse<>(true, Constant.User_Updated, true, System.currentTimeMillis(), HttpStatus.OK,userData);
             }
 
             logService.saveLog(result,request,debugAll);
@@ -299,12 +298,12 @@ public class UserController extends ControllerConfig {
             if (id != null) {
                 boolean flag = userService.deleteUserById(id);
                 if (flag) {
-                    result = new GeneralResponse<>(true, CommonMessage.User_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(true, Constant.User_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result = new GeneralResponse<>(false, CommonMessage.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(false, Constant.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             } else
-                throw new Exception(CommonMessage.Null_Record_Passed);
+                throw new Exception(Constant.Null_Record_Passed);
                 //result = new GeneralResponse<>(false, CommonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }
@@ -328,10 +327,10 @@ public class UserController extends ControllerConfig {
             UserIdentification userIdentification = userService.getUserHeadDetail(id);
             if(userIdentification==null)
             {
-                response= new GeneralResponse<>(userIdentification, CommonMessage.User_Not_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                response= new GeneralResponse<>(userIdentification, Constant.User_Not_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            response= new GeneralResponse<>(userIdentification, CommonMessage.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            response= new GeneralResponse<>(userIdentification, Constant.User_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(response,request,debugAll);
 
         }

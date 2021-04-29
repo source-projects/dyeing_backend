@@ -11,7 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CommonMessage {
+public class Constant {
 
     public static String Null_Record_Passed = "null record passed";
 
@@ -380,6 +380,10 @@ public class CommonMessage {
 
 
 
+
+    //Constant variable for attendance
+    public static Integer inOutTimeAuto = 12;
+    public static Integer inOutTimeCheck = 12;
 
 
 
