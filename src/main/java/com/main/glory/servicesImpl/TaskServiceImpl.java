@@ -2,7 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.task.*;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.admin.Department;
 import com.main.glory.model.task.*;
 import com.main.glory.model.task.request.TaskDetail;
@@ -57,7 +57,7 @@ public class TaskServiceImpl {
         UserData userDataExist = userService.getUserById(record.getAssignUserId());
 
         if(departmentExist==null || userDataExist==null)
-            throw new Exception(Constant.Department_Not_Found);
+            throw new Exception(ConstantFile.Department_Not_Found);
 
 
         TaskMast taskMast = taskMastDao.save(record);
@@ -134,7 +134,7 @@ public class TaskServiceImpl {
                     taskDataDao.save(taskData);
                 break;
             default:
-                throw new Exception(Constant.Task_Type_Not_Found);
+                throw new Exception(ConstantFile.Task_Type_Not_Found);
 
         }
 
@@ -331,7 +331,7 @@ public class TaskServiceImpl {
     public void updateTaskByIdAndFlag(Long id, Boolean approvedFlag) throws Exception {
         TaskData taskDataExist = taskDataDao.getTaskDetailById(id);
         if(taskDataExist==null) {
-            throw new Exception(Constant.Task_Not_Found);
+            throw new Exception(ConstantFile.Task_Not_Found);
         }
 
         taskDataDao.updateTaskWithIdAndFlag(id,approvedFlag);
@@ -345,7 +345,7 @@ public class TaskServiceImpl {
     public void updateTaskData(TaskData taskData) throws Exception {
         TaskData taskDataExist = taskDataDao.getTaskDetailById(taskData.getId());
         if(taskDataExist==null)
-            throw new Exception(Constant.Task_Not_Found);
+            throw new Exception(ConstantFile.Task_Not_Found);
 
         taskDataDao.saveAndFlush(taskData);
     }
@@ -357,7 +357,7 @@ public class TaskServiceImpl {
     public boolean deleteTaskDataById(Long id) throws Exception {
         TaskData taskDataExist = taskDataDao.getTaskDetailById(id);
         if(taskDataExist==null)
-            throw new Exception(Constant.Task_Not_Found);
+            throw new Exception(ConstantFile.Task_Not_Found);
 
         taskDataDao.deleteTaskDataById(id);
         return true;

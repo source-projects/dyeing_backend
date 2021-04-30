@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.QualityName;
@@ -54,14 +54,14 @@ public class QualityController extends ControllerConfig {
 
             Optional<Party> party = partyDao.findById(quality.getPartyId());
             if(party.isEmpty()){
-                throw new Exception(Constant.Party_Not_Exist);
+                throw new Exception(ConstantFile.Party_Not_Exist);
             }
 
             int flag = qualityServiceImp.saveQuality(quality,headers.get("id"));
             if (flag == 1)
-                result= new GeneralResponse<>(null, Constant.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,quality);
+                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,quality);
             else
-                result= new GeneralResponse<>(null, Constant.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,quality);
+                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,quality);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,27 +80,27 @@ public class QualityController extends ControllerConfig {
                 case "own":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        result =  new GeneralResponse<>(x, Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result =  new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     else
-                        result = new GeneralResponse<>(x, Constant.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result = new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     break;
                 case "group":
                     x = qualityServiceImp.getAllQuality(id, getBy);
                     if(!x.isEmpty())
-                        result= new GeneralResponse<>(x, Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     else
-                        result= new GeneralResponse<>(x, Constant.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     break;
                 case "all":
                     x = qualityServiceImp.getAllQuality(null, null);
                     if(!x.isEmpty())
-                        result= new GeneralResponse<>(x, Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     else
-                        result= new GeneralResponse<>(x, Constant.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                     break;
                 default:
-                    result= new GeneralResponse<>(null, Constant.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
             }
@@ -120,18 +120,18 @@ public class QualityController extends ControllerConfig {
         try {
             Optional<Party> party = partyDao.findById(quality.getPartyId());
             if(party.isEmpty()){
-                throw new Exception(Constant.Party_Not_Exist+quality.getPartyId());
+                throw new Exception(ConstantFile.Party_Not_Exist+quality.getPartyId());
             }
             if (quality.getId() != null) {
                 boolean flag = qualityServiceImp.updateQuality(quality);
                 if (flag) {
-                    result= new GeneralResponse<>(true, Constant.Quality_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(true, ConstantFile.Quality_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result = new GeneralResponse<>(false, Constant.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(false, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             }
             else {
-                result = new GeneralResponse<>(false, Constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch(Exception e){
@@ -151,11 +151,11 @@ public class QualityController extends ControllerConfig {
             if (id != null) {
                 var qualityData = qualityServiceImp.getQualityByID(id);
                 if (qualityData == null) {
-                    result = new GeneralResponse<>(null, Constant.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 } else
-                    result = new GeneralResponse<>(qualityData, Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(qualityData, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             } else
-                result = new GeneralResponse<>(null, Constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }catch (Exception e)
@@ -175,9 +175,9 @@ public class QualityController extends ControllerConfig {
         try {
             var qualityData = qualityServiceImp.getAllQualityNameData();
             if (qualityData.isEmpty()) {
-                result = new GeneralResponse<>(null, Constant.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else
-                result = new GeneralResponse<>(qualityData.get(), Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityData.get(), ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
@@ -195,13 +195,13 @@ public class QualityController extends ControllerConfig {
 
         try {
             if (id == null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             var qualityData = qualityServiceImp.getQualityNameDataById(id);
             if (qualityData.isEmpty()) {
-                result = new GeneralResponse<>(null, Constant.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else
-                result = new GeneralResponse<>(qualityData.get(), Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityData.get(), ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -222,11 +222,11 @@ public class QualityController extends ControllerConfig {
 
             List<GetAllQualtiy> qualityData = qualityServiceImp.getAllQualityDataWithHeaderId(headers.get("id"));
             if (qualityData == null) {
-                result =  new GeneralResponse<>(null, Constant.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result =  new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else {
 
-                result = new GeneralResponse<>(qualityData, Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(qualityData, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)
@@ -260,12 +260,12 @@ public class QualityController extends ControllerConfig {
             if (quality_id != null) {
                 Boolean flag = qualityServiceImp.getQualityIsExist(quality_id, id);
                 if (flag) {
-                    result = new GeneralResponse<>(true, Constant.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(true, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 } else
-                    result = new GeneralResponse<>(false, Constant.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                    result = new GeneralResponse<>(false, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
                 logService.saveLog(result, request, debugAll);
             } else
-                result = new GeneralResponse<>(false, Constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -284,13 +284,13 @@ public class QualityController extends ControllerConfig {
             if (id != null) {
                 boolean flag = qualityServiceImp.deleteQualityById(id);
                 if (flag) {
-                    result =  new GeneralResponse<>(true, Constant.Quality_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result =  new GeneralResponse<>(true, ConstantFile.Quality_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 } else {
-                    result= new GeneralResponse<>(false, Constant.Quality_Data_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(false, ConstantFile.Quality_Data_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 }
             }
             else {
-                result = new GeneralResponse<>(false, Constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
 
             logService.saveLog(result, request, debugAll);

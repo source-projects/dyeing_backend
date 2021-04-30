@@ -2,7 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetCompleteFinishMtrDetail;
@@ -28,7 +28,7 @@ public class BatchImpl {
     @Autowired
     QualityServiceImp qualityServiceImp;
 
-    Constant constant;
+    ConstantFile constantFile;
 
     public boolean isBatchIdExists(String name, Long id){
 
@@ -161,7 +161,7 @@ public class BatchImpl {
             }
 
             if (batchData.isEmpty())
-                throw new Exception(constant.StockBatch_Not_Found + batchId);
+                throw new Exception(constantFile.StockBatch_Not_Found + batchId);
 
             return batchData;
         }catch (Exception e)
@@ -231,7 +231,7 @@ public class BatchImpl {
     public void deleteBatch(Long id) throws Exception {
         Optional<BatchData> batchData = batchDao.findById(id);
         if(!batchData.isPresent())
-            throw new Exception(constant.Batch_Data_Not_Found);
+            throw new Exception(constantFile.Batch_Data_Not_Found);
 
         batchDao.deleteById(id);
     }

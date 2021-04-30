@@ -1,7 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.request.GetCompleteFinishMtrDetail;
@@ -24,7 +24,7 @@ public class BatchFinishMtrController extends ControllerConfig {
     @Autowired
     LogServiceImpl logService;
 
-    Constant constant;
+    ConstantFile constantFile;
 
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
@@ -44,7 +44,7 @@ public class BatchFinishMtrController extends ControllerConfig {
         try {
             batchImpl.updateFinishMtrBatch(batchData);
 
-            result = new GeneralResponse<>(true, constant.FinishMtr_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,batchData);
+            result = new GeneralResponse<>(true, constantFile.FinishMtr_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,batchData);
 
             logService.saveLog(result,request,debugAll);
 
@@ -63,7 +63,7 @@ public class BatchFinishMtrController extends ControllerConfig {
         try{
             //System.out.println("deleting batch with id:"+id);
             batchImpl.deleteBatch(id);
-            result = new GeneralResponse<>(true, constant.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, constantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,9 +84,9 @@ public class BatchFinishMtrController extends ControllerConfig {
                 List<BatchData> batchData = batchImpl.getBatchById(batchId,controlId);
 
                 if(!batchData.isEmpty())
-                result = new GeneralResponse<>(batchData, constant.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 else
-                    result = new GeneralResponse<>(batchData, constant.StockBatch_Not_Found,false,System.currentTimeMillis(),HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(batchData, constantFile.StockBatch_Not_Found,false,System.currentTimeMillis(),HttpStatus.OK,request.getRequestURI());
 
                 logService.saveLog(result,request,debugAll);
             }
@@ -111,15 +111,15 @@ public class BatchFinishMtrController extends ControllerConfig {
                 GetCompleteFinishMtrDetail batchData = batchImpl.getAllDetailBy(batchId,controlId);
 
                 if(batchData==null)
-                    result = new GeneralResponse<>(null, constant.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                 else
-                result = new GeneralResponse<>(batchData, constant.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                 logService.saveLog(result,request,debugAll);
             }
             else{
-                result = new GeneralResponse<>(null, constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 logService.saveLog(result,request,true);
             }
         }catch(Exception e){

@@ -1,8 +1,7 @@
 package com.main.glory.servicesImpl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.employee.AttendanceDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.request.FilterAttendance;
@@ -27,7 +26,7 @@ public class AttendanceServiceImpl {
 
      */
 
-    Constant constant;
+    ConstantFile constantFile;
 
     @Autowired
     EmployeeServiceImpl employeeService;
@@ -37,7 +36,7 @@ public class AttendanceServiceImpl {
     public Attendance saveAttendance(Attendance record) throws Exception {
         EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
         if(employeeMast==null)
-            throw new Exception(constant.Employee_Not_Found);
+            throw new Exception(constantFile.Employee_Not_Found);
 
         record.setControlId(employeeMast.getId());
         Attendance attendance = attendanceDao.save(record);
@@ -48,7 +47,7 @@ public class AttendanceServiceImpl {
 
         EmployeeMast employeeMast  =employeeService.getEmployeeByEmpId(record.getControlId());
         if(employeeMast==null)
-            throw new Exception(constant.Employee_Not_Found);
+            throw new Exception(constantFile.Employee_Not_Found);
 
         record.setControlId(employeeMast.getId());
 
@@ -70,7 +69,7 @@ public class AttendanceServiceImpl {
         EmployeeMast employeeMast =employeeService.getEmployeeByEmpId(id);
 
         if(employeeMast==null)
-            throw new Exception(constant.Employee_Not_Found);
+            throw new Exception(constantFile.Employee_Not_Found);
 
         return attendanceDao.getAllAttendanceByEmployeeId(employeeMast.getId());
 
@@ -85,7 +84,7 @@ public class AttendanceServiceImpl {
         EmployeeWithAttendance employeeWithAttendance=null;
         EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(id);
         if(employeeMastExist==null)
-            throw new Exception(constant.Employee_Not_Exist);
+            throw new Exception(constantFile.Employee_Not_Exist);
 
         Attendance attendance = attendanceDao.getLatestAttendanceRecordByEmployeeId(employeeMastExist.getId());
 
@@ -123,7 +122,7 @@ public class AttendanceServiceImpl {
 
             EmployeeMast employeeMastExist = employeeService.getEmployeeByEmpId(filterAttendance.getControlId());
             if(employeeMastExist==null)
-                throw new Exception(constant.Employee_Not_Found);
+                throw new Exception(constantFile.Employee_Not_Found);
 
             EmployeeAttendanceResponse employeeAttendanceResponse = attendanceDao.getAttendanceBasedOnFilter(employeeMastExist.getId(),filterAttendance.getFromDate(),filterAttendance.getToDate());
             if(employeeAttendanceResponse!=null)
@@ -184,7 +183,7 @@ public class AttendanceServiceImpl {
 
         EmployeeMast employeeMast=employeeService.getEmployeeByEmpId(record.getEmpId());
         if(employeeMast==null)
-            throw new Exception(Constant.Employee_Not_Exist);
+            throw new Exception(ConstantFile.Employee_Not_Exist);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(record.getDate());
@@ -218,7 +217,7 @@ public class AttendanceServiceImpl {
                     else {
 
                         calendar.setTime(previousAttendance.getInTime());
-                        calendar.add(Calendar.HOUR, Constant.inOutTimeAuto);
+                        calendar.add(Calendar.HOUR, ConstantFile.inOutTimeAuto);
                         previousAttendance.setOutTime(calendar.getTime());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast, attendanceDao.saveAndFlush(previousAttendance));
 
@@ -312,7 +311,7 @@ public class AttendanceServiceImpl {
                     else {
 
                         calendar.setTime(previousAttendance.getInTime());
-                        calendar.add(Calendar.HOUR, Constant.inOutTimeAuto);
+                        calendar.add(Calendar.HOUR, ConstantFile.inOutTimeAuto);
                         previousAttendance.setOutTime(calendar.getTime());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast, attendanceDao.saveAndFlush(previousAttendance));
 
