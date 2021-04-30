@@ -4,7 +4,7 @@ import com.main.glory.Dao.admin.EmployeeSequenceDao;
 import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.Dao.employee.EmployeeDataDao;
 import com.main.glory.Dao.employee.EmployeeMastDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.admin.EmployeeSequence;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeData;
@@ -113,11 +113,11 @@ public class EmployeeServiceImpl {
     public void deleteEmployeeById(Long id) throws Exception {
         EmployeeMast employeeMast = employeeMastDao.getEmployeeByEmpId(id);
         if(employeeMast==null)
-            throw new Exception(Constant.Employee_Not_Found);
+            throw new Exception(ConstantFile.Employee_Not_Found);
 
         List<Attendance> attendances = attendanceDao.getAllAttendanceByEmployeeId(id);
         if(!attendances.isEmpty())
-            throw new Exception(Constant.Attendance_Record_Exist);
+            throw new Exception(ConstantFile.Attendance_Record_Exist);
 
         employeeMastDao.deleteByEmployeeId(id);
     }
@@ -127,7 +127,7 @@ public class EmployeeServiceImpl {
         //check the empId is exist
         EmployeeMast employeeMastExist = employeeMastDao.getEmployeeByEmpId(record.getControlId());
         if(employeeMastExist==null)
-            throw new Exception(Constant.Employee_Not_Found);
+            throw new Exception(ConstantFile.Employee_Not_Found);
 
         record.setControlId(employeeMastExist.getId());
         EmployeeData employeeData = employeeDataDao.saveAndFlush(record);

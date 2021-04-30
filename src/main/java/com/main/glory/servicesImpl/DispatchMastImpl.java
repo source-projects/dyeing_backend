@@ -6,7 +6,7 @@ import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
@@ -36,7 +36,7 @@ import java.util.*;
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
 
-    Constant constant;
+    ConstantFile constantFile;
 
     @Autowired
     ProductionPlanImpl productionPlanService;
@@ -280,7 +280,7 @@ public class DispatchMastImpl {
         //check the invoice sequece exist or not
         InvoiceSequence invoiceSequenceExist =invoiceSequenceDao.getSequence();
         if(invoiceSequenceExist==null)
-            throw new Exception(constant.Invoice_Sequence_Not_Found );
+            throw new Exception(constantFile.Invoice_Sequence_Not_Found );
 
 
         //invoice process
@@ -322,7 +322,7 @@ public class DispatchMastImpl {
             List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
 
             if (batchDataList.isEmpty())
-                throw new Exception(constant.Batch_Data_Not_Found);
+                throw new Exception(constantFile.Batch_Data_Not_Found);
         }
 
 
@@ -544,7 +544,7 @@ public class DispatchMastImpl {
         Party party=partyDao.findByPartyId(stockMast.getPartyId());
 
         if(party==null)
-            throw new Exception(Constant.Party_Not_Exist);
+            throw new Exception(ConstantFile.Party_Not_Exist);
 
 
 

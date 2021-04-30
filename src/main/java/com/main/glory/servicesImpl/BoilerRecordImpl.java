@@ -1,7 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.machine.BoilerMachineRecordDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerMachineRecord;
 import com.main.glory.model.machine.BoilerMachineRecord;
@@ -31,7 +31,7 @@ public class BoilerRecordImpl {
     @Autowired
     BoilerMachineRecordDao boilerMachineRecordDao;
 
-    Constant constant;
+    ConstantFile constantFile;
 
     public void saveMachine(AddBoilerInfo boilerMachineRecordList) throws Exception {
 
@@ -63,7 +63,7 @@ public class BoilerRecordImpl {
 
         List<BoilerMachineRecord> boilerMachineRecords = boilerMachineRecordDao.getAllBoilerRecord();
         if(boilerMachineRecords.isEmpty())
-            throw new Exception(constant.Machine_Data_Found);
+            throw new Exception(constantFile.Machine_Data_Found);
 
         return boilerMachineRecords;
     }

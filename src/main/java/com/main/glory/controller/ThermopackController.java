@@ -1,7 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddThermopackInfo;
 import com.main.glory.model.machine.Thermopack;
@@ -41,14 +41,14 @@ public class ThermopackController extends ControllerConfig {
         if(thermopackRecord==null)
         {
             //result =  new GeneralResponse<Boolean>(false, "machine info is null", false, System.currentTimeMillis(), HttpStatus.OK);
-            throw new Exception(Constant.Null_Record_Passed);
+            throw new Exception(ConstantFile.Null_Record_Passed);
         }
 
         boolean flag;
         try {
 
             thermopackService.saveThermopackRecord(thermopackRecord);
-            result =new GeneralResponse<>(null, Constant.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -71,10 +71,10 @@ public class ThermopackController extends ControllerConfig {
             List<Thermopack> machineMasts = thermopackService.getAllMachineRecord();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, Constant.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result = new GeneralResponse<>(machineMasts, Constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }
@@ -97,10 +97,10 @@ public class ThermopackController extends ControllerConfig {
             List<ThermopackFilterRecord> machineRecord = thermopackService.getDataBasedOnFilter(record);
             if(machineRecord.isEmpty())
             {
-                result = new GeneralResponse<>(null, Constant.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else {
-                result = new GeneralResponse<>(machineRecord, Constant.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(machineRecord, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             logService.saveLog(result,request,debugAll);
         }
@@ -125,10 +125,10 @@ public class ThermopackController extends ControllerConfig {
             List<Thermopack> machineRecord = thermopackService.getRecordBasedOnShift(record);
             if(machineRecord.isEmpty())
             {
-                result = new GeneralResponse<>(null, Constant.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-            result = new GeneralResponse<>(machineRecord, Constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(machineRecord, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         }

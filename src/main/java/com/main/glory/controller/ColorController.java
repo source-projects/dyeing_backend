@@ -2,7 +2,7 @@ package com.main.glory.controller;
 
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
@@ -29,7 +29,7 @@ import java.util.Optional;
 public class ColorController extends ControllerConfig {
 
 
-	Constant constant;
+	ConstantFile constantFile;
 
 	@Autowired
 	LogServiceImpl logService;
@@ -52,10 +52,10 @@ public class ColorController extends ControllerConfig {
 		try {
 			Optional<Supplier> supplier = supplierDao.findById(colorMast.getSupplierId());
 			if(supplier.isEmpty())
-				result= new GeneralResponse<>(null, constant.Supplier_Not_Found+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				result= new GeneralResponse<>(null, constantFile.Supplier_Not_Found+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 			else {
 				colorService.addColor(colorMast,headers.get("id"));
-				result = new GeneralResponse<>(true, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				result = new GeneralResponse<>(true, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 
 			}
 			logService.saveLog(result,request,debugAll);
@@ -81,9 +81,9 @@ public class ColorController extends ControllerConfig {
 					//System.out.println(obj);
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
-						result = new GeneralResponse<>(obj, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {
-						result = new GeneralResponse<>(null, constant.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 
 
@@ -91,22 +91,22 @@ public class ColorController extends ControllerConfig {
 				case "group":
 					obj = colorService.getAll(getBy,id);
 					if(!obj.isEmpty()){
-						result = new GeneralResponse<>(obj, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {
-						result = new GeneralResponse<>(null, constant.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 					break;
 				case "all":
 					obj = colorService.getAll(null,null);
 					if(!obj.isEmpty()){
-						result = new GeneralResponse<>(obj, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {
-						result = new GeneralResponse<>(null, constant.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+						result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					}
 
 					break;
 				default:
-					result = new GeneralResponse<>(null, constant.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					result = new GeneralResponse<>(null, constantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
 			}
@@ -126,7 +126,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try {
 			colorService.updateColor(colorMast);
-			result = new GeneralResponse<>(true, constant.Color_Updated, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+			result = new GeneralResponse<>(true, constantFile.Color_Updated, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,7 +143,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try{
 			colorService.deleteColorById(id);
-			result = new GeneralResponse<>(true, constant.Color_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(true, constantFile.Color_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -161,12 +161,12 @@ public class ColorController extends ControllerConfig {
 			if (id != null) {
 				var colorData = colorService.getColorById(id);
 				if (colorData != null) {
-					result = new GeneralResponse<>(colorData.get(), constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+					result = new GeneralResponse<>(colorData.get(), constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 				} else
-					result = new GeneralResponse<>(null, constant.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+					result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 				logService.saveLog(result, request, debugAll);
 			} else {
-				result = new GeneralResponse<>(null, constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+				result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
 				logService.saveLog(result, request, true);
 			}
 		}catch (Exception e)
@@ -183,7 +183,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<ColorBox>,Object> result;
 		try {
 			List<ColorBox> colorBoxes = colorService.getAllBox(issued);
-			result = new GeneralResponse<>(colorBoxes, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(colorBoxes, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -199,7 +199,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<GetAllBox>,Object> result;
 		try {
 			List<GetAllBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId,issued);
-			result = new GeneralResponse<>(colorBoxes, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(colorBoxes, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -216,9 +216,9 @@ public class ColorController extends ControllerConfig {
 		try {
 			List<SupplierItemWithLeftColorQty> records = colorService.getSupplierItemWithAvailableStock();
 			if(records.isEmpty())
-				result = new GeneralResponse<>(null, constant.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			else
-			result = new GeneralResponse<>(records, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			result = new GeneralResponse<>(records, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -234,7 +234,7 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<Boolean,Object> result;
 		try {
 			colorService.issueBox(issueBoxRequest);
-			result = new GeneralResponse<>(true, constant.Color_Issue, true, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
+			result = new GeneralResponse<>(true, constantFile.Color_Issue, true, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,9 +251,9 @@ public class ColorController extends ControllerConfig {
 		try {
 			List<GetAllBox> list = colorService.getAllColorBoxes();
 			if(!list.isEmpty())
-			response= new GeneralResponse<>(list, constant.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			response= new GeneralResponse<>(list, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 			else
-				response= new GeneralResponse<>(list, constant.Color_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+				response= new GeneralResponse<>(list, constantFile.Color_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 			logService.saveLog(response,request,debugAll);
 		} catch (Exception e) {

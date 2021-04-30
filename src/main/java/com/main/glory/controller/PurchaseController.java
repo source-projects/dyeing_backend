@@ -2,7 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.purchase.Purchase;
 import com.main.glory.model.purchase.response.PurchaseResponse;
@@ -45,10 +45,10 @@ public class PurchaseController extends ControllerConfig {
         try{
 
             if(record==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             purchaseService.addPurchase(record);
-            result= new GeneralResponse<>(true, Constant.Purchase_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(true, ConstantFile.Purchase_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -65,10 +65,10 @@ public class PurchaseController extends ControllerConfig {
         try{
 
             if(record==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             purchaseService.updatePurchase(record,headers.get("id"));
-            result= new GeneralResponse<>(true, Constant.Purchase_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result= new GeneralResponse<>(true, ConstantFile.Purchase_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -87,10 +87,10 @@ public class PurchaseController extends ControllerConfig {
             List<PurchaseResponse> list = purchaseService.getAllPurchaseRecord();
             if(list.isEmpty())
             {
-                result= new GeneralResponse<>(list, Constant.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result= new GeneralResponse<>(list, Constant.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(list, ConstantFile.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class PurchaseController extends ControllerConfig {
         try{
 
             purchaseService.deleteRecordById(id);
-            result= new GeneralResponse<>(true, Constant.Purchase_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, ConstantFile.Purchase_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -123,16 +123,16 @@ public class PurchaseController extends ControllerConfig {
         try{
 
             if(id==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             PurchaseResponse list = purchaseService.getPurchaseRecordById(id);
             if(list==null)
             {
-                result= new GeneralResponse<>(list, Constant.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             }
             else
-                result= new GeneralResponse<>(list, Constant.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -150,10 +150,10 @@ public class PurchaseController extends ControllerConfig {
         try{
 
             if(id==null||flag==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             purchaseService.updatePurchaseRecordWithAdmin(id,flag,headers.get("id"));
-            result= new GeneralResponse<>(true, Constant.Purchase_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, ConstantFile.Purchase_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -173,10 +173,10 @@ public class PurchaseController extends ControllerConfig {
             List<PurchaseResponse> list = purchaseService.getAllPurchaseRecordBasedOnFlag(flag,headers.get("id"));
             if (list.isEmpty())
             {
-                result = new GeneralResponse<>(list, Constant.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.Purchase_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else {
-                result = new GeneralResponse<>(list, Constant.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.Purchase_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {

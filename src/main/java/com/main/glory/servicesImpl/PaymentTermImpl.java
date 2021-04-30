@@ -6,7 +6,7 @@ import com.main.glory.Dao.paymentTerm.AdvancePaymentDao;
 import com.main.glory.Dao.paymentTerm.PaymentDataDao;
 import com.main.glory.Dao.paymentTerm.PaymentMastDao;
 import com.main.glory.Dao.paymentTerm.PaymentTypeDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
@@ -179,7 +179,7 @@ public class PaymentTermImpl {
 
         PaymentType paymentTypeExist=paymentTypeDao.getPaymentTypeByName(type);
         if(paymentTypeExist!=null)
-            throw new Exception(Constant.ProductionType_Exist);
+            throw new Exception(ConstantFile.ProductionType_Exist);
         PaymentType paymentType=new PaymentType(type);
         paymentTypeDao.save(paymentType);
         return true;
@@ -196,7 +196,7 @@ public class PaymentTermImpl {
     public List<PaymentMast> getAllPaymentMast(Long partyId) throws Exception {
         List<PaymentMast> list = paymentMastDao.findByPartyId(partyId);
         if(list.isEmpty())
-            throw new Exception(Constant.Payment_Not_Found);
+            throw new Exception(ConstantFile.Payment_Not_Found);
         return list;
     }
 

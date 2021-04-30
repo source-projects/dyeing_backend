@@ -1,7 +1,7 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.machine.*;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.machine.*;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
@@ -229,7 +229,7 @@ public class MachineServiceImpl {
 
         MachineCategory machineCategoryExist = machineCategoryDao.getMachineCategoryExist(machineCategory.getName());
         if(machineCategoryExist!=null)
-            throw new Exception(Constant.Machine_Category_Exist);
+            throw new Exception(ConstantFile.Machine_Category_Exist);
         machineCategoryDao.save(machineCategory);
     }
 

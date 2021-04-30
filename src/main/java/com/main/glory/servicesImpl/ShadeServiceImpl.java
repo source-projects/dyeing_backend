@@ -5,7 +5,7 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -74,7 +74,7 @@ public class ShadeServiceImpl {
 		Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
 		if(!quality.isPresent())
 		{
-			throw new Exception(Constant.Quality_Data_Not_Found +shadeMast.getQualityId());
+			throw new Exception(ConstantFile.Quality_Data_Not_Found +shadeMast.getQualityId());
 		}
 
 		//check the dyeing process for the shade is available or not
@@ -117,7 +117,7 @@ public class ShadeServiceImpl {
 	public List<ShadeMast> getAllShadeMast() throws Exception{
 		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeMast();
 		if(shadeMastList.isEmpty())
-			throw new Exception(Constant.Shade_Not_Found);
+			throw new Exception(ConstantFile.Shade_Not_Found);
 		else{
 			return shadeMastList;
 		}
@@ -169,12 +169,12 @@ public class ShadeServiceImpl {
 		Optional<ShadeMast> shadeMast = shadeMastDao.findById(id);
 		// check if this is present in the database
 		if(shadeMast.isEmpty()){
-			throw new Exception(Constant.Shade_Not_Exist+id);
+			throw new Exception(ConstantFile.Shade_Not_Exist+id);
 		}
 		//check the production is avialble or not
 		List<ProductionPlan> productionPlans = productionPlanDao.getAllProductionByShadeId(id);
 		if(!productionPlans.isEmpty())
-			throw new Exception(Constant.Production_Record_Exist);
+			throw new Exception(ConstantFile.Production_Record_Exist);
 		shadeMastDao.deleteById(id);
 
 		return true;
@@ -445,13 +445,13 @@ public class ShadeServiceImpl {
 
 		Optional<Quality> quality=qualityDao.findById(qualityId);
 		if(quality.isEmpty())
-			throw new Exception(Constant.Quality_Data_Not_Found);
+			throw new Exception(ConstantFile.Quality_Data_Not_Found);
 
 		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
 
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities = shadeMastDao.findByQualityEntryIdAndPartyId(qualityId,partyId);
 		if(shadeByPartyAndQualities.isEmpty())
-			throw new Exception(Constant.Shade_Not_Found);
+			throw new Exception(ConstantFile.Shade_Not_Found);
 
 		return shadeByPartyAndQualities;
 
@@ -570,7 +570,7 @@ public class ShadeServiceImpl {
 
 		Party partyExist =partyDao.findByPartyId(partyId);
 		if (partyExist==null)
-			throw new Exception(Constant.Party_Not_Exist);
+			throw new Exception(ConstantFile.Party_Not_Exist);
 		List<GetShadeByPartyAndQuality> shadeByPartyAndQualities=null;
 		List<GetShadeByPartyAndQuality> list=new ArrayList<>();
 		if(qualityId==null)

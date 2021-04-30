@@ -1,7 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.machine.AddMachineInfo.AddBoilerInfo;
 import com.main.glory.model.machine.BoilerMachineRecord;
@@ -36,7 +36,7 @@ public class BoilerController extends ControllerConfig {
     @Autowired
     HttpServletRequest request;
 
-    Constant constant;
+    ConstantFile constantFile;
 
     @PostMapping(value="/machine/boilerRecord")
     public ResponseEntity<GeneralResponse<Boolean,Object>> saveBoilerRecord(@RequestBody AddBoilerInfo boilerMachineRecord) throws Exception {
@@ -44,14 +44,14 @@ public class BoilerController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(boilerMachineRecord==null)
         {
-            result = new GeneralResponse<>(false, constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
         }
 
         boolean flag;
         try {
 
             boilerRecordService.saveMachine(boilerMachineRecord);
-            result = new GeneralResponse<>(null, constant.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,boilerMachineRecord);
+            result = new GeneralResponse<>(null, constantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,boilerMachineRecord);
             logService.saveLog(result,request,debugAll);
 
         }
@@ -70,7 +70,7 @@ public class BoilerController extends ControllerConfig {
         GeneralResponse<List<BoilerMachineRecord>,Object> result;
         if(filter==null)
         {
-            result = new GeneralResponse<>(null, constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,true);
         }
 
@@ -79,9 +79,9 @@ public class BoilerController extends ControllerConfig {
 
             List<BoilerMachineRecord> list = boilerRecordService.getBoilerRecordBasedOnFilter(filter);
             if(list!=null)
-            result = new GeneralResponse<>(list, constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            result = new GeneralResponse<>(list, constantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, constant.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null, constantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
@@ -103,10 +103,10 @@ public class BoilerController extends ControllerConfig {
             List<BoilerMachineRecord> machineMasts = boilerRecordService.getAllMachineRecord();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, constant.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-            result = new GeneralResponse<>(machineMasts, constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, constantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         }
@@ -128,10 +128,10 @@ public class BoilerController extends ControllerConfig {
             List<BoilerFilter> machineRecord = boilerRecordService.getDataBasedOnFilter(record);
             if(machineRecord.isEmpty())
             {
-                result = new GeneralResponse<>(null, constant.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(null, constantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-            result = new GeneralResponse<>(machineRecord, constant.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(machineRecord, constantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
 
@@ -157,10 +157,10 @@ public class BoilerController extends ControllerConfig {
             flag = boilerRecordService.updateRecord(record);
             if(flag==true)
             {
-                result = new GeneralResponse<>(true, constant.Machine_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(true, constantFile.Machine_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             }
             else
-            result = new GeneralResponse<>(false, constant.Machine_Data_Not_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(false, constantFile.Machine_Data_Not_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }

@@ -3,7 +3,7 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
@@ -180,19 +180,19 @@ public class SupplierServiceImpl {
                     //if coming list not containe the record of existing data then check in
                     List<DyeingChemicalData> chemicalDataList = dyeingProcessService.getDyeingProcessChemicalDataByItemId(e);
                     if(!chemicalDataList.isEmpty())
-                        throw new Exception(Constant.DyeingProcess_Data_Exist);
+                        throw new Exception(ConstantFile.DyeingProcess_Data_Exist);
 
                     List<ShadeData> shadeData = shadeService.getShadDataByItemId(e);
                     if(!shadeData.isEmpty())
-                        throw new Exception(Constant.Shade_Exist);
+                        throw new Exception(ConstantFile.Shade_Exist);
 
                     List<DyeingSlipItemData> dyeingSlipDataList = dyeingSlipService.getDyeingItemDataByItemId(e);
                     if(!dyeingSlipDataList.isEmpty())
-                        throw new Exception(Constant.Dyeing_Slip_Data_Exist);
+                        throw new Exception(ConstantFile.Dyeing_Slip_Data_Exist);
 
                     List<ColorData> colorData =colorService.colorDataDao.getAllColorDataByItemId(e);
                     if(!colorData.isEmpty())
-                        throw new Exception(Constant.Color_Data_Exist);
+                        throw new Exception(ConstantFile.Color_Data_Exist);
 
                     //change the hash map values for delete the item later because the item is not coming from
                     toDeleteItem.replace(e,true);
@@ -391,7 +391,7 @@ public class SupplierServiceImpl {
 
     public Boolean supplierRateExist(String name, Long id) throws Exception {
         if(name==null || id==null)
-            throw new Exception(Constant.Null_Record_Passed);
+            throw new Exception(ConstantFile.Null_Record_Passed);
 
         SupplierRate rate =  supplierRateDao.getSupplierRateByNameAndExceptId(name,id);
         if(rate!=null)

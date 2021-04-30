@@ -2,7 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
@@ -38,17 +38,17 @@ public class DyeingSlipController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
-    Constant constant;
+    ConstantFile constantFile;
 
     @PutMapping("/dyeingSlip")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateDyeingSlip(@RequestBody DyeingSlipMast data){
         GeneralResponse<Boolean,Object> result;
         try {
             if(data == null){
-                result = new GeneralResponse<>(false, constant.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
             }else {
                 dyeingSlipService.updateDyeingSlip(data);
-                result = new GeneralResponse<>(true, constant.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(true, constantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,data);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -64,14 +64,14 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<SlipFormatData,Object> result;
         try {
             if(batchId == null || productionId == null){
-                throw new Exception(constant.Null_Record_Passed);
+                throw new Exception(constantFile.Null_Record_Passed);
             }else {
 
                 SlipFormatData data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
                 if(data!=null)
-                result = new GeneralResponse<>(data, constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 else
-                    result = new GeneralResponse<>(null, constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -89,9 +89,9 @@ public class DyeingSlipController extends ControllerConfig {
 
                 List<DyeingSlipMast> data = dyeingSlipService.getAllDyeingSlip();
                 if(data!=null)
-                    result = new GeneralResponse<>(data, constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                 else
-                    result = new GeneralResponse<>(null, constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -109,9 +109,9 @@ public class DyeingSlipController extends ControllerConfig {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllAdditionalDyeingSlip();
             if(!data.isEmpty())
-                result = new GeneralResponse<>(data, constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(null, constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -128,10 +128,10 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-            result = new GeneralResponse<>(false, constant.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(false, constantFile.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
 
             dyeingSlipService.addAdditionalSlipData(addAdditionDyeingSlipModel);
-            result = new GeneralResponse<>(true, constant.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, constantFile.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
 
             logService.saveLog(result,request,debugAll);
 
@@ -150,11 +150,11 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-                result = new GeneralResponse<>(false, Constant.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
+                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
 
            dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
 
-           result = new GeneralResponse<>(true, Constant.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+           result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
 
             logService.saveLog(result,request,debugAll);
 
@@ -172,13 +172,13 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<GetAllAdditionalDyeingSlip,Object> result;
         try {
             if(id ==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getAdditionalDyeingSlipById(id);
             if(data!=null)
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -198,9 +198,9 @@ public class DyeingSlipController extends ControllerConfig {
 
             BatchResponseWithSlip data = dyeingSlipService.getAdditionalDyeingSlipForPrintById(id);
             if(data!=null)
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -215,13 +215,13 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if(id ==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             Boolean data = dyeingSlipService.deleteAdditionalDyeingSlipById(id);
             if(data)
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -240,9 +240,9 @@ public class DyeingSlipController extends ControllerConfig {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllDirectDyeignSlip();
             if(!data.isEmpty())
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(null, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
@@ -259,13 +259,13 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<GetAllAdditionalDyeingSlip,Object> result;
         try {
             if(id ==null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getDirectDyeingSlipById(id);
             if(data!=null)
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -283,12 +283,12 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if (addAdditionDyeingSlipModel == null)
-                throw new Exception(Constant.Null_Record_Passed);
+                throw new Exception(ConstantFile.Null_Record_Passed);
 
 
             dyeingSlipService.updateDirectDyeingSlip(addAdditionDyeingSlipModel);
 
-            result = new GeneralResponse<>(true, Constant.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
 
             logService.saveLog(result,request,debugAll);
 
@@ -336,9 +336,9 @@ public class DyeingSlipController extends ControllerConfig {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllReDyeignSlip();
             if(!data.isEmpty())
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(null, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
 
@@ -358,13 +358,13 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<GetAllAdditionalDyeingSlip,Object> result;
         try {
             if(id ==null)
-                throw new Exception(Constant.Null_Record_Passed);//result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
+                throw new Exception(ConstantFile.Null_Record_Passed);//result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getReDyeingSlipById(id);
             if(data!=null)
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             else
-                result = new GeneralResponse<>(data, Constant.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
             logService.saveLog(result,request,debugAll);
@@ -383,11 +383,11 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             if (addAdditionDyeingSlipModel == null)
-                throw new Exception(Constant.Null_Record_Passed);//result = new GeneralResponse<>(false, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(ConstantFile.Null_Record_Passed);//result = new GeneralResponse<>(false, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
 
             dyeingSlipService.updateReDyeingSlip(addAdditionDyeingSlipModel);
 
-            result = new GeneralResponse<>(true, Constant.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
             logService.saveLog(result,request,debugAll);
 
 
@@ -407,14 +407,14 @@ public class DyeingSlipController extends ControllerConfig {
         GeneralResponse<List<ItemListForDirectDyeing>,Object> result;
         try {
             if (record == null)
-                throw new Exception(Constant.Null_Record_Passed);//result = new GeneralResponse<>(null, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(ConstantFile.Null_Record_Passed);//result = new GeneralResponse<>(null, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
 
             List<ItemListForDirectDyeing> list  = dyeingSlipService.getItemListByShadeAndBatch(record);
 
             if(!list.isEmpty())
-            result = new GeneralResponse<>(list, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(list, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
             else
-            result = new GeneralResponse<>(list, Constant.SupplierRate_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(list, ConstantFile.SupplierRate_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
 

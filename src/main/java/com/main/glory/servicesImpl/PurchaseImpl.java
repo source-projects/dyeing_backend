@@ -5,7 +5,7 @@ import com.main.glory.Dao.admin.AuthorizeDao;
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.purchase.MaterialPhotosDao;
 import com.main.glory.Dao.purchase.PurchaseDao;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.admin.Authorize;
 import com.main.glory.model.admin.Department;
 import com.main.glory.model.purchase.MaterialPhotos;
@@ -56,10 +56,10 @@ public class PurchaseImpl {
         Authorize receiverByExist = authorizeDao.getAuthorizeById(record.getReceiverById());
         Authorize approvedByExist = adminServcice.getAuthorizeById(record.getApprovedById());
         if (receiverByExist==null || departmentExist==null )
-            throw new Exception(Constant.ReceiverBy_Not_Found+" Or "+ Constant.Department_Not_Found);
+            throw new Exception(ConstantFile.ReceiverBy_Not_Found+" Or "+ ConstantFile.Department_Not_Found);
 
         if (approvedByExist==null)
-            throw new Exception(Constant.ApprovedBy_Not_Found);
+            throw new Exception(ConstantFile.ApprovedBy_Not_Found);
 
         purchaseDao.save(record);
 
@@ -73,21 +73,21 @@ public class PurchaseImpl {
         Authorize receiverByExist = authorizeDao.getAuthorizeById(record.getReceiverById());
         Authorize approvedByExist = adminServcice.getAuthorizeById(record.getApprovedById());
         if (receiverByExist==null || departmentExist==null )
-            throw new Exception(Constant.ReceiverBy_Not_Found+" Or "+ Constant.Department_Not_Found);
+            throw new Exception(ConstantFile.ReceiverBy_Not_Found+" Or "+ ConstantFile.Department_Not_Found);
 
         if (approvedByExist==null)
-            throw new Exception(Constant.ApprovedBy_Not_Found);
+            throw new Exception(ConstantFile.ApprovedBy_Not_Found);
 
         //check the record updated by admin or user
         UserData userDataExist = userService.getUserById(Long.parseLong(id));
         if(userDataExist==null)
-            throw new Exception(Constant.User_Not_Exist);
+            throw new Exception(ConstantFile.User_Not_Exist);
 
         Purchase purchaseRecordExist = purchaseDao.getPurchaseById(record.getId());
         if(record.getChecked()!=purchaseRecordExist.getChecked())
         {
             if(userDataExist.getUserHeadId()!=0)
-            throw new Exception(Constant.Purchase_Updated_By_Only_Admin);
+            throw new Exception(ConstantFile.Purchase_Updated_By_Only_Admin);
             else
             {
                 purchaseDao.saveAndFlush(record);
@@ -150,10 +150,10 @@ public class PurchaseImpl {
     public void deleteRecordById(Long id) throws Exception {
         Purchase purchaseExit = purchaseDao.getPurchaseById(id);
         if (purchaseExit == null)
-            throw new Exception(Constant.Purchase_Not_Found);
+            throw new Exception(ConstantFile.Purchase_Not_Found);
 
         if (purchaseExit.getChecked() == true)
-            throw new Exception(Constant.Purchase_Deleted_If_Not_Checked);
+            throw new Exception(ConstantFile.Purchase_Deleted_If_Not_Checked);
 
         List<MaterialPhotos> materialPhotosList = purchaseExit.getMaterialPhotosList();
         purchaseDao.deleteByPurchaseId(id);

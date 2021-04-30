@@ -1,7 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.Constant;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
@@ -46,7 +46,7 @@ public class SupplierController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try{
             Boolean isPresent = supplierService.isUniqueName(id, name);
-            result =  new GeneralResponse<>(isPresent, Constant.Supplier_Found+isPresent, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(isPresent, ConstantFile.Supplier_Found+isPresent, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             logService.saveLog(result,request,debugAll);
         }catch (Exception e){
             e.printStackTrace();
@@ -62,9 +62,9 @@ public class SupplierController extends ControllerConfig {
         try{
             Boolean flag = supplierService.addSupplier(supplier,headers.get("id"));
             if(flag) {
-                result= new GeneralResponse<>(true, Constant.Supplier_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, ConstantFile.Supplier_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(false, Constant.Supplier_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(false, ConstantFile.Supplier_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -82,9 +82,9 @@ public class SupplierController extends ControllerConfig {
         try{
             Boolean flag = supplierService.addSupplierRates(addSupplierRateRequest);
             if(flag) {
-                result= new GeneralResponse<>(true, Constant.Supplier_Added, true, System.currentTimeMillis(), HttpStatus.OK,addSupplierRateRequest);
+                result= new GeneralResponse<>(true, ConstantFile.Supplier_Added, true, System.currentTimeMillis(), HttpStatus.OK,addSupplierRateRequest);
             } else {
-                result= new GeneralResponse<>(false, Constant.Supplier_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,addSupplierRateRequest);
+                result= new GeneralResponse<>(false, ConstantFile.Supplier_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,addSupplierRateRequest);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -102,9 +102,9 @@ public class SupplierController extends ControllerConfig {
         try{
             Boolean flag = supplierService.supplierRateExist(name,id);
             if(flag) {
-                result= new GeneralResponse<>(true, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(false, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(false, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -122,14 +122,14 @@ public class SupplierController extends ControllerConfig {
         GeneralResponse<Object,Object> result;
         try{
             if(id == null){
-                throw new Exception(Constant.Null_Record_Passed);//result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(ConstantFile.Null_Record_Passed);//result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
             Object obj =  supplierService.getSupplier(id);
             if(obj != null){
-                result= new GeneralResponse<>(obj, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(null, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -146,14 +146,14 @@ public class SupplierController extends ControllerConfig {
 
         try{
             if(id == null){
-                throw new Exception(Constant.Null_Record_Passed);//result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
+                throw new Exception(ConstantFile.Null_Record_Passed);//result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
             List<RateAndItem> item =  supplierService.getSupplierItemAndRate(id);
             if(item != null){
-                result= new GeneralResponse<>(item, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(item, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(null, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -170,9 +170,9 @@ public class SupplierController extends ControllerConfig {
         try{
             Object obj = supplierService.getAllRates();
             if(obj != null){
-                result= new GeneralResponse<>(obj, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(null, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -188,9 +188,9 @@ public class SupplierController extends ControllerConfig {
         try{
             List<GetItemWithSupplier> obj = supplierService.getAllItemWithSupplierName();
             if(obj != null){
-                result= new GeneralResponse<>(obj, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(obj, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -210,32 +210,32 @@ public class SupplierController extends ControllerConfig {
                 case "own":
                     List obj = supplierService.getAllSupplier(getBy, id);
                     if(!obj.isEmpty()){
-                        result= new GeneralResponse<>(obj, Constant.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(obj, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     } else
-                        result= new GeneralResponse<>(null, Constant.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
                     break;
                 case "group":
                     List obj1 = supplierService.getAllSupplier(getBy, id);
 
                     if(!obj1.isEmpty()){
-                        result= new GeneralResponse<>(obj1, Constant.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(obj1, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     } else {
-                        result= new GeneralResponse<>(null, Constant.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     }
                     break;
 
                 case "all":
                     List obj2 = supplierService.getAllSupplier(null, null);
                     if(!obj2.isEmpty()){
-                        result= new GeneralResponse<>(obj2, Constant.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(obj2, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     } else {
-                        result= new GeneralResponse<>(null, Constant.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
                     }
 
                     break;
                 default:
-                    result= new GeneralResponse<>(null, Constant.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
 
             }
@@ -257,10 +257,10 @@ public class SupplierController extends ControllerConfig {
             List<GetAllSupplierWithName> object =supplierService.getAllSupplierName();
 
             if(!object.isEmpty()) {
-                result = new GeneralResponse<>(object, Constant.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(object, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             }else
             {
-                result = new GeneralResponse<>(object, Constant.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(object, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -278,9 +278,9 @@ public class SupplierController extends ControllerConfig {
         try{
             Boolean flag = supplierService.updateSupplier(updateSupplierRequest);
             if (flag) {
-                result= new GeneralResponse<>(null, Constant.Supplier_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.Supplier_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
             } else {
-                result= new GeneralResponse<>(null, Constant.Supplier_Invalid_Data, false, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.Supplier_Invalid_Data, false, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -298,7 +298,7 @@ public class SupplierController extends ControllerConfig {
         try{
             supplierService.updateSupplierRatesWithValidation(updateSupplierRequest);
 
-                result= new GeneralResponse<>(null, Constant.SupplierRate_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -320,9 +320,9 @@ public class SupplierController extends ControllerConfig {
         try{
             List<SupplierRate> obj = supplierService.getAllColorItemBySupplierId(supplierId);
             if(obj != null){
-                result= new GeneralResponse<>(obj, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(null, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -341,9 +341,9 @@ public class SupplierController extends ControllerConfig {
         try{
             List<SupplierRate> obj = supplierService.getAllChemicalItemBySupplierId(supplierId);
             if(obj != null){
-                result= new GeneralResponse<>(obj, Constant.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             } else {
-                result= new GeneralResponse<>(null, Constant.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {

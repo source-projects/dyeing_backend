@@ -11,7 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Constant {
+public class ConstantFile {
 
     public static String Null_Record_Passed = "null record passed";
 
