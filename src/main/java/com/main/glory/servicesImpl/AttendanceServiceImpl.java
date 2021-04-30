@@ -275,6 +275,7 @@ public class AttendanceServiceImpl {
                 Attendance currentAttendance = attendanceDao.getAttendanceByDateAndIdDescendingOrder(calendar.getTime(),employeeMast.getId());
                 if(currentAttendance==null || (currentAttendance.getInTime()!=null && currentAttendance.getOutTime()!=null)) {
                     currentAttendance = new Attendance(record,employeeMast);
+                    currentAttendance.setUrl(record.getUrl());
                     employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(currentAttendance));
                 }
                 else
