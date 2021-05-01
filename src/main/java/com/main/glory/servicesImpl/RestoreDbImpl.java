@@ -29,7 +29,6 @@ import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.Dao.user.UserPermissionDao;
-import com.main.glory.schedulers.Singleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
