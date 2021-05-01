@@ -1,14 +1,12 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetStockBasedOnFilter;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithoutBatches;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
-import com.main.glory.model.dispatch.request.GetInvoiceBasedOnFilter;
-import com.main.glory.model.dispatch.request.InvoiceWithBatch;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -45,7 +43,7 @@ public class FilterController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
-    CommonMessage commonMessage;
+    ConstantFile constantFile;
 
 
 
@@ -57,9 +55,9 @@ public class FilterController extends ControllerConfig {
 
             List<GetBatchWithControlId> stockMast = stockBatchService.getAllBatchWithoutProductionPlan();
             if(!stockMast.isEmpty()){
-                result = new GeneralResponse<>(stockMast, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(stockMast, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }else{
-                result = new GeneralResponse<>(null, commonMessage.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -80,9 +78,9 @@ public class FilterController extends ControllerConfig {
 
             List<GetAllStockWithoutBatches> stockMast = stockBatchService.getStockListWithoutBatches();
             if(!stockMast.isEmpty()){
-                result = new GeneralResponse<>(stockMast, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(stockMast, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }else{
-                result = new GeneralResponse<>(null, commonMessage.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -103,9 +101,9 @@ public class FilterController extends ControllerConfig {
 
             List<StockMast> stockFiltersData = stockBatchService.getStockBasedOnFilter(filter);
             if(!stockFiltersData.isEmpty())
-                result = new GeneralResponse<>(stockFiltersData, commonMessage.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(stockFiltersData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, commonMessage.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
 
             logService.saveLog(result,request,debugAll);
 

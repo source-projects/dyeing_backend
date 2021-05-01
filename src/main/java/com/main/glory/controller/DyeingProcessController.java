@@ -2,7 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class DyeingProcessController extends ControllerConfig{
 
 
-    CommonMessage commonMessage;
+    ConstantFile constantFile;
 
     @Autowired
     LogServiceImpl logService;
@@ -42,10 +42,10 @@ public class DyeingProcessController extends ControllerConfig{
         GeneralResponse<Boolean,Object> result;
         try {
             if(data == null){
-                result = new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
             }else {
                 dyeingProcessService.addDyeingProcess(data);
-                result = new GeneralResponse<>(true, commonMessage.DyeingProcess_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,data);
+                result = new GeneralResponse<>(true, constantFile.DyeingProcess_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,data);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -62,10 +62,10 @@ public class DyeingProcessController extends ControllerConfig{
         GeneralResponse<Boolean,Object> result;
         try {
             if(data == null){
-                result = new GeneralResponse<>(false, commonMessage.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
             }else {
                 dyeingProcessService.updateDyeingProcess(data);
-                result = new GeneralResponse<>(true, commonMessage.DyeingProcess_Updated, true, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(true, constantFile.DyeingProcess_Updated, true, System.currentTimeMillis(), HttpStatus.OK,data);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
@@ -82,11 +82,11 @@ public class DyeingProcessController extends ControllerConfig{
         try{
             List<GetAllDyeingProcessList> list = dyeingProcessService.getAllDyeingProcess(headers.get("id"));
             if(!list.isEmpty()){
-                result = new GeneralResponse<>(list, commonMessage.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
             {
-                result = new GeneralResponse<>(list, commonMessage.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e){
@@ -102,11 +102,11 @@ public class DyeingProcessController extends ControllerConfig{
         GeneralResponse<DyeingProcessMast,Object> result=null;
         try{
             if(id==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constantFile.Null_Record_Passed);
 
             DyeingProcessMast data = dyeingProcessService.getDyeingProcessById(id);
             if(data!=null){
-                result = new GeneralResponse<>(data, commonMessage.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, constantFile.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e){
@@ -122,14 +122,14 @@ public class DyeingProcessController extends ControllerConfig{
         try{
 
             if(name==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constantFile.Null_Record_Passed);
 
             Boolean data = dyeingProcessService.dyeingProcessExistWithName(name,id);
             if(data){
-                result = new GeneralResponse<>(false, commonMessage.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, constantFile.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else {
-                result= new GeneralResponse<>(true, commonMessage.DyeingProcess_Name_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, constantFile.DyeingProcess_Name_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e){
@@ -147,14 +147,14 @@ public class DyeingProcessController extends ControllerConfig{
         GeneralResponse<Boolean,Object> result;
         try{
             if(id==null)
-                throw new Exception(commonMessage.Null_Record_Passed);
+                throw new Exception(constantFile.Null_Record_Passed);
 
             Boolean flag = dyeingProcessService.deleteByProcessId(id);
             if(flag){
-                result = new GeneralResponse<>(true, commonMessage.DyeingProcess_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, constantFile.DyeingProcess_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
             }
             else
-                result = new GeneralResponse<>(null, commonMessage.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 
             logService.saveLog(result,request,debugAll);
         }catch (Exception e){

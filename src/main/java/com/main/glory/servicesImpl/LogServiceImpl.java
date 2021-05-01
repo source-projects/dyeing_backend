@@ -1,23 +1,14 @@
 package com.main.glory.servicesImpl;
 
-import aj.org.objectweb.asm.TypeReference;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.main.glory.Dao.log.APILogDao;
-import com.main.glory.model.CommonMessage;
-import com.main.glory.model.DemoGeneral;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.log.APILog;
-import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service("logServiceImpl")
 public class LogServiceImpl<T,D> {

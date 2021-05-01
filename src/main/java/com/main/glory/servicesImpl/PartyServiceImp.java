@@ -11,7 +11,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.PaymentMast;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -71,7 +71,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             if (party.getGSTIN()==null || party.getGSTIN().isEmpty()) {
 
                 if (party.getPartyCode().length() > 4)
-                    throw new Exception(CommonMessage.Party_Code_Less);
+                    throw new Exception(ConstantFile.Party_Code_Less);
 
                // Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
                 Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
@@ -80,12 +80,12 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception("GST No." + party.getGSTIN() + " is already exist");*/
 
                 if (partyCodeAvailable!=null)
-                    throw new Exception(CommonMessage.Party_Code_Exist + party.getPartyCode());
+                    throw new Exception(ConstantFile.Party_Code_Exist + party.getPartyCode());
 
                 //check the partyname exist
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if(partyExistWithName!=null)
-                    throw new Exception(CommonMessage.Party_Exist);
+                    throw new Exception(ConstantFile.Party_Exist);
 
                 partyDao.save(partyData);
                 return;
@@ -93,7 +93,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             else {
 
                 if (party.getPartyCode().length() > 4)
-                    throw new Exception(CommonMessage.Party_Code_Less);
+                    throw new Exception(ConstantFile.Party_Code_Less);
 
                 Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
                 Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
@@ -102,7 +102,7 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception("GST No." + party.getGSTIN() + " is already exist");
 
                 if (partyCodeAvailable != null)
-                    throw new Exception(CommonMessage.Party_Code_Exist + party.getPartyCode());
+                    throw new Exception(ConstantFile.Party_Code_Exist + party.getPartyCode());
 
                 //check the partyname exist
 
@@ -154,7 +154,7 @@ public class PartyServiceImp implements PartyServiceInterface {
     public PartyWithUserHeadName getPartyDetailById(Long id) throws Exception {
         var partyData = partyDao.findPartyWithUserHeadById(id);
         if (partyData==null)
-            throw new Exception(CommonMessage.Party_Not_Found);
+            throw new Exception(ConstantFile.Party_Not_Found);
         else
             return partyData;
     }
@@ -198,27 +198,27 @@ public class PartyServiceImp implements PartyServiceInterface {
             //check the record in sub table that are avialble or not
             List<DispatchMast> dispatchMastList = dispatchMast.getDispatchByPartyId(id);
             if(!dispatchMastList.isEmpty())
-                throw new Exception(CommonMessage.Dispatch_Exit);
+                throw new Exception(ConstantFile.Dispatch_Exit);
 
             List<Quality> qualityList = qualityServiceImp.getqualityListByPartyId(id);
             if(!qualityList.isEmpty())
-                throw new Exception(CommonMessage.Quality_Data_Exist);
+                throw new Exception(ConstantFile.Quality_Data_Exist);
 
             List<PaymentMast> paymentMastList = paymentTermService.getAllPaymentByPartyId(id);
             if(!paymentMastList.isEmpty())
-                throw new Exception(CommonMessage.Payment_Exist);
+                throw new Exception(ConstantFile.Payment_Exist);
 
             List<ShadeMast> shadeMastList = shadeService.getShadeByPartyId(id);
             if(!shadeMastList.isEmpty())
-                throw new Exception(CommonMessage.Shade_Exist);
+                throw new Exception(ConstantFile.Shade_Exist);
 
             List<ProductionPlan> productionPlans =productionPlanService.getAllProductinByPartyId(id);
             if(!productionPlans.isEmpty())
-                throw new Exception(CommonMessage.Production_Record_Exist);
+                throw new Exception(ConstantFile.Production_Record_Exist);
 
             List<StockMast> stockMastList = stockBatchService.getAllStockByPartyId(id);
             if(!stockMastList.isEmpty())
-                throw new Exception(CommonMessage.StockBatch_Exist);
+                throw new Exception(ConstantFile.StockBatch_Exist);
 
 
             partyDao.deleteById(id);
@@ -459,7 +459,7 @@ public class PartyServiceImp implements PartyServiceInterface {
     public PartyReport getPartyReportById(Long id, Long qualityId) throws Exception {
         Party party = partyDao.findByPartyId(id);
         if(party==null)
-            throw new Exception(CommonMessage.Party_Not_Found);
+            throw new Exception(ConstantFile.Party_Not_Found);
 
 
         PartyReport partyReport =new PartyReport(party);
@@ -494,7 +494,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
             Quality qualityExist = qualityServiceImp.getQualityByEntryId(qualityId);
             if(qualityExist==null)
-                throw new Exception(CommonMessage.Quality_Data_Not_Found);
+                throw new Exception(ConstantFile.Quality_Data_Not_Found);
 
             List<BatchDetail> list = stockBatchService.getBatchDetailForReport(party.getId(),qualityId);
             /*if(list.isEmpty())

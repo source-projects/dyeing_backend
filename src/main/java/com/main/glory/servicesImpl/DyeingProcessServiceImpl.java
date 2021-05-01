@@ -4,13 +4,11 @@ import com.main.glory.Dao.dyeingProcess.DyeingChemicalDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.CommonMessage;
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
-import com.main.glory.model.dyeingSlip.DyeingSlipMast;
-import com.main.glory.model.qualityProcess.Chemical;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.Permissions;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service("dyeingProcessServiceImpl")
 public class DyeingProcessServiceImpl {
@@ -44,13 +41,13 @@ public class DyeingProcessServiceImpl {
     @Autowired
     DyeingProcessMastDao dyeingProcessMastDao;
 
-    CommonMessage commonMessage;
+    ConstantFile constantFile;
 
     public void addDyeingProcess(DyeingProcessMast data) throws Exception {
         //check the dyeing process already exist with the name or not
         DyeingProcessMast dyeingProcessMastExistWithName = dyeingProcessMastDao.getDyeingProcessByName(data.getProcessName());
         if(dyeingProcessMastExistWithName!=null)
-            throw new Exception(commonMessage.DyeingProcess_Name_Exist);
+            throw new Exception(constantFile.DyeingProcess_Name_Exist);
         dyeingProcessMastDao.save(data);
     }
 
@@ -139,7 +136,7 @@ public class DyeingProcessServiceImpl {
     public List<DyeingProcessData> getDyeingProcessDataById(Long id) throws Exception {
         List<DyeingProcessData> dyeingProcessDataList = dyeingProcessDataDao.findDyeingProcessDataByControlId(id);
         if(dyeingProcessDataList.isEmpty())
-            throw new Exception(commonMessage.DyeingProcess_Not_Found+id);
+            throw new Exception(constantFile.DyeingProcess_Not_Found+id);
         return dyeingProcessDataList;
     }
 
@@ -155,7 +152,7 @@ public class DyeingProcessServiceImpl {
 
         if(dyeingProcessMastExist==null)
         {
-            throw new Exception(commonMessage.DyeingProcess_Not_Found+data.getId());
+            throw new Exception(constantFile.DyeingProcess_Not_Found+data.getId());
         }
         List<ShadeMast> getAllShade= shadeService.getAllShadeByProcessId(dyeingProcessMastExist.getId());
         DyeingProcessMast x = dyeingProcessMastDao.save(data);
@@ -181,7 +178,7 @@ public class DyeingProcessServiceImpl {
 
             List<ShadeMast> shadeMastList = shadeService.getAllShadeMastByProcessIdForDeleteProcess(dyeingProcessMastExist.getId());
             if(!shadeMastList.isEmpty())
-            throw new Exception(commonMessage.Shade_Exist);
+            throw new Exception(constantFile.Shade_Exist);
 
             dyeingProcessMastDao.deleteByProcessId(id);
         }
