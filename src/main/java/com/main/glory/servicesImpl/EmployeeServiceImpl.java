@@ -111,7 +111,7 @@ public class EmployeeServiceImpl {
     }
 
     public void deleteEmployeeById(Long id) throws Exception {
-        EmployeeMast employeeMast = employeeMastDao.getEmployeeByEmpId(id);
+        EmployeeMast employeeMast = employeeMastDao.getEmployeeById(id);
         if(employeeMast==null)
             throw new Exception(ConstantFile.Employee_Not_Found);
 

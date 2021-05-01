@@ -1,7 +1,6 @@
 package com.main.glory.config;
 
 import com.main.glory.filters.AuthenticationFilter;
-import com.main.glory.servicesImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
