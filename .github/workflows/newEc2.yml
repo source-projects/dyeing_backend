@@ -28,7 +28,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         source: "target/*.jar"
-        target: "builds"
+        target: "dyeing_erp"
         
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.3
@@ -37,12 +37,13 @@ jobs:
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         script: |
+          sudo rm *.jar
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           #sudo systemctl restart /usr/lib/systemd/system/javaapp.service
-          java -jar /home/ubuntu/builds/target/*.jar > /home/ubuntu/builds/target/server-logs.txt 2>&1 &
+          java -jar /home/ubuntu/dyeing_erp/target/*.jar > /home/ubuntu/dyeing_erp/target/server-logs.txt 2>&1 &
           
     - name: slack the message for success
       if: success()
