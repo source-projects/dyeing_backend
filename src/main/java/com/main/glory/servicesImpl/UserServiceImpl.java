@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserServiceInterface {
         UserData userData = userDao.getUserById(Long.parseLong(id));
 
         //admin requesting
-        if(userData.getUserHeadId()==0)
+        if(userData.getUserHeadId()==0 || userData.getIsMaster()==false)
         {
 
             List<UserData> list =userDao.getAllUserHeadList();
