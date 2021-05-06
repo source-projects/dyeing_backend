@@ -243,6 +243,20 @@ public class ColorController extends ControllerConfig {
 		}
 		return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+	@PostMapping("/color/box/issueWithList")
+	public ResponseEntity<GeneralResponse<Boolean,Object>> issueBox(@RequestBody List<IssueBoxRequest> issueBoxRequest){
+		GeneralResponse<Boolean,Object> result;
+		try {
+			colorService.issueBoxList(issueBoxRequest);
+			result = new GeneralResponse<>(true, constantFile.Color_Issue, true, System.currentTimeMillis(), HttpStatus.OK,issueBoxRequest);
+			logService.saveLog(result,request,debugAll);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,issueBoxRequest);
+			logService.saveLog(result,request,true);
+		}
+		return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+	}
 
 	//get all color boxec
 	@GetMapping("/color/box/all")

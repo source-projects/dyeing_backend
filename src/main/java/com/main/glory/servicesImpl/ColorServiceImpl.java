@@ -389,4 +389,21 @@ public class ColorServiceImpl {
     public List<ColorMast> getColorByCreatedAndUserHeadId(Long id, Long id1) {
         return colorMastDao.getAllByCreatedByAndHeadId(id,id1);
     }
+
+    public void issueBoxList(List<IssueBoxRequest> issueBoxRequest) {
+        //issue all the box
+        List<ColorBox> list = new ArrayList<>();
+        issueBoxRequest.forEach(e->{
+            ColorBox colorBox = colorBoxDao.getColorBoxById(e.getBoxId());
+            if(colorBox!=null)
+            {
+                colorBox.setIssued(true);
+                colorBox.setIssuedDate(new Date(System.currentTimeMillis()));
+
+                list.add(colorBox);
+            }
+        });
+
+        colorBoxDao.saveAll(list);
+    }
 }
