@@ -28,7 +28,7 @@ jobs:
         username: gloryauto
         password: ${{ secrets.GFL_P_PASSWORD }}
         source: "target/*.jar"
-        target: "builds"
+        target: "dyeing_erp"
         
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.3
