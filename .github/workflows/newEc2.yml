@@ -28,7 +28,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         source: "target/*.jar"
-        target: "builds"
+        target: "dyeing_erp"
         
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.3
