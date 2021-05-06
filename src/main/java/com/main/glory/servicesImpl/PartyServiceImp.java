@@ -165,7 +165,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         Party party1 = partyDao.findByPartyCodeExceptId(party.getPartyCode(),party.getId());
 
         if (!partyIndex.isPresent())
-            throw new Exception("Party data not found for id:" + party.getId());
+            throw new Exception("Party dat  a not found for id:" + party.getId());
 
         if (party1!=null)
             throw new Exception("Party code should be unique");

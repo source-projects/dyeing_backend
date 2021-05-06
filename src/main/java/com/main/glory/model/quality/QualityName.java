@@ -1,6 +1,7 @@
 package com.main.glory.model.quality;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,7 +21,8 @@ public class QualityName {
     Date createdDate;
     Long updatedBy;
     Date updatedDate;
-
+    @ColumnDefault("0")
+    Double rate;
     @PrePersist
     public void create()
     {
