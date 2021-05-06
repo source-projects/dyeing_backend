@@ -37,11 +37,12 @@ jobs:
         username: gloryauto
         password: ${{ secrets.GFL_P_PASSWORD }}
         script: |
+          sudo rm *.jar
           fuser -n tcp -k 8080 
           fuser -n tcp -k 8080 
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
-          java -jar /home/gloryauto/builds/target/*.jar > /home/gloryauto/builds/target/server-logs.txt 2>&1 &
+          java -jar /home/gloryauto/dyeing_erp/target/*.jar > /home/gloryauto/dyeing_erp/target/server-logs.txt 2>&1 &
           
     - name: slack the message for success
       if: success()
