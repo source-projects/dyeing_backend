@@ -84,6 +84,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
+            qualityName.setCreatedBy(Long.parseLong(request.getParameter("id")));
             adminServcice.saveQualityName(qualityName);
             result= new GeneralResponse<>(null, constantFile.Quality_Name_Added, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             logService.saveLog(result,request,debugAll);
@@ -108,6 +109,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
+            qualityName.setUpdatedBy(Long.parseLong(request.getParameter("id")));
             adminServcice.updateQualityName(qualityName);
             result =  new GeneralResponse<>(true, constantFile.Quality_Name_Updated, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
 

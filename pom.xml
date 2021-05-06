@@ -8,15 +8,15 @@
 		<version>2.3.3.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>gloryautofab</artifactId>
+	<groupId>com.glory</groupId>
+	<artifactId>gloryErp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>gloryautofab</name>
+	<name>gloryErp</name>
 	<description>Demo project for Spring Boot</description>
-
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 
 	<dependencies>
 		<dependency>

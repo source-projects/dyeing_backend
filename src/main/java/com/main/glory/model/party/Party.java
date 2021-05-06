@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +40,10 @@ public class Party {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false)
     private Long id;
+    @ColumnDefault("0")
+    Long paymentDays;
+    @ColumnDefault("0.0")
+    Double creditLimit;
     private String partyName;
     private String partyAddress1;
     private String partyAddress2;
@@ -58,6 +63,7 @@ public class Party {
     private Boolean internalTransfer;
     private String partyType;
     private String paymentTerms;
+    @ColumnDefault("0.0")
     private Double percentageDiscount;
     private Double gstPercentage;
     private Long userHeadId;
@@ -124,6 +130,9 @@ public class Party {
         this.gstPercentage=addParty.getGstPercentage();
         this.userHeadId=addParty.getUserHeadId();
         this.partyCode=addParty.getPartyCode();
+        this.paymentDays=addParty.getPaymentDays();
+        this.creditLimit=addParty.getCreditLimit();
+
     }
 
 }
