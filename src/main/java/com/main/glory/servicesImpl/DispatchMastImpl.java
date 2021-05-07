@@ -10,6 +10,7 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
+import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
 import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
@@ -21,6 +22,7 @@ import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
@@ -35,6 +37,9 @@ import java.util.*;
 
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
+
+    @Autowired
+    PaymentTermImpl paymentTermService;
 
     ConstantFile constantFile;
 
@@ -413,9 +418,14 @@ public class DispatchMastImpl {
     }
 
 
-    public List<BatchWithTotalMTRandFinishMTR> getBatchByParty(Long partyId)throws Exception {
+    public List<BatchWithTotalMTRandFinishMTRWithPendingBill> getBatchByParty(Long partyId)throws Exception {
+        List<BatchWithTotalMTRandFinishMTRWithPendingBill> list = new ArrayList<>();
+
         List<BatchWithTotalMTRandFinishMTR> batchDataListByParty=new ArrayList<>();
         List<StockMast> stockMastList = stockBatchService.getStockListByParty(partyId);
+        Party party = partyServiceImp.getPartyById(partyId);
+        if(party==null)
+            throw new Exception(ConstantFile.Party_Not_Exist);
 
        /* if(stockMastList.size()<=0)
             return batchDataListByParty;*/
@@ -432,9 +442,22 @@ public class DispatchMastImpl {
 
         }
 
+        // check the pending bill amt
+        Double pendingBillAmt = paymentTermService.getTotalPendingAmtByPartyId(partyId);
+        batchDataListByParty.forEach(e->{
+
+            if(pendingBillAmt > party.getCreditLimit())
+            {
+                list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e,true));
+            }
+        });
+
+
+
+
       /*  if(batchDataListByParty.isEmpty())
             throw new Exception("data not found for party:"+partyId);*/
-        return  batchDataListByParty;
+        return  list;
     }
 
     public List<GetAllDispatch> getAllDisptach() throws Exception{
@@ -848,8 +871,8 @@ public class DispatchMastImpl {
             PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party.get(),qualityBillByInvoiceNumberList,batchWithGrList);
 
 
-            if(partyDataByInvoiceNumber==null)
-                throw new Exception("no data found");
+            /*if(partyDataByInvoiceNumber==null)
+                throw new Exception("no data found");*/
             return partyDataByInvoiceNumber;
         }
 
@@ -1009,8 +1032,8 @@ public class DispatchMastImpl {
             throw new Exception("no data found for party id:"+partyId);
 
         List<DispatchMast> list=dispatchMastDao.getPendingBillByPartyId(partyId);
-        if(list.isEmpty())
-            throw new Exception("no pending invoice found for party:"+partyId);
+        /*if(list.isEmpty())
+            throw new Exception("no pending invoice found for party:"+partyId);*/
 
         return list;
 

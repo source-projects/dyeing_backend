@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
+import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
 import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
@@ -96,11 +97,11 @@ public class DispatchController extends ControllerConfig {
 
     //Get batches by the party id
     @GetMapping("/dispatch/getBatchByParty/{partyId}")
-    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
-        GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTRWithPendingBill>,Object>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+        GeneralResponse<List<BatchWithTotalMTRandFinishMTRWithPendingBill>,Object> result;
         try{
             if(partyId!=null) {
-                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getBatchByParty(partyId);
+                List<BatchWithTotalMTRandFinishMTRWithPendingBill> x =dispatchMastService.getBatchByParty(partyId);
                 if(x.isEmpty())
                     result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
