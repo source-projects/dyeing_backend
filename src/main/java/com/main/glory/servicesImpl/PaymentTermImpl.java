@@ -117,8 +117,8 @@ public class PaymentTermImpl {
 
         }
 
-        if(list.isEmpty())
-            throw new Exception("no pending invoice found for party:"+partyId);
+      /*  if(list.isEmpty())
+            throw new Exception("no pending invoice found for party:"+partyId);*/
         return list;
     }
 
@@ -241,5 +241,9 @@ public class PaymentTermImpl {
         });
 
         return getAllBankList;
+    }
+
+    public Double getTotalPendingAmtByPartyId(Long partyId) {
+        return dispatchMastDao.getTotalPendingAmtByPartyId(partyId);
     }
 }
