@@ -199,7 +199,13 @@ public class ColorController extends ControllerConfig {
 		GeneralResponse<List<GetAllBox>,Object> result;
 		try {
 			List<GetAllBox> colorBoxes = colorService.getAllBoxNotIssuedBoxByItemId(itemId,issued);
-			result = new GeneralResponse<>(colorBoxes, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+			if(!colorBoxes.isEmpty()) {
+				result = new GeneralResponse<>(colorBoxes, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+			}
+			else
+			{
+				result = new GeneralResponse<>(colorBoxes, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+			}
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
