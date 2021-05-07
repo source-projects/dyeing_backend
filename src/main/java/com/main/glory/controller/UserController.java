@@ -59,11 +59,11 @@ public class UserController extends ControllerConfig {
             userObj=userService.getUserById(id);
             if(userObj!=null)
             {
-                result = new GeneralResponse<>(userObj, ConstantFile.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString().toString());
+                result = new GeneralResponse<>(userObj, ConstantFile.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             }
             else
-            result = new GeneralResponse<>(null, ConstantFile.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString().toString());
+            result = new GeneralResponse<>(null, ConstantFile.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         else {
