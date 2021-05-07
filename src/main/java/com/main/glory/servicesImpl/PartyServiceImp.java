@@ -241,7 +241,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             if (!partyAll.isEmpty()) {
                 partyAll.forEach(e ->
                 {
-                    PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName(),e.getPartyCode());
+                    PartyWithName partyWithName = new PartyWithName(e);
                     //System.out.println(partyWithName.getId());
                     partyWithNameList.add(partyWithName);
                 });
@@ -415,7 +415,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             if (!partyAll.isEmpty()) {
                 partyAll.forEach(e ->
                 {
-                    PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName(),e.getPartyCode());
+                    PartyWithName partyWithName = new PartyWithName(e);
                     //System.out.println(partyWithName.getId());
                     partyWithNameList.add(partyWithName);
                 });

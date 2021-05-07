@@ -14,5 +14,12 @@ public class PartyWithName {
     private Long id;
     private String partyName;
     String partyCode;
+    private Double percentageDiscount;
 
+    public PartyWithName(Party e) {
+        this.id=e.getId();
+        this.partyName = e.getPartyName();
+        this.partyCode=e.getPartyCode();
+        this.percentageDiscount = e.getPercentageDiscount();
+    }
 }
