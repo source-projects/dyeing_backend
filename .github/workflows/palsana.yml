@@ -37,7 +37,7 @@ jobs:
         username: gloryauto
         password: ${{ secrets.GFL_P_PASSWORD }}
         script: |
-          sudo rm /home/ubuntu/dyeing_erp/BE/target/*.jar
+          #sudo rm /home/ubuntu/dyeing_erp/BE/target/*.jar
           fuser -n tcp -k 8080 
           fuser -n tcp -k 8080 
           fuser -k -n tcp 8080
