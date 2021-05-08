@@ -9,6 +9,7 @@ import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -41,8 +42,8 @@ public interface UserDao extends JpaRepository<UserData, Long> {
     @Query("select u from UserData u where u.userHeadId=:userHeadId AND u.id=:createdBy")
     UserData findByUserHeadIdAndUserId(Long userHeadId, Long createdBy);
 
-    @Query(value = "select * from user as u where u.id=id LIMIT 1",nativeQuery = true)
-    UserData findUserById(Long id);
+    @Query(value = "select * from user as u where u.id=:id LIMIT 1",nativeQuery = true)
+    UserData findUserById(@Param("id") Long id);
 
     @Query("select u from UserData u where u.createdBy=:id OR u.userHeadId=:userHeadId")
     List<UserData> findByUserAndHeadId(Long userHeadId, Long id);
