@@ -54,6 +54,7 @@ public class EmployeeMast {
         this.updatedDate=e.getUpdatedDate();
         this.empId=e.getEmpId();
         this.departmentId=e.getDepartmentId();
+        this.employeeDocumentList = e.getEmployeeDocumentList();
     }
 
 
