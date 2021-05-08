@@ -84,7 +84,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            qualityName.setCreatedBy(Long.parseLong(request.getParameter("id")));
+            //qualityName.setCreatedBy(Long.parseLong(request.getParameter("id")));
             adminServcice.saveQualityName(qualityName);
             result= new GeneralResponse<>(null, constantFile.Quality_Name_Added, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             logService.saveLog(result,request,debugAll);
@@ -92,6 +92,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result =new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,qualityName);
             logService.saveLog(result,request,true);
         }
@@ -109,7 +110,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            qualityName.setUpdatedBy(Long.parseLong(request.getParameter("id")));
+            //qualityName.setUpdatedBy(Long.parseLong(request.getParameter("id")));
             adminServcice.updateQualityName(qualityName);
             result =  new GeneralResponse<>(true, constantFile.Quality_Name_Updated, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
 
@@ -117,6 +118,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,qualityName);
             logService.saveLog(result,request,true);
         }
@@ -143,6 +145,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
 
+            e.printStackTrace();
             result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
@@ -169,6 +172,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,jetMast);
             logService.saveLog(result,request,debugAll);
         }
@@ -194,6 +198,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }

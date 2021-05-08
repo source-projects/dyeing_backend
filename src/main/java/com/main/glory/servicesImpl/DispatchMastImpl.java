@@ -445,10 +445,12 @@ public class DispatchMastImpl {
         // check the pending bill amt
         Double pendingBillAmt = paymentTermService.getTotalPendingAmtByPartyId(partyId);
         batchDataListByParty.forEach(e->{
-
             if(pendingBillAmt > party.getCreditLimit())
             {
                 list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e,true));
+            }
+            else {
+                list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e,false));
             }
         });
 
