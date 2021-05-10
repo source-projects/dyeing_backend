@@ -77,14 +77,14 @@ public class AdminController extends ControllerConfig {
        GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
-            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             //logService.saveLog(result,request,true);
         }
 
         boolean flag;
         try {
 
-            qualityName.setCreatedBy(Long.parseLong(request.getParameter("id")));
+            //qualityName.setCreatedBy(Long.parseLong(request.getParameter("id")));
             adminServcice.saveQualityName(qualityName);
             result= new GeneralResponse<>(null, constantFile.Quality_Name_Added, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             logService.saveLog(result,request,debugAll);
@@ -109,7 +109,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            qualityName.setUpdatedBy(Long.parseLong(request.getParameter("id")));
+            //qualityName.setUpdatedBy(Long.parseLong(request.getParameter("id")));
             adminServcice.updateQualityName(qualityName);
             result =  new GeneralResponse<>(true, constantFile.Quality_Name_Updated, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
 
