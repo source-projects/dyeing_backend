@@ -51,8 +51,6 @@ public class AttendanceController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             Attendance attendance= attendanceService.saveAttendance(record);
-            //System.out.println("har::"+headers.get("id"));
-            //System.out.println(id);
 
             result = new GeneralResponse<>(attendance.getId(), constantFile.Attendance_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);

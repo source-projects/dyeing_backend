@@ -77,7 +77,7 @@ public class AdminController extends ControllerConfig {
        GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
-            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             //logService.saveLog(result,request,true);
         }
 

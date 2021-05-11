@@ -546,13 +546,13 @@ public class StockBatchController extends ControllerConfig {
 
     //gt the job card detail by batch and stock Id
     @GetMapping("/stockBatch/get/getJobCardBy")
-    public ResponseEntity<GeneralResponse<JobCard,Object>> getJobCardByStockIdAndBatchId(@RequestParam(name = "batchId")String batchId, @RequestParam(name = "stockId")Long stockId) throws Exception {
+    public ResponseEntity<GeneralResponse<JobCard,Object>> getJobCardByStockIdAndBatchId(@RequestParam(name = "batchId")String batchId) throws Exception {
         GeneralResponse<JobCard,Object> result;
         try {
-            if(batchId.isEmpty() || stockId==null)
+            if(batchId.isEmpty())
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
-            JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(stockId,batchId);
+            JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(batchId);
 
             result= new GeneralResponse<>(qty, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
