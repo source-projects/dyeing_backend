@@ -77,8 +77,9 @@ public interface PartyDao extends JpaRepository<Party, Long>  {
 	@Query("select p from Party p where p.partyCode=:partyCode AND p.id!=:id")
 	Party findByPartyCodeExceptId(String partyCode, Long id);
 
-//	@Modifying
-//	@Transactional
-//	@Query("drop database :dbname")
-//    void dropCommand(String dbname);
+
+	/*@Modifying
+	@Transactional
+	@Query("drop database :dbname")
+    void dropCommand(String dbname);*/
 }

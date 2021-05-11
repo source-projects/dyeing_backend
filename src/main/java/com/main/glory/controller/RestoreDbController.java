@@ -31,13 +31,13 @@ public class RestoreDbController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
-    @GetMapping("/db/restore/{name}")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> restoreDb(@PathVariable(name = "name") String name) {
+    @GetMapping("/db/restore/{date}")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> restoreDb(@PathVariable(name = "date") String date) {
         GeneralResponse<Boolean,Object> result;
         try{
 
 
-            Boolean flag = restoreDb.restoreDb(name);
+            Boolean flag = restoreDb.restoreDb(date);
             if(flag)
             {
                 result = new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
