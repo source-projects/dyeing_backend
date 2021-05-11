@@ -33,10 +33,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -165,8 +171,18 @@ public class RestoreDbImpl {
                 parent.mkdir();
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            File backupFile = new File(parent+"/"+"demo.sql");
+            backupFile.createNewFile();
 
-            File backupFile = new File(parent+"/"+name);
+            URL url = new URL("https://res.cloudinary.com/dvvqdgl3s/raw/upload/v1620641056/o8x16jqz8bbqkipqa8rj.sql");
+            BufferedReader read = new BufferedReader(new InputStreamReader(url.openStream()));
+            String i;
+            while ((i = read.readLine()) != null) {
+                i+="\n";
+                Files.write(Paths.get(String.valueOf(backupFile)), i.getBytes(), StandardOpenOption.APPEND);
+            }
+                //System.out.println(i);
+            read.close();
 
 
             if(!backupFile.exists())
@@ -221,6 +237,7 @@ public class RestoreDbImpl {
 
         if(!backupFile.exists())
             backupFile.createNewFile();
+
         String cmd="mysqldump --column-statistics=0 --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
         System.out.println(cmd);
 
@@ -242,6 +259,8 @@ public class RestoreDbImpl {
                 Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.asMap("resource_type","raw"));
                 ObjectMapper objectMapper = new ObjectMapper();
                 System.out.println(objectMapper.writeValueAsString(uploadResult));
+                //uploadResult.get("secure_url") get uploaded url
+                //uploadResult.get("public_id") get uploaded file name use while we are try to restore the file
                 return true;
             }
             else return false;
