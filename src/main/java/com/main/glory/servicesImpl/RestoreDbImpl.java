@@ -12,6 +12,7 @@ import com.main.glory.Dao.batch.BatchDataDao;
 import com.main.glory.Dao.color.ColorBoxDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
+import com.main.glory.Dao.database.DatabaseBackupDao;
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
@@ -29,6 +30,7 @@ import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.Dao.user.UserPermissionDao;
+import com.main.glory.model.database.DatabaseBackup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -143,8 +146,7 @@ public class RestoreDbImpl {
 
 
     @Autowired
-    APCDao apcDao;
-
+    DatabaseBackupDao databaseBackupDao;
    // private final Cloudinary cloudinary = Singleton.getCloudinary();
 
 
@@ -161,20 +163,30 @@ public class RestoreDbImpl {
 
     private Runtime runtime;
     private Process process;
-    public Boolean restoreDb(String name) throws IOException, InterruptedException {
+
+    public Boolean restoreDb(String date) throws Exception {
 
     //restore db
-        try {
+
             File parent =new File("backup");
 
             if(!parent.exists())
                 parent.mkdir();
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            List<DatabaseBackup> databaseBackupList = databaseBackupDao.getDatabaseByDate(simpleDateFormat.parse(date));
+
+
+            if(databaseBackupList.isEmpty())
+                throw new Exception("no backup found");
+
+
+
             File backupFile = new File(parent+"/"+"demo.sql");
             backupFile.createNewFile();
 
-            URL url = new URL("https://res.cloudinary.com/dvvqdgl3s/raw/upload/v1620641056/o8x16jqz8bbqkipqa8rj.sql");
+
+            URL url = new URL(databaseBackupList.get(databaseBackupList.size()-1).getUrl());
             BufferedReader read = new BufferedReader(new InputStreamReader(url.openStream()));
             String i;
             while ((i = read.readLine()) != null) {
@@ -199,12 +211,6 @@ public class RestoreDbImpl {
             process = Runtime.getRuntime().exec(command);
             int exitValue = process.waitFor();
 
-
-
-
-
-
-
             //System.out.println("exit value: " + exitValue);
             if (exitValue == 0) {
 
@@ -215,12 +221,6 @@ public class RestoreDbImpl {
 
 
 
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
     public Boolean backupDb() throws IOException {
@@ -239,7 +239,7 @@ public class RestoreDbImpl {
             backupFile.createNewFile();
 
         String cmd="mysqldump --column-statistics=0 --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
-        System.out.println(cmd);
+        //System.out.println(cmd);
 
 
         try {
@@ -257,10 +257,19 @@ public class RestoreDbImpl {
                         "api_key", "841845242494588",
                         "api_secret", "E1owKNvkJZa131NBcDYEM6mdZSc"));
                 Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.asMap("resource_type","raw"));
+                /*
                 ObjectMapper objectMapper = new ObjectMapper();
+                uploadResult.get("secure_url") get uploaded url
+                uploadResult.get("public_id") get uploaded file name use while we are try to restore the file
                 System.out.println(objectMapper.writeValueAsString(uploadResult));
-                //uploadResult.get("secure_url") get uploaded url
-                //uploadResult.get("public_id") get uploaded file name use while we are try to restore the file
+                */
+
+                DatabaseBackup databaseBackup = new DatabaseBackup();
+                databaseBackup.setName(uploadResult.get("public_id").toString());
+                databaseBackup.setUrl(uploadResult.get("secure_url").toString());
+
+                databaseBackupDao.save(databaseBackup);
+
                 return true;
             }
             else return false;
@@ -288,7 +297,9 @@ public class RestoreDbImpl {
 
         //clear by all the table payment type
         //partyDao.trucateRecord();
-       // partyDao.dropCommand(dbname);
+       /* partyDao.dropCommand(dbname);*/
+
+
 
         return true;
     }
