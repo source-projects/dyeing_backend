@@ -377,6 +377,10 @@ public class ConstantFile {
 
 
 
+    //JWT
+    public static String JWT_Expired = "JWT expired";
+    public static String JWT_Not_Found = "JWT not found";
+    public static String Unauthorized_User = "Unauthorized User";
 
 
 

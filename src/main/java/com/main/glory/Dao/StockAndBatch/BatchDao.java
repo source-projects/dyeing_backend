@@ -282,7 +282,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select sum(b.mtr) from BatchData b where b.batchId=:batchId AND b.mergeBatchId IS NULL")
     Double getTotalMtrByBatchId(String batchId);
 
-    @Query(value = "select control_id from batch_data where batch_id =:e LIMIT 1",nativeQuery = true)
+    @Query(value = "select control_id from batch_data where batch_id =:e AND control_id IS NOT NULL LIMIT 1",nativeQuery = true)
     Long getControlIdByBatchId(String e);
 
 

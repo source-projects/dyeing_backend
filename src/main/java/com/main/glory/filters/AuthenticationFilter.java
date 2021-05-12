@@ -1,5 +1,6 @@
 package com.main.glory.filters;
 
+import com.main.glory.model.ConstantFile;
 import com.main.glory.model.MappingPermission;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -51,10 +52,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		try{
 
 			// for swagger turn off the guards
-			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+			/*if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
-			}
+			}*/
 
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
@@ -130,7 +131,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 						}
 						else if(method.equals("POST")){
 							if(!permissions.getAdd()){
-								throw new Exception("Unauthorized user");
+								throw new Exception(ConstantFile.Unauthorized_User);
 							}
 						}
 						else if(method.equals("PUT")){
@@ -148,7 +149,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 						}
 						else if(method.equals("DELETE")){
 							if(!permissions.getDelete() || !permissions.getDeleteAll()){
-								throw new Exception("Unauthorized user");
+								throw new Exception(ConstantFile.Unauthorized_User);
 							}
 						}
 					}
@@ -156,7 +157,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 			if(id == null){
-				throw new Exception("No JWT found");
+				throw new Exception(ConstantFile.JWT_Not_Found);
 			}
 
 			//System.out.println(SecurityContextHolder.getContext().getAuthentication());
@@ -184,6 +185,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				errorMessage = "JWT expired";
 				statusCode = 401;
 			}
+			else if(errorMessage.contains("No JWT found"))
+			{
+				errorMessage = "No JWT found";
+				statusCode = 400;
+			}
+
 			//response.get
 			response.sendError(statusCode,errorMessage);
 		}
