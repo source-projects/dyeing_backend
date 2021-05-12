@@ -444,17 +444,16 @@ public class DispatchMastImpl {
 
         // check the pending bill amt
         Double pendingBillAmt = paymentTermService.getTotalPendingAmtByPartyId(partyId);
-        batchDataListByParty.forEach(e->{
-            if(pendingBillAmt > party.getCreditLimit())
-            {
-                list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e,true));
-            }
-            else {
-                list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e,false));
-            }
-        });
+        if(!batchDataListByParty.isEmpty()) {
+            batchDataListByParty.forEach(e -> {
+                if (pendingBillAmt > party.getCreditLimit()) {
+                    list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e, true));
+                } else {
+                    list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e, false));
+                }
+            });
 
-
+        }
 
 
       /*  if(batchDataListByParty.isEmpty())
@@ -890,7 +889,7 @@ public class DispatchMastImpl {
         DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(invoiceNo));
         String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
         if(invoiceExist == null || invoiceExist=="")
-            throw new Exception("no data found");
+            throw new Exception(ConstantFile.Dispatch_Found);
 
 
         //quality list
@@ -912,7 +911,7 @@ public class DispatchMastImpl {
             Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
 
             if(quality.isEmpty())
-                throw new Exception("no quality found");
+                throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber=new QualityBillByInvoiceNumber(quality.get());
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
@@ -1258,11 +1257,11 @@ public class DispatchMastImpl {
         StockMast stockMast = stockBatchService.getStockById(createDispatch.getBatchAndStockIdList().get(0).getStockId());
 
         if(stockMast==null)
-            throw new Exception("party not found");
+            throw new Exception(ConstantFile.StockBatch_Exist);
 
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
             if(party==null)
-                throw new Exception("party not found");
+                throw new Exception(ConstantFile.Party_Not_Exist);
 
 
 
@@ -1276,7 +1275,7 @@ public class DispatchMastImpl {
 
             List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
             if(batchDataList.isEmpty())
-                throw new Exception("no batch record found with stock");
+                throw new Exception(ConstantFile.Batch_Data_Not_Exist);
 
 
 
@@ -1296,7 +1295,7 @@ public class DispatchMastImpl {
             Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQualityId());
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
             if(quality==null)
-                throw new Exception("no quality found");
+                throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
 //            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = batchDao.getQualityBillByStockAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
 
@@ -1326,7 +1325,7 @@ public class DispatchMastImpl {
 
 
         if(batchWithGrList.isEmpty() || qualityBillByInvoiceNumberList.isEmpty())
-            throw new Exception("no record found");
+            throw new Exception(ConstantFile.Batch_Data_Not_Found);
 
         PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party,qualityBillByInvoiceNumberList,batchWithGrList);
 

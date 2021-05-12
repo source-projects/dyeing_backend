@@ -24,6 +24,7 @@ public class PartyDataByInvoiceNumber {
     Double sgst;
     Double taxAmt;
     Double netAmt;
+    Double percentageDiscount;
     List<QualityBillByInvoiceNumber> qualityList;
     List<BatchWithGr> batchWithGrList;
 
@@ -39,6 +40,7 @@ public class PartyDataByInvoiceNumber {
         this.sgst = dispatchMast.getSgst();
         this.taxAmt=dispatchMast.getTaxAmt();
         this.netAmt = dispatchMast.getNetAmt();
+        this.percentageDiscount = party.getPercentageDiscount();
     }
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList) {
         this.partyName=party.getPartyName();
@@ -46,6 +48,7 @@ public class PartyDataByInvoiceNumber {
         this.GST=party.getGSTIN();
         this.qualityList=qualityBillByInvoiceNumberList;
         this.batchWithGrList=batchWithGrList;
+        this.percentageDiscount = party.getPercentageDiscount();
     }
 
 }
