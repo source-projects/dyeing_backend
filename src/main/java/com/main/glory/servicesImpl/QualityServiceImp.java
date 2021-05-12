@@ -291,18 +291,20 @@ public class QualityServiceImp  {
 
         List<QualityData> qualityDataList = new ArrayList<>();
         if(qualityList.isPresent()) {
-            for (Quality quality : qualityList.get()) {
+            if (qualityList.isPresent()) {
+                for (Quality quality : qualityList.get()) {
 
-                if (qualityList.get().isEmpty())
-                    continue;
+                    if (qualityList.get().isEmpty())
+                        continue;
 
-                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-                if (qualityName.isEmpty())
-                    continue;
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                    if (qualityName.isEmpty())
+                        continue;
 
-                qualityDataList.add(new QualityData(quality, qualityName.get(), partName));
+                    qualityDataList.add(new QualityData(quality, qualityName.get(), partName));
 
 
+                }
             }
         }
         partyQualityData.setQualityDataList(qualityDataList);
