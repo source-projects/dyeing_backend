@@ -209,6 +209,7 @@ public class AttendanceServiceImpl {
                     if((diff / (60 * 60 * 1000))<12)
                     {
                         previousAttendance.setOutTime(record.getDate());
+                        previousAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(previousAttendance));
 
                         /*return employeeWithAttendance;*/
@@ -219,6 +220,7 @@ public class AttendanceServiceImpl {
                         calendar.setTime(previousAttendance.getInTime());
                         calendar.add(Calendar.HOUR, ConstantFile.inOutTimeAuto);
                         previousAttendance.setOutTime(calendar.getTime());
+                        previousAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast, attendanceDao.saveAndFlush(previousAttendance));
 
                     }
@@ -237,6 +239,7 @@ public class AttendanceServiceImpl {
                     else
                     {
                         currentAttendance.setOutTime(record.getDate());
+                        currentAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(currentAttendance));
                     }
 
@@ -263,6 +266,7 @@ public class AttendanceServiceImpl {
                         if(currentAttendanceExist.getOutTime() == null)
                         {
                             currentAttendanceExist.setOutTime(record.getDate());
+                            currentAttendanceExist.setOutUrl(record.getUrl()==null?"":record.getUrl());
                             employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(currentAttendanceExist));
                         }
                     }
@@ -274,6 +278,7 @@ public class AttendanceServiceImpl {
                 calendar.setTime(record.getDate());
                 Attendance currentAttendance = attendanceDao.getAttendanceByDateAndIdDescendingOrder(calendar.getTime(),employeeMast.getId());
                 if(currentAttendance==null || (currentAttendance.getInTime()!=null && currentAttendance.getOutTime()!=null)) {
+                    //in time
                     currentAttendance = new Attendance(record,employeeMast);
                     currentAttendance.setUrl(record.getUrl());
                     employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(currentAttendance));
@@ -282,6 +287,7 @@ public class AttendanceServiceImpl {
                 {
                     //asve the out time which is coming
                     currentAttendance.setOutTime(record.getDate());
+                    currentAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                     employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(currentAttendance));
                 }
             }
@@ -304,6 +310,7 @@ public class AttendanceServiceImpl {
                     if((diff / (60 * 60 * 1000))<12)
                     {
                         previousAttendance.setOutTime(record.getDate());
+                        previousAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(previousAttendance));
 
                         /*return employeeWithAttendance;*/
@@ -314,6 +321,7 @@ public class AttendanceServiceImpl {
                         calendar.setTime(previousAttendance.getInTime());
                         calendar.add(Calendar.HOUR, ConstantFile.inOutTimeAuto);
                         previousAttendance.setOutTime(calendar.getTime());
+                        previousAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                         employeeWithAttendance = new EmployeeWithAttendance(employeeMast, attendanceDao.saveAndFlush(previousAttendance));
 
                     }
