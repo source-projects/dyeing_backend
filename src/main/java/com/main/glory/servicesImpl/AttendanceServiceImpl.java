@@ -285,7 +285,7 @@ public class AttendanceServiceImpl {
                 }
                 else
                 {
-                    //asve the out time which is coming
+                    //save the out time which is coming
                     currentAttendance.setOutTime(record.getDate());
                     currentAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
                     employeeWithAttendance = new EmployeeWithAttendance(employeeMast,attendanceDao.saveAndFlush(currentAttendance));
