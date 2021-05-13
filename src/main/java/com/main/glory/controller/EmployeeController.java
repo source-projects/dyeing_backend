@@ -233,10 +233,10 @@ public class EmployeeController extends ControllerConfig {
 
             List<EmployeeMast> employeeMast= employeeService.getEmployeeByEmpIdOrName(id);
 
-            if(!employeeMast.isEmpty())
-                result= new GeneralResponse<>(employeeMast, ConstantFile.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if(employeeMast.get(0)!=null)
+                result= new GeneralResponse<>(employeeMast, ConstantFile.Employee_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result= new GeneralResponse<>(employeeMast, ConstantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
