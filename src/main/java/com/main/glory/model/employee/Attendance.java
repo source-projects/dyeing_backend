@@ -30,7 +30,6 @@ public class Attendance {
     Date updatedDate;
     Boolean shift; //true:morning
     String url;
-    @ColumnDefault("Not Available")
     String outUrl;
 
     public Attendance(GetLatestAttendance record, EmployeeMast employeeMast) {
