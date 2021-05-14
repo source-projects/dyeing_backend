@@ -419,7 +419,8 @@ public class PartyServiceImp implements PartyServiceInterface {
             if (!partyAll.isEmpty()) {
                 partyAll.forEach(e ->
                 {
-                    PartyWithName partyWithName = new PartyWithName(e);
+                    Double pendingAmt = paymentTermService.getTotalPendingAmtByPartyId(e.getId());
+                    PartyWithName partyWithName = new PartyWithName(e,pendingAmt);
                     //System.out.println(partyWithName.getId());
                     partyWithNameList.add(partyWithName);
                 });
