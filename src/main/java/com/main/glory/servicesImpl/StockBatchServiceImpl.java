@@ -1325,7 +1325,7 @@ public class StockBatchServiceImpl {
             {
                 //check the batch is done with produciton or not
                 ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getBatchId());
-                if(productionPlan.getStatus()==false)
+                if(productionPlan == null || productionPlan.getStatus()==false)
                     continue;
 
                 JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
