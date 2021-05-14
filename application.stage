@@ -17,6 +17,10 @@ spring.datasource.tomcat.max-active=50
 spring.datasource.tomcat.max-idle=15
 spring.datasource.tomcat.min-idle=8
 spring.datasource.tomcat.default-auto-commit=true
+
+#allow schedule
+spring.enable.scheduling = true
+
 #debug variable
 spring.application.debugAll = true
 #spring.jpa.properties.hibernate.generate_statistics=true
