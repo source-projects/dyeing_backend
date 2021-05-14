@@ -443,17 +443,20 @@ public class DispatchMastImpl {
         }
 
         // check the pending bill amt
-        Double pendingBillAmt = paymentTermService.getTotalPendingAmtByPartyId(partyId);
-        if(!batchDataListByParty.isEmpty()) {
-            batchDataListByParty.forEach(e -> {
-                if (pendingBillAmt > party.getCreditLimit()) {
-                    list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e, true));
-                } else {
-                    list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e, false));
-                }
-            });
+       /*Double pendingBillAmt = paymentTermService.getTotalPendingAmtByPartyId(partyId);
+        if(pendingBillAmt!=null) {
+            if (!batchDataListByParty.isEmpty()) {
+                batchDataListByParty.forEach(e -> {
+                    if (pendingBillAmt > party.getCreditLimit()) {
+                        list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e, true));
+                    } else {
+                        list.add(new BatchWithTotalMTRandFinishMTRWithPendingBill(e, false));
+                    }
+                });
 
-        }
+            }
+        }*/
+
 
 
       /*  if(batchDataListByParty.isEmpty())
