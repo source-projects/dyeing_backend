@@ -30,6 +30,5 @@ public class PartyReport {
         this.gst=party.getGSTIN();
         this.address=party.getPartyAddress1();
         this.partCode=party.getPartyCode();
-
     }
 }

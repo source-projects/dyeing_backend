@@ -142,9 +142,9 @@ public class EmployeeServiceImpl {
     public List<EmployeeMast> getEmployeeByEmpIdOrName(String id) {
         //check that the id is id or name
         List<EmployeeMast> employeeMastList=new ArrayList<>();
-        employeeMastList.add(employeeMastDao.getEmployeeByEmpId(Long.parseLong(id)));
+        /*employeeMastList.add(employeeMastDao.getEmployeeByEmpId(Long.parseLong(id)));*/
 
-        /*try
+        try
         {
             Long numberConvertable =Long.parseLong(id);
             employeeMastList = employeeMastDao.getEmployeeByLikeEmpId(id);
@@ -156,7 +156,6 @@ public class EmployeeServiceImpl {
             e.printStackTrace();
             employeeMastList = employeeMastDao.getEmployeeByName(id);
             return employeeMastList;
-        }*/
-        return employeeMastList;
+        }
     }
 }
