@@ -97,11 +97,11 @@ public class DispatchController extends ControllerConfig {
 
     //Get batches by the party id
     @GetMapping("/dispatch/getBatchByParty/{partyId}")
-    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTRWithPendingBill>,Object>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
-        GeneralResponse<List<BatchWithTotalMTRandFinishMTRWithPendingBill>,Object> result;
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+        GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
         try{
             if(partyId!=null) {
-                List<BatchWithTotalMTRandFinishMTRWithPendingBill> x =dispatchMastService.getBatchByParty(partyId);
+                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getBatchByParty(partyId);
                 if(x.isEmpty())
                     result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
