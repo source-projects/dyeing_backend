@@ -233,7 +233,7 @@ public class EmployeeController extends ControllerConfig {
 
             List<EmployeeMast> employeeMast= employeeService.getEmployeeByEmpIdOrName(id);
 
-            if(employeeMast.get(0)!=null)
+            if(!employeeMast.isEmpty())
                 result= new GeneralResponse<>(employeeMast, ConstantFile.Employee_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
                 result= new GeneralResponse<>(employeeMast, ConstantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
