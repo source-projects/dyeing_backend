@@ -47,11 +47,12 @@ public class DbScheduler {
 
     private Process process;
 
-    //pattern minute, hour, day, month, weekday
+    //pattern second ,minute, hour, day, month, weekday
     @Scheduled(cron="0 0 0 * * *")//at every night at 12am
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
 
-       restoreDbService.backupDb();
+        //System.out.println("called db");
+        restoreDbService.backupDb();
 
     }
 }
