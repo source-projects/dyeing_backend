@@ -51,8 +51,6 @@ public class AttendanceController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             Attendance attendance= attendanceService.saveAttendance(record);
-            //System.out.println("har::"+headers.get("id"));
-            //System.out.println(id);
 
             result = new GeneralResponse<>(attendance.getId(), constantFile.Attendance_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
@@ -109,11 +107,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list.isEmpty())
             {
-                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             }
             else {
-                result = new GeneralResponse<>(list, constantFile.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
 
             logService.saveLog(result,request,debugAll);
@@ -121,7 +119,7 @@ public class AttendanceController extends ControllerConfig {
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -141,11 +139,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             }
             else {
-                result = new GeneralResponse<>(list, constantFile.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -154,7 +152,7 @@ public class AttendanceController extends ControllerConfig {
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -206,11 +204,11 @@ public class AttendanceController extends ControllerConfig {
             //System.out.println(id);
             if(list==null)
             {
-                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             }
             else {
-                result = new GeneralResponse<>(list, constantFile.Attendance_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, constantFile.Attendance_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -218,7 +216,7 @@ public class AttendanceController extends ControllerConfig {
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

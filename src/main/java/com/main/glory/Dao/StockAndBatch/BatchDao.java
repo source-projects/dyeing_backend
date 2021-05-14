@@ -33,7 +33,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllBatchResponse(SUM(p.mtr) as MTR, SUM(p.wt) as WT, p.batchId as batchId) from BatchData p where p.controlId =:id GROUP BY p.batchId ")
     List<GetAllBatchResponse> findAllBatchesByControlId(@Param("id") Long id);
 
-    Optional<List<BatchData>> findByBatchId(String batchId);
+    @Query("select x from BatchData x where x.batchId=:batchId")
+    List<BatchData> findByBatchId(String batchId);
 
 
     @Query("select b from BatchData b where b.controlId=:controlId AND b.batchId=:batchId AND b.batchId IS NOT NULL AND b.controlId IS NOT NULL")
@@ -281,7 +282,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select sum(b.mtr) from BatchData b where b.batchId=:batchId AND b.mergeBatchId IS NULL")
     Double getTotalMtrByBatchId(String batchId);
 
-    @Query(value = "select control_id from batch_data where batch_id =:e LIMIT 1",nativeQuery = true)
+    @Query(value = "select control_id from batch_data where batch_id =:e AND control_id IS NOT NULL LIMIT 1",nativeQuery = true)
     Long getControlIdByBatchId(String e);
 
 

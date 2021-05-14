@@ -75,15 +75,15 @@ public class MergeBatchController extends ControllerConfig {
             List<MergeBatchResponse> list = stockBatchService.getAllMergeBatchId();
 
             if(!list.isEmpty())
-                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -95,15 +95,15 @@ public class MergeBatchController extends ControllerConfig {
             BatchToPartyQualityWithGr list = stockBatchService.getMergeBatchByMergeBatchId(mergeBatchId);
 
             if(list!=null)
-                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -117,12 +117,12 @@ public class MergeBatchController extends ControllerConfig {
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
             stockBatchService.deleteMergeBatchByMergeBatchId(mergeBatchId);
-            result = new GeneralResponse<>(true, ConstantFile.MergeBatch_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, ConstantFile.MergeBatch_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

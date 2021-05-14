@@ -65,16 +65,16 @@ public class DesignationController extends ControllerConfig {
 
             Boolean flag = designationService.getDesignationIsDelatable(id);
             if(flag)
-                result = new GeneralResponse<>(flag, constantFile.User_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, constantFile.User_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(flag, constantFile.Designation_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, constantFile.Designation_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -88,17 +88,17 @@ public class DesignationController extends ControllerConfig {
         try{
             List<Designation> data = designationService.getDesignation();
             if(!data.isEmpty()){
-                result = new GeneralResponse<>(data, constantFile.Designation_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, constantFile.Designation_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
             {
-                result = new GeneralResponse<>(data, constantFile.Designation_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(data, constantFile.Designation_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -110,17 +110,17 @@ public class DesignationController extends ControllerConfig {
         try{
             Boolean flag = designationService.deleteDesignationById(id);
             if(flag){
-                result = new GeneralResponse<>(flag, constantFile.Designation_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, constantFile.Designation_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
             {
-                result = new GeneralResponse<>(flag, constantFile.Designation_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(flag, constantFile.Designation_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

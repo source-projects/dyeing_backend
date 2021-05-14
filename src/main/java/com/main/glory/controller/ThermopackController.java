@@ -48,14 +48,14 @@ public class ThermopackController extends ControllerConfig {
         try {
 
             thermopackService.saveThermopackRecord(thermopackRecord);
-            result =new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -71,17 +71,17 @@ public class ThermopackController extends ControllerConfig {
             List<Thermopack> machineMasts = thermopackService.getAllMachineRecord();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString()+"?"+request.getQueryString());
             }
             else
-            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

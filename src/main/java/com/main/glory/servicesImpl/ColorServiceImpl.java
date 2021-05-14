@@ -290,8 +290,8 @@ public class ColorServiceImpl {
             }
         }
 
-        if(list.isEmpty())
-            throw new Exception(constantFile.Color_Not_Found);
+        /*if(list.isEmpty())
+            throw new Exception(constantFile.Color_Not_Found);*/
         return list;
 
     }

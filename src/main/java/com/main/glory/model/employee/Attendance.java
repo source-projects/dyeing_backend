@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -29,6 +30,7 @@ public class Attendance {
     Date updatedDate;
     Boolean shift; //true:morning
     String url;
+    String outUrl;
 
     public Attendance(GetLatestAttendance record, EmployeeMast employeeMast) {
         this.inTime = record.getDate();

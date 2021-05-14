@@ -94,6 +94,8 @@ public class Party {
         this.gstPercentage = party.getGstPercentage();
         this.userHeadId=party.getUserHeadId();
         this.partyCode=party.getPartyCode();
+        this.creditLimit = party.getCreditLimit();
+        this.paymentDays = party.getPaymentDays();
     }
 
 

@@ -200,7 +200,7 @@ public class ConstantFile {
     public static String Party_Added = "Data added successfully";
     public static String Party_Updated = "Data updated successfully";
     public static String Party_Deleted = "Data deleted successfully";
-    public static String Party_Code_Less = "Party Code should not be greater than 4 digit";
+    public static String Party_Code_Less = "Party Code should be in 2-5 digit";
     public static String Party_Found_ByMaster = "Data found for master ";
     public static String Party_Not_Found_ByMaster = "Data not found for master ";
 
@@ -214,6 +214,7 @@ public class ConstantFile {
 
     //StockBatch
     public static String StockBatch_Exist = "StockBatch data exist";
+    public static String StockBatch_Not_Exist = "StockBatch data not exist";
     public static String StockBatch_Found = "Data found";
     public static String StockBatch_With_Batch = "Data found with batch";
     public static String StockBatch_Without_Batch = "Data found without batch";
@@ -241,6 +242,7 @@ public class ConstantFile {
     public static String Batch_Id_Found = "Data found ";
     public static String Batch_Id_Not_Found = "Data not found ";
     public static String Batch_Data_Not_Found = "Data not found ";
+    public static String Batch_Data_Not_Exist = "Batch Data not Exist ";
 
     //Payment
     public static String Payment_Exist = "Party data exist";
@@ -377,6 +379,10 @@ public class ConstantFile {
 
 
 
+    //JWT
+    public static String JWT_Expired = "JWT expired";
+    public static String JWT_Not_Found = "JWT not found";
+    public static String Unauthorized_User = "Unauthorized User";
 
 
 

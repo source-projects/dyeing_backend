@@ -70,7 +70,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
             if (party.getGSTIN()==null || party.getGSTIN().isEmpty()) {
 
-                if (party.getPartyCode().length() > 4)
+                if (party.getPartyCode().length() >= 2 && party.getPartyCode().length() <= 5)
                     throw new Exception(ConstantFile.Party_Code_Less);
 
                // Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
@@ -92,7 +92,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             }
             else {
 
-                if (party.getPartyCode().length() > 4)
+                if (party.getPartyCode().length() >= 2 && party.getPartyCode().length() <= 5)
                     throw new Exception(ConstantFile.Party_Code_Less);
 
                 Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
@@ -170,6 +170,10 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party1!=null)
             throw new Exception("Party code should be unique");
 
+        //party code length exception
+        if (party.getPartyCode().length() >= 2 && party.getPartyCode().length() <= 5)
+            throw new Exception(ConstantFile.Party_Code_Less);
+
         if (party.getGSTIN() ==null || party.getGSTIN().isEmpty()) {
             partyDao.saveAndFlush(party);
             return true;
@@ -241,7 +245,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             if (!partyAll.isEmpty()) {
                 partyAll.forEach(e ->
                 {
-                    PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName(),e.getPartyCode());
+                    PartyWithName partyWithName = new PartyWithName(e);
                     //System.out.println(partyWithName.getId());
                     partyWithNameList.add(partyWithName);
                 });
@@ -415,7 +419,8 @@ public class PartyServiceImp implements PartyServiceInterface {
             if (!partyAll.isEmpty()) {
                 partyAll.forEach(e ->
                 {
-                    PartyWithName partyWithName = new PartyWithName(e.getId(), e.getPartyName(),e.getPartyCode());
+                    Double pendingAmt = paymentTermService.getTotalPendingAmtByPartyId(e.getId());
+                    PartyWithName partyWithName = new PartyWithName(e,pendingAmt);
                     //System.out.println(partyWithName.getId());
                     partyWithNameList.add(partyWithName);
                 });

@@ -123,9 +123,9 @@ public class EmployeeController extends ControllerConfig {
             EmployeeMast employeeMast= employeeService.getEmployeeById(id);
 
             if(employeeMast!=null)
-            result= new GeneralResponse<>(employeeMast, constantFile.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(employeeMast, constantFile.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-            result= new GeneralResponse<>(employeeMast, constantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(employeeMast, constantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -133,7 +133,7 @@ public class EmployeeController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -152,9 +152,9 @@ public class EmployeeController extends ControllerConfig {
             EmployeeMast employeeMast= employeeService.getEmployeeByEmpId(id);
 
             if(employeeMast!=null)
-                result= new GeneralResponse<>(true, constantFile.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, constantFile.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(false, constantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(false, constantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -162,7 +162,7 @@ public class EmployeeController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -180,9 +180,9 @@ public class EmployeeController extends ControllerConfig {
             List<GetAllEmployee> employeeMast= employeeService.getAllEmployee();
 
             if(employeeMast.size()>0)
-                result= new GeneralResponse<>(employeeMast, constantFile.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, constantFile.Employee_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(employeeMast, constantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, constantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -190,7 +190,7 @@ public class EmployeeController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -206,14 +206,14 @@ public class EmployeeController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             employeeService.deleteEmployeeById(id);
-            result= new GeneralResponse<>(true, constantFile.Employee_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, constantFile.Employee_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -234,16 +234,16 @@ public class EmployeeController extends ControllerConfig {
             List<EmployeeMast> employeeMast= employeeService.getEmployeeByEmpIdOrName(id);
 
             if(!employeeMast.isEmpty())
-                result= new GeneralResponse<>(employeeMast, ConstantFile.DyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, ConstantFile.Employee_Exist, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.DyeingProcess_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(employeeMast, ConstantFile.Employee_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

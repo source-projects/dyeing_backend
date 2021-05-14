@@ -53,7 +53,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(jetMast==null)
         {
-            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,jetMast);
             //logService.saveLog(result,request,debugAll);
         }
 
@@ -92,6 +92,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result =new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,qualityName);
             logService.saveLog(result,request,true);
         }
@@ -117,6 +118,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,qualityName);
             logService.saveLog(result,request,true);
         }
@@ -128,7 +130,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             //logService.saveLog(result,request,true);
         }
 
@@ -136,14 +138,15 @@ public class AdminController extends ControllerConfig {
         try {
 
             adminServcice.deleteQualityNameById(id);
-            result =  new GeneralResponse<>(true, constantFile.Quality_Name_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(true, constantFile.Quality_Name_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
 
-            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            e.printStackTrace();
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -155,7 +158,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(jetMast==null)
         {
-            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             //logService.saveLog(result,request,true);
         }
 
@@ -169,6 +172,7 @@ public class AdminController extends ControllerConfig {
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,jetMast);
             logService.saveLog(result,request,debugAll);
         }
@@ -180,7 +184,7 @@ public class AdminController extends ControllerConfig {
        GeneralResponse<JetMast,Object> result;
         if(id==null)
         {
-            result =  new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             //logService.saveLog(result,request,true);
         }
 
@@ -188,13 +192,14 @@ public class AdminController extends ControllerConfig {
         try {
 
             JetMast jetMast = jetService.getJetMastById(id);
-            result= new GeneralResponse<>(jetMast, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(jetMast, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -207,7 +212,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             //logService.saveLog(result,request,true);
         }
 
@@ -233,7 +238,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Company,Object> result;
         if(id==null)
         {
-            result= new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -241,14 +246,14 @@ public class AdminController extends ControllerConfig {
         try {
 
             Company c  = adminServcice.getCompanyById(id);
-            result= new GeneralResponse<>(c, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(c, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -259,7 +264,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(company==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -286,7 +291,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(department==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -315,7 +320,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(c.getName()==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -341,7 +346,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -350,14 +355,14 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteCompanyById(id);
             if(flag) {
-                result = new GeneralResponse<>(null, constantFile.Company_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.Company_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
                 logService.saveLog(result,request,debugAll);
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -369,7 +374,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result=null;
         if(id==null)
         {
-            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -378,14 +383,14 @@ public class AdminController extends ControllerConfig {
 
             flag = adminServcice.deleteDepartmentById(id);
             if(flag) {
-                result = new GeneralResponse<>(null, constantFile.Department_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.Department_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
                 logService.saveLog(result,request,true);
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -398,7 +403,7 @@ public class AdminController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         if(data==null)
         {
-            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(false, " info is null", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -430,16 +435,16 @@ public class AdminController extends ControllerConfig {
 
             List<Authorize> list = adminServcice.getApprovedByList();
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -476,13 +481,13 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("data can't be null");
 
             ApprovedBy data =adminServcice.getApprovedById(id);
-            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -499,9 +504,9 @@ public class AdminController extends ControllerConfig {
 
             List<DepartmentResponse> list = adminServcice.getAllDepartmentListByHeaderId(headers.get("id"));
             if(list.isEmpty())
-                result= new GeneralResponse<>(null, constantFile.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, constantFile.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,true);
         }
@@ -509,7 +514,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
@@ -523,14 +528,14 @@ public class AdminController extends ControllerConfig {
         try {
 
             DepartmentResponse list = adminServcice.getDepartmentById(id);
-            result= new GeneralResponse<>(list, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(list, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -563,16 +568,16 @@ public class AdminController extends ControllerConfig {
 
             List<AddJet> list = jetService.getAllJet();
             if(list.isEmpty())
-                result= new GeneralResponse<>(list, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -587,16 +592,16 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = jetService.getJetIsDeletable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(flag, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -611,15 +616,15 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = adminServcice.getApprovedByDeletable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, "data is not deletable", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -634,15 +639,15 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = adminServcice.getDepartmentIsDelatable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, constantFile.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(flag, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -657,15 +662,15 @@ public class AdminController extends ControllerConfig {
 
             Boolean flag = adminServcice.getCompanyIsDelatable(id);
             if(flag)
-                result= new GeneralResponse<>(flag, constantFile.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(flag, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -682,15 +687,15 @@ public class AdminController extends ControllerConfig {
 
             List<Company> list = adminServcice.getAllCompany();
             if(list.isEmpty())
-                result= new GeneralResponse<>(list, constantFile.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -706,16 +711,16 @@ public class AdminController extends ControllerConfig {
 
             Boolean list = jetService.deleteJetMastByJetId(id);
             if(list==false)
-                result= new GeneralResponse<>(list, constantFile.Jet_Record_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Jet_Record_Exist, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Jet_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -752,13 +757,13 @@ public class AdminController extends ControllerConfig {
 
             Boolean list = adminServcice.deleteApprovedById(id);
 
-            result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -802,16 +807,16 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequence();
             if(invoiceSequence!=null)
-                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-            result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -851,9 +856,9 @@ public class AdminController extends ControllerConfig {
 
             InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
             if(invoiceSequence!=null)
-                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -861,7 +866,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -933,15 +938,15 @@ public class AdminController extends ControllerConfig {
             BatchSequence batchSequence = adminServcice.getBatchSequence(update);
 
             if(batchSequence!=null)
-            result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -958,14 +963,14 @@ public class AdminController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             BatchSequence batchSequence = adminServcice.getBatchSequenceById(id);
-            result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1028,11 +1033,11 @@ public class AdminController extends ControllerConfig {
             List<Authorize> list = adminServcice.getAllReceiver();
             if(list.isEmpty())
             {
-                result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             }
             else
-                result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -1040,7 +1045,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1059,17 +1064,17 @@ public class AdminController extends ControllerConfig {
             ReceiverBy list = adminServcice.getReceiverById(id);
             if(list==null)
             {
-                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
-                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1085,14 +1090,14 @@ public class AdminController extends ControllerConfig {
                 throw new Exception("null record passed");
 
             adminServcice.deleteReceiverById(id);
-            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1138,11 +1143,11 @@ public class AdminController extends ControllerConfig {
 
             if(reportTypeList.isEmpty())
             {
-                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
             {
-                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
 
@@ -1152,7 +1157,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1174,11 +1179,11 @@ public class AdminController extends ControllerConfig {
 
             if(reportTypeList==null)
             {
-                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
             {
-                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(reportTypeList, constantFile.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
 
             logService.saveLog(result,request,debugAll);
@@ -1188,7 +1193,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1209,11 +1214,11 @@ public class AdminController extends ControllerConfig {
 
             if(flag==false)
             {
-                result= new GeneralResponse<>(false, constantFile.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(false, constantFile.Report_Type_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
             {
-                result= new GeneralResponse<>(true, constantFile.Report_Type_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, constantFile.Report_Type_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
 
             logService.saveLog(result,request,debugAll);
@@ -1223,7 +1228,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1241,7 +1246,7 @@ public class AdminController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             adminServcice.deleteReportTypeById(id);
-            result= new GeneralResponse<>(true, constantFile.Report_Type_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, constantFile.Report_Type_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
 
@@ -1251,7 +1256,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1269,7 +1274,7 @@ public class AdminController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             adminServcice.addAuthorize(authorize);
-            result= new GeneralResponse<>(true, constantFile.Authorize_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, constantFile.Authorize_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
 
@@ -1279,7 +1284,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1297,7 +1302,7 @@ public class AdminController extends ControllerConfig {
                 throw new Exception(constantFile.Null_Record_Passed);
 
             adminServcice.updateAuthorize(authorize);
-            result= new GeneralResponse<>(true, constantFile.Authorize_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, constantFile.Authorize_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
 
@@ -1307,7 +1312,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1325,9 +1330,9 @@ public class AdminController extends ControllerConfig {
 
             List<Authorize> list = adminServcice.getAllAuthorize();
             if(!list.isEmpty())
-            result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
 
             logService.saveLog(result,request,debugAll);
@@ -1339,7 +1344,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1357,9 +1362,9 @@ public class AdminController extends ControllerConfig {
 
             Authorize list = adminServcice.getAuthorizeById(id);
             if(list!=null)
-                result= new GeneralResponse<>(list, constantFile.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
 
             logService.saveLog(result,request,debugAll);
@@ -1371,7 +1376,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -1389,7 +1394,7 @@ public class AdminController extends ControllerConfig {
 
             adminServcice.deleteAuthorizeById(id);
 
-            result= new GeneralResponse<>(true, ConstantFile.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(true, ConstantFile.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -1400,7 +1405,7 @@ public class AdminController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

@@ -63,11 +63,11 @@ public class BatchFinishMtrController extends ControllerConfig {
         try{
             //System.out.println("deleting batch with id:"+id);
             batchImpl.deleteBatch(id);
-            result = new GeneralResponse<>(true, constantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, constantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -84,19 +84,19 @@ public class BatchFinishMtrController extends ControllerConfig {
                 List<BatchData> batchData = batchImpl.getBatchById(batchId,controlId);
 
                 if(!batchData.isEmpty())
-                result = new GeneralResponse<>(batchData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
-                    result = new GeneralResponse<>(batchData, constantFile.StockBatch_Not_Found,false,System.currentTimeMillis(),HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(batchData, constantFile.StockBatch_Not_Found,false,System.currentTimeMillis(),HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
                 logService.saveLog(result,request,debugAll);
             }
             else{
-                result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 logService.saveLog(result,request,true);
             }
         }catch(Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -111,20 +111,20 @@ public class BatchFinishMtrController extends ControllerConfig {
                 GetCompleteFinishMtrDetail batchData = batchImpl.getAllDetailBy(batchId,controlId);
 
                 if(batchData==null)
-                    result = new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
                 else
-                result = new GeneralResponse<>(batchData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
                 logService.saveLog(result,request,debugAll);
             }
             else{
-                result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 logService.saveLog(result,request,true);
             }
         }catch(Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

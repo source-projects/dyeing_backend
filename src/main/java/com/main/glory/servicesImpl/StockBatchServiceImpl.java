@@ -1325,7 +1325,7 @@ public class StockBatchServiceImpl {
             {
                 //check the batch is done with produciton or not
                 ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(g.getBatchId());
-                if(productionPlan.getStatus()==false)
+                if(productionPlan == null || productionPlan.getStatus()==false)
                     continue;
 
                 JetData jetData = jetService.getJetDataByProductionIdWithoutFilter(productionPlan.getId());
@@ -1757,14 +1757,14 @@ public class StockBatchServiceImpl {
         return batchDetailList;
     }
 
-    public JobCard getJobCardByStockIdAndBatchId(Long stockId, String batchId) throws Exception {
+    public JobCard getJobCardByStockIdAndBatchId(String batchId) throws Exception {
 
 
-        List<BatchData> batchData = batchDao.findByControlIdAndBatchId(stockId,batchId);
+        List<BatchData> batchData = batchDao.findByBatchId(batchId);
         if(batchData.isEmpty())
             throw new Exception(ConstantFile.Batch_Data_Not_Found);
 
-
+        Long stockId = batchDao.getControlIdByBatchId(batchId);
 
         //header record
         Double totalWt = batchDao.getTotalWtByControlIdAndBatchId(stockId,batchId);
@@ -1785,7 +1785,10 @@ public class StockBatchServiceImpl {
         System.out.println(totalMtr);
         System.out.println(totalPcs);
         System.out.println(totalWt);
-        System.out.println(totalPcs);*/
+        System.out.println(totalPcs);
+
+        can be get and error for userdata
+        */
         JobCard jobCard=new JobCard(stockMast,party,userData,quality,qualityName.get(),totalMtr,totalPcs,totalWt);
         jobCard.setBatchId(batchId);
         jobCard.setTotalFinishMtr(totalFinish);

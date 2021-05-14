@@ -61,7 +61,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -74,14 +74,14 @@ public class MachineController extends ControllerConfig {
         try {
 
             machineService.addTempMachineRecord(name,date);
-            result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -124,14 +124,14 @@ public class MachineController extends ControllerConfig {
         try {
 
             machineService.saveMachineRecord(name,speed);
-            result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -145,16 +145,16 @@ public class MachineController extends ControllerConfig {
 
             var x = machineService.getAllCategory();
             if(x!=null) {
-                result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
             }
             else
-                result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -170,16 +170,16 @@ public class MachineController extends ControllerConfig {
             var x = machineService.getAllMachineByCategory(id);
 
             if(!x.isEmpty())
-            result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-            result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(x, ConstantFile.Machine_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -195,10 +195,10 @@ public class MachineController extends ControllerConfig {
             List<GetAllMachine> machineMasts = machineService.getAllMachine();
             if(machineMasts.isEmpty())
             {
-                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
-            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -206,7 +206,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -227,10 +227,10 @@ public class MachineController extends ControllerConfig {
             GetAllMachine machineMasts = machineService.getMachineById(id);
             if(machineMasts ==null)
             {   
-                result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
-            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(machineMasts, ConstantFile.Machine_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -238,7 +238,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -288,14 +288,14 @@ public class MachineController extends ControllerConfig {
             }
             flag = machineService.deleteMachineById(id);
             if(flag ==true)
-            result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
 
         }
@@ -314,14 +314,14 @@ public class MachineController extends ControllerConfig {
             }
             flag = machineService.deleteMachineCategoryById(id);
             if(flag ==true)
-                result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,true);
         }
@@ -367,16 +367,16 @@ public class MachineController extends ControllerConfig {
             }
             flag = machineService.getCategoryIsDeletble(id);
             if(flag ==true)
-                result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(false, ConstantFile.Machine_Data_Not_Deletable, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Machine_Data_Not_Deletable, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
 
         }
@@ -396,9 +396,9 @@ public class MachineController extends ControllerConfig {
             }
             flag = machineService.getMachineIsDeletable(id);
             if(flag ==true)
-                result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, ConstantFile.Machine_Data_Deletable, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(false, ConstantFile.Machine_Data_Not_Deletable, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Machine_Data_Not_Deletable, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -406,7 +406,7 @@ public class MachineController extends ControllerConfig {
         catch(Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
 
         }

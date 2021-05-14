@@ -47,14 +47,14 @@ public class StockBatchController extends ControllerConfig {
         try{
             Boolean isPresent = batchService.isBatchIdExists(name, id);
             if(isPresent)
-            result = new GeneralResponse<>(isPresent, ConstantFile.Batch_Id_Found+isPresent, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(isPresent, ConstantFile.Batch_Id_Found+isPresent, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else {
-                result = new GeneralResponse<>(isPresent, ConstantFile.Batch_Id_Not_Found+isPresent, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(isPresent, ConstantFile.Batch_Id_Not_Found+isPresent, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         }catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -83,12 +83,12 @@ public class StockBatchController extends ControllerConfig {
         try {
             WTByStockAndBatch qty= stockBatchService.getWtByStockAndBatchId(stockId,batchId);
 
-                result= new GeneralResponse<>(qty, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(qty, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -103,14 +103,14 @@ public class StockBatchController extends ControllerConfig {
             if (qualityId != null && partyId != null) {
                 List<GetAllBatch> batchData = stockBatchService.getBatchByPartyAndQuality(qualityId, partyId);
 
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             } else {
-                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -128,37 +128,37 @@ public class StockBatchController extends ControllerConfig {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
                     if (stockMast == null) {
-                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else {
-                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     }
                     break;
 
                 case "group":
                     stockMast = stockBatchService.getAllStockBatch(getBy, id);
                     if (stockMast == null) {
-                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else {
-                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     }
                     break;
 
                 case "all":
                     stockMast = stockBatchService.getAllStockBatch(null, null);
                     if (stockMast == null) {
-                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else {
-                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     }
                     break;
                 default:
-                    result= new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
 
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         logService.saveLog(result,request,debugAll);
@@ -172,17 +172,17 @@ public class StockBatchController extends ControllerConfig {
             if (id != null) {
                 Optional<StockMast> stockMast = stockBatchService.getStockBatchById(id);
                 if (stockMast.isPresent()) {
-                    result= new GeneralResponse<>(stockMast.get(), ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(stockMast.get(), ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 } else {
-                    result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 }
             } else {
-                result= new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -196,15 +196,15 @@ public class StockBatchController extends ControllerConfig {
 
             List<GetAllBatch> stockMast = stockBatchService.getAllBatchWithoutFilter();
             if (!stockMast.isEmpty()) {
-                result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
-                result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found , false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found , false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -218,15 +218,15 @@ public class StockBatchController extends ControllerConfig {
             if (batchId != null) {
                 List<BatchData> batchData = stockBatchService.getBatchById(batchId, controlId);
 
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             } else {
-                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -242,17 +242,17 @@ public class StockBatchController extends ControllerConfig {
                 List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithoutProductionPlan(qualityId, partyId,headers.get("id"));
 
                 if(batchData.isEmpty())
-                    result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             } else {
-                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -266,15 +266,15 @@ public class StockBatchController extends ControllerConfig {
             if (qualityId != null && partyId != null) {
                 List<GetAllBatch> batchData = stockBatchService.byQualityAndPartyWithProductionPlan(qualityId, partyId);
 
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             } else {
-                result= new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -290,15 +290,15 @@ public class StockBatchController extends ControllerConfig {
             if (qualityId != null && partyId != null) {
                 List<StockMast> batchData = stockBatchService.getStockBatchListById(qualityId, partyId);
 
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             } else {
-                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -313,15 +313,15 @@ public class StockBatchController extends ControllerConfig {
             List<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetail(headers.get("id"));
 
             if(batchData.isEmpty())
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-            result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -336,13 +336,13 @@ public class StockBatchController extends ControllerConfig {
 
             List<BatchData> batchData = stockBatchService.getAllBatchByQualityId(qualityId);
 
-            result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -357,15 +357,15 @@ public class StockBatchController extends ControllerConfig {
             BatchToPartyAndQuality batchData = stockBatchService.getPartyAndQualityByBatch(controlId, batchId);
 
             if(batchData!=null)
-            result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -380,9 +380,9 @@ public class StockBatchController extends ControllerConfig {
             Boolean batchDataFlag = stockBatchService.IsBatchAvailable(controlId, batchId);
 
             if (batchDataFlag == true) {
-                result = new GeneralResponse<>(true, ConstantFile.Batch_Id_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, ConstantFile.Batch_Id_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
-                result = new GeneralResponse<>(false, ConstantFile.Batch_Id_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Batch_Id_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             }
             logService.saveLog(result,request,debugAll);
@@ -390,7 +390,7 @@ public class StockBatchController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -405,16 +405,16 @@ public class StockBatchController extends ControllerConfig {
             if (qualityId != null && partyId != null) {
                 List<GetAllBatch> batchData = stockBatchService.getBatchWithoutProductionPlanByPartyAndQuality(qualityId, partyId);
 
-                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             } else {
                 throw new Exception(ConstantFile.Null_Record_Passed);
-                //result =new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                //result =new GeneralResponse<>(null, "Null id passed", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -473,11 +473,11 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             stockBatchService.deleteStockBatch(id);
-            result = new GeneralResponse<>(true, ConstantFile.StockBatch_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, ConstantFile.StockBatch_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -488,11 +488,11 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             stockBatchService.deleteBatchGr(id);
-            result = new GeneralResponse<>(true, ConstantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, ConstantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -505,14 +505,14 @@ public class StockBatchController extends ControllerConfig {
             Boolean flag = stockBatchService.deleteStockBatchWithControlAndBatchID(controlId, batchId);
 
             if (flag == true)
-                result= new GeneralResponse<>(true, ConstantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(true, ConstantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(false, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(false, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -527,14 +527,14 @@ public class StockBatchController extends ControllerConfig {
             List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated(headers.get("id"));
 
             if (!flag.isEmpty())
-                response= new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                response= new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                response= new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                response= new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(response,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            response= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(response,request,true);
         }
         return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
@@ -546,20 +546,20 @@ public class StockBatchController extends ControllerConfig {
 
     //gt the job card detail by batch and stock Id
     @GetMapping("/stockBatch/get/getJobCardBy")
-    public ResponseEntity<GeneralResponse<JobCard,Object>> getJobCardByStockIdAndBatchId(@RequestParam(name = "batchId")String batchId, @RequestParam(name = "stockId")Long stockId) throws Exception {
+    public ResponseEntity<GeneralResponse<JobCard,Object>> getJobCardByStockIdAndBatchId(@RequestParam(name = "batchId")String batchId) throws Exception {
         GeneralResponse<JobCard,Object> result;
         try {
-            if(batchId.isEmpty() || stockId==null)
+            if(batchId.isEmpty())
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
-            JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(stockId,batchId);
+            JobCard qty= stockBatchService.getJobCardByStockIdAndBatchId(batchId);
 
-            result= new GeneralResponse<>(qty, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(qty, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -576,15 +576,15 @@ public class StockBatchController extends ControllerConfig {
                 List<GetAllBatch> batchData = stockBatchService.getAllBatchForAdditionalSlip(headers.get("id"));
 
                 if(batchData.isEmpty())
-                    result = new GeneralResponse<>(batchData, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                    result = new GeneralResponse<>(batchData, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
-                result = new GeneralResponse<>(batchData, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(batchData, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -600,13 +600,13 @@ public class StockBatchController extends ControllerConfig {
 
             List<GetAllBatch> batchData = stockBatchService.getAllBatchForRedyeingSlip(headers.get("id"));
 
-            result = new GeneralResponse<>(batchData, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(batchData, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

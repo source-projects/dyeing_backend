@@ -31,24 +31,24 @@ public class RestoreDbController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll=true;
 
-    @GetMapping("/db/restore/{name}")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> restoreDb(@PathVariable(name = "name") String name) {
+    @GetMapping("/db/restore/{date}")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> restoreDb(@PathVariable(name = "date") String date) {
         GeneralResponse<Boolean,Object> result;
         try{
 
 
-            Boolean flag = restoreDb.restoreDb(name);
+            Boolean flag = restoreDb.restoreDb(date);
             if(flag)
             {
-                result = new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
-            else result =  new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else result =  new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
 
@@ -66,9 +66,9 @@ public class RestoreDbController extends ControllerConfig {
             Boolean flag = restoreDb.backupDb();
             if(flag)
             {
-                result=  new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result=  new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
-            else result= new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            else result= new GeneralResponse<>(false, "Db restore not Successfully", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
 
@@ -76,7 +76,7 @@ public class RestoreDbController extends ControllerConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

@@ -53,7 +53,7 @@ public class PaymentTermController extends ControllerConfig {
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -65,11 +65,11 @@ public class PaymentTermController extends ControllerConfig {
         GeneralResponse<Boolean,Object> result;
         try {
             Boolean flag = paymentTermService.savePaymentType(type);
-            result = new GeneralResponse<>(true, ConstantFile.Payment_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result = new GeneralResponse<>(true, ConstantFile.Payment_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -82,13 +82,13 @@ public class PaymentTermController extends ControllerConfig {
             List<PaymentType> flag = paymentTermService.getAllPaymentType();
 
             if(flag.isEmpty())
-                result= new GeneralResponse<>(flag, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-            result= new GeneralResponse<>(flag, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+            result= new GeneralResponse<>(flag, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -127,15 +127,15 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetPendingDispatch> list = paymentTermService.getPendingBillByPartyId(partyId);
             if(!list.isEmpty())
-                result = new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -152,15 +152,15 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAdvancePayment> list = paymentTermService.getAdvancePayment(partyId);
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -176,15 +176,15 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAllBank> list = paymentTermService.getAllBankName();
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -199,15 +199,15 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAllBank> list = paymentTermService.getAllAdvanceBankName();
             if(!list.isEmpty())
-                result= new GeneralResponse<>(list, ConstantFile.Bank_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Bank_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.Bank_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Bank_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -223,15 +223,15 @@ public class PaymentTermController extends ControllerConfig {
 
             List<PaymentMast> list = paymentTermService.getAllPaymentMast(partyId);
             if(!list.isEmpty())
-                result = new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
@@ -248,15 +248,15 @@ public class PaymentTermController extends ControllerConfig {
 
             PaymentMast list = paymentTermService.getPaymentDetailById(paymentBunchId);
             if(list!=null)
-                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-           result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+           result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
@@ -271,15 +271,15 @@ public class PaymentTermController extends ControllerConfig {
 
             List<GetAllPayment> list = paymentTermService.getAllPaymentWithPartyName();
             if(list!=null)
-                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
