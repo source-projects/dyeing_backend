@@ -200,7 +200,7 @@ public class ConstantFile {
     public static String Party_Added = "Data added successfully";
     public static String Party_Updated = "Data updated successfully";
     public static String Party_Deleted = "Data deleted successfully";
-    public static String Party_Code_Less = "Party Code should not be greater than 4 digit";
+    public static String Party_Code_Less = "Party Code should be in 2-5 digit";
     public static String Party_Found_ByMaster = "Data found for master ";
     public static String Party_Not_Found_ByMaster = "Data not found for master ";
 
