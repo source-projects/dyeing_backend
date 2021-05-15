@@ -108,7 +108,7 @@ public class DispatchMastImpl {
         if(pendingAmt!=null && pendingAmt > party.get().getCreditLimit())
         {
             //check the password and allow to create the invoice else throw the exception
-            if(!dispatchList.getPassword().equals("gloryFab123@@"))
+            if(dispatchList.getPassword()==null || !dispatchList.getPassword().equals("gloryFab123@@"))
             {
                 throw new Exception(ConstantFile.Dispatch_Password_Wrong);
             }
