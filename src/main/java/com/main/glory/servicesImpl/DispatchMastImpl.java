@@ -83,204 +83,6 @@ public class DispatchMastImpl {
 
     public Long saveDispatch(CreateDispatch dispatchList) throws Exception {
 
-        /*List<DispatchMast> list = dispatchMastDao.getAllInvoiceList();
-
-        List<DispatchData> saveTheList=new ArrayList<>();
-        //if the sequence is there or not
-        if(!list.isEmpty())
-        {
-            Long invoiceNumber = dispatchMastDao.getInvoiceNumber("inv");
-
-            invoiceNumber+=1;
-           //get the invoice and merge with "inv" and then create the invoice for multiple batch
-
-
-
-            //party detail by stock
-
-            StockMast stockMast=stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).getStockId());
-
-            Optional<Party> party = partyDao.findById(stockMast.getPartyId());
-
-            if(party.isEmpty())
-                throw new Exception("no party found for id:"+stockMast.getPartyId());
-
-
-            //check the user are exist or not
-            if(dispatchList.getCreatedBy()!=null && dispatchList.getUserHeadId()!= null) {
-
-                UserData createdUserExist = userService.getUserById(dispatchList.getCreatedBy());
-
-                if (createdUserExist == null)
-                    throw new Exception("no user found for id:" + dispatchList.getCreatedBy());
-
-
-                UserData headUserExist = userService.getUserByUserHeadIdAndId(dispatchList.getUserHeadId(),dispatchList.getCreatedBy());
-                if (headUserExist == null)
-                    throw new Exception("no user found with head");
-            }
-            else
-                throw new Exception("user head id or createdBy id can't be null");
-
-
-
-
-
-            //check first the data is available or not
-
-            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
-                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
-
-                if (batchDataList.isEmpty())
-                    throw new Exception("no batch data found");
-            }
-
-
-            //iterate and change the status
-            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
-                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
-
-                if (batchDataList.isEmpty())
-                    throw new Exception("no batch data found");
-
-                for(BatchData batchData:batchDataList)
-                {
-
-                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
-                    {
-                        DispatchData dispatchData=new DispatchData(batchData);
-
-                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
-
-                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
-                        //saveTheList.add(dispatchData);
-                        //save the complete batch with gr list to the dispatch data with same invoice number
-                        dispatchDataDao.save(dispatchData);
-
-                        batchData.setIsBillGenrated(true);
-                        batchDao.save(batchData);
-                    }
-                }
-            }
-
-
-
-
-
-
-            //increament the invoice number to dispatch mast
-
-
-            DispatchMast dispatchMast =new DispatchMast();
-            dispatchMast.setPrefix("inv");
-            dispatchMast.setPartyId(party.get().getId());
-            dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
-            dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
-            dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
-            dispatchMast.setPostfix(invoiceNumber);
-            dispatchMastDao.save(dispatchMast);
-            return true;
-
-        }
-        else
-        {
-            //party detail by stock
-
-            StockMast stockMast=stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).getStockId());
-
-            Optional<Party> party = partyDao.findById(stockMast.getPartyId());
-
-            if(party.isEmpty())
-                throw new Exception("no party found for id:"+stockMast.getPartyId());
-
-
-            //check the user are exist or not
-            UserData createdUserExist =userService.getUserById(dispatchList.getCreatedBy());
-
-            if(createdUserExist==null)
-                throw new Exception("no user found for id:"+dispatchList.getCreatedBy());
-
-
-            UserData headUserExist = userService.getUserByUserHeadIdAndId(dispatchList.getUserHeadId(),dispatchList.getCreatedBy());
-            if (headUserExist == null)
-                throw new Exception("no user found with head");
-
-
-            //if there is not sequence then  create it
-            DispatchMast createDipatch=new DispatchMast();
-            createDipatch.setPostfix(0l);
-            createDipatch.setPrefix("inv");
-
-            //System.out.println(createDipatch.getPostfix()+":"+createDipatch.getPrefix());
-            dispatchMastDao.save(createDipatch);
-
-
-
-            Long invoiceNumber = dispatchMastDao.getInvoiceNumber("inv");
-
-            //do the same above thing if the invoice data is emty
-            invoiceNumber+=1;
-            //get the invoice and merge with "inv" and then create the invoice for multiple batch
-
-            //check first the data is available or not
-
-            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
-                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
-
-                if (batchDataList.isEmpty())
-                    throw new Exception("no batch data found");
-            }
-
-
-                //iterate and change the status
-            for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
-                List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
-
-                if (batchDataList.isEmpty())
-                    throw new Exception("no batch data found");
-
-                for(BatchData batchData:batchDataList)
-                {
-
-                    if(batchData.getIsFinishMtrSave()==true && batchData.getIsBillGenrated()==false)
-                    {
-                        DispatchData dispatchData=new DispatchData(batchData);
-
-                        dispatchData.setInvoiceNo("inv"+invoiceNumber);
-
-                        dispatchData.setCreatedBy(dispatchList.getCreatedBy());
-                        //saveTheList.add(dispatchData);
-                        //save the complete batch with gr list to the dispatch data with same invoice number
-                        dispatchDataDao.save(dispatchData);
-
-                        batchData.setIsBillGenrated(true);
-                        batchDao.save(batchData);
-                    }
-                }
-            }
-
-
-
-
-            //increament the the invoice number to dispatch mast
-
-
-            DispatchMast dispatchMast =new DispatchMast();
-
-            dispatchMast.setPrefix("inv");
-            dispatchMast.setPartyId(party.get().getId());
-            dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
-            dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
-            dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
-            dispatchMast.setPostfix(invoiceNumber);
-
-            dispatchMastDao.save(dispatchMast);
-            return true;
-
-        }
-
-*/
-
 
         //check the invoice sequece exist or not
         InvoiceSequence invoiceSequenceExist =invoiceSequenceDao.getSequence();
@@ -301,28 +103,20 @@ public class DispatchMastImpl {
             throw new Exception("no party found for id:"+stockMast.getPartyId());
 
 
-       /* //check the user are exist or not
-        if(dispatchList.getCreatedBy()!=null && dispatchList.getUserHeadId()!= null) {
-
-            UserData createdUserExist = userService.getUserById(dispatchList.getCreatedBy());
-
-            if (createdUserExist == null)
-                throw new Exception("no user found for id:" + dispatchList.getCreatedBy());
-
-
-            UserData headUserExist = userService.getUserByUserHeadIdAndId(dispatchList.getUserHeadId(),dispatchList.getCreatedBy());
-            if (headUserExist == null)
-                throw new Exception("no user found with head");
+        //check the credit limit invoice password gloryFab123@@
+        Double pendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.get().getId());
+        if(pendingAmt!=null && pendingAmt > party.get().getCreditLimit())
+        {
+            //check the password and allow to create the invoice else throw the exception
+            if(!dispatchList.getPassword().equals("gloryFab123@@"))
+            {
+                throw new Exception(ConstantFile.Dispatch_Password_Wrong);
+            }
         }
-        else
-            throw new Exception("user head id or createdBy id can't be null");*/
-
-
 
 
 
         //check first the data is available or not
-
         for(BatchAndStockId createDispatch:dispatchList.getBatchAndStockIdList()) {
             List<BatchData> batchDataList = batchDao.findByControlIdAndBatchId(createDispatch.getStockId(), createDispatch.getBatchId());
 
