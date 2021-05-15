@@ -340,6 +340,31 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    //get password to create invoie
+    @GetMapping("/dispatch/get/passwordExist")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> getPasswordToCreateInvoice(@RequestParam(name = "password")String password) throws Exception{
+        GeneralResponse<Boolean,Object> result;
+        try{
+            Boolean flag = dispatchMastService.getPasswordToCreateInvoice(password);
+            if(flag==true)
+            {
+            //result= new GeneralResponse<>(flag, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+                result= new GeneralResponse<>(flag, constantFile.Dispatch_Password_Correct, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+            {
+                result= new GeneralResponse<>(flag, constantFile.Dispatch_Password_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
 
 
 
