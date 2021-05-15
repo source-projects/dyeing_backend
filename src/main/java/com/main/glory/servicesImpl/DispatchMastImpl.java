@@ -108,7 +108,7 @@ public class DispatchMastImpl {
         if(pendingAmt!=null && pendingAmt > party.get().getCreditLimit())
         {
             //check the password and allow to create the invoice else throw the exception
-            if(dispatchList.getPassword()==null || !dispatchList.getPassword().equals("gloryFab123@@"))
+            if(dispatchList.getPassword()==null || getPasswordToCreateInvoice(dispatchList.getPassword())==false)
             {
                 throw new Exception(ConstantFile.Dispatch_Password_Wrong);
             }
@@ -1138,5 +1138,13 @@ public class DispatchMastImpl {
 
     public List<DispatchMast> getDispatchByCreatedByAndUserHeadId(Long id, Long id1) {
         return dispatchMastDao.getDispatchByCreatedByAndUserHeadId(id,id1);
+    }
+
+    public Boolean getPasswordToCreateInvoice(String password) {
+        if(password.equals("gloryFab123@@"))
+            return true;
+            else
+                return false;
+
     }
 }
