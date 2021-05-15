@@ -1,7 +1,9 @@
 package com.main.glory.model.party.request;
 
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
+import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.response.QualityWithDetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,10 @@ public class PartyReport {
     String gst;
     String address;
     String partCode;
+    Double pendingAmt;
+    DispatchMast lastDispatch;
+    Double availableStockValue;
+    List<QualityWithDetail> qualityWithDetailList;
     List<BatchDetail> batchDetailList;
 
 

@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.PaymentMast;
@@ -23,6 +25,8 @@ import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.quality.response.QualityWithDetail;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -37,6 +41,9 @@ import com.main.glory.services.PartyServiceInterface;
 
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface {
+
+    @Autowired
+    QualityNameDao qualityNameDao;
 
     @Autowired
     DispatchMastImpl dispatchMast;
@@ -466,6 +473,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         if(party==null)
             throw new Exception(ConstantFile.Party_Not_Found);
 
+        List<QualityWithDetail> qualityWithDetailList = new ArrayList<>();
 
         PartyReport partyReport =new PartyReport(party);
 
@@ -474,7 +482,6 @@ public class PartyServiceImp implements PartyServiceInterface {
         //if quality id is not coming then get all quality for the given party
         if(qualityId==null)
         {
-
             List<Quality> qualityList = qualityServiceImp.getqualityListByPartyId(party.getId());
             for(Quality quality : qualityList)
             {
@@ -485,6 +492,10 @@ public class PartyServiceImp implements PartyServiceInterface {
                 {
                     batchDetailList.add(batchDetail);
                 }
+
+                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                if(qualityName.isPresent())
+                qualityWithDetailList.add(new QualityWithDetail(qualityName,stockBatchService.getAvailableStockValueByPartyIdWithQualityEntryId(party.getId(),qualityId)));
 
 
             }
@@ -510,9 +521,27 @@ public class PartyServiceImp implements PartyServiceInterface {
             }
             partyReport.setBatchDetailList(batchDetailList);
 
+            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(qualityExist.getQualityNameId());
+            if(qualityName.isPresent())
+            qualityWithDetailList.add(new QualityWithDetail(qualityName,stockBatchService.getAvailableStockValueByPartyIdWithQualityEntryId(party.getId(),qualityId)));
+
         }
 
 
+        //get the more information for analysis
+        Double pendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.getId());
+        //last unpaid dispatch
+        DispatchMast dispatchMast = paymentTermService.getLastUnpaidDispatchByPartyId(party.getId());
+        //get the available stock value by quality name rate * stock batch mtr
+        Double stockAvailable = stockBatchService.getAvailableStockValueByPartyIdWithQualityEntryId(party.getId(),null);
+
+
+
+        //set the values
+        partyReport.setLastDispatch(dispatchMast);
+        partyReport.setPendingAmt(pendingAmt==null?0:pendingAmt);
+        partyReport.setAvailableStockValue(stockAvailable==null?0:stockAvailable);
+        partyReport.setQualityWithDetailList(qualityWithDetailList);
         return partyReport;
     }
 

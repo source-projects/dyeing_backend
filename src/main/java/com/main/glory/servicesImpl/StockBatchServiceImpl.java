@@ -2207,6 +2207,49 @@ public class StockBatchServiceImpl {
         return stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
     }
 
+    public Double getAvailableStockValueByPartyIdWithQualityEntryId(Long partyId, Long qualityEntryId) throws Exception {
+        Double availableStockValue=0.0;
+
+        if(qualityEntryId==null)
+        {
+
+            List<Quality> qualityList = qualityDao.getQualityListByPartyIdId(partyId);
+            for(Quality quality:qualityList)
+            {
+                Optional<QualityName> qualityNameRate = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                if(qualityNameRate.isPresent()) {
+
+                    Double totalMtr = batchDao.getTotalMtrByQualityIdWithBillGeneratedFlag(quality.getId(),false);
+
+                    if(totalMtr!=null)
+                        availableStockValue += qualityNameRate.get().getRate() *totalMtr;
+
+                }
+
+            }
+
+
+        }
+        else {
+            //quality exist or not
+            Quality quality = qualityDao.getqualityById(qualityEntryId);
+            if(quality==null)
+                throw new Exception(ConstantFile.Quality_Data_Not_Exist);
+
+            Optional<QualityName> qualityNameRate = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+            if(qualityNameRate.isPresent()) {
+
+                Double totalMtr = batchDao.getTotalMtrByQualityIdWithBillGeneratedFlag(quality.getId(),false);
+
+                if(totalMtr!=null)
+                    availableStockValue += qualityNameRate.get().getRate() *totalMtr;
+
+            }
+
+        }
+        return availableStockValue;
+    }
+
 
    /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);

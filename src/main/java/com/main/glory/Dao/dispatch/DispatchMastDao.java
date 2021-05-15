@@ -4,6 +4,7 @@ import com.main.glory.model.dispatch.DispatchMast;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -40,4 +41,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
 
     @Query("select SUM(d.netAmt) from DispatchMast d where d.paymentBunchId IS NULL AND d.partyId=:partyId")
     Double getTotalPendingAmtByPartyId(Long partyId);
+
+    @Query(value = "select * from dispatch_mast as x where x.party_id =:partyId AND x.payment_bunch_id IS NULL order by x.id DESC LIMIT 1",nativeQuery = true)
+    DispatchMast getLastPendingDispatchByPartyId(@Param("partyId") Long partyId);
 }

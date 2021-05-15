@@ -30,9 +30,9 @@ public class APILog<T> {
     String deviceType;
     String deviceInfo;
     String userId;
-    @Column(columnDefinition = "varchar(10000)")
+    @Column(columnDefinition = "TEXT")
     String requestBody;
-    @Column(columnDefinition = "varchar(10000)")
+    @Column(columnDefinition = "TEXT")
     String responseBody;
     String responseMsg;
     String method;
