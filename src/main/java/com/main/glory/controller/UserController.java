@@ -248,9 +248,7 @@ public class UserController extends ControllerConfig {
                 token = jwtUtil.generateToken(user, "refreshToken");
                 loginResponse.setRefreshToken(token);
                 result = new GeneralResponse<>(loginResponse, ConstantFile.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,userData);
-                /*System.out.println(headers.toString());
-                System.out.println(request.getRequestURL());*/
-                //logService.saveRequestResponse(request,result,headers,null);
+
 
             }
             else
