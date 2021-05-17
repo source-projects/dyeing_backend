@@ -246,4 +246,8 @@ public class PaymentTermImpl {
     public Double getTotalPendingAmtByPartyId(Long partyId) {
         return dispatchMastDao.getTotalPendingAmtByPartyId(partyId);
     }
+
+    public DispatchMast getLastUnpaidDispatchByPartyId(Long id) {
+        return dispatchMastDao.getLastPendingDispatchByPartyId(id);
+    }
 }

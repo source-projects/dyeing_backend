@@ -20,5 +20,7 @@ public class CreateDispatch {
     Double sgst;
     Double taxAmt;
     Double netAmt;
+    String password;
+    Boolean passwordFlag;
     List<BatchAndStockId> batchAndStockIdList;
 }

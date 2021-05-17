@@ -54,11 +54,12 @@ public class JwtUtil {
 		long exp = 0;
 		if(tokenType.equals("accessToken")){
 			//token expire after 2 days
-			Calendar c = Calendar.getInstance();
+			/*Calendar c = Calendar.getInstance();
 			c.setTime(new Date(timeStamp));
 			c.add(Calendar.DATE,2);
 
-			exp =c.getTimeInMillis();
+			exp =c.getTimeInMillis();*/
+
 
 			claims.put("permissions", user.getUserPermissionData());
 			claims.put("designation", user.getDesignationId().getDesignation());
@@ -75,13 +76,15 @@ public class JwtUtil {
 		claims.put("ts",timeStamp);
 		claims.put("secret", CipherModule.encrypt(user.getId().toString()+ timeStamp));
 
+		System.out.println(new Date(timeStamp)+":issues:"+new Date(exp));
 		return createToken(claims, user.getId().toString(), timeStamp, exp);
 	}
 
 	private String createToken(Map<String, Object> claims, String subject, long timeStamp, long exp) {
 
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(timeStamp))
-				.setExpiration(new Date(exp))
+		//set the time as well
+		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60* 60* 1460))//1460 = 2months hours
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
 	}
 

@@ -378,6 +378,15 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select SUM(x.wt) from BatchData x where x.mergeBatchId=:batchId AND x.isProductionPlanned=:b")
     Double getTotalWtByMergeBatchIdWithProductionFlag(String batchId, boolean b);
 
+    @Query(value = "select sum(b.mtr) from batch_data as b where b.is_bill_genrated=:b and b.control_id IN(select x.id from stock_mast as x where x.quality_id=:qualityEntryId)",nativeQuery = true)
+    Double getTotalMtrByQualityIdWithBillGeneratedFlag(@Param("qualityEntryId") Long qualityEntryId, @Param("b") Boolean b);
+
+    @Query("select count(b.id) from BatchData b where b.mergeBatchId=:batchId")
+    Long getTotalPcsByMergeBatchId(String batchId);
+
+    @Query("select count(b.id) from BatchData b where b.batchId=:batchId and b.mergeBatchId IS NULL")
+    Long getTotalPcsByBatchId(String batchId);
+
 
 
 

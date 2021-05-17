@@ -323,6 +323,8 @@ public class ConstantFile {
     public static String Dispatch_Deleted = "Data deleted successfully";
     public static String Dispatch_Found = "Data found ";
     public static String Dispatch_Not_Found = "Data not found ";
+    public static String Dispatch_Password_Correct="Correct password entered";
+    public static String Dispatch_Password_Wrong="Wrong password entered";
 
 
     //Supplier
