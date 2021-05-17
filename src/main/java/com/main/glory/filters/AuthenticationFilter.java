@@ -191,8 +191,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 				statusCode = 400;
 			}
 
+			System.out.println("------"+errorMessage);
 			//response.get
 			response.sendError(statusCode,errorMessage);
+			//System.out.println(response.toString());
 		}
 	}
 
