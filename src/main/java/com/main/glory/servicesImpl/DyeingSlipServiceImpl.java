@@ -87,6 +87,7 @@ public class DyeingSlipServiceImpl {
 
     public SlipFormatData getDyeingSlipByBatchStockId(String batchId, Long productionId) throws Exception {
 
+        Long totalPcs;
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
         if(dyeingSlipMastExist==null)
             throw new Exception(ConstantFile.DyeingSlip_Not_Found);
@@ -112,10 +113,13 @@ public class DyeingSlipServiceImpl {
         Double wt = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
         if(productionPlan.getIsMergeBatchId()==true)
         {
+            totalPcs = batchDao.getTotalPcsByMergeBatchId(productionPlan.getBatchId());
             wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
         }
         else {
             wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
+            totalPcs = batchDao.getTotalPcsByBatchId(productionPlan.getBatchId());
+
         }
         if(productionPlan.getShadeId()!=null)
         {
@@ -134,7 +138,9 @@ public class DyeingSlipServiceImpl {
 
 
         GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
+
         slipFormatData.setTotalWt(wt);
+        slipFormatData.setBatchCount(totalPcs);
         slipFormatData.setQualityId(record.getQualityId());
         //slipFormatData.setQualityEntryId(quality.getId());
         JetMast jetMast =jetService.getJetMastById(slipFormatData.getJetId());
