@@ -42,7 +42,7 @@ public class Quality {
 	private Date qualityDate;
 	private Long userHeadId;
 	private Double rate;
-	private String HSN="9988";
+	private String HSN="998821";
 	Long qualityNameId;
 	@Column(columnDefinition = "varchar(255) default 'meter'")
 	String billingUnit;
