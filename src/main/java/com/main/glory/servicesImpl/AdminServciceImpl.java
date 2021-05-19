@@ -273,7 +273,7 @@ public class AdminServciceImpl {
 
     public void updateQualityName(QualityName qualityName) throws Exception {
         Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailByNameAndId(qualityName.getQualityName(), qualityName.getId());
-        if(qualityNameExist.isEmpty())
+        if(!qualityNameExist.isEmpty())
             throw new Exception(constantFile.Quality_Name_Exist);
 
         qualityNameDao.saveAndFlush(qualityName);
