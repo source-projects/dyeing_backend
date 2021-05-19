@@ -14,7 +14,7 @@ public interface JetMastDao  extends JpaRepository<JetMast,Long> {
     @Query("select j from JetMast j where id=: controlId")
     Optional<JetMast> findByControlId(Long controlId);
 
-    @Query("select j from JetMast j")
+    @Query("select j from JetMast j ORDER BY j.id ASC")
     List<JetMast> getAll();
 
     @Query("select j from JetMast j where j.name=:name")
