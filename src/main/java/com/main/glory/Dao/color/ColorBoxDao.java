@@ -7,6 +7,7 @@ import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -45,4 +46,10 @@ public interface ColorBoxDao extends JpaRepository<ColorBox, Long> {
 	@Transactional
 	@Query("delete from ColorBox c where c.controlId IS NULL")
     void deleteColorBoxWhichIsNUll();
+
+	@Query(value = "select * from color_box as x where x.issued=:issued and x.controlId IN (select c.id from color_data as c where c.item_id=:itemId)  AND x.ORDER BY x.box_no DESC LIMTI 1",nativeQuery = true)
+    ColorBox getLatestColorBoxByItemIdWithIssuseFlag(@RequestParam("itemId") Long itemId, @RequestParam("issued") Boolean issued);
+
+	@Query("select sum(x.quantityLeft) from ColorBox x where x.controlId IN(select c.id from ColorData c where c.itemId=:itemId) AND x.issued=:issued")
+	Double getTotalQtyLeftByItemIdWithIssueFlag(Long itemId, Boolean issued);
 }

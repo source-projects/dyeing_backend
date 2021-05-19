@@ -21,6 +21,7 @@ import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -1147,4 +1148,20 @@ public class DispatchMastImpl {
                 return false;
 
     }
+
+    public List<DispatchMast> getDispatchByDateFilter(Date fromDate, Date toDate) {
+        return dispatchMastDao.getAllDispatchByDateFilter(fromDate,toDate);
+    }
+
+    public List<QualityWithRateAndTotalMtr> getAllQualityByInvoiceNo(Long postfix) {
+
+        return dispatchDataDao.getAllQualityByInvoiceNo(String.valueOf(postfix));
+
+    }
+
+    public List<Long> getAllBatchEntryIdByQualityAndInvoice(Long qualityEntryId, Long postfix) {
+        return dispatchDataDao.getAllBatchEntryIdByQualityAndInvoice(qualityEntryId,String.valueOf(postfix));
+    }
+
+
 }

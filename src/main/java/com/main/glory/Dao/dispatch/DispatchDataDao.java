@@ -1,17 +1,14 @@
 package com.main.glory.Dao.dispatch;
 
 import com.main.glory.model.dispatch.DispatchData;
-import com.main.glory.model.dispatch.request.BatchAndStockId;
-import com.main.glory.model.dispatch.response.BatchListWithInvoice;
-import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
+import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
@@ -66,7 +63,11 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(d.batchEntryId) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
     List<GetBatchByInvoice> getAllStockByInvoiceNumber(String invoiceNumber);
 
+    @Query("select new com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr(x.qualityEntryId,(select q.qualityName from QualityName q where q.id = (select qq.qualityNameId from Quality qq where qq.id=x.qualityEntryId)),(select q.qualityId from Quality q where q.id=x.qualityEntryId),x.qualityRate) from DispatchData x where x.invoiceNo=:invoiceNo GROUP BY x.qualityEntryId")
+    List<QualityWithRateAndTotalMtr> getAllQualityByInvoiceNo(String invoiceNo);
 
+    @Query("select (x.batchEntryId) from DispatchData x where x.invoiceNo=:invoiceNo AND x.qualityEntryId=:qualityEntryId")
+    List<Long> getAllBatchEntryIdByQualityAndInvoice(Long qualityEntryId, String invoiceNo);
 
 
     //get All Distapatch list

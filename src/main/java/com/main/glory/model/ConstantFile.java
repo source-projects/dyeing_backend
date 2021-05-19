@@ -344,6 +344,7 @@ public class ConstantFile {
     public static String SupplierRate_Deleted = "Data deleted successfully ";
     public static String SupplierRate_Found = "Data found ";
     public static String SupplierRate_Not_Found = "Data not found ";
+    public static String SupplierRate_Not_Exist = "Supplier rate not exist ";
 
     //get by String
     public static String GetBy_String_Wrong = "Get by String Wrong ";
@@ -394,6 +395,7 @@ public class ConstantFile {
     public static Integer inOutTimeCheck = 12;
 
 
+    public static String ColorBox_Not_Found = "Color box not found";
 
 
 }
