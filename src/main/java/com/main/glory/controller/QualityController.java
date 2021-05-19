@@ -10,11 +10,14 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.party.request.PartyReport;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityRequest;
+import com.main.glory.model.quality.request.GetQualityReport;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.quality.response.QualityReport;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -299,6 +302,33 @@ public class QualityController extends ControllerConfig {
         {
             e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    //report of quality
+    @PostMapping(value="/quality/all/report")
+    public ResponseEntity<GeneralResponse<List<QualityReport>,Object>> getPartyReportById(@RequestBody GetQualityReport record) throws Exception {
+        GeneralResponse<List<QualityReport>,Object> result;
+        try {
+            if (record!=null) {
+                List<QualityReport> data = qualityServiceImp.getQualityReport(record);
+                if (!data.isEmpty()) {
+                    result =  new GeneralResponse<>(data, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                } else {
+                    result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+                }
+            }
+            else {
+                result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,record);
+            }
+            logService.saveLog(result, request, debugAll);
+        }catch (Exception e )
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

@@ -2250,6 +2250,11 @@ public class StockBatchServiceImpl {
         return availableStockValue;
     }
 
+    public Double getTotalFinishMtrByBatchEntryIdList(List<Long> batchIdsByQuality) {
+
+        return batchDao.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
+    }
+
 
    /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);

@@ -44,4 +44,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
 
     @Query(value = "select * from dispatch_mast as x where x.party_id =:partyId AND x.payment_bunch_id IS NULL order by x.id DESC LIMIT 1",nativeQuery = true)
     DispatchMast getLastPendingDispatchByPartyId(@Param("partyId") Long partyId);
+
+    @Query("select x from DispatchMast x where Date(x.createdDate)>=Date(:fromDate) AND Date(x.createdDate)<=Date(:toDate)")
+    List<DispatchMast> getAllDispatchByDateFilter(Date fromDate, Date toDate);
 }

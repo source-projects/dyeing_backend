@@ -5,8 +5,6 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
-import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
-import com.main.glory.model.dispatch.response.BatchListWithInvoice;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +13,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -386,6 +383,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select count(b.id) from BatchData b where b.batchId=:batchId and b.mergeBatchId IS NULL")
     Long getTotalPcsByBatchId(String batchId);
+
+    @Query("select SUM(x.mtr) from BatchData x where x.id IN (:batchIdsByQuality)")
+    Double getTotalFinishMtrByBatchEntryIdList(List<Long> batchIdsByQuality);
 
 
 

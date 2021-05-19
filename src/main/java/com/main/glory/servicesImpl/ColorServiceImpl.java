@@ -7,6 +7,7 @@ import com.main.glory.Dao.color.ColorMastDao;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.color.ColorAcknowledgement;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.color.ColorMast;
@@ -406,4 +407,37 @@ public class ColorServiceImpl {
 
         colorBoxDao.saveAll(list);
     }
+
+
+    //change the existing color stock qty and visible color qty based on issue box
+    public void changeExistingColorStock(ColorAcknowledgement record) throws Exception {
+
+       /* //check that the item is exist or not
+        SupplierRate supplierRate =supplierRateDao.getSupplierRateByItemId(record.getItemId());
+
+        if(supplierRate==null)
+            throw new Exception(ConstantFile.SupplierRate_Not_Exist);
+
+
+
+        if(record.getIssue()==true){
+
+            //change in latest issue color box
+            //and add the record in color acknowledgement
+
+            ColorBox colorBox = colorBoxDao.getLatestColorBoxByItemIdWithIssuseFlag(record.getItemId(),true);
+            if(colorBox==null)
+                throw new Exception(ConstantFile.ColorBox_Not_Found);
+
+            Double availableIssuedQty = colorBoxDao.getTotalQtyLeftByItemIdWithIssueFlag(record.getItemId(),true);
+
+            //existingIssuedQty = existingIssuedQty==null ? record.getVisibleQty()
+            if(record.getVisibleQty() > availableIssuedQty)
+                colorBox.setQuantityLeft(colorBox.getQuantityLeft()+(record.getVisibleQty()-availableIssuedQty));
+            else
+                colorBox.setQuantityLeft(colorBox.getQuantityLeft()+(record.getVisibleQty()+availableIssuedQty));
+
+            }
+*/
+        }
 }
