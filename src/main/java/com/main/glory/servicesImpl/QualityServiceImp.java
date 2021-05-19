@@ -11,6 +11,8 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
+import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -18,9 +20,11 @@ import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityRequest;
+import com.main.glory.model.quality.request.GetQualityReport;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.quality.response.QualityReport;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -37,6 +41,9 @@ import com.main.glory.model.quality.Quality;
 public class QualityServiceImp  {
 
     ConstantFile constantFile;
+
+    @Autowired
+    DispatchMastImpl dispatchMastService;
 
     @Autowired
     ProgramServiceImpl programService;
@@ -508,5 +515,58 @@ public class QualityServiceImp  {
 
     public Quality getQualityByStockId(Long controlId) {
         return qualityDao.getQualityByStockId(controlId);
+    }
+
+    public List<QualityReport> getQualityReport(GetQualityReport record) throws Exception {
+        List<QualityReport> qualityReportList=new ArrayList<>();
+
+        if(record.getFromDate()==null || record.getToDate()==null)
+            throw new Exception(ConstantFile.Null_Record_Passed);
+
+        if(record.getQualityEntryId()==null)
+        {
+            List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByDateFilter(record.getFromDate(),record.getToDate());
+            for(DispatchMast dispatchMast:dispatchMastList)
+            {
+                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(dispatchMast.getPostfix());
+                for(QualityWithRateAndTotalMtr qualityWithRateAndTotalMtr:qualityWithRateAndTotalMtrList)
+                {
+                    List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(),dispatchMast.getPostfix());
+
+                    if(!batchIdsByQuality.isEmpty())
+                    {
+                        Double totalMtr = stockBatchService.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
+                        qualityReportList.add(new QualityReport(qualityWithRateAndTotalMtr,totalMtr));
+                    }
+                }
+            }
+
+
+        }
+        else
+        {
+            //check that the quality is exist or not
+            Quality qualityExist = qualityDao.getqualityById(record.getQualityEntryId());
+            if(qualityExist==null)
+                throw new Exception(ConstantFile.Quality_Data_Not_Exist);
+
+
+            List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByDateFilter(record.getFromDate(),record.getToDate());
+            for(DispatchMast dispatchMast:dispatchMastList)
+            {
+                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(dispatchMast.getPostfix());
+                for(QualityWithRateAndTotalMtr qualityWithRateAndTotalMtr:qualityWithRateAndTotalMtrList)
+                {
+                    if(qualityWithRateAndTotalMtr.getQualityEntryId().equals(record.getQualityEntryId())) {
+                        List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(), dispatchMast.getPostfix());
+                        if (!batchIdsByQuality.isEmpty()) {
+                            Double totalMtr = stockBatchService.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
+                            qualityReportList.add(new QualityReport(qualityWithRateAndTotalMtr, totalMtr));
+                        }
+                    }
+                }
+            }
+        }
+        return qualityReportList;
     }
 }

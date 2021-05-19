@@ -4,6 +4,7 @@ import com.main.glory.Dao.SupplierDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.color.ColorAcknowledgement;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
 import com.main.glory.model.color.request.GetAllBox;
@@ -283,6 +284,27 @@ public class ColorController extends ControllerConfig {
 		}
 		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatusCode()));
 	}
+
+	//get the color stock update aknowledgement
+	@PutMapping("/color/box/changeExistingColorStock")
+	public ResponseEntity<GeneralResponse<Boolean,Object>> changeExistingColorStock(@RequestBody ColorAcknowledgement record){
+		GeneralResponse<Boolean,Object> result;
+		try {
+
+			colorService.changeExistingColorStock(record);
+			result= new GeneralResponse<>(true, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+
+			logService.saveLog(result,request,debugAll);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+			logService.saveLog(result,request,true);
+		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+	}
+
+
 
 
 }
