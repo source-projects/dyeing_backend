@@ -10,6 +10,7 @@ import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
 import java.util.List;
@@ -42,7 +43,8 @@ public class Quality {
 	private Date qualityDate;
 	private Long userHeadId;
 	private Double rate;
-	private String HSN="998821";
+	@ColumnDefault("998821")
+	private String HSN;
 	Long qualityNameId;
 	@Column(columnDefinition = "varchar(255) default 'meter'")
 	String billingUnit;
