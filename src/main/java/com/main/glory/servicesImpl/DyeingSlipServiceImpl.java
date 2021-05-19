@@ -161,7 +161,7 @@ public class DyeingSlipServiceImpl {
         return dyeingSlipMast;
     }
 
-    public void addAdditionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
+    public Long addAdditionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
         //AdditionDyeingProcessSlip toStoreSlip =new AdditionDyeingProcessSlip();
 
@@ -194,6 +194,8 @@ public class DyeingSlipServiceImpl {
             }
 
             dyeingSlipItemDataDao.saveAll(list);
+
+            return dyeingSlipMast.getId();
 
 
     }

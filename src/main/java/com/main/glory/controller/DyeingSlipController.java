@@ -124,21 +124,21 @@ public class DyeingSlipController extends ControllerConfig {
 
     //add addition dyeing slip
     @PostMapping("/dyeingSlip/add/additionalDyeingSlip/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Long,Object>> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
+        GeneralResponse<Long,Object> result;
         try {
             if(addAdditionDyeingSlipModel ==null)
-            result = new GeneralResponse<>(false, constantFile.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(null, constantFile.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
 
-            dyeingSlipService.addAdditionalSlipData(addAdditionDyeingSlipModel);
-            result = new GeneralResponse<>(true, constantFile.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            Long id = dyeingSlipService.addAdditionalSlipData(addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(id, constantFile.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
 
             logService.saveLog(result,request,debugAll);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
