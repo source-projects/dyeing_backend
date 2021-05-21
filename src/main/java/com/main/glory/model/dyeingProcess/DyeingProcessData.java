@@ -29,6 +29,7 @@ public class DyeingProcessData {
     Long sequence;
     Boolean isColor;
     Double liquerRation;
+    String shadeType;
 
 
     @OneToMany(cascade = CascadeType.ALL)
