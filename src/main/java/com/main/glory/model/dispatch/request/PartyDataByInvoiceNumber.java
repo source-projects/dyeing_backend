@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,6 +28,7 @@ public class PartyDataByInvoiceNumber {
     Double percentageDiscount;
     List<QualityBillByInvoiceNumber> qualityList;
     List<BatchWithGr> batchWithGrList;
+    Date createdDate;
 
 
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList, DispatchMast dispatchMast) {

@@ -37,6 +37,7 @@ public class Supplier {
     Long paymentTerms;
     Long updatedBy;
     Long userHeadId;
+    Long qualityNameId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")

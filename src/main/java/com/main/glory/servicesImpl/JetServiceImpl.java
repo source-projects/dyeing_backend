@@ -11,6 +11,7 @@ import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
@@ -39,7 +40,6 @@ import java.util.*;
 @Service("jetServiceImpl")
 @Transactional
 public class JetServiceImpl {
-
 
 
     @Autowired
@@ -93,21 +93,21 @@ public class JetServiceImpl {
     BatchDao batchDao;
 
     ConstantFile constantFile;
+
     public void saveJet(AddJet jetMast) throws Exception {
 
 
         Optional<JetMast> jetExist = jetMastDao.findByName(jetMast.getName());
-        if(jetExist.isPresent()) {
+        if (jetExist.isPresent()) {
             throw new Exception(constantFile.Jet_Exist_With_Name);
         }
-        JetMast newJet=new JetMast(jetMast);
+        JetMast newJet = new JetMast(jetMast);
         jetMastDao.save(newJet);
 
     }
 
 
-
-    public void saveJetData( List<AddJetData> jetDataList) throws Exception{
+    public void saveJetData(List<AddJetData> jetDataList) throws Exception {
 
         //get the dyeing process color box list
         Long productionId = jetDataList.get(0).getProductionId();
@@ -116,15 +116,14 @@ public class JetServiceImpl {
 
 
         ProductionPlan productionPlanExits = productionPlanService.getProductionData(productionId);
-        if(productionPlanExits.getStatus())
+        if (productionPlanExits.getStatus())
             throw new Exception(ConstantFile.Production_With_Jet);
 
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
 
 
-        if(shadeMast.isEmpty())
-        {
-            throw new Exception("no shade found with id:"+productionPlanExits.getShadeId());
+        if (shadeMast.isEmpty()) {
+            throw new Exception("no shade found with id:" + productionPlanExits.getShadeId());
         }
 
 
@@ -132,18 +131,16 @@ public class JetServiceImpl {
         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
 
 
-       //count the color/chemical amt to deduct
-        Double colorAmtToDeduct=0.0;
+        //count the color/chemical amt to deduct
+        Double colorAmtToDeduct = 0.0;
         //get the batch is merge batch id or batch id merge batcg id
         BatchData isMergeBatch = batchDao.getIsMergeBatchId(productionPlanExits.getBatchId());
         BatchData isBatchId = batchDao.getIsBatchId(productionPlanExits.getBatchId());
         Double totalBatchWt;
-        if(productionPlanExits.getIsMergeBatchId()==false)
-        {
+        if (productionPlanExits.getIsMergeBatchId() == false) {
             //get total wt of batch id
             totalBatchWt = batchDao.getTotalWtByBatchId(productionPlanExits.getBatchId());
-        }
-        else {
+        } else {
             //get total wt of merge batcg uid
             totalBatchWt = batchDao.getTotalWtByMergeBatchId(productionPlanExits.getBatchId());
         }
@@ -173,69 +170,75 @@ public class JetServiceImpl {
 
 
         }*/
+
+
+
 /*
+        //List<DyeingProcessData> dyeingProcessDataList = dyeingProcessService.dyeingProcessDataWithShadeTypeAndCategory(dyeingProcessMast.getId(),shadeMast.get().getCategory());
         //check the capacity first for the chemical box issue had that much capacity to fill the batch or not
         for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
         {
             for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
             {
-                String suppplierName = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
-                SupplierRate supplierRate=supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
-                Double data=0.0;
-                if(supplierRate.getItemType().equals("Chemical"))
-                    colorAmtToDeduct = (dyeingChemicalData.getConcentration()*totalBatchWt*dyeingProcessData.getLiquerRation())/1000;
+                //get the Only dyeing chemical item based on shade type
+                    if (dyeingChemicalData.getShadeType().equals(shadeMast.get().getCategory()) || dyeingChemicalData.getShadeType().equals("DEFAULT")) {
+                    String suppplierName = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
+                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                    Double data = 0.0;
+                    if (supplierRate.getItemType().equals("Chemical"))
+                        colorAmtToDeduct = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
 
-                List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
+                    List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
 
-                if(colorBoxList.isEmpty())
-                    throw new Exception("no chemical box is available for batch, supplier:"+suppplierName+", item:"+supplierRate.getItemName());
+                    if (colorBoxList.isEmpty())
+                        throw new Exception("no chemical box is available for batch, supplier:" + suppplierName + ", item:" + supplierRate.getItemName());
 
-                for(ColorBox c:colorBoxList)
-                {
-                    data += c.getQuantityLeft();
+                    for (ColorBox c : colorBoxList) {
+                        data += c.getQuantityLeft();
+
+                    }
+                    if (colorAmtToDeduct > data)
+                        throw new Exception("issue the box first because required chemical amt:" + colorAmtToDeduct + " and available is:" + data + " for batch, item:" + dyeingChemicalData.getItemId());
 
                 }
-                if(colorAmtToDeduct > data)
-                    throw new Exception("issue the box first because required chemical amt:"+colorAmtToDeduct+" and available is:"+data+" for batch, item:"+dyeingChemicalData.getItemId());
-
             }
 
 
         }
 
-*/
+
+ */
+
         //*********  Color item checks end
 
 
-
         //save to jet data first check the capacity
-        Double availableJetCapacity=0.0;
+        Double availableJetCapacity = 0.0;
 
-        Double availableBatchInJetCapacity=0.0;
+        Double availableBatchInJetCapacity = 0.0;
         Double newBatchCapacity = 0.0;
 
         //first check the capacity and production detail is available or not
-        for(AddJetData addJetData:jetDataList)
-        {
-            if(addJetData.getControlId()==null)
+        for (AddJetData addJetData : jetDataList) {
+            if (addJetData.getControlId() == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
-            if(addJetData.getProductionId()==null)
+            if (addJetData.getProductionId() == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
             Optional<JetMast> jetMastExist = jetMastDao.findById(addJetData.getControlId());
 
-            ProductionPlan productionPlanExist=productionPlanService.getProductionData(addJetData.getProductionId());
+            ProductionPlan productionPlanExist = productionPlanService.getProductionData(addJetData.getProductionId());
 
-            Optional<JetData> jetDataExistWithProducton=jetDataDao.findByControlIdAndProductionId(addJetData.getControlId(),addJetData.getProductionId());
+            Optional<JetData> jetDataExistWithProducton = jetDataDao.findByControlIdAndProductionId(addJetData.getControlId(), addJetData.getProductionId());
 
-            if(jetMastExist.isEmpty())
+            if (jetMastExist.isEmpty())
                 throw new Exception("Jet Mast is not found");
 
-            if(productionPlanExist==null)
+            if (productionPlanExist == null)
                 throw new Exception("production data not found");
 
-            if(jetDataExistWithProducton.isPresent())
+            if (jetDataExistWithProducton.isPresent())
                 throw new Exception(ConstantFile.Production_With_Jet);
 
 
@@ -245,38 +248,32 @@ public class JetServiceImpl {
 
             //existing jet capacity with batch
             List<JetData> exstingJetData = jetDataDao.findByControlId(jetMastExist.get().getId());
-            for(JetData jetData:exstingJetData)
-            {
+            for (JetData jetData : exstingJetData) {
                 ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
-                if (productionPlanExits!=null)
-                {
+                if (productionPlanExits != null) {
 
-                    Double batchDataQTY=0.0;
-                    if(productionPlan.getIsMergeBatchId()==false)
-                    batchDataQTY = batchDao.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId());
+                    Double batchDataQTY = 0.0;
+                    if (productionPlan.getIsMergeBatchId() == false)
+                        batchDataQTY = batchDao.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId());
                     else
-                    batchDataQTY = batchDao.getBatchWithoutFinishMtrQTYByMergeId(productionPlan.getBatchId());
-                //    System.out.println(batchDataQTY.getWT());
-                    if(batchDataQTY!=0.0)
-                    availableBatchInJetCapacity+=batchDataQTY;
+                        batchDataQTY = batchDao.getBatchWithoutFinishMtrQTYByMergeId(productionPlan.getBatchId());
+                    //    System.out.println(batchDataQTY.getWT());
+                    if (batchDataQTY != 0.0)
+                        availableBatchInJetCapacity += batchDataQTY;
 
                 }
             }
 
 
-
             //new batch capacity
             ProductionPlan productionPlan = productionPlanService.getProductionData(addJetData.getProductionId());
-            if (productionPlan!=null)
-            {
-                if(productionPlan.getIsMergeBatchId()==false) {
+            if (productionPlan != null) {
+                if (productionPlan.getIsMergeBatchId() == false) {
                     Double batchDataQTY = batchDao.getBatchWithoutFinishMtrQTYById(productionPlan.getBatchId());
                     //       System.out.println(batchDataQTY.getWT());
                     if (batchDataQTY != null)
                         newBatchCapacity += batchDataQTY;
-                }
-                else
-                {
+                } else {
                     Double batchDataQTY = batchDao.getBatchWithoutFinishMtrQTYByMergeId(productionPlan.getBatchId());
                     //       System.out.println(batchDataQTY.getWT());
                     if (batchDataQTY != null)
@@ -287,14 +284,13 @@ public class JetServiceImpl {
 
 
             //add the capacity with new batch capacity
-            newBatchCapacity+=availableBatchInJetCapacity;
+            newBatchCapacity += availableBatchInJetCapacity;
 
             //check the capacity is fullfill the requirement
-            if(newBatchCapacity > availableJetCapacity)
+            if (newBatchCapacity > availableJetCapacity)
                 throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
 
             //********** jet capcity check end
-
 
 
             Optional<JetMast> jetMastExistJetMast = jetMastDao.findById(addJetData.getControlId());
@@ -339,32 +335,32 @@ public class JetServiceImpl {
 
             }*/
 
-            /*
+
+           /*
             //deduct the chemical amt from the box as per the dyeing process
             for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
             {
-                for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
-                {
-                    colorAmtToDeduct = (dyeingProcessData.getLiquerRation()*totalBatchWt*dyeingChemicalData.getConcentration())/1000;
-                    System.out.println(dyeingChemicalData.getItemId()+":chemical amt deduct:"+colorAmtToDeduct);
-                    List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
+                for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData()) {
+                    //get the dyeing process item based on shade type
 
-                    for(ColorBox colorBox:colorBoxList)
-                    {
-                        if((colorAmtToDeduct - colorBox.getQuantityLeft()) > 0 )
-                        {
-                            System.out.println("use chemical:"+colorBox.getBoxNo());
-                            colorBox.setFinished(true);
-                            colorAmtToDeduct=colorAmtToDeduct-colorBox.getQuantityLeft();
-                            colorBox.setQuantityLeft(0.0);
-                        }
-                        else
-                        {
-                            System.out.println("\"use chemical:\""+colorBox.getBoxNo());
-                            colorBox.setQuantityLeft(colorBox.getQuantityLeft() - colorAmtToDeduct);
-                            break;
-                        }
+                    if (dyeingChemicalData.getShadeType().equals(shadeMast.get().getCategory()) || dyeingChemicalData.getShadeType().equals("DEFAULT")) {
+                        colorAmtToDeduct = (dyeingProcessData.getLiquerRation() * totalBatchWt * dyeingChemicalData.getConcentration()) / 1000;
+                        System.out.println(dyeingChemicalData.getItemId() + ":chemical amt deduct:" + colorAmtToDeduct);
+                        List<ColorBox> colorBoxList = colorService.getColorBoxListByItemId(dyeingChemicalData.getItemId());
 
+                        for (ColorBox colorBox : colorBoxList) {
+                            if ((colorAmtToDeduct - colorBox.getQuantityLeft()) > 0) {
+                                System.out.println("use chemical:" + colorBox.getBoxNo());
+                                colorBox.setFinished(true);
+                                colorAmtToDeduct = colorAmtToDeduct - colorBox.getQuantityLeft();
+                                colorBox.setQuantityLeft(0.0);
+                            } else {
+                                System.out.println("\"use chemical:\"" + colorBox.getBoxNo());
+                                colorBox.setQuantityLeft(colorBox.getQuantityLeft() - colorAmtToDeduct);
+                                break;
+                            }
+
+                        }
                     }
                 }
 
@@ -372,12 +368,12 @@ public class JetServiceImpl {
 
             }
 
-*/
+            */
+
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
 
             DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
-            List<DyeingSlipData> dyeingSlipDataList =new ArrayList<>();
-
+            List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
 
 
 //            //check the slip is already exist or not
@@ -392,61 +388,58 @@ public class JetServiceImpl {
             dyeingSlipMast.setBatchId(productionPlanExits.getBatchId());
             //dyeingSlipMast.setStockId(productionPlanExist.getStockId());
 
-            for(DyeingProcessData dyeingProcessData:dyeingProcessMast.getDyeingProcessData())
-            {
+            for (DyeingProcessData dyeingProcessData : dyeingProcessMast.getDyeingProcessData()) {
                 DyeingSlipData dyeingSlipData = new DyeingSlipData(dyeingProcessData);
                 List<DyeingSlipItemData> slipItemLists = new ArrayList<>();
-                for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
-                {
-                    DyeingSlipItemData slipItemList =new DyeingSlipItemData();
-                    slipItemList.setItemId(dyeingChemicalData.getItemId());
-                    SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
-                    slipItemList.setItemName(supplierRateItem.getItemName());
+                for (DyeingChemicalData dyeingChemicalData : dyeingProcessData.getDyeingChemicalData()) {
 
-                    String name = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
-                    slipItemList.setSupplierName(name);
+                    if (dyeingChemicalData.getShadeType().equals(shadeMast.get().getCategory()) || dyeingChemicalData.getShadeType().equals("DEFAULT")) {
+                        DyeingSlipItemData slipItemList = new DyeingSlipItemData();
+                        slipItemList.setItemId(dyeingChemicalData.getItemId());
+                        SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                        slipItemList.setItemName(supplierRateItem.getItemName());
 
-                    Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
-                    slipItemList.setSupplierId(supplier.getId());
+                        String name = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
+                        slipItemList.setSupplierName(name);
 
-                    Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
+                        Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
+                        slipItemList.setSupplierId(supplier.getId());
 
-                    //for item type is color or not
-                    if(supplierRate.get().getItemType().equals("Color"))
-                        slipItemList.setIsColor(true);
-                    else
-                        slipItemList.setIsColor(false);
+                        Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
 
-
-                    Double amtQty = 0.0;
-                    if(supplierRate.isPresent()) {
+                        //for item type is color or not
                         if (supplierRate.get().getItemType().equals("Color"))
-                            amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
-                        else {
+                            slipItemList.setIsColor(true);
+                        else
+                            slipItemList.setIsColor(false);
 
-                            if(dyeingChemicalData.getByChemical().equals("L")) {
-                                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
-                                //function call to check in the range
-                                amtQty = getAmountInRange(amtQty);
-                            }
-                            else if(dyeingChemicalData.getByChemical().equals("W"))
-                            {
-                                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt ) / 100;
-                                //function call to check in the range
-                                amtQty = getAmountInRange(amtQty);
-                            }
-                            else if(dyeingChemicalData.getByChemical().equals("F"))
-                            {
-                                amtQty = dyeingChemicalData.getConcentration();
-                                //function call to check in the range
-                                amtQty = getAmountInRange(amtQty);
+
+                        Double amtQty = 0.0;
+                        if (supplierRate.isPresent()) {
+                            if (supplierRate.get().getItemType().equals("Color"))
+                                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
+                            else {
+
+                                if (dyeingChemicalData.getByChemical().equals("L")) {
+                                    amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
+                                    //function call to check in the range
+                                    amtQty = getAmountInRange(amtQty);
+                                } else if (dyeingChemicalData.getByChemical().equals("W")) {
+                                    amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
+                                    //function call to check in the range
+                                    amtQty = getAmountInRange(amtQty);
+                                } else if (dyeingChemicalData.getByChemical().equals("F")) {
+                                    amtQty = dyeingChemicalData.getConcentration();
+                                    //function call to check in the range
+                                    amtQty = getAmountInRange(amtQty);
+                                }
                             }
                         }
+
+
+                        slipItemList.setQty(amtQty);
+                        slipItemLists.add(slipItemList);
                     }
-
-
-                    slipItemList.setQty(amtQty);
-                    slipItemLists.add(slipItemList);
                 }
                 dyeingSlipData.setDyeingSlipItemData(slipItemLists);
                 dyeingSlipDataList.add(dyeingSlipData);
@@ -460,40 +453,35 @@ public class JetServiceImpl {
             //****** also add the shade data with the slip of dyeing process of dyeing function
 
             //get the dyeing function from the dyeing process of batch
-            DyeingSlipData getDyeingProcess  = dyeingSlipService.getDyeingProcessDataOnlyBySlipMast(x.getId());
+            DyeingSlipData getDyeingProcess = dyeingSlipService.getDyeingProcessDataOnlyBySlipMast(x.getId());
 
             //if it is exisiting then add shade data with that dyeing process
             List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
-            if(getDyeingProcess!=null)
-            {
+            if (getDyeingProcess != null) {
                 //add the privious one item in dyeing list
 
-                for(DyeingSlipItemData dyeingSlipItemData:getDyeingProcess.getDyeingSlipItemData())
-                {
+                for (DyeingSlipItemData dyeingSlipItemData : getDyeingProcess.getDyeingSlipItemData()) {
                     dyeingSlipItemDataList.add(dyeingSlipItemData);
                 }
 
-                for(ShadeData shadeData:shadeMast.get().getShadeDataList())
-                {
+                for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
                     Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
                     SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
 
-                        DyeingSlipItemData dyeingSlipItemData=new DyeingSlipItemData(shadeData,supplierRate,supplier,totalBatchWt);
+                    DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(shadeData, supplierRate, supplier, totalBatchWt);
 
                     dyeingSlipItemDataList.add(dyeingSlipItemData);
                 }
-            }
-            else {
+            } else {
                 //if not exist then create slip for dyeing with shade data only
-                getDyeingProcess=new DyeingSlipData();
+                getDyeingProcess = new DyeingSlipData();
                 getDyeingProcess.setControlId(x.getId());
                 getDyeingProcess.setProcessType("Dyeing");
-                for(ShadeData shadeData:shadeMast.get().getShadeDataList())
-                {
+                for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
                     Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
                     SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
 
-                    DyeingSlipItemData dyeingSlipItemData=new DyeingSlipItemData(shadeData,supplierRate,supplier,totalBatchWt);
+                    DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(shadeData, supplierRate, supplier, totalBatchWt);
 
                     dyeingSlipItemDataList.add(dyeingSlipItemData);
                 }
@@ -505,33 +493,28 @@ public class JetServiceImpl {
             //if not then create on function and add the shade data with function by the given formula
 
 
-
             // 3. change the status of production
             productionPlanExist.setStatus(true);
             productionPlanDao.save(productionPlanExist);
 
 
-            long count=0;
+            long count = 0;
 
 
             //get the count of production in existing jet
-            List<JetData> existingJetData=jetDataDao.findByControlId(jetDataList.get(0).getControlId());
-            if(existingJetData.isEmpty())
-            {
+            List<JetData> existingJetData = jetDataDao.findByControlId(jetDataList.get(0).getControlId());
+            if (existingJetData.isEmpty()) {
                 //save the jet data
-                JetData saveJetData=new JetData(addJetData,productionPlanExist);
+                JetData saveJetData = new JetData(addJetData, productionPlanExist);
                 saveJetData.setSequence(1l);
                 jetDataDao.save(saveJetData);
-            }
-            else
-            {
-                for(JetData jetData:existingJetData)
-                {
+            } else {
+                for (JetData jetData : existingJetData) {
                     count++;
                 }
                 //save jet with production
-                count=count+1;
-                JetData saveJetData=new JetData(addJetData,productionPlanExist);
+                count = count + 1;
+                JetData saveJetData = new JetData(addJetData, productionPlanExist);
 
                 saveJetData.setSequence(count);
                 jetDataDao.save(saveJetData);
@@ -543,35 +526,30 @@ public class JetServiceImpl {
         }
 
 
-
-
     }
 
     Double getAmountInRange(Double amtQty) {
 
         List<QuantityRange> quantityRangeList = quantityRangeDao.getAllRange();
-        Double valueToReturn=0.0;
+        Double valueToReturn = 0.0;
 
-        int i=0;
-        for(QuantityRange q:quantityRangeList)
-        {
-            if(q.getValue()>amtQty){
+        int i = 0;
+        for (QuantityRange q : quantityRangeList) {
+            if (q.getValue() > amtQty) {
 
-                if(i>0 && i<quantityRangeList.size()) {
+                if (i > 0 && i < quantityRangeList.size()) {
 
                     valueToReturn = (q.getValue() + quantityRangeList.get(i - 1).getValue()) / 2;// i'th contain last index
                     if (amtQty < valueToReturn) {
-                        valueToReturn = quantityRangeList.get(i-1).getValue();
+                        valueToReturn = quantityRangeList.get(i - 1).getValue();
                     } else {
                         valueToReturn = q.getValue();
                     }
-                }
-                else
-                {
-                    if(i==0)
-                        valueToReturn=quantityRangeList.get(0).getValue();
+                } else {
+                    if (i == 0)
+                        valueToReturn = quantityRangeList.get(0).getValue();
                     else
-                        valueToReturn=quantityRangeList.get(quantityRangeList.size()-1).getValue();
+                        valueToReturn = quantityRangeList.get(quantityRangeList.size() - 1).getValue();
                 }
 
                 break;
@@ -579,45 +557,43 @@ public class JetServiceImpl {
             i++;
 
         }
-        return  valueToReturn;
+        return valueToReturn;
 
     }
 
-    public List<GetJetData> getJetData(Long id) throws Exception{
+    public List<GetJetData> getJetData(Long id) throws Exception {
 
-        List<GetJetData> getJetDataList=new ArrayList<>();
+        List<GetJetData> getJetDataList = new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
-        if(jetDataList.isEmpty())
+        if (jetDataList.isEmpty())
             throw new Exception(ConstantFile.Jet_Not_Found);
 
-        for(JetData jetData:jetDataList)
-        {
+        for (JetData jetData : jetDataList) {
             getJetDataList.add(new GetJetData(jetData));
         }
         return getJetDataList;
     }
-    public List<GetJetData> getJetRecordData(Long id) throws Exception{
 
-        List<GetJetData> getJetDataList=new ArrayList<>();
+    public List<GetJetData> getJetRecordData(Long id) throws Exception {
+
+        List<GetJetData> getJetDataList = new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(id);
 
-        for(JetData jetData:jetDataList)
-        {
+        for (JetData jetData : jetDataList) {
             getJetDataList.add(new GetJetData(jetData));
         }
         return getJetDataList;
     }
 
-    public List<GetStatus> getJetStatusList() throws Exception{
+    public List<GetStatus> getJetStatusList() throws Exception {
 
-        List<GetStatus> getStatusList=new ArrayList<>();
+        List<GetStatus> getStatusList = new ArrayList<>();
 
-        for(JetStatus jetStatus:JetStatus.values())
-        {
+        for (JetStatus jetStatus : JetStatus.values()) {
             getStatusList.add(new GetStatus(jetStatus));
         }
 
-        if(getStatusList.isEmpty())
+        if (getStatusList.isEmpty())
             throw new Exception("No status found");
 
         return getStatusList;
@@ -629,16 +605,15 @@ public class JetServiceImpl {
 
         //change the production sequnce in same jet
 
-        if(jetDataToUpdate.getTo().getJetId().equals(jetDataToUpdate.getFrom().getJetId()))
-        {
+        if (jetDataToUpdate.getTo().getJetId().equals(jetDataToUpdate.getFrom().getJetId())) {
             //check the production is avaialbe or not
-            ProductionPlan productionExist=productionPlanService.getProductionData(jetDataToUpdate.getFrom().getProductionId());
+            ProductionPlan productionExist = productionPlanService.getProductionData(jetDataToUpdate.getFrom().getProductionId());
 
-            if(productionExist==null)
+            if (productionExist == null)
                 throw new Exception("no production data found");
-            productionExist=productionPlanService.getProductionData(jetDataToUpdate.getTo().getProductionId());
+            productionExist = productionPlanService.getProductionData(jetDataToUpdate.getTo().getProductionId());
 
-            if(productionExist==null)
+            if (productionExist == null)
                 throw new Exception("no production data found");
 
             //update the sequence of production as per the requirement
@@ -670,9 +645,7 @@ public class JetServiceImpl {
             jetDataDao.save(newJetData);
 
 
-
-        }
-        else {
+        } else {
             //change the production sequnce in between two jet
 
 
@@ -691,7 +664,7 @@ public class JetServiceImpl {
             if (!jetDataList.isEmpty()) {
                 for (JetData jetData : jetDataList) {
                     ProductionPlan productionPlan = productionPlanService.getProductionData(jetData.getProductionId());
-                    List<BatchData> batchDataList = batchDao.getBatchByBatchId( productionPlan.getBatchId());
+                    List<BatchData> batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
 
                     if (batchDataList.isEmpty())
                         throw new Exception("no batch or production data found");
@@ -754,21 +727,16 @@ public class JetServiceImpl {
     }
 
 
+    public List<GetJetData> getJetDataWithInQueueProdution(Long id) throws Exception {
 
-
-
-
-    public List<GetJetData> getJetDataWithInQueueProdution(Long id) throws Exception{
-
-        List<GetJetData> getJetDataList=new ArrayList<>();
+        List<GetJetData> getJetDataList = new ArrayList<>();
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
-        if(jetDataList.isEmpty())
+        if (jetDataList.isEmpty())
             throw new Exception(constantFile.Jet_Not_Found);
 
         //fetch the data which are in Queue
-        for(JetData jetData:jetDataList)
-        {
-            if(jetData.getStatus()==JetStatus.inQueue) {
+        for (JetData jetData : jetDataList) {
+            if (jetData.getStatus() == JetStatus.inQueue) {
                 getJetDataList.add(new GetJetData(jetData));
             }
         }
@@ -778,42 +746,36 @@ public class JetServiceImpl {
         return getJetDataList;
     }
 
-    public List<GetAllJetMast> getAllJetData() throws Exception{
+    public List<GetAllJetMast> getAllJetData() throws Exception {
         List<JetMast> jetMastList = jetMastDao.getAll();
 
-        List<GetAllJetMast> getAllJetMast=new ArrayList<>();
+        List<GetAllJetMast> getAllJetMast = new ArrayList<>();
 
         /*if(jetMastList.isEmpty())
             return  jetMastList;*/
 
-        int i=0;
-        for(JetMast jetMast:jetMastList)
-        {
+        int i = 0;
+        for (JetMast jetMast : jetMastList) {
             List<GetJetData> jetDataList = new ArrayList<>();
-            List<JetData> existJetDataList =  jetDataDao.findByControlId(jetMast.getId());
+            List<JetData> existJetDataList = jetDataDao.findByControlId(jetMast.getId());
 
-            for(JetData jetData:existJetDataList)
-            {
-                if(jetData.getStatus()==JetStatus.inQueue)
-                {
+            for (JetData jetData : existJetDataList) {
+                if (jetData.getStatus() == JetStatus.inQueue) {
                     ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
-                    if(productionPlan==null)
+                    if (productionPlan == null)
                         continue;
-                    GetAllProductionWithShadeData data=productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
-                    GetJetData getJetData=null;
-                    if(productionPlan.getIsDirect()==false)
-                    {
+                    GetAllProductionWithShadeData data = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
+                    GetJetData getJetData = null;
+                    if (productionPlan.getIsDirect() == false) {
                         ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
-                        if(colorTone!=null) {
+                        if (colorTone != null) {
                             DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
-                            getJetData = new GetJetData(data,jetData,colorTone,dyeingProcessMast);
+                            getJetData = new GetJetData(data, jetData, colorTone, dyeingProcessMast);
                             getJetData.setBatchId(productionPlan.getBatchId());
                             jetDataList.add(getJetData);
                         }
-                    }
-                    else
-                    {
-                        getJetData=new GetJetData(jetData,data);
+                    } else {
+                        getJetData = new GetJetData(jetData, data);
                         getJetData.setBatchId(productionPlan.getBatchId());
                         getJetData.setProcessName("directDyeing");
                         jetDataList.add(getJetData);
@@ -833,7 +795,7 @@ public class JetServiceImpl {
             allJetMast.setCapacity(jetMast.getCapacity());
             allJetMast.setName(jetMast.getName());
 
-            if(!jetDataList.isEmpty())
+            if (!jetDataList.isEmpty())
                 allJetMast.setJetDataList(jetDataList);
 
             getAllJetMast.add(allJetMast);
@@ -843,37 +805,35 @@ public class JetServiceImpl {
 
     }
 
-    public void updateProductionStatus(ChangeStatus jetDataToUpdate, String id) throws Exception{
+    public void updateProductionStatus(ChangeStatus jetDataToUpdate, String id) throws Exception {
 
         /*
-            * before change the status of batch to complete from the jet
-            * make sure the user had permission and belong to the batch
-            * then batch can be updated
-            *
-            ****** optional****
+         * before change the status of batch to complete from the jet
+         * make sure the user had permission and belong to the batch
+         * then batch can be updated
+         *
+         ****** optional****
          */
 
-        Optional<JetData> jetDataExist= jetDataDao.findByControlIdAndProductionId(jetDataToUpdate.getControlId(),jetDataToUpdate.getProdcutionId());
+        Optional<JetData> jetDataExist = jetDataDao.findByControlIdAndProductionId(jetDataToUpdate.getControlId(), jetDataToUpdate.getProdcutionId());
 
-        if(jetDataExist.isEmpty())
+        if (jetDataExist.isEmpty())
             throw new Exception("No data found");
 
-        if(jetDataExist.get().getStatus() == JetStatus.success)
+        if (jetDataExist.get().getStatus() == JetStatus.success)
             throw new Exception("data can't update because production is already completed");
 
-        List<String> getStatusList=new ArrayList<>();
+        List<String> getStatusList = new ArrayList<>();
 
-        for(JetStatus jetStatus:JetStatus.values())
-        {
+        for (JetStatus jetStatus : JetStatus.values()) {
             getStatusList.add(jetStatus.toString());
         }
 
-        if(!getStatusList.contains(jetDataToUpdate.getStatus()))
+        if (!getStatusList.contains(jetDataToUpdate.getStatus()))
             throw new Exception("no status found");
 
         //if the status is success then update the sequence of respected jet
-        if(jetDataToUpdate.getStatus().equals("success"))
-        {
+        if (jetDataToUpdate.getStatus().equals("success")) {
             //check the sequence of production is first or not
 
 
@@ -882,30 +842,24 @@ public class JetServiceImpl {
 
             //System.out.println(jetDataExist.get().getStatus());
             List<JetData> jetDataList = jetDataDao.findByControlId(jetDataToUpdate.getControlId());
-            for(JetData jetData:jetDataList)
-            {
-                if(jetData.getProductionId()==jetDataExist.get().getProductionId())
-                {
+            for (JetData jetData : jetDataList) {
+                if (jetData.getProductionId() == jetDataExist.get().getProductionId()) {
                     //update the status of production
                     jetDataExist.get().setStatus(JetStatus.success);
                     jetDataDao.save(jetDataExist.get());
 
-                }
-                else
-                {
+                } else {
                     //update the sequence of production by +1 from the jet
-                    long number=jetData.getSequence();
+                    long number = jetData.getSequence();
                     number--;
                     jetData.setSequence(number);
                     jetDataDao.save(jetData);
                 }
             }
 
-        }
-        else
-        {
+        } else {
             //update the any other status except success update that on
-            if(!getStatusList.contains(jetDataToUpdate.getStatus()))
+            if (!getStatusList.contains(jetDataToUpdate.getStatus()))
                 throw new Exception("Wrong status found");
 
             jetDataExist.get().setStatus(JetStatus.valueOf(jetDataToUpdate.getStatus()));
@@ -917,18 +871,16 @@ public class JetServiceImpl {
     }
 
     public Boolean deleteJetDataByProductionId(Long id) throws Exception {
-        JetData jetData=jetDataDao.findByProductionId(id);
-        if(jetData==null) {
+        JetData jetData = jetDataDao.findByProductionId(id);
+        if (jetData == null) {
             throw new Exception("production data not found");
         }
 
         //update the existing production from jet because the production is going to be deleted
-        List<JetData> jetDataList=jetDataDao.findByControlIdWithExistingProduction(jetData.getControlId());
-        for(JetData jetData1:jetDataList)
-        {
-            if(jetData1.getSequence()>jetData.getSequence())
-            {
-                long number=jetData1.getSequence();
+        List<JetData> jetDataList = jetDataDao.findByControlIdWithExistingProduction(jetData.getControlId());
+        for (JetData jetData1 : jetDataList) {
+            if (jetData1.getSequence() > jetData.getSequence()) {
+                long number = jetData1.getSequence();
                 number--;
                 jetData1.setSequence(number);
                 jetDataDao.save(jetData1);
@@ -936,15 +888,13 @@ public class JetServiceImpl {
         }
 
         //update the status from production table
-        ProductionPlan productionPlan=productionPlanService.getProductionData(id);
+        ProductionPlan productionPlan = productionPlanService.getProductionData(id);
         productionPlan.setStatus(false);
         productionPlanService.saveProductionPlan(productionPlan);
 
 
         jetDataDao.deleteByProductionId(id);
         return true;
-
-
 
 
     }
@@ -955,19 +905,19 @@ public class JetServiceImpl {
         ProductionPlan productionPlanExist = productionPlanService.getProductionData(productionId);
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetId);
 
-        if(jetMastExist.isEmpty())
+        if (jetMastExist.isEmpty())
             throw new Exception(ConstantFile.Jet_Not_Found);
 
-        Optional<JetData> jetExistWithProduction = jetDataDao.findByControlIdAndProductionId(jetId,productionId);
+        Optional<JetData> jetExistWithProduction = jetDataDao.findByControlIdAndProductionId(jetId, productionId);
 
-        if(jetExistWithProduction.isEmpty())
+        if (jetExistWithProduction.isEmpty())
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);
 
         Double wt = batchDao.getTotalWtByBatchId(productionPlanExist.getBatchId());
 
         //get the party and quality and shade data
         StockMast stockMast = null;//stockBatchService.getStockById(productionPlanExist.getStockId());
-        GetQualityResponse quality =null;//qualityServiceImp.getQualityByID(stockMast.getQualityId());
+        GetQualityResponse quality = null;//qualityServiceImp.getQualityByID(stockMast.getQualityId());
         Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExist.getShadeId());
         if (shadeMast.isEmpty())
             throw new Exception(constantFile.Shade_Not_Found);
@@ -984,17 +934,15 @@ public class JetServiceImpl {
         data.setProductionId(productionId);
 
         //process with item data
-        List<GetJetSlipData> getJetSlipData =new ArrayList<>();
+        List<GetJetSlipData> getJetSlipData = new ArrayList<>();
 
 
         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
 
-        for(DyeingProcessData dyeingProcessData : dyeingProcessMast.getDyeingProcessData())
-        {
+        for (DyeingProcessData dyeingProcessData : dyeingProcessMast.getDyeingProcessData()) {
             List<SlipItemList> itemLists = new ArrayList<>();
-            for(DyeingChemicalData dyeingChemicalData:dyeingProcessData.getDyeingChemicalData())
-            {
-                SlipItemList item =new SlipItemList();
+            for (DyeingChemicalData dyeingChemicalData : dyeingProcessData.getDyeingChemicalData()) {
+                SlipItemList item = new SlipItemList();
                 SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
                 item.setItemName(supplierRateItem.getItemName());
                 String supplier = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
@@ -1006,17 +954,17 @@ public class JetServiceImpl {
 //                if(jetMastExist.get().getLiquorRatio()==null || jetMastExist.get().getLiquorRatio().equals(""))
 //                    throw new Exception("jet liquer ration can't be null");
 
-                Double qty = (dyeingProcessData.getLiquerRation() * dyeingChemicalData.getConcentration() * wt) /1000;
+                Double qty = (dyeingProcessData.getLiquerRation() * dyeingChemicalData.getConcentration() * wt) / 1000;
                 item.setQty(qty);
                 itemLists.add(item);
 
             }
 
             //add to the list
-            getJetSlipData.add(new GetJetSlipData(dyeingProcessData,itemLists));
+            getJetSlipData.add(new GetJetSlipData(dyeingProcessData, itemLists));
 
         }
-        if(getJetSlipData.isEmpty())
+        if (getJetSlipData.isEmpty())
             throw new Exception("no process data found ");
 
         data.setSlipDataList(getJetSlipData);
@@ -1029,16 +977,16 @@ public class JetServiceImpl {
 
     public Boolean deleteJetMastByJetId(Long id) throws Exception {
 
-            Optional<JetMast> jetMast  =jetMastDao.getJetById(id);
-            if(jetMast.isEmpty())
-                throw new Exception(constantFile.Jet_Not_Found);
+        Optional<JetMast> jetMast = jetMastDao.getJetById(id);
+        if (jetMast.isEmpty())
+            throw new Exception(constantFile.Jet_Not_Found);
 
-            //check the child record available for the jet or not
-            if(!jetMast.get().getJetDataList().isEmpty())
-                throw new Exception(constantFile.Jet_Record_Exist);
+        //check the child record available for the jet or not
+        if (!jetMast.get().getJetDataList().isEmpty())
+            throw new Exception(constantFile.Jet_Record_Exist);
 
-            jetMastDao.deleteByJetId(id);
-            return true;
+        jetMastDao.deleteByJetId(id);
+        return true;
 
 
     }
@@ -1053,13 +1001,12 @@ public class JetServiceImpl {
     public List<AddJet> getAllJet() throws Exception {
 
         List<AddJet> list = new ArrayList<>();
-        List<JetMast> jetMastList=jetMastDao.getAll();
+        List<JetMast> jetMastList = jetMastDao.getAll();
 
-        if(jetMastList.isEmpty())
+        if (jetMastList.isEmpty())
             return list;
 
-        for(JetMast jetMast:jetMastList)
-        {
+        for (JetMast jetMast : jetMastList) {
             list.add(new AddJet(jetMast));
         }
         return list;
@@ -1074,8 +1021,8 @@ public class JetServiceImpl {
     public void removeProductionFromJet(Long jetId, Long productionId) throws Exception {
 
         //check first the prodution is already in jet or not
-        JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId,productionId);
-        if(jetDataExist==null)
+        JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId, productionId);
+        if (jetDataExist == null)
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(productionId);
@@ -1131,10 +1078,6 @@ public class JetServiceImpl {
 */
 
 
-
-
-
-
         // 2.remove the dyeing slip from the dyeign slip based on jet and produciton id
         DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
 
@@ -1147,24 +1090,21 @@ public class JetServiceImpl {
 
         //change the remain production sequence
         List<JetData> jetDataList = jetDataDao.findByControlId(jetId);
-        for(JetData jetData : jetDataList)
-        {
-            if(jetData.getSequence() > jetDataExist.getSequence())
-                jetData.setSequence(jetData.getSequence()-1);
+        for (JetData jetData : jetDataList) {
+            if (jetData.getSequence() > jetDataExist.getSequence())
+                jetData.setSequence(jetData.getSequence() - 1);
 
         }
         //remover the jet record
         jetDataDao.deleteJetDataById(jetDataExist.getId());
 
 
-
         ///remove the production record if the production record added by direct
-        if(productionPlan.getIsDirect()==true)
-        {
+        if (productionPlan.getIsDirect() == true) {
             //change the status of batches as well
 
             List<BatchData> batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
-            batchDataList.forEach(e->{
+            batchDataList.forEach(e -> {
                 e.setIsProductionPlanned(false);
                 batchDao.save(e);
             });
@@ -1177,39 +1117,38 @@ public class JetServiceImpl {
 
     public void updateJet(AddJet jetMast) throws Exception {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(jetMast.getId());
-        if(jetMastExist.isEmpty())
+        if (jetMastExist.isEmpty())
             throw new Exception(constantFile.Jet_Not_Found);
 
         JetMast jetToUpdate = new JetMast(jetMast);
         jetToUpdate.setId(jetMast.getId());
         List<JetData> jetDataList = jetDataDao.findByControlId(jetMast.getId());
 
-        if(jetMast.getCapacity()<jetMastExist.get().getCapacity())
+        if (jetMast.getCapacity() < jetMastExist.get().getCapacity())
             throw new Exception("jet capacity can't be update because already batch available with that capacity");
 
         jetMastDao.save(jetToUpdate);
-        for(JetData jetData:jetDataList)
-        {
+        for (JetData jetData : jetDataList) {
             //jetData.setControlId(jetToUpdate.getId());
-            jetDataDao.updateJetWithId(jetData.getId(),jetToUpdate.getId());
+            jetDataDao.updateJetWithId(jetData.getId(), jetToUpdate.getId());
         }
 
     }
 
     public JetMast getJetMastById(Long id) throws Exception {
         Optional<JetMast> jetMast = jetMastDao.getJetById(id);
-        if(jetMast.isEmpty())
+        if (jetMast.isEmpty())
             throw new Exception(constantFile.Jet_Not_Found);
         return jetMast.get();
     }
 
     public Boolean getJetIsDeletable(Long id) throws Exception {
         Optional<JetMast> jetMastExist = jetMastDao.getJetById(id);
-        if(jetMastExist.isEmpty())
+        if (jetMastExist.isEmpty())
             throw new Exception(constantFile.Jet_Not_Found);
 
         List<JetData> jetDataList = jetDataDao.findByControlId(id);
-        if(jetDataList.isEmpty())
+        if (jetDataList.isEmpty())
             return true;
         else
             return false;

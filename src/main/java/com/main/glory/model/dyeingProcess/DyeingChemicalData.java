@@ -21,6 +21,7 @@ public class DyeingChemicalData {
     String itemName;
     String byChemical;
     Double concentration;
+    String shadeType;
 
 
 }

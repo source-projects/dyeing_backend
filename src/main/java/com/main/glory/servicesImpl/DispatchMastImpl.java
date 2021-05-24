@@ -813,6 +813,7 @@ public class DispatchMastImpl {
 
         PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party.get(),qualityBillByInvoiceNumberList,batchWithGrList,dispatchMast);
 
+        partyDataByInvoiceNumber.setCreatedDate(dispatchMast.getCreatedDate());
 
         if(partyDataByInvoiceNumber==null)
             throw new Exception("no data found");
