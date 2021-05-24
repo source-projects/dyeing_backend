@@ -610,11 +610,11 @@ public class JetServiceImpl {
             ProductionPlan productionExist = productionPlanService.getProductionData(jetDataToUpdate.getFrom().getProductionId());
 
             if (productionExist == null)
-                throw new Exception("no production data found");
+                throw new Exception(ConstantFile.Production_Not_Found);
             productionExist = productionPlanService.getProductionData(jetDataToUpdate.getTo().getProductionId());
 
             if (productionExist == null)
-                throw new Exception("no production data found");
+                throw new Exception(ConstantFile.Production_Not_Found);
 
             //update the sequence of production as per the requirement
             //if the batch is able to fit into the new jet then update the data from the jet
@@ -625,7 +625,6 @@ public class JetServiceImpl {
                     number--;
                     jetData.setSequence(number);
                     jetDataDao.save(jetData);
-
                 }
             }
 
@@ -721,6 +720,7 @@ public class JetServiceImpl {
                 }
             }
             JetData newJetData = new JetData(jetDataToUpdate.getTo());
+
             jetDataDao.save(newJetData);
         }
 

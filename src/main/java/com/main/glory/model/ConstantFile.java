@@ -115,6 +115,7 @@ public class ConstantFile {
     public static String Department_Found = "Data found";
     public static String Department_Not_Found = "Data not found";
     public static String Department_Name_Exist = "Department name exist";
+    public static String Department_Not_Exist = "Department not exist";
     public static String Department_Deleted = "Data deleted successfully";
 
 
@@ -220,6 +221,7 @@ public class ConstantFile {
     public static String StockBatch_Without_Batch = "Data found without batch";
     public static String StockBatch_Not_Found = "Data not found ";
     public static String StockBatch_Added = "Data added successfully";
+    public static String ReturnStockBatch_Added = "Return stock Data added successfully";
     public static String StockBatch_Updated = "Data updated successfully";
     public static String StockBatch_Deleted = "Data deleted successfully";
 
