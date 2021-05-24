@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.admin.*;
+import com.main.glory.model.admin.request.AuthorizeWithDepartment;
 import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
@@ -426,14 +427,14 @@ public class AdminController extends ControllerConfig {
 
 */
     @GetMapping(value="/admin/get/approvedBy")
-    public ResponseEntity<GeneralResponse<List<Authorize>,Object>> getAllApproved() throws Exception {
+    public ResponseEntity<GeneralResponse<List<AuthorizeWithDepartment>,Object>> getAllApproved() throws Exception {
 
-        GeneralResponse<List<Authorize>,Object> result;
+        GeneralResponse<List<AuthorizeWithDepartment>,Object> result;
 
         boolean flag;
         try {
 
-            List<Authorize> list = adminServcice.getApprovedByList();
+            List<AuthorizeWithDepartment> list = adminServcice.getApprovedByList();
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -1023,14 +1024,14 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }*/
     @GetMapping(value="/admin/get/receiver")
-    public ResponseEntity<GeneralResponse<List<Authorize>,Object>> getAllReceiver() throws Exception {
+    public ResponseEntity<GeneralResponse<List<AuthorizeWithDepartment>,Object>> getAllReceiver() throws Exception {
 
-        GeneralResponse<List<Authorize>,Object> result;
+        GeneralResponse<List<AuthorizeWithDepartment>,Object> result;
 
         boolean flag;
         try {
 
-            List<Authorize> list = adminServcice.getAllReceiver();
+            List<AuthorizeWithDepartment> list = adminServcice.getAllReceiver();
             if(list.isEmpty())
             {
                 result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -1319,16 +1320,14 @@ public class AdminController extends ControllerConfig {
     }
 
     @GetMapping(value="/admin/get/authorize/all")
-    public ResponseEntity<GeneralResponse<List<Authorize>,Object>> getAllAuthorize() throws Exception {
+    public ResponseEntity<GeneralResponse<List<AuthorizeWithDepartment>,Object>> getAllAuthorize() throws Exception {
 
-        GeneralResponse<List<Authorize>,Object> result;
+        GeneralResponse<List<AuthorizeWithDepartment>,Object> result;
 
         boolean flag;
         try {
 
-
-
-            List<Authorize> list = adminServcice.getAllAuthorize();
+            List<AuthorizeWithDepartment> list = adminServcice.getAllAuthorize();
             if(!list.isEmpty())
             result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else

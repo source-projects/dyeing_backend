@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.PartyDao;
+import com.main.glory.Dao.StockAndBatch.BatchReturnDao;
 import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
@@ -10,6 +11,7 @@ import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.BatchReturn;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
@@ -41,6 +43,9 @@ import java.util.*;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
+
+    @Autowired
+    BatchReturnDao batchReturnDao;
 
     @Autowired
     DispatchMastImpl dispatchMastService;
@@ -2253,6 +2258,60 @@ public class StockBatchServiceImpl {
     public Double getTotalFinishMtrByBatchEntryIdList(List<Long> batchIdsByQuality) {
 
         return batchDao.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
+    }
+
+    public void saveReturnStockBatch(BatchReturnBody record) throws Exception {
+
+
+        //get the latest chal no
+        Long latestChlNo = batchReturnDao.getlatestChlNo();
+        latestChlNo = latestChlNo==null?1:latestChlNo;
+        //check that the batch list is exist or not
+
+        List<BatchReturn> batchReturnList = new ArrayList<>();
+
+        //stock id, quality  id, party id
+        Map<Long,HashMap<Long,Long>> hashMapMap = new HashMap<>();
+        List<Long> batchEntryIdToDelete = new ArrayList<>();
+        for(BatchData e:record.getBatchDataList())
+        {
+            BatchData batchDataExist = batchDao.getBatchDataById(e.getId());
+            if(batchDataExist==null)
+                throw new Exception(ConstantFile.Batch_Data_Not_Exist);
+
+            if(batchDataExist.getIsProductionPlanned()==true)
+                throw new Exception(ConstantFile.Production_Record_Exist);
+
+            batchEntryIdToDelete.add(batchDataExist.getId());
+
+            if(hashMapMap.containsKey(batchDataExist.getControlId()))
+            {
+                Map<Long,Long> existing = hashMapMap.get(batchDataExist.getControlId());
+                Map.Entry<Long,Long> entry = existing.entrySet().iterator().next();
+
+                batchReturnList.add(new BatchReturn(entry.getKey(),entry.getValue(),batchDataExist,latestChlNo));
+            }
+            else
+            {
+                StockMast stockMast = stockMastDao.findByStockId(batchDataExist.getControlId());
+                HashMap<Long,Long> qualityAndPartyId = new HashMap<>();
+                qualityAndPartyId.put(stockMast.getQualityId(),stockMast.getPartyId());
+
+                batchReturnList.add(new BatchReturn(stockMast,batchDataExist,latestChlNo));
+                hashMapMap.put(stockMast.getId(),qualityAndPartyId);
+            }
+        }
+
+
+
+
+        //remove all from batch table
+        batchDao.deleteByIdList(batchEntryIdToDelete);
+        //save all in return list
+        batchReturnDao.saveAll(batchReturnList);
+
+
+
     }
 
 

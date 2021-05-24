@@ -23,5 +23,14 @@ public class Authorize {
     String contact;
     String email;
     String type;//receive by and approved
+    Long departmentId;
 
+    public Authorize(Authorize authorize) {
+        this.id=authorize.getId();
+        this.name= authorize.getName();
+        this.contact = authorize.getContact();
+        this.email = authorize.getEmail();
+        this.type = authorize.getType();
+        this.departmentId = authorize.getDepartmentId();
+    }
 }
