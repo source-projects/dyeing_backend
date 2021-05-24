@@ -2,12 +2,14 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
+import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
@@ -26,6 +28,11 @@ import java.util.*;
 
 @Service("SupplierServiceImpl")
 public class SupplierServiceImpl {
+
+
+    @Autowired
+    QualityNameDao qualityNameDao;
+
     @Autowired
     SupplierDao supplierDao;
 
@@ -398,6 +405,17 @@ public class SupplierServiceImpl {
             return true;
         else
             return false;
+
+    }
+
+    public List<SupplierRate> getAllRatesByQualityNameId(Long qualityNameId) throws Exception {
+        //check that the quality name exist or not
+
+        Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityNameId);
+        if(qualityNameExist.isEmpty())
+            throw new Exception(ConstantFile.Quality_Name_Not_Exist);
+
+        return supplierRateDao.getAllItemByQualityNameId(qualityNameId);
 
     }
 }
