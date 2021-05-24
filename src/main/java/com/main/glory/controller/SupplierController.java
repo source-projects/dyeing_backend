@@ -183,13 +183,13 @@ public class SupplierController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/supplier/rates/byQualityNameId")
-    public ResponseEntity<GeneralResponse<List<SupplierRate>,Object>> getAllSupplierRatesByQualityNameId(@RequestParam("qualityNameId") Long qualityNameId){
+    public ResponseEntity<GeneralResponse<List<SupplierRate>,Object>> getAllSupplierRatesByQualityNameId(@RequestParam("qualityNameId") Long qualityNameId,@RequestParam("type") String type){
         GeneralResponse<List<SupplierRate>,Object> result;
         try{
             if(qualityNameId==null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
-            List<SupplierRate> obj = supplierService.getAllRatesByQualityNameId(qualityNameId);
+            List<SupplierRate> obj = supplierService.getAllRatesByQualityNameId(qualityNameId,type);
             if(!obj.isEmpty()){
                 result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {

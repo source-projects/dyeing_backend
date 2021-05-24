@@ -408,14 +408,14 @@ public class SupplierServiceImpl {
 
     }
 
-    public List<SupplierRate> getAllRatesByQualityNameId(Long qualityNameId) throws Exception {
+    public List<SupplierRate> getAllRatesByQualityNameId(Long qualityNameId,String type) throws Exception {
         //check that the quality name exist or not
 
         Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityNameId);
         if(qualityNameExist.isEmpty())
             throw new Exception(ConstantFile.Quality_Name_Not_Exist);
 
-        return supplierRateDao.getAllItemByQualityNameId(qualityNameId);
+        return supplierRateDao.getAllItemByQualityNameId(qualityNameId,type);
 
     }
 }
