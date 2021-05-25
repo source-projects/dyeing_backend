@@ -5,6 +5,7 @@ import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.task.ReportTypeDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.admin.*;
+import com.main.glory.model.admin.request.AuthorizeWithDepartment;
 import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.purchase.Purchase;
@@ -87,8 +88,8 @@ public class AdminServciceImpl {
         approveByDao.save(data);
     }
 */
-    public List<Authorize> getApprovedByList() {
-        return authorizeDao.getAllAuthorizeByType("approve");
+    public List<AuthorizeWithDepartment> getApprovedByList() {
+        return authorizeDao.getAllAuthorizeByTypeWithDepartment("approve");
     }
 
     public List<Company> getAllCompany() {
@@ -393,8 +394,8 @@ public class AdminServciceImpl {
 
     }*/
 
-    public List<Authorize> getAllReceiver() {
-        return authorizeDao.getAllAuthorizeByType("receive");
+    public List<AuthorizeWithDepartment> getAllReceiver() {
+        return authorizeDao.getAllAuthorizeByTypeWithDepartment("receive");
     }
 /*
     public ReceiverBy getReceiverById(Long id) {
@@ -486,6 +487,13 @@ public class AdminServciceImpl {
         if(authorizeExist!=null)
             throw new Exception(constantFile.Authorize_Name_Exist);
 
+        //check that the dept exist or not
+        Department departmentExist = departmentDao.getDepartmentById(authorize.getDepartmentId());
+        if(departmentExist==null)
+            throw new Exception(ConstantFile.Department_Not_Exist);
+
+
+
         authorizeDao.save(authorize);
     }
 
@@ -494,11 +502,17 @@ public class AdminServciceImpl {
         if(authorizeExist==null)
             throw new Exception(constantFile.Authorize_Not_Found);
 
+        //check that the dept exist or not
+        Department departmentExist = departmentDao.getDepartmentById(authorize.getDepartmentId());
+        if(departmentExist==null)
+            throw new Exception(ConstantFile.Department_Not_Exist);
+
+
         authorizeDao.save(authorize);
     }
 
-    public List<Authorize> getAllAuthorize() {
-        return authorizeDao.getAllAuthorize();
+    public List<AuthorizeWithDepartment> getAllAuthorize() {
+        return authorizeDao.getAllAuthorizeWithDepartment();
     }
 
     public Authorize getAuthorizeById(Long id) {

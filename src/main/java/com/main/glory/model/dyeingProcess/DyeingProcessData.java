@@ -31,6 +31,7 @@ public class DyeingProcessData {
     Double liquerRation;
 
 
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingChemicalData> dyeingChemicalData;

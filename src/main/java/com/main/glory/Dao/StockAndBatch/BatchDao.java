@@ -387,6 +387,11 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select SUM(x.mtr) from BatchData x where x.id IN (:batchIdsByQuality)")
     Double getTotalFinishMtrByBatchEntryIdList(List<Long> batchIdsByQuality);
 
+    @Modifying
+    @Transactional
+    @Query("delete from BatchData x where x.id IN (:batchEntryIdToDelete)")
+    void deleteByIdList(List<Long> batchEntryIdToDelete);
+
 
 
 

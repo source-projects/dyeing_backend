@@ -52,10 +52,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		try{
 
 			// for swagger turn off the guards
-			/*if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
+			if(true || !request.getRequestURI().startsWith("/swagger-ui.html")){
 				chain.doFilter(request, response);
 				return;
-			}*/
+			}
 
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
@@ -64,10 +64,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		}
 
-		if( path.startsWith("login")  || path.startsWith("admin")  || request.getRequestURI().contains("machine") || request.getRequestURI().contains("db") || request.getRequestURI().contains("task") || request.getRequestURI().contains("testing")){
+		/*if( path.startsWith("login")  || path.startsWith("admin")  || request.getRequestURI().contains("machine") || request.getRequestURI().contains("db") || request.getRequestURI().contains("task") || request.getRequestURI().contains("testing")){
 			chain.doFilter(request, response);
 			return;
-		}
+		}*/
 
 		final String authorizationHeader = request.getHeader("Authorization");
 
