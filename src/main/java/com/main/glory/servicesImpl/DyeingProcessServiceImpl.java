@@ -63,7 +63,7 @@ public class DyeingProcessServiceImpl {
         List<DyeingProcessMast> processList = null;
         Permissions permissions = new Permissions(userPermission.getPr().intValue());
 
-        if (permissions.getViewAll())
+        /*if (permissions.getViewAll())
         {
             userId=null;
             userHeadId=null;
@@ -94,11 +94,12 @@ public class DyeingProcessServiceImpl {
             userId = userData.getId();
             userHeadId=null;
             processList = dyeingProcessMastDao.getAllDyeingProcessByCreatedAndHead(userId,userHeadId);
-        }
+        }*/
 
 
 
 
+        processList = dyeingProcessMastDao.getAllProcess();
         for(DyeingProcessMast d:processList)
         {
             list.add(new GetAllDyeingProcessList(d));
