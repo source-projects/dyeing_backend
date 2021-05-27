@@ -49,4 +49,12 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     @Query("select s from Supplier s where s.createdBy=:id OR s.userHeadId=:id1")
     List<Supplier> getSupplierByCreatedAndUserHeadId(Long id, Long id1);
+
+    @Modifying
+    @Transactional
+    @Query("update Supplier x set x.qualityNameId=:qualityNameId where x.id IN (:supplierIds)")
+    void updateSupplierWithQualityNameId(List<Long> supplierIds, Long qualityNameId);
+
+    @Query("select x from Supplier x where x.qualityNameId=:qualityNameId")
+    List<Supplier> getAllSupplierListByQualityNameId(Long qualityNameId);
 }

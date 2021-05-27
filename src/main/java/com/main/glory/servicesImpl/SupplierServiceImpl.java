@@ -415,7 +415,20 @@ public class SupplierServiceImpl {
         if(qualityNameExist.isEmpty())
             throw new Exception(ConstantFile.Quality_Name_Not_Exist);
 
-        return supplierRateDao.getAllItemByQualityNameId(qualityNameId,type);
+        List<SupplierRate> list = supplierRateDao.getAllItemByQualityNameId(qualityNameId,type);
 
+        if(list.isEmpty())
+            return supplierRateDao.getAllItemWithType(type);
+        else
+            return list;
+
+    }
+
+    public void updateSupplierWithQualityNameId(List<Long> supplierIds, Long qualityNameId) {
+        supplierDao.updateSupplierWithQualityNameId(supplierIds,qualityNameId);
+    }
+
+    public List<Supplier> getSupplierByQualityNameId(Long id) {
+        return supplierDao.getAllSupplierListByQualityNameId(id);
     }
 }
