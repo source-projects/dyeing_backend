@@ -133,7 +133,7 @@ public class ShadeServiceImpl {
 
 		}
 
-		if(specialFlag = true)
+		if(specialFlag == true)
 		{
 			shadeData.setCategory("SPECIAL");
 		}
