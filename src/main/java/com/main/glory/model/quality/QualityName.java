@@ -20,7 +20,7 @@ import java.util.List;
 public class QualityName {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    Long id;
     String qualityName;//should be unique
     Long createdBy;
     Date createdDate;

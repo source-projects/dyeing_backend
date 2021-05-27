@@ -428,7 +428,7 @@ public class SupplierServiceImpl {
         supplierDao.updateSupplierWithQualityNameId(supplierIds,qualityNameId);
     }
 
-    public List<Supplier> getSupplierByQualityNameId(Long id) {
+    public List<SupplierResponse> getSupplierByQualityNameId(Long id) {
         return supplierDao.getAllSupplierListByQualityNameId(id);
     }
 }
