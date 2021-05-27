@@ -19,6 +19,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.QualityWithPartyName;
+import com.main.glory.model.quality.request.AddQualityName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.GetQualityReport;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
@@ -490,9 +491,9 @@ public class QualityServiceImp  {
         return qualityDao.getAllQualityByQualityNameId(id);
     }
 
-    public Optional<List<QualityName>> getAllQualityNameData() {
+    public Optional<List<AddQualityName>> getAllQualityNameData() {
 
-        return qualityNameDao.getAllQualityName();
+        return qualityNameDao.getAllQualityNameWithSupplier();
 
     }
 

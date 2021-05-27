@@ -12,6 +12,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.party.request.PartyReport;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.quality.request.AddQualityName;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.GetQualityReport;
 import com.main.glory.model.quality.request.UpdateQualityRequest;
@@ -172,8 +173,8 @@ public class QualityController extends ControllerConfig {
     }
 
     @GetMapping(value = "/quality/qualityName/get/all")
-    public ResponseEntity<GeneralResponse<List<QualityName>,Object>> getAllQualityNameData() {
-        GeneralResponse<List<QualityName>,Object> result;
+    public ResponseEntity<GeneralResponse<List<AddQualityName>,Object>> getAllQualityNameData() {
+        GeneralResponse<List<AddQualityName>,Object> result;
 
         try {
             var qualityData = qualityServiceImp.getAllQualityNameData();

@@ -1,6 +1,7 @@
 package com.main.glory.Dao.quality;
 
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.quality.request.AddQualityName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,7 @@ public interface QualityNameDao extends JpaRepository<QualityName,Long> {
 
     @Query("select x.qualityName from QualityName x where x.id=(select q.qualityNameId from Quality q where q.id=:qualityId)")
     String getQualityNameDetailByQualitytEntryId(Long qualityId);
+
+    @Query("select ")
+    Optional<List<AddQualityName>> getAllQualityNameWithSupplier();
 }

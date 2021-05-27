@@ -25,4 +25,17 @@ public class AddQualityName {
     Date updatedDate;
     Double rate;
     List<Supplier> supplierList;
+
+    public AddQualityName(QualityName qualityName,List<Supplier> supplierList)
+    {
+        this.id = qualityName.getId();
+        this.qualityName = qualityName.getQualityName();
+        this.createdBy = qualityName.getCreatedBy();
+        this.createdDate = qualityName.getCreatedDate();
+        this.updatedBy = qualityName.getUpdatedBy();
+        this.updatedDate = qualityName.getUpdatedDate();
+        this.rate = qualityName.getRate();
+        this.supplierList = supplierList;
+    }
+
 }
