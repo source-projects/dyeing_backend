@@ -125,7 +125,7 @@ public class ShadeServiceImpl {
 		{
 			totalConcentration+=shadeItem.getConcentration()==null?0:shadeItem.getConcentration();
 			Optional<SupplierRate> supplierRate = supplierService.getItemById(shadeItem.getSupplierItemId());
-			if(supplierRate.get().getItemName().equals("Blue SR") || supplierRate.get().getItemName().equals("Blue GRL"))
+			if(supplierRate.get().getItemName().equalsIgnoreCase("Blue SR") || supplierRate.get().getItemName().equalsIgnoreCase("Blue GRL"))
 			{
 				specialFlag = true;
 			}
