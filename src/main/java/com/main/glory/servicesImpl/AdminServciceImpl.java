@@ -13,6 +13,7 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.responce.SupplierResponse;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.user.UserData;
@@ -279,7 +280,7 @@ public class AdminServciceImpl {
         //check the supplier list is exist or not
         if(!qualityName.getSupplierList().isEmpty())
         {
-            for(Supplier supplier:qualityName.getSupplierList())
+            for(SupplierResponse supplier:qualityName.getSupplierList())
             {
 
                 Optional<Supplier> supplierExist = supplierService.getSupplier(supplier.getId());
@@ -312,11 +313,11 @@ public class AdminServciceImpl {
             //it mean remove the supplier with quality name id
             List<Long> existingSupplierId = new ArrayList<>();
 
-            List<Supplier> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
+            List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
 
             if(!supplierList.isEmpty())
             {
-                for(Supplier supplier:supplierList)
+                for(SupplierResponse supplier:supplierList)
                 {
                     existingSupplierId.add(supplier.getId());
                 }
@@ -327,7 +328,7 @@ public class AdminServciceImpl {
             //now add which are coming
             List<Long> supplierIds = new ArrayList<>();
 
-            for(Supplier supplier:qualityName.getSupplierList())
+            for(SupplierResponse supplier:qualityName.getSupplierList())
             {
 
                 Optional<Supplier> supplierExist = supplierService.getSupplier(supplier.getId());
@@ -346,11 +347,11 @@ public class AdminServciceImpl {
            //it mean remove the supplier with quality name id
            List<Long> existingSupplierId = new ArrayList<>();
 
-           List<Supplier> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
+           List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
 
            if(!supplierList.isEmpty())
            {
-               for(Supplier supplier:supplierList)
+               for(SupplierResponse supplier:supplierList)
                {
                    existingSupplierId.add(supplier.getId());
                }
@@ -376,7 +377,7 @@ public class AdminServciceImpl {
             throw new Exception(constantFile.Quality_Data_Exist);
 
 
-        List<Supplier> supplierListExist = supplierService.getSupplierByQualityNameId(id);
+        List<SupplierResponse> supplierListExist = supplierService.getSupplierByQualityNameId(id);
         if(!supplierListExist.isEmpty())
             throw new Exception(ConstantFile.Supplier_Exist);
 

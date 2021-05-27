@@ -181,7 +181,7 @@ public class QualityController extends ControllerConfig {
             if (qualityData.isEmpty()) {
                 result = new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else
-                result = new GeneralResponse<>(qualityData.get(), ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(qualityData, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         }catch (Exception e)

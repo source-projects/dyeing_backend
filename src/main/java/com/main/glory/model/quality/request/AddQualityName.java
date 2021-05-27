@@ -2,6 +2,7 @@ package com.main.glory.model.quality.request;
 
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.responce.SupplierResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,9 @@ public class AddQualityName {
     Long updatedBy;
     Date updatedDate;
     Double rate;
-    List<Supplier> supplierList;
+    List<SupplierResponse> supplierList;
 
-    public AddQualityName(QualityName qualityName,List<Supplier> supplierList)
+    public AddQualityName(QualityName qualityName,List<SupplierResponse> supplierList)
     {
         this.id = qualityName.getId();
         this.qualityName = qualityName.getQualityName();
@@ -35,7 +36,7 @@ public class AddQualityName {
         this.updatedBy = qualityName.getUpdatedBy();
         this.updatedDate = qualityName.getUpdatedDate();
         this.rate = qualityName.getRate();
-        this.supplierList = supplierList;
+        this.supplierList = supplierList.isEmpty()?null:supplierList;
     }
 
 }

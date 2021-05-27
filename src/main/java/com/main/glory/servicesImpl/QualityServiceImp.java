@@ -27,6 +27,8 @@ import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.quality.response.QualityReport;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.responce.SupplierResponse;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -40,6 +42,9 @@ import com.main.glory.model.quality.Quality;
 
 @Service("qualityServiceImp")
 public class QualityServiceImp  {
+
+    @Autowired
+    SupplierServiceImpl supplierService;
 
     ConstantFile constantFile;
 
@@ -491,9 +496,20 @@ public class QualityServiceImp  {
         return qualityDao.getAllQualityByQualityNameId(id);
     }
 
-    public Optional<List<AddQualityName>> getAllQualityNameData() {
+    public List<AddQualityName> getAllQualityNameData() {
 
-        return qualityNameDao.getAllQualityNameWithSupplier();
+        List<AddQualityName> list =new ArrayList<>();
+        Optional<List<QualityName>> qualityNameList = qualityNameDao.getAllQualityName();
+        if(!qualityNameList.isEmpty()) {
+            for (QualityName qualityName : qualityNameList.get()) {
+
+                List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
+                list.add(new AddQualityName(qualityName,supplierList));
+
+            }
+        }
+
+        return list;
 
     }
 

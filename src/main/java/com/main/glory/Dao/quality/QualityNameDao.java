@@ -32,6 +32,6 @@ public interface QualityNameDao extends JpaRepository<QualityName,Long> {
     @Query("select x.qualityName from QualityName x where x.id=(select q.qualityNameId from Quality q where q.id=:qualityId)")
     String getQualityNameDetailByQualitytEntryId(Long qualityId);
 
-    @Query("select ")
-    Optional<List<AddQualityName>> getAllQualityNameWithSupplier();
+    /*@Query("select new com.main.glory.model.quality.request.AddQualityName(x,(select ss from Supplier ss where ss.qualityNameId=x.id)) from QualityName x")
+    Optional<List<AddQualityName>> getAllQualityNameWithSupplier();*/
 }
