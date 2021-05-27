@@ -1020,7 +1020,7 @@ public class JetServiceImpl {
 
     public void removeProductionFromJet(Long jetId, Long productionId) throws Exception {
 
-        //check first the prodution is already in jet or not
+        //check first the production is already in jet or not
         JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId, productionId);
         if (jetDataExist == null)
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);

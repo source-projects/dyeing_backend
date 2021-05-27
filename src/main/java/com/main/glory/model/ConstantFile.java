@@ -337,7 +337,8 @@ public class ConstantFile {
     public static String Supplier_Deleted = "Data deleted successfully ";
     public static String Supplier_Found = "Data found ";
     public static String Supplier_Not_Found = "Data not found ";
-    public static String Supplier_Exist= "Supplier data exit ";
+    public static String Supplier_Exist= "Supplier data exist ";
+    public static String Supplier_Not_Exist= "Supplier data not exist ";
 
     //Supplier rate
     public static String SupplierRate_Added = "Data added successfully ";
