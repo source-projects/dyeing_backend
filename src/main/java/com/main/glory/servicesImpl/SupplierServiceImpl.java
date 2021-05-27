@@ -344,7 +344,7 @@ public class SupplierServiceImpl {
         String name;
         name = supplierRateDao.getSupplierNameByItemId(itemId);
         if (name.isEmpty())
-            throw new Exception("no supplier name found for given item");
+            throw new Exception(ConstantFile.Supplier_Not_Found);
         return name;
     }
 

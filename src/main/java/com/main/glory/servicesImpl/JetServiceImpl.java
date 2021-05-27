@@ -141,7 +141,7 @@ public class JetServiceImpl {
             //get total wt of batch id
             totalBatchWt = batchDao.getTotalWtByBatchId(productionPlanExits.getBatchId());
         } else {
-            //get total wt of merge batcg uid
+            //get total wt of merge batch uid
             totalBatchWt = batchDao.getTotalWtByMergeBatchId(productionPlanExits.getBatchId());
         }
 

@@ -42,7 +42,7 @@ public class DispatchMast {
         this.cgst = dispatchList.getCgst();
         this.sgst =dispatchList.getSgst();
         this.taxAmt = dispatchList.getTaxAmt();
-        this.netAmt = dispatchList.getNetAmt();
+        this.netAmt = Math.floor(dispatchList.getNetAmt());
     }
 
 

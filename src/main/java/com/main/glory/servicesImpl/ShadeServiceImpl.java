@@ -15,6 +15,8 @@ import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -105,15 +107,49 @@ public class ShadeServiceImpl {
 			Party party = partyDao.findByPartyId(shadeData.getPartyId());
 			shadeData.setUserHeadId(party.getUserHeadId());
 		}
-		
+
+
+		shadeData = setShadeCatogory(shadeData);
+
 		shadeMastDao.save(shadeData);
 
 
 
 	}
 
+	private ShadeMast setShadeCatogory(ShadeMast shadeData) {
+		//check the total concentration
+		Double totalConcentration=0.0;
+		Boolean specialFlag = false;
+		for(ShadeData shadeItem:shadeData.getShadeDataList())
+		{
+			totalConcentration+=shadeItem.getConcentration()==null?0:shadeItem.getConcentration();
+			Optional<SupplierRate> supplierRate = supplierService.getItemById(shadeItem.getSupplierItemId());
+			if(supplierRate.get().getItemName().equalsIgnoreCase("Blue SR") || supplierRate.get().getItemName().equalsIgnoreCase("Blue GRL"))
+			{
+				specialFlag = true;
+			}
 
-	
+
+		}
+
+		if(specialFlag == true)
+		{
+			shadeData.setCategory("SPECIAL");
+		}
+		else
+		{
+			if(totalConcentration >= 0 || totalConcentration <=1)
+				shadeData.setCategory("LIGHT");
+			else if(totalConcentration > 1 || totalConcentration <=2.5)
+				shadeData.setCategory("MEDIUM");
+			else if(totalConcentration > 2.5)
+				shadeData.setCategory("DARK");
+		}
+		return shadeData;
+	}
+
+
 	public List<ShadeMast> getAllShadeMast() throws Exception{
 		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeMast();
 		if(shadeMastList.isEmpty())
@@ -149,6 +185,7 @@ public class ShadeServiceImpl {
 			try{
 				//System.out.println(shadeMast);
 				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
+				shadeMast = setShadeCatogory(shadeMast);
 				ShadeMast x = shadeMastDao.save(shadeMast);
 				/*for(ProductionPlan p :productionPlansList)
 				{
