@@ -139,13 +139,14 @@ public class ShadeServiceImpl {
 		}
 		else
 		{
-			if(totalConcentration >= 0 || totalConcentration <=1)
+			if(totalConcentration >= 0 && totalConcentration <=1)
 				shadeData.setCategory("LIGHT");
-			else if(totalConcentration > 1 || totalConcentration <=2.5)
+			else if(totalConcentration > 1 && totalConcentration <=2.5)
 				shadeData.setCategory("MEDIUM");
 			else if(totalConcentration > 2.5)
 				shadeData.setCategory("DARK");
 		}
+		System.out.println(totalConcentration+"-"+shadeData.getCategory());
 		return shadeData;
 	}
 
