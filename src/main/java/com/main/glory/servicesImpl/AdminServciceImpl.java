@@ -278,7 +278,7 @@ public class AdminServciceImpl {
         QualityName newQualityName = new QualityName(qualityName);
         List<Long> supplierIds = new ArrayList<>();
         //check the supplier list is exist or not
-        if(!qualityName.getSupplierList().isEmpty())
+        if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
         {
             for(SupplierResponse supplier:qualityName.getSupplierList())
             {
@@ -306,7 +306,7 @@ public class AdminServciceImpl {
         if(!qualityNameExist.isEmpty())
             throw new Exception(constantFile.Quality_Name_Exist);
 
-        if(!qualityName.getSupplierList().isEmpty())
+        if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
         {
 
             //remove first
