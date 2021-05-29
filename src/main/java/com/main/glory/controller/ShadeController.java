@@ -259,6 +259,7 @@ public class ShadeController extends ControllerConfig {
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
+
 	@GetMapping(value="/shade/exist")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> getShadeByPartyAndWithAndWithoutQuality(@RequestParam(name = "qualityEntryId") Long entryId,@RequestParam(name = "partyShadeNo") String partyShadeNo,@RequestParam(name = "shadeId") Long shadeId) throws Exception {
 		GeneralResponse<Boolean,Object> result;
