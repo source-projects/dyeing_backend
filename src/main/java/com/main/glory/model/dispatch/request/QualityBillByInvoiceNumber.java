@@ -56,10 +56,10 @@ public class QualityBillByInvoiceNumber {
         this.hsn = quality.getHSN();
         this.rate = quality.getRate();
         this.batchId = batchId;
-        this.totalMtr = totalMtr;
-        this.finishMtr = totalFinishMtr;
+        this.totalMtr = quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalMtr:(totalMtr/100)*quality.getWtPer100m();
+        this.finishMtr = quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalFinishMtr:(totalFinishMtr/100)*quality.getWtPer100m();;
         this.pcs = totalPcs;
         this.pChalNo = stockMast.getChlNo();
-        this.amt = finishMtr*rate;
+        this.amt = this.finishMtr*rate;
     }
 }
