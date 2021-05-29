@@ -4,6 +4,7 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,8 +31,9 @@ public class DispatchData {
     Long shadeId;
     Double qualityRate;
     Double shadeRate;
-    @Column(columnDefinition = "varchar(255) default 'meter'")
+    @ColumnDefault("meter")
     String billingUnit;
+    Double wtPer100m;
 
 
     public DispatchData(BatchData batchData) {
@@ -48,6 +50,8 @@ public class DispatchData {
         this.qualityEntryId=quality.getId();
         this.qualityRate=quality.getRate();
         this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
+        this.billingUnit = quality.getBillingUnit();
+        this.wtPer100m = quality.getWtPer100m();
         //this.shadeRate=shadeMast.getExtraRate();
     }
     public DispatchData(BatchData batchData,  Quality quality) {
@@ -56,6 +60,8 @@ public class DispatchData {
         this.stockId=batchData.getControlId();
         this.qualityEntryId=quality.getId();
         this.qualityRate=quality.getRate();
+        this.billingUnit = quality.getBillingUnit();
+        this.wtPer100m = quality.getWtPer100m();
         //this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         //this.shadeRate=shadeMast.getExtraRate();
     }
