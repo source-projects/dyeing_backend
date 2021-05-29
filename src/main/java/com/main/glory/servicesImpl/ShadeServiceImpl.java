@@ -667,7 +667,7 @@ public class ShadeServiceImpl {
 
 	public ShadeMast getShadeExistWithPartyShadeNoAndQualityEntryId(ShadeExistWithPartyShadeAndQualityId record) {
 
-		if(record.getShadeId()==null || record.getShadeId().equals(0l))
+		if(record.getShadeId()==null || record.getShadeId().equals(0))
 			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),record.getPartyShadeNo(),0l);
 		else
 			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),record.getPartyShadeNo(),record.getShadeId());
