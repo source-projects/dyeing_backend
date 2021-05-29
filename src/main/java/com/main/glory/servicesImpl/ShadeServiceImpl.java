@@ -91,11 +91,14 @@ public class ShadeServiceImpl {
 		{
 			shadeData.setShadeDataList(null);
 			shadeData.setPending(true);
+			if(shadeMast.getCategory()==null)
+				throw new Exception("Select shade category");
 		}
 		else {
 
 			shadeData.setPending(false);
 			shadeData.setShadeDataList(shadeMast.getShadeDataList());
+			shadeData = setShadeCatogory(shadeData);
 		}
 
 
@@ -109,7 +112,7 @@ public class ShadeServiceImpl {
 
 
 
-		shadeData = setShadeCatogory(shadeData);
+
 
 		//check that shade is exist or not
 		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeData.getId()==null?0:shadeData.getId(),shadeData.getPartyShadeNo(),shadeData.getQualityEntryId());
@@ -130,6 +133,8 @@ public class ShadeServiceImpl {
 		//check the total concentration
 		Double totalConcentration=0.0;
 		Boolean specialFlag = false;
+
+
 		for(ShadeData shadeItem:shadeData.getShadeDataList())
 		{
 			totalConcentration+=shadeItem.getConcentration()==null?0:shadeItem.getConcentration();
@@ -182,9 +187,12 @@ public class ShadeServiceImpl {
 	}
 
 	
-	public Boolean updateShade(ShadeMast shadeMast) {
-		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
+	public Boolean updateShade(ShadeMast shadeMast) throws Exception {
+		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty()) {
 			shadeMast.setPending(true);
+			if(shadeMast.getCategory()==null)
+				throw new Exception("Select shade category");
+		}
 		else
 			shadeMast.setPending(false);
 
@@ -192,7 +200,7 @@ public class ShadeServiceImpl {
 		if(shadeIndex==null)
 			return false;
 		else{
-			try{
+
 				//System.out.println(shadeMast);
 				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
 				shadeMast = setShadeCatogory(shadeMast);
@@ -209,10 +217,7 @@ public class ShadeServiceImpl {
 					productionPlanDao.updateProductionWithShadeId(p.getId(),x.getId());
 				}*/
 				//shadeDataDao.saveAll(shadeMast.getShadeDataList());
-			}catch(Exception e){
-				e.printStackTrace();
-				return false;
-			}
+
 
 		}
 		return true;
