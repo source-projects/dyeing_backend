@@ -260,15 +260,15 @@ public class ShadeController extends ControllerConfig {
 	}
 
 	@PostMapping(value="/shade/exist")
-	public ResponseEntity<GeneralResponse<ShadeMast,Object>> getShadeByPartyAndWithAndWithoutQuality(ShadeExistWithPartyShadeAndQualityId record) throws Exception {
-		GeneralResponse<ShadeMast,Object> result;
+	public ResponseEntity<GeneralResponse<Boolean,Object>> getShadeByPartyAndWithAndWithoutQuality(ShadeExistWithPartyShadeAndQualityId record) throws Exception {
+		GeneralResponse<Boolean,Object> result;
 		try {
 
 				ShadeMast flag = shadeService.getShadeExistWithPartyShadeNoAndQualityEntryId(record);
 				if (flag!=null) {
-					result =  new GeneralResponse<>(flag, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+					result =  new GeneralResponse<>(true, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 				} else {
-					result= new GeneralResponse<>(flag, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+					result= new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
 				}
 
 			logService.saveLog(result,request,debugAll);
