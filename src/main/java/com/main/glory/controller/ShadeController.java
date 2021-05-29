@@ -259,17 +259,19 @@ public class ShadeController extends ControllerConfig {
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
+
 	@GetMapping(value="/shade/exist")
 	public ResponseEntity<GeneralResponse<ShadeMast,Object>> getShadeByPartyAndWithAndWithoutQuality(@RequestParam(name = "qualityEntryId") Long entryId,@RequestParam(name = "partyShadeNo") String partyShadeNo,@RequestParam(name = "shadeId") Long shadeId) throws Exception {
 		GeneralResponse<ShadeMast,Object> result;
+
 		try {
 
 			ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeId,partyShadeNo,entryId);
 				ShadeMast flag = shadeService.getShadeExistWithPartyShadeNoAndQualityEntryId(record);
 				if (flag!=null) {
-					result =  new GeneralResponse<>(flag, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+					result =  new GeneralResponse<>(true, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
 				} else {
-					result= new GeneralResponse<>(flag, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+					result= new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
 				}
 
 			logService.saveLog(result,request,debugAll);
