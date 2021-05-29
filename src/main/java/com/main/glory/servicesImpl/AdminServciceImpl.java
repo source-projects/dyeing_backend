@@ -276,7 +276,9 @@ public class AdminServciceImpl {
             throw new Exception(constantFile.Quality_Name_Exist);
 
         QualityName newQualityName = new QualityName(qualityName);
-        List<Long> supplierIds = new ArrayList<>();
+
+        //supplier record processs
+       /* List<Long> supplierIds = new ArrayList<>();
         //check the supplier list is exist or not
         if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
         {
@@ -292,12 +294,12 @@ public class AdminServciceImpl {
             }
 
 
-        }
+        }*/
         QualityName x = qualityNameDao.save(newQualityName);
 
         //update the supplier with quality name id
-        if(!supplierIds.isEmpty())
-        supplierService.updateSupplierWithQualityNameId(supplierIds,x.getId());
+       /* if(!supplierIds.isEmpty())
+        supplierService.updateSupplierWithQualityNameId(supplierIds,x.getId());*/
 
     }
 
@@ -306,7 +308,8 @@ public class AdminServciceImpl {
         if(!qualityNameExist.isEmpty())
             throw new Exception(constantFile.Quality_Name_Exist);
 
-        if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
+        //supplier list
+        /*if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
         {
 
             //remove first
@@ -359,7 +362,7 @@ public class AdminServciceImpl {
                supplierService.updateSupplierWithQualityNameId(existingSupplierId,null);
            }
         }
-
+*/
 
         QualityName newQualityName = new QualityName(qualityName);
         qualityNameDao.saveAndFlush(newQualityName);
