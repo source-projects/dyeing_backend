@@ -15,7 +15,6 @@ import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
-import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -109,7 +108,17 @@ public class ShadeServiceImpl {
 		}
 
 
+
 		shadeData = setShadeCatogory(shadeData);
+
+		//check that shade is exist or not
+		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeData.getId()==null?0:shadeData.getId(),shadeData.getPartyShadeNo(),shadeData.getQualityEntryId());
+		ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
+
+		if(shadeMastExist !=null)
+			throw new Exception(ConstantFile.Shade_Exist_Quality_And_PartyShade);
+
+
 
 		shadeMastDao.save(shadeData);
 
@@ -187,6 +196,13 @@ public class ShadeServiceImpl {
 				//System.out.println(shadeMast);
 				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
 				shadeMast = setShadeCatogory(shadeMast);
+
+				//check that shade is exist or not
+				ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeMast.getId()==null?0:shadeMast.getId(),shadeMast.getPartyShadeNo(),shadeMast.getQualityEntryId());
+				ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
+
+				if(shadeMastExist !=null)
+					throw new Exception(ConstantFile.Shade_Exist_Quality_And_PartyShade);
 				ShadeMast x = shadeMastDao.save(shadeMast);
 				/*for(ProductionPlan p :productionPlansList)
 				{
@@ -643,4 +659,12 @@ public class ShadeServiceImpl {
     public List<ShadeMast> getShadeByCreatedByAndUserHeadId(Long id) {
 		return shadeMastDao.getAllShadeByCreatedByAndUserHeadId(id,id);
     }
+
+	public ShadeMast getShadeExistWithPartyShadeNoAndQualityEntryId(ShadeExistWithPartyShadeAndQualityId record) {
+
+		if(record.getShadeId()==null)
+			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),record.getPartyShadeNo(),0l);
+		else
+			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),record.getPartyShadeNo(),record.getShadeId());
+	}
 }
