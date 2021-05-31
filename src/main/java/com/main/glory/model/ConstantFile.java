@@ -28,6 +28,7 @@ public class ConstantFile {
     public static String Jet_Exist_Without_Production = "Production not exist with jet";
     public static String Jet_Deleted = "Data deleted successfully";
     public static String Jet_Record_Exist = "Jet record exist";
+    public static String Jet_Record_Completed = "Jet record status Completed";
 
 
     //production
@@ -41,6 +42,8 @@ public class ConstantFile {
     public static String Production_Unable_Deleted = "unable to delete production";
     public static String Production_Removed = "Data removed from jet ";
     public static String Production_Record_Exist = "Production record exist";
+    public static String Production_Record_Not_Planned = "Production record not planned";
+    public static String Production_Record_Not_Exist_With_Jet = "Production record not exist with jet";
 
     //merge Batch
     public static String MergeBatch_Found = "Data found";
