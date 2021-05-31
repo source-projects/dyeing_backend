@@ -1024,10 +1024,15 @@ public class JetServiceImpl {
 
     public void removeProductionFromJet(Long jetId, Long productionId) throws Exception {
 
+
         //check first the production is already in jet or not
         JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId, productionId);
         if (jetDataExist == null)
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);
+
+
+        if(jetDataExist.getStatus().equals(JetStatus.start))
+            throw new Exception(ConstantFile.Jet_Record_Start);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(productionId);
 
@@ -1206,5 +1211,9 @@ public class JetServiceImpl {
         HMIMast hmiMast = new HMIMast(productionPlan,jetDataExist,totalWt,record);
 
         hmiMastDao.save(hmiMast);
+
+        //update jet status
+        jetDataExist.setStatus(JetStatus.start);
+        jetDataDao.save(jetDataExist);
     }
 }
