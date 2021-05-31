@@ -321,7 +321,7 @@ public class JetController extends ControllerConfig {
         boolean flag;
         try {
             jetService.hmiSaveJetdata(record);
-            result = new GeneralResponse<>(true, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            result = new GeneralResponse<>(true, constantFile.Jet_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
         }
