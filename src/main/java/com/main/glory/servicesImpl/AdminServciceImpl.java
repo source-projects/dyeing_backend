@@ -11,17 +11,24 @@ import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.purchase.Purchase;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.quality.request.AddQualityName;
+import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.responce.SupplierResponse;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.model.task.TaskMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service("adminServiceImpl")
 public class AdminServciceImpl {
+
+    @Autowired
+    SupplierServiceImpl supplierService;
 
     @Autowired
     AuthorizeDao authorizeDao;
@@ -263,21 +270,101 @@ public class AdminServciceImpl {
     }
 
 
-    public void saveQualityName(QualityName qualityName) throws Exception {
+    public void saveQualityName(AddQualityName qualityName) throws Exception {
         Optional<QualityName> qualityNameExist =qualityNameDao.getQualityNameDetailByNameAndId(qualityName.getQualityName(),0l);
         if(qualityNameExist.isPresent())
             throw new Exception(constantFile.Quality_Name_Exist);
 
-        qualityNameDao.save(qualityName);
+        QualityName newQualityName = new QualityName(qualityName);
+
+        //supplier record processs
+        List<Long> supplierIds = new ArrayList<>();
+        //check the supplier list is exist or not
+        if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
+        {
+            for(SupplierResponse supplier:qualityName.getSupplierList())
+            {
+
+                Optional<Supplier> supplierExist = supplierService.getSupplier(supplier.getId());
+                if(supplierExist.isEmpty())
+                    throw new Exception(ConstantFile.Supplier_Not_Exist);
+
+                supplierIds.add(supplierExist.get().getId());
+
+            }
+
+
+        }
+        QualityName x = qualityNameDao.save(newQualityName);
+
+        //update the supplier with quality name id
+        if(!supplierIds.isEmpty())
+        supplierService.updateSupplierWithQualityNameId(supplierIds,x.getId());
 
     }
 
-    public void updateQualityName(QualityName qualityName) throws Exception {
+    public void updateQualityName(AddQualityName qualityName) throws Exception {
         Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailByNameAndId(qualityName.getQualityName(), qualityName.getId());
         if(!qualityNameExist.isEmpty())
             throw new Exception(constantFile.Quality_Name_Exist);
 
-        qualityNameDao.saveAndFlush(qualityName);
+        //supplier list
+        if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
+        {
+
+            //remove first
+            //it mean remove the supplier with quality name id
+            List<Long> existingSupplierId = new ArrayList<>();
+
+            List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
+
+            if(!supplierList.isEmpty())
+            {
+                for(SupplierResponse supplier:supplierList)
+                {
+                    existingSupplierId.add(supplier.getId());
+                }
+
+                supplierService.updateSupplierWithQualityNameId(existingSupplierId,null);
+            }
+
+            //now add which are coming
+            List<Long> supplierIds = new ArrayList<>();
+
+            for(SupplierResponse supplier:qualityName.getSupplierList())
+            {
+
+                Optional<Supplier> supplierExist = supplierService.getSupplier(supplier.getId());
+                if(supplierExist.isEmpty())
+                    throw new Exception(ConstantFile.Supplier_Not_Exist);
+
+                supplierIds.add(supplierExist.get().getId());
+
+            }
+            supplierService.updateSupplierWithQualityNameId(supplierIds,qualityName.getId());
+
+
+        }
+        else
+        {
+           //it mean remove the supplier with quality name id
+           List<Long> existingSupplierId = new ArrayList<>();
+
+           List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
+
+           if(!supplierList.isEmpty())
+           {
+               for(SupplierResponse supplier:supplierList)
+               {
+                   existingSupplierId.add(supplier.getId());
+               }
+
+               supplierService.updateSupplierWithQualityNameId(existingSupplierId,null);
+           }
+        }
+
+        QualityName newQualityName = new QualityName(qualityName);
+        qualityNameDao.saveAndFlush(newQualityName);
 
     }
 
@@ -290,6 +377,13 @@ public class AdminServciceImpl {
         Optional<List<Quality>> qualityList = qualityServiceImp.getQualityByQualityNameId(id);
         if(qualityList.isPresent())
             throw new Exception(constantFile.Quality_Data_Exist);
+
+
+        List<SupplierResponse> supplierListExist = supplierService.getSupplierByQualityNameId(id);
+        if(!supplierListExist.isEmpty())
+            throw new Exception(ConstantFile.Supplier_Exist);
+
+
 
         qualityNameDao.deleteQualityNameById(id);
     }

@@ -64,4 +64,7 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 
 	@Query("select x from ShadeMast x where x.createdBy=:userId AND x.userHeadId=:userHeadId")
     List<ShadeMast> getAllShadeByCreatedByAndUserHeadId(Long userId, Long userHeadId);
+
+	@Query("select x from ShadeMast x where x.partyShadeNo=:partyShadeNo AND x.qualityEntryId=:qualityEntryId AND x.id!=:shadeId")
+    ShadeMast getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(Long qualityEntryId, String partyShadeNo, Long shadeId);
 }

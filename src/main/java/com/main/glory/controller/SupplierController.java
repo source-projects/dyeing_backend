@@ -11,6 +11,7 @@ import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
 import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.supplier.responce.RateAndItem;
+import com.main.glory.model.supplier.responce.SupplierRateResponse;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,13 +184,13 @@ public class SupplierController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @GetMapping("/supplier/rates/byQualityNameId")
-    public ResponseEntity<GeneralResponse<List<SupplierRate>,Object>> getAllSupplierRatesByQualityNameId(@RequestParam("qualityNameId") Long qualityNameId,@RequestParam("type") String type){
-        GeneralResponse<List<SupplierRate>,Object> result;
+    public ResponseEntity<GeneralResponse<List<SupplierRateResponse>,Object>> getAllSupplierRatesByQualityNameId(@RequestParam("qualityNameId") Long qualityNameId,@RequestParam("type") String type){
+        GeneralResponse<List<SupplierRateResponse>,Object> result;
         try{
             if(qualityNameId==null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
-            List<SupplierRate> obj = supplierService.getAllRatesByQualityNameId(qualityNameId,type);
+            List<SupplierRateResponse> obj = supplierService.getAllRatesByQualityNameId(qualityNameId,type);
             if(!obj.isEmpty()){
                 result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {

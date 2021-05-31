@@ -41,7 +41,7 @@ public class PartyDataByInvoiceNumber {
         this.cgst = dispatchMast.getCgst();
         this.sgst = dispatchMast.getSgst();
         this.taxAmt=dispatchMast.getTaxAmt();
-        this.netAmt = dispatchMast.getNetAmt();
+        this.netAmt = Math.floor(dispatchMast.getNetAmt());
         this.percentageDiscount = party.getPercentageDiscount();
     }
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList) {

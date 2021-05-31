@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,6 +22,7 @@ public class DyeingChemicalData {
     String itemName;
     String byChemical;
     Double concentration;
+    @ColumnDefault("DEFAULT")
     String shadeType;
 
 

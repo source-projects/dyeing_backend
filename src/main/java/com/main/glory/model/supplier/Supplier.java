@@ -23,7 +23,6 @@ import java.util.List;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(hidden = true)
     Long id;
     String supplierName;
     Double discountPercentage;

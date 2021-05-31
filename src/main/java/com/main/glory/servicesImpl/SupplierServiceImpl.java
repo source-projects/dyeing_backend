@@ -344,7 +344,7 @@ public class SupplierServiceImpl {
         String name;
         name = supplierRateDao.getSupplierNameByItemId(itemId);
         if (name.isEmpty())
-            throw new Exception("no supplier name found for given item");
+            throw new Exception(ConstantFile.Supplier_Not_Found);
         return name;
     }
 
@@ -408,14 +408,27 @@ public class SupplierServiceImpl {
 
     }
 
-    public List<SupplierRate> getAllRatesByQualityNameId(Long qualityNameId,String type) throws Exception {
+    public List<SupplierRateResponse> getAllRatesByQualityNameId(Long qualityNameId,String type) throws Exception {
         //check that the quality name exist or not
 
         Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityNameId);
         if(qualityNameExist.isEmpty())
             throw new Exception(ConstantFile.Quality_Name_Not_Exist);
 
-        return supplierRateDao.getAllItemByQualityNameId(qualityNameId,type);
+        List<SupplierRateResponse> list = supplierRateDao.getAllItemByQualityNameId(qualityNameId,type);
 
+        if(list.isEmpty())
+            return supplierRateDao.getAllItemWithType(type);
+        else
+            return list;
+
+    }
+
+    public void updateSupplierWithQualityNameId(List<Long> supplierIds, Long qualityNameId) {
+        supplierDao.updateSupplierWithQualityNameId(supplierIds,qualityNameId);
+    }
+
+    public List<SupplierResponse> getSupplierByQualityNameId(Long id) {
+        return supplierDao.getAllSupplierListByQualityNameId(id);
     }
 }

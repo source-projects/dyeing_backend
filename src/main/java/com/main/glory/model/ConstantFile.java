@@ -146,6 +146,7 @@ public class ConstantFile {
 
     //Shade
     public static String Shade_Exist = "Shade data exist";
+    public static String Shade_Exist_Quality_And_PartyShade = "Shade data exist with quality and party shade no";
     public static String Shade_Not_Exist = "Shade data not exist ";
     public static String Shade_Found = "Data found";
     public static String Shade_Not_Found = "Data not found";
@@ -337,7 +338,8 @@ public class ConstantFile {
     public static String Supplier_Deleted = "Data deleted successfully ";
     public static String Supplier_Found = "Data found ";
     public static String Supplier_Not_Found = "Data not found ";
-    public static String Supplier_Exist= "Supplier data exit ";
+    public static String Supplier_Exist= "Supplier data exist ";
+    public static String Supplier_Not_Exist= "Supplier data not exist ";
 
     //Supplier rate
     public static String SupplierRate_Added = "Data added successfully ";

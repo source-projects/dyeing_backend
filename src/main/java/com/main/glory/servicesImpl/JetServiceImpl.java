@@ -141,7 +141,7 @@ public class JetServiceImpl {
             //get total wt of batch id
             totalBatchWt = batchDao.getTotalWtByBatchId(productionPlanExits.getBatchId());
         } else {
-            //get total wt of merge batcg uid
+            //get total wt of merge batch uid
             totalBatchWt = batchDao.getTotalWtByMergeBatchId(productionPlanExits.getBatchId());
         }
 
@@ -1020,7 +1020,7 @@ public class JetServiceImpl {
 
     public void removeProductionFromJet(Long jetId, Long productionId) throws Exception {
 
-        //check first the prodution is already in jet or not
+        //check first the production is already in jet or not
         JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId, productionId);
         if (jetDataExist == null)
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);

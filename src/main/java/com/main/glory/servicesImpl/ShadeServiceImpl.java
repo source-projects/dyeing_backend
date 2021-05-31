@@ -15,6 +15,7 @@ import com.main.glory.model.shade.APC;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
+import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -90,11 +91,14 @@ public class ShadeServiceImpl {
 		{
 			shadeData.setShadeDataList(null);
 			shadeData.setPending(true);
+			if(shadeMast.getCategory()==null)
+				throw new Exception("Select shade category");
 		}
 		else {
 
 			shadeData.setPending(false);
 			shadeData.setShadeDataList(shadeMast.getShadeDataList());
+			shadeData = setShadeCatogory(shadeData);
 		}
 
 
@@ -105,15 +109,62 @@ public class ShadeServiceImpl {
 			Party party = partyDao.findByPartyId(shadeData.getPartyId());
 			shadeData.setUserHeadId(party.getUserHeadId());
 		}
-		
+
+
+
+
+
+		//check that shade is exist or not
+		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeData.getId()==null?0:shadeData.getId(),shadeData.getPartyShadeNo(),shadeData.getQualityEntryId());
+		ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
+
+		if(shadeMastExist !=null)
+			throw new Exception(ConstantFile.Shade_Exist_Quality_And_PartyShade);
+
+
+
 		shadeMastDao.save(shadeData);
 
 
 
 	}
 
+	private ShadeMast setShadeCatogory(ShadeMast shadeData) {
+		//check the total concentration
+		Double totalConcentration=0.0;
+		Boolean specialFlag = false;
 
-	
+
+		for(ShadeData shadeItem:shadeData.getShadeDataList())
+		{
+			totalConcentration+=shadeItem.getConcentration()==null?0:shadeItem.getConcentration();
+			Optional<SupplierRate> supplierRate = supplierService.getItemById(shadeItem.getSupplierItemId());
+			if(supplierRate.get().getItemName().equalsIgnoreCase("Blue SR") || supplierRate.get().getItemName().equalsIgnoreCase("Blue GRL"))
+			{
+				specialFlag = true;
+			}
+
+
+		}
+
+		if(specialFlag == true)
+		{
+			shadeData.setCategory("SPECIAL");
+		}
+		else
+		{
+			if(totalConcentration >= 0 && totalConcentration <=1)
+				shadeData.setCategory("LIGHT");
+			else if(totalConcentration > 1 && totalConcentration <=2.5)
+				shadeData.setCategory("MEDIUM");
+			else if(totalConcentration > 2.5)
+				shadeData.setCategory("DARK");
+		}
+		System.out.println(totalConcentration+"-"+shadeData.getCategory());
+		return shadeData;
+	}
+
+
 	public List<ShadeMast> getAllShadeMast() throws Exception{
 		List<ShadeMast> shadeMastList = shadeMastDao.getAllShadeMast();
 		if(shadeMastList.isEmpty())
@@ -136,9 +187,12 @@ public class ShadeServiceImpl {
 	}
 
 	
-	public Boolean updateShade(ShadeMast shadeMast) {
-		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
+	public Boolean updateShade(ShadeMast shadeMast) throws Exception {
+		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty()) {
 			shadeMast.setPending(true);
+			if(shadeMast.getCategory()==null)
+				throw new Exception("Select shade category");
+		}
 		else
 			shadeMast.setPending(false);
 
@@ -146,19 +200,24 @@ public class ShadeServiceImpl {
 		if(shadeIndex==null)
 			return false;
 		else{
-			try{
+
 				//System.out.println(shadeMast);
 				List<ProductionPlan> productionPlansList =productionPlanService.getProductionByShadeId(shadeMast.getId());
+				shadeMast = setShadeCatogory(shadeMast);
+
+				//check that shade is exist or not
+				ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeMast.getId()==null?0:shadeMast.getId(),shadeMast.getPartyShadeNo(),shadeMast.getQualityEntryId());
+				ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
+
+				if(shadeMastExist !=null)
+					throw new Exception(ConstantFile.Shade_Exist_Quality_And_PartyShade);
 				ShadeMast x = shadeMastDao.save(shadeMast);
 				/*for(ProductionPlan p :productionPlansList)
 				{
 					productionPlanDao.updateProductionWithShadeId(p.getId(),x.getId());
 				}*/
 				//shadeDataDao.saveAll(shadeMast.getShadeDataList());
-			}catch(Exception e){
-				e.printStackTrace();
-				return false;
-			}
+
 
 		}
 		return true;
@@ -605,4 +664,12 @@ public class ShadeServiceImpl {
     public List<ShadeMast> getShadeByCreatedByAndUserHeadId(Long id) {
 		return shadeMastDao.getAllShadeByCreatedByAndUserHeadId(id,id);
     }
+
+	public ShadeMast getShadeExistWithPartyShadeNoAndQualityEntryId(ShadeExistWithPartyShadeAndQualityId record) {
+
+		if(record.getShadeId()==null || record.getShadeId().equals(0))
+			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),record.getPartyShadeNo(),0l);
+		else
+			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),record.getPartyShadeNo(),record.getShadeId());
+	}
 }

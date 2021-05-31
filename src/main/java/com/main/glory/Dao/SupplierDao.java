@@ -3,6 +3,7 @@ package com.main.glory.Dao;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
+import com.main.glory.model.supplier.responce.SupplierResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -49,4 +50,12 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     @Query("select s from Supplier s where s.createdBy=:id OR s.userHeadId=:id1")
     List<Supplier> getSupplierByCreatedAndUserHeadId(Long id, Long id1);
+
+    @Modifying
+    @Transactional
+    @Query("update Supplier x set x.qualityNameId=:qualityNameId where x.id IN (:supplierIds)")
+    void updateSupplierWithQualityNameId(List<Long> supplierIds, Long qualityNameId);
+
+    @Query("select new com.main.glory.model.supplier.responce.SupplierResponse(x) from Supplier x where x.qualityNameId=:qualityNameId")
+    List<SupplierResponse> getAllSupplierListByQualityNameId(Long qualityNameId);
 }

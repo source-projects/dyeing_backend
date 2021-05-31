@@ -10,6 +10,7 @@ import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.quality.request.AddQualityName;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.servicesImpl.AdminServciceImpl;
 import com.main.glory.servicesImpl.JetServiceImpl;
@@ -74,7 +75,7 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping(value="/admin/quality/add/qualityName/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQualityName(@RequestBody QualityName qualityName) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQualityName(@RequestBody AddQualityName qualityName) throws Exception {
        GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {
@@ -100,7 +101,7 @@ public class AdminController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PutMapping(value="/admin/quality/update/qualityName/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityName(@RequestBody QualityName qualityName) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityName(@RequestBody AddQualityName qualityName) throws Exception {
         GeneralResponse<Boolean,Object> result;
         if(qualityName==null)
         {

@@ -751,18 +751,23 @@ public class DispatchMastImpl {
             shadeRate = dispatchDataList.get(0).getShadeRate();
 
 
-            //Count the total amt based on quality rate and total finish mtr
-            amt=(rate+shadeRate)*finishMtr;
-
-
-
-
-
 
             //set the quality with batch data
             qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
-            qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
-            qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
+            if(dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter")) {
+                qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
+                qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
+            }else
+            {
+
+                totalMtr = (totalMtr / 100) * dispatchDataList.get(0).getWtPer100m();
+                finishMtr = (finishMtr / 100) * dispatchDataList.get(0).getWtPer100m();
+                qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
+                qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
+            }
+            //Count the total amt based on quality rate and total finish mtr
+            amt=(rate+shadeRate)*finishMtr;
+
             qualityBillByInvoiceNumber.setPcs(pcs);
             qualityBillByInvoiceNumber.setAmt(amt);
             qualityBillByInvoiceNumber.setRate(rate);
