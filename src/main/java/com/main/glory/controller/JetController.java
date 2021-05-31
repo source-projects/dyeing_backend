@@ -316,7 +316,7 @@ public class JetController extends ControllerConfig {
 
     //save data in hmi mast
     @PostMapping(value="/jet/start")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> hmiSaveJetData(JetStart record)  throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> hmiSaveJetData(@RequestBody JetStart record)  throws Exception {
         GeneralResponse<Boolean,Object> result;
         boolean flag;
         try {
