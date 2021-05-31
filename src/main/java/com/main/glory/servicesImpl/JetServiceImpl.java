@@ -764,7 +764,7 @@ public class JetServiceImpl {
             List<JetData> existJetDataList = jetDataDao.findByControlId(jetMast.getId());
 
             for (JetData jetData : existJetDataList) {
-                if (jetData.getStatus() == JetStatus.inQueue) {
+                if (jetData.getStatus().equals(JetStatus.inQueue) || jetData.getStatus().equals(JetStatus.start)) {
                     ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
                     if (productionPlan == null)
                         continue;
@@ -1188,7 +1188,7 @@ public class JetServiceImpl {
             throw new Exception(ConstantFile.Jet_Record_Completed);
 
 
-        if(!jetDataExist.getControlId().equals(record.getJetNo()))
+        if(!jetDataExist.getControlId().toString().equals(record.getJetNo()))
             throw new Exception(ConstantFile.Production_Record_Not_Exist_With_Jet);
 
         ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetDataExist.getProductionId());
