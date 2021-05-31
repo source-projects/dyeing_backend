@@ -6,6 +6,7 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.supplier.responce.ItemWithSupplier;
+import com.main.glory.model.supplier.responce.SupplierRateResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -63,9 +64,9 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
     @Query("select x from SupplierRate x where x.itemName=:name AND x.supplierId!=:id")
     SupplierRate getSupplierRateByNameAndExceptId(String name, Long id);
 
-    @Query("select x from SupplierRate x where x.supplierId IN (select s.id from Supplier s where s.qualityNameId=:qualityNameId) AND x.itemType=:type")
-    List<SupplierRate> getAllItemByQualityNameId(Long qualityNameId,String type);
+    @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,(select ss.supplierName from Supplier ss where ss.id=x.supplierId)) from SupplierRate x where x.supplierId IN (select s.id from Supplier s where s.qualityNameId=:qualityNameId) AND x.itemType=:type")
+    List<SupplierRateResponse> getAllItemByQualityNameId(Long qualityNameId, String type);
 
-    @Query("select x from SupplierRate x where x.itemType=:type")
-    List<SupplierRate> getAllItemWithType(String type);
+    @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,(select ss.supplierName from Supplier ss where ss.id=x.supplierId)) from SupplierRate x where x.itemType=:type")
+    List<SupplierRateResponse> getAllItemWithType(String type);
 }
