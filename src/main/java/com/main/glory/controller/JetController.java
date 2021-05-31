@@ -6,6 +6,7 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.jet.request.AddJetData;
 import com.main.glory.model.jet.request.ChangeStatus;
+import com.main.glory.model.jet.request.JetStart;
 import com.main.glory.model.jet.request.UpdateJetData;
 import com.main.glory.model.jet.responce.*;
 import com.main.glory.servicesImpl.JetServiceImpl;
@@ -307,6 +308,27 @@ public class JetController extends ControllerConfig {
         {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    //save data in hmi mast
+    @PostMapping(value="/jet/start")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> hmiSaveJetData(@RequestBody JetStart record)  throws Exception {
+        GeneralResponse<Boolean,Object> result;
+        boolean flag;
+        try {
+            jetService.hmiSaveJetdata(record);
+            result = new GeneralResponse<>(true, constantFile.Jet_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

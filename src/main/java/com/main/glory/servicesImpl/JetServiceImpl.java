@@ -5,6 +5,7 @@ import com.main.glory.Dao.Jet.JetMastDao;
 import com.main.glory.Dao.QuantityRangeDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.color.ColorDataDao;
+import com.main.glory.Dao.hmi.HMIMastDao;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.qualityProcess.ChemicalDao;
@@ -18,6 +19,7 @@ import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
+import com.main.glory.model.hmi.HMIMast;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
@@ -41,6 +43,8 @@ import java.util.*;
 @Transactional
 public class JetServiceImpl {
 
+    @Autowired
+    HMIMastDao hmiMastDao;
 
     @Autowired
     PartyServiceImp partyServiceImp;
@@ -760,7 +764,7 @@ public class JetServiceImpl {
             List<JetData> existJetDataList = jetDataDao.findByControlId(jetMast.getId());
 
             for (JetData jetData : existJetDataList) {
-                if (jetData.getStatus() == JetStatus.inQueue) {
+                if (jetData.getStatus().equals(JetStatus.inQueue) || jetData.getStatus().equals(JetStatus.start)) {
                     ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
                     if (productionPlan == null)
                         continue;
@@ -1020,10 +1024,15 @@ public class JetServiceImpl {
 
     public void removeProductionFromJet(Long jetId, Long productionId) throws Exception {
 
+
         //check first the production is already in jet or not
         JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetId, productionId);
         if (jetDataExist == null)
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);
+
+
+        if(jetDataExist.getStatus().equals(JetStatus.start))
+            throw new Exception(ConstantFile.Jet_Record_Start);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(productionId);
 
@@ -1165,5 +1174,46 @@ public class JetServiceImpl {
 
     public List<JetData> getAllProductionSuccessFromJet() {
         return jetDataDao.getAllProductionSuccessFromJet();
+    }
+
+    public void hmiSaveJetdata(JetStart record) throws Exception {
+        //check that the production is completed or not
+
+        JetData jetDataExist = jetDataDao.getJetDataByProductionId(record.getProductionId());
+
+        if(jetDataExist==null)
+            throw new Exception(ConstantFile.Jet_Not_Found);
+
+        if(jetDataExist.getStatus().equals(JetStatus.success))
+            throw new Exception(ConstantFile.Jet_Record_Completed);
+
+
+        if(!jetDataExist.getControlId().toString().equals(record.getJetNo()))
+            throw new Exception(ConstantFile.Production_Record_Not_Exist_With_Jet);
+
+        ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetDataExist.getProductionId());
+
+        if(productionPlan.getStatus()==false)
+            throw new Exception(ConstantFile.Production_Record_Not_Planned);
+
+        //check that batch id is merge batch id or not
+        BatchData isMergeBatch = batchDao.getIsMergeBatchId(productionPlan.getBatchId());
+        Double totalWt = 0.0;
+        if(isMergeBatch==null)
+        {
+            totalWt = batchDao.getTotalWtByBatchId(productionPlan.getBatchId());
+        }
+        else
+        {
+            totalWt = batchDao.getTotalWtByMergeBatchId(productionPlan.getBatchId());
+        }
+
+        HMIMast hmiMast = new HMIMast(productionPlan,jetDataExist,totalWt,record);
+
+        hmiMastDao.save(hmiMast);
+
+        //update jet status
+        jetDataExist.setStatus(JetStatus.start);
+        jetDataDao.save(jetDataExist);
     }
 }
