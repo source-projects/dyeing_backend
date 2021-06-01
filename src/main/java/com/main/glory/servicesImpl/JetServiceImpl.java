@@ -1171,6 +1171,9 @@ public class JetServiceImpl {
     public List<JetData> getAllProductionInTheQueue() {
         return jetDataDao.getAllProductionInTheQueue();
     }
+    public List<JetData> getAllProductionInTheQueueWithStart() {
+        return jetDataDao.getAllProductionInTheQueueAndStart();
+    }
 
     public List<JetData> getAllProductionSuccessFromJet() {
         return jetDataDao.getAllProductionSuccessFromJet();
