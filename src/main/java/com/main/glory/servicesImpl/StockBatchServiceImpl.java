@@ -1820,7 +1820,7 @@ public class StockBatchServiceImpl {
 
 
         //get all batches which are in the queue
-        List<JetData> jetDataList = jetService.getAllProductionInTheQueue();
+        List<JetData> jetDataList = jetService.getAllProductionInTheQueueWithStart();
 
         for(JetData jetData:jetDataList)
         {

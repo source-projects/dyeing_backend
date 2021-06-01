@@ -50,6 +50,9 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
     @Query("select j from JetData j where j.status='inQueue'")
     List<JetData> getAllProductionInTheQueue();
 
+    @Query("select j from JetData j where j.status='inQueue' OR j.status='start'")
+    List<JetData> getAllProductionInTheQueueAndStart();
+
     @Query("select j from JetData j where j.status='success'")
     List<JetData> getAllProductionSuccessFromJet();
 }
