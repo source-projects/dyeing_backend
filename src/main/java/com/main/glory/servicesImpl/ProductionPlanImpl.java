@@ -774,6 +774,41 @@ public class ProductionPlanImpl {
         return productionPlanDao.getProductionByBatchId(batchId);
     }
 
+    public void deleteProductionByBatchId(String batchId) throws Exception {
+
+        ProductionPlan productionPlanExist = productionPlanDao.getProductionByBatchId(batchId);
+
+        if(productionPlanExist==null)
+            throw new Exception(ConstantFile.Production_Not_Found);
+
+        if(productionPlanExist.getStatus()==true)
+            throw new Exception(ConstantFile.Production_With_Jet);
+
+
+        productionPlanDao.deleteProductionById(productionPlanExist.getId());
+        List<BatchData> batchDataList=null;
+
+
+        //change the flag of batchData list
+        if(productionPlanExist.getIsMergeBatchId())
+        {
+            batchDataList = batchDao.getBatchByMergeBatchId(productionPlanExist.getBatchId());
+
+        }
+        else
+        {
+            batchDataList = batchDao.getBatchByBatchId(productionPlanExist.getBatchId());
+        }
+
+        if(batchDataList.isEmpty())
+            throw new Exception(ConstantFile.Batch_Data_Not_Exist);
+
+        batchDataList.forEach(e->{
+            batchDao.updateProductionPlanned(e.getId(),false);
+        });
+
+    }
+
 /*
     public List<BatchData> getAllBatch(Long partyId, Long qualityEntryId, String batchId) {
 
