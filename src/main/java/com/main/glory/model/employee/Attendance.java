@@ -31,6 +31,8 @@ public class Attendance {
     Boolean shift; //true:morning
     String url;
     String outUrl;
+    @ColumnDefault("false")
+    Boolean approved;
 
     public Attendance(GetLatestAttendance record, EmployeeMast employeeMast) {
         this.inTime = record.getDate();

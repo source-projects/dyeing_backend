@@ -162,6 +162,7 @@ public class AttendanceController extends ControllerConfig {
     {
         GeneralResponse<EmployeeWithAttendance,Object> result;
         try {
+
             if(record==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 

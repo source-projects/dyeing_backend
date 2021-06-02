@@ -231,6 +231,14 @@ public class ProductionPlanImpl {
               throw new Exception("no data found");*/
 
 
+        if(!list.isEmpty())
+        {
+            list.forEach(e->{
+                e.setTotalMtr(stockBatchService.changeInFormattedDecimal(e.getTotalMtr()));
+                e.setTotalWt(stockBatchService.changeInFormattedDecimal(e.getTotalWt()));
+            });
+        }
+
         return list;
 
 
@@ -278,8 +286,8 @@ public class ProductionPlanImpl {
                     record.setColorTone(productionPlanDao.getColorToneByBatchId(e));
                 }
 
-                record.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(e));
-                record.setTotalWt(batchDao.getTotalWtByMergeBatchId(e));
+                record.setTotalMtr(stockBatchService.changeInFormattedDecimal(batchDao.getTotalMtrByMergeBatchId(e)));
+                record.setTotalWt(stockBatchService.changeInFormattedDecimal(batchDao.getTotalWtByMergeBatchId(e)));
 
             }
             else
@@ -290,6 +298,8 @@ public class ProductionPlanImpl {
                 if(stockMast!=null)
                 {
                     record = productionPlanDao.getProductionWithColorToneByBatchId(e,stockMast.getPartyId(),stockMast.getQualityId());
+                    record.setTotalWt(stockBatchService.changeInFormattedDecimal(record.getTotalWt()));
+                    record.setTotalMtr(stockBatchService.changeInFormattedDecimal(record.getTotalMtr()));
                     record.setBatchId(e);
                     record.setPartyId(stockMast.getPartyId().toString());
                     record.setQualityEntryId(stockMast.getQualityId().toString());
