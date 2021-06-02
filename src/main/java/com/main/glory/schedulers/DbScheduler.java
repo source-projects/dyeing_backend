@@ -25,10 +25,18 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.*;
+
+import static org.hibernate.bytecode.BytecodeLogger.LOGGER;
 
 @Service
 @EnableScheduling
 public class DbScheduler {
+
+    private final static Logger LOGGER =
+            Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     @Value("${spring.datasource.username}")
     private String user;
@@ -51,7 +59,8 @@ public class DbScheduler {
     @Scheduled(cron="0 0 0 * * *")//at every night at 12am
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
 
-        //System.out.println("called db");
+        LOGGER.log(Level.INFO, "called db at night 12 am");
+        //System.out.println("");
         restoreDbService.backupDb();
 
     }
