@@ -51,7 +51,7 @@ public class DbScheduler {
     @Scheduled(cron="0 0 0 * * *")//at every night at 12am
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
 
-        //System.out.println("called db");
+        System.out.println("called db");
         restoreDbService.backupDb();
 
     }
