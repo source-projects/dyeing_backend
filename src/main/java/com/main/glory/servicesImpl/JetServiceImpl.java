@@ -288,7 +288,7 @@ public class JetServiceImpl {
 
 
             //add the capacity with new batch capacity
-            newBatchCapacity += availableBatchInJetCapacity;
+            //newBatchCapacity += availableBatchInJetCapacity;
 
             //check the capacity is fullfill the requirement
             if (newBatchCapacity > availableJetCapacity)

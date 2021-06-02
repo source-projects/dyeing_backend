@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.DecimalFormat;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,7 +27,7 @@ public class BatchToPartyAndQuality {
     String processName;
     String partyShadeNo;
 
-
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
     public BatchToPartyAndQuality(Quality quality, Party party, GetBatchWithControlId batch) {
         this.qualityEntryId=quality.getId().toString();
@@ -35,8 +37,8 @@ public class BatchToPartyAndQuality {
         this.partyName=party.getPartyName();
         this.controlId=batch.controlId;
         this.batchId=batch.batchId;
-        this.totalMtr=batch.MTR;
-        this.totalWt=batch.WT;
+        this.totalMtr=Double.valueOf(df2.format(batch.MTR));
+        this.totalWt=Double.valueOf(df2.format(batch.WT));
         this.mergeBatchId = batch.getMergeBatchId()==null?null : batch.getMergeBatchId();
 
     }
