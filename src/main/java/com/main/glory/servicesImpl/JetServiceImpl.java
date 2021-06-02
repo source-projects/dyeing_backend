@@ -288,7 +288,7 @@ public class JetServiceImpl {
 
 
             //add the capacity with new batch capacity
-            newBatchCapacity += availableBatchInJetCapacity;
+            //newBatchCapacity += availableBatchInJetCapacity;
 
             //check the capacity is fullfill the requirement
             if (newBatchCapacity > availableJetCapacity)
@@ -1170,6 +1170,9 @@ public class JetServiceImpl {
 
     public List<JetData> getAllProductionInTheQueue() {
         return jetDataDao.getAllProductionInTheQueue();
+    }
+    public List<JetData> getAllProductionInTheQueueWithStart() {
+        return jetDataDao.getAllProductionInTheQueueAndStart();
     }
 
     public List<JetData> getAllProductionSuccessFromJet() {

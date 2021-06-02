@@ -38,6 +38,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -49,6 +50,8 @@ public class StockBatchServiceImpl {
 
     @Autowired
     DispatchMastImpl dispatchMastService;
+
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
     ConstantFile constantFile;
 
@@ -90,6 +93,7 @@ public class StockBatchServiceImpl {
     QualityServiceImp qualityServiceImp;
     @Autowired
     PartyDao partyDao;
+
 
 
     public List<StockMast> getAllStockBatch(Long qualityId) {
@@ -866,8 +870,8 @@ public class StockBatchServiceImpl {
 
                 }
 
-                batchToPartyAndQuality.setTotalMtr(batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId()));
-                batchToPartyAndQuality.setTotalWt(batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId()));
+                batchToPartyAndQuality.setTotalMtr(changeInFormattedDecimal(batchDao.getTotalMtrByMergeBatchId(batch.getMergeBatchId())));
+                batchToPartyAndQuality.setTotalWt(changeInFormattedDecimal(batchDao.getTotalWtByMergeBatchId(batch.getMergeBatchId())));
 
             }
             batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
@@ -1192,8 +1196,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
                     getAllBatch.setControlId(getBatchWithControlId.getControlId());
-                    getAllBatch.setTotalWt(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId()));
-                    getAllBatch.setTotalMtr(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId()));
+                    getAllBatch.setTotalWt(changeInFormattedDecimal(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId())));
+                    getAllBatch.setTotalMtr(changeInFormattedDecimal(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId())));
                     batchId.add(getAllBatch.getBatchId());
                     //System.out.println();
                     System.out.println(objectMapper.writeValueAsString(getAllBatch));
@@ -1213,8 +1217,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
-                    getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
-                    getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
+                    getAllBatch.setTotalWt(changeInFormattedDecimal(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false)));
+                    getAllBatch.setTotalMtr(changeInFormattedDecimal(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false)));
 
 
                     if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
@@ -1237,6 +1241,10 @@ public class StockBatchServiceImpl {
         /*if(list.isEmpty())
             throw new Exception(commonMessage.StockBatch_Found_ByParty+partyId);*/
         return list;
+    }
+
+    public Double changeInFormattedDecimal(Double values) {
+        return Double.valueOf(df2.format(values));
     }
 
     public List<GetAllBatch> getBatchListByQualityWithoutProductionPlan(Long qualityId) throws Exception {
@@ -1267,8 +1275,8 @@ public class StockBatchServiceImpl {
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
                 getAllBatch.setControlId(getBatchWithControlId.getControlId());
-                getAllBatch.setTotalMtr(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId()));
-                getAllBatch.setTotalWt(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId()));
+                getAllBatch.setTotalMtr(changeInFormattedDecimal(batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId())));
+                getAllBatch.setTotalWt(changeInFormattedDecimal(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId())));
                 batchId.add(getAllBatch.getBatchId());
                 list.add(getAllBatch);
 
@@ -1289,8 +1297,8 @@ public class StockBatchServiceImpl {
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
-                getAllBatch.setTotalWt(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
-                getAllBatch.setTotalMtr(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false));
+                getAllBatch.setTotalWt(changeInFormattedDecimal(batchDao.getTotalWtByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false)));
+                getAllBatch.setTotalMtr(changeInFormattedDecimal(batchDao.getTotalMtrByMergeBatchIdWithProductionFlag(getBatchWithControlId.getMergeBatchId(),false)));
 
                 if(!batchId.contains(getBatchWithControlId.getMergeBatchId())) {
                     //System.out.println("merge:"+getBatchWithControlId.getMergeBatchId());
@@ -1820,7 +1828,7 @@ public class StockBatchServiceImpl {
 
 
         //get all batches which are in the queue
-        List<JetData> jetDataList = jetService.getAllProductionInTheQueue();
+        List<JetData> jetDataList = jetService.getAllProductionInTheQueueWithStart();
 
         for(JetData jetData:jetDataList)
         {
