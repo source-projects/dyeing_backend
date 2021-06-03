@@ -309,7 +309,7 @@ public class AdminServciceImpl {
             throw new Exception(constantFile.Quality_Name_Exist);
 
         //supplier list
-        if(qualityName.getSupplierList()!=null || !qualityName.getSupplierList().isEmpty())
+        if(qualityName.getSupplierList()!=null)
         {
 
             //remove first

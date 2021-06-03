@@ -27,6 +27,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.quality.response.QualityWithQualityNameParty;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -37,6 +38,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Part;
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -2297,7 +2299,9 @@ public class StockBatchServiceImpl {
                 Map<Long,Long> existing = hashMapMap.get(batchDataExist.getControlId());
                 Map.Entry<Long,Long> entry = existing.entrySet().iterator().next();
 
-                batchReturnList.add(new BatchReturn(entry.getKey(),entry.getValue(),batchDataExist,latestChlNo));
+                Optional<QualityWithQualityNameParty> quality = qualityDao.findByIdWithQualityNameResponse(entry.getKey());
+                Party party = partyDao.findByPartyId(entry.getValue());
+                batchReturnList.add(new BatchReturn(entry.getKey(),entry.getValue(),batchDataExist,latestChlNo,record.getChallanDate(),party,quality.get()));
             }
             else
             {
@@ -2305,7 +2309,10 @@ public class StockBatchServiceImpl {
                 HashMap<Long,Long> qualityAndPartyId = new HashMap<>();
                 qualityAndPartyId.put(stockMast.getQualityId(),stockMast.getPartyId());
 
-                batchReturnList.add(new BatchReturn(stockMast,batchDataExist,latestChlNo));
+                Optional<QualityWithQualityNameParty> quality = qualityDao.findByIdWithQualityNameResponse(stockMast.getQualityId());
+                Party party = partyDao.findByPartyId(stockMast.getPartyId());
+
+                batchReturnList.add(new BatchReturn(stockMast,batchDataExist,latestChlNo,record.getChallanDate(),party,quality.get()));
                 hashMapMap.put(stockMast.getId(),qualityAndPartyId);
             }
         }
@@ -2320,6 +2327,12 @@ public class StockBatchServiceImpl {
 
 
 
+    }
+
+    public List<BatchReturn> getAllReturnBatch() {
+
+
+        return null;
     }
 
 
