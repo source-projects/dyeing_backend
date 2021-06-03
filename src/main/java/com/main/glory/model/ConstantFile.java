@@ -226,9 +226,10 @@ public class ConstantFile {
     public static String StockBatch_Without_Batch = "Data found without batch";
     public static String StockBatch_Not_Found = "Data not found ";
     public static String StockBatch_Added = "Data added successfully";
-    public static String ReturnStockBatch_Added = "Return stock Data added successfully";
     public static String StockBatch_Updated = "Data updated successfully";
     public static String StockBatch_Deleted = "Data deleted successfully";
+    public static String ReturnStockBatch_Added = "Return stock Data added successfully";
+    public static String ReturnStockBatch_Found = "Return stock Data found ";
 
 
     public static String StockBatch_Found_ByMaster = "Data found for master ";

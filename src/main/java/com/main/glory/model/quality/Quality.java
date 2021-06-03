@@ -27,24 +27,24 @@ import javax.persistence.*;
 public class Quality {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-	private String  qualityId;
+    Long id;
+	String  qualityId;
 	String qualityName;
-	private String qualityType;
-	private String unit;
-	private Long  partyId;
-	private Double wtPer100m;
-	private Double mtrPerKg;
-	private String remark;
-	private  Date createdDate;
-	private Long createdBy;
-	private Long updatedBy;
-	private Date updatedDate;
-	private Date qualityDate;
-	private Long userHeadId;
-	private Double rate;
+	String qualityType;
+	String unit;
+	Long  partyId;
+	Double wtPer100m;
+	Double mtrPerKg;
+	String remark;
+	Date createdDate;
+	Long createdBy;
+	Long updatedBy;
+	Date updatedDate;
+	Date qualityDate;
+	Long userHeadId;
+	Double rate;
 	@ColumnDefault("998821")
-	private String HSN;
+	String HSN;
 	Long qualityNameId;
 	@Column(columnDefinition = "varchar(255) default 'meter'")
 	String billingUnit;
