@@ -11,6 +11,7 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.party.request.PartyReport;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
 import com.main.glory.model.quality.request.AddQualityRequest;
@@ -333,6 +334,32 @@ public class QualityController extends ControllerConfig {
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @GetMapping(value = "/quality/qualityIdExist")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> IsQualityIdAlreadyExist(@RequestParam(name = "qualityId") String qualityId,@RequestParam(name="partyId")Long partyId) {
+
+        GeneralResponse<Boolean, Object> result;
+        try {
+            if (partyId != null) {
+                Quality flag = qualityServiceImp.getQualityIdIsExist(qualityId, partyId);
+                if (flag!=null) {
+                    result = new GeneralResponse<>(true, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
+                } else
+                    result = new GeneralResponse<>(false, ConstantFile.Quality_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
+                logService.saveLog(result, request, debugAll);
+            } else
+                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
     }
 
 }
