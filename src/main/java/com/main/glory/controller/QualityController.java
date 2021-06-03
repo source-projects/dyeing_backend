@@ -10,7 +10,6 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.Party;
-import com.main.glory.model.party.request.PartyReport;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
@@ -338,12 +337,12 @@ public class QualityController extends ControllerConfig {
 
 
     @GetMapping(value = "/quality/qualityIdExist")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> IsQualityIdAlreadyExist(@RequestParam(name = "qualityId") String qualityId,@RequestParam(name="partyId")Long partyId) {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> IsQualityIdAlreadyExist(@RequestParam(name = "qualityId") String qualityId,@RequestParam(name="partyId")Long partyId,@RequestParam(name="id")Long id) {
 
         GeneralResponse<Boolean, Object> result;
         try {
             if (partyId != null) {
-                Quality flag = qualityServiceImp.getQualityIdIsExist(qualityId, partyId);
+                Quality flag = qualityServiceImp.getQualityIdIsExistExceptId(qualityId, partyId,id);
                 if (flag!=null) {
                     result = new GeneralResponse<>(true, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
                 } else
