@@ -256,13 +256,15 @@ public class RestoreDbImpl {
                         "cloud_name", "dvvqdgl3s",
                         "api_key", "841845242494588",
                         "api_secret", "E1owKNvkJZa131NBcDYEM6mdZSc"));
+
                 Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.asMap("resource_type","raw"));
-                /*
+                //thread sleep because api is taking time for upload
+                Thread.sleep(5000);
+
                 ObjectMapper objectMapper = new ObjectMapper();
-                uploadResult.get("secure_url") get uploaded url
-                uploadResult.get("public_id") get uploaded file name use while we are try to restore the file
+                //uploadResult.get("secure_url"); //get uploaded url
+                //uploadResult.get("public_id"); //get uploaded file name use while we are try to restore the file
                 System.out.println(objectMapper.writeValueAsString(uploadResult));
-                */
 
                 DatabaseBackup databaseBackup = new DatabaseBackup();
                 databaseBackup.setName(uploadResult.get("public_id").toString());
