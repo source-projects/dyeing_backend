@@ -270,5 +270,24 @@ public class ProductionPlanController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping(value="/productionPlan/removeBy")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> removeByBatchId(@RequestParam(name="batchId")String batchId)
+    {
+        GeneralResponse<Boolean,Object> result;
+        try {
+            productionPlanService.deleteProductionByBatchId(batchId);
+            result =  new GeneralResponse<>(true, ConstantFile.Production_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 }

@@ -1118,7 +1118,10 @@ public class DispatchMastImpl {
                 totalMtr+=batchData.getMtr();
             }
 
-            qualityBillByInvoiceNumberList.add(new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast));
+            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast);
+            qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
+            //qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
+            qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
 
 
             batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
