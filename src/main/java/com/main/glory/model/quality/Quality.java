@@ -46,7 +46,7 @@ public class Quality {
 	@ColumnDefault("998821")
 	String HSN;
 	Long qualityNameId;
-	@Column(columnDefinition = "varchar(255) default 'meter'")
+	@ColumnDefault("meter")
 	String billingUnit;
 
 	public Quality(Quality other) {

@@ -2,6 +2,7 @@ package com.main.glory.model.StockDataBatchData.response;
 
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +30,9 @@ public class BatchToPartyAndQuality {
 
     private static DecimalFormat df2 = new DecimalFormat("#.##");
 
-    public BatchToPartyAndQuality(Quality quality, Party party, GetBatchWithControlId batch) {
+    public BatchToPartyAndQuality(Quality quality, Party party, GetBatchWithControlId batch, QualityName qualityName) {
         this.qualityEntryId=quality.getId().toString();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=qualityName.getQualityName();
         this.qualityId=quality.getQualityId();
         this.partyId=party.getId().toString();
         this.partyName=party.getPartyName();
