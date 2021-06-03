@@ -230,6 +230,8 @@ public class ConstantFile {
     public static String StockBatch_Deleted = "Data deleted successfully";
     public static String ReturnStockBatch_Added = "Return stock Data added successfully";
     public static String ReturnStockBatch_Found = "Return stock Data found ";
+    public static String ReturnStockBatch_Not_Found = "Return stock Data not found ";
+    public static String ChalNo_Not_Exist = "ChalNo not Exist";
 
 
     public static String StockBatch_Found_ByMaster = "Data found for master ";

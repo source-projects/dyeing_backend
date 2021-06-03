@@ -29,6 +29,7 @@ public class BatchReturn {
     Long partyId;
     String partyName;
     String address;
+    String partyCode;
     Long qualityEntryId;
     String qualityName;
     String qualityId;
@@ -40,6 +41,8 @@ public class BatchReturn {
     public BatchReturn(StockMast stockMast, BatchData batchDataExist, Long chlNo, Date challanDate, Party party, QualityWithQualityNameParty quality) {
         this.stockId = stockMast.getId();
         this.partyId = stockMast.getPartyId();
+        this.partyName = party.getPartyName();
+        this.partyCode =party.getPartyCode();
         this.address = party.getPartyAddress1();
         this.qualityEntryId = stockMast.getQualityId();
         this.qualityName = quality.getQualityName();
@@ -56,6 +59,8 @@ public class BatchReturn {
         this.challanDate = challanDate;
         this.stockId = batchDataExist.getControlId();
         this.partyId = partyId;
+        this.partyCode =party.getPartyCode();
+        this.partyName = party.getPartyName();
         this.address = party.getPartyAddress1();
         this.qualityEntryId = qualityEntryId;
         this.qualityId = quality.getQualityId();

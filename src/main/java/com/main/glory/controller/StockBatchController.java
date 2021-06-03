@@ -632,10 +632,10 @@ public class StockBatchController extends ControllerConfig {
 
 
     @GetMapping("/stockBatch/all/returnBatch")
-    public ResponseEntity<GeneralResponse<List<BatchReturn>,Object>> getReturnBatch() throws Exception {
-        GeneralResponse<List<BatchReturn>,Object> result = null;
+    public ResponseEntity<GeneralResponse<List<BatchReturnResponse>,Object>> getReturnBatch() throws Exception {
+        GeneralResponse<List<BatchReturnResponse>,Object> result = null;
         try {
-            List<BatchReturn> list = stockBatchService.getAllReturnBatch();
+            List<BatchReturnResponse> list = stockBatchService.getAllReturnBatch();
 
             if(!list.isEmpty()) {
                 result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
@@ -647,6 +647,28 @@ public class StockBatchController extends ControllerConfig {
         } catch (Exception e) {
             e.printStackTrace();
             result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @GetMapping("/stockBatch/get/returnBatch")
+    public ResponseEntity<GeneralResponse<BatchReturnResponse,Object>> getReturnBatchByChalNo(@RequestParam(name = "chlNo") Long chlNo) throws Exception {
+        GeneralResponse<BatchReturnResponse,Object> result = null;
+        try {
+            BatchReturnResponse list = stockBatchService.getReturnBatchByChalNo(chlNo);
+
+            if(list!=null) {
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
