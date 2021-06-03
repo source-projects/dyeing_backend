@@ -103,6 +103,9 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("select new com.main.glory.model.quality.response.QualityWithQualityNameParty(q,(select x.qualityName from QualityName x where x.id=q.qualityNameId)) from Quality q where q.id=:key")
     Optional<QualityWithQualityNameParty> findByIdWithQualityNameResponse(Long key);
 
+    @Query("select x from Quality x where LOWER(x.qualityId)=LOWER(:qualityId) AND x.partyId=:partyId")
+    Quality getQualityIdIsExistWithPartyId(String qualityId, Long partyId);
+
     /*@Query("select q from Quality q where q.id IN(select s.qualityId from StockBatch s where s.id=:stockId)")
     Quality getQualityByStockId(Long stockId);*/
 }

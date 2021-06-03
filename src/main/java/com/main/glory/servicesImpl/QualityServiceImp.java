@@ -102,7 +102,7 @@ public class QualityServiceImp  {
         if (quality1 != null)
             throw new Exception("Quality id is already exist");*/
 
-        Quality qualityExistWithId = qualityDao.getQualityById(qualityDto.getQualityId());
+        Quality qualityExistWithId = qualityDao.getQualityIdIsExistWithPartyId(qualityDto.getQualityId(),qualityDto.getPartyId());
         if(qualityExistWithId!=null)
             throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
@@ -190,8 +190,8 @@ public class QualityServiceImp  {
 
 
             //check the quality except the the given id
-            Quality qualityExistWithId = qualityDao.getQualityByIdWithExcept(qualityDto.getQualityId(),qualityDto.getId());
-            if(qualityExistWithId!=null)
+            Quality qualityExistWithId = qualityDao.getQualityIdIsExistWithPartyId(qualityDto.getQualityId(),qualityDto.getPartyId());
+            if(qualityExistWithId.getId()!=qualityDto.getId())
                 throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
             qualityData.get().setPartyId(qualityDto.getPartyId());
@@ -586,5 +586,9 @@ public class QualityServiceImp  {
             }
         }
         return qualityReportList;
+    }
+
+    public Quality getQualityIdIsExist(String qualityId, Long partyId) {
+        return qualityDao.getQualityIdIsExistWithPartyId(qualityId,partyId);
     }
 }
