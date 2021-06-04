@@ -259,7 +259,7 @@ public class RestoreDbImpl {
 
                 Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.asMap("resource_type","raw"));
                 //thread sleep because api is taking time for upload
-                Thread.sleep(5000);
+                Thread.sleep(50000);
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 //uploadResult.get("secure_url"); //get uploaded url

@@ -52,7 +52,7 @@ public class QualityController extends ControllerConfig {
     Boolean debugAll=true;
 
     @PostMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody AddQualityRequest quality,@RequestHeader Map<String, String> headers) {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody Quality quality,@RequestHeader Map<String, String> headers) {
         GeneralResponse<Boolean,Object> result;
         try{
 
@@ -119,7 +119,7 @@ public class QualityController extends ControllerConfig {
     }
 
     @PutMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody UpdateQualityRequest quality) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody Quality quality) throws Exception {
         GeneralResponse<Boolean,Object> result;
         try {
             Optional<Party> party = partyDao.findById(quality.getPartyId());
