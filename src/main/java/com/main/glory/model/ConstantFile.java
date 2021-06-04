@@ -409,4 +409,11 @@ public class ConstantFile {
     public static String ColorBox_Not_Found = "Color box not found";
 
 
+    public static String TagDyeingProcess_Name_Exist = "Tag Dyeing Process Name exist";
+    public static String TagDyeingProcess_Added = "Data added successfully";
+    public static String TagDyeingProcess_Updated = "Data updated successfully";
+    public static String TagDyeingProcess_Found = "Data found";
+    public static String TagDyeingProcess_Not_Found = "Data not found ";
+    public static String TagDyeingProcess_Not_Exist = "Tag sDyeing Process not exist ";
+    public static String TagDyeingProcess_Deleted = "Data deleted successfully";
 }

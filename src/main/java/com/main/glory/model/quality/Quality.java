@@ -48,6 +48,7 @@ public class Quality {
 	Long qualityNameId;
 	@ColumnDefault("meter")
 	String billingUnit;
+	Long processId;
 
 	public Quality(Quality other) {
 		this.id = other.id;
@@ -68,6 +69,7 @@ public class Quality {
 		this.qualityNameId=other.qualityNameId;
 		this.billingUnit=other.getBillingUnit();
 		this.mtrPerKg=other.getMtrPerKg();
+		this.processId = other.getProcessId()==null?null:other.getProcessId();
 	}
 
 	//for adding the quality

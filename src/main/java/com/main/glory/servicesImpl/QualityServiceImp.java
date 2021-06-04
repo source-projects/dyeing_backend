@@ -13,6 +13,7 @@ import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -20,14 +21,11 @@ import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.QualityWithPartyName;
 import com.main.glory.model.quality.request.AddQualityName;
-import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.quality.request.GetQualityReport;
-import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.quality.response.GetAllQualtiy;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.quality.response.QualityReport;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.responce.SupplierResponse;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -47,6 +45,9 @@ public class QualityServiceImp  {
     SupplierServiceImpl supplierService;
 
     ConstantFile constantFile;
+
+    @Autowired
+    DyeingProcessServiceImpl dyeingProcessService;
 
     @Autowired
     DispatchMastImpl dispatchMastService;
@@ -80,7 +81,7 @@ public class QualityServiceImp  {
     ModelMapper modelMapper;
 
     
-    public int saveQuality(AddQualityRequest qualityDto,String id) throws Exception {
+    public int saveQuality(Quality qualityDto,String id) throws Exception {
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
@@ -179,7 +180,7 @@ public class QualityServiceImp  {
 
 
     
-    public boolean updateQuality(UpdateQualityRequest qualityDto) throws Exception {
+    public boolean updateQuality(Quality qualityDto) throws Exception {
         var qualityData = qualityDao.findById(qualityDto.getId());
         if (!qualityData.isPresent())
             return false;
@@ -194,7 +195,7 @@ public class QualityServiceImp  {
             if(qualityExistWithId!=null)
                 throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
-            qualityData.get().setPartyId(qualityDto.getPartyId());
+            /*qualityData.get().setPartyId(qualityDto.getPartyId());
             qualityData.get().setQualityId(qualityDto.getQualityId());
             qualityData.get().setQualityNameId(qualityDto.getQualityNameId());
             qualityData.get().setQualityName(qualityDto.getQualityName());
@@ -205,8 +206,9 @@ public class QualityServiceImp  {
             qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
             qualityData.get().setQualityDate(qualityDto.getQualityDate());
             qualityData.get().setRate(qualityDto.getRate());
-            qualityData.get().setBillingUnit(qualityDto.getBillingUnit());
-            qualityDao.save(qualityData.get());
+            qualityData.get().setBillingUnit(qualityDto.getBillingUnit());*/
+
+            qualityDao.save(qualityDto);
             return true;
         }
     }
@@ -464,7 +466,20 @@ public class QualityServiceImp  {
             getAllQualtiy.setPartyName(partyName.get().getPartyName());
             getAllQualtiy.setQualityName(qualityName.get().getQualityName());
             getAllQualtiy.setQualityNameId(qualityName.get().getId());
+
+            //check that the dyeing process is exit or not
+            if(quality.getProcessId()!=null)
+            {
+                DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality.getProcessId());
+                if(dyeingProcessMast!=null)
+                {
+                    getAllQualtiy.setProcessId(dyeingProcessMast.getId());
+                    getAllQualtiy.setProcessName(dyeingProcessMast.getProcessName());
+                }
+            }
             getAllQualtiyList.add(getAllQualtiy);
+
+
         }
         /*if (getAllQualtiyList.isEmpty())
             throw new Exception("no data found");*/
