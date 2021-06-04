@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,6 +17,7 @@ public class BatchReturnBody {
     Long id;
     Long createdBy;
     Long updatedBy;
+    Date challanDate;
     List<BatchData> batchDataList;
 
 }

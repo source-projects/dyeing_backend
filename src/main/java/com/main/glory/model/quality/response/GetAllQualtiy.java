@@ -22,6 +22,8 @@ public class GetAllQualtiy {
     String billingUnit;
     Double mtrPerKg;
     Long qualityNameId;
+    Long processId;
+    String processName;
 
     public GetAllQualtiy(Quality quality) {
         this.id=quality.getId();

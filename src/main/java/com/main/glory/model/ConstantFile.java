@@ -226,9 +226,12 @@ public class ConstantFile {
     public static String StockBatch_Without_Batch = "Data found without batch";
     public static String StockBatch_Not_Found = "Data not found ";
     public static String StockBatch_Added = "Data added successfully";
-    public static String ReturnStockBatch_Added = "Return stock Data added successfully";
     public static String StockBatch_Updated = "Data updated successfully";
     public static String StockBatch_Deleted = "Data deleted successfully";
+    public static String ReturnStockBatch_Added = "Return stock Data added successfully";
+    public static String ReturnStockBatch_Found = "Return stock Data found ";
+    public static String ReturnStockBatch_Not_Found = "Return stock Data not found ";
+    public static String ChalNo_Not_Exist = "ChalNo not Exist";
 
 
     public static String StockBatch_Found_ByMaster = "Data found for master ";
@@ -406,4 +409,11 @@ public class ConstantFile {
     public static String ColorBox_Not_Found = "Color box not found";
 
 
+    public static String TagDyeingProcess_Name_Exist = "Tag Dyeing Process Name exist";
+    public static String TagDyeingProcess_Added = "Data added successfully";
+    public static String TagDyeingProcess_Updated = "Data updated successfully";
+    public static String TagDyeingProcess_Found = "Data found";
+    public static String TagDyeingProcess_Not_Found = "Data not found ";
+    public static String TagDyeingProcess_Not_Exist = "Tag sDyeing Process not exist ";
+    public static String TagDyeingProcess_Deleted = "Data deleted successfully";
 }

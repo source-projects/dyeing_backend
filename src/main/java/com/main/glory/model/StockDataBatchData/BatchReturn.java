@@ -1,5 +1,8 @@
 package com.main.glory.model.StockDataBatchData;
 
+import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.response.QualityWithQualityNameParty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,27 +27,48 @@ public class BatchReturn {
     Long updatedBy;
     Long batchEntryId;
     Long partyId;
+    String partyName;
+    String address;
+    String partyCode;
     Long qualityEntryId;
+    String qualityName;
+    String qualityId;
     Double mtr;
     Long chlNo;
+    String batchId;
+    Date challanDate;
 
-    public BatchReturn(StockMast stockMast, BatchData batchDataExist,Long chlNo) {
+    public BatchReturn(StockMast stockMast, BatchData batchDataExist, Long chlNo, Date challanDate, Party party, QualityWithQualityNameParty quality) {
         this.stockId = stockMast.getId();
         this.partyId = stockMast.getPartyId();
+        this.partyName = party.getPartyName();
+        this.partyCode =party.getPartyCode();
+        this.address = party.getPartyAddress1();
         this.qualityEntryId = stockMast.getQualityId();
+        this.qualityName = quality.getQualityName();
+        this.qualityId = quality.getQualityId();
         this.mtr = batchDataExist.getMtr();
         this.batchEntryId = batchDataExist.getId();
         this.chlNo= chlNo;
+        this.batchId = batchDataExist.getBatchId();
+        this.challanDate = challanDate;
 
     }
 
-    public BatchReturn(Long qualityEntryId, Long partyId, BatchData batchDataExist,Long chlNo) {
+    public BatchReturn(Long qualityEntryId, Long partyId, BatchData batchDataExist, Long chlNo, Date challanDate, Party party, QualityWithQualityNameParty quality) {
+        this.challanDate = challanDate;
         this.stockId = batchDataExist.getControlId();
         this.partyId = partyId;
+        this.partyCode =party.getPartyCode();
+        this.partyName = party.getPartyName();
+        this.address = party.getPartyAddress1();
         this.qualityEntryId = qualityEntryId;
+        this.qualityId = quality.getQualityId();
+        this.qualityName = quality.getQualityName();
         this.mtr = batchDataExist.getMtr();
         this.batchEntryId = batchDataExist.getId();
         this.chlNo = chlNo;
+        this.batchId = batchDataExist.getBatchId();
     }
 
     @PrePersist

@@ -5,6 +5,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.BatchReturn;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
@@ -613,7 +614,7 @@ public class StockBatchController extends ControllerConfig {
 
     }
 
-    @PostMapping("/stockBatch/returnBatch")
+    @PostMapping("/stockBatch/add/returnBatch")
     public ResponseEntity<GeneralResponse<Boolean,Object>> createReturnBatch(@RequestBody  BatchReturnBody record) throws Exception {
         GeneralResponse<Boolean,Object> result = null;
         try {
@@ -624,6 +625,50 @@ public class StockBatchController extends ControllerConfig {
         } catch (Exception e) {
             e.printStackTrace();
             result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @GetMapping("/stockBatch/all/returnBatch")
+    public ResponseEntity<GeneralResponse<List<BatchReturnResponse>,Object>> getReturnBatch() throws Exception {
+        GeneralResponse<List<BatchReturnResponse>,Object> result = null;
+        try {
+            List<BatchReturnResponse> list = stockBatchService.getAllReturnBatch();
+
+            if(!list.isEmpty()) {
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            }
+            else
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @GetMapping("/stockBatch/get/returnBatch")
+    public ResponseEntity<GeneralResponse<BatchReturnResponse,Object>> getReturnBatchByChalNo(@RequestParam(name = "chlNo") Long chlNo) throws Exception {
+        GeneralResponse<BatchReturnResponse,Object> result = null;
+        try {
+            BatchReturnResponse list = stockBatchService.getReturnBatchByChalNo(chlNo);
+
+            if(list!=null) {
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

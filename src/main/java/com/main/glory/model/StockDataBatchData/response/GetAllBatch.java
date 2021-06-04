@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -45,11 +46,11 @@ public class GetAllBatch {
         this.qualityName = qualityName;
         this.qualityType = qualityType;
     }
-    public GetAllBatch(Party party, Quality quality) {
+    public GetAllBatch(Party party, Quality quality, QualityName qualityName) {
         this.partyId=party.getId();
         this.partyName=party.getPartyName();
         this.qualityEntryId=quality.getId();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=qualityName.getQualityName();
         this.qualityType=quality.getQualityType();
         this.qualityId=quality.getQualityId();
     }

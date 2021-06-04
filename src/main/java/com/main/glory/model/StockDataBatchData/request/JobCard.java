@@ -27,6 +27,7 @@ public class JobCard {
     String masterName;
     Long userHeadId;
     Date receiveDate;
+    Date chlDate;
     String batchId;
     String chalNo;
     String qualityName;
@@ -45,6 +46,7 @@ public class JobCard {
         this.masterName=userData.getUserName();
         this.userHeadId = userData.getId();
         this.receiveDate = stockMast.getReceiveDate();
+        this.chlDate = stockMast.getChlDate();
         this.chalNo=stockMast.getChlNo();
         this.qualityName=qualityName.getQualityName();
         this.qualityId=quality.getQualityId();

@@ -27,6 +27,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.model.quality.response.QualityWithQualityNameParty;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
@@ -47,6 +48,7 @@ public class StockBatchServiceImpl {
 
     @Autowired
     BatchReturnDao batchReturnDao;
+
 
     @Autowired
     DispatchMastImpl dispatchMastService;
@@ -790,8 +792,8 @@ public class StockBatchServiceImpl {
 
                 Optional<Party> party=partyDao.findById(stockMast.get().getPartyId());
 
-
-                BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch);
+                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+                BatchToPartyAndQuality batchToPartyAndQuality=new BatchToPartyAndQuality(quality.get(),party.get(),batch,qualityName.get());
 
                 //check that the process and party shade is exist or not
                 //if not then set the detail by null
@@ -1183,6 +1185,7 @@ public class StockBatchServiceImpl {
 
         for(Quality quality:qualityListByParty.get())
         {
+            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
             List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(quality.getId(),partyId);
 
             //batch list based on stock id
@@ -1191,7 +1194,7 @@ public class StockBatchServiceImpl {
                 List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockId(stockMast.getId());
                 for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
                 {
-                    GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality);
+                    GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality,qualityName.get());
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
@@ -1212,7 +1215,7 @@ public class StockBatchServiceImpl {
                 List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
                 for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
                 {
-                    GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality);
+                    GetAllBatch getAllBatch=new GetAllBatch(partyExist.get(),quality,qualityName.get());
 
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
@@ -1252,8 +1255,11 @@ public class StockBatchServiceImpl {
         List<String> batchId = new ArrayList<>();
         Optional<Quality> qualityExist=qualityDao.findById(qualityId);
 
+
+
         if(qualityExist.isEmpty())
             throw new Exception(ConstantFile.Quality_Data_Not_Exist+qualityId);
+        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(qualityId);
 
 
         Optional<Party> party=partyDao.findById(qualityExist.get().getPartyId());
@@ -1270,7 +1276,7 @@ public class StockBatchServiceImpl {
             List<GetBatchWithControlId> batchWithStockList=batchDao.getBatchAndStockListWithoutProductionPlanByStockId(stockMast.getId());
             for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
             {
-                GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get());
+                GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get(),qualityName.get());
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
@@ -1293,7 +1299,7 @@ public class StockBatchServiceImpl {
 
             for(GetBatchWithControlId getBatchWithControlId:batchWithStockList)
             {
-                GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get());
+                GetAllBatch getAllBatch=new GetAllBatch(party.get(),qualityExist.get(),qualityName.get());
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());
@@ -1441,6 +1447,7 @@ public class StockBatchServiceImpl {
         }
         Optional<Party> party=partyDao.findById(partyId);
         Optional<Quality> quality =qualityDao.findById(qualityId);
+        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
 
         //storing all the data of batchName to object
         for(int x=0;x<controlId.size();x++)
@@ -1450,7 +1457,7 @@ public class StockBatchServiceImpl {
                 if(!quality.isPresent() && !party.isPresent())
                     continue;
 
-                getAllBatch=new GetAllBatch(party.get(),quality.get());
+                getAllBatch=new GetAllBatch(party.get(),quality.get(),qualityName.get());
                 getAllBatch.setBatchId(batchName.get(x));
                 getAllBatch.setControlId(controlId.get(x));
                 getAllBatch.setProductionPlanned(productionPlanned.get(x));
@@ -2271,9 +2278,9 @@ public class StockBatchServiceImpl {
     public void saveReturnStockBatch(BatchReturnBody record) throws Exception {
 
 
-        //get the latest chal no
+        //get the latest chl_no no
         Long latestChlNo = batchReturnDao.getlatestChlNo();
-        latestChlNo = latestChlNo==null?1:latestChlNo;
+        latestChlNo = latestChlNo==null?1:++latestChlNo;
         //check that the batch list is exist or not
 
         List<BatchReturn> batchReturnList = new ArrayList<>();
@@ -2297,7 +2304,9 @@ public class StockBatchServiceImpl {
                 Map<Long,Long> existing = hashMapMap.get(batchDataExist.getControlId());
                 Map.Entry<Long,Long> entry = existing.entrySet().iterator().next();
 
-                batchReturnList.add(new BatchReturn(entry.getKey(),entry.getValue(),batchDataExist,latestChlNo));
+                Optional<QualityWithQualityNameParty> quality = qualityDao.findByIdWithQualityNameResponse(entry.getKey());
+                Party party = partyDao.findByPartyId(entry.getValue());
+                batchReturnList.add(new BatchReturn(entry.getKey(),entry.getValue(),batchDataExist,latestChlNo,record.getChallanDate(),party,quality.get()));
             }
             else
             {
@@ -2305,7 +2314,10 @@ public class StockBatchServiceImpl {
                 HashMap<Long,Long> qualityAndPartyId = new HashMap<>();
                 qualityAndPartyId.put(stockMast.getQualityId(),stockMast.getPartyId());
 
-                batchReturnList.add(new BatchReturn(stockMast,batchDataExist,latestChlNo));
+                Optional<QualityWithQualityNameParty> quality = qualityDao.findByIdWithQualityNameResponse(stockMast.getQualityId());
+                Party party = partyDao.findByPartyId(stockMast.getPartyId());
+
+                batchReturnList.add(new BatchReturn(stockMast,batchDataExist,latestChlNo,record.getChallanDate(),party,quality.get()));
                 hashMapMap.put(stockMast.getId(),qualityAndPartyId);
             }
         }
@@ -2320,6 +2332,38 @@ public class StockBatchServiceImpl {
 
 
 
+    }
+
+    public List<BatchReturnResponse> getAllReturnBatch() {
+
+        List<BatchReturnResponse> list = new ArrayList<>();
+
+        List<ReturnBatchDetail> returnBatchDetailList = batchReturnDao.getAllChallanWithDetail();
+
+        returnBatchDetailList.forEach(e->{
+
+            List<BatchReturn> batchReturnList = batchReturnDao.getBatchReturnByChalNo(e.getChlNo());
+            BatchReturnResponse batchReturnResponse = new BatchReturnResponse(e,Long.valueOf(batchReturnList.size()));
+            list.add(batchReturnResponse);
+
+        });
+
+        return list;
+    }
+
+    public BatchReturnResponse getReturnBatchByChalNo(Long chlNo) throws Exception {
+
+        //check that chl no exit or not
+        BatchReturn batchReturnExist = batchReturnDao.getChalNoExist(chlNo);
+
+        if(batchReturnExist == null)
+            throw new Exception(ConstantFile.ChalNo_Not_Exist);
+
+        ReturnBatchDetail returnBatchDetail = batchReturnDao.getChallanDetailByChlNo(chlNo);
+        List<BatchReturn> batchReturnList = batchReturnDao.getBatchReturnByChalNo(chlNo);
+        BatchReturnResponse batchReturnResponse = new BatchReturnResponse(returnBatchDetail,batchReturnList);
+
+        return  batchReturnResponse;
     }
 
 

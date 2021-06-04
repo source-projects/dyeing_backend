@@ -29,10 +29,12 @@ public class PartyDataByInvoiceNumber {
     List<QualityBillByInvoiceNumber> qualityList;
     List<BatchWithGr> batchWithGrList;
     Date createdDate;
+    private String contactNo;
 
 
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList, DispatchMast dispatchMast) {
         this.partyName=party.getPartyName();
+        this.contactNo=party.getContactNo();
         this.address=party.getPartyAddress1();
         this.GST=party.getGSTIN();
         this.qualityList=qualityBillByInvoiceNumberList;
@@ -46,6 +48,7 @@ public class PartyDataByInvoiceNumber {
     }
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList) {
         this.partyName=party.getPartyName();
+        this.contactNo=party.getContactNo();
         this.address=party.getPartyAddress1();
         this.GST=party.getGSTIN();
         this.qualityList=qualityBillByInvoiceNumberList;

@@ -3,11 +3,15 @@ package com.main.glory.servicesImpl;
 import com.main.glory.Dao.dyeingProcess.DyeingChemicalDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessMastDao;
+import com.main.glory.Dao.dyeingProcess.TagDyeingProcess.TagDyeingProcessDataDao;
+import com.main.glory.Dao.dyeingProcess.TagDyeingProcess.TagDyeingProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.model.dyeingProcess.TagDyeingProcess.TagDyeingProcessData;
+import com.main.glory.model.dyeingProcess.TagDyeingProcess.TagDyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.SupplierRate;
@@ -24,6 +28,11 @@ import java.util.List;
 public class DyeingProcessServiceImpl {
 
 
+    @Autowired
+    TagDyeingProcessDataDao tagDyeingProcessDataDao;
+
+    @Autowired
+    TagDyeingProcessMastDao tagDyeingProcessMastDao;
 
     @Autowired
     UserDao userDao;
@@ -220,4 +229,55 @@ public class DyeingProcessServiceImpl {
     }
 
 
+    public void addTagDyeingProcess(TagDyeingProcessMast data) throws Exception {
+
+        //Check that the same tag name procecss exit or not
+        TagDyeingProcessMast tagDyeingProcessMastExist = tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(data.getTagProcessName(),0l);
+
+        if(tagDyeingProcessMastExist!=null)
+            throw new Exception(ConstantFile.TagDyeingProcess_Name_Exist);
+
+        //check that the supplier item exist or not
+        for(TagDyeingProcessData record : data.getDyeingTagDataList())
+        {
+            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(record.getItemId());
+            if(supplierRate==null)
+                throw new Exception(ConstantFile.SupplierRate_Not_Exist);
+        }
+
+        tagDyeingProcessMastDao.save(data);
+    }
+
+    public void updateTagDyeingProcess(TagDyeingProcessMast data) throws Exception {
+
+        //check that the record is exist or not
+        TagDyeingProcessMast tagDyeingProcessMastExist = tagDyeingProcessMastDao.getTagDyeingProcessById(data.getId());
+        if(tagDyeingProcessMastExist==null)
+            throw new Exception(ConstantFile.TagDyeingProcess_Not_Exist);
+
+        //Check that the same tag name procecss exit or not
+        tagDyeingProcessMastExist = tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(data.getTagProcessName(),data.getId());
+
+        if(tagDyeingProcessMastExist!=null)
+            throw new Exception(ConstantFile.TagDyeingProcess_Name_Exist);
+
+        //check that the supplier item exist or not
+        for(TagDyeingProcessData record : data.getDyeingTagDataList())
+        {
+            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(record.getItemId());
+            if(supplierRate==null)
+                throw new Exception(ConstantFile.SupplierRate_Not_Exist);
+        }
+
+        tagDyeingProcessMastDao.save(data);
+    }
+
+    public TagDyeingProcessMast getTagDyeignProcessById(Long id) {
+
+        return tagDyeingProcessMastDao.getTagDyeingProcessById(id);
+    }
+
+    public List<TagDyeingProcessMast> getAllTagDyeignProcess() {
+        return tagDyeingProcessMastDao.getAllTagDyeingProcessMast();
+    }
 }
