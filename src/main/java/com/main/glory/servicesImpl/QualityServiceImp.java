@@ -201,6 +201,7 @@ public class QualityServiceImp  {
             qualityData.get().setQualityType(qualityDto.getQualityType());
             qualityData.get().setUnit(qualityDto.getUnit());
             qualityData.get().setWtPer100m(qualityDto.getWtPer100m());
+            qualityData.get().setMtrPerKg(qualityDto.getMtrPerKg());
             qualityData.get().setRemark(qualityDto.getRemark());
             qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
             qualityData.get().setQualityDate(qualityDto.getQualityDate());
