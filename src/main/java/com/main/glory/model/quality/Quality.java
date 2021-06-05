@@ -44,12 +44,11 @@ public class Quality {
 	Long userHeadId;
 	Double rate;
 	@ColumnDefault("998821")
-	String HSN;
+	String hsn;
 	Long qualityNameId;
 	@ColumnDefault("meter")
 	String billingUnit;
 	Long processId;
-	Long processName;
 
 	public Quality(Quality other) {
 		this.id = other.id;
