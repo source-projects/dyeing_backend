@@ -327,7 +327,16 @@ public class QualityServiceImp  {
                     if (qualityName.isEmpty())
                         continue;
 
-                    qualityDataList.add(new QualityData(quality, qualityName.get(), partName));
+                    QualityData qualityData = new QualityData(quality, qualityName.get(), partName);
+                    if(quality.getProcessId()!=null)
+                    {
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality.getProcessId());
+                        if(dyeingProcessMast!=null) {
+                            qualityData.setProcessId(quality.getProcessId());
+                            qualityData.setProcessName(dyeingProcessMast.getProcessName());
+                        }
+                    }
+                    qualityDataList.add(qualityData);
 
 
                 }
@@ -391,6 +400,15 @@ public class QualityServiceImp  {
                         continue;
 
                     QualityData qualityData = new QualityData(quality1,qualityName.get());
+                    if(quality1.getProcessId()!=null)
+                    {
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality1.getProcessId());
+                        if(dyeingProcessMast!=null)
+                        {
+                            qualityData.setProcessId(dyeingProcessMast.getId());
+                            qualityData.setProcessName(dyeingProcessMast.getProcessName());
+                        }
+                    }
                     qualityDataList.add(qualityData);
 
                 }
