@@ -34,6 +34,9 @@ public class GetQualityResponse {
     String billingUnit;
     Double mtrPerKg;
     String partyCode;
+    String hsn;//in case sensitive
+    Long processId;
+    String procecssName;
 
     public GetQualityResponse(QualityWithPartyName data) {
         this.id= data.getId();
@@ -55,6 +58,7 @@ public class GetQualityResponse {
         this.partyName=data.getPartyName();
         this.mtrPerKg=data.getMtrPerKg();
         this.partyCode=data.getPartyCode();
+        this.hsn = data.getHsn();
     }
 
     public GetQualityResponse(Quality data) {
@@ -76,6 +80,8 @@ public class GetQualityResponse {
         this.userHeadId=data.getUserHeadId();
         this.billingUnit=data.getBillingUnit();
         this.mtrPerKg=data.getMtrPerKg();
+        this.processId = data.getProcessId();
+        this.hsn = data.getHsn();
         //this.partyName=data.getPartyName();
 
     }

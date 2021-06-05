@@ -86,7 +86,7 @@ public class QualityServiceImp  {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         Party party = partyDao.findByPartyId(qualityDto.getPartyId());
-        Quality quality = new Quality(qualityDto);
+        //Quality quality = new Quality(qualityDto);
 
         System.out.println("header:"+id);
 
@@ -95,7 +95,7 @@ public class QualityServiceImp  {
         System.out.println(":"+user.getId());
         if(user.getIsMaster()==false || qualityDto.getUserHeadId()==0)
         {
-            quality.setUserHeadId(party.getUserHeadId());
+            qualityDto.setUserHeadId(party.getUserHeadId());
         }
 
         //elese remin the master
@@ -107,11 +107,12 @@ public class QualityServiceImp  {
         if(qualityExistWithId!=null)
             throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
-        if(quality.getUnit().equals("weight"))
-            quality.setWtPer100m(1.0);
+        if(qualityDto.getUnit().equals("weight"))
+            qualityDto.setWtPer100m(1.0);
 
-        quality.setHSN("998821");
-        Quality x = qualityDao.save(quality);
+        if(qualityDto.getHsn()!=null)
+            qualityDto.setHsn("998821");
+        Quality x = qualityDao.save(qualityDto);
 
         return 1;
     }
@@ -242,7 +243,7 @@ public class QualityServiceImp  {
     }
 
     
-    public GetQualityResponse getQualityByID(Long id) {
+    public GetQualityResponse getQualityByID(Long id) throws Exception {
         Optional<Quality> quality = qualityDao.findById(id);
         if (!quality.isPresent())
             return null;
@@ -252,8 +253,17 @@ public class QualityServiceImp  {
         if(qualityName.isEmpty())
             return null;
         quality1.setQualityName(qualityName.get().getQualityName());
-        String party = partyDao.getPartyNameByPartyId(quality1.getPartyId());
-        quality1.setPartyName(party);
+        Party party = partyDao.findByPartyId(quality1.getPartyId());
+        quality1.setPartyName(party.getPartyName());
+        quality1.setPartyCode(party.getPartyCode());
+
+        if(quality.get().getProcessId()!=null)
+        {
+            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality.get().getProcessId());
+            if(dyeingProcessMast!=null)
+                quality1.setProcecssName(dyeingProcessMast.getProcessName());
+
+        }
 
         return quality1;
     }

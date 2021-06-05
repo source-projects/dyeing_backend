@@ -44,7 +44,7 @@ public class Quality {
 	Long userHeadId;
 	Double rate;
 	@ColumnDefault("998821")
-	String HSN;
+	String hsn;
 	Long qualityNameId;
 	@ColumnDefault("meter")
 	String billingUnit;
@@ -70,6 +70,7 @@ public class Quality {
 		this.billingUnit=other.getBillingUnit();
 		this.mtrPerKg=other.getMtrPerKg();
 		this.processId = other.getProcessId()==null?null:other.getProcessId();
+
 	}
 
 	//for adding the quality
