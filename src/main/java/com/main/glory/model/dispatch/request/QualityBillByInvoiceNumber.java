@@ -3,12 +3,10 @@ package com.main.glory.model.dispatch.request;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -46,14 +44,14 @@ public class QualityBillByInvoiceNumber {
         this.qualityId=quality.getQualityId();
         this.rate=quality.getRate();
         this.qualityName=quality.getQualityName();
-        this.hsn=quality.getHSN();
+        this.hsn=quality.getHsn();
     }
 
 
     public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, Optional<QualityName> qualityName, String batchId, StockMast stockMast) {
         this.qualityId = quality.getQualityId();
         this.qualityName = qualityName.get().getQualityName();
-        this.hsn = quality.getHSN();
+        this.hsn = quality.getHsn();
         this.rate = quality.getRate();
         this.batchId = batchId;
         this.totalMtr = quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalMtr:(totalMtr/100)*quality.getWtPer100m();

@@ -149,7 +149,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
             "(select q.qualityId from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS qualityId," +
             "(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=(select sm.qualityId from StockMast sm where sm.id=:stockId))) AS qualityName," +
             "(select q.rate from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS rate," +
-            "(select q.HSN from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS HSN," +
+            "(select q.hsn from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS hsn," +
             ":batchId AS batchId," +
             "SUM(b.mtr) AS totalMtr," +
             "SUM(b.finishMtr) AS totalFinishMtr," +

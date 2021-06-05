@@ -110,7 +110,8 @@ public class QualityServiceImp  {
         if(quality.getUnit().equals("weight"))
             quality.setWtPer100m(1.0);
 
-        quality.setHSN("998821");
+        if(quality.getHsn()!=null)
+        quality.setHsn("998821");
         Quality x = qualityDao.save(quality);
 
         return 1;
