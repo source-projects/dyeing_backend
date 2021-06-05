@@ -251,8 +251,9 @@ public class QualityServiceImp  {
         if(qualityName.isEmpty())
             return null;
         quality1.setQualityName(qualityName.get().getQualityName());
-        String party = partyDao.getPartyNameByPartyId(quality1.getPartyId());
-        quality1.setPartyName(party);
+        Party party = partyDao.findByPartyId(quality1.getPartyId());
+        quality1.setPartyName(party.getPartyName());
+        quality1.setPartyCode(party.getPartyCode());
 
         if(quality.get().getProcessId()!=null)
         {
