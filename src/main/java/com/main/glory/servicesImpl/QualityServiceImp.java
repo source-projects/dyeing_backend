@@ -400,6 +400,15 @@ public class QualityServiceImp  {
                         continue;
 
                     QualityData qualityData = new QualityData(quality1,qualityName.get());
+                    if(quality1.getProcessId()!=null)
+                    {
+                        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality1.getProcessId());
+                        if(dyeingProcessMast!=null)
+                        {
+                            qualityData.setProcessId(dyeingProcessMast.getId());
+                            qualityData.setProcessName(dyeingProcessMast.getProcessName());
+                        }
+                    }
                     qualityDataList.add(qualityData);
 
                 }
