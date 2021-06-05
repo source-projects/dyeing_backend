@@ -24,6 +24,8 @@ public class QualityData {
     Long partyId;
     String partyName;
     private Double wtPer100m;
+    Long processId;
+    String processName;
 
 
     public QualityData(Quality quality1, QualityName qualityName) {
@@ -35,6 +37,7 @@ public class QualityData {
         this.partyId=quality1.getPartyId();
         this.wtPer100m=quality1.getWtPer100m();
         this.qualityNameId = quality1.getQualityNameId();
+        this.processId=quality1.getProcessId();
 
     }
 

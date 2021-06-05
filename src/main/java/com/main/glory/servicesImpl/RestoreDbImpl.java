@@ -247,7 +247,7 @@ public class RestoreDbImpl {
             //runtime = Runtime.getRuntime();
             process = Runtime.getRuntime().exec(cmd);
             int exitValue = process.waitFor();
-
+            //System.out.println("value:"+exitValue);
 
             if(exitValue==0) {
                 //run the cloudinary as well
@@ -259,7 +259,7 @@ public class RestoreDbImpl {
 
                 Map uploadResult = cloudinary.uploader().upload(backupFile, ObjectUtils.asMap("resource_type","raw"));
                 //thread sleep because api is taking time for upload
-                Thread.sleep(50000);
+                //Thread.sleep(50000);
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 //uploadResult.get("secure_url"); //get uploaded url
@@ -273,24 +273,22 @@ public class RestoreDbImpl {
                 databaseBackupDao.save(databaseBackup);
 
                 return true;
+            }else {
+
+                System.out.println("exit value: " + exitValue);
+                BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line = "";
+                while ((line = buf.readLine()) != null) {
+                    System.out.println("exec response: " + line);
+                }
             }
-            else return false;
-
-
-            /*System.out.println("exit value: " + exitValue);
-            BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = "";
-            while ((line = buf.readLine()) != null) {
-                System.out.println("exec response: " + line);
-            }*/
-
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
-            return false;
 
         }
+        return false;
 
 
     }
