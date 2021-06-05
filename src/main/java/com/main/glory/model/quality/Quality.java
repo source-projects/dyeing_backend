@@ -49,6 +49,7 @@ public class Quality {
 	@ColumnDefault("meter")
 	String billingUnit;
 	Long processId;
+	Long processName;
 
 	public Quality(Quality other) {
 		this.id = other.id;
