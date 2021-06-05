@@ -64,7 +64,7 @@ public class RestoreDbController extends ControllerConfig {
 
 
             Boolean flag = restoreDb.backupDb();
-            if(flag)
+            if(flag==true)
             {
                 result=  new GeneralResponse<>(true, "Db restore Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }

@@ -247,7 +247,7 @@ public class RestoreDbImpl {
             //runtime = Runtime.getRuntime();
             process = Runtime.getRuntime().exec(cmd);
             int exitValue = process.waitFor();
-            System.out.println("value:"+exitValue);
+            //System.out.println("value:"+exitValue);
 
             if(exitValue==0) {
                 //run the cloudinary as well
@@ -273,23 +273,22 @@ public class RestoreDbImpl {
                 databaseBackupDao.save(databaseBackup);
 
                 return true;
+            }else {
+
+                System.out.println("exit value: " + exitValue);
+                BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line = "";
+                while ((line = buf.readLine()) != null) {
+                    System.out.println("exec response: " + line);
+                }
             }
-
-            /*System.out.println("exit value: " + exitValue);
-            BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = "";
-            while ((line = buf.readLine()) != null) {
-                System.out.println("exec response: " + line);
-            }*/
-
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
-            return false;
 
         }
-        return null;
+        return false;
 
 
     }
