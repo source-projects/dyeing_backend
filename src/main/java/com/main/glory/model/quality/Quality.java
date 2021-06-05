@@ -70,6 +70,7 @@ public class Quality {
 		this.billingUnit=other.getBillingUnit();
 		this.mtrPerKg=other.getMtrPerKg();
 		this.processId = other.getProcessId()==null?null:other.getProcessId();
+		this.
 	}
 
 	//for adding the quality

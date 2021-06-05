@@ -86,7 +86,7 @@ public class QualityServiceImp  {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
         Party party = partyDao.findByPartyId(qualityDto.getPartyId());
-        Quality quality = new Quality(qualityDto);
+        //Quality quality = new Quality(qualityDto);
 
         System.out.println("header:"+id);
 
@@ -95,7 +95,7 @@ public class QualityServiceImp  {
         System.out.println(":"+user.getId());
         if(user.getIsMaster()==false || qualityDto.getUserHeadId()==0)
         {
-            quality.setUserHeadId(party.getUserHeadId());
+            qualityDto.setUserHeadId(party.getUserHeadId());
         }
 
         //elese remin the master
@@ -107,12 +107,12 @@ public class QualityServiceImp  {
         if(qualityExistWithId!=null)
             throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
-        if(quality.getUnit().equals("weight"))
-            quality.setWtPer100m(1.0);
+        if(qualityDto.getUnit().equals("weight"))
+            qualityDto.setWtPer100m(1.0);
 
-        if(quality.getHsn()!=null)
-        quality.setHsn("998821");
-        Quality x = qualityDao.save(quality);
+        if(qualityDto.getHsn()!=null)
+            qualityDto.setHsn("998821");
+        Quality x = qualityDao.save(qualityDto);
 
         return 1;
     }
