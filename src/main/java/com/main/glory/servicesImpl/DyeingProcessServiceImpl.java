@@ -118,7 +118,7 @@ public class DyeingProcessServiceImpl {
 
     }
 
-    public DyeingProcessMast getDyeingProcessById(Long processId) throws Exception {
+    public DyeingProcessMast getDyeingProcessById(Long processId) {
 
         DyeingProcessMast x = dyeingProcessMastDao.getDyeingProcessById(processId);
         int i=0;

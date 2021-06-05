@@ -241,7 +241,7 @@ public class QualityServiceImp  {
     }
 
     
-    public GetQualityResponse getQualityByID(Long id) {
+    public GetQualityResponse getQualityByID(Long id) throws Exception {
         Optional<Quality> quality = qualityDao.findById(id);
         if (!quality.isPresent())
             return null;
@@ -253,6 +253,14 @@ public class QualityServiceImp  {
         quality1.setQualityName(qualityName.get().getQualityName());
         String party = partyDao.getPartyNameByPartyId(quality1.getPartyId());
         quality1.setPartyName(party);
+
+        if(quality.get().getProcessId()!=null)
+        {
+            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality.get().getProcessId());
+            if(dyeingProcessMast!=null)
+                quality1.setProcecssName(dyeingProcessMast.getProcessName());
+
+        }
 
         return quality1;
     }
