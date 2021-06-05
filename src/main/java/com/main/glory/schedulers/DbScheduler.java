@@ -56,7 +56,7 @@ public class DbScheduler {
     private Process process;
 
     //pattern second ,minute, hour, day, month, weekday
-    @Scheduled(cron="0 25 16 * * *",zone = "Asia/Kolkata")//at every night at 12am
+    @Scheduled(cron="0 33 16 * * *",zone = "Asia/Kolkata")//at every night at 12am
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
 
 
