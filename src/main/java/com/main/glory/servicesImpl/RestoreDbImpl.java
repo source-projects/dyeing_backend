@@ -247,7 +247,7 @@ public class RestoreDbImpl {
             //runtime = Runtime.getRuntime();
             process = Runtime.getRuntime().exec(cmd);
             int exitValue = process.waitFor();
-
+            System.out.println("value:"+exitValue);
 
             if(exitValue==0) {
                 //run the cloudinary as well
@@ -274,8 +274,6 @@ public class RestoreDbImpl {
 
                 return true;
             }
-            else return false;
-
 
             /*System.out.println("exit value: " + exitValue);
             BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -291,6 +289,7 @@ public class RestoreDbImpl {
             return false;
 
         }
+        return null;
 
 
     }
