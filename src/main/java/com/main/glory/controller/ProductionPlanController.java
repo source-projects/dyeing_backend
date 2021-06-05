@@ -270,7 +270,7 @@ public class ProductionPlanController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping(value="/productionPlan/removeBy")
+    @DeleteMapping(value="/productionPlan/removeBy")
     public ResponseEntity<GeneralResponse<Boolean,Object>> removeByBatchId(@RequestParam(name="batchId")String batchId)
     {
         GeneralResponse<Boolean,Object> result;
