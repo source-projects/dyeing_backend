@@ -35,7 +35,7 @@ public class ShadeController extends ControllerConfig {
 	Boolean debugAll=true;
 
 	@PostMapping("/shade")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody AddShadeMast shadeMast ,@RequestHeader Map<String, String> headers){
+	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody ShadeMast shadeMast ,@RequestHeader Map<String, String> headers){
 		GeneralResponse<Boolean,Object> result;
 		try {
 			if(shadeMast == null){

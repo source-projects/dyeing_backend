@@ -6,6 +6,7 @@ import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -54,7 +55,7 @@ import java.util.List;
 	String apcNo;
 	Boolean pending;
 	Double extraRate;
-	@Column(columnDefinition = "varchar(255) default 'Not mentioned'")
+    @ColumnDefault("Not mentioned")
 	String colorName;
 
 	@OneToMany(cascade = CascadeType.ALL)
