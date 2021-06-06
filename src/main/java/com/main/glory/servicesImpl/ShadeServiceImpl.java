@@ -70,35 +70,35 @@ public class ShadeServiceImpl {
 
 	@Transactional
 
-	public void saveShade(AddShadeMast shadeMast,String id) throws Exception{
+	public void saveShade(ShadeMast shadeMast,String id) throws Exception{
 		//consider we have data and add directlt
-		Optional<Quality> quality=qualityDao.findByQualityId(shadeMast.getQualityId());
-		if(!quality.isPresent())
+		Quality quality=qualityDao.getqualityById(shadeMast.getQualityEntryId());
+		if(quality==null)
 		{
-			throw new Exception(ConstantFile.Quality_Data_Not_Found +shadeMast.getQualityId());
+			throw new Exception(ConstantFile.Quality_Data_Not_Found +shadeMast.getQualityEntryId());
 		}
 
 		//check the dyeing process for the shade is available or not
 
 		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
-		ShadeMast shadeData =  new ShadeMast(shadeMast);
+		//ShadeMast shadeData =  new ShadeMast(shadeMast);
 
-		shadeData.setQualityEntryId(quality.get().getId());
+		//shadeMast.setQualityEntryId(quality.get().getId());
 
 
 		if (shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty())
 		{
-			shadeData.setShadeDataList(null);
-			shadeData.setPending(true);
+			shadeMast.setShadeDataList(null);
+			shadeMast.setPending(true);
 			if(shadeMast.getCategory()==null)
 				throw new Exception("Select shade category");
 		}
 		else {
 
-			shadeData.setPending(false);
-			shadeData.setShadeDataList(shadeMast.getShadeDataList());
-			shadeData = setShadeCatogory(shadeData);
+			shadeMast.setPending(false);
+			shadeMast.setShadeDataList(shadeMast.getShadeDataList());
+			shadeMast = setShadeCatogory(shadeMast);
 		}
 
 
@@ -106,8 +106,8 @@ public class ShadeServiceImpl {
 		UserData userData = userDao.getUserById(Long.parseLong(id));
 		if(userData.getIsMaster()==false) {
 			//get the party record
-			Party party = partyDao.findByPartyId(shadeData.getPartyId());
-			shadeData.setUserHeadId(party.getUserHeadId());
+			Party party = partyDao.findByPartyId(shadeMast.getPartyId());
+			shadeMast.setUserHeadId(party.getUserHeadId());
 		}
 
 
@@ -115,7 +115,7 @@ public class ShadeServiceImpl {
 
 
 		//check that shade is exist or not
-		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeData.getId()==null?0:shadeData.getId(),shadeData.getPartyShadeNo(),shadeData.getQualityEntryId());
+		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeMast.getId()==null?0:shadeMast.getId(),shadeMast.getPartyShadeNo(),shadeMast.getQualityEntryId());
 		ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
 
 		if(shadeMastExist !=null)
@@ -123,7 +123,7 @@ public class ShadeServiceImpl {
 
 
 
-		shadeMastDao.save(shadeData);
+		shadeMastDao.save(shadeMast);
 
 
 
