@@ -296,26 +296,25 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public Optional<StockMast> getStockBatchById(Long id) throws Exception{
-            Optional<StockMast> data = stockMastDao.findById(id);
-            List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.get().getId(),false);
+    public StockMast getStockBatchById(Long id) throws Exception{
+            StockMast data = stockMastDao.findByStockId(id);
+            /*List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(),false);
 
-            data.get().setBatchData(batchDataList);
-            if(data.isPresent()){
+            data.setBatchData(batchDataList)*/;
+            if(data!=null){
                 int count=0;//count the production plan gr
                 //check the batches is produciton plan
-                for(BatchData batchData:batchDataList)
+                for(BatchData batchData:data.getBatchData())
                 {
 
                     if(batchData.getIsProductionPlanned()==true)
                         count++;
                 }
-                // https://MohanGloryAutotech@github.com/gloryautotech/dyeing_backend.git
 
-                if(count == batchDataList.size())
-                    data.get().setIsProductionPlanned(true);
+                if(count == data.getBatchData().size())
+                    data.setIsProductionPlanned(true);
                 else
-                    data.get().setIsProductionPlanned(false);
+                    data.setIsProductionPlanned(false);
 
                 return data;
             }
@@ -348,6 +347,11 @@ public class StockBatchServiceImpl {
             List<BatchData> batchData = batchDao.findByControlId(stockMast.getId());
             for (BatchData batch : batchData) {
                 batchGr.put(batch.getId(), false);
+
+                if(batch.getIsExtra()==true)
+                {
+                    batchDataList.add(batch);
+                }
                 //System.out.println(batch.getId());
             }
 

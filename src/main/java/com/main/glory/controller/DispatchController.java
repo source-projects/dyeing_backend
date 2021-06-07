@@ -217,6 +217,7 @@ public class DispatchController extends ControllerConfig {
             e.printStackTrace();
             result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -364,6 +365,23 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+    //delete functionality to take one step back
+    @DeleteMapping("/dispatch/delete")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteDispatch(@RequestParam(name = "invoiceNo") Long invoiceNo) throws Exception{
+        GeneralResponse<Boolean,Object> result;
+        try{
+            dispatchMastService.deleteDispatchByInvoiceNo(invoiceNo);
+            result= new GeneralResponse<>(true, constantFile.Dispatch_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result =  new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 
 
