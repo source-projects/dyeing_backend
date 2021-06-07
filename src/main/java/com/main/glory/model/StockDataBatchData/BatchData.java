@@ -47,7 +47,7 @@ public class BatchData {
     List<DispatchData> dispatchData;*/
 
     public BatchData(BatchData other) {
-        this.id=other.id==null?0:other.id;
+        this.id=other.id==null?null:other.id;
         this.mtr=other.mtr;
         this.wt=other.wt;
         this.batchId=other.batchId;

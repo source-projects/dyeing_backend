@@ -298,13 +298,14 @@ public class StockBatchServiceImpl {
     @Transactional
     public StockMast getStockBatchById(Long id) throws Exception{
             StockMast data = stockMastDao.findByStockId(id);
-            /*List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(),false);
+            List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(),false);
 
-            data.setBatchData(batchDataList)*/;
-            if(data!=null){
+            StockMast stockMast = new StockMast(data);
+            stockMast.setBatchData(batchDataList);
+            if(stockMast!=null){
                 int count=0;//count the production plan gr
                 //check the batches is produciton plan
-                for(BatchData batchData:data.getBatchData())
+                for(BatchData batchData:stockMast.getBatchData())
                 {
 
                     if(batchData.getIsProductionPlanned()==true)
@@ -316,7 +317,7 @@ public class StockBatchServiceImpl {
                 else
                     data.setIsProductionPlanned(false);
 
-                return data;
+                return stockMast;
             }
             else
                 throw new Exception ("no data found for StockId: "+id);
@@ -325,7 +326,7 @@ public class StockBatchServiceImpl {
 
     public void updateBatch(AddStockBatch stockMast,String id) throws Exception {
         //first check the batch id is null or not
-        try {
+
             List<BatchData> batchDataList = new ArrayList<>();
             Long batchId = 0l, max = 0l;
 
@@ -335,9 +336,9 @@ public class StockBatchServiceImpl {
             }
 
             // Validate, if batch is not given to the production planning then throw the exception
-            if (original.get().getIsProductionPlanned()) {
+            /*if (original.get().getIsProductionPlanned()) {
                 throw new Exception("BatchData is already sent to production, for id:" + stockMast.getId());
-            }
+            }*/
 
 
             //for delete the batch gr if not coming from FE
@@ -372,6 +373,7 @@ public class StockBatchServiceImpl {
                 else
                 {
                     batch=new BatchData(batch);
+
                 }
                 batchId = Long.parseLong(batch.getBatchId());
                 if (batchId > max) {
@@ -424,11 +426,7 @@ public class StockBatchServiceImpl {
                 batchSequneceDao.updateBatchSequence(batchSequence.getId(), max + 1);
             }
 
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+
     }
 
     @Transactional
