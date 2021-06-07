@@ -881,7 +881,7 @@ public class DispatchMastImpl {
                 continue;
 
 
-            String invoiceNumber=dispatchMast.getPrefix()+dispatchMast.getPostfix();
+            String invoiceNumber=String.valueOf(dispatchMast.getPostfix());
             List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
             for(GetBatchByInvoice getBatchByInvoice:stockWithBatchList)
             {
@@ -906,7 +906,7 @@ public class DispatchMastImpl {
                     batchFinishMtr +=batchData.getFinishMtr();
                     totalFinishMtr +=batchFinishMtr;
                 }
-                amt+=batchFinishMtr*quality.getRate();
+                amt+=batchFinishMtr*dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
                 batchFinishMtr = 0.0;
 
 
@@ -930,8 +930,8 @@ public class DispatchMastImpl {
 
 
         }
-        if (list.isEmpty())
-            throw new Exception("no invoice data found");
+        /*if (list.isEmpty())
+            throw new Exception("no invoice data found");*/
         return list;
 
     }
@@ -982,7 +982,7 @@ public class DispatchMastImpl {
             if(userData==null)
                 continue;
 
-            String invoiceNumber=dispatchMast.getPrefix()+dispatchMast.getPostfix();
+            String invoiceNumber=String.valueOf(dispatchMast.getPostfix());
             List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
             for(GetBatchByInvoice getBatchByInvoice:stockWithBatchList)
             {
@@ -1007,14 +1007,15 @@ public class DispatchMastImpl {
                     totalFinishMtr+=batchData.getFinishMtr();
                 }
 
+                Double qualityRate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
                 QualityList qualityData= new QualityList();
                 qualityData.setTotalMtr(totalBatchMtr);
                 qualityData.setTotalFinishMtr(totalFinishMtr);
                 qualityData.setQualityEntryId(quality.getId());
                 qualityData.setQulityId(quality.getQualityId());
-                qualityData.setAmt(quality.getRate()*totalFinishMtr);
+                qualityData.setAmt(qualityRate*totalFinishMtr);
                 qualityData.setBatchId(getBatchByInvoice.getBatchId());
-                qualityData.setRate(quality.getRate());
+                qualityData.setRate(qualityRate);
 
                 qualityLists.add(qualityData);
 
@@ -1034,8 +1035,8 @@ public class DispatchMastImpl {
 
             }
         }
-        if(list.isEmpty())
-            throw new Exception("no data found ");
+        /*if(list.isEmpty())
+            throw new Exception("no data found ");*/
 
 
         return list;

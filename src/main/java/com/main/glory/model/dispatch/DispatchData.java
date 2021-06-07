@@ -23,7 +23,8 @@ public class DispatchData {
     String batchId;
     Long stockId;
     String invoiceNo;
-    Boolean isSendToParty=false;
+    @ColumnDefault("0")
+    Boolean isSendToParty;
     Date createdDate;
     Long createdBy;
     Long updatedBy;
