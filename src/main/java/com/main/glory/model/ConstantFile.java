@@ -329,6 +329,7 @@ public class ConstantFile {
     public static String Dispatch_Added = "Data added successfully";
     public static String Dispatch_Not_Added = "Data not added successfully";
     public static String Dispatch_Exit= "Dispatch exist";
+    public static String Dispatch_Not_Exist= "Data not exist";
     public static String Dispatch_Updated = "Data updated successfully";
     public static String Dispatch_Deleted = "Data deleted successfully";
     public static String Dispatch_Found = "Data found ";
