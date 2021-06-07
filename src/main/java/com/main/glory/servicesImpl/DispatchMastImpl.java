@@ -10,7 +10,6 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
-import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
 import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
@@ -23,7 +22,6 @@ import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
 import com.main.glory.model.party.Party;
-import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
@@ -1173,4 +1171,25 @@ public class DispatchMastImpl {
     }
 
 
+    public void deleteDispatchByInvoiceNo(Long invoiceNo) throws Exception {
+        //check invoice is exist or not
+        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(invoiceNo);
+
+        if(dispatchMast==null)
+            throw new Exception(ConstantFile.Dispatch_Not_Exist);
+
+        //change that flag of batch data list by invoice number
+        List<Long> batchEntryIds = dispatchDataDao.getBatchEntryIdsByInvoiceNo(String.valueOf(invoiceNo));
+
+        if(!batchEntryIds.isEmpty())
+        {
+            batchDao.updateBillStatusInListOfBatchEntryId(batchEntryIds,false);
+        }
+
+        //now delete the dispatch data and then mast info of dispatch
+        dispatchDataDao.deleteBatchEntryIdByInvoiceNo(String.valueOf(invoiceNo));
+
+        dispatchMastDao.deleteByInvoicePostFix(invoiceNo);
+
+    }
 }

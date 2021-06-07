@@ -171,9 +171,9 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<StockMast,Object> result;
         try {
             if (id != null) {
-                Optional<StockMast> stockMast = stockBatchService.getStockBatchById(id);
-                if (stockMast.isPresent()) {
-                    result= new GeneralResponse<>(stockMast.get(), ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                StockMast stockMast = stockBatchService.getStockBatchById(id);
+                if (stockMast!=null) {
+                    result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 } else {
                     result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 }

@@ -296,28 +296,28 @@ public class StockBatchServiceImpl {
     }
 
     @Transactional
-    public Optional<StockMast> getStockBatchById(Long id) throws Exception{
-            Optional<StockMast> data = stockMastDao.findById(id);
-            List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.get().getId(),false);
+    public StockMast getStockBatchById(Long id) throws Exception{
+            StockMast data = stockMastDao.findByStockId(id);
+            List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(),false);
 
-            data.get().setBatchData(batchDataList);
-            if(data.isPresent()){
+            StockMast stockMast = new StockMast(data);
+            stockMast.setBatchData(batchDataList);
+            if(stockMast!=null){
                 int count=0;//count the production plan gr
                 //check the batches is produciton plan
-                for(BatchData batchData:batchDataList)
+                for(BatchData batchData:stockMast.getBatchData())
                 {
 
                     if(batchData.getIsProductionPlanned()==true)
                         count++;
                 }
-                // https://MohanGloryAutotech@github.com/gloryautotech/dyeing_backend.git
 
-                if(count == batchDataList.size())
-                    data.get().setIsProductionPlanned(true);
+                if(count == data.getBatchData().size())
+                    data.setIsProductionPlanned(true);
                 else
-                    data.get().setIsProductionPlanned(false);
+                    data.setIsProductionPlanned(false);
 
-                return data;
+                return stockMast;
             }
             else
                 throw new Exception ("no data found for StockId: "+id);
@@ -326,7 +326,7 @@ public class StockBatchServiceImpl {
 
     public void updateBatch(AddStockBatch stockMast,String id) throws Exception {
         //first check the batch id is null or not
-        try {
+
             List<BatchData> batchDataList = new ArrayList<>();
             Long batchId = 0l, max = 0l;
 
@@ -336,9 +336,9 @@ public class StockBatchServiceImpl {
             }
 
             // Validate, if batch is not given to the production planning then throw the exception
-            if (original.get().getIsProductionPlanned()) {
+            /*if (original.get().getIsProductionPlanned()) {
                 throw new Exception("BatchData is already sent to production, for id:" + stockMast.getId());
-            }
+            }*/
 
 
             //for delete the batch gr if not coming from FE
@@ -348,6 +348,11 @@ public class StockBatchServiceImpl {
             List<BatchData> batchData = batchDao.findByControlId(stockMast.getId());
             for (BatchData batch : batchData) {
                 batchGr.put(batch.getId(), false);
+
+                if(batch.getIsExtra()==true)
+                {
+                    batchDataList.add(batch);
+                }
                 //System.out.println(batch.getId());
             }
 
@@ -368,6 +373,7 @@ public class StockBatchServiceImpl {
                 else
                 {
                     batch=new BatchData(batch);
+
                 }
                 batchId = Long.parseLong(batch.getBatchId());
                 if (batchId > max) {
@@ -420,11 +426,7 @@ public class StockBatchServiceImpl {
                 batchSequneceDao.updateBatchSequence(batchSequence.getId(), max + 1);
             }
 
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+
     }
 
     @Transactional

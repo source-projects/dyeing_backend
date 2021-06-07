@@ -392,6 +392,11 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("delete from BatchData x where x.id IN (:batchEntryIdToDelete)")
     void deleteByIdList(List<Long> batchEntryIdToDelete);
 
+    @Modifying
+    @Transactional
+    @Query("update BatchData x set x.isBillGenrated=:status where x.id IN (:batchEntryIds)")
+    void updateBillStatusInListOfBatchEntryId(List<Long> batchEntryIds, Boolean status);
+
 
 
 
