@@ -65,7 +65,7 @@ public class DispatchController extends ControllerConfig {
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, constantFile.Dispatch_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -83,7 +83,7 @@ public class DispatchController extends ControllerConfig {
             if(!list.isEmpty())
                 result =  new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result =  new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result =  new GeneralResponse<>(list, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();

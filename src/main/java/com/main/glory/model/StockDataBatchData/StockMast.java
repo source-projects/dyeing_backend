@@ -26,6 +26,11 @@ import java.util.Optional;
 @Getter
 public class StockMast {
 
+    /*
+    *
+    * Don't change anything otherwise it will ruin
+    *
+    * */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
@@ -62,38 +67,45 @@ public class StockMast {
     public StockMast(StockMast sm) {
         this.id = sm.id;
         this.stockInType = sm.stockInType;
+        this.partyId = sm.partyId;
+        this.billNo=sm.billNo;
+        this.billDate = sm.billDate;
+        this.chlDate = sm.chlDate;
+        this.chlNo = sm.chlNo;
         this.createdDate = sm.createdDate;
         this.updatedDate = sm.updatedDate;
         this.batchData = sm.batchData;
-        this.partyId = sm.partyId;
         this.qualityId = sm.qualityId;
-        this.chlDate = sm.chlDate;
-        this.chlNo = sm.chlNo;
         this.unit = sm.unit;
         this.isProductionPlanned = sm.isProductionPlanned;
         this.createdBy = sm.createdBy;
         this.updatedBy = sm.updatedBy;
         this.userHeadId= sm.getUserHeadId();
         this.receiveDate=sm.receiveDate;
+        this.remark =sm.getRemark();
+        this.wtPer100m=sm.getWtPer100m();
     }
 
     public StockMast(AddStockBatch sm) {
         this.id = sm.getId();
         this.stockInType = sm.getStockInType();
-        this.createdDate = sm.getCreatedDate();
-        this.updatedDate = sm.getUpdatedDate();
-        //this.batchData = sm.getBatchData();
         this.partyId = sm.getPartyId();
-        this.qualityId = sm.getQualityId();
+        this.billDate = sm.getBillDate()==null?null:sm.getBillDate();
+        this.billNo = sm.getBillNo()==null?null:sm.getBillNo();
         this.chlDate = sm.getChlDate();
         this.chlNo = sm.getChlNo();
         this.unit = sm.getUnit();
-        this.isProductionPlanned = sm.getIsProductionPlanned();
         this.createdBy = sm.getCreatedBy();
         this.updatedBy = sm.getUpdatedBy();
         this.userHeadId= sm.getUserHeadId();
+        this.isProductionPlanned = sm.getIsProductionPlanned();
+        this.createdDate = sm.getCreatedDate();
+        this.updatedDate = sm.getUpdatedDate();
         this.receiveDate=sm.getReceiveDate();
-        //this.batchData =sm.getBatchData();
+        this.remark = sm.getRemark()==null?null:sm.getRemark();
+        this.wtPer100m=sm.getWtPer100m();
+        //this.batchData = sm.getBatchData();
+        this.qualityId = sm.getQualityId();
 
     }
 

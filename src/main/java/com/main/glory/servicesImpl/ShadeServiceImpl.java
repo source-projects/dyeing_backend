@@ -72,6 +72,12 @@ public class ShadeServiceImpl {
 
 	public void saveShade(ShadeMast shadeMast,String id) throws Exception{
 		//consider we have data and add directlt
+		if(shadeMast.getQualityEntryId()==null)
+			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
+
+		if(shadeMast.getPartyId()==null)
+			throw new Exception(ConstantFile.Party_Not_Exist);
+
 		Quality quality=qualityDao.getqualityById(shadeMast.getQualityEntryId());
 		if(quality==null)
 		{
@@ -178,6 +184,7 @@ public class ShadeServiceImpl {
 	public Optional<ShadeMast> getShadeMastById(Long id) throws Exception {
 		Optional<ShadeMast> shadeMastList = shadeMastDao.findById(id);
 
+
 		/*if(shadeMastList.isPresent() && shadeMastList.get().getPartyId()!=null && shadeMastList.get().getQualityEntryId()!=null)
 			return shadeMastList;
 		else{
@@ -188,6 +195,13 @@ public class ShadeServiceImpl {
 
 	
 	public Boolean updateShade(ShadeMast shadeMast) throws Exception {
+
+		if(shadeMast.getQualityEntryId()==null)
+			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
+
+		if(shadeMast.getPartyId()==null)
+			throw new Exception(ConstantFile.Party_Not_Exist);
+
 		if(shadeMast.getShadeDataList()==null || shadeMast.getShadeDataList().isEmpty()) {
 			shadeMast.setPending(true);
 			if(shadeMast.getCategory()==null)
