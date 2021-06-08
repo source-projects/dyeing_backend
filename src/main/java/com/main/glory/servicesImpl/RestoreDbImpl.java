@@ -46,9 +46,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @Service("restoreDbServiceImp")
@@ -272,7 +274,7 @@ public class RestoreDbImpl {
 
                 databaseBackupDao.save(databaseBackup);
 
-                return true;
+
             }else {
 
                 System.out.println("exit value: " + exitValue);
@@ -282,6 +284,29 @@ public class RestoreDbImpl {
                     System.out.println("exec response: " + line);
                 }
             }
+
+
+            //remove the file using cmd which are 7 days old
+            File[] files = new File(String.valueOf(parent)).listFiles();
+
+            Date currentDate = new Date(System.currentTimeMillis());
+            for (File file : files) {
+
+                if (file.isFile()) {
+                    long time = file.lastModified();
+                    //Date fileDate = simpleDateFormat.parse(new Date(file.getName()).toString());
+                    long diff = currentDate.getTime() - time;
+
+                    if(TimeUnit.DAYS.convert(diff,TimeUnit.MILLISECONDS)>7)
+                    {
+                        file.delete();
+                    }
+
+                    System.out.println(TimeUnit.DAYS.convert(diff,TimeUnit.MILLISECONDS));
+                    System.out.println(file.getName());
+                }
+            }
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
