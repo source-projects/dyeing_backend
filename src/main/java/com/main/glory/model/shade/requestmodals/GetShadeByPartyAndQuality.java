@@ -20,7 +20,7 @@ public class GetShadeByPartyAndQuality {
     Long qualityEntryId;
     String qualityId;
     String qualityName;
-
+    String colorName;
 
 
 }
