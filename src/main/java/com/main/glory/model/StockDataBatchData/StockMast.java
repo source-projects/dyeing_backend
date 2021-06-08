@@ -75,6 +75,7 @@ public class StockMast {
         this.updatedBy = sm.updatedBy;
         this.userHeadId= sm.getUserHeadId();
         this.receiveDate=sm.receiveDate;
+        this.remark =sm.getRemark();
     }
 
     public StockMast(AddStockBatch sm) {
@@ -82,6 +83,9 @@ public class StockMast {
         this.stockInType = sm.getStockInType();
         this.createdDate = sm.getCreatedDate();
         this.updatedDate = sm.getUpdatedDate();
+        this.remark = sm.getRemark()==null?null:sm.getRemark();
+        this.billDate = sm.getBillDate()==null?null:sm.getBillDate();
+        this.billNo = sm.getBillNo()==null?null:sm.getBillNo();
         //this.batchData = sm.getBatchData();
         this.partyId = sm.getPartyId();
         this.qualityId = sm.getQualityId();
