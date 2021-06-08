@@ -302,8 +302,8 @@ public class RestoreDbImpl {
                         file.delete();
                     }
 
-                    System.out.println(TimeUnit.DAYS.convert(diff,TimeUnit.MILLISECONDS));
-                    System.out.println(file.getName());
+                    /*System.out.println(TimeUnit.DAYS.convert(diff,TimeUnit.MILLISECONDS));
+                    System.out.println(file.getName());*/
                 }
             }
             return true;
