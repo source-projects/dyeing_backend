@@ -25,6 +25,8 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 
 	@Query("select s from ShadeMast s where s.createdBy=:userHeadId OR s.userHeadId=:userHeadId")
 	List<ShadeMast> findAllByUserHeadId(Long userHeadId);
+
+	@Query("select new com.main.glory.model.shade.ShadeMast(x,(select d.processName from DyeingProcessMast d where d.id=x.processId)) from ShadeMast x where x.id=:aLong ")
 	Optional<ShadeMast> findById(Long aLong);
 
 	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(s.id, s.partyShadeNo, s.colorTone,s.partyId,(select pp.partyCode from Party pp where pp.id=:partyId),(select pp.partyName from Party pp where pp.id=:partyId),s.qualityEntryId,(select q.qualityId from Quality q where q.id=:qualityId) as qualityIdString,(select q.qualityName from QualityName q where q.id=(select qq.qualityNameId from Quality qq where qq.id=:qualityId))) from ShadeMast s where s.partyId = :partyId AND s.qualityEntryId=:qualityId AND s.partyId IS NOT NULL AND s.qualityEntryId IS NOT NULL")

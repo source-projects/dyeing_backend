@@ -23,17 +23,9 @@ import java.util.List;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
-	//@Column(unique = true,nullable = false)
 	String partyShadeNo;
-	//@Column(nullable = false)
 	Long processId;
-
-	//@Column(nullable = false)
-
 	Long qualityEntryId;
-
-	//@Column(nullable = false)
-
 	Long partyId;
 	String colorTone;
 	Long createdBy;
@@ -42,14 +34,10 @@ import java.util.List;
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
 	Date updatedDate;;
-	//@Column(nullable = false)
 	Long userHeadId;
-	//@Column(nullable = false)
 	Long cuttingId;
 	String remark;
-	//@Column(nullable = false)
 	String category;
-	//@Column(nullable = false)
 	String labColorNo;
 	String processName;
 	String apcNo;
@@ -109,4 +97,30 @@ import java.util.List;
 		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
 
+	//for get shade by id
+	public ShadeMast(ShadeMast addShadeMast,String processName)
+	{
+		this.id=addShadeMast.getId();
+		this.partyShadeNo=addShadeMast.getPartyShadeNo();
+		this.processId=addShadeMast.getProcessId();
+		this.qualityEntryId=addShadeMast.getQualityEntryId();
+		this.partyId=addShadeMast.getPartyId();
+		this.colorTone=addShadeMast.getColorTone();
+		this.createdBy = addShadeMast.getCreatedBy();
+		this.updatedBy = addShadeMast.getUpdatedBy();
+		this.createdDate = addShadeMast.getCreatedDate();
+		this.updatedDate = addShadeMast.getUpdatedDate();
+		this.userHeadId = addShadeMast.getUserHeadId();
+		this.cuttingId=addShadeMast.getCuttingId();
+		this.remark=addShadeMast.getRemark();
+		this.category=addShadeMast.getCategory();
+		this.labColorNo=addShadeMast.getLabColorNo();
+		this.processName=processName;
+		this.apcNo =addShadeMast.getApcNo();
+		this.pending=addShadeMast.getPending();
+		this.extraRate=addShadeMast.getExtraRate();
+		this.colorName = addShadeMast.getColorName();
+		this.shadeDataList = addShadeMast.getShadeDataList();
+
+	}
 }
