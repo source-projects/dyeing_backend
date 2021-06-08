@@ -149,7 +149,7 @@ public class StockBatchController extends ControllerConfig {
                     if (stockMast == null) {
                         result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else {
-                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     }
                     break;
                 default:
