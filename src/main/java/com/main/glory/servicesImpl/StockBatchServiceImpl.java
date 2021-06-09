@@ -373,7 +373,6 @@ public class StockBatchServiceImpl {
                 else
                 {
                     batch=new BatchData(batch);
-
                 }
                 batchId = Long.parseLong(batch.getBatchId());
                 if (batchId > max) {
@@ -385,15 +384,15 @@ public class StockBatchServiceImpl {
 
 
             //##Iterate the loop first for check the record that are production plan true or not and then delete the record who flag is false
-            for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
+           /* for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
                 //System.out.println(entry.getKey()+":"+entry.getValue());
                 if (entry.getValue() == false) {
                         batchGr.replace(entry.getKey(), true);
                     //throw new Exception("remove the production first of batch:"+batchDataProductionPlan.getBatchId());
 
                 }
-            }
-            //remove the record
+            }*/
+            //remove the record jiska flag false ho
             for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
                 //System.out.println(entry.getKey()+":"+entry.getValue());
                 if (entry.getValue() == false) {
