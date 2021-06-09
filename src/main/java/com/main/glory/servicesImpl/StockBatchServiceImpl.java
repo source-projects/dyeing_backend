@@ -1250,6 +1250,9 @@ public class StockBatchServiceImpl {
 
     public Double changeInFormattedDecimal(Double values) {
         //df2.setMaximumFractionDigits(2);
+        if(values==null)
+            return 0.0;
+        else
         return Precision.round(values,2);
     }
 
