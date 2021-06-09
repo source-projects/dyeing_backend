@@ -199,7 +199,7 @@ public class DyeingSlipServiceImpl {
 
             GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
 
-            slipFormatData.setTotalWt(wt);
+            slipFormatData.setTotalWt(stockBatchService.changeInFormattedDecimal(wt));
             slipFormatData.setBatchCount(totalPcs);
             slipFormatData.setQualityId(record.getQualityId());
             //slipFormatData.setQualityEntryId(quality.getId());
