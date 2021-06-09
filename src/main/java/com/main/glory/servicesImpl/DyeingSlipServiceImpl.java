@@ -196,7 +196,7 @@ public class DyeingSlipServiceImpl {
             }
 
 
-
+            //System.out.println("batch:"+productionPlan.getBatchId());
             GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
 
             slipFormatData.setTotalWt(stockBatchService.changeInFormattedDecimal(wt));
