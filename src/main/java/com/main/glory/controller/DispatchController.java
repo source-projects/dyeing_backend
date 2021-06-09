@@ -9,6 +9,7 @@ import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFini
 import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
+import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.servicesImpl.DispatchMastImpl;
@@ -379,6 +380,27 @@ public class DispatchController extends ControllerConfig {
             e.printStackTrace();
             result =  new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    //report by date with consildate bill response
+    @PostMapping("/dispatch/report/forConslidateBill")
+    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+        GeneralResponse<List<ConsolidatedBillMast>, Object> result;
+        try{
+            List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true
+            );
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
