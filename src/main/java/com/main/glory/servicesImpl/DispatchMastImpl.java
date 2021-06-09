@@ -17,10 +17,7 @@ import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
-import com.main.glory.model.dispatch.response.GetAllDispatch;
-import com.main.glory.model.dispatch.response.GetBatchByInvoice;
-import com.main.glory.model.dispatch.response.GetConsolidatedBill;
-import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
+import com.main.glory.model.dispatch.response.*;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
@@ -31,6 +28,7 @@ import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -1191,6 +1189,98 @@ public class DispatchMastImpl {
         dispatchDataDao.deleteBatchEntryIdByInvoiceNo(String.valueOf(invoiceNo));
 
         dispatchMastDao.deleteByInvoicePostFix(invoiceNo);
+
+    }
+
+    public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(Filter filter) throws Exception {
+        Date from=null;
+        Date to=null;
+        //add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                "yyyy-MM-dd");
+
+
+        if(!filter.getFrom().isEmpty())
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if(!filter.getTo().isEmpty()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date
+            to=c.getTime();
+        }
+
+
+        List<ConsolidatedBillMast> list = new ArrayList<>();
+
+        //System.out.println(from+":"+to);
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByDateFilter(from,to);
+        for(DispatchMast dispatchMast:dispatchMastList)
+        {
+            ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
+
+            Party party =partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if(party==null)
+                continue;
+
+
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            if(userData==null)
+                continue;
+
+
+            String invoiceNumber=String.valueOf(dispatchMast.getPostfix());
+            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
+            List<ConsolidatedBillData> consolidatedBillDataList = new ArrayList<>();
+            for(GetBatchByInvoice getBatchByInvoice:stockWithBatchList)
+            {
+                Double amt=0.0;
+                Double totalFinishMtr=0.0;
+                // Double batchFinishMtr=0.0;
+                Double totalBatchMtr=0.0;
+
+                //getBatchByInvoice.
+                //getBatchByInvoice.getBatchEntryId()//sum of getBatchByInvoice
+                if(getBatchByInvoice.getBatchId()==null)
+                    continue;
+
+                List<BatchData> batchDataList = stockBatchService.getBatchWithControlIdAndBatchId(getBatchByInvoice.getBatchId(),getBatchByInvoice.getStockId());
+                if(batchDataList.isEmpty())
+                    continue;
+
+                StockMast stockMast = stockBatchService.getStockByStockId(getBatchByInvoice.getStockId());
+                if(stockMast==null)
+                    continue;
+
+                GetQualityResponse quality= qualityServiceImp.getQualityByID(stockMast.getQualityId());
+                if(quality==null)
+                    continue;
+
+                for(BatchData batchData:batchDataList)
+                {
+                    totalBatchMtr+=batchData.getMtr();
+                    //batchFinishMtr +=batchData.getFinishMtr();
+                    totalFinishMtr +=batchData.getFinishMtr();
+                }
+                Double rate=dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
+                amt=totalFinishMtr*rate;
+                //batchFinishMtr = 0.0;
+
+                consolidatedBillDataList.add(new ConsolidatedBillData(party,quality,getBatchByInvoice.getBatchId(),getBatchByInvoice.getBatchEntryId(),totalBatchMtr,totalFinishMtr,amt,rate,dispatchMast));
+
+
+
+
+            }
+            consolidatedBillMast.setConsolidatedBillDataList(consolidatedBillDataList);
+            list.add(consolidatedBillMast);
+
+
+        }
+        /*if (list.isEmpty())
+            throw new Exception("no invoice data found");*/
+        return list;
 
     }
 }
