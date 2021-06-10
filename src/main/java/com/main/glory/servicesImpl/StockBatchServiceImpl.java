@@ -32,6 +32,7 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -1248,7 +1249,11 @@ public class StockBatchServiceImpl {
     }
 
     public Double changeInFormattedDecimal(Double values) {
-        return Double.valueOf(df2.format(values));
+        //df2.setMaximumFractionDigits(2);
+        if(values==null)
+            return 0.0;
+        else
+        return Precision.round(values,2);
     }
 
     public List<GetAllBatch> getBatchListByQualityWithoutProductionPlan(Long qualityId) throws Exception {

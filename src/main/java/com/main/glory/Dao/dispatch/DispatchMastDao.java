@@ -47,4 +47,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
 
     @Query("select x from DispatchMast x where Date(x.createdDate)>=Date(:fromDate) AND Date(x.createdDate)<=Date(:toDate)")
     List<DispatchMast> getAllDispatchByDateFilter(Date fromDate, Date toDate);
+
+    @Query("select d from DispatchMast d where Date(d.createdDate)>=Date(:from) AND Date(d.createdDate)<=Date(:to)")
+    List<DispatchMast> getInvoiceByDateFilter(Date from, Date to);
 }

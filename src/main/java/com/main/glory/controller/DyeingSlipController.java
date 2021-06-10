@@ -83,11 +83,11 @@ public class DyeingSlipController extends ControllerConfig {
     }
 
     @GetMapping("/dyeingSlip/all")
-    public ResponseEntity<GeneralResponse<List<DyeingSlipMast>,Object>> getAllDyeingSlip(){
-        GeneralResponse<List<DyeingSlipMast>,Object> result;
+    public ResponseEntity<GeneralResponse<List<SlipFormatData>,Object>> getAllDyeingSlip(){
+        GeneralResponse<List<SlipFormatData>,Object> result;
         try {
 
-                List<DyeingSlipMast> data = dyeingSlipService.getAllDyeingSlip();
+                List<SlipFormatData> data = dyeingSlipService.getAllDyeingSlip();
                 if(data!=null)
                     result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
@@ -96,7 +96,7 @@ public class DyeingSlipController extends ControllerConfig {
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

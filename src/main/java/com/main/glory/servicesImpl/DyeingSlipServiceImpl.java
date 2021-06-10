@@ -21,6 +21,7 @@ import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.Quality;
+import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
@@ -32,6 +33,9 @@ import java.util.*;
 
 @Service("dyeingSlipServiceImpl")
 public class DyeingSlipServiceImpl {
+
+    @Autowired
+    AdminServciceImpl adminServcice;
 
     ConstantFile constantFile;
 
@@ -153,12 +157,60 @@ public class DyeingSlipServiceImpl {
         return  slipFormatData;
     }
 
-    public List<DyeingSlipMast> getAllDyeingSlip() throws Exception {
+    public List<SlipFormatData> getAllDyeingSlip() throws Exception {
 
-        List<DyeingSlipMast> dyeingSlipMast = dyeingSlipMastDao.getAllDyeingSlip();
-        if(dyeingSlipMast.isEmpty())
+        List<SlipFormatData> list =new ArrayList<>();
+        List<DyeingSlipMast> dyeingSlipMastList = dyeingSlipMastDao.getAllDyeingSlip();
+        if(dyeingSlipMastList.isEmpty())
             throw new Exception(constantFile.DyeingSlip_Not_Found );
-        return dyeingSlipMast;
+
+        for(DyeingSlipMast dyeingSlipMastExist:dyeingSlipMastList)
+        {
+            Long totalPcs;
+            SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
+            ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
+            GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
+            Double wt = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+            if(productionPlan.getIsMergeBatchId()==true)
+            {
+                totalPcs = batchDao.getTotalPcsByMergeBatchId(productionPlan.getBatchId());
+                wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
+            }
+            else {
+                wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
+                totalPcs = batchDao.getTotalPcsByBatchId(productionPlan.getBatchId());
+
+            }
+            if(productionPlan.getShadeId()!=null)
+            {
+                Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                slipFormatData.setColorTone(shadeMast.get().getColorTone());
+                slipFormatData.setColorName(shadeMast.get().getColorName());
+                slipFormatData.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+            }
+            else
+            {
+                slipFormatData.setColorTone("#fff");
+                slipFormatData.setColorName("No Color");
+                slipFormatData.setPartyShadeNo("-");
+            }
+
+
+            //System.out.println("batch:"+productionPlan.getBatchId());
+            GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
+
+            slipFormatData.setTotalWt(stockBatchService.changeInFormattedDecimal(wt));
+            slipFormatData.setBatchCount(totalPcs);
+            slipFormatData.setQualityId(record.getQualityId());
+            //slipFormatData.setQualityEntryId(quality.getId());
+            JetMast jetMast =jetService.getJetMastById(slipFormatData.getJetId());
+           /* if(jetMast==null)
+                throw new Exception(ConstantFile.Jet_Not_Exist_With_Name);*/
+            slipFormatData.setJetName(jetMast.getName());
+            list.add(slipFormatData);
+        }
+
+        return list;
     }
 
     public Long addAdditionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {

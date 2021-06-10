@@ -60,7 +60,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query("select d from DispatchData d where d.invoiceNo=:invoiceNo")
     List<DispatchData> getBatchByInvoiceNo(String invoiceNo);
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(d.batchEntryId) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchEntryId) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
     List<GetBatchByInvoice> getAllStockByInvoiceNumber(String invoiceNumber);
 
     @Query("select new com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr(x.qualityEntryId,(select q.qualityName from QualityName q where q.id = (select qq.qualityNameId from Quality qq where qq.id=x.qualityEntryId)),(select q.qualityId from Quality q where q.id=x.qualityEntryId),x.qualityRate) from DispatchData x where x.invoiceNo=:invoiceNo GROUP BY x.qualityEntryId")
