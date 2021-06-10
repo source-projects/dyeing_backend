@@ -3,6 +3,7 @@ package com.main.glory.model.StockDataBatchData.response;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class BatchToPartyAndQuality {
     String processName;
     String partyShadeNo;
 
-    private static DecimalFormat df2 = new DecimalFormat("#.##");
+    //private static DecimalFormat df2 = new DecimalFormat("#.##");
 
     public BatchToPartyAndQuality(Quality quality, Party party, GetBatchWithControlId batch, QualityName qualityName) {
         this.qualityEntryId=quality.getId().toString();
@@ -38,8 +39,8 @@ public class BatchToPartyAndQuality {
         this.partyName=party.getPartyName();
         this.controlId=batch.controlId;
         this.batchId=batch.batchId;
-        this.totalMtr=Double.valueOf(df2.format(batch.MTR));
-        this.totalWt=Double.valueOf(df2.format(batch.WT));
+        this.totalMtr=Double.valueOf(StockBatchServiceImpl.changeInFormattedDecimal(batch.MTR));
+        this.totalWt=Double.valueOf(StockBatchServiceImpl.changeInFormattedDecimal(batch.WT));
         this.mergeBatchId = batch.getMergeBatchId()==null?null : batch.getMergeBatchId();
 
     }
