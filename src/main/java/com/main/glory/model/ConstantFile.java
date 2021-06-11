@@ -30,6 +30,7 @@ public class ConstantFile {
     public static String Jet_Record_Exist = "Jet record exist";
     public static String Jet_Record_Completed = "Jet record status Completed";
     public static String Jet_Record_Start = "Jet record status : Started";
+    public static String Jet_Capacity_Exceed = "Jet capacity exceed";
 
 
     //production
