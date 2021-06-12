@@ -1263,6 +1263,8 @@ public class DispatchMastImpl {
                     //batchFinishMtr +=batchData.getFinishMtr();
                     totalFinishMtr +=batchData.getFinishMtr();
                 }
+                System.out.println(invoiceNumber);
+                System.out.println(batchDataList.get(0).getId());
                 Double rate=dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
                 amt=totalFinishMtr*rate;
                 //batchFinishMtr = 0.0;
