@@ -22,7 +22,7 @@ public class DyeingChemicalData {
     String itemName;
     String byChemical;
     Double concentration;
-    @ColumnDefault("DEFAULT")
+    @Column(columnDefinition = "varchar(255) default 'DEFAULT'")
     String shadeType;
 
 

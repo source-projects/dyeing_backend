@@ -17,6 +17,7 @@ public class ConsolidatedBillMast {
 
     Long invoiceNo;
     Date createdDate;
+    String headName;
     List<ConsolidatedBillData> consolidatedBillDataList;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {

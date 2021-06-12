@@ -43,10 +43,10 @@ public class Quality {
 	Date qualityDate;
 	Long userHeadId;
 	Double rate;
-	@ColumnDefault("998821")
+	@Column(columnDefinition = "varchar(255) default '998821'")
 	String hsn;
 	Long qualityNameId;
-	@ColumnDefault("meter")
+	@Column(columnDefinition = "varchar(255) default 'meter'")
 	String billingUnit;
 	Long processId;
 

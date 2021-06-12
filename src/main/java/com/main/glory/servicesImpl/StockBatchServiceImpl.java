@@ -2372,6 +2372,10 @@ public class StockBatchServiceImpl {
         return  batchReturnResponse;
     }
 
+    public List<BatchData> getBatchByBatchIdWithInvoiceNuber(String batchId, String invoiceNumber) {
+        return batchDao.getBatchByBatchIdAndInvoiceNumber(batchId,invoiceNumber);
+    }
+
 
    /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);
