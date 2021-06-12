@@ -83,7 +83,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Modifying
     @Transactional
-    @Query("update DispatchData x where x.qualityRate=:rate AND x.batchId=:batchId AND x.invoiceNo=:invoiceNo")
+    @Query("update DispatchData x set x.qualityRate=:rate where x.batchId=:batchId AND x.invoiceNo=:invoiceNo")
     void updateQualityRateWithBatchIdAndInvoiceNo(String invoiceNo, String batchId, Double rate);
 
 
