@@ -43,7 +43,7 @@ import java.util.List;
 	String apcNo;
 	Boolean pending;
 	Double extraRate;
-    @ColumnDefault("Not mentioned")
+	@Column(columnDefinition = "varchar(255) default 'Not mentioned'")
 	String colorName;
 
 	@OneToMany(cascade = CascadeType.ALL)

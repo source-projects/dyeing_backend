@@ -23,7 +23,7 @@ public class DispatchData {
     String batchId;
     Long stockId;
     String invoiceNo;
-    @ColumnDefault("0")
+    @Column(columnDefinition = "boolean default false")
     Boolean isSendToParty;
     Date createdDate;
     Long createdBy;
@@ -32,7 +32,7 @@ public class DispatchData {
     Long shadeId;
     Double qualityRate;
     Double shadeRate;
-    @ColumnDefault("meter")
+    @Column(columnDefinition = "varchar(255) default 'meter'")
     String billingUnit;
     Double wtPer100m;
 

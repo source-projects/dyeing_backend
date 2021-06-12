@@ -31,18 +31,35 @@ public class DispatchMast {
     Long updatedBy;
     Long partyId;
     Double discount;
+    Double percentageDiscount;
     Double cgst;
     Double sgst;
     Double taxAmt;
     Double netAmt;
 
     public DispatchMast(CreateDispatch dispatchList) {
-        //for storing the tax amoutt
+        //for storing the tax amount
+        this.percentageDiscount = dispatchList.getPercentageDiscount();
         this.discount= dispatchList.getDiscount();
         this.cgst = dispatchList.getCgst();
         this.sgst =dispatchList.getSgst();
         this.taxAmt = dispatchList.getTaxAmt();
         this.netAmt = Math.floor(dispatchList.getNetAmt());
+    }
+
+    public DispatchMast(CreateDispatch createDispatch, DispatchMast dispatchMast) {
+        this.id=dispatchMast.getId();
+        this.createdDate = dispatchMast.getCreatedDate();
+        this.createdBy = dispatchMast.getCreatedBy();
+        this.updatedBy = dispatchMast.getUpdatedBy();
+        this.userHeadId = dispatchMast.getUserHeadId();
+        this.partyId = dispatchMast.getPartyId();
+        this.percentageDiscount = createDispatch.getPercentageDiscount();
+        this.discount = createDispatch.getDiscount();
+        this.cgst = createDispatch.getCgst();
+        this.sgst = createDispatch.getSgst();
+        this.netAmt = createDispatch.getNetAmt();
+        this.taxAmt = createDispatch.getTaxAmt();
     }
 
 

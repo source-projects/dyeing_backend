@@ -397,6 +397,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("update BatchData x set x.isBillGenrated=:status where x.id IN (:batchEntryIds)")
     void updateBillStatusInListOfBatchEntryId(List<Long> batchEntryIds, Boolean status);
 
+    @Query("select x from BatchData x where x.batchId=:batchId AND x.id in (select d.batchEntryId from DispatchData d where d.invoiceNo=:invoiceNumber)")
+    List<BatchData> getBatchByBatchIdAndInvoiceNumber(String batchId, String invoiceNumber);
+
 
 
 
