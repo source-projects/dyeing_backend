@@ -26,6 +26,7 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,7 +87,7 @@ public class DispatchMastImpl {
     QualityNameDao qualityNameDao;
 
 
-    public Long saveDispatch(CreateDispatch dispatchList) throws Exception {
+    public Long saveDispatch(CreateDispatch dispatchList,Long userId) throws Exception {
 
 
         //check the invoice sequece exist or not
@@ -95,7 +96,13 @@ public class DispatchMastImpl {
             throw new Exception(constantFile.Invoice_Sequence_Not_Found );
 
 
-        //invoice process
+
+        //check user exist or not
+        UserData userData = userService.getUserById(userId);
+
+        if(userData==null)
+            throw new Exception(ConstantFile.User_Not_Exist);
+
 
 
         //party detail by stock
@@ -158,6 +165,7 @@ public class DispatchMastImpl {
             if (batchDataList.isEmpty())
                 throw new Exception("no batch data found");
 
+
             for(BatchData batchData:batchDataList)
             {
 
@@ -212,8 +220,17 @@ public class DispatchMastImpl {
         dispatchMast.setPartyId(party.get().getId());
         dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
         dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
-        dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
+
+        if(userData.getUserHeadId()==0 || userData.getIsMaster()==false)
+        {
+            dispatchMast.setUserHeadId(party.get().getUserHeadId());
+        }
+        else
+        {
+            dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
+        }
+
         dispatchMastDao.save(dispatchMast);
 
 
