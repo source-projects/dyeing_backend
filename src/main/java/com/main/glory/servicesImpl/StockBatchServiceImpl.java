@@ -1248,7 +1248,7 @@ public class StockBatchServiceImpl {
         return list;
     }
 
-    public Double changeInFormattedDecimal(Double values) {
+    public static Double changeInFormattedDecimal(Double values) {
         //df2.setMaximumFractionDigits(2);
         if(values==null)
             return 0.0;
@@ -2370,6 +2370,10 @@ public class StockBatchServiceImpl {
         BatchReturnResponse batchReturnResponse = new BatchReturnResponse(returnBatchDetail,batchReturnList);
 
         return  batchReturnResponse;
+    }
+
+    public List<BatchData> getBatchByBatchIdWithInvoiceNuber(String batchId, String invoiceNumber) {
+        return batchDao.getBatchByBatchIdAndInvoiceNumber(batchId,invoiceNumber);
     }
 
 

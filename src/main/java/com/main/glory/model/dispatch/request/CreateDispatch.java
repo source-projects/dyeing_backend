@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class CreateDispatch {
+    Long invoiceNo;
     Long createdBy;
     Long userHeadId;
     Long updatedBy;
@@ -22,5 +23,6 @@ public class CreateDispatch {
     Double netAmt;
     String password;
     Boolean passwordFlag;
+    Double percentageDiscount;
     List<BatchAndStockId> batchAndStockIdList;
 }

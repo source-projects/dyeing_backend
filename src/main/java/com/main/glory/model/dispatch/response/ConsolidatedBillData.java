@@ -24,6 +24,7 @@ public class ConsolidatedBillData {
     Double totalFinishMtr;
     Double rate;
     Double amt;
+    String headName;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast) {

@@ -66,7 +66,7 @@ public class DispatchController extends ControllerConfig {
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class DispatchController extends ControllerConfig {
             if(!list.isEmpty())
                 result =  new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result =  new GeneralResponse<>(list, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result =  new GeneralResponse<>(list, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -104,7 +104,7 @@ public class DispatchController extends ControllerConfig {
             if(partyId!=null) {
                 List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getBatchByParty(partyId);
                 if(x.isEmpty())
-                    result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
                 result= new GeneralResponse<>(x, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
@@ -129,7 +129,7 @@ public class DispatchController extends ControllerConfig {
                 if(x!=null)
                 result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
-                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
                 result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -153,7 +153,7 @@ public class DispatchController extends ControllerConfig {
             if(!x.isEmpty())
             result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
-                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
@@ -165,15 +165,14 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PutMapping("/dispatch/updateDispatch/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatch(@RequestBody UpdateInvoice updateInvoice) throws Exception{
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
         GeneralResponse<Boolean,Object> result;
         try{
 
-            Boolean flag = dispatchMastService.updateDispatch(updateInvoice);
-            if(flag==true)
+            dispatchMastService.updateDispatch(updateInvoice);
+
             result= new GeneralResponse<>(true, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
-            else
-                result= new GeneralResponse<>(false, "data not updated", true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
+
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -211,7 +210,7 @@ public class DispatchController extends ControllerConfig {
                 result= new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
-                result= new GeneralResponse<>(null,ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result= new GeneralResponse<>(null,ConstantFile.Null_Record_Passed, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
         } catch (Exception e){

@@ -16,6 +16,10 @@ public class BatchWithTotalMTRandFinishMTR {
     Double MTR;
     Double totalFinishMtr;
     Long totalPcs;
+    String qualityId;
+    Double rate;
+    String qualityName;
+    Long qualityEntryId;
 
 
     public BatchWithTotalMTRandFinishMTR(String batchId, Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs) {
