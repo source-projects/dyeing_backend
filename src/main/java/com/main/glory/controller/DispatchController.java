@@ -46,7 +46,7 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
         GeneralResponse<Long,Object> result;
         try{
-            Long flag = dispatchMastService.saveDispatch(dispatchMast);
+            Long flag = dispatchMastService.saveDispatch(dispatchMast,Long.parseLong(request.getParameter("id")));
             result= new GeneralResponse<>(flag, constantFile.Dispatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,dispatchMast);
 
             logService.saveLog(result,request,debugAll);
