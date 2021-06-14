@@ -1311,6 +1311,7 @@ public class DispatchMastImpl {
                 //batchFinishMtr = 0.0;
 
                 ConsolidatedBillData consolidatedBillData =new ConsolidatedBillData(party,quality,getBatchByInvoice.getBatchId(),getBatchByInvoice.getBatchEntryId(),totalBatchMtr,totalFinishMtr,amt,rate,dispatchMast);
+                consolidatedBillData.setHeadName(userData.getFirstName());
                 consolidatedBillDataList.add(consolidatedBillData);
 
 
