@@ -3,6 +3,7 @@ package com.main.glory.model.dispatch.response;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.response.GetQualityResponse;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +35,9 @@ public class ConsolidatedBillData {
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName();
         this.pcs =pcs;
-        this.totalMtr = totalBatchMtr;
-        this.totalFinishMtr = totalFinishMtr;
+        this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalBatchMtr);
+        this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.rate = rate;
-        this.amt = amt;
+        this.amt = StockBatchServiceImpl.changeInFormattedDecimal(amt);
     }
 }

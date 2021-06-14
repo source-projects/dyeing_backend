@@ -292,4 +292,8 @@ public class AttendanceController extends ControllerConfig {
     }
 
 
+    // report api's attendance
+
+
+
 }
