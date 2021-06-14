@@ -46,7 +46,8 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
         GeneralResponse<Long,Object> result;
         try{
-            Long flag = dispatchMastService.saveDispatch(dispatchMast);
+            System.out.println(request.getHeaderNames());
+            Long flag = dispatchMastService.saveDispatch(dispatchMast,Long.parseLong(request.getHeader("id")));
             result= new GeneralResponse<>(flag, constantFile.Dispatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,dispatchMast);
 
             logService.saveLog(result,request,debugAll);
@@ -217,7 +218,7 @@ public class DispatchController extends ControllerConfig {
             e.printStackTrace();
             result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
-            logService.saveLog(result,request,true);
+            //logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -331,7 +332,7 @@ public class DispatchController extends ControllerConfig {
                 result= new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
             }
             else
-                result= new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
+                result= new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
@@ -354,7 +355,7 @@ public class DispatchController extends ControllerConfig {
             }
             else
             {
-                result= new GeneralResponse<>(flag, constantFile.Dispatch_Password_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result= new GeneralResponse<>(flag, constantFile.Dispatch_Password_Wrong, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
@@ -393,7 +394,7 @@ public class DispatchController extends ControllerConfig {
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
-                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,filter);
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
