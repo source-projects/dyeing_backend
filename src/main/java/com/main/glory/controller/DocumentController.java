@@ -9,27 +9,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api")
 
 public class DocumentController extends ControllerConfig {
+
+
+    @Autowired
+    HttpServletRequest request;
+
     @Autowired
     DocumentImpl documentService;
-/*
-    @PostMapping("/Document/")
-    public ResponseEntity<GeneralResponse<Boolean>> GetDocument(@RequestBody GetDocumentModel documentModel){
-        GeneralResponse<Boolean> result;
+
+    @PostMapping("/document/")
+    public ResponseEntity<GeneralResponse<Boolean,String>> GetDocument(@RequestBody GetDocumentModel documentModel){
+        GeneralResponse<Boolean,String> result;
 
         try{
             documentService.getDocument(documentModel);
 
-            result = new GeneralResponse<>(true, "PDF send successfully", true, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(true, "PDF send successfully", true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 
         }catch (Exception e){
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
-    }*/
+    }
 }

@@ -9,12 +9,17 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.document.request.GetDocumentModel;
+import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.Party;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,6 +35,10 @@ public class DocumentImpl {
 
     @Autowired
     PartyServiceImp partyServiceImp;
+
+    @Autowired
+    private JavaMailSender sender;
+
 
 
     public void getParty(GetDocumentModel documentModel) throws Exception {
@@ -96,5 +105,32 @@ public class DocumentImpl {
             default:throw new Exception("Module not found");
         }
 
+    }
+
+    //list of receiver ,filename, file
+
+    public void sendMail(GetDocumentModel documentModel, String fileName, File f) throws MessagingException {
+
+        for (ToEmailList toEmailList : documentModel.getToEmailList()) {
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+            try {
+                helper.setTo(toEmailList.getToEmail());
+                helper.setText(documentModel.getSendText());
+                helper.setSubject(documentModel.getSubjectEmail());
+
+                // file content
+               /* Path path = Paths.get(fileNasme);
+                byte[] content = Files.readAllBytes(path);*/
+                helper.addAttachment(fileName,f);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            sender.send(message);
+       /*     System.out.println("To:" + toEmailList.getToEmail());
+            SendEmail.sendMail(toEmailList.getToEmail(), fileName, documentModel.getSubjectEmail(), documentModel.getSendText(),f);*/
+
+        }
     }
 }
