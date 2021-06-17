@@ -1260,8 +1260,12 @@ public class DispatchMastImpl {
                 "yyyy-MM-dd");
 
 
-        if(!filter.getFrom().isEmpty())
+         if(!filter.getFrom().isEmpty()) {
             from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date and 1 day is comming minus from FE
+            from=c.getTime();
+        }
         if(!filter.getTo().isEmpty()) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
