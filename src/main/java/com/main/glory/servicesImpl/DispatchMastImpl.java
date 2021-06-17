@@ -1175,8 +1175,17 @@ public class DispatchMastImpl {
 
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast);
             qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
-            //qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
+            //set the rate as well if it is coming and change the amt as well
+            if(batchAndStockId.getRate()!=null)
+            {
+                qualityBillByInvoiceNumber.setRate(batchAndStockId.getRate());
+                qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getFinishMtr() * batchAndStockId.getRate()));
+            }
+
+
+
             qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
+
 
 
             batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
@@ -1190,7 +1199,11 @@ public class DispatchMastImpl {
             throw new Exception(ConstantFile.Batch_Data_Not_Found);
 
         PartyDataByInvoiceNumber partyDataByInvoiceNumber=new PartyDataByInvoiceNumber(party,qualityBillByInvoiceNumberList,batchWithGrList);
-
+        //set the percentage discount as well
+        if(createDispatch.getPercentageDiscount()!=null)
+        {
+            partyDataByInvoiceNumber.setPercentageDiscount(createDispatch.getPercentageDiscount());
+        }
 
         if(partyDataByInvoiceNumber==null)
             throw new Exception("no data found");
