@@ -2,6 +2,9 @@ package com.main.glory.servicesImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,14 +36,23 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.party.Party;
 import com.main.glory.services.PartyServiceInterface;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface {
+
+    @Autowired
+    DocumentImpl documentService;
 
     @Autowired
     QualityNameDao qualityNameDao;
@@ -313,7 +325,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         File f = new File(fileName);
         f.createNewFile();
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(fileName));//file is created, where the project filder is
+        PdfWriter.getInstance(document, new FileOutputStream(fileName));//file is created, where the project folder is
         document.open();
 
 
@@ -353,15 +365,10 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         //______Document created successfully
 
-
         //Send mail
+        documentService.sendMail(documentModel,fileName,f);
 
-        for (ToEmailList toEmailList : documentModel.getToEmailList()) {
-            System.out.println("To:" + toEmailList.getToEmail());
-            SendEmail email = new SendEmail(toEmailList.getToEmail(), fileName, documentModel.getSubjectEmail(), documentModel.getSendText());
-            email.sendMail();
 
-        }
 
     }
 

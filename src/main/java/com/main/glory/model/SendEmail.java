@@ -4,8 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -18,82 +30,38 @@ import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.util.Properties;
 
-
-@NoArgsConstructor
 @Getter
-@Setter
+@Service("mailService")
 public class SendEmail {
 
+
     String to;
-    String  fileName;
+    String fileName;
     String subject;
     String text;
-    String username ="mohan.glorygfl@gmail.com";
-    String password = "Mohan_123";
+    @Value("${spring.mail.username}")
+    String username ;
+    @Value("${spring.mail.password}")
+    String password ;
+
+    /*@Autowired
+    private static JavaMailSender javaMailSender;*/
 
 
-    public SendEmail(String to, String fileName, String subject,String text) {
-        this.to = to;
-        this.fileName = fileName;
-        this.subject = subject;
-        this.text=text;
-    }
-
-    public void sendMail()
-    {
-
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
-
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+   /* public static void sendMail(String toEmail, String fileName, String subjectEmail, String sendText, File f)  throws MessagingException, IOException {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(this.to)
-            );
-            message.setSubject(this.subject);
-
-            //message.setText(this.text);
-
-
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
-
-            Multipart multipart = new MimeMultipart();
-
-            //set file
-            DataSource source = new FileDataSource(this.fileName);
-            messageBodyPart.setText(this.getText());
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(this.fileName);
-            multipart.addBodyPart(messageBodyPart);
-
-            //set text
-            messageBodyPart=new MimeBodyPart();
-            messageBodyPart.setText(this.getText());
-            multipart.addBodyPart(messageBodyPart);
-
-            message.setContent(multipart);
-
-            Transport.send(message);
-
-            System.out.println("Done:"+this.getTo());
-
+            helper.setTo("demo@gmail.com");
+            helper.setText("Greetings :)");
+            helper.setSubject("Mail From Spring Boot");
         } catch (MessagingException e) {
             e.printStackTrace();
+            return "Error while sending mail ..";
         }
-
-
+        sender.send(message);
     }
+*/
+
 }
