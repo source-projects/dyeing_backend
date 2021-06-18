@@ -26,6 +26,7 @@ public class PartyDataByInvoiceNumber {
     Double taxAmt;
     Double netAmt;
     Double percentageDiscount;
+    String remark;
     List<QualityBillByInvoiceNumber> qualityList;
     List<BatchWithGr> batchWithGrList;
     Date createdDate;
@@ -45,6 +46,7 @@ public class PartyDataByInvoiceNumber {
         this.taxAmt=dispatchMast.getTaxAmt();
         this.netAmt = Math.floor(dispatchMast.getNetAmt());
         this.percentageDiscount = party.getPercentageDiscount();
+        this.remark = dispatchMast.getRemark();
     }
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList) {
         this.partyName=party.getPartyName();

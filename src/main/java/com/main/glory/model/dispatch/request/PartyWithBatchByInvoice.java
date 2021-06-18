@@ -25,6 +25,7 @@ public class PartyWithBatchByInvoice {
     public PartyWithBatchByInvoice(List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList, Party party) {
         this.partyId=party.getId();
         this.partyName=party.getPartyName();
+        this.percentageDiscount=party.getPercentageDiscount();
         this.batchWithControlIdList=batchWithTotalMTRandFinishMTRList;
     }
 }

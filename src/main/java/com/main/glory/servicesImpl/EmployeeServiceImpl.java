@@ -10,6 +10,7 @@ import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeData;
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.response.GetAllEmployee;
+import com.main.glory.model.employee.response.MonthlyAttendanceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -157,5 +158,9 @@ public class EmployeeServiceImpl {
             employeeMastList = employeeMastDao.getEmployeeByName(id);
             return employeeMastList;
         }
+    }
+
+    public List<MonthlyAttendanceResponse> getAllEmployeeNameWithId() {
+        return employeeMastDao.getAllEmployeeNameWithId();
     }
 }

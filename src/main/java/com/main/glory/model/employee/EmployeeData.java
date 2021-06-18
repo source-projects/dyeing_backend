@@ -16,7 +16,7 @@ public class EmployeeData {
     Long id;
     String name;
     String url;
-    String type;//qr,document
+    String type;//qr,document,profile
     @Transient
     MultipartFile file;
     Long controlId;

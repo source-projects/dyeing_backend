@@ -24,5 +24,6 @@ public class CreateDispatch {
     String password;
     Boolean passwordFlag;
     Double percentageDiscount;
+    String remark;
     List<BatchAndStockId> batchAndStockIdList;
 }

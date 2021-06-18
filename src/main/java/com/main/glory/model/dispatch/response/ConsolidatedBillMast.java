@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -18,10 +19,14 @@ public class ConsolidatedBillMast {
     Long invoiceNo;
     Date createdDate;
     String headName;
+    Long userHeadId;
+    Long partyId;
     List<ConsolidatedBillData> consolidatedBillDataList;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {
         this.invoiceNo = dispatchMast.getPostfix();
         this.createdDate = dispatchMast.getCreatedDate();
+        this.partyId = dispatchMast.getPartyId();
     }
+
 }

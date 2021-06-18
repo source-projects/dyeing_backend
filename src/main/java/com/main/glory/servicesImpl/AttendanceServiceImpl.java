@@ -4,17 +4,23 @@ import com.main.glory.Dao.employee.AttendanceDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.EmployeeMast;
+import com.main.glory.model.employee.request.Filter;
 import com.main.glory.model.employee.request.FilterAttendance;
 import com.main.glory.model.employee.request.GetLatestAttendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
 import com.main.glory.model.employee.response.EmployeeWithAttendance;
 import com.main.glory.model.employee.response.GetAllEmployee;
+import com.main.glory.model.employee.response.MonthlyAttendanceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service("attendanceServiceImpl")
 public class AttendanceServiceImpl {
@@ -176,7 +182,7 @@ public class AttendanceServiceImpl {
         /*
 
         * check that the employee exist or not
-        * and FE always send the EMpID we have to get the empId from record object and convert it into the record empId and then check
+        * and FE always send the empId we have to get the empId from record object and convert it into the record id and then check
         with existing record
 
         */
@@ -206,7 +212,7 @@ public class AttendanceServiceImpl {
 
 
                     Long diff =record.getDate().getTime() - calendar.getTime().getTime();
-                    if((diff / (60 * 60 * 1000))<12)
+                    if((diff / (60 * 60 * 1000))<12) //to convert diff in hour
                     {
                         previousAttendance.setOutTime(record.getDate());
                         previousAttendance.setOutUrl(record.getUrl()==null?"":record.getUrl());
@@ -373,6 +379,51 @@ public class AttendanceServiceImpl {
         return employeeWithAttendance;
 
 
+
+    }
+
+    public List<MonthlyAttendanceResponse> getAttendanceMonthlyReport(Filter filter) throws ParseException {
+
+        List<MonthlyAttendanceResponse> list = new ArrayList<>();
+
+        Date from=null;
+        Date to=null;
+        //add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                "yyyy-MM-dd");
+
+
+        if(!filter.getFrom().isEmpty())
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if(!filter.getTo().isEmpty()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is working,but not working on EC2 because of timezone
+            to=c.getTime();
+        }
+
+
+       list = employeeService.getAllEmployeeNameWithId();
+
+        /*
+         for counting something
+        long countBigCustomers = customers
+                .stream()
+                .filter(c -> c.getPoints() > 100)
+                .count();*/
+
+
+        Date finalFrom = from;
+        Date finalTo = to;
+        list.forEach(e->{
+            e.setApproved(attendanceDao.getApprovedFlagAttendanceByIdAndDateFilter(finalFrom, finalTo,e.getId(),true));
+            e.setNotApproved(attendanceDao.getApprovedFlagAttendanceByIdAndDateFilter(finalFrom, finalTo,e.getId(),false));
+            e.setTotalPresent(e.getApproved()+e.getNotApproved());
+            e.setTotalAbsent(TimeUnit.DAYS.convert(finalTo.getTime()-finalFrom.getTime(), TimeUnit.MILLISECONDS) - e.getTotalPresent());
+        });
+        return list;
 
     }
 }

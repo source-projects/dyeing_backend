@@ -36,6 +36,7 @@ public class DispatchMast {
     Double sgst;
     Double taxAmt;
     Double netAmt;
+    String remark;
 
     public DispatchMast(CreateDispatch dispatchList) {
         //for storing the tax amount
@@ -45,6 +46,7 @@ public class DispatchMast {
         this.sgst =dispatchList.getSgst();
         this.taxAmt = dispatchList.getTaxAmt();
         this.netAmt = Math.floor(dispatchList.getNetAmt());
+        this.remark = dispatchList.getRemark()==null?null:dispatchList.getRemark();
     }
 
     public DispatchMast(CreateDispatch createDispatch, DispatchMast dispatchMast) {
