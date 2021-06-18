@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("dispatchMastImpl")
 public class DispatchMastImpl {
@@ -197,6 +198,7 @@ public class DispatchMastImpl {
                     dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
 
                     dispatchData.setCreatedBy(dispatchList.getCreatedBy());
+                    dispatchData.setIsSendToParty(false);
                     //saveTheList.add(dispatchData);
                     //save the complete batch with gr list to the dispatch data with same invoice number
                     dispatchDataDao.save(dispatchData);
@@ -340,8 +342,8 @@ public class DispatchMastImpl {
                     mtr += batchWithTotalMTRandFinishMTR.getMTR();
                     finish+=batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
                 }
-                getAllDispatch.setTotalMtr(mtr);
-                getAllDispatch.setFinishMtr(finish);
+                getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
+                getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
 
                 dispatchDataList.add(getAllDispatch);
             }
@@ -429,15 +431,8 @@ public class DispatchMastImpl {
         if(dispatchMast!=null)
             partyWithBatchByInvoice.setPercentageDiscount(dispatchMast.getPercentageDiscount());
         //status
-        Boolean isSendToParty=dispatchDataDao.getSendToPartyFlag(invoiceNo);
-        if(isSendToParty==true)
-        {
-            partyWithBatchByInvoice.setIsSendToParty(isSendToParty);
-        }
-        else
-        {
-            partyWithBatchByInvoice.setIsSendToParty(isSendToParty);
-        }
+        partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));
+
         return partyWithBatchByInvoice;
 
     }
@@ -1282,7 +1277,7 @@ public class DispatchMastImpl {
         if(!filter.getTo().isEmpty()) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
-            c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date and 1 day is comming minus from FE
+            c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is working,but not working on EC2 because of timezone
             to=c.getTime();
         }
 
@@ -1338,8 +1333,8 @@ public class DispatchMastImpl {
                     //batchFinishMtr +=batchData.getFinishMtr();
                     totalFinishMtr +=batchData.getFinishMtr();
                 }
-                System.out.println(invoiceNumber);
-                System.out.println(batchDataList.get(0).getId());
+                /*System.out.println(invoiceNumber);
+                System.out.println(batchDataList.get(0).getId());*/
                 Double rate=dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
                 amt=totalFinishMtr*rate;
                 //batchFinishMtr = 0.0;
@@ -1352,14 +1347,37 @@ public class DispatchMastImpl {
 
 
             }
+            consolidatedBillMast.setUserHeadId(userData.getId());
             consolidatedBillMast.setHeadName(userData.getFirstName());
             consolidatedBillMast.setConsolidatedBillDataList(consolidatedBillDataList);
+            if(!consolidatedBillDataList.isEmpty())
             list.add(consolidatedBillMast);
 
 
         }
-        /*if (list.isEmpty())
-            throw new Exception("no invoice data found");*/
+
+        //filter by user head id
+        if(filter.getUserHeadId()!=null) {
+            list = list.stream().filter(p -> p.getUserHeadId() .equals( filter.getUserHeadId())).collect(Collectors.toList());
+        }
+
+        //filter by party id
+        if(filter.getPartyId()!=null) {
+            list = list.stream().filter(p -> p.getPartyId() .equals( filter.getPartyId())).collect(Collectors.toList());
+        }
+
+        //filter by quality name id
+        if(filter.getQualityNameId()!=null) {
+            list = list.stream().filter(p -> p.getConsolidatedBillDataList().stream().filter(child -> child.getQualityNameId().equals(filter.getQualityNameId())).findAny().isPresent()).collect(Collectors.toList());
+        }
+
+
+        //filter by quality name id
+        if(filter.getQualityEntryId()!=null) {
+            list = list.stream().filter(p -> p.getConsolidatedBillDataList().stream().filter(child -> child.getQualityEntryId().equals(filter.getQualityEntryId())).findAny().isPresent()).collect(Collectors.toList());
+        }
+
+
         return list;
 
     }

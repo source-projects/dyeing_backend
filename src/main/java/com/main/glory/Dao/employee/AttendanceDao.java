@@ -3,6 +3,7 @@ package com.main.glory.Dao.employee;
 
 import com.main.glory.model.employee.Attendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
+import com.main.glory.model.employee.response.MonthlyAttendanceResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,4 +36,10 @@ public interface AttendanceDao extends JpaRepository<Attendance,Long> {
 
     @Query(value = "select * from attendance as x where x.control_id=:id AND Date(x.in_time)=Date(:date) ORDER by x.id DESC LIMIT 1",nativeQuery = true)
     Attendance getAttendanceByDateAndIdDescendingOrder(@RequestParam("date") Date date, @RequestParam("id") Long id);
+
+    //@Query("select new com.main.glory.model.employee.response.MonthlyAttendanceResponse((select x from EmployeeMast x where x.id=a.controlId),select COUNT(aa.approved) from Attendance aa where DATE(aa.inTime) >= DATE(:from) AND DATE(aa.intTime) <= DATE(:to) AND aa.approved=true,select COUNT(aa.approved) from Attendance aa where DATE(aa.inTime) >= DATE(:from) AND DATE(aa.intTime) <= DATE(:to) AND aa.approved=false) from Attendance a")
+    //List<MonthlyAttendanceResponse> getMonthlyResponseByDateFilter(Date from, Date to);
+
+    @Query("select count(x.id) from Attendance x where DATE(x.inTime) >=DATE(:from) AND DATE(x.inTime)<=DATE(:to) AND x.approved=:flag AND x.controlId=:id")
+    Long getApprovedFlagAttendanceByIdAndDateFilter(Date from,Date to,Long id,Boolean flag);
 }
