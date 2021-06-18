@@ -1,12 +1,17 @@
 package com.main.glory.controller;
 
+import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.TestingDao;
+import com.main.glory.Dao.batch.BatchDataDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.testing.Testing;
 import com.main.glory.model.user.Request.UserAddRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -21,6 +26,9 @@ public class TestingController extends ControllerConfig {
 
     @Autowired
     TestingDao testingDao;
+
+    @Autowired
+    BatchDao batchDao;
 
     /*@PutMapping("/testing/{records}")
     public GeneralResponse<Boolean> createRecord(@PathVariable(name = "records") Long records) throws Exception{
@@ -77,4 +85,22 @@ public class TestingController extends ControllerConfig {
         return result;
     }*//*
 */
+
+    @GetMapping("/testing/{batchId}")
+    public ResponseEntity<GeneralResponse<List<BatchData>,String>> getByBatchId(@PathVariable(name = "batchId") String batchId) throws Exception{
+        GeneralResponse<List<BatchData>,String> result;
+        try{
+            List<BatchData> list = batchDao.getBatchByBatchId(batchId);
+            if(!list.isEmpty())
+                result =  new GeneralResponse<>(list, "found", true, System.currentTimeMillis(), HttpStatus.OK,batchId);
+            else
+                result =  new GeneralResponse<>(list, "not found", true, System.currentTimeMillis(), HttpStatus.OK,batchId);
+            //logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,batchId);
+            //logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 }
