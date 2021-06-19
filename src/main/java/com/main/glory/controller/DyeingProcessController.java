@@ -255,7 +255,7 @@ public class DyeingProcessController extends ControllerConfig {
 
     }
 
-    @GetMapping("/dyeingProcess/exit/tagProcess")
+    @GetMapping("/dyeingProcess/exist/tagProcess")
     public ResponseEntity<GeneralResponse<TagDyeingProcessMast, Object>> getTagProcessExitWithName(@RequestParam(name = "name") String name, @RequestParam("id") Long id) {
         GeneralResponse<TagDyeingProcessMast, Object> result;
         try {
