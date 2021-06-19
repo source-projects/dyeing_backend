@@ -34,4 +34,16 @@ public class TagDyeingProcessMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<TagDyeingProcessData> dyeingTagDataList;
 
+    @PrePersist
+    public void create()
+    {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void update()
+    {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
 }

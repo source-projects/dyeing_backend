@@ -205,6 +205,7 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
         GeneralResponse<PartyDataByInvoiceNumber,Object> result;
         try{
+            //id = invoiceNo
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchBy(id);
 

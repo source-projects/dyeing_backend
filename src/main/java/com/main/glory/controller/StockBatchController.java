@@ -676,7 +676,7 @@ public class StockBatchController extends ControllerConfig {
 
 
     //available stock batch
-    @GetMapping("/stockBatch/available/all/{getBy}/{id}")
+    @GetMapping("/stockBatch/pending/all/{getBy}/{id}")
     public ResponseEntity<GeneralResponse<List<GetAllStockWithPartyNameResponse>,Object>> getAllAvailableStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) throws Exception {
 
         GeneralResponse<List<GetAllStockWithPartyNameResponse>,Object> result;

@@ -29,12 +29,14 @@ public class ConsolidatedBillData {
     Long partyId;
     Long qualityEntryId;
     Long qualityNameId;
+    Long invoiceNo;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast) {
 
         this.batchId = batchId;
         this.invoiceDate = dispatchMast.getCreatedDate();
+        this.invoiceNo = dispatchMast.getPostfix();
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName();
         this.pcs =pcs;
