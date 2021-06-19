@@ -62,6 +62,8 @@ public class DispatchMast {
         this.sgst = createDispatch.getSgst();
         this.netAmt = createDispatch.getNetAmt();
         this.taxAmt = createDispatch.getTaxAmt();
+        this.postfix =createDispatch.getInvoiceNo();
+        this.remark = createDispatch.getRemark();
     }
 
 
