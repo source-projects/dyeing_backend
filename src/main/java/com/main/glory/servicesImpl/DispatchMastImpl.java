@@ -91,10 +91,10 @@ public class DispatchMastImpl {
     public Long saveDispatch(CreateDispatch dispatchList,Long userId) throws Exception {
 
 
-        //check the invoice sequece exist or not
+        //check the invoice sequence exist or not
         InvoiceSequence invoiceSequenceExist =invoiceSequenceDao.getSequence();
         if(invoiceSequenceExist==null)
-            throw new Exception(constantFile.Invoice_Sequence_Not_Found );
+            throw new Exception(constantFile.Invoice_Sequence_Not_Found);
 
 
 
@@ -939,6 +939,7 @@ public class DispatchMastImpl {
                 if(getBatchByInvoice.getBatchId()==null)
                     continue;
 
+                //get batch list by batch id and control id who's bill is generated
                 List<BatchData> batchDataList = stockBatchService.getBatchWithControlIdAndBatchId(getBatchByInvoice.getBatchId(),getBatchByInvoice.getStockId());
                 if(batchDataList.isEmpty())
                     continue;
@@ -1040,6 +1041,7 @@ public class DispatchMastImpl {
                 if(getBatchByInvoice.getBatchId()==null)
                     continue;
 
+                //get batch list by batch id and control id who's bill is generated
                 List<BatchData> batchDataList = stockBatchService.getBatchWithControlIdAndBatchId(getBatchByInvoice.getBatchId(),getBatchByInvoice.getStockId());
                 if(batchDataList.isEmpty())
                     continue;
@@ -1126,11 +1128,23 @@ public class DispatchMastImpl {
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
 
             //check the stock is exist with batch or not
+            //if the create flag is true the check batch data for create
+            if(createDispatch.getCreateFlag()==true)
+            {
 
-            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
-            if(batchDataList.isEmpty())
-                throw new Exception(ConstantFile.Batch_Data_Not_Exist);
+                List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
+                if(batchDataList.isEmpty())
+                    throw new Exception(ConstantFile.Batch_Data_Not_Exist);
 
+            }
+            else
+            {
+                //check only existing of batch records
+                List<BatchData> batchDataList = batchDao.getBatchByBatchIdAndInvoiceNumber(batchAndStockId.getBatchId(),String.valueOf(createDispatch.getInvoiceNo()));
+                if(batchDataList.isEmpty())
+                    throw new Exception(ConstantFile.Batch_Data_Not_Exist);
+
+            }
 
 
             /*if(party.getId()!=stockMastExist.getPartyId())
@@ -1160,7 +1174,16 @@ public class DispatchMastImpl {
 
 
             //batch record
-            List<BatchData> batchDataList = batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
+            List<BatchData> batchDataList=null ;
+            if(createDispatch.getCreateFlag()==true)
+            {
+                batchDataList= batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
+
+            }
+            else
+            {
+                batchDataList = batchDao.getBatchByBatchIdAndInvoiceNumber(batchAndStockId.getBatchId(),String.valueOf(createDispatch.getInvoiceNo()));
+            }
             for(BatchData batchData:batchDataList)
             {
                 totalFinishMtr+=batchData.getFinishMtr();

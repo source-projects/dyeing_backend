@@ -1593,6 +1593,7 @@ public class StockBatchServiceImpl {
 
     }
 
+
     public List<BatchData> getBatchWithControlIdAndBatchId(String batchId, Long stockId) {
         List<BatchData> batchDataList = batchDao.findBatchWithBillGenerated(batchId,stockId);
         return batchDataList;
