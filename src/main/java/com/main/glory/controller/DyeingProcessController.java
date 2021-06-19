@@ -256,16 +256,16 @@ public class DyeingProcessController extends ControllerConfig {
     }
 
     @GetMapping("/dyeingProcess/exist/tagProcess")
-    public ResponseEntity<GeneralResponse<TagDyeingProcessMast, Object>> getTagProcessExitWithName(@RequestParam(name = "name") String name, @RequestParam("id") Long id) {
-        GeneralResponse<TagDyeingProcessMast, Object> result;
+    public ResponseEntity<GeneralResponse<Boolean, Object>> getTagProcessExitWithName(@RequestParam(name = "name") String name, @RequestParam("id") Long id) {
+        GeneralResponse<Boolean, Object> result;
         try {
 
             TagDyeingProcessMast list = dyeingProcessService.getTagDyeingProcessExist(id, name);
 
             if (list != null) {
-                result = new GeneralResponse<>(list, constantFile.TagDyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                result = new GeneralResponse<>(true, constantFile.TagDyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             } else {
-                result = new GeneralResponse<>(list, constantFile.TagDyeingProcess_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                result = new GeneralResponse<>(false, constantFile.TagDyeingProcess_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             }
 
             logService.saveLog(result, request, debugAll);
