@@ -283,14 +283,28 @@ public class DyeingProcessServiceImpl {
 
     public TagDyeingProcessMast getTagDyeingProcessExist(Long id, String name) {
 
-        /*if(id==0 || id == null)
+        TagDyeingProcessMast tagDyeingProcessMast = null;
+        if(id==0 || id == null)
         {
 
+            tagDyeingProcessMast= tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(name,0l);
         }
         else
         {
+            tagDyeingProcessMast= tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(name,id);
+        }
+        return tagDyeingProcessMast;
+    }
 
-        }*/
-        return null;
+    public void deleteTagDyeignProcessById(Long id) throws Exception {
+
+        //check the tag dyeing process is exist or not
+        TagDyeingProcessMast tagDyeingProcessMast = tagDyeingProcessMastDao.getTagDyeingProcessById(id);
+        if(tagDyeingProcessMast==null)
+            throw new Exception(ConstantFile.TagDyeingProcess_Not_Exist);
+
+        tagDyeingProcessMastDao.deleteTagDyeingProcessById(id);
+        //delete the child data as well
+        tagDyeingProcessDataDao.deleteTagProcessDataByControlId(id);
     }
 }

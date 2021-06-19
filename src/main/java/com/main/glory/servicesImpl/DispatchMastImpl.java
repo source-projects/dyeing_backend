@@ -432,8 +432,10 @@ public class DispatchMastImpl {
 
         //get the discount from party
         DispatchMast dispatchMast = dispatchMastDao.getDispatchMastByInvoiceNo(Long.parseLong(invoiceNo));
-        if(dispatchMast!=null)
+        if(dispatchMast!=null) {
             partyWithBatchByInvoice.setPercentageDiscount(dispatchMast.getPercentageDiscount());
+            partyWithBatchByInvoice.setRemark(dispatchMast.getRemark());
+        }
         //status
         partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));
 
