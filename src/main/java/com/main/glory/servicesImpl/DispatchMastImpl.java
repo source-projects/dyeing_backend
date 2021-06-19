@@ -876,7 +876,7 @@ public class DispatchMastImpl {
         if(partyDataByInvoiceNumber==null)
             throw new Exception("no data found");
 
-        partyDataByInvoiceNumber.setInvoiceNo(invoiceNo);
+        partyDataByInvoiceNumber.setInvoiceNo(Long.parseLong(invoiceNo));
 
         return partyDataByInvoiceNumber;
 
@@ -1230,6 +1230,17 @@ public class DispatchMastImpl {
         if(partyDataByInvoiceNumber==null)
             throw new Exception("no data found");
 
+
+        //if the create flag is false then bind the invoice no and date as well
+        if(createDispatch.getCreateFlag()==false)
+        {
+
+            DispatchMast dispatchMast = dispatchMastDao.getDispatchMastByInvoiceNo(createDispatch.getInvoiceNo());
+            if(dispatchMast!=null) {
+                partyDataByInvoiceNumber.setInvoiceNo(dispatchMast.getPostfix());
+                partyDataByInvoiceNumber.setCreatedDate(dispatchMast.getCreatedDate());
+            }
+        }
 
         return partyDataByInvoiceNumber;
 
