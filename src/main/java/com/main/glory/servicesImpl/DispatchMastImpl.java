@@ -318,7 +318,7 @@ public class DispatchMastImpl {
                 GetAllDispatch getAllDispatch=new GetAllDispatch(dispatchData);
 
                 DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(dispatchData.getInvoiceNo()));
-                Party party = partyServiceImp.getPartyDetailById(dispatchMast.getPartyId());
+                Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
                 if(party==null)
                     continue;
                 //get the batch data
