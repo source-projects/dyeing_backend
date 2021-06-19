@@ -318,6 +318,10 @@ public class DispatchMastImpl {
                 GetAllDispatch getAllDispatch=new GetAllDispatch(dispatchData);
                 System.out.println("invoice:"+dispatchData.getInvoiceNo());
                 DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(dispatchData.getInvoiceNo()));
+
+                if(dispatchMast==null)
+                    continue;
+
                 Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
                 if(party==null)
                     continue;
