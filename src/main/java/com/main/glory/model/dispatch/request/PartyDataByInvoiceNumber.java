@@ -19,7 +19,8 @@ public class PartyDataByInvoiceNumber {
     String partyName;
     String address;
     String GST;
-    String invoiceNo;
+    Long invoiceNo;
+    Date invoiceDate;
     Double discount;
     Double cgst;
     Double sgst;
