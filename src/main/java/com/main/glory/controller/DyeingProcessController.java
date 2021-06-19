@@ -255,4 +255,27 @@ public class DyeingProcessController extends ControllerConfig {
 
     }
 
+    @GetMapping("/dyeingProcess/exit/tagProcess")
+    public ResponseEntity<GeneralResponse<TagDyeingProcessMast, Object>> getTagProcessExitWithName(@RequestParam(name = "name")String name,@RequestParam("id") Long id) {
+        GeneralResponse<TagDyeingProcessMast, Object> result;
+        try {
+
+            TagDyeingProcessMast list = dyeingProcessService.getTagDyeingProcessExist(id,name);
+
+            if (list!=null) {
+                result = new GeneralResponse<>(list, constantFile.TagDyeingProcess_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            } else {
+                result = new GeneralResponse<>(list, constantFile.TagDyeingProcess_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            }
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+
+    }
+
 }

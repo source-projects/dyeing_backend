@@ -280,4 +280,17 @@ public class DyeingProcessServiceImpl {
     public List<TagDyeingProcessMast> getAllTagDyeignProcess() {
         return tagDyeingProcessMastDao.getAllTagDyeingProcessMast();
     }
+
+    public TagDyeingProcessMast getTagDyeingProcessExist(Long id, String name) {
+
+        /*if(id==0 || id == null)
+        {
+
+        }
+        else
+        {
+
+        }*/
+        return null;
+    }
 }
