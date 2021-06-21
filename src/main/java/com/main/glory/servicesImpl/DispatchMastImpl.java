@@ -1424,7 +1424,7 @@ public class DispatchMastImpl {
 
 
     //only the the rate and discount is updating
-    public void updateDispatch(CreateDispatch createDispatch) throws Exception {
+    public Long updateDispatch(CreateDispatch createDispatch) throws Exception {
 
 
         //check that the invoice record is exist or not
@@ -1444,6 +1444,7 @@ public class DispatchMastImpl {
             //update batch quality rate with batch id
             dispatchDataDao.updateQualityRateWithBatchIdAndInvoiceNo(String.valueOf(dispatchMast.getPostfix()),batcheAndStockId.getBatchId(),batcheAndStockId.getRate());
         }
+        return createDispatch.getInvoiceNo();
 
     }
 }

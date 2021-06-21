@@ -286,7 +286,6 @@ public class DyeingProcessServiceImpl {
         TagDyeingProcessMast tagDyeingProcessMast = null;
         if(id==0 || id == null)
         {
-
             tagDyeingProcessMast= tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(name,0l);
         }
         else
