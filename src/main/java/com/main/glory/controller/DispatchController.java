@@ -166,13 +166,13 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PutMapping("/dispatch/updateDispatch/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Long,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
+        GeneralResponse<Long,Object> result;
         try{
 
-            dispatchMastService.updateDispatch(updateInvoice);
+            Long invoiceNo = dispatchMastService.updateDispatch(updateInvoice);
 
-            result= new GeneralResponse<>(true, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
+            result= new GeneralResponse<>(invoiceNo, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
