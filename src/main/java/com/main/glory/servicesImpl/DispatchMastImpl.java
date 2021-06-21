@@ -1245,7 +1245,7 @@ public class DispatchMastImpl {
             }
         }
         else {
-            partyDataByInvoiceNumber.setRemark(createDispatch.getRemark()!=null?null:createDispatch.getRemark());
+            partyDataByInvoiceNumber.setRemark(createDispatch.getRemark()==null?null:createDispatch.getRemark());
         }
 
         return partyDataByInvoiceNumber;
