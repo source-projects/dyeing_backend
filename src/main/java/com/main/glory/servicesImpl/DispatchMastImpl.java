@@ -1233,7 +1233,7 @@ public class DispatchMastImpl {
             throw new Exception("no data found");
 
 
-        //if the create flag is false then bind the invoice no and date as well
+        //if the create flag is false then bind the invoice no and date as well otherwise bind that record which are coming
         if(createDispatch.getCreateFlag()==false)
         {
 
@@ -1241,8 +1241,13 @@ public class DispatchMastImpl {
             if(dispatchMast!=null) {
                 partyDataByInvoiceNumber.setInvoiceNo(dispatchMast.getPostfix());
                 partyDataByInvoiceNumber.setCreatedDate(dispatchMast.getCreatedDate());
+                partyDataByInvoiceNumber.setRemark(dispatchMast.getRemark());
             }
         }
+       
+        //change remark as per coming from FE
+        partyDataByInvoiceNumber.setRemark(createDispatch.getRemark()==null?null:createDispatch.getRemark());
+        
 
         return partyDataByInvoiceNumber;
 
