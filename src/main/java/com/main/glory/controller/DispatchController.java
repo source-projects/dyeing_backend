@@ -166,13 +166,13 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PutMapping("/dispatch/updateDispatch/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Long,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
+        GeneralResponse<Long,Object> result;
         try{
 
-            dispatchMastService.updateDispatch(updateInvoice);
+            Long invoiceNo = dispatchMastService.updateDispatch(updateInvoice);
 
-            result= new GeneralResponse<>(true, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
+            result= new GeneralResponse<>(invoiceNo, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e){
@@ -205,6 +205,7 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
         GeneralResponse<PartyDataByInvoiceNumber,Object> result;
         try{
+            //id = invoiceNo
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchBy(id);
 
@@ -404,6 +405,27 @@ public class DispatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    //get complete bill detail by filter for export by excel
+    /*@PostMapping("/dispatch/report/forCompleteInvoiceDetailForExportData")
+    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> forCompleteInvoiceDetailForExportData(@RequestBody Filter filter) throws Exception{
+        GeneralResponse<List<ConsolidatedBillMast>, Object> result;
+        try{
+            List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true
+            );
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }*/
+
 
 
 

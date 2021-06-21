@@ -1,11 +1,9 @@
-package com.main.glory.model.dispatch;
+package com.main.glory.model.employee.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,10 +12,4 @@ import java.util.Date;
 public class Filter {
     String from;
     String to;
-    Long userHeadId;
-    Long partyId;
-    Long qualityEntryId;
-    Long qualityNameId;
-
-
 }

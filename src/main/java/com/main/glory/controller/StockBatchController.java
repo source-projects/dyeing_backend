@@ -675,5 +675,55 @@ public class StockBatchController extends ControllerConfig {
     }
 
 
+    //available stock batch
+    @GetMapping("/stockBatch/pending/all/{getBy}/{id}")
+    public ResponseEntity<GeneralResponse<List<GetAllStockWithPartyNameResponse>,Object>> getAllAvailableStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) throws Exception {
+
+        GeneralResponse<List<GetAllStockWithPartyNameResponse>,Object> result;
+
+        try {
+            List<GetAllStockWithPartyNameResponse> stockMast = null;
+            switch (getBy) {
+                case "own":
+                    stockMast = stockBatchService.getAllAvailableStockBatch(getBy, id);
+                    if (stockMast == null) {
+                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    } else {
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    }
+                    break;
+
+                case "group":
+                    stockMast = stockBatchService.getAllAvailableStockBatch(getBy, id);
+                    if (stockMast == null) {
+                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    } else {
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    }
+                    break;
+
+                case "all":
+                    stockMast = stockBatchService.getAllAvailableStockBatch(null, null);
+                    if (stockMast == null) {
+                        result= new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    } else {
+                        result= new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    }
+                    break;
+                default:
+                    result= new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        logService.saveLog(result,request,debugAll);
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
 
 }

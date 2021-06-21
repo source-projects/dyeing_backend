@@ -20,7 +20,7 @@ public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    Long controlId;
+    Long controlId;//employee record id
     Date date;
     Date inTime;
     Date outTime;

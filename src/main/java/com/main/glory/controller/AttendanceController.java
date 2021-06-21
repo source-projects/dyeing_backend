@@ -4,10 +4,12 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.employee.Attendance;
+import com.main.glory.model.employee.request.Filter;
 import com.main.glory.model.employee.request.FilterAttendance;
 import com.main.glory.model.employee.request.GetLatestAttendance;
 import com.main.glory.model.employee.response.EmployeeAttendanceResponse;
 import com.main.glory.model.employee.response.EmployeeWithAttendance;
+import com.main.glory.model.employee.response.MonthlyAttendanceResponse;
 import com.main.glory.servicesImpl.AttendanceServiceImpl;
 import com.main.glory.servicesImpl.EmployeeServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -292,7 +294,36 @@ public class AttendanceController extends ControllerConfig {
     }
 
 
-    // report api's attendance
+
+
+    // report api's for attendance
+
+    @PostMapping(value="/attendance/report/month")
+    public ResponseEntity<GeneralResponse<List<MonthlyAttendanceResponse>,Object>> getEmployeeAttendanceReportMonthly(@RequestBody Filter record)
+    {
+        GeneralResponse<List<MonthlyAttendanceResponse>,Object> result;
+        try {
+            if(record.getFrom()==null || record.getTo()==null)
+                throw new Exception(constantFile.Null_Record_Passed);
+
+            List<MonthlyAttendanceResponse> list = attendanceService.getAttendanceMonthlyReport(record);
+            if(list==null || list.isEmpty())
+            {
+                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            }
+            else {
+                result = new GeneralResponse<>(list, constantFile.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            }
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 
 

@@ -3,6 +3,7 @@ package com.main.glory.Dao.employee;
 
 import com.main.glory.model.employee.EmployeeMast;
 import com.main.glory.model.employee.response.GetAllEmployee;
+import com.main.glory.model.employee.response.MonthlyAttendanceResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -37,6 +38,9 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
 
     @Query(value = "select * from employee_mast as x where x.emp_id LIKE :empId% ",nativeQuery = true)
     List<EmployeeMast> getEmployeeByLikeEmpId(@RequestParam("empId") String empId);
+
+    @Query("select new com.main.glory.model.employee.response.MonthlyAttendanceResponse(x.id,x.name,x.empId,(select d from EmployeeData d where d.controlId=x.id AND d.type='profile')) from EmployeeMast x")
+    List<MonthlyAttendanceResponse> getAllEmployeeNameWithId();
 
    /* @Query("select new com.main.glory.model.employee.response.GetAllEmployee(s," +
             "(select d.name from Department d where d.id=s.departmentId) as name," +

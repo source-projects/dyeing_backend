@@ -20,11 +20,13 @@ public class PartyWithBatchByInvoice {
     String partyName;
     Boolean isSendToParty;
     Double percentageDiscount;
+    String remark;
     List<BatchWithTotalMTRandFinishMTR> batchWithControlIdList;
 
     public PartyWithBatchByInvoice(List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList, Party party) {
         this.partyId=party.getId();
         this.partyName=party.getPartyName();
+        this.percentageDiscount=party.getPercentageDiscount();
         this.batchWithControlIdList=batchWithTotalMTRandFinishMTRList;
     }
 }

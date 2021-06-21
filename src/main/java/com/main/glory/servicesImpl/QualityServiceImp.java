@@ -242,7 +242,7 @@ public class QualityServiceImp  {
         return true;
     }
 
-    
+    //get latest complete response
     public GetQualityResponse getQualityByID(Long id) throws Exception {
         Optional<Quality> quality = qualityDao.findById(id);
         if (!quality.isPresent())

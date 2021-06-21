@@ -43,6 +43,7 @@ import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
@@ -290,6 +291,116 @@ public class StockBatchServiceImpl {
 
         });
             return list;
+
+
+
+
+    }
+
+    @Transactional
+    public List<GetAllStockWithPartyNameResponse> getAllAvailableStockBatch(String getBy, Long id) throws Exception {
+        Optional<List<GetAllStockWithPartyNameResponse>> data = null;
+        List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
+
+        Boolean flag = false;
+
+        if(id ==  null){
+            data = stockMastDao.getAllStockWithPartyName();
+            if(data.isPresent())
+            {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for(GetAllStockWithPartyNameResponse batchData:data.get())
+                {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData,batchDataList,qualityName));
+
+                }
+
+
+            }
+
+
+        }
+        else if(getBy.equals("own")){
+
+            data = stockMastDao.getAllStockWithPartyNameByCreatedBy(id);
+
+            if(data.isPresent())
+            {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for(GetAllStockWithPartyNameResponse batchData:data.get())
+                {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData,batchDataList,qualityName));
+
+                }
+
+
+            }
+        }
+
+        else if(getBy.equals("group")){
+
+            UserData userData = userDao.findUserById(id);
+
+            if(userData.getUserHeadId().equals(userData.getId())) {
+                //master user
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(id,id);
+            }
+            else
+            {
+                UserData userOperator =userDao.getUserById(id);
+                data = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedBy(userOperator.getId(),userOperator.getUserHeadId());
+            }
+            if(data.isPresent())
+            {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for(GetAllStockWithPartyNameResponse batchData:data.get())
+                {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData,batchDataList,qualityName));
+
+                }
+
+
+            }
+
+
+        }
+
+        list.forEach(stock->{
+            int count=0;//count the production plan gr
+            //check the batches is produciton plan
+            for(BatchData batchData:stock.getBatchData())
+            {
+
+                if(batchData.getIsProductionPlanned()==true)
+                    count++;
+            }
+
+            if(count == stock.getBatchData().size())
+                stock.setIsProductionPlanned(true);
+            else
+                stock.setIsProductionPlanned(false);
+
+        });
+
+
+        //get only those who's batches production is not planned
+        list = list.stream().filter(stock -> stock.getBatchData().stream().filter(batch -> batch.getIsProductionPlanned()==false).findAny().isPresent()).collect(Collectors.toList());
+
+        //to quick count using stream
+      /*  System.out.println("sum:"+list.forEach(e->{
+            e.getBatchData().stream().filter(x-> x.getIsProductionPlanned()==false && x.getBatchId().equals("1654")).mapToDouble(x->x.getMtr()).sum();
+        }));*/
+
+        return list;
 
 
 
@@ -1481,6 +1592,7 @@ public class StockBatchServiceImpl {
 
 
     }
+
 
     public List<BatchData> getBatchWithControlIdAndBatchId(String batchId, Long stockId) {
         List<BatchData> batchDataList = batchDao.findBatchWithBillGenerated(batchId,stockId);

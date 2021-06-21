@@ -280,4 +280,30 @@ public class DyeingProcessServiceImpl {
     public List<TagDyeingProcessMast> getAllTagDyeignProcess() {
         return tagDyeingProcessMastDao.getAllTagDyeingProcessMast();
     }
+
+    public TagDyeingProcessMast getTagDyeingProcessExist(Long id, String name) {
+
+        TagDyeingProcessMast tagDyeingProcessMast = null;
+        if(id==0 || id == null)
+        {
+            tagDyeingProcessMast= tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(name,0l);
+        }
+        else
+        {
+            tagDyeingProcessMast= tagDyeingProcessMastDao.getTagDyeingProcessNameExistExceptId(name,id);
+        }
+        return tagDyeingProcessMast;
+    }
+
+    public void deleteTagDyeignProcessById(Long id) throws Exception {
+
+        //check the tag dyeing process is exist or not
+        TagDyeingProcessMast tagDyeingProcessMast = tagDyeingProcessMastDao.getTagDyeingProcessById(id);
+        if(tagDyeingProcessMast==null)
+            throw new Exception(ConstantFile.TagDyeingProcess_Not_Exist);
+
+        tagDyeingProcessMastDao.deleteTagDyeingProcessById(id);
+        //delete the child data as well
+        tagDyeingProcessDataDao.deleteTagProcessDataByControlId(id);
+    }
 }

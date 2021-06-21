@@ -2,7 +2,9 @@ package com.main.glory.Dao.dyeingProcess.TagDyeingProcess;
 
 import com.main.glory.model.dyeingProcess.TagDyeingProcess.TagDyeingProcessMast;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,4 +18,9 @@ public interface TagDyeingProcessMastDao extends JpaRepository<TagDyeingProcessM
 
     @Query("select x from TagDyeingProcessMast x")
     List<TagDyeingProcessMast> getAllTagDyeingProcessMast();
+
+    @Modifying
+    @Transactional
+    @Query("delete from TagDyeingProcessMast x where x.id=:id")
+    void deleteTagDyeingProcessById(Long id);
 }
