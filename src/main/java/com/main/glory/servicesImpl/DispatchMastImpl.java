@@ -1241,6 +1241,7 @@ public class DispatchMastImpl {
             if(dispatchMast!=null) {
                 partyDataByInvoiceNumber.setInvoiceNo(dispatchMast.getPostfix());
                 partyDataByInvoiceNumber.setCreatedDate(dispatchMast.getCreatedDate());
+                partyDataByInvoiceNumber.setRemark(dispatchMast.getRemark());
             }
         }
 
