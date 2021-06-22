@@ -1245,8 +1245,10 @@ public class DispatchMastImpl {
             }
         }
 
+
         //change remark as per coming from FE
         partyDataByInvoiceNumber.setRemark(createDispatch.getRemark()==null?null:createDispatch.getRemark());
+
 
 
         return partyDataByInvoiceNumber;
@@ -1313,7 +1315,8 @@ public class DispatchMastImpl {
                 "yyyy-MM-dd");
 
 
-        if(!filter.getFrom().isEmpty()) {
+
+         if(!filter.getFrom().isEmpty()) {
             from = datetimeFormatter1.parse(filter.getFrom());
             c.setTime(from);
             c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date and 1 day is comming minus from FE
