@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,6 +23,9 @@ public class BatchReturnResponse {
     String partyName;
     String qualityName;
     String qualityId;
+    Date challanDate;
+    String address;
+    String gst;
     List<BatchReturnData> batchReturnList;
 
     public BatchReturnResponse(BatchReturnMast batchReturnExist, Long pcs, List<BatchReturnData> batchReturnList, Double totalMtr) {
@@ -33,6 +37,9 @@ public class BatchReturnResponse {
         this.batchReturnList = batchReturnList;
         this.qualityName = batchReturnList.get(0).getQualityName();
         this.qualityId = batchReturnList.get(0).getQualityId();
+        this.gst = batchReturnExist.getGst();
+        this.challanDate = batchReturnExist.getChallanDate();
+        this.address= batchReturnExist.getAddress();
     }
 
  /*   public BatchReturnResponse(ReturnBatchDetail e, List<BatchReturnData> batchReturnList) {

@@ -30,6 +30,7 @@ public class BatchReturnMast {
     String partyName;
     String address;
     String partyCode;
+    String gst;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -50,6 +51,7 @@ public class BatchReturnMast {
     @PrePersist
     public void create()
     {
+        this.challanDate = new Date(System.currentTimeMillis());
         this.createdDate=new Date(System.currentTimeMillis());
     }
 
