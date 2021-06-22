@@ -615,16 +615,16 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @PostMapping("/stockBatch/add/returnBatch")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> createReturnBatch(@RequestBody  BatchReturnBody record) throws Exception {
-        GeneralResponse<Boolean,Object> result = null;
+    public ResponseEntity<GeneralResponse<Long,Object>> createReturnBatch(@RequestBody  BatchReturnBody record) throws Exception {
+        GeneralResponse<Long,Object> result = null;
         try {
-            stockBatchService.saveReturnStockBatch(record);
-            result = new GeneralResponse<>(true, ConstantFile.ReturnStockBatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            Long id = stockBatchService.saveReturnStockBatch(record);
+            result = new GeneralResponse<>(id, ConstantFile.ReturnStockBatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

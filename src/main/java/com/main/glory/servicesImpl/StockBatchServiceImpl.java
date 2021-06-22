@@ -2393,7 +2393,7 @@ public class StockBatchServiceImpl {
         return batchDao.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
     }
 
-    public void saveReturnStockBatch(BatchReturnBody record) throws Exception {
+    public Long saveReturnStockBatch(BatchReturnBody record) throws Exception {
 
 
         //get the latest chl_no no
@@ -2448,6 +2448,7 @@ public class StockBatchServiceImpl {
         //save all in return list
         batchReturnDao.saveAll(batchReturnList);
 
+        return latestChlNo;
 
 
     }

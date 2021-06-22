@@ -1244,10 +1244,12 @@ public class DispatchMastImpl {
                 partyDataByInvoiceNumber.setRemark(dispatchMast.getRemark());
             }
         }
-       
+
+
         //change remark as per coming from FE
         partyDataByInvoiceNumber.setRemark(createDispatch.getRemark()==null?null:createDispatch.getRemark());
-        
+
+
 
         return partyDataByInvoiceNumber;
 
