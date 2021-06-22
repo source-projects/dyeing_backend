@@ -1,6 +1,8 @@
 package com.main.glory.model.StockDataBatchData.response;
 
 import com.main.glory.model.StockDataBatchData.BatchReturn;
+import com.main.glory.model.StockDataBatchData.BatchReturnData;
+import com.main.glory.model.StockDataBatchData.BatchReturnMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +22,20 @@ public class BatchReturnResponse {
     String partyName;
     String qualityName;
     String qualityId;
-    List<BatchReturn> batchReturnList;
+    List<BatchReturnData> batchReturnList;
 
-    public BatchReturnResponse(ReturnBatchDetail e, List<BatchReturn> batchReturnList) {
+    public BatchReturnResponse(BatchReturnMast batchReturnExist, Long pcs, List<BatchReturnData> batchReturnList, Double totalMtr) {
+        this.id = batchReturnExist.getId();
+        this.chlNo = batchReturnExist.getChlNo();
+        this.totalMtr=totalMtr;
+        this.totalPcs = pcs;
+        this.partyName=batchReturnExist.getPartyName();
+        this.batchReturnList = batchReturnList;
+        this.qualityName = batchReturnList.get(0).getQualityName();
+        this.qualityId = batchReturnList.get(0).getQualityId();
+    }
+
+ /*   public BatchReturnResponse(ReturnBatchDetail e, List<BatchReturnData> batchReturnList) {
         this.id = e.getId();
         this.totalMtr = e.getMtr();
         this.totalPcs = Long.valueOf(batchReturnList.size());
@@ -41,5 +54,7 @@ public class BatchReturnResponse {
         this.qualityName = e.getQualityName();
         this.qualityId = e.getQualityId();
 
-    }
+    }*/
+
+
 }
