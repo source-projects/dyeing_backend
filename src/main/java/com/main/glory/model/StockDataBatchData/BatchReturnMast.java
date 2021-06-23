@@ -31,6 +31,8 @@ public class BatchReturnMast {
     String address;
     String partyCode;
     String gst;
+    String broker;
+    String tempoNo;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -44,6 +46,8 @@ public class BatchReturnMast {
         this.createdBy =record.getCreatedBy()==null?null:record.getCreatedBy();
         this.challanDate = record.getChallanDate()==null?null:record.getChallanDate();
         this.chlNo =latestChlNo;
+        this.broker = record.getBroker();
+        this.tempoNo = record.getTempoNo();
 
 
     }

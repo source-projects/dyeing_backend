@@ -26,6 +26,8 @@ public class BatchReturnResponse {
     Date challanDate;
     String address;
     String gst;
+    String broker;
+    String tempoNo;
     List<BatchReturnData> batchReturnList;
 
     public BatchReturnResponse(BatchReturnMast batchReturnExist, Long pcs, List<BatchReturnData> batchReturnList, Double totalMtr) {
@@ -40,6 +42,8 @@ public class BatchReturnResponse {
         this.gst = batchReturnExist.getGst();
         this.challanDate = batchReturnExist.getChallanDate();
         this.address= batchReturnExist.getAddress();
+        this.tempoNo = batchReturnExist.getTempoNo()==null?null:batchReturnExist.getTempoNo();
+        this.broker = batchReturnExist.getBroker()==null?null:batchReturnExist.getBroker();
     }
 
  /*   public BatchReturnResponse(ReturnBatchDetail e, List<BatchReturnData> batchReturnList) {

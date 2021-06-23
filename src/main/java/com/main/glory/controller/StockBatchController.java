@@ -663,7 +663,7 @@ public class StockBatchController extends ControllerConfig {
                 result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
-                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
