@@ -18,6 +18,8 @@ public class BatchReturnBody {
     Long createdBy;
     Long updatedBy;
     Date challanDate;
+    String broker;
+    String tempoNo;
     List<BatchData> batchDataList;
 
 }
