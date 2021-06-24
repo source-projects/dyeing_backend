@@ -175,13 +175,13 @@ public class DispatchMastImpl {
                     DispatchData dispatchData=null;
                     if(shadeMast!=null)
                     {
-                        dispatchData=new DispatchData(batchData,shadeMast,quality);
+                        dispatchData=new DispatchData(batchData,shadeMast,quality,stockMast1);
                         dispatchData.setShadeRate(shadeMast.getExtraRate());
 
                     }
                     else
                     {
-                        dispatchData=new DispatchData(batchData,quality);
+                        dispatchData=new DispatchData(batchData,quality,stockMast1);
                         dispatchData.setShadeRate(0.0);
                     }
 
@@ -1197,7 +1197,7 @@ public class DispatchMastImpl {
                 totalMtr+=batchData.getMtr();
             }
 
-            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMast);
+            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality,totalFinishMtr,totalMtr,totalPcs,qualityName,batchAndStockId.getBatchId(),stockMastExist);
             qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
             //set the rate as well if it is coming and change the amt as well
             if(batchAndStockId.getRate()!=null)
@@ -1244,10 +1244,12 @@ public class DispatchMastImpl {
                 partyDataByInvoiceNumber.setRemark(dispatchMast.getRemark());
             }
         }
-       
+
+
         //change remark as per coming from FE
         partyDataByInvoiceNumber.setRemark(createDispatch.getRemark()==null?null:createDispatch.getRemark());
-        
+
+
 
         return partyDataByInvoiceNumber;
 

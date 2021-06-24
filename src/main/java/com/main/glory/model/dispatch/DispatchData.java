@@ -1,6 +1,7 @@
 package com.main.glory.model.dispatch;
 
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
 import lombok.*;
@@ -44,7 +45,7 @@ public class DispatchData {
 
     }
 
-    public DispatchData(BatchData batchData, ShadeMast shadeMast, Quality quality) {
+    public DispatchData(BatchData batchData, ShadeMast shadeMast, Quality quality, StockMast stockMast) {
         this.batchEntryId=batchData.getId();
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
@@ -52,17 +53,17 @@ public class DispatchData {
         this.qualityRate=quality.getRate();
         this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         this.billingUnit = quality.getBillingUnit();
-        this.wtPer100m = quality.getWtPer100m();
+        this.wtPer100m = stockMast.getWtPer100m();
         //this.shadeRate=shadeMast.getExtraRate();
     }
-    public DispatchData(BatchData batchData,  Quality quality) {
+    public DispatchData(BatchData batchData,  Quality quality,StockMast stockMast) {
         this.batchEntryId=batchData.getId();
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
         this.qualityEntryId=quality.getId();
         this.qualityRate=quality.getRate();
         this.billingUnit = quality.getBillingUnit();
-        this.wtPer100m = quality.getWtPer100m();
+        this.wtPer100m = stockMast.getWtPer100m();
         //this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         //this.shadeRate=shadeMast.getExtraRate();
     }

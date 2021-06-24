@@ -23,6 +23,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			{
 
 				//set the request timestamp in request
-				request.setAttribute("requestTime",System.currentTimeMillis());
+				//request.setAttribute("requestTime",System.currentTimeMillis());
 
 		String path = "";
 		String method = "";
@@ -59,6 +60,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 			path = request.getRequestURI().substring(5);
 			System.out.println(path);
+			/*StringBuffer jb = new StringBuffer();
+			String line = null;
+			BufferedReader reader = request.getReader();
+			while ((line = reader.readLine()) != null)
+				jb.append(line);
+
+			System.out.println(jb.toString());*/
 			method = request.getMethod();
 		} catch (Exception e) {
 			e.printStackTrace();
