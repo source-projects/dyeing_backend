@@ -30,6 +30,14 @@ public class ConsolidatedBillData {
     Long qualityEntryId;
     Long qualityNameId;
     Long invoiceNo;
+    //new field
+    Double discount;
+    Double percentageDiscount;
+    Double taxAmt;
+    Double cgst;
+    Double sgst;
+    Double gstAmt;
+    Double netAmt;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast) {
@@ -47,5 +55,12 @@ public class ConsolidatedBillData {
         this.partyId = party.getId();
         this.qualityEntryId=quality.getId();
         this.qualityNameId = quality.getQualityNameId();
+        this. discount=dispatchMast.getDiscount();
+        this.percentageDiscount=dispatchMast.getPercentageDiscount();
+        this.taxAmt=dispatchMast.getTaxAmt();
+        this.cgst=dispatchMast.getCgst();
+        this.sgst=dispatchMast.getSgst();
+        this.gstAmt=this.cgst+this.sgst;
+        this. netAmt=dispatchMast.getNetAmt();
     }
 }
