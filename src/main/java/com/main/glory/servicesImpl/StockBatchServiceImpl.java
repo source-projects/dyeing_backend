@@ -2494,6 +2494,14 @@ public class StockBatchServiceImpl {
         return batchDao.getBatchByBatchIdAndInvoiceNumber(batchId,invoiceNumber);
     }
 
+    public Double getTotalMtrByBatchId(String batchId) {
+        return batchDao.getTotalMtrByBatchId(batchId);
+    }
+
+    public Double getTotalMtrByMergeBatchId(String batchId) {
+        return batchDao.getTotalMtrByMergeBatchId(batchId) ;
+    }
+
 
    /* public Quality getQualityByStockId(Long stockId) {
         return qualityDao.getQualityByStockId(stockId);

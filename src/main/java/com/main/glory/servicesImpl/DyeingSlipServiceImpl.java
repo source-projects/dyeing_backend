@@ -18,6 +18,7 @@ import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.jet.JetMast;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
 import com.main.glory.model.quality.Quality;
@@ -91,6 +92,7 @@ public class DyeingSlipServiceImpl {
 
     public SlipFormatData getDyeingSlipByBatchStockId(String batchId, Long productionId) throws Exception {
 
+        Party party=null;
         Long totalPcs;
         DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
         if(dyeingSlipMastExist==null)
@@ -114,15 +116,22 @@ public class DyeingSlipServiceImpl {
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
         GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
-        Double wt = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+        Double wt = 0.0;
+        Double mtr = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
         if(productionPlan.getIsMergeBatchId()==true)
         {
+            BatchData isMergeBatchId = batchDao.getIsMergeBatchId(productionPlan.getBatchId());
+            party = partyServiceImp.getPartyByStockId(isMergeBatchId.getControlId());
             totalPcs = batchDao.getTotalPcsByMergeBatchId(productionPlan.getBatchId());
             wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
+            mtr = stockBatchService.getTotalMtrByMergeBatchId(productionPlan.getBatchId());
         }
         else {
+            BatchData batchData = batchDao.getIsBatchId(productionPlan.getBatchId());
+            party = partyServiceImp.getPartyByStockId(batchData.getControlId());
             wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
             totalPcs = batchDao.getTotalPcsByBatchId(productionPlan.getBatchId());
+            mtr = stockBatchService.getTotalMtrByBatchId(productionPlan.getBatchId());
 
         }
         if(productionPlan.getShadeId()!=null)
@@ -142,8 +151,9 @@ public class DyeingSlipServiceImpl {
 
 
         GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
-
+        slipFormatData.setPartyName(party==null?null:party.getPartyName());
         slipFormatData.setTotalWt(wt);
+        slipFormatData.setTotalMeter(mtr);
         slipFormatData.setBatchCount(totalPcs);
         slipFormatData.setQualityId(record.getQualityId());
         //slipFormatData.setQualityEntryId(quality.getId());

@@ -555,4 +555,8 @@ public class PartyServiceImp implements PartyServiceInterface {
     public List<Party> getPartyByCreatedAndUserHeadId(Long id) {
         return partyDao.getAllPartyByCreatedAndHead(id,id);
     }
+
+    public Party getPartyByStockId(Long controlId) {
+        return partyDao.findPartyByStockId(controlId);
+    }
 }
