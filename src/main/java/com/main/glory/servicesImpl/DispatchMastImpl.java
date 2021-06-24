@@ -175,13 +175,13 @@ public class DispatchMastImpl {
                     DispatchData dispatchData=null;
                     if(shadeMast!=null)
                     {
-                        dispatchData=new DispatchData(batchData,shadeMast,quality);
+                        dispatchData=new DispatchData(batchData,shadeMast,quality,stockMast1);
                         dispatchData.setShadeRate(shadeMast.getExtraRate());
 
                     }
                     else
                     {
-                        dispatchData=new DispatchData(batchData,quality);
+                        dispatchData=new DispatchData(batchData,quality,stockMast1);
                         dispatchData.setShadeRate(0.0);
                     }
 

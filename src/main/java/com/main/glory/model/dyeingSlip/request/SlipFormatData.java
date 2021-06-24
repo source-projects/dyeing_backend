@@ -13,6 +13,7 @@ import lombok.Setter;
 public class SlipFormatData extends DyeingSlipMast{
 
     Double totalWt;
+    Double totalMeter;
     String qualityId;
     Long qualityEntryId;
     String partyShadeNo;
@@ -20,6 +21,7 @@ public class SlipFormatData extends DyeingSlipMast{
     String colorTone;
     String colorName;
     String jetName;
+    String partyName;
 
 
     public SlipFormatData(DyeingSlipMast dyeingSlipMastExist) {
