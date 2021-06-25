@@ -20,6 +20,10 @@ public class BatchReturnBody {
     Date challanDate;
     String broker;
     String tempoNo;
+    String diffPartyName;
+    String diffPartyAddress;
+    String diffGst;
+    Boolean diffDeliveryParty;
     List<BatchData> batchDataList;
 
 }

@@ -2437,6 +2437,12 @@ public class StockBatchServiceImpl {
 
         }
         BatchReturnMast batchReturnMast = new BatchReturnMast(party,record,latestChlNo,stockMast);
+        if(record.getDiffDeliveryParty()==true)
+        {
+            batchReturnMast.setDiffPartyName(record.getDiffPartyName());
+            batchReturnMast.setDiffGst(record.getDiffGst()==null?null:record.getDiffGst());
+            batchReturnMast.setDiffPartyAddress(record.getDiffPartyAddress());
+        }
         batchReturnMast.setBatchReturnData(batchReturnDataList);
         batchReturnMastDao.save(batchReturnMast);
 
