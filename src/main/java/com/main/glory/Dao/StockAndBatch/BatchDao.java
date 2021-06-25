@@ -400,6 +400,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select x from BatchData x where x.batchId=:batchId AND x.id in (select d.batchEntryId from DispatchData d where d.invoiceNo=:invoiceNumber)")
     List<BatchData> getBatchByBatchIdAndInvoiceNumber(String batchId, String invoiceNumber);
 
+    @Query("select count(x.id) from BatchData x where x.batchId=:batchId")
+    Long getTotalPcsByBatchIdWithoutExtra(String batchId);
+
 
 
 
