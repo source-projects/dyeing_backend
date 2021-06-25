@@ -33,12 +33,13 @@ public class BatchReturnMast {
     String gst;
     String broker;
     String tempoNo;
+    String pChallanNo;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchReturnData> batchReturnData;
 
-    public BatchReturnMast(Party party, BatchReturnBody record, Long latestChlNo) {
+    public BatchReturnMast(Party party, BatchReturnBody record, Long latestChlNo,StockMast stockMast) {
         this.partyId = party.getId();
         this.partyCode = party.getPartyCode();
         this.partyName = party.getPartyName();
@@ -48,6 +49,7 @@ public class BatchReturnMast {
         this.chlNo =latestChlNo;
         this.broker = record.getBroker();
         this.tempoNo = record.getTempoNo();
+        this.pChallanNo = stockMast.getChlNo();
 
 
     }

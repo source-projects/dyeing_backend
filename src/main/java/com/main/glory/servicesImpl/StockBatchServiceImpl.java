@@ -2411,6 +2411,9 @@ public class StockBatchServiceImpl {
 
 
         Party party = partyDao.findPartyByStockId(record.getBatchDataList().get(0).getControlId());
+        StockMast stockMast = stockMastDao.findByStockId(record.getBatchDataList().get(0).getControlId());
+        if(stockMast==null)
+            throw new Exception(ConstantFile.StockBatch_Not_Exist);
 
         List<BatchReturnData> batchReturnDataList = new ArrayList<>();
         for(BatchData e:record.getBatchDataList())
@@ -2433,7 +2436,7 @@ public class StockBatchServiceImpl {
 
 
         }
-        BatchReturnMast batchReturnMast = new BatchReturnMast(party,record,latestChlNo);
+        BatchReturnMast batchReturnMast = new BatchReturnMast(party,record,latestChlNo,stockMast);
         batchReturnMast.setBatchReturnData(batchReturnDataList);
         batchReturnMastDao.save(batchReturnMast);
 
