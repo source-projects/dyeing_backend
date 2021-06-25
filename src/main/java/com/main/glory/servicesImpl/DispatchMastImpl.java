@@ -1319,13 +1319,13 @@ public class DispatchMastImpl {
          if(!filter.getFrom().isEmpty()) {
             from = datetimeFormatter1.parse(filter.getFrom());
             c.setTime(from);
-            c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date and 1 day is comming minus from FE
+            //c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date and 1 day is comming minus from FE
             from=c.getTime();
         }
         if(!filter.getTo().isEmpty()) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
-            c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is working,but not working on EC2 because of timezone
+            //c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is working,but not working on EC2 because of timezone
             to=c.getTime();
         }
 
@@ -1357,6 +1357,7 @@ public class DispatchMastImpl {
                 Double totalFinishMtr=0.0;
                 // Double batchFinishMtr=0.0;
                 Double totalBatchMtr=0.0;
+                Long greyPcs;
 
                 //getBatchByInvoice.
                 //getBatchByInvoice.getBatchEntryId()//sum of getBatchByInvoice
@@ -1385,9 +1386,10 @@ public class DispatchMastImpl {
                 System.out.println(batchDataList.get(0).getId());*/
                 Double rate=dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
                 amt=totalFinishMtr*rate;
+                greyPcs = batchDao.getTotalPcsByBatchIdWithoutExtra(batchDataList.get(0).getBatchId());
                 //batchFinishMtr = 0.0;
 
-                ConsolidatedBillData consolidatedBillData =new ConsolidatedBillData(party,quality,getBatchByInvoice.getBatchId(),getBatchByInvoice.getBatchEntryId(),totalBatchMtr,totalFinishMtr,amt,rate,dispatchMast);
+                ConsolidatedBillData consolidatedBillData =new ConsolidatedBillData(party,quality,getBatchByInvoice.getBatchId(),getBatchByInvoice.getBatchEntryId(),totalBatchMtr,totalFinishMtr,amt,rate,dispatchMast,greyPcs);
                 consolidatedBillData.setHeadName(userData.getFirstName());
                 consolidatedBillDataList.add(consolidatedBillData);
 
