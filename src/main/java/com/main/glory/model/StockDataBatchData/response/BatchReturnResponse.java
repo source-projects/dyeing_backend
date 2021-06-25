@@ -28,11 +28,13 @@ public class BatchReturnResponse {
     String gst;
     String broker;
     String tempoNo;
+    String pChallanNo;
     List<BatchReturnData> batchReturnList;
 
     public BatchReturnResponse(BatchReturnMast batchReturnExist, Long pcs, List<BatchReturnData> batchReturnList, Double totalMtr) {
         this.id = batchReturnExist.getId();
         this.chlNo = batchReturnExist.getChlNo();
+        this.pChallanNo = batchReturnExist.getPChallanNo()==null?null:batchReturnExist.getPChallanNo();
         this.totalMtr=totalMtr;
         this.totalPcs = pcs;
         this.partyName=batchReturnExist.getPartyName();
