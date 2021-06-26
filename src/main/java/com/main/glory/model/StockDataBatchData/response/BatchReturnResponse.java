@@ -32,6 +32,7 @@ public class BatchReturnResponse {
     String diffPartyName;
     String diffPartyAddress;
     String diffGst;
+    Boolean diffDeliveryParty;
     List<BatchReturnData> batchReturnList;
 
     public BatchReturnResponse(BatchReturnMast batchReturnExist, Long pcs, List<BatchReturnData> batchReturnList, Double totalMtr) {
@@ -52,6 +53,7 @@ public class BatchReturnResponse {
         this.diffGst = batchReturnExist.getDiffGst()==null?(batchReturnExist.getGst()==null?null:batchReturnExist.getGst()):batchReturnExist.getDiffGst();
         this.diffPartyAddress =batchReturnExist.getDiffPartyAddress()==null?batchReturnExist.getAddress():batchReturnExist.getDiffPartyAddress();
         this.diffPartyName = batchReturnExist.getDiffPartyName()==null?batchReturnExist.getPartyName():batchReturnExist.getDiffPartyName();
+        this.diffDeliveryParty = batchReturnExist.getDiffDeliveryParty();
     }
 
  /*   public BatchReturnResponse(ReturnBatchDetail e, List<BatchReturnData> batchReturnList) {

@@ -60,6 +60,7 @@ public class BatchReturnMast {
         this.diffPartyName = party.getPartyName();
         this.diffPartyAddress= party.getPartyAddress1();
         this.diffGst = party.getGSTIN();
+        this.diffDeliveryParty = false;
 
 
     }
