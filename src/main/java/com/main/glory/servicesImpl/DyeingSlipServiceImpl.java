@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
@@ -176,6 +177,8 @@ public class DyeingSlipServiceImpl {
 
         for(DyeingSlipMast dyeingSlipMastExist:dyeingSlipMastList)
         {
+            ObjectMapper objectMapper = new ObjectMapper();
+            System.out.println(objectMapper.writeValueAsString(dyeingSlipMastExist));
             Long totalPcs;
             SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
             ProductionPlan productionPlan = productionPlanService.getProductionDataById(dyeingSlipMastExist.getProductionId());
