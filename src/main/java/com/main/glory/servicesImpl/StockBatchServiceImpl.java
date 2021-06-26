@@ -1903,7 +1903,7 @@ public class StockBatchServiceImpl {
 
 
         List<BatchData> batchData = batchDao.findByBatchId(batchId);
-        if(batchData.isEmpty())
+        if(batchData == null || batchData.isEmpty())
             throw new Exception(ConstantFile.Batch_Data_Not_Found);
 
         Long stockId = batchDao.getControlIdByBatchId(batchId);
