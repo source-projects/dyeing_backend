@@ -298,7 +298,7 @@ public class DispatchMastImpl {
         return  batchDataListByParty;
     }
 
-    public List<GetAllDispatch> getAllDisptach() throws Exception{
+    public List<GetAllDispatch> getAllDisptach(Boolean signByParty) throws Exception{
 
         List<GetAllDispatch> dispatchDataList=new ArrayList<>();
         List<DispatchData> dispatchList =dispatchDataDao.getAllDispatch();
@@ -354,6 +354,15 @@ public class DispatchMastImpl {
             }
 
 
+        }
+
+        if(signByParty==true)
+        {
+            dispatchDataList = dispatchDataList.stream().filter(x->x.getSignByParty()==true).collect(Collectors.toList());
+        }
+        else if (signByParty==false)
+        {
+            dispatchDataList = dispatchDataList.stream().filter(x->x.getSignByParty()==false).collect(Collectors.toList());
         }
         return dispatchDataList;
     }
