@@ -246,7 +246,9 @@ public class ProductionPlanImpl {
                 for (GetBatchWithControlId batchRespone : batchDataForMergeBatch) {
                     //Long stockId = batchDao.getControlIdByBatchId(e);
 
+
                     System.out.println(productionPlanExist.getId()+"batch-"+batchRespone.getBatchId()+"-"+batchRespone.getControlId());
+
                     StockMast stockMast = stockBatchService.getStockByStockId(batchRespone.getControlId());
                     Party party = partyServiceImp.getPartyById(stockMast.getPartyId());
                     Quality quality = qualityServiceImp.getQualityByEntryId(stockMast.getQualityId());
