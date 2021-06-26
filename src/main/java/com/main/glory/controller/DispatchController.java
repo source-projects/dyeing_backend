@@ -144,7 +144,7 @@ public class DispatchController extends ControllerConfig {
     }
 
 
-    @PostMapping("/dispatch/getAll")
+    @GetMapping("/dispatch/getAll")
     public ResponseEntity<GeneralResponse<List<GetAllDispatch>, Object>> getAllDispatch(@RequestParam(name = "signByParty") Boolean signByParty) throws Exception{
 
         GeneralResponse<List<GetAllDispatch>,Object> result;
