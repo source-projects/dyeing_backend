@@ -335,6 +335,7 @@ public class DispatchMastImpl {
                     BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(),batch.getStockId());
                     batchList.add(batchWithTotalMTRandFinishMTR);
                 }
+                getAllDispatch.setSignByParty(dispatchMast.getSignByParty()==null?false:dispatchMast.getSignByParty());
                 getAllDispatch.setPartyId(party.getId());
                 getAllDispatch.setPartyName(party.getPartyName());
                 getAllDispatch.setBatchList(batchList);
@@ -1397,6 +1398,7 @@ public class DispatchMastImpl {
 
 
             }
+            consolidatedBillMast.setSignByParty(dispatchMast.getSignByParty()==null?false:dispatchMast.getSignByParty());
             consolidatedBillMast.setUserHeadId(userData.getId());
             consolidatedBillMast.setHeadName(userData.getFirstName());
             consolidatedBillMast.setConsolidatedBillDataList(consolidatedBillDataList);
@@ -1425,6 +1427,11 @@ public class DispatchMastImpl {
         //filter by quality name id
         if(filter.getQualityEntryId()!=null) {
             list = list.stream().filter(p -> p.getConsolidatedBillDataList().stream().filter(child -> child.getQualityEntryId().equals(filter.getQualityEntryId())).findAny().isPresent()).collect(Collectors.toList());
+        }
+
+        //filter by signByParty
+        if(filter.getSignByParty()!=null) {
+            list = list.stream().filter(p -> p.getSignByParty().equals(filter.getSignByParty())).collect(Collectors.toList());
         }
 
 
@@ -1456,5 +1463,18 @@ public class DispatchMastImpl {
         }
         return createDispatch.getInvoiceNo();
 
+    }
+
+    public void signDispatchByParty(List<UpdateSignDispatch> updateSignDispatchList) {
+
+        updateSignDispatchList.forEach(e->{
+            DispatchMast dispatchMastExist = dispatchMastDao.getDispatchMastByInvoiceNo(e.getInvoiceNo());
+            if(dispatchMastExist!=null)
+            {
+                dispatchMastExist.setSignByParty(e.getSignByParty()==null?false:e.getSignByParty());
+                dispatchMastExist.setSignUpdatedDate(new Date(System.currentTimeMillis()));
+                dispatchMastDao.save(dispatchMastExist);
+            }
+        });
     }
 }

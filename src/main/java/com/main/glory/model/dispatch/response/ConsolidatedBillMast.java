@@ -21,6 +21,7 @@ public class ConsolidatedBillMast {
     String headName;
     Long userHeadId;
     Long partyId;
+    Boolean signByParty;
     List<ConsolidatedBillData> consolidatedBillDataList;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {

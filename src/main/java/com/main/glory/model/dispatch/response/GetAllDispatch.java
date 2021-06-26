@@ -26,6 +26,7 @@ public class GetAllDispatch {
     Double netAmt;
     Double totalMtr;
     Double finishMtr;
+    Boolean signByParty;
     List<BatchWithTotalMTRandFinishMTR> batchList;
 
     public GetAllDispatch(DispatchData dispatchData) {

@@ -18,6 +18,6 @@ public class Filter {
     Long partyId;
     Long qualityEntryId;
     Long qualityNameId;
-
+    Boolean signByParty;
 
 }
