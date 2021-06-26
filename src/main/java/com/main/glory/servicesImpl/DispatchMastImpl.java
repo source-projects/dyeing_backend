@@ -298,7 +298,7 @@ public class DispatchMastImpl {
         return  batchDataListByParty;
     }
 
-    public List<GetAllDispatch> getAllDisptach(Boolean signByParty) throws Exception{
+    public List<GetAllDispatch> getAllDisptach(String signByParty) throws Exception{
 
         List<GetAllDispatch> dispatchDataList=new ArrayList<>();
         List<DispatchData> dispatchList =dispatchDataDao.getAllDispatch();
@@ -356,14 +356,15 @@ public class DispatchMastImpl {
 
         }
 
-        if(signByParty==true)
+        if(signByParty.equals("true"))
         {
             dispatchDataList = dispatchDataList.stream().filter(x->x.getSignByParty()==true).collect(Collectors.toList());
         }
-        else if (signByParty==false)
+        else if (signByParty.equals("false"))
         {
             dispatchDataList = dispatchDataList.stream().filter(x->x.getSignByParty()==false).collect(Collectors.toList());
         }
+
         return dispatchDataList;
     }
 
