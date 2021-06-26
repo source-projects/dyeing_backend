@@ -3,6 +3,7 @@ package com.main.glory.model.dispatch;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.dispatch.request.CreateDispatch;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.text.DateFormat;
@@ -37,6 +38,9 @@ public class DispatchMast {
     Double taxAmt;
     Double netAmt;
     String remark;
+    Date signUpdatedDate;
+    @ColumnDefault("false")
+    Boolean signByParty;
 
     public DispatchMast(CreateDispatch dispatchList) {
         //for storing the tax amount

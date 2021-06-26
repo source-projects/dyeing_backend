@@ -406,6 +406,26 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+
+    //sign dispatch flag
+    @PostMapping("/dispatch/signByParty")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> signDispatchByParty(@RequestBody List<UpdateSignDispatch> updateSignDispatchList) throws Exception{
+        GeneralResponse<Boolean,Object> result;
+        try{
+            //System.out.println(request.getHeaderNames());
+            dispatchMastService.signDispatchByParty(updateSignDispatchList);
+            result= new GeneralResponse<>(true, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSignDispatchList);
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result =  new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,updateSignDispatchList);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     //get complete bill detail by filter for export by excel
     /*@PostMapping("/dispatch/report/forCompleteInvoiceDetailForExportData")
     public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> forCompleteInvoiceDetailForExportData(@RequestBody Filter filter) throws Exception{
