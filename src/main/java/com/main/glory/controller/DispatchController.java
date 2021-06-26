@@ -144,13 +144,13 @@ public class DispatchController extends ControllerConfig {
     }
 
 
-    @GetMapping("/dispatch/getAll")
-    public ResponseEntity<GeneralResponse<List<GetAllDispatch>, Object>> getAllDispatch() throws Exception{
+    @PostMapping("/dispatch/getAll")
+    public ResponseEntity<GeneralResponse<List<GetAllDispatch>, Object>> getAllDispatch(@RequestParam(name = "signByParty") Boolean signByParty) throws Exception{
 
         GeneralResponse<List<GetAllDispatch>,Object> result;
         try{
 
-            List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
+            List<GetAllDispatch> x =dispatchMastService.getAllDisptach(signByParty);
             if(!x.isEmpty())
             result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
