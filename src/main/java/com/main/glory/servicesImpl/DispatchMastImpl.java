@@ -218,6 +218,7 @@ public class DispatchMastImpl {
 
 
         DispatchMast dispatchMast =new DispatchMast(dispatchList);
+        dispatchMast.setSignByParty(false);
         dispatchMast.setPrefix("inv");
         dispatchMast.setPartyId(party.get().getId());
         dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
