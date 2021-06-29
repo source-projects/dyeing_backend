@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -33,7 +34,13 @@ public class BatchReturnMast {
     String gst;
     String broker;
     String tempoNo;
-    String pChallanNo;
+    String pchallanNo;
+    String diffPartyName;
+    String diffPartyAddress;
+    String diffGst;
+    @ColumnDefault("false")
+    Boolean diffDeliveryParty;
+
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
@@ -49,7 +56,11 @@ public class BatchReturnMast {
         this.chlNo =latestChlNo;
         this.broker = record.getBroker();
         this.tempoNo = record.getTempoNo();
-        this.pChallanNo = stockMast.getChlNo();
+        this.pchallanNo = stockMast.getChlNo();
+        this.diffPartyName = party.getPartyName();
+        this.diffPartyAddress= party.getPartyAddress1();
+        this.diffGst = party.getGSTIN();
+        this.diffDeliveryParty = false;
 
 
     }

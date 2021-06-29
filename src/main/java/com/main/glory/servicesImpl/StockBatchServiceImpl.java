@@ -1903,7 +1903,7 @@ public class StockBatchServiceImpl {
 
 
         List<BatchData> batchData = batchDao.findByBatchId(batchId);
-        if(batchData.isEmpty())
+        if(batchData == null || batchData.isEmpty())
             throw new Exception(ConstantFile.Batch_Data_Not_Found);
 
         Long stockId = batchDao.getControlIdByBatchId(batchId);
@@ -2437,6 +2437,15 @@ public class StockBatchServiceImpl {
 
         }
         BatchReturnMast batchReturnMast = new BatchReturnMast(party,record,latestChlNo,stockMast);
+        if(record.getDiffDeliveryParty()==true)
+        {
+            batchReturnMast.setDiffPartyName(record.getDiffPartyName());
+            batchReturnMast.setDiffGst(record.getDiffGst()==null?null:record.getDiffGst());
+            batchReturnMast.setDiffPartyAddress(record.getDiffPartyAddress());
+            batchReturnMast.setDiffDeliveryParty(true);
+        }
+
+
         batchReturnMast.setBatchReturnData(batchReturnDataList);
         batchReturnMastDao.save(batchReturnMast);
 

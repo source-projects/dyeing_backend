@@ -24,6 +24,7 @@ public class ProductionPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+    @Column(unique=true)
     String batchId;
     Long shadeId;
     /*@Column(columnDefinition = "varchar(255) default 'Not mention'")

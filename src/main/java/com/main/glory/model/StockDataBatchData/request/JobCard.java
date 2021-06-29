@@ -22,6 +22,7 @@ import java.util.Optional;
 @Setter
 public class JobCard {
     Long partyId;
+    Double percentageDiscount;
     String partyCode;
     String partyName;
     String masterName;
@@ -55,5 +56,6 @@ public class JobCard {
         this.totalWt=totalWt;
         this.totalPcs=totalPcs;
         this.partyCode=party.getPartyCode();
+        this.percentageDiscount = party.getPercentageDiscount()==null?0:party.getPercentageDiscount();
     }
 }

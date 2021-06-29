@@ -29,12 +29,16 @@ public class BatchReturnResponse {
     String broker;
     String tempoNo;
     String pchallanNo;
+    String diffPartyName;
+    String diffPartyAddress;
+    String diffGst;
+    Boolean diffDeliveryParty;
     List<BatchReturnData> batchReturnList;
 
     public BatchReturnResponse(BatchReturnMast batchReturnExist, Long pcs, List<BatchReturnData> batchReturnList, Double totalMtr) {
         this.id = batchReturnExist.getId();
         this.chlNo = batchReturnExist.getChlNo();
-        this.pchallanNo = batchReturnExist.getPChallanNo()==null?null:batchReturnExist.getPChallanNo();
+        this.pchallanNo = batchReturnExist.getPchallanNo()==null?null:batchReturnExist.getPchallanNo();
         this.totalMtr=totalMtr;
         this.totalPcs = pcs;
         this.partyName=batchReturnExist.getPartyName();
@@ -46,6 +50,10 @@ public class BatchReturnResponse {
         this.address= batchReturnExist.getAddress();
         this.tempoNo = batchReturnExist.getTempoNo()==null?null:batchReturnExist.getTempoNo();
         this.broker = batchReturnExist.getBroker()==null?null:batchReturnExist.getBroker();
+        this.diffGst = batchReturnExist.getDiffGst()==null?(batchReturnExist.getGst()==null?null:batchReturnExist.getGst()):batchReturnExist.getDiffGst();
+        this.diffPartyAddress =batchReturnExist.getDiffPartyAddress()==null?batchReturnExist.getAddress():batchReturnExist.getDiffPartyAddress();
+        this.diffPartyName = batchReturnExist.getDiffPartyName()==null?batchReturnExist.getPartyName():batchReturnExist.getDiffPartyName();
+        this.diffDeliveryParty = batchReturnExist.getDiffDeliveryParty();
     }
 
  /*   public BatchReturnResponse(ReturnBatchDetail e, List<BatchReturnData> batchReturnList) {

@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
@@ -27,6 +28,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.supplier.SupplierRate;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -176,6 +178,11 @@ public class DyeingSlipServiceImpl {
 
         for(DyeingSlipMast dyeingSlipMastExist:dyeingSlipMastList)
         {
+            List<BatchData> batchDataListExist =batchDao.getBatchByBatchId(dyeingSlipMastExist.getBatchId());
+            if(batchDataListExist==null || batchDataListExist.isEmpty())
+                continue;
+            ObjectMapper objectMapper = new ObjectMapper();
+            //System.out.println(objectMapper.writeValueAsString(dyeingSlipMastExist));
             Long totalPcs;
             SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
             ProductionPlan productionPlan = productionPlanService.getProductionDataById(dyeingSlipMastExist.getProductionId());

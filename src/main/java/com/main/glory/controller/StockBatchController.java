@@ -615,7 +615,7 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @PostMapping("/stockBatch/add/returnBatch")
-    public ResponseEntity<GeneralResponse<Long,Object>> createReturnBatch(@RequestBody  BatchReturnBody record) throws Exception {
+    public ResponseEntity<GeneralResponse<Long,Object>> createReturnBatch(@RequestBody BatchReturnBody record) throws Exception {
         GeneralResponse<Long,Object> result = null;
         try {
             Long id = stockBatchService.saveReturnStockBatch(record);

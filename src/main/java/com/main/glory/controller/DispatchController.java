@@ -145,12 +145,12 @@ public class DispatchController extends ControllerConfig {
 
 
     @GetMapping("/dispatch/getAll")
-    public ResponseEntity<GeneralResponse<List<GetAllDispatch>, Object>> getAllDispatch() throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetAllDispatch>, Object>> getAllDispatch(@RequestParam(name = "signByParty") String signByParty) throws Exception{
 
         GeneralResponse<List<GetAllDispatch>,Object> result;
         try{
 
-            List<GetAllDispatch> x =dispatchMastService.getAllDisptach();
+            List<GetAllDispatch> x =dispatchMastService.getAllDisptach(signByParty);
             if(!x.isEmpty())
             result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -402,6 +402,26 @@ public class DispatchController extends ControllerConfig {
             result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
             logService.saveLog(result,request,true
             );
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+    //sign dispatch flag
+    @PostMapping("/dispatch/signByParty")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> signDispatchByParty(@RequestBody List<UpdateSignDispatch> updateSignDispatchList) throws Exception{
+        GeneralResponse<Boolean,Object> result;
+        try{
+            //System.out.println(request.getHeaderNames());
+            dispatchMastService.signDispatchByParty(updateSignDispatchList);
+            result= new GeneralResponse<>(true, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSignDispatchList);
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result =  new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,updateSignDispatchList);
+            logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
