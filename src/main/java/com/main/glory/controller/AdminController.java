@@ -38,7 +38,7 @@ public class AdminController extends ControllerConfig {
     AdminServciceImpl adminService;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     HttpServletRequest request;

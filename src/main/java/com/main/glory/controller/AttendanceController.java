@@ -35,7 +35,7 @@ public class AttendanceController extends ControllerConfig {
     LogServiceImpl logService;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     HttpServletRequest request;

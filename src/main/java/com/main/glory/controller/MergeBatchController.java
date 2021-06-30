@@ -32,7 +32,7 @@ public class MergeBatchController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
 
     //create the merge batch list

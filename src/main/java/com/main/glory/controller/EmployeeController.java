@@ -29,7 +29,7 @@ public class EmployeeController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     EmployeeServiceImpl employeeService;

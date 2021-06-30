@@ -40,7 +40,7 @@ public class StockBatchController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @GetMapping("/stockBatch/isBatchExists/{name}/{id}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> isBatchIdUnique(@PathVariable(value="name") String name, @PathVariable(value="id") Long id){

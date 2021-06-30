@@ -29,7 +29,7 @@ public class RestoreDbController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @GetMapping("/db/restore/{date}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> restoreDb(@PathVariable(name = "date") String date) {
