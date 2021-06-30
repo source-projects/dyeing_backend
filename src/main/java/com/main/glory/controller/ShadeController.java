@@ -32,7 +32,7 @@ public class ShadeController extends ControllerConfig {
 	HttpServletRequest request;
 
 	@Value("${spring.application.debugAll}")
-	Boolean debugAll=true;
+	Boolean debugAll;
 
 	@PostMapping("/shade")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody ShadeMast shadeMast ,@RequestHeader Map<String, String> headers){

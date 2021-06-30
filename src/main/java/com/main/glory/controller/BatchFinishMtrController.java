@@ -27,7 +27,7 @@ public class BatchFinishMtrController extends ControllerConfig {
     ConstantFile constantFile;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     HttpServletRequest request;

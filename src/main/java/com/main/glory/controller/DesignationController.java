@@ -29,7 +29,7 @@ public class DesignationController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     private DesignationServiceImpl designationService;

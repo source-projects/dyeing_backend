@@ -36,7 +36,7 @@ public class DyeingSlipController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     ConstantFile constantFile;
 
