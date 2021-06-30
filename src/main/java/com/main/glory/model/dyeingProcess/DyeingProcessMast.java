@@ -38,6 +38,11 @@ public class DyeingProcessMast {
 
     @PrePersist
     void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
+    @PreUpdate
+    void onUpdate()
+    {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
 
 
 
