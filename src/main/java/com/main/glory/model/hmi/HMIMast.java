@@ -25,6 +25,7 @@ public class HMIMast {
     Double wt;
     String shadeNo;
     Boolean status;
+    Long productionId;
     Date createdDate;
     Date updatedDate;
     Long createdBy;
@@ -42,6 +43,7 @@ public class HMIMast {
         this.jetNo = String.valueOf(jetDataExist.getControlId());
         this.batchId = productionPlan.getBatchId();
         this.wt = totalWt;
+        this.productionId = productionPlan.getId();
         this.shadeNo = productionPlan.getShadeId()==null?"No Shade mention":String.valueOf(productionPlan.getShadeId());
         this.createdBy = records.getCreatedBy()==null?null:records.getCreatedBy();
         this.updatedBy = records.getUpdatedBy()==null?null: records.getUpdatedBy();

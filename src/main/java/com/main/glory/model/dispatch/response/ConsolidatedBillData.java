@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -39,6 +40,12 @@ public class ConsolidatedBillData {
     Double sgst;
     Double gstAmt;
     Double netAmt;
+    String partyAddress1;
+    String partyAddress2;
+    String contactNo;
+    private String city;
+    private String state;
+    private String gstin;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast,Long greyPcs) {
@@ -64,5 +71,11 @@ public class ConsolidatedBillData {
         this.sgst=dispatchMast.getSgst();
         this.gstAmt=this.cgst+this.sgst;
         this. netAmt=dispatchMast.getNetAmt();
+        this.partyAddress1 = party.getPartyAddress1()==null?null:party.getPartyAddress1();
+        this.partyAddress2 = party.getPartyAddress2()==null?null:party.getPartyAddress2();
+        this.gstin = party.getGSTIN()==null?null:party.getGSTIN();
+        this.city = party.getCity()==null?null:party.getCity();
+        this.state = party.getState()==null?null:party.getState();
+        this.contactNo = party.getContactNo()==null?null:party.getContactNo();
     }
 }

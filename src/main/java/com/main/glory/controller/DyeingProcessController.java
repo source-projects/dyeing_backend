@@ -33,7 +33,7 @@ public class DyeingProcessController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll = true;
+    Boolean debugAll;
 
     @Autowired
     DyeingProcessServiceImpl dyeingProcessService;

@@ -45,7 +45,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			{
 
 				//set the request timestamp in request
-				//request.setAttribute("requestTime",System.currentTimeMillis());
+				request.setAttribute("requestTime",System.currentTimeMillis());
 
 		String path = "";
 		String method = "";

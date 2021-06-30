@@ -39,7 +39,7 @@ public class ColorController extends ControllerConfig {
 	HttpServletRequest request;
 
 	@Value("${spring.application.debugAll}")
-	Boolean debugAll=true;
+	Boolean debugAll;
 
 	@Autowired
 	SupplierDao supplierDao;

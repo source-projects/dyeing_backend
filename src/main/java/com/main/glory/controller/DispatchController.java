@@ -37,7 +37,7 @@ public class DispatchController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     DispatchMastImpl dispatchMastService;

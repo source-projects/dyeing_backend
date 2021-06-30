@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,6 +32,8 @@ public class DyeingSlipMast {
     Long jetId;
     Long productionId;
     String batchId;
+    @ColumnDefault("0")
+    Long dyeingProcessMastId;
 
 
 

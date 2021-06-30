@@ -9,7 +9,6 @@ import com.main.glory.model.admin.request.AuthorizeWithDepartment;
 import com.main.glory.model.admin.request.DepartmentResponse;
 import com.main.glory.model.jet.JetMast;
 import com.main.glory.model.jet.request.AddJet;
-import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.servicesImpl.AdminServciceImpl;
@@ -36,10 +35,10 @@ public class AdminController extends ControllerConfig {
     JetServiceImpl jetService;
 
     @Autowired
-    AdminServciceImpl adminServcice;
+    AdminServciceImpl adminService;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @Autowired
     HttpServletRequest request;
@@ -87,7 +86,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             //qualityName.setCreatedBy(Long.parseLong(request.getParameter("id")));
-            adminServcice.saveQualityName(qualityName);
+            adminService.saveQualityName(qualityName);
             result= new GeneralResponse<>(null, constantFile.Quality_Name_Added, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
             logService.saveLog(result,request,debugAll);
 
@@ -113,7 +112,7 @@ public class AdminController extends ControllerConfig {
         try {
 
             //qualityName.setUpdatedBy(Long.parseLong(request.getParameter("id")));
-            adminServcice.updateQualityName(qualityName);
+            adminService.updateQualityName(qualityName);
             result =  new GeneralResponse<>(true, constantFile.Quality_Name_Updated, true, System.currentTimeMillis(), HttpStatus.OK,qualityName);
 
             logService.saveLog(result,request,debugAll);
@@ -139,7 +138,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.deleteQualityNameById(id);
+            adminService.deleteQualityNameById(id);
             result =  new GeneralResponse<>(true, constantFile.Quality_Name_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -221,7 +220,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.saveCompanyName(c);
+            adminService.saveCompanyName(c);
             result= new GeneralResponse<>(null, constantFile.Company_Added, true, System.currentTimeMillis(), HttpStatus.OK,c);
             logService.saveLog(result,request,debugAll);
 
@@ -247,7 +246,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            Company c  = adminServcice.getCompanyById(id);
+            Company c  = adminService.getCompanyById(id);
             result= new GeneralResponse<>(c, constantFile.Company_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
 
@@ -273,7 +272,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.updateCompany(company);
+            adminService.updateCompany(company);
             result= new GeneralResponse<>(true, constantFile.Company_Updated, true, System.currentTimeMillis(), HttpStatus.OK,company);
             logService.saveLog(result,request,debugAll);
 
@@ -300,7 +299,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.updateDepartment(department);
+            adminService.updateDepartment(department);
             result= new GeneralResponse<>(true, constantFile.Department_Updated, true, System.currentTimeMillis(), HttpStatus.OK,department);
             logService.saveLog(result,request,debugAll);
 
@@ -329,7 +328,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.saveDepartment(c);
+            adminService.saveDepartment(c);
             result= new GeneralResponse<>(null, constantFile.Department_Added, true, System.currentTimeMillis(), HttpStatus.OK,c);
             logService.saveLog(result,request,debugAll);
 
@@ -355,7 +354,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            flag = adminServcice.deleteCompanyById(id);
+            flag = adminService.deleteCompanyById(id);
             if(flag) {
                 result = new GeneralResponse<>(null, constantFile.Company_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
                 logService.saveLog(result,request,debugAll);
@@ -383,7 +382,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            flag = adminServcice.deleteDepartmentById(id);
+            flag = adminService.deleteDepartmentById(id);
             if(flag) {
                 result = new GeneralResponse<>(null, constantFile.Department_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI()+"?"+request.getQueryString());
                 logService.saveLog(result,request,true);
@@ -412,7 +411,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.saveApprovedBy(data);
+            adminService.saveApprovedBy(data);
             result= new GeneralResponse<>(null, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,data);
             logService.saveLog(result,request,debugAll);
 
@@ -435,7 +434,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            List<AuthorizeWithDepartment> list = adminServcice.getApprovedByList();
+            List<AuthorizeWithDepartment> list = adminService.getApprovedByList();
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -459,7 +458,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.updateApprovedBy(approvedBy);
+            adminService.updateApprovedBy(approvedBy);
             result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,approvedBy);
             logService.saveLog(result,request,debugAll);
 
@@ -482,7 +481,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception("data can't be null");
 
-            ApprovedBy data =adminServcice.getApprovedById(id);
+            ApprovedBy data =adminService.getApprovedById(id);
             result= new GeneralResponse<>(data, " Data fetched successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -504,7 +503,7 @@ public class AdminController extends ControllerConfig {
         try {
 
 
-            List<DepartmentResponse> list = adminServcice.getAllDepartmentListByHeaderId(headers.get("id"));
+            List<DepartmentResponse> list = adminService.getAllDepartmentListByHeaderId(headers.get("id"));
             if(list.isEmpty())
                 result= new GeneralResponse<>(null, constantFile.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -529,7 +528,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            DepartmentResponse list = adminServcice.getDepartmentById(id);
+            DepartmentResponse list = adminService.getDepartmentById(id);
             result= new GeneralResponse<>(list, constantFile.Department_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
             logService.saveLog(result,request,debugAll);
@@ -550,7 +549,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            adminServcice.updateDepartment(department);
+            adminService.updateDepartment(department);
             result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK);
 
         }
@@ -616,7 +615,7 @@ public class AdminController extends ControllerConfig {
 
         try {
 
-            Boolean flag = adminServcice.getApprovedByDeletable(id);
+            Boolean flag = adminService.getApprovedByDeletable(id);
             if(flag)
                 result= new GeneralResponse<>(flag, "data is deletable", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -639,7 +638,7 @@ public class AdminController extends ControllerConfig {
 
         try {
 
-            Boolean flag = adminServcice.getDepartmentIsDelatable(id);
+            Boolean flag = adminService.getDepartmentIsDelatable(id);
             if(flag)
                 result= new GeneralResponse<>(flag, constantFile.Department_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -662,7 +661,7 @@ public class AdminController extends ControllerConfig {
 
         try {
 
-            Boolean flag = adminServcice.getCompanyIsDelatable(id);
+            Boolean flag = adminService.getCompanyIsDelatable(id);
             if(flag)
                 result= new GeneralResponse<>(flag, constantFile.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -687,7 +686,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            List<Company> list = adminServcice.getAllCompany();
+            List<Company> list = adminService.getAllCompany();
             if(list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Company_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -735,7 +734,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            Boolean list = adminServcice.deleteDepartmentById(id);
+            Boolean list = adminService.deleteDepartmentById(id);
             if(list==false)
                 result= new GeneralResponse<>(null, " data not found", false, System.currentTimeMillis(), HttpStatus.OK);
             else
@@ -757,7 +756,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            Boolean list = adminServcice.deleteApprovedById(id);
+            Boolean list = adminService.deleteApprovedById(id);
 
             result= new GeneralResponse<>(list, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
@@ -783,7 +782,7 @@ public class AdminController extends ControllerConfig {
             if(record == null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            adminServcice.addInvoiceSequence(record);
+            adminService.addInvoiceSequence(record);
 
             result= new GeneralResponse<>(true, constantFile.Invoice_Sequence_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
@@ -807,7 +806,7 @@ public class AdminController extends ControllerConfig {
         try {
 
 
-            InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequence();
+            InvoiceSequence invoiceSequence = adminService.getInvoiceSequence();
             if(invoiceSequence!=null)
                 result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -832,7 +831,7 @@ public class AdminController extends ControllerConfig {
         try {
 
 
-            adminServcice.updateInvoiceSequence(invoiceSequence);
+            adminService.updateInvoiceSequence(invoiceSequence);
             result= new GeneralResponse<>(true, constantFile.Invoice_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,invoiceSequence);
             logService.saveLog(result,request,debugAll);
 
@@ -856,7 +855,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            InvoiceSequence invoiceSequence = adminServcice.getInvoiceSequenceById(id);
+            InvoiceSequence invoiceSequence = adminService.getInvoiceSequenceById(id);
             if(invoiceSequence!=null)
                 result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -886,7 +885,7 @@ public class AdminController extends ControllerConfig {
             if(record == null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            adminServcice.addBatchSequence(record);
+            adminService.addBatchSequence(record);
 
             result= new GeneralResponse<>(true, constantFile.Batch_Sequence_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
 
@@ -914,7 +913,7 @@ public class AdminController extends ControllerConfig {
             if(record == null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            BatchSequence id = adminServcice.updateBatchSequence(record);
+            BatchSequence id = adminService.updateBatchSequence(record);
 
             result= new GeneralResponse<>(id, constantFile.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
@@ -937,7 +936,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            BatchSequence batchSequence = adminServcice.getBatchSequence(update);
+            BatchSequence batchSequence = adminService.getBatchSequence(update);
 
             if(batchSequence!=null)
             result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -964,7 +963,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            BatchSequence batchSequence = adminServcice.getBatchSequenceById(id);
+            BatchSequence batchSequence = adminService.getBatchSequenceById(id);
             result= new GeneralResponse<>(batchSequence, constantFile.Batch_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -987,7 +986,7 @@ public class AdminController extends ControllerConfig {
             if(record==null)
                 throw new Exception("null record passed");
 
-            adminServcice.addReceiver(record);
+            adminService.addReceiver(record);
             result= new GeneralResponse<>(true, " Data added successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
@@ -1011,7 +1010,7 @@ public class AdminController extends ControllerConfig {
             if(record==null)
                 throw new Exception("null record passed");
 
-            adminServcice.updateReceiver(record);
+            adminService.updateReceiver(record);
             result= new GeneralResponse<>(true, " Data updated successfully", true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
 
@@ -1032,7 +1031,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            List<AuthorizeWithDepartment> list = adminServcice.getAllReceiver();
+            List<AuthorizeWithDepartment> list = adminService.getAllReceiver();
             if(list.isEmpty())
             {
                 result= new GeneralResponse<>(list, constantFile.Authorize_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -1063,7 +1062,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception("null record passed");
 
-            ReceiverBy list = adminServcice.getReceiverById(id);
+            ReceiverBy list = adminService.getReceiverById(id);
             if(list==null)
             {
                 result= new GeneralResponse<>(list, " no record found", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -1091,7 +1090,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception("null record passed");
 
-            adminServcice.deleteReceiverById(id);
+            adminService.deleteReceiverById(id);
             result= new GeneralResponse<>(true, " Data deleted successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -1117,7 +1116,7 @@ public class AdminController extends ControllerConfig {
             if(record == null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            adminServcice.addReportType(record);
+            adminService.addReportType(record);
 
             result= new GeneralResponse<>(true, constantFile.Report_Type_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
             logService.saveLog(result,request,debugAll);
@@ -1141,7 +1140,7 @@ public class AdminController extends ControllerConfig {
         try {
 
 
-            List<ReportType> reportTypeList = adminServcice.getAllReportType();
+            List<ReportType> reportTypeList = adminService.getAllReportType();
 
             if(reportTypeList.isEmpty())
             {
@@ -1177,7 +1176,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            ReportType reportTypeList = adminServcice.getReportTypeById(id);
+            ReportType reportTypeList = adminService.getReportTypeById(id);
 
             if(reportTypeList==null)
             {
@@ -1212,7 +1211,7 @@ public class AdminController extends ControllerConfig {
             if(record==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            flag = adminServcice.updateReportType(record);
+            flag = adminService.updateReportType(record);
 
             if(flag==false)
             {
@@ -1247,7 +1246,7 @@ public class AdminController extends ControllerConfig {
             if(id==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            adminServcice.deleteReportTypeById(id);
+            adminService.deleteReportTypeById(id);
             result= new GeneralResponse<>(true, constantFile.Report_Type_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -1275,7 +1274,7 @@ public class AdminController extends ControllerConfig {
             if(authorize==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            adminServcice.addAuthorize(authorize);
+            adminService.addAuthorize(authorize);
             result= new GeneralResponse<>(true, constantFile.Authorize_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -1303,7 +1302,7 @@ public class AdminController extends ControllerConfig {
             if(authorize==null)
                 throw new Exception(constantFile.Null_Record_Passed);
 
-            adminServcice.updateAuthorize(authorize);
+            adminService.updateAuthorize(authorize);
             result= new GeneralResponse<>(true, constantFile.Authorize_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,debugAll);
 
@@ -1328,7 +1327,7 @@ public class AdminController extends ControllerConfig {
         boolean flag;
         try {
 
-            List<AuthorizeWithDepartment> list = adminServcice.getAllAuthorize();
+            List<AuthorizeWithDepartment> list = adminService.getAllAuthorize();
             if(!list.isEmpty())
             result= new GeneralResponse<>(list, constantFile.Authorize_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -1360,7 +1359,7 @@ public class AdminController extends ControllerConfig {
 
 
 
-            Authorize list = adminServcice.getAuthorizeById(id);
+            Authorize list = adminService.getAuthorizeById(id);
             if(list!=null)
                 result= new GeneralResponse<>(list, constantFile.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -1392,7 +1391,7 @@ public class AdminController extends ControllerConfig {
 
 
 
-            adminServcice.deleteAuthorizeById(id);
+            adminService.deleteAuthorizeById(id);
 
             result= new GeneralResponse<>(true, ConstantFile.Authorize_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 

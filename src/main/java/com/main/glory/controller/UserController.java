@@ -30,7 +30,7 @@ import java.util.Map;
 public class UserController extends ControllerConfig {
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
 
     @Autowired

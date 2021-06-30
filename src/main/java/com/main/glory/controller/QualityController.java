@@ -49,7 +49,7 @@ public class QualityController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
     @PostMapping(value = "/quality")
     public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody Quality quality,@RequestHeader Map<String, String> headers) {

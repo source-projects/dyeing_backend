@@ -37,7 +37,7 @@ public class PaymentTermController extends ControllerConfig {
     HttpServletRequest request;
 
     @Value("${spring.application.debugAll}")
-    Boolean debugAll=true;
+    Boolean debugAll;
 
 
     @PostMapping(value="/paymentTerm/")

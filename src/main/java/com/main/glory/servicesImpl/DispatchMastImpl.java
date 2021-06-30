@@ -1397,7 +1397,18 @@ public class DispatchMastImpl {
                 /*System.out.println(invoiceNumber);
                 System.out.println(batchDataList.get(0).getId());*/
                 Double rate=dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
+                //get the billing unit as per change
+                String billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
+                if(billingUnit.equalsIgnoreCase("meter"))
                 amt=totalFinishMtr*rate;
+                else
+                {
+                    //convert meter to wt
+                    Double wtPer100m = dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
+                    totalFinishMtr =(totalFinishMtr/100)*(wtPer100m==null?1:wtPer100m);
+                    totalBatchMtr = (totalBatchMtr/100)*(wtPer100m==null?1:wtPer100m);
+                    amt=totalFinishMtr*rate;
+                }
                 greyPcs = batchDao.getTotalPcsByBatchIdWithoutExtra(batchDataList.get(0).getBatchId());
                 //batchFinishMtr = 0.0;
 
