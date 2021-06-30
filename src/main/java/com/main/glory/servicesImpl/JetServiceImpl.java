@@ -451,7 +451,7 @@ public class JetServiceImpl {
 
             }
             dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
-
+            dyeingSlipMast.setDyeingProcessMastId(dyeingProcessMast.getId());
             DyeingSlipMast x = dyeingSlipService.saveDyeingSlipMastFromProcess(dyeingSlipMast);
 
             //****** also add the shade data with the slip of dyeing process of dyeing function

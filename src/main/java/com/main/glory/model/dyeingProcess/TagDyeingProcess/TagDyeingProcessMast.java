@@ -27,6 +27,7 @@ public class TagDyeingProcessMast {
     Double temp;
     Double holdTime;
     Long sequence;
+    String processType;
     Double liquerRation;
 
 
