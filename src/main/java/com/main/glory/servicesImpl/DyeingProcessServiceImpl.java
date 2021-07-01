@@ -120,7 +120,8 @@ public class DyeingProcessServiceImpl {
 
     public DyeingProcessMast getDyeingProcessById(Long processId) {
 
-        DyeingProcessMast x = dyeingProcessMastDao.getDyeingProcessById(processId);
+        DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.getDyeingProcessById(processId);
+        DyeingProcessMast x = new DyeingProcessMast(dyeingProcessMast);
         int i=0;
         List<DyeingProcessData> dyeingProcessDataList = new ArrayList<>();
         for(DyeingProcessData dyeingProcessData:x.getDyeingProcessData())
