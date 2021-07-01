@@ -34,6 +34,16 @@ public class DyeingProcessMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingProcessData> dyeingProcessData;
 
+    public DyeingProcessMast(DyeingProcessMast dyeingProcessMast) {
+        this.id = dyeingProcessMast.getId();
+        this.userHeadId = dyeingProcessMast.getUserHeadId()==null?null:dyeingProcessMast.getUserHeadId();
+        this.createdBy = dyeingProcessMast.getCreatedBy();
+        this.updatedBy = dyeingProcessMast.getUpdatedBy();
+        this.createdDate = dyeingProcessMast.getCreatedDate();
+        this.updatedDate= dyeingProcessMast.getUpdatedDate()==null?null:dyeingProcessMast.getUpdatedDate();
+        this.processName = dyeingProcessMast.getProcessName();
+        this.dyeingProcessData =dyeingProcessMast.getDyeingProcessData();
+    }
 
 
     @PrePersist
