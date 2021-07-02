@@ -43,6 +43,7 @@ public class ConsolidatedBillData {
     String partyAddress1;
     String partyAddress2;
     String contactNo;
+    Double discountAmt;
     private String city;
     private String state;
     private String gstin;
@@ -77,5 +78,6 @@ public class ConsolidatedBillData {
         this.city = party.getCity()==null?null:party.getCity();
         this.state = party.getState()==null?null:party.getState();
         this.contactNo = party.getContactNo()==null?null:party.getContactNo();
+        this.discountAmt = this.amt - ((this.amt / 100) * this.percentageDiscount);
     }
 }
