@@ -54,6 +54,7 @@ public class DyeingSlipMast {
         this.jetId=dyeingSlipMastExist.jetId;
         this.productionId=dyeingSlipMastExist.productionId;
         this.batchId=dyeingSlipMastExist.batchId;
+        this.dyeingProcessMastId = dyeingSlipMastExist.getDyeingProcessMastId()==null?null:dyeingSlipMastExist.getDyeingProcessMastId();
     }
 
     /*public DyeingSlipMast(AddAdditionDyeingSlipModel addAdditionDyeingSlipModel) {

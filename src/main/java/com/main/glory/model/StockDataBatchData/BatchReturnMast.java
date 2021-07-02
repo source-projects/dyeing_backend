@@ -48,6 +48,7 @@ public class BatchReturnMast {
 
     public BatchReturnMast(Party party, BatchReturnBody record, Long latestChlNo,StockMast stockMast) {
         this.partyId = party.getId();
+        this.gst = party.getGSTIN()==null?null:party.getGSTIN();
         this.partyCode = party.getPartyCode();
         this.partyName = party.getPartyName();
         this.address = party.getPartyAddress1();
@@ -59,7 +60,7 @@ public class BatchReturnMast {
         this.pchallanNo = stockMast.getChlNo();
         this.diffPartyName = party.getPartyName();
         this.diffPartyAddress= party.getPartyAddress1();
-        this.diffGst = party.getGSTIN();
+        this.diffGst = party.getGSTIN()==null?null:party.getGSTIN();
         this.diffDeliveryParty = false;
 
 
