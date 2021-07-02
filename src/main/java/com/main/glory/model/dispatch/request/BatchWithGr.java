@@ -23,6 +23,10 @@ public class BatchWithGr {
         this.controlId=batch.getStockId();
     }
 
+    public BatchWithGr(String batchId,Long controlId) {
+        this.batchId=batchId;
+        this.controlId=controlId;
+    }
     public BatchWithGr(List<BatchData> batchDataList, Long stockId, String batchId) {
         this.batchId=batchId;
         this.controlId=stockId;

@@ -1269,8 +1269,57 @@ public class DispatchMastImpl {
             qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
 
 
+            //data preview change
+            if(batchDataList.size()>30) {
 
-            batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
+                int i=0;
+                int object = batchDataList.size()/30;
+                int remainingGrFrom =batchDataList.size()%30;
+                int startIndex=0;
+                int limit=30;
+                //divide the entire object because of gr is greater than the limit
+
+                if(remainingGrFrom > 0)
+                {
+                    object++;
+                }
+                for(int x=1;x<object;x++)
+                {
+                    // to index value is not going to push into the list
+                    // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
+                    //only from 0-29 object are going to store in list
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex,limit);
+                    BatchWithGr newBatchWithGr=new BatchWithGr(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    startIndex=limit;
+                    limit +=30;
+                    batchWithGrList.add(newBatchWithGr);
+
+                }
+
+                //for remaining gr
+                if(remainingGrFrom > 0)
+                {
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex,batchDataList.size());
+                    BatchWithGr newBatchWithGr=new BatchWithGr(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    batchWithGrList.add(newBatchWithGr);
+                }
+
+                //batchWithGr.setBatchDataList(batchDataList);
+                //batchWithGrList.add(batchWithGr);
+            }
+            else
+            {
+                //for perfect gr lst which is 30
+                /*batchWithGr.setBatchDataList(batchDataList);
+                batchWithGrList.add(batchWithGr);*/
+                batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
+            }
+
+
+
+
 
 
 
