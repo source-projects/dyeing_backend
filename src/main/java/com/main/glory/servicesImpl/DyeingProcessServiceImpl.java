@@ -229,6 +229,7 @@ public class DyeingProcessServiceImpl {
                 else
                 {
                     dyeingplcMast = new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
+                    dyeingplcMast.setDyeingProcessMastId(data.getId());
                 }
 
             }
