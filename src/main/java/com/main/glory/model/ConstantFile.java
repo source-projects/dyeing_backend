@@ -132,6 +132,7 @@ public class ConstantFile {
     public static String DyeingProcess_Not_Found = "Data not found ";
     public static String DyeingProcess_Name_Exist = "Dyeing Process exist";
     public static String DyeingProcess_Deleted = "Data deleted successfully";
+    public static String DyeingProcessPlc_Data_Not_Exist = "Dyeing Plc recor not found";
 
     //Dyeing Slip
     public static String DyeingSlip_Added = "Data added successfully";
