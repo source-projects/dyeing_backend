@@ -78,12 +78,20 @@ public class DyeingProcessServiceImpl {
         {
             if(dyeingProcessData.getProcessType().equalsIgnoreCase("Dyeing"))
             {
-                dyeingplcMast =new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
+                if(dyeingProcessData.getDyeingplcMast()!=null) {
+                    dyeingplcMast = new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
+                }
+                else
+                    throw new Exception(ConstantFile.DyeingProcessPlc_Data_Not_Exist);
+
             }
 
         }
         DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.save(data);
+
         dyeingplcMast.setDyeingProcessMastId(dyeingProcessMast.getId());
+        if(dyeingplcMast!=null)
+            dyeingplcMastDao.save(dyeingplcMast);
     }
 
     public List<GetAllDyeingProcessList> getAllDyeingProcess(String id) throws Exception {
@@ -161,11 +169,17 @@ public class DyeingProcessServiceImpl {
                 dyeingChemicalDataList.add(dyeingChemicalData);
             }
 
+            //find the plc record as well
+            DyeingplcMast dyeingplcMast = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(x.getId());
+            if(dyeingplcMast!=null)
+                dyeingProcessData.setDyeingplcMast(dyeingplcMast);
+
             dyeingProcessData.setDyeingChemicalData(dyeingChemicalDataList);
 
             dyeingProcessDataList.add(dyeingProcessData);
         }
         x.setDyeingProcessData(dyeingProcessDataList);
+
 
         return x;
     }
@@ -187,6 +201,7 @@ public class DyeingProcessServiceImpl {
 
         DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
 
+        DyeingplcMast dyeingplcMast = null;
         if(dyeingProcessMastExist==null)
         {
             throw new Exception(constantFile.DyeingProcess_Not_Found+data.getId());
@@ -209,6 +224,13 @@ public class DyeingProcessServiceImpl {
             if(dyeingProcessData.getProcessType().equalsIgnoreCase("Dyeing"))
             {
                 dyeingProcessExistFlag = true;
+                if(dyeingProcessData.getDyeingplcMast()==null)
+                    throw new Exception(ConstantFile.DyeingProcessPlc_Data_Not_Exist);
+                else
+                {
+                    dyeingplcMast = new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
+                }
+
             }
         }
 
@@ -230,7 +252,7 @@ public class DyeingProcessServiceImpl {
             //update the existing dyeing plc
             DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
             if(dyeingplcMastExist!=null) {
-                DyeingplcMast dyeingplcMast = new DyeingplcMast(dyeingplcMastExist);
+                //dyeingplcMast = new DyeingplcMast(dyeingplcMastExist);
                 dyeingplcMastDao.save(dyeingplcMast);
             }
         }
