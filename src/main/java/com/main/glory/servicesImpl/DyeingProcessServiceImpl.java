@@ -236,7 +236,7 @@ public class DyeingProcessServiceImpl {
 
 
         //if the above flag is false then it mean we have to remove the dyeing plc recocrd of that process
-        if (dyeingProcessExistFlag==true)
+        if (dyeingProcessExistFlag==false)
         {
             //remove the plc record
             DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
@@ -249,7 +249,7 @@ public class DyeingProcessServiceImpl {
         }
         else
         {
-            //update the existing dyeing plc
+            //update the existing dyeing plc if the flag is true
             DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
             if(dyeingplcMastExist!=null) {
                 //dyeingplcMast = new DyeingplcMast(dyeingplcMastExist);
