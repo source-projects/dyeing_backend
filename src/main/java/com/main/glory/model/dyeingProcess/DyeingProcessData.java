@@ -1,6 +1,7 @@
 package com.main.glory.model.dyeingProcess;
 
 
+import com.main.glory.model.dyeingProcess.DyeingPLC.DyeingplcMast;
 import com.main.glory.model.jet.JetData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,8 @@ public class DyeingProcessData {
     Double liquerRation;
 
 
+    @Transient
+    DyeingplcMast dyeingplcMast;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")

@@ -1,6 +1,7 @@
 package com.main.glory.model.dyeingProcess;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.dyeingProcess.DyeingPLC.DyeingplcMast;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.shade.ShadeMast;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +29,7 @@ public class DyeingProcessMast {
     Date createdDate;
     Date updatedDate;
     String processName;
+
 
 
     @OneToMany(cascade = CascadeType.ALL)

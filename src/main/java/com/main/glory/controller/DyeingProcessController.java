@@ -297,4 +297,25 @@ public class DyeingProcessController extends ControllerConfig {
 
     }
 
+
+
+    //Dyeing plc api's
+    @GetMapping("/dyeingProcess/getPlcNameList")
+    public ResponseEntity<GeneralResponse<List<String>, Object>> getPlcNameList() {
+        GeneralResponse<List<String>, Object> result;
+        try {
+
+                List<String> list = dyeingProcessService.getPlcNameList();
+                result = new GeneralResponse<>(list, constantFile.DyeingProcess_Added, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+
+    }
+
 }
