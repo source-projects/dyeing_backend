@@ -88,7 +88,10 @@ public class DyeingProcessServiceImpl {
 
         }
         DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.save(data);
+
         dyeingplcMast.setDyeingProcessMastId(dyeingProcessMast.getId());
+        if(dyeingplcMast!=null)
+            dyeingplcMastDao.save(dyeingplcMast);
     }
 
     public List<GetAllDyeingProcessList> getAllDyeingProcess(String id) throws Exception {
