@@ -250,11 +250,16 @@ public class DyeingProcessServiceImpl {
         else
         {
             //update the existing dyeing plc if the flag is true
+
             DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
             if(dyeingplcMastExist!=null) {
-                //dyeingplcMast = new DyeingplcMast(dyeingplcMastExist);
-                dyeingplcMastDao.save(dyeingplcMast);
+                //the below one will excute the update query for the given record because of exiting model object we are using
+                dyeingplcMastExist.setDyeingplcDataList(dyeingplcMast.getDyeingplcDataList());
+                dyeingplcMastDao.save(dyeingplcMastExist);
             }
+            else
+            dyeingplcMastDao.save(dyeingplcMast);
+
         }
 
 
