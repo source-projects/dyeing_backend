@@ -68,6 +68,7 @@ public class DyeingProcessServiceImpl {
         if(dyeingProcessMastExistWithName!=null)
             throw new Exception(constantFile.DyeingProcess_Name_Exist);
 
+        Boolean dyeingProcessExistFlag = false;
         DyeingplcMast dyeingplcMast = null;
         /*if(data.getDyeingProcessData().stream().filter(p->p.getProcessType().equalsIgnoreCase("Dyeing")))
         {
@@ -84,14 +85,17 @@ public class DyeingProcessServiceImpl {
                 else
                     throw new Exception(ConstantFile.DyeingProcessPlc_Data_Not_Exist);
 
+                dyeingProcessExistFlag = true;
             }
 
         }
         DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.save(data);
 
-        dyeingplcMast.setDyeingProcessMastId(dyeingProcessMast.getId());
-        if(dyeingplcMast!=null)
-            dyeingplcMastDao.save(dyeingplcMast);
+        if(dyeingProcessExistFlag==true) {
+            dyeingplcMast.setDyeingProcessMastId(dyeingProcessMast.getId());
+            if (dyeingplcMast != null)
+                dyeingplcMastDao.save(dyeingplcMast);
+        }
     }
 
     public List<GetAllDyeingProcessList> getAllDyeingProcess(String id) throws Exception {
@@ -228,6 +232,7 @@ public class DyeingProcessServiceImpl {
                     throw new Exception(ConstantFile.DyeingProcessPlc_Data_Not_Exist);
                 else
                 {
+                    //create new object with given dyeingProcessMast id
                     dyeingplcMast = new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
                     dyeingplcMast.setDyeingProcessMastId(data.getId());
                 }
@@ -254,7 +259,8 @@ public class DyeingProcessServiceImpl {
 
             DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
             if(dyeingplcMastExist!=null) {
-                //the below one will excute the update query for the given record because of exiting model object we are using
+                //the below one will execute the update query for the given record because of exiting model object we are using
+                //if exit then only change the data list
                 dyeingplcMastExist.setDyeingplcDataList(dyeingplcMast.getDyeingplcDataList());
                 dyeingplcMastDao.save(dyeingplcMastExist);
             }
