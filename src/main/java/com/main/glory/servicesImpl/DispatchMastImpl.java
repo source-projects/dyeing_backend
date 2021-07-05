@@ -27,6 +27,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.apache.catalina.User;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -864,12 +865,57 @@ public class DispatchMastImpl {
 
             for(DispatchData invoiceBatch:dispatchDataList)
             {
-
                 Optional<BatchData> batchData=batchDao.findById(invoiceBatch.getBatchEntryId());
                 batchDataList.add(batchData.get());
             }
-            batchWithGr.setBatchDataList(batchDataList);
-            batchWithGrList.add(batchWithGr);
+
+            //change the list respone if the size is greater than 30 object
+
+            if(batchDataList.size()>30) {
+
+                int i=0;
+                int object = batchDataList.size()/30;
+                int remainingGrFrom =batchDataList.size()%30;
+                int startIndex=0;
+                int limit=30;
+                //divide the entire object because of gr is greter than the limit
+
+                if(remainingGrFrom > 0)
+                {
+                    object++;
+                }
+                for(int x=1;x<object;x++)
+                {
+                    // to index value is not going to push into the list
+                    // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
+                    //only from 0-29 object are going to store in list
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex,limit);
+                    BatchWithGr newBatchWithGr=new BatchWithGr(batch);
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    startIndex=limit;
+                    limit +=30;
+                    batchWithGrList.add(newBatchWithGr);
+
+                }
+
+                //for remaining gr
+                if(remainingGrFrom > 0)
+                {
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex,batchDataList.size());
+                    BatchWithGr newBatchWithGr=new BatchWithGr(batch);
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    batchWithGrList.add(newBatchWithGr);
+                }
+
+                //batchWithGr.setBatchDataList(batchDataList);
+               //batchWithGrList.add(batchWithGr);
+            }
+            else
+            {
+                //for perfect gr lst which is 30
+                batchWithGr.setBatchDataList(batchDataList);
+                batchWithGrList.add(batchWithGr);
+            }
 
 
         }
@@ -1223,8 +1269,57 @@ public class DispatchMastImpl {
             qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
 
 
+            //data preview change
+            if(batchDataList.size()>30) {
 
-            batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
+                int i=0;
+                int object = batchDataList.size()/30;
+                int remainingGrFrom =batchDataList.size()%30;
+                int startIndex=0;
+                int limit=30;
+                //divide the entire object because of gr is greater than the limit
+
+                if(remainingGrFrom > 0)
+                {
+                    object++;
+                }
+                for(int x=1;x<object;x++)
+                {
+                    // to index value is not going to push into the list
+                    // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
+                    //only from 0-29 object are going to store in list
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex,limit);
+                    BatchWithGr newBatchWithGr=new BatchWithGr(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    startIndex=limit;
+                    limit +=30;
+                    batchWithGrList.add(newBatchWithGr);
+
+                }
+
+                //for remaining gr
+                if(remainingGrFrom > 0)
+                {
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex,batchDataList.size());
+                    BatchWithGr newBatchWithGr=new BatchWithGr(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    batchWithGrList.add(newBatchWithGr);
+                }
+
+                //batchWithGr.setBatchDataList(batchDataList);
+                //batchWithGrList.add(batchWithGr);
+            }
+            else
+            {
+                //for perfect gr lst which is 30
+                /*batchWithGr.setBatchDataList(batchDataList);
+                batchWithGrList.add(batchWithGr);*/
+                batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getStockId(),batchAndStockId.getBatchId()));
+            }
+
+
+
+
 
 
 

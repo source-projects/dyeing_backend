@@ -17,6 +17,7 @@ public class DyeingplcMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+    @Column(unique=true)
     Long dyeingProcessMastId;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -24,4 +25,9 @@ public class DyeingplcMast {
     List<DyeingplcData> dyeingplcDataList;
 
 
+    public DyeingplcMast(DyeingplcMast dyeingplcMast) {
+        this.id = dyeingplcMast.getId()==null?null:dyeingplcMast.getId();
+        this.dyeingProcessMastId = dyeingplcMast.getDyeingProcessMastId()==null?null:dyeingplcMast.getDyeingProcessMastId();
+        this.dyeingplcDataList = dyeingplcMast.getDyeingplcDataList()==null?null:dyeingplcMast.getDyeingplcDataList();
+    }
 }

@@ -1915,7 +1915,7 @@ public class StockBatchServiceImpl {
         Long totalPcs= batchDao.getTotalPcsByBatchAndStockIdWithoutFilter(stockId,batchId);
         StockMast stockMast = stockMastDao.findByStockId(stockId);
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
-        UserData userData = userDao.getUserById(stockMast.getUserHeadId());
+        UserData userData = userDao.getUserById(party.getUserHeadId());
         Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
 

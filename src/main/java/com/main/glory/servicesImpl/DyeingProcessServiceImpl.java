@@ -1,6 +1,8 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.dyeingProcess.DyeingChemicalDataDao;
+import com.main.glory.Dao.dyeingProcess.DyeingPLC.DyeingplcDataDao;
+import com.main.glory.Dao.dyeingProcess.DyeingPLC.DyeingplcMastDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessDataDao;
 import com.main.glory.Dao.dyeingProcess.DyeingProcessMastDao;
 import com.main.glory.Dao.dyeingProcess.TagDyeingProcess.TagDyeingProcessDataDao;
@@ -8,8 +10,10 @@ import com.main.glory.Dao.dyeingProcess.TagDyeingProcess.TagDyeingProcessMastDao
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
+import com.main.glory.model.dyeingProcess.DyeingPLC.DyeingplcMast;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.model.dyeingProcess.PLCParameter;
 import com.main.glory.model.dyeingProcess.TagDyeingProcess.TagDyeingProcessData;
 import com.main.glory.model.dyeingProcess.TagDyeingProcess.TagDyeingProcessMast;
 import com.main.glory.model.dyeingProcess.request.GetAllDyeingProcessList;
@@ -52,12 +56,46 @@ public class DyeingProcessServiceImpl {
 
     ConstantFile constantFile;
 
+    @Autowired
+    DyeingplcMastDao dyeingplcMastDao;
+
+    @Autowired
+    DyeingplcDataDao dyeingplcDataDao;
+
     public void addDyeingProcess(DyeingProcessMast data) throws Exception {
         //check the dyeing process already exist with the name or not
         DyeingProcessMast dyeingProcessMastExistWithName = dyeingProcessMastDao.getDyeingProcessByName(data.getProcessName());
         if(dyeingProcessMastExistWithName!=null)
             throw new Exception(constantFile.DyeingProcess_Name_Exist);
-        dyeingProcessMastDao.save(data);
+
+        Boolean dyeingProcessExistFlag = false;
+        DyeingplcMast dyeingplcMast = null;
+        /*if(data.getDyeingProcessData().stream().filter(p->p.getProcessType().equalsIgnoreCase("Dyeing")))
+        {
+
+        }*/
+
+        for(DyeingProcessData dyeingProcessData:data.getDyeingProcessData())
+        {
+            if(dyeingProcessData.getProcessType().equalsIgnoreCase("Dyeing"))
+            {
+                if(dyeingProcessData.getDyeingplcMast()!=null) {
+                    dyeingplcMast = new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
+                }
+                else
+                    throw new Exception(ConstantFile.DyeingProcessPlc_Data_Not_Exist);
+
+                dyeingProcessExistFlag = true;
+            }
+
+        }
+        DyeingProcessMast dyeingProcessMast = dyeingProcessMastDao.save(data);
+
+        if(dyeingProcessExistFlag==true) {
+            dyeingplcMast.setDyeingProcessMastId(dyeingProcessMast.getId());
+            if (dyeingplcMast != null)
+                dyeingplcMastDao.save(dyeingplcMast);
+        }
     }
 
     public List<GetAllDyeingProcessList> getAllDyeingProcess(String id) throws Exception {
@@ -135,11 +173,17 @@ public class DyeingProcessServiceImpl {
                 dyeingChemicalDataList.add(dyeingChemicalData);
             }
 
+            //find the plc record as well
+            DyeingplcMast dyeingplcMast = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(x.getId());
+            if(dyeingplcMast!=null)
+                dyeingProcessData.setDyeingplcMast(dyeingplcMast);
+
             dyeingProcessData.setDyeingChemicalData(dyeingChemicalDataList);
 
             dyeingProcessDataList.add(dyeingProcessData);
         }
         x.setDyeingProcessData(dyeingProcessDataList);
+
 
         return x;
     }
@@ -161,6 +205,7 @@ public class DyeingProcessServiceImpl {
 
         DyeingProcessMast dyeingProcessMastExist = dyeingProcessMastDao.getDyeingProcessById(data.getId());
 
+        DyeingplcMast dyeingplcMast = null;
         if(dyeingProcessMastExist==null)
         {
             throw new Exception(constantFile.DyeingProcess_Not_Found+data.getId());
@@ -174,6 +219,55 @@ public class DyeingProcessServiceImpl {
             }
         }
 
+
+        //update the dyeing plc data as well
+        //if it is true then it mean remove the plc record of that dyeing process
+        Boolean dyeingProcessExistFlag = false;
+        for(DyeingProcessData dyeingProcessData:data.getDyeingProcessData())
+        {
+            if(dyeingProcessData.getProcessType().equalsIgnoreCase("Dyeing"))
+            {
+                dyeingProcessExistFlag = true;
+                if(dyeingProcessData.getDyeingplcMast()==null)
+                    throw new Exception(ConstantFile.DyeingProcessPlc_Data_Not_Exist);
+                else
+                {
+                    //create new object with given dyeingProcessMast id
+                    dyeingplcMast = new DyeingplcMast(dyeingProcessData.getDyeingplcMast());
+                    dyeingplcMast.setDyeingProcessMastId(data.getId());
+                }
+
+            }
+        }
+
+
+        //if the above flag is false then it mean we have to remove the dyeing plc recocrd of that process
+        if (dyeingProcessExistFlag==false)
+        {
+            //remove the plc record
+            DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
+
+            if(dyeingplcMastExist!=null)
+            {
+                dyeingplcDataDao.deleteByControlId(dyeingplcMastExist.getId());
+                dyeingplcMastDao.deleteByEntryId(dyeingplcMastExist.getId());
+            }
+        }
+        else
+        {
+            //update the existing dyeing plc if the flag is true
+
+            DyeingplcMast dyeingplcMastExist = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(data.getId());
+            if(dyeingplcMastExist!=null) {
+                //the below one will execute the update query for the given record because of exiting model object we are using
+                //if exit then only change the data list
+                dyeingplcMastExist.setDyeingplcDataList(dyeingplcMast.getDyeingplcDataList());
+                dyeingplcMastDao.save(dyeingplcMastExist);
+            }
+            else
+            dyeingplcMastDao.save(dyeingplcMast);
+
+        }
 
 
     }
@@ -306,5 +400,15 @@ public class DyeingProcessServiceImpl {
         tagDyeingProcessMastDao.deleteTagDyeingProcessById(id);
         //delete the child data as well
         tagDyeingProcessDataDao.deleteTagProcessDataByControlId(id);
+    }
+
+    public List<String> getPlcNameList() {
+        List<String> list = new ArrayList<>();
+        PLCParameter[] plcParameters = PLCParameter.values();
+        for(PLCParameter plcParameter:plcParameters)
+        {
+            list.add(plcParameter.toString());
+        }
+        return list;
     }
 }
