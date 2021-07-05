@@ -67,7 +67,6 @@ public class ConsolidatedBillData {
         this.qualityNameId = quality.getQualityNameId();
         this.discount=dispatchMast.getDiscount();
         this.percentageDiscount=dispatchMast.getPercentageDiscount()==null?0:dispatchMast.getPercentageDiscount();
-        this.taxAmt=dispatchMast.getTaxAmt();
         this. netAmt=dispatchMast.getNetAmt();
         this.partyAddress1 = party.getPartyAddress1()==null?null:party.getPartyAddress1();
         this.partyAddress2 = party.getPartyAddress2()==null?null:party.getPartyAddress2();
@@ -75,10 +74,11 @@ public class ConsolidatedBillData {
         this.city = party.getCity()==null?null:party.getCity();
         this.state = party.getState()==null?null:party.getState();
         this.contactNo = party.getContactNo()==null?null:party.getContactNo();
-        this.discountAmt = StockBatchServiceImpl.changeInFormattedDecimal(this.amt - ((this.amt / 100) * this.percentageDiscount));
+        this.discountAmt = StockBatchServiceImpl.changeInFormattedDecimal((this.amt * this.percentageDiscount)/100);
+        this.taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(this.amt - ((this.amt * this.percentageDiscount)/100));
         this.cgst=StockBatchServiceImpl.changeInFormattedDecimal((this.discountAmt * 2.5)/100);
         this.sgst=StockBatchServiceImpl.changeInFormattedDecimal((this.discountAmt * 2.5)/100);
         this.gstAmt=this.cgst+this.sgst;
-        this.netAmt = this.discountAmt+this.gstAmt;
+        this.netAmt = this.taxAmt+this.gstAmt;
     }
 }
