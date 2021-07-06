@@ -49,11 +49,12 @@ public class DyeingProcessMast {
 
 
     @PrePersist
-    void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
+    protected void onCreate(){this.createdDate=new Date(System.currentTimeMillis());}
     @PreUpdate
-    void onUpdate()
+    protected void onUpdate()
     {
-        this.updatedDate = new Date(System.currentTimeMillis());
+
+        this.updatedDate = this.getUpdatedDate()==null?new Date(System.currentTimeMillis()):this.getUpdatedDate();
     }
 
 

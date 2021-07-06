@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.TestingDao;
 import com.main.glory.Dao.batch.BatchDataDao;
@@ -94,11 +95,15 @@ public class TestingController extends ControllerConfig {
     }*//*
 */
 
-    @GetMapping("/testing/{batchId}")
+    /*@GetMapping("/testing/{batchId}")
     public ResponseEntity<GeneralResponse<List<BatchData>,String>> getByBatchId(@PathVariable(name = "batchId") String batchId) throws Exception{
         GeneralResponse<List<BatchData>,String> result;
         try{
             List<BatchData> list = batchDao.getBatchByBatchId(batchId);
+            BatchData batchData = list.get(0);
+            testingService.updateBatchList(list.get(0));
+            ObjectMapper objectMapper = new ObjectMapper();
+            System.out.println(objectMapper.writeValueAsString(batchData));
             if(!list.isEmpty())
                 result =  new GeneralResponse<>(list, "found", true, System.currentTimeMillis(), HttpStatus.OK,batchId);
             else
@@ -112,7 +117,7 @@ public class TestingController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-
+*/
 
     @PostMapping("/testing/stockmast")
     public ResponseEntity<GeneralResponse<Boolean,String>> saveStockMast(@RequestBody AddStockBatch stockMast) throws Exception{
@@ -129,4 +134,7 @@ public class TestingController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+
+
 }
