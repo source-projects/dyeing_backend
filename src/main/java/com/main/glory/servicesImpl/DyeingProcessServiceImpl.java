@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service("dyeingProcessServiceImpl")
@@ -211,7 +212,10 @@ public class DyeingProcessServiceImpl {
             throw new Exception(constantFile.DyeingProcess_Not_Found+data.getId());
         }
         List<ShadeMast> getAllShade= shadeService.getAllShadeByProcessId(dyeingProcessMastExist.getId());
+       /* if(data.getUpdatedDate()==null)
+            data.setUpdatedDate(new Date(System.currentTimeMillis()));*/
         DyeingProcessMast x = dyeingProcessMastDao.save(data);
+
 
         if(!getAllShade.isEmpty()) {
             for (ShadeMast s : getAllShade) {

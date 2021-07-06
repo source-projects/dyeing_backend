@@ -244,7 +244,7 @@ public class ShadeServiceImpl {
 		if(shadeMast.isEmpty()){
 			throw new Exception(ConstantFile.Shade_Not_Exist+id);
 		}
-		//check the production is avialble or not
+		//check the production is available or not
 		List<ProductionPlan> productionPlans = productionPlanDao.getAllProductionByShadeId(id);
 		if(!productionPlans.isEmpty())
 			throw new Exception(ConstantFile.Production_Record_Exist);
