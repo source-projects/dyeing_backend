@@ -57,4 +57,14 @@ public class TestingServiceImpl {
 
         batchDao.saveAll(batchDataList);
     }
+
+    /*public void updateBatchList(List<BatchData> list) {
+        BatchData batchData = list.get(0);
+        batchData.setMtr(100.0);
+        list.set(0,batchData);
+    }
+
+    public void updateBatchList(BatchData batchData) {
+        batchData.setMtr(1000.0);
+    }*/
 }
