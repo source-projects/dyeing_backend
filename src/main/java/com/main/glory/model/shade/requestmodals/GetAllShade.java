@@ -35,6 +35,7 @@ public class GetAllShade {
     String apcNo;
     Boolean pending;
     String colorName;
+    Double wtPer100m;
     List<ShadeData> shadeDataList;
 
 
@@ -62,7 +63,7 @@ public class GetAllShade {
         this.partyShadeNo=e.getPartyShadeNo();
         this.processId=e.getProcessId();
         this.qualityEntryId=qualityName.get().getId();
-        this.qualityName=qualityName.get().getQualityName();
+        this.qualityName=qualityName1.getQualityName();
         this.qualityId=qualityName.get().getQualityId();
         this.partyName=party.get().getPartyName();
         this.partyId=party.get().getId();
@@ -75,5 +76,6 @@ public class GetAllShade {
         this.qualityName=qualityName1.getQualityName();
         this.colorName=e.getColorName();
         this.shadeDataList = e.getShadeDataList();
+        this.wtPer100m = qualityName.get().getWtPer100m();
     }
 }
