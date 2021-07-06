@@ -76,8 +76,8 @@ public class ConsolidatedBillData {
         this.contactNo = party.getContactNo()==null?null:party.getContactNo();
         this.discountAmt = StockBatchServiceImpl.changeInFormattedDecimal((this.amt * this.percentageDiscount)/100);
         this.taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(this.amt - ((this.amt * this.percentageDiscount)/100));
-        this.cgst=StockBatchServiceImpl.changeInFormattedDecimal((this.discountAmt * 2.5)/100);
-        this.sgst=StockBatchServiceImpl.changeInFormattedDecimal((this.discountAmt * 2.5)/100);
+        this.cgst=StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100);
+        this.sgst=StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100);
         this.gstAmt=this.cgst+this.sgst;
         this.netAmt = this.taxAmt+this.gstAmt;
     }
