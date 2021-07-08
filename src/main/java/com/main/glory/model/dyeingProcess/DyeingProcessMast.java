@@ -54,7 +54,7 @@ public class DyeingProcessMast {
     protected void onUpdate()
     {
 
-        this.updatedDate = this.getUpdatedDate()==null?new Date(System.currentTimeMillis()):this.getUpdatedDate();
+        this.updatedDate = this.getUpdatedDate()==null?new Date(System.currentTimeMillis()):new Date(System.currentTimeMillis());
     }
 
 
