@@ -39,6 +39,9 @@ public class BatchData {
     @ColumnDefault("false")
     Boolean isFinishMtrSave;
     String mergeBatchId;
+    String pchallanRef;
+
+
 
    /* @ApiModelProperty(hidden = true)
     @JsonIgnore
@@ -50,7 +53,7 @@ public class BatchData {
         this.id=other.id==null?null:other.id;
         this.mtr=other.mtr;
         this.wt=other.wt;
-        this.batchId=other.batchId;
+        this.batchId=other.batchId==null?null:other.getBatchId();
         this.controlId=other.controlId==null?0:other.getControlId();
         this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
         this.isExtra=other.isExtra==null?false:other.getIsExtra();
@@ -58,6 +61,7 @@ public class BatchData {
         this.finishMtr=other.finishMtr==null?0:other.getFinishMtr();
         this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();
         this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
+        this.pchallanRef = other.getPchallanRef()==null?null:other.getPchallanRef();
 
 
     }

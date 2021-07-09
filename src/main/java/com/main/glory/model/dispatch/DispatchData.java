@@ -36,12 +36,14 @@ public class DispatchData {
     @Column(columnDefinition = "varchar(255) default 'meter'")
     String billingUnit;
     Double wtPer100m;
+    String pchallanRef;
 
 
     public DispatchData(BatchData batchData) {
         this.batchEntryId=batchData.getId();
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
+        this.pchallanRef = batchData.getPchallanRef();
 
     }
 
@@ -54,6 +56,7 @@ public class DispatchData {
         this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         this.billingUnit = quality.getBillingUnit();
         this.wtPer100m = stockMast.getWtPer100m();
+        this.pchallanRef = batchData.getPchallanRef();
         //this.shadeRate=shadeMast.getExtraRate();
     }
     public DispatchData(BatchData batchData,  Quality quality,StockMast stockMast) {
@@ -64,6 +67,7 @@ public class DispatchData {
         this.qualityRate=quality.getRate();
         this.billingUnit = quality.getBillingUnit();
         this.wtPer100m = stockMast.getWtPer100m();
+        this.pchallanRef = batchData.getPchallanRef();
         //this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         //this.shadeRate=shadeMast.getExtraRate();
     }

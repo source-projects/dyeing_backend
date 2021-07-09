@@ -53,8 +53,7 @@ public class DyeingProcessMast {
     @PreUpdate
     protected void onUpdate()
     {
-
-        this.updatedDate = this.getUpdatedDate()==null?new Date(System.currentTimeMillis()):this.getUpdatedDate();
+        this.updatedDate = new Date(System.currentTimeMillis());
     }
 
 
