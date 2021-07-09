@@ -6,6 +6,7 @@ import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.StockDataBatchData.request.WTByStockAndBatch;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -402,6 +403,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select count(x.id) from BatchData x where x.batchId=:batchId")
     Long getTotalPcsByBatchIdWithoutExtra(String batchId);
+
+    @Query(value = "select * from batch_data as x where x.pchallan_ref=:pchallanRef AND x.id!=:id AND x.control_id in (select id from stock_mast as s where s.party_id=:partyId)",nativeQuery = true)
+    List<BatchData> getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(@Param("pchallanRef") String pchallanRef, @Param("partyId") Long partyId, @Param("id")Long id);
 
 
 

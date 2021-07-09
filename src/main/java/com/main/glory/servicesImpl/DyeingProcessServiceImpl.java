@@ -212,9 +212,10 @@ public class DyeingProcessServiceImpl {
             throw new Exception(constantFile.DyeingProcess_Not_Found+data.getId());
         }
         List<ShadeMast> getAllShade= shadeService.getAllShadeByProcessId(dyeingProcessMastExist.getId());
-       /* if(data.getUpdatedDate()==null)
-            data.setUpdatedDate(new Date(System.currentTimeMillis()));*/
-        DyeingProcessMast x = dyeingProcessMastDao.save(data);
+
+        //data.setUpdatedDate(new Date(System.currentTimeMillis()));
+        dyeingProcessMastExist = new DyeingProcessMast(data);
+        DyeingProcessMast x = dyeingProcessMastDao.save(dyeingProcessMastExist);
 
 
         if(!getAllShade.isEmpty()) {
