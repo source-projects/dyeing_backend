@@ -449,5 +449,87 @@ public class DispatchController extends ControllerConfig {
 
 
 
+    //create dispatchBy pchallan api's
+    @GetMapping("/dispatch/getPChallanByParty/{partyId}")
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getPChallanByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+        GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
+        try{
+            if(partyId!=null) {
+                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getPChallanByParty(partyId);
+                if(x.isEmpty())
+                    result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                else
+                    result= new GeneralResponse<>(x, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+                result= new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/dispatch/add")
+    public ResponseEntity<GeneralResponse<Long,Object>> createDispatchForPchallan(@RequestBody CreateDispatch dispatchMast) throws Exception{
+        GeneralResponse<Long,Object> result;
+        try{
+            System.out.println(request.getHeaderNames());
+            Long flag = dispatchMastService.createDispatchForPchallan(dispatchMast,Long.parseLong(request.getHeader("id")));
+            result= new GeneralResponse<>(flag, constantFile.Dispatch_Added, true, System.currentTimeMillis(), HttpStatus.OK,dispatchMast);
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,dispatchMast);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping("/dispatch/update")
+    public ResponseEntity<GeneralResponse<Long,Object>> updateDispatchForPchallan(@RequestBody CreateDispatch updateInvoice) throws Exception{
+        GeneralResponse<Long,Object> result;
+        try{
+
+            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice);
+
+            result= new GeneralResponse<>(invoiceNo, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,updateInvoice);
+            logService.saveLog(result,request,true);
+        }
+        return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    //for print invoice
+    @GetMapping("/dispatch/getPChallanPartyWithQualityDispatchBy/{id}")
+    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPChallanPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
+        GeneralResponse<PartyDataByInvoiceNumber,Object> result;
+        try{
+            //id = invoiceNo
+            if(id!=null) {
+                PartyDataByInvoiceNumber x =dispatchMastService.getPChallanPartyWithQualityDispatchBy(id);
+
+                result= new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+                result= new GeneralResponse<>(null,ConstantFile.Null_Record_Passed, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+            //logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 }

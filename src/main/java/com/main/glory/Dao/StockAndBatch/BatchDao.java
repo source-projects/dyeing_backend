@@ -408,6 +408,17 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<BatchData> getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(@Param("pchallanRef") String pchallanRef, @Param("partyId") Long partyId, @Param("id")Long id);
 
 
+    //get all the pchallan by stock id
+    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR,SUM(p.finishMtr) as finishMtr,count(p.id) as count,p.pchallanRef as pchallanRef ) from BatchData p where p.controlId=:id AND p.isProductionPlanned = true AND p.isFinishMtrSave=true AND isBillGenrated=false GROUP BY p.controlId,p.pchallanRef")
+    List<BatchWithTotalMTRandFinishMTR> getAllPChallanByStockIdWithTotalFinishMtr(Long id);
+
+    @Query("select x from BatchData x where x.controlId=:stockId AND x.pchallanRef=:pchallanRef")
+    List<BatchData> findByControlIdAndPchallanRef(Long stockId, String pchallanRef);
+
+    @Query("select x from BatchData x where x.controlId=:stockId AND x.pchallanRef=:pchallanRef AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
+    List<BatchData> findByControlIdAndPchallanRefForBillGenrate(Long stockId, String pchallanRef);
+
+
 
 
 

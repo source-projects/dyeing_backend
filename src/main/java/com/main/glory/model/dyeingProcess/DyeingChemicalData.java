@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -24,6 +25,14 @@ public class DyeingChemicalData {
     Double concentration;
     @Column(columnDefinition = "varchar(255) default 'DEFAULT'")
     String shadeType;
+    Date updatedDate;
+
+    @PreUpdate
+    protected void onUpdate()
+    {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
 
 
 }

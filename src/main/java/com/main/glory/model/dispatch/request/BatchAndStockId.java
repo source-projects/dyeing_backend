@@ -13,6 +13,7 @@ public class BatchAndStockId {
     Long stockId;
     Double rate;
     Long qualityEntryId;
+    String pchallanRef;
 
     public BatchAndStockId(String batchId, Long stockId) {
         this.batchId = batchId;
