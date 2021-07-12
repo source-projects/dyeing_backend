@@ -222,9 +222,10 @@ public class DyeingProcessServiceImpl {
         }
         List<ShadeMast> getAllShade= shadeService.getAllShadeByProcessId(dyeingProcessMastExist.getId());
 
-        //data.setUpdatedDate(new Date(System.currentTimeMillis()));
-        dyeingProcessMastExist = new DyeingProcessMast(data);
-        DyeingProcessMast x = dyeingProcessMastDao.save(dyeingProcessMastExist);
+      
+        data.setUpdatedDate(new Date(System.currentTimeMillis()));
+        DyeingProcessMast x = dyeingProcessMastDao.save(data);
+
 
 
         if(!getAllShade.isEmpty()) {
