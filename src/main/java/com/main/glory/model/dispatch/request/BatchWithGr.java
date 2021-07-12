@@ -20,6 +20,7 @@ public class BatchWithGr {
     Long controlId;
     List<BatchData> batchDataList;
 
+
     public BatchWithGr(GetBatchByInvoice batch) {
         this.batchId=batch.getBatchId();
         this.controlId=batch.getStockId();
@@ -31,6 +32,17 @@ public class BatchWithGr {
     }
     public BatchWithGr(List<BatchData> batchDataList, Long stockId, String batchId) {
         this.batchId=batchId;
+        this.controlId=stockId;
+        this.batchDataList=batchDataList;
+    }
+
+    //pchallan
+    public BatchWithGr(Long controlId,String pchallanRef) {
+        this.pchallanRef=pchallanRef;
+        this.controlId=controlId;
+    }
+    public BatchWithGr(List<BatchData> batchDataList,  String pchallanRef,Long stockId) {
+        this.pchallanRef=pchallanRef;
         this.controlId=stockId;
         this.batchDataList=batchDataList;
     }

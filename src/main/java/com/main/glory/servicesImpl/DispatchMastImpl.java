@@ -1863,4 +1863,173 @@ public class DispatchMastImpl {
         return partyDataByInvoiceNumber;
 
     }
+
+    public PartyDataByInvoiceNumber getPartyWithQualityDispatchByPChallanAndStockId(CreateDispatch createDispatch) throws Exception {
+        List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList = new ArrayList<>();
+        List<BatchWithGr> batchWithGrList = new ArrayList<>();
+
+
+        StockMast stockMast = stockBatchService.getStockById(createDispatch.getBatchAndStockIdList().get(0).getStockId());
+
+        if (stockMast == null)
+            throw new Exception(ConstantFile.StockBatch_Exist);
+
+        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        if (party == null)
+            throw new Exception(ConstantFile.Party_Not_Exist);
+
+
+        //check the all the batches and stock is belong to same party or not
+        for (BatchAndStockId batchAndStockId : createDispatch.getBatchAndStockIdList()) {
+
+            StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
+
+            //check the stock is exist with batch or not
+            //if the create flag is true the check batch data for create
+            if (createDispatch.getCreateFlag() == true) {
+
+                List<BatchData> batchDataList = batchDao.getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getPchallanRef());
+                if (batchDataList.isEmpty())
+                    throw new Exception(ConstantFile.Batch_Data_Not_Exist);
+
+            } else {
+                //check only existing of batch records
+                List<BatchData> batchDataList = batchDao.getBatchByPChallanRefAndInvoiceNumber(batchAndStockId.getPchallanRef(), String.valueOf(createDispatch.getInvoiceNo()));
+                if (batchDataList.isEmpty())
+                    throw new Exception(ConstantFile.Batch_Data_Not_Exist);
+
+            }
+
+
+            /*if(party.getId()!=stockMastExist.getPartyId())
+                throw new Exception("may the stock or batch is not belong to the same party");*/
+
+
+        }
+
+
+        //for the quality record and batch gr record
+        for (BatchAndStockId batchAndStockId : createDispatch.getBatchAndStockIdList()) {
+
+            //quality record
+
+            StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
+            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQualityId());
+            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
+            if (quality == null)
+                throw new Exception(ConstantFile.Quality_Data_Not_Exist);
+
+//            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = batchDao.getQualityBillByStockAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
+
+
+            Double totalMtr = 0.0; //;= batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            Double totalFinishMtr = 0.0;// = batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+            Long totalPcs = 0l;// = batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+
+
+            //batch record
+            List<BatchData> batchDataList = null;
+            if (createDispatch.getCreateFlag() == true) {
+                batchDataList = batchDao.getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getPchallanRef());
+
+            } else {
+                batchDataList = batchDao.getBatchByPChallanRefAndInvoiceNumber(batchAndStockId.getPchallanRef(), String.valueOf(createDispatch.getInvoiceNo()));
+            }
+            for (BatchData batchData : batchDataList) {
+                totalFinishMtr += batchData.getFinishMtr();
+                totalPcs++;
+                totalMtr += batchData.getMtr();
+            }
+
+            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality, totalFinishMtr, totalMtr, totalPcs, qualityName, batchAndStockId.getPchallanRef(), stockMastExist);
+            qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
+            //set the rate as well if it is coming and change the amt as well
+            if (batchAndStockId.getRate() != null) {
+                qualityBillByInvoiceNumber.setRate(batchAndStockId.getRate());
+                qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getFinishMtr() * batchAndStockId.getRate()));
+            }
+
+
+            qualityBillByInvoiceNumberList.add(qualityBillByInvoiceNumber);
+
+
+            //data preview change
+            if (batchDataList.size() > 30) {
+
+                int i = 0;
+                int object = batchDataList.size() / 30;
+                int remainingGrFrom = batchDataList.size() % 30;
+                int startIndex = 0;
+                int limit = 30;
+                //divide the entire object because of gr is greater than the limit
+
+                if (remainingGrFrom > 0) {
+                    object++;
+                }
+                for (int x = 1; x < object; x++) {
+                    // to index value is not going to push into the list
+                    // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
+                    //only from 0-29 object are going to store in list
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex, limit);
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(),batchAndStockId.getPchallanRef());
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    startIndex = limit;
+                    limit += 30;
+                    batchWithGrList.add(newBatchWithGr);
+
+                }
+
+                //for remaining gr
+                if (remainingGrFrom > 0) {
+                    List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(),batchAndStockId.getPchallanRef());
+                    newBatchWithGr.setBatchDataList(newBatchList);
+                    batchWithGrList.add(newBatchWithGr);
+                }
+
+                //batchWithGr.setBatchDataList(batchDataList);
+                //batchWithGrList.add(batchWithGr);
+            } else {
+                //for perfect gr lst which is 30
+                /*batchWithGr.setBatchDataList(batchDataList);
+                batchWithGrList.add(batchWithGr);*/
+                batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getPchallanRef(),batchAndStockId.getStockId()));
+            }
+
+
+        }
+
+
+        if (batchWithGrList.isEmpty() || qualityBillByInvoiceNumberList.isEmpty())
+            throw new Exception(ConstantFile.Batch_Data_Not_Found);
+
+        PartyDataByInvoiceNumber partyDataByInvoiceNumber = new PartyDataByInvoiceNumber(party, qualityBillByInvoiceNumberList, batchWithGrList);
+        //set the percentage discount as well
+        if (createDispatch.getPercentageDiscount() != null) {
+            partyDataByInvoiceNumber.setPercentageDiscount(createDispatch.getPercentageDiscount());
+        }
+
+        if (partyDataByInvoiceNumber == null)
+            throw new Exception("no data found");
+
+
+        //if the create flag is false then bind the invoice no and date as well otherwise bind that record which are coming
+        if (createDispatch.getCreateFlag() == false) {
+
+            DispatchMast dispatchMast = dispatchMastDao.getDispatchMastByInvoiceNo(createDispatch.getInvoiceNo());
+            if (dispatchMast != null) {
+                partyDataByInvoiceNumber.setInvoiceNo(dispatchMast.getPostfix());
+                partyDataByInvoiceNumber.setCreatedDate(dispatchMast.getCreatedDate());
+                partyDataByInvoiceNumber.setRemark(dispatchMast.getRemark());
+            }
+        }
+
+
+        //change remark as per coming from FE
+        partyDataByInvoiceNumber.setRemark(createDispatch.getRemark() == null ? null : createDispatch.getRemark());
+
+
+        return partyDataByInvoiceNumber;
+
+    }
 }

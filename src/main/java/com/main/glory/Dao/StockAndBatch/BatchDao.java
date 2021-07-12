@@ -418,6 +418,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select x from BatchData x where x.controlId=:stockId AND x.pchallanRef=:pchallanRef AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
     List<BatchData> findByControlIdAndPchallanRefForBillGenrate(Long stockId, String pchallanRef);
 
+    @Query("select b from BatchData b where b.pchallanRef=:pchallanRef AND b.isFinishMtrSave=true AND b.isBillGenrated=false")
+    List<BatchData> getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(String pchallanRef);
+
+    @Query("select x from BatchData x where x.pchallanRef=:pchallanRef AND x.id in (select d.batchEntryId from DispatchData d where d.invoiceNo=:invoiceNumber)")
+    List<BatchData> getBatchByPChallanRefAndInvoiceNumber(String pchallanRef, String invoiceNumber);
+
 
 
 

@@ -532,4 +532,26 @@ public class DispatchController extends ControllerConfig {
     }
 
 
+    //preview repsonse api by party with pchallan detail
+    @PostMapping("/dispatch/get/receipt/getPartyWithQualityDispatchByPChallanAndStock/")
+    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPartyWithQualityDispatchByPChallanAndStock(@RequestBody CreateDispatch createDispatch) throws Exception{
+        GeneralResponse<PartyDataByInvoiceNumber,Object> result;
+        try{
+            if(createDispatch!=null) {
+                PartyDataByInvoiceNumber x =dispatchMastService.getPartyWithQualityDispatchByPChallanAndStockId(createDispatch);
+
+                result= new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
+            }
+            else
+                result= new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,createDispatch);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,createDispatch);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
 }
