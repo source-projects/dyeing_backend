@@ -15,4 +15,7 @@ public interface DyeingChemicalDataDao extends JpaRepository<DyeingChemicalData,
 
     @Query("select q from DyeingChemicalData q where q.itemId=:id")
     List<DyeingChemicalData> getChemicalDataByItemId(Long id);
+
+    @Query("select new com.main.glory.model.dyeingProcess.DyeingChemicalData(x,(select s.itemName from SupplierRate s where s.id= x.itemId) as itemname) from DyeingChemicalData x where x.controlId=:controlId")
+    List<DyeingChemicalData> getChemicalListResponseByControlId(Long controlId);
 }

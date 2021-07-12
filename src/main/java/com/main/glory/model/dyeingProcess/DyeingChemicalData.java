@@ -33,6 +33,17 @@ public class DyeingChemicalData {
         this.updatedDate = new Date(System.currentTimeMillis());
     }
 
+    public DyeingChemicalData(DyeingChemicalData dyeingChemicalData,String itemName)
+    {
+        this.id = dyeingChemicalData.getId();
+        this.controlId = dyeingChemicalData.getControlId();
+        this.itemId = dyeingChemicalData.getItemId();
+        this.byChemical = dyeingChemicalData.getByChemical();
+        this.concentration = dyeingChemicalData.getConcentration();
+        this.shadeType = dyeingChemicalData.getShadeType();
+        this.itemName = itemName;
+    }
+
 
 
 }
