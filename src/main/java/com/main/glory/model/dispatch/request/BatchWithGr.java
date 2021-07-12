@@ -24,6 +24,7 @@ public class BatchWithGr {
     public BatchWithGr(GetBatchByInvoice batch) {
         this.batchId=batch.getBatchId();
         this.controlId=batch.getStockId();
+        this.pchallanRef = batch.getPchallanRef();
     }
 
     public BatchWithGr(String batchId,Long controlId) {

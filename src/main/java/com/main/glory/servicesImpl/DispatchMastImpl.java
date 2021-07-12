@@ -26,12 +26,9 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
-import org.apache.catalina.User;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -364,7 +361,7 @@ public class DispatchMastImpl {
                 if (batchData.getWt() != null) {
                     WT += batchData.getWt();
                     MTR += batchData.getMtr();
-                    totalFinishMtr = batchData.getFinishMtr();
+                    totalFinishMtr += batchData.getFinishMtr();
                     totalPcs++;
 
                 }
@@ -1569,7 +1566,7 @@ public class DispatchMastImpl {
 
         //iterate and change the status
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
-            List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefForBillGenrate(createDispatch.getStockId(), createDispatch.getBatchId());
+            List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef());
 
 
             //get the shade detail skip because of pchallan is in diffrent batch then which shade rate should get
@@ -1720,7 +1717,7 @@ public class DispatchMastImpl {
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
             qualityBillByInvoiceNumber.setQualityName(qualityName.get().getQualityName());
 
-            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInviceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
+            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
 
             String isMergeBatchId = "";
             for (DispatchData invoiceBatch : dispatchDataList) {
@@ -1756,7 +1753,7 @@ public class DispatchMastImpl {
 
 
             //set the quality with batch data
-            qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
+            qualityBillByInvoiceNumber.setBatchId(batch.getPchallanRef());
             if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter")) {
                 qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
                 qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
@@ -1793,7 +1790,7 @@ public class DispatchMastImpl {
 
             //batches data
 
-            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInviceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
+            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
 
             for (DispatchData invoiceBatch : dispatchDataList) {
                 Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
@@ -2030,6 +2027,84 @@ public class DispatchMastImpl {
 
 
         return partyDataByInvoiceNumber;
+
+    }
+
+    //get dispatch by id for update dispatch
+    public PartyWithBatchByInvoice getDispatchForUpdatePChallanByInvoiceNumber(String invoiceNo) throws Exception {
+        List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList = new ArrayList<>();
+
+        List<GetBatchByInvoice> list = dispatchDataDao.findPChallanAndStockByInvoice(invoiceNo);
+
+       /* if(list.isEmpty())
+            throw new Exception("no data found");*/
+
+        for (GetBatchByInvoice batch : list) {
+            BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = new BatchWithTotalMTRandFinishMTR();
+
+            batchWithTotalMTRandFinishMTR.setPchallanRef(batch.getPchallanRef());
+            batchWithTotalMTRandFinishMTR.setControlId(batch.getStockId());
+
+            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
+            Double WT = 0.0;
+            Double MTR = 0.0;
+            Double totalFinishMtr = 0.0;
+            Long totalPcs = 0l;
+
+            for (DispatchData dispatchData : dispatchDataList) {
+                BatchData batchData = batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
+                if (batchData.getWt() != null) {
+                    WT += batchData.getWt();
+                    MTR += batchData.getMtr();
+                    totalFinishMtr += batchData.getFinishMtr();
+                    totalPcs++;
+
+                }
+            }
+            if (!dispatchDataList.isEmpty()) {
+                Quality quality = qualityDao.getqualityById(dispatchDataList.get(0).getQualityEntryId());
+                if (quality != null) {
+                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                    batchWithTotalMTRandFinishMTR.setQualityEntryId(quality.getId());
+                    batchWithTotalMTRandFinishMTR.setQualityId(quality.getQualityId());
+                    batchWithTotalMTRandFinishMTR.setQualityName(qualityName.get().getQualityName());
+                    batchWithTotalMTRandFinishMTR.setRate(dispatchDataList.get(0).getQualityRate());
+
+                }
+            }
+            batchWithTotalMTRandFinishMTR.setTotalFinishMtr(totalFinishMtr);
+            batchWithTotalMTRandFinishMTR.setTotalPcs(totalPcs);
+            batchWithTotalMTRandFinishMTR.setWT(stockBatchService.changeInFormattedDecimal(WT));
+            batchWithTotalMTRandFinishMTR.setMTR(stockBatchService.changeInFormattedDecimal(MTR));
+//            Optional<Party> party=partyDao.findById(dispatchDataList.get(0).getStockId());
+//            if(party.isPresent())
+//                throw new Exception("no party data found");
+//            batchWithTotalMTRandFinishMTR.setPartyId(party.get().getId());
+//            batchWithTotalMTRandFinishMTR.setPartyName(party.get().getPartyName());
+            batchWithTotalMTRandFinishMTRList.add(batchWithTotalMTRandFinishMTR);
+        }
+
+
+        StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
+        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+
+        if (party == null)
+            throw new Exception(ConstantFile.Party_Not_Exist);
+
+
+        PartyWithBatchByInvoice partyWithBatchByInvoice = new PartyWithBatchByInvoice(batchWithTotalMTRandFinishMTRList, party);
+
+
+        //get the discount from party
+        DispatchMast dispatchMast = dispatchMastDao.getDispatchMastByInvoiceNo(Long.parseLong(invoiceNo));
+        if (dispatchMast != null) {
+            partyWithBatchByInvoice.setPercentageDiscount(dispatchMast.getPercentageDiscount());
+            partyWithBatchByInvoice.setRemark(dispatchMast.getRemark());
+        }
+        //status
+        partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));
+
+        return partyWithBatchByInvoice;
 
     }
 }

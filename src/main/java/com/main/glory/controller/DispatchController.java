@@ -201,6 +201,7 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
     }
 
+    //for printing the invoice
     @GetMapping("/dispatch/getPartyWithQualityDispatchBy/{id}")
     public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
         GeneralResponse<PartyDataByInvoiceNumber,Object> result;
@@ -323,6 +324,7 @@ public class DispatchController extends ControllerConfig {
 
     //********************* New Invoice module
 
+    //for receipt/preview of invoice before saving the record
     @PostMapping("/dispatch/get/receipt/getPartyWithQualityDispatchByBatchesAndStock/")
     public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPartyWithQualityDispatchBy(@RequestBody CreateDispatch createDispatch) throws Exception{
         GeneralResponse<PartyDataByInvoiceNumber,Object> result;
@@ -532,7 +534,7 @@ public class DispatchController extends ControllerConfig {
     }
 
 
-    //preview repsonse api by party with pchallan detail
+    //preview repsonse of FE api by party with pchallan detail
     @PostMapping("/dispatch/get/receipt/getPartyWithQualityDispatchByPChallanAndStock/")
     public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPartyWithQualityDispatchByPChallanAndStock(@RequestBody CreateDispatch createDispatch) throws Exception{
         GeneralResponse<PartyDataByInvoiceNumber,Object> result;
@@ -553,5 +555,28 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+    //get dipatch to update dispatch by invoice number
+    @GetMapping("/dispatch/getDispatchWithPChallan/byInvoiceNumber/{invoiceNo}")
+    public ResponseEntity<GeneralResponse<PartyWithBatchByInvoice,Object>> getDispatchForUpdateByInvoiceNumber(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
+        GeneralResponse<PartyWithBatchByInvoice,Object> result;
+        try{
+            if(invoiceNo!=null) {
+                PartyWithBatchByInvoice x =dispatchMastService.getDispatchForUpdatePChallanByInvoiceNumber(invoiceNo);
+                if(x!=null)
+                    result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                else
+                    result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+                result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 }
