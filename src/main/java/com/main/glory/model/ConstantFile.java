@@ -246,6 +246,17 @@ public class ConstantFile {
     public static String StockBatch_Not_Found_ByPartyQuality = "Data not found for Party and Quality ";
 
 
+    //pchallan api's
+    public static String StockBatch_PChallanRef_Create = "Create PChallan Not batches";
+    public static String StockBatch_PChallanRef_Update = "Update PChallan Not batches";
+    public static String StockBatch_PChallanRef_Added = "Data added successfully";
+    public static String StockBatch_PChallanRef_Updated = "Data updated successfully";
+    public static String StockBatch_PChallanRef_Deleted = "Data deleted successfully";
+    public static String StockBatch_PChallanRef_Found = "Data found";
+    public static String StockBatch_PChallanRef_Not_Found = "Data not found";
+    public static String StockBatch_PChallanRef_ExistWithParty = "PChallan exist with party";
+
+
     //batch
     public static String Batch_Data_Added = "Data added successfully";
     public static String Batch_Data_Updated = "Data updated successfully";
@@ -255,6 +266,7 @@ public class ConstantFile {
     public static String Batch_Id_Not_Found = "Data not found ";
     public static String Batch_Data_Not_Found = "Data not found ";
     public static String Batch_Data_Not_Exist = "Batch Data not Exist ";
+    public static String Batch_Dyeing_Already = "Batch already dyeing";
 
     //Payment
     public static String Payment_Exist = "Party data exist";

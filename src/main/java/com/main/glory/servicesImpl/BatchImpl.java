@@ -71,6 +71,9 @@ public class BatchImpl {
                 if (batchData.getId() == 0) {
                     batchData.setIsExtra(true);
                     batchData.setMtr(0.0);
+                    //get the pchallan n by sequence id whic is coming from FE
+                    BatchData batchDataForPChallanRef = batchDao.getBatchDataById(batchData.getSequenceId());
+                    batchData.setPchallanRef(batchDataForPChallanRef.getPchallanRef());
 
                 } else {
                     //if it is already available then replace the flag from the hash map
@@ -114,6 +117,9 @@ public class BatchImpl {
                     batchData.setIsExtra(true);
                     batchData.setMtr(0.0);
 
+                    //get the pchallan n by sequence id whic is coming from FE
+                    BatchData batchDataForPChallanRef = batchDao.getBatchDataById(batchData.getSequenceId());
+                    batchData.setPchallanRef(batchDataForPChallanRef.getPchallanRef());
 
                 } else {
                     //if it is already available then replace the flag from the hash map

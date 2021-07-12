@@ -92,6 +92,19 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query("select x.wtPer100m from DispatchData x where x.batchEntryId=:id AND x.invoiceNo=:invoiceNumber")
     Double getWtPer100mByInvoiceAndBatchEntryId(String invoiceNumber, Long id);
 
+    @Modifying
+    @Transactional
+    @Query("update DispatchData x set x.qualityRate=:rate where x.pchallanRef=:pchallanRef AND x.invoiceNo=:invoiceNo")
+    void updateQualityRateWithPChallanRefAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate);
+
+
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.stockId,dd.pchallanRef) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.stockId")
+    List<GetBatchByInvoice> findPChallanAndStockByInvoice(String invoiceExist);
+
+    //get the invoice batch by the invoice no and batch id and stock id
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.invoiceNo=:invoiceNo AND dd.batchId IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
+    List<DispatchData> findByPChallanRefAndStockIdAndInviceNo(Long stockId, String pchallanRef, String invoiceNo);
+
 
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")

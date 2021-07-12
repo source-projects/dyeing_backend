@@ -4,12 +4,14 @@ import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Optional;
 
 @NoArgsConstructor
@@ -33,6 +35,8 @@ public class GetAllShade {
     String apcNo;
     Boolean pending;
     String colorName;
+    Double wtPer100m;
+    List<ShadeData> shadeDataList;
 
 
     public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName,DyeingProcessMast dyeingProcessMast) {
@@ -59,7 +63,7 @@ public class GetAllShade {
         this.partyShadeNo=e.getPartyShadeNo();
         this.processId=e.getProcessId();
         this.qualityEntryId=qualityName.get().getId();
-        this.qualityName=qualityName.get().getQualityName();
+        this.qualityName=qualityName1.getQualityName();
         this.qualityId=qualityName.get().getQualityId();
         this.partyName=party.get().getPartyName();
         this.partyId=party.get().getId();
@@ -71,5 +75,7 @@ public class GetAllShade {
         this.processName=dyeingProcessMast.getProcessName();
         this.qualityName=qualityName1.getQualityName();
         this.colorName=e.getColorName();
+        this.shadeDataList = e.getShadeDataList();
+        this.wtPer100m = qualityName.get().getWtPer100m();
     }
 }

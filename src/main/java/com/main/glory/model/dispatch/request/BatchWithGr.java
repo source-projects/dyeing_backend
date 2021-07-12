@@ -14,6 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 public class BatchWithGr {
+
+    String pchallanRef;
     String batchId;
     Long controlId;
     List<BatchData> batchDataList;

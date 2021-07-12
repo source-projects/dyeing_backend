@@ -17,6 +17,7 @@ public class GetBatchByInvoice {
     String batchId;
     Long stockId;
     String mergeBatchId;
+    String pchallanRef;
 
     public GetBatchByInvoice(Long batchEntryId, String batchId, Long stockId) {
         this.batchEntryId = batchEntryId;
@@ -28,5 +29,10 @@ public class GetBatchByInvoice {
         this.batchId = batchId;
         this.stockId = stockId;
         this.mergeBatchId=mergeBatchId;
+    }
+    public GetBatchByInvoice(Long batchEntryId, Long stockId,String pchallanRef) {
+        this.batchEntryId = batchEntryId;
+        this.pchallanRef = pchallanRef;
+        this.stockId = stockId;
     }
 }

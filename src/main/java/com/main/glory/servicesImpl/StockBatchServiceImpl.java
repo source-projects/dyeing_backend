@@ -29,6 +29,7 @@ import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import org.apache.commons.math3.util.Precision;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -162,14 +163,14 @@ public class StockBatchServiceImpl {
                     stockMast.setUserHeadId(party.getUserHeadId());
                 }
                 //check the invoice sequence
-                BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+               /* BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
                 if(batchSequence==null)
                     throw new Exception(ConstantFile.Batch_Sequence_Not_Exist);
 
                 if(max >= batchSequence.getSequence())
                 {
                     batchSequneceDao.updateBatchSequence(batchSequence.getId(),max+1);
-                }
+                }*/
 
 
                 //add record
@@ -536,10 +537,10 @@ public class StockBatchServiceImpl {
 
 
             //update the sequence
-            BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
+            /*BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
             if (max >= batchSequence.getSequence()) {
                 batchSequneceDao.updateBatchSequence(batchSequence.getId(), max + 1);
-            }
+            }*/
 
 
     }
@@ -2512,6 +2513,142 @@ public class StockBatchServiceImpl {
 
     public Double getTotalMtrByMergeBatchId(String batchId) {
         return batchDao.getTotalMtrByMergeBatchId(batchId) ;
+    }
+
+
+    //add pchallan record api'ss service
+    public void addPChallanRef(StockMast stockMast) throws Exception {
+
+        List<BatchData> batchDataList = new ArrayList<>();
+        //check that the party exist with same challan ref
+        for(BatchData batchData:stockMast.getBatchData())
+        {
+            List<BatchData> batchDataExistWithChallanAndPartyId = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batchData.getPchallanRef(),stockMast.getPartyId(),0l);
+            if(batchDataExistWithChallanAndPartyId.size() > 0)
+                throw new Exception(ConstantFile.StockBatch_PChallanRef_ExistWithParty);
+
+            if(batchData.getBatchId()!=null)
+            {
+                throw new Exception(ConstantFile.StockBatch_PChallanRef_Create);
+            }
+            batchDataList.add(new BatchData(batchData));
+
+
+        }
+
+        //store pchallan
+
+        stockMast.setBatchData(batchDataList);
+        stockMastDao.save(stockMast);
+    }
+
+    public void updatePChallanRef(StockMast stockMast,String id) throws Exception {
+        List<BatchData> batchDataList = new ArrayList<>();
+        for(BatchData batchData:stockMast.getBatchData())
+        {
+            /*List<BatchData> batchDataExistWithChallanAndPartyId = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batchData.getPchallanRef(),stockMast.getPartyId(),batchData.getId()==null?0l:batchData.getId());
+            if(batchDataExistWithChallanAndPartyId!=null)
+                throw new Exception(ConstantFile.StockBatch_PChallanRef_ExistWithParty);
+            */
+            if(batchData.getBatchId()!=null)
+            {
+                throw new Exception(ConstantFile.StockBatch_PChallanRef_Create);
+            }
+            //batchDataList.add(new BatchData(batchData));
+
+            if(batchData.getIsProductionPlanned()==true)
+                throw new Exception(ConstantFile.Batch_Dyeing_Already);
+
+        }
+
+        Long batchId = 0l, max = 0l;
+
+        Optional<StockMast> original = stockMastDao.findById(stockMast.getId());
+        if (original.isEmpty()) {
+            throw new Exception(ConstantFile.StockBatch_Not_Found+ stockMast.getId());
+        }
+
+        // Validate, if batch is not given to the production planning then throw the exception
+            /*if (original.get().getIsProductionPlanned()) {
+                throw new Exception("BatchData is already sent to production, for id:" + stockMast.getId());
+            }*/
+
+
+        //for delete the batch gr if not coming from FE
+
+        //##Get the data first from the list
+        Map<Long, Boolean> batchGr = new HashMap<>();
+        List<BatchData> batchData = batchDao.findByControlId(stockMast.getId());
+        for (BatchData batch : batchData) {
+            batchGr.put(batch.getId(), false);
+
+            if(batch.getIsExtra()==true)
+            {
+                batchDataList.add(batch);
+            }
+            //System.out.println(batch.getId());
+        }
+
+        //change the as per the data is coming from FE
+        for (BatchData batch : stockMast.getBatchData()) {
+            if(batch.getBatchId()!=null)
+                throw new Exception(ConstantFile.StockBatch_PChallanRef_Update);
+            //System.out.println("coming:"+batch.getId());
+            if (batchGr.containsKey(batch.getId())) {
+                BatchData batchData1=batchDao.getBatchDataById(batch.getId());
+                batchData1.setMtr(batch.getMtr());
+                batchData1.setWt(batch.getWt());
+                batchData1.setIsProductionPlanned(batch.getIsProductionPlanned());
+
+                batch = new BatchData(batchData1);
+                batchGr.replace(batch.getId(), true);
+            }
+            else
+            {
+                batch=new BatchData(batch);
+            }
+            /*batchId = Long.parseLong(batch.getBatchId());
+            if (batchId > max) {
+                max = batchId;
+            }*/
+            batch.setControlId(stockMast.getId());
+
+            //check the challan changes?
+           /* BatchData batchDataExistWithPChallan = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batch.getPchallanRef(),stockMast.getPartyId(),batch.getId());
+            if(batchDataExistWithPChallan!=null)
+                throw new Exception(ConstantFile.StockBatch_PChallanRef_ExistWithParty);
+           */
+            batchDataList.add(batch);
+        }
+
+
+
+        //remove the record jiska flag false ho
+        for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
+            //System.out.println(entry.getKey()+":"+entry.getValue());
+            if (entry.getValue() == false) {
+                //remove the batch id and only if the production is not plan
+                batchDao.deleteByIdWithProduction(entry.getKey());
+            }
+        }
+
+
+        //for data entry user
+        UserData userData = userDao.getUserById(Long.parseLong(id));
+        if(userData.getIsMaster()==false || stockMast.getUserHeadId()==0)
+        {
+            //fetch the party record to set the usert head
+            Party party = partyDao.findByPartyId(stockMast.getPartyId());
+            stockMast.setUserHeadId(party.getUserHeadId());
+        }
+        //update record
+        StockMast x = new StockMast(stockMast);
+        x.setBatchData(batchDataList);
+        stockMastDao.save(x);
+    }
+
+    public List<BatchData> getPChallanExistWithParyId(Long partyId, String pchallanRef) {
+        return batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(pchallanRef,partyId,0l);
     }
 
 

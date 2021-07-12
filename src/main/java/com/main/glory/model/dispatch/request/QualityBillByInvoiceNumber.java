@@ -20,6 +20,7 @@ public class QualityBillByInvoiceNumber {
     Double rate;
     Double shadeRate;
     String batchId;
+    String pchallanRef;
     Double totalMtr;
     Double finishMtr;
     Long pcs;
