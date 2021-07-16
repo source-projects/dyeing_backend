@@ -1377,11 +1377,13 @@ public class DispatchMastImpl {
                 if (quality == null)
                     continue;
 
-                for (BatchData batchData : batchDataList) {
+                /*for (BatchData batchData : batchDataList) {
                     totalBatchMtr += batchData.getMtr();
                     //batchFinishMtr +=batchData.getFinishMtr();
                     totalFinishMtr += batchData.getFinishMtr();
-                }
+                }*/
+                totalBatchMtr = batchDataList.stream().filter(x->x.getBatchId()!=null).mapToDouble(x->x.getMtr()).sum();
+                totalFinishMtr = batchDataList.stream().filter(x->x.getBatchId()!=null).mapToDouble(x->x.getFinishMtr()).sum();
                 /*System.out.println(invoiceNumber);
                 System.out.println(batchDataList.get(0).getId());*/
                 Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
