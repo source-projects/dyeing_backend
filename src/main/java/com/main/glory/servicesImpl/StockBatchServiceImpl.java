@@ -2517,7 +2517,7 @@ public class StockBatchServiceImpl {
 
 
     //add pchallan record api'ss service
-    public void addPChallanRef(StockMast stockMast) throws Exception {
+    public Long addPChallanRef(StockMast stockMast) throws Exception {
 
         List<BatchData> batchDataList = new ArrayList<>();
         //check that the party exist with same challan ref
@@ -2539,10 +2539,11 @@ public class StockBatchServiceImpl {
         //store pchallan
 
         stockMast.setBatchData(batchDataList);
-        stockMastDao.save(stockMast);
+        StockMast x = stockMastDao.save(stockMast);
+        return x.getId();
     }
 
-    public void updatePChallanRef(StockMast stockMast,String id) throws Exception {
+    public Long updatePChallanRef(StockMast stockMast,String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
         for(BatchData batchData:stockMast.getBatchData())
         {
@@ -2644,7 +2645,8 @@ public class StockBatchServiceImpl {
         //update record
         StockMast x = new StockMast(stockMast);
         x.setBatchData(batchDataList);
-        stockMastDao.save(x);
+        StockMast update = stockMastDao.save(x);
+        return update.getId();
     }
 
     public List<BatchData> getPChallanExistWithParyId(Long partyId, String pchallanRef) {
