@@ -491,6 +491,8 @@ public class StockBatchServiceImpl {
                 {
                     batch=new BatchData(batch);
                 }
+                ObjectMapper obj = new ObjectMapper();
+                System.out.println("-"+obj.writeValueAsString(obj));
                 batchId = Long.parseLong(batch.getBatchId());
                 if (batchId > max) {
                     max = batchId;

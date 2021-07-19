@@ -27,9 +27,9 @@ public class BatchWithTotalMTRandFinishMTR {
     public BatchWithTotalMTRandFinishMTR(String batchId, Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs) {
         this.batchId = batchId;
         this.controlId = controlId;
-        this.WT = WT;
-        this.MTR = MTR;
-        this.totalFinishMtr = totalFinishMtr;
+        this.WT = StockBatchServiceImpl.changeInFormattedDecimal(WT);
+        this.MTR = StockBatchServiceImpl.changeInFormattedDecimal(MTR);
+        this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.totalPcs = totalPcs;
     }
 
