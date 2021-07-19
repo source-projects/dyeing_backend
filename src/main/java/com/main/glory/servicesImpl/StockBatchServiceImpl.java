@@ -491,8 +491,8 @@ public class StockBatchServiceImpl {
                 {
                     batch=new BatchData(batch);
                 }
-                ObjectMapper obj = new ObjectMapper();
-                System.out.println("-"+obj.writeValueAsString(obj));
+                /*ObjectMapper obj = new ObjectMapper();
+                System.out.println("-"+obj.writeValueAsString(batch));*/
                 batchId = Long.parseLong(batch.getBatchId());
                 if (batchId > max) {
                     max = batchId;
@@ -515,8 +515,10 @@ public class StockBatchServiceImpl {
             for (Map.Entry<Long, Boolean> entry : batchGr.entrySet()) {
                 //System.out.println(entry.getKey()+":"+entry.getValue());
                 if (entry.getValue() == false) {
-                    //remove the batch id and only if the production is not plan
-                    batchDao.deleteByIdWithProduction(entry.getKey());
+                    //set null if the batch gr is not comming from FE
+                    batchDao.setBatchIdByEntryId(entry.getKey(),null);
+                    //batchDao.deleteByIdWithProduction(entry.getKey());
+
                 }
             }
 

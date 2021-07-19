@@ -425,6 +425,12 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     List<BatchData> getBatchByPChallanRefAndInvoiceNumber(String pchallanRef, String invoiceNumber);
 
 
+    @Modifying
+    @Transactional
+    @Query("update BatchData x set x.batchId=:batchId where x.id=:key")
+    void setBatchIdByEntryId(Long key, String batchId);
+
+
 
 
 
