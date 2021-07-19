@@ -276,53 +276,56 @@ public class DispatchMastImpl {
     public List<GetAllDispatch> getAllDisptach(String signByParty) throws Exception {
 
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
-        List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
+        //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
 
+        List<DispatchMast> dispatchList = dispatchMastDao.getAllInvoiceList();
 
         List<String> invoiceNumber = new ArrayList<>();
 
        /* if (dispatchList.isEmpty())
             throw new Exception("no data found");*/
-        for (DispatchData dispatchData : dispatchList) {
+        for (DispatchMast dispatchMast : dispatchList) {
             List<BatchWithTotalMTRandFinishMTR> batchList = new ArrayList<>();
 
-            if (!invoiceNumber.contains(dispatchData.getInvoiceNo())) {
-                invoiceNumber.add(dispatchData.getInvoiceNo());
-                GetAllDispatch getAllDispatch = new GetAllDispatch(dispatchData);
-                System.out.println("invoice:" + dispatchData.getInvoiceNo());
-                DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(dispatchData.getInvoiceNo()));
+           /* if (!invoiceNumber.contains(dispatchMast.getPostfix())) {
+                invoiceNumber.add(dispatchMast.getPostfix().toString());*/
+            GetAllDispatch getAllDispatch = new GetAllDispatch(dispatchMast);
+            //System.out.println("invoice:" + dispatchData.getInvoiceNo());
+                /*DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(dispatchData.getPostfix());
 
                 if (dispatchMast == null)
-                    continue;
+                    continue;*/
 
-                Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
-                if (party == null)
-                    continue;
-                //get the batch data
+            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if (party == null)
+                continue;
+            //get the batch data
 
-                List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchData.getInvoiceNo());
+            List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchMast.getPostfix().toString());
 
-                for (GetBatchByInvoice batch : batchListWithInvoiceList) {
-                    //list of batches
-                    BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
-                    batchList.add(batchWithTotalMTRandFinishMTR);
-                }
-                getAllDispatch.setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
-                getAllDispatch.setPartyId(party.getId());
-                getAllDispatch.setPartyName(party.getPartyName());
-                getAllDispatch.setBatchList(batchList);
-                getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
-                Double mtr = 0.0;
-                Double finish = 0.0;
-                for (BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR : batchList) {
-                    mtr += batchWithTotalMTRandFinishMTR.getMTR();
-                    finish += batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
-                }
-                getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
-                getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
-
-                dispatchDataList.add(getAllDispatch);
+            for (GetBatchByInvoice batch : batchListWithInvoiceList) {
+                //list of batches
+                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
+                batchList.add(batchWithTotalMTRandFinishMTR);
             }
+            getAllDispatch.setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
+            getAllDispatch.setPartyId(party.getId());
+            getAllDispatch.setPartyName(party.getPartyName());
+            getAllDispatch.setBatchList(batchList);
+            getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
+            Double mtr = 0.0;
+            Double finish = 0.0;
+           /* for (BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR : batchList) {
+                mtr += batchWithTotalMTRandFinishMTR.getMTR();
+                finish += batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
+            }*/
+            mtr = batchList.stream().mapToDouble(q->q.getMTR()).sum();
+            finish = batchList.stream().mapToDouble(q->q.getTotalFinishMtr()).sum();
+            getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
+            getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
+
+            dispatchDataList.add(getAllDispatch);
+            //}
 
 
         }
@@ -1382,8 +1385,8 @@ public class DispatchMastImpl {
                     //batchFinishMtr +=batchData.getFinishMtr();
                     totalFinishMtr += batchData.getFinishMtr();
                 }*/
-                totalBatchMtr = batchDataList.stream().filter(x->x.getBatchId()!=null).mapToDouble(x->x.getMtr()).sum();
-                totalFinishMtr = batchDataList.stream().filter(x->x.getBatchId()!=null).mapToDouble(x->x.getFinishMtr()).sum();
+                totalBatchMtr = batchDataList.stream().filter(x -> x.getBatchId() != null).mapToDouble(x -> x.getMtr()).sum();
+                totalFinishMtr = batchDataList.stream().filter(x -> x.getBatchId() != null).mapToDouble(x -> x.getFinishMtr()).sum();
                 /*System.out.println(invoiceNumber);
                 System.out.println(batchDataList.get(0).getId());*/
                 Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
@@ -1970,7 +1973,7 @@ public class DispatchMastImpl {
                     // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
                     //only from 0-29 object are going to store in list
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, limit);
-                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(),batchAndStockId.getPchallanRef());
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
                     newBatchWithGr.setBatchDataList(newBatchList);
                     startIndex = limit;
                     limit += 30;
@@ -1981,7 +1984,7 @@ public class DispatchMastImpl {
                 //for remaining gr
                 if (remainingGrFrom > 0) {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
-                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(),batchAndStockId.getPchallanRef());
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
                     newBatchWithGr.setBatchDataList(newBatchList);
                     batchWithGrList.add(newBatchWithGr);
                 }
@@ -1992,7 +1995,7 @@ public class DispatchMastImpl {
                 //for perfect gr lst which is 30
                 /*batchWithGr.setBatchDataList(batchDataList);
                 batchWithGrList.add(batchWithGr);*/
-                batchWithGrList.add(new BatchWithGr(batchDataList,batchAndStockId.getPchallanRef(),batchAndStockId.getStockId()));
+                batchWithGrList.add(new BatchWithGr(batchDataList, batchAndStockId.getPchallanRef(), batchAndStockId.getStockId()));
             }
 
 
