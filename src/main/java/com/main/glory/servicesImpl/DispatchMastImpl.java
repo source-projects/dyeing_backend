@@ -815,6 +815,7 @@ public class DispatchMastImpl {
 
             //change the list respone if the size is greater than 30 object
 
+            batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
             if (batchDataList.size() > 30) {
 
                 int i = 0;
