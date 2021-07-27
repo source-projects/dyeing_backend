@@ -30,6 +30,7 @@ public class HMIMast {
     Date updatedDate;
     Long createdBy;
     Long updatedBy;
+    Boolean completed;
 
     public HMIMast(String lotNo, String shadeno, Double wt, String jetNo) {
         this.batchId = lotNo;
@@ -47,6 +48,7 @@ public class HMIMast {
         this.shadeNo = productionPlan.getShadeId()==null?"No Shade mention":String.valueOf(productionPlan.getShadeId());
         this.createdBy = records.getCreatedBy()==null?null:records.getCreatedBy();
         this.updatedBy = records.getUpdatedBy()==null?null: records.getUpdatedBy();
+        this.completed = false;
     }
 
     @PrePersist
