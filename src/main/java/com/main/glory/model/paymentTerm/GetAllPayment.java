@@ -1,6 +1,6 @@
 package com.main.glory.model.paymentTerm;
 
-import com.main.glory.model.PaymentMast;
+import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

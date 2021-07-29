@@ -7,7 +7,7 @@ import com.main.glory.Dao.paymentTerm.PaymentDataDao;
 import com.main.glory.Dao.paymentTerm.PaymentMastDao;
 import com.main.glory.Dao.paymentTerm.PaymentTypeDao;
 import com.main.glory.model.ConstantFile;
-import com.main.glory.model.PaymentMast;
+import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
 import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;

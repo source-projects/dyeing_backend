@@ -1,6 +1,6 @@
 package com.main.glory.Dao.paymentTerm;
 
-import com.main.glory.model.PaymentMast;
+import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.GetAllPayment;
 import com.main.glory.model.paymentTerm.request.GetAllBank;
 import org.springframework.data.jpa.repository.JpaRepository;

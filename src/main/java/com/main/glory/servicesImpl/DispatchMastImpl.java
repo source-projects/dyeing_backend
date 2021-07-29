@@ -278,7 +278,13 @@ public class DispatchMastImpl {
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
         //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
 
-        List<DispatchMast> dispatchList = dispatchMastDao.getAllInvoiceList();
+        List<DispatchMast> dispatchList = null;
+        if(signByParty==null|| signByParty.isEmpty())
+        {
+            dispatchList = dispatchMastDao.getAllInvoiceList();
+        }
+        else
+        dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
 
         List<String> invoiceNumber = new ArrayList<>();
 
@@ -289,6 +295,9 @@ public class DispatchMastImpl {
 
            /* if (!invoiceNumber.contains(dispatchMast.getPostfix())) {
                 invoiceNumber.add(dispatchMast.getPostfix().toString());*/
+            if (dispatchMast == null)
+                continue;
+
             GetAllDispatch getAllDispatch = new GetAllDispatch(dispatchMast);
             //System.out.println("invoice:" + dispatchData.getInvoiceNo());
                 /*DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(dispatchData.getPostfix());
@@ -330,11 +339,11 @@ public class DispatchMastImpl {
 
         }
 
-        if (signByParty.equals("true")) {
+       /* if (signByParty.equals("true")) {
             dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == true).collect(Collectors.toList());
         } else if (signByParty.equals("false")) {
             dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == false).collect(Collectors.toList());
-        }
+        }*/
 
         return dispatchDataList;
     }
@@ -770,6 +779,7 @@ public class DispatchMastImpl {
 
             //set the quality with batch data
             qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
+            qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
             if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter")) {
                 qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
                 qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
@@ -812,6 +822,9 @@ public class DispatchMastImpl {
                 Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
                 batchDataList.add(batchData.get());
             }
+
+            batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
+
 
             //change the list respone if the size is greater than 30 object
 
@@ -858,6 +871,8 @@ public class DispatchMastImpl {
 
 
         }
+
+
 
 
         //for party data
@@ -1758,6 +1773,7 @@ public class DispatchMastImpl {
 
 
             //set the quality with batch data
+            qualityBillByInvoiceNumber.setPchallanRef(batch.getPchallanRef());
             qualityBillByInvoiceNumber.setBatchId(batch.getPchallanRef());
             if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter")) {
                 qualityBillByInvoiceNumber.setTotalMtr(totalMtr);

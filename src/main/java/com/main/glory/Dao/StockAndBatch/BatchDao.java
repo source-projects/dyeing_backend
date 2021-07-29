@@ -439,6 +439,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("update BatchData x set x.controlId=:controlId,x.batchId=:batchId where x.id=:key")
     void setBatchIdAndControlIdByEntryId(Long key, String batchId, Long controlId);
 
+    @Query(value = "select * from batch_data where control_id=:controlId AND is_production_planned=true LIMIT 1",nativeQuery = true)
+    BatchData findIsProductionPlanTrueByControlId(@Param("controlId") Long controlId);
+
 
 
 

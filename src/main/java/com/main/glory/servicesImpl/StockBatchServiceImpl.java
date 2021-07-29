@@ -198,14 +198,30 @@ public class StockBatchServiceImpl {
         Boolean flag = false;
 
         if (id == null) {
-            data = stockMastDao.getAllStockWithPartyName();
+            data = stockMastDao.getAllStockWithPartyNameAndQualityName();
             if (data.isPresent()) {
                 List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                //List<GetAllBatchResponse> batchDataList2 = new ArrayList<>();
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
 
-                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
-                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, qualityName));
+                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
+                    if(trueBatch!=null)
+                    {
+                        batchData.setIsProductionPlanned(true);
+                    }
+                    else
+                    {
+                        batchData.setIsProductionPlanned(false);
+                    }
+                    /*if (batchData.getBatchData().stream().anyMatch(x -> x.getIsProductionPlanned() == true)) {
+                        batchData.setIsProductionPlanned(true);
+                    } else {
+                        batchData.setIsProductionPlanned(false);
+                    }*/
+
+                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
 
                 }
 
@@ -222,8 +238,17 @@ public class StockBatchServiceImpl {
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
 
-                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
-                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, qualityName));
+                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
+                    if(trueBatch!=null)
+                    {
+                        batchData.setIsProductionPlanned(true);
+                    }
+                    else
+                    {
+                        batchData.setIsProductionPlanned(false);
+                    }
+                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
 
                 }
 
@@ -245,8 +270,17 @@ public class StockBatchServiceImpl {
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
 
-                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
-                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, qualityName));
+                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
+                    if(trueBatch!=null)
+                    {
+                        batchData.setIsProductionPlanned(true);
+                    }
+                    else
+                    {
+                        batchData.setIsProductionPlanned(false);
+                    }
+                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
 
                 }
 
@@ -256,7 +290,7 @@ public class StockBatchServiceImpl {
 
         }
 
-        list.forEach(stock -> {
+/*        list.forEach(stock -> {
             int count = 0;//count the production plan gr
             //check the batches is produciton plan
             for (BatchData batchData : stock.getBatchData()) {
@@ -270,7 +304,7 @@ public class StockBatchServiceImpl {
             else
                 stock.setIsProductionPlanned(false);
 
-        });
+        });*/
         return list;
 
 
