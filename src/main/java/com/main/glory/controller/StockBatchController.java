@@ -122,7 +122,6 @@ public class StockBatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<List<GetAllStockWithPartyNameResponse>, Object>> getAllStockBatch(@PathVariable(value = "getBy") String getBy, @PathVariable(value = "id") Long id) throws Exception {
 
         GeneralResponse<List<GetAllStockWithPartyNameResponse>, Object> result;
-
         try {
             List<GetAllStockWithPartyNameResponse> stockMast = null;
             switch (getBy) {

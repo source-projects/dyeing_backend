@@ -17,7 +17,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
-import com.main.glory.model.PaymentMast;
+import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;

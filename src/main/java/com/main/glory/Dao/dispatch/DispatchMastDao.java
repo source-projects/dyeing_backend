@@ -53,4 +53,7 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
 
     @Query("select x from DispatchMast x where x.postfix=:invoiceNo")
     DispatchMast getDispatchMastByInvoiceNo(Long invoiceNo);
+
+    @Query("select x from DispatchMast x where x.signByParty=:signByParty")
+    List<DispatchMast> getAllInvoiceListBySignByParty(Boolean signByParty);
 }

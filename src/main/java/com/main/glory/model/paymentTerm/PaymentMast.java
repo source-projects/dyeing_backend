@@ -1,4 +1,4 @@
-package com.main.glory.model;
+package com.main.glory.model.paymentTerm;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dispatch.DispatchMast;
