@@ -81,4 +81,8 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
     /*@Query("select q from Quality q where q.id=(select s.qualityId from StockBatch s where s.id=:stockId)")
     Quality getQualityByStockId(Long stockId);*/
+
+    @Query("select x from StockMast x where x.receiveDate>=:from AND x.receiveDate<=:to AND x.isProductionPlanned=true")
+    List<StockMast> getAllStockByRecievedDate(Date from,Date to);
+
 }

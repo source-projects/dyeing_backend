@@ -9,6 +9,8 @@ import com.main.glory.model.StockDataBatchData.BatchReturn;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
+import com.main.glory.services.AllStockDateWiseData;
+import com.main.glory.services.DataConversion;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -19,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +37,11 @@ public class StockBatchController extends ControllerConfig {
 
     @Autowired
     private StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    AllStockDateWiseData allStockDateWiseData;
+    
+     
 
     @Autowired
     LogServiceImpl logService;
@@ -776,6 +786,23 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PostMapping("/stockBatch/getmtrsum/filterbydate")
+    public ResponseEntity<GeneralResponse<List<AllStockDateWiseDataUnderParty>, Object>> getMtrSumFilterByDate(String from,String to) throws Exception {
+        GeneralResponse<List<AllStockDateWiseDataUnderParty>, Object> response;
+        try {
+            List<AllStockDateWiseDataUnderParty> flag = allStockDateWiseData.getAllStockDateWiseData(from,to);
 
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
 
 }
