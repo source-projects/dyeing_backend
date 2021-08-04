@@ -1406,21 +1406,41 @@ public class DispatchMastImpl {
                 System.out.println(batchDataList.get(0).getId());*/
                 Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
                 //get the billing unit as per change
-                String billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
-                if (billingUnit.equalsIgnoreCase("meter"))
+                //String billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
+                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
+                Double wtPer100m = dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
+                if(unitDetail.getBillingUnit().equalsIgnoreCase(unitDetail.getInwardUnit()))
+                {
                     amt = totalFinishMtr * rate;
-                else {
-                    //convert meter to wt
-                    Double wtPer100m = dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
+                }
+                else if(unitDetail.getBillingUnit().equalsIgnoreCase("meter") && unitDetail.getInwardUnit().equalsIgnoreCase("weight"))
+                {
+                    //convert meter to weight
                     totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     amt = totalFinishMtr * rate;
+
                 }
+                else if(unitDetail.getBillingUnit().equalsIgnoreCase("weight") && unitDetail.getInwardUnit().equalsIgnoreCase("meter"))
+                {
+                    //convert weight to meter
+                    totalFinishMtr = (totalFinishMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
+                    totalBatchMtr = (totalBatchMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
+                    amt = totalFinishMtr * rate;
+
+                }
+
+
+
+
+
                 greyPcs = batchDao.getTotalPcsByBatchIdWithoutExtra(batchDataList.get(0).getBatchId());
                 //batchFinishMtr = 0.0;
 
                 ConsolidatedBillData consolidatedBillData = new ConsolidatedBillData(party, quality, getBatchByInvoice.getBatchId(), getBatchByInvoice.getBatchEntryId(), totalBatchMtr, totalFinishMtr, amt, rate, dispatchMast, greyPcs);
                 consolidatedBillData.setHeadName(userData.getFirstName());
+                consolidatedBillData.setBillingUnit(unitDetail.getBillingUnit());
+                consolidatedBillData.setInwardUnit(unitDetail.getInwardUnit());
                 consolidatedBillDataList.add(consolidatedBillData);
 
 
@@ -1482,7 +1502,7 @@ public class DispatchMastImpl {
         dispatchMastDao.save(dispatchMast);
 
 
-        //cheange the batch rate as well
+        //change the batch rate as well
         for (BatchAndStockId batcheAndStockId : createDispatch.getBatchAndStockIdList()) {
             //update batch quality rate with batch id
             dispatchDataDao.updateQualityRateWithBatchIdAndInvoiceNo(String.valueOf(dispatchMast.getPostfix()), batcheAndStockId.getBatchId(), batcheAndStockId.getRate());
@@ -1849,6 +1869,7 @@ public class DispatchMastImpl {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, limit);
                     newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList,dispatchDataList.get(0).getWtPer100m(),dispatchDataList.get(0).getInwardUnit(),dispatchDataList.get(0).getBillingUnit());
                     BatchWithGr newBatchWithGr = new BatchWithGr(batch);
+                    newBatchWithGr.setBillingUnit(dispatchDataList.get(0).getBillingUnit());
                     newBatchWithGr.setBatchDataList(newBatchList);
                     startIndex = limit;
                     limit += 30;
@@ -1861,6 +1882,7 @@ public class DispatchMastImpl {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
                     newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList,dispatchDataList.get(0).getWtPer100m(),dispatchDataList.get(0).getInwardUnit(),dispatchDataList.get(0).getBillingUnit());
                     BatchWithGr newBatchWithGr = new BatchWithGr(batch);
+                    newBatchWithGr.setBillingUnit(dispatchDataList.get(0).getBillingUnit());
                     newBatchWithGr.setBatchDataList(newBatchList);
                     batchWithGrList.add(newBatchWithGr);
                 }
@@ -1871,6 +1893,7 @@ public class DispatchMastImpl {
                 //for perfect gr lst which is 30
                 batchDataList = conversionMtrAndFinishMtrWithWtUnit(batchDataList,dispatchDataList.get(0).getWtPer100m(),dispatchDataList.get(0).getInwardUnit(),dispatchDataList.get(0).getBillingUnit());
                 batchWithGr.setBatchDataList(batchDataList);
+                batchWithGr.setBillingUnit(dispatchDataList.get(0).getBillingUnit());
                 batchWithGrList.add(batchWithGr);
             }
 

@@ -47,6 +47,8 @@ public class ConsolidatedBillData {
     private String city;
     private String state;
     private String gstin;
+    String billingUnit;
+    String inwardUnit;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast,Long greyPcs) {
