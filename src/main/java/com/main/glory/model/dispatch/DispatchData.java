@@ -37,6 +37,7 @@ public class DispatchData {
     String billingUnit;
     Double wtPer100m;
     String pchallanRef;
+    String inwardUnit; //From quality take unit
 
 
     public DispatchData(BatchData batchData) {
@@ -55,6 +56,7 @@ public class DispatchData {
         this.qualityRate=quality.getRate();
         this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         this.billingUnit = quality.getBillingUnit();
+        this.inwardUnit =quality.getUnit();
         this.wtPer100m = stockMast.getWtPer100m();
         this.pchallanRef = batchData.getPchallanRef();
         //this.shadeRate=shadeMast.getExtraRate();
@@ -65,6 +67,7 @@ public class DispatchData {
         this.stockId=batchData.getControlId();
         this.qualityEntryId=quality.getId();
         this.qualityRate=quality.getRate();
+        this.inwardUnit = quality.getUnit();
         this.billingUnit = quality.getBillingUnit();
         this.wtPer100m = stockMast.getWtPer100m();
         this.pchallanRef = batchData.getPchallanRef();
