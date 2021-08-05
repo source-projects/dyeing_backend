@@ -1685,7 +1685,7 @@ public class DispatchMastImpl {
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
             dispatchMast.setUserHeadId(party.get().getUserHeadId());
         } else {
-            dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
+            dispatchMast.setUserHeadId(party.get().getUserHeadId());
         }
 
         dispatchMastDao.save(dispatchMast);
