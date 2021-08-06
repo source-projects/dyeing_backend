@@ -2401,8 +2401,8 @@ public class StockBatchServiceImpl {
             }
             //batchDataList.add(new BatchData(batchData));
 
-            if (batchData.getIsProductionPlanned() == true)
-                throw new Exception(ConstantFile.Batch_Dyeing_Already);
+            /*if (batchData.getIsProductionPlanned() == true)
+                throw new Exception(ConstantFile.Batch_Dyeing_Already);*/
 
         }
 
@@ -2437,6 +2437,8 @@ public class StockBatchServiceImpl {
         for (BatchData batch : stockMast.getBatchData()) {
             if (batch.getBatchId() != null)
                 throw new Exception(ConstantFile.StockBatch_PChallanRef_Update);
+
+
             //System.out.println("coming:"+batch.getId());
             if (batchGr.containsKey(batch.getId())) {
                 BatchData batchData1 = batchDao.getBatchDataById(batch.getId());
