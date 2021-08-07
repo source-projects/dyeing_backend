@@ -418,6 +418,30 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select x from BatchData x where x.controlId=:stockId AND x.pchallanRef=:pchallanRef AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
     List<BatchData> findByControlIdAndPchallanRefForBillGenrate(Long stockId, String pchallanRef);
 
+    @Query("select b from BatchData b where b.pchallanRef=:pchallanRef AND b.isFinishMtrSave=true AND b.isBillGenrated=false")
+    List<BatchData> getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(String pchallanRef);
+
+    @Query("select x from BatchData x where x.pchallanRef=:pchallanRef AND x.id in (select d.batchEntryId from DispatchData d where d.invoiceNo=:invoiceNumber)")
+    List<BatchData> getBatchByPChallanRefAndInvoiceNumber(String pchallanRef, String invoiceNumber);
+
+
+    @Modifying
+    @Transactional
+    @Query("update BatchData x set x.batchId=:batchId where x.id=:key")
+    void setBatchIdByEntryId(Long key, String batchId);
+
+
+
+
+
+    @Modifying
+    @Transactional
+    @Query("update BatchData x set x.controlId=:controlId,x.batchId=:batchId where x.id=:key")
+    void setBatchIdAndControlIdByEntryId(Long key, String batchId, Long controlId);
+
+    @Query(value = "select * from batch_data where control_id=:controlId AND is_production_planned=true LIMIT 1",nativeQuery = true)
+    BatchData findIsProductionPlanTrueByControlId(@Param("controlId") Long controlId);
+
 
 
 

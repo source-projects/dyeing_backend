@@ -31,6 +31,7 @@ public class ConsolidatedBillData {
     Long partyId;
     Long qualityEntryId;
     Long qualityNameId;
+    String qualityId;
     Long invoiceNo;
     //new field
     Double discount;
@@ -47,6 +48,8 @@ public class ConsolidatedBillData {
     private String city;
     private String state;
     private String gstin;
+    String billingUnit;
+    String inwardUnit;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast,Long greyPcs) {
@@ -56,6 +59,7 @@ public class ConsolidatedBillData {
         this.invoiceNo = dispatchMast.getPostfix();
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName();
+        this.qualityId = quality.getQualityId();
         this.pcs =pcs;
         this.greyPcs = greyPcs;
         this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalBatchMtr);

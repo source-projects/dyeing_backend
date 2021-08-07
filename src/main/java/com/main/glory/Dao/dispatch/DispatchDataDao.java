@@ -3,6 +3,7 @@ package com.main.glory.Dao.dispatch;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
+import com.main.glory.model.dispatch.response.UnitDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -98,12 +99,18 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     void updateQualityRateWithPChallanRefAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate);
 
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.stockId,dd.pchallanRef) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.stockId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.stockId,dd.pchallanRef) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.pchallanRef,dd.stockId")
     List<GetBatchByInvoice> findPChallanAndStockByInvoice(String invoiceExist);
 
     //get the invoice batch by the invoice no and batch id and stock id
-    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.invoiceNo=:invoiceNo AND dd.batchId IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
-    List<DispatchData> findByPChallanRefAndStockIdAndInviceNo(Long stockId, String pchallanRef, String invoiceNo);
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.invoiceNo=:invoiceNo AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
+    List<DispatchData> findByPChallanRefAndStockIdAndInvoiceNo(Long stockId, String pchallanRef, String invoiceNo);
+
+    @Query("select x.inwardUnit from DispatchData x where x.batchEntryId=:id AND x.invoiceNo=:invoiceNumber")
+    String getInwardUnitByInvoiceAndBatchEntryId(String invoiceNumber, Long id);
+
+    @Query("select new com.main.glory.model.dispatch.response.UnitDetail(d.billingUnit,d.inwardUnit,d.wtPer100m) from DispatchData d where d.invoiceNo=:invoiceNo AND d.batchEntryId=:batchEntryId")
+    UnitDetail getUnitDetailByInvoiceNoAndBatchEntryId(String invoiceNo, Long batchEntryId);
 
 
     //get All Distapatch list

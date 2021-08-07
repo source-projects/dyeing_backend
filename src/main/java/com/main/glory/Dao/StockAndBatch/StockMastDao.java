@@ -14,7 +14,11 @@ import java.util.Optional;
 public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
  @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, (Select p.partyName from Party p where p.id = sm.partyId),(select q.qualityName from QualityName q where q.id = (select qq.qualityNameId from Quality qq where qq.id = sm.qualityId))) from StockMast sm")
+ Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameAndQualityName();
+
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, (Select p.partyName from Party p where p.id = sm.partyId),(select q.qualityName from QualityName q where q.id = (select qq.qualityNameId from Quality qq where qq.id = sm.qualityId))) from StockMast sm")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyName();
+
 
  @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, (Select p.partyName from Party p where p.id = sm.partyId),(select q.qualityName from QualityName q where q.id = (select qq.qualityNameId from Quality qq where qq.id = sm.qualityId))) from StockMast sm where createdBy = :createdBy")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByCreatedBy(Long createdBy);

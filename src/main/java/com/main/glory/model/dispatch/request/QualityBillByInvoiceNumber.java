@@ -27,6 +27,8 @@ public class QualityBillByInvoiceNumber {
     String pChalNo;
     Double amt;
     Double amtWt;
+    String billingUnit;
+
 
     public QualityBillByInvoiceNumber(String qualityId, String qualityName, String hsn, Double rate, String batchId, Double totalMtr, Double finishMtr, Long pcs, String pChalNo) {
         this.qualityId = qualityId;
@@ -60,5 +62,6 @@ public class QualityBillByInvoiceNumber {
         this.pcs = totalPcs;
         this.pChalNo = stockMast.getChlNo();
         this.amt = this.finishMtr*rate;
+        this.pchallanRef = batchId;// batch id can be batch id or pchallan ref
     }
 }
