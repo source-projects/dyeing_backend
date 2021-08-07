@@ -27,6 +27,7 @@ public class QualityBillByInvoiceNumber {
     String pChalNo;
     Double amt;
     Double amtWt;
+    String billingUnit;
 
 
     public QualityBillByInvoiceNumber(String qualityId, String qualityName, String hsn, Double rate, String batchId, Double totalMtr, Double finishMtr, Long pcs, String pChalNo) {

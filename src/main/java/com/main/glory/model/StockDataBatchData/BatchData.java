@@ -52,7 +52,7 @@ public class BatchData {
     public BatchData(BatchData other) {
         this.id=other.id==null?null:other.id;
         this.mtr=other.mtr;
-        this.wt=other.wt;
+        this.wt=other.wt==null?null:other.wt;
         this.batchId=other.batchId==null?null:other.getBatchId();
         this.controlId=other.controlId==null?0:other.getControlId();
         this.isProductionPlanned = other.getIsProductionPlanned()==null?false:other.getIsProductionPlanned();
