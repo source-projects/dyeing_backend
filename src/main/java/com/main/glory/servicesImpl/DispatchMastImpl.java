@@ -279,12 +279,10 @@ public class DispatchMastImpl {
         //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
 
         List<DispatchMast> dispatchList = null;
-        if(signByParty==null|| signByParty.isEmpty())
-        {
+        if (signByParty == null || signByParty.isEmpty()) {
             dispatchList = dispatchMastDao.getAllInvoiceList();
-        }
-        else
-        dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
+        } else
+            dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
 
         List<String> invoiceNumber = new ArrayList<>();
 
@@ -328,8 +326,8 @@ public class DispatchMastImpl {
                 mtr += batchWithTotalMTRandFinishMTR.getMTR();
                 finish += batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
             }*/
-            mtr = batchList.stream().mapToDouble(q->q.getMTR()).sum();
-            finish = batchList.stream().mapToDouble(q->q.getTotalFinishMtr()).sum();
+            mtr = batchList.stream().mapToDouble(q -> q.getMTR()).sum();
+            finish = batchList.stream().mapToDouble(q -> q.getTotalFinishMtr()).sum();
             getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
             getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
 
@@ -873,8 +871,6 @@ public class DispatchMastImpl {
         }
 
 
-
-
         //for party data
         StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
         Optional<Party> party = partyDao.findById(stockMast.getPartyId());
@@ -1407,31 +1403,23 @@ public class DispatchMastImpl {
                 Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
                 //get the billing unit as per change
                 //String billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
-                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,batchDataList.get(0).getId());
+                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
                 Double wtPer100m = dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
-                if(unitDetail.getBillingUnit().equalsIgnoreCase(unitDetail.getInwardUnit()))
-                {
+                if (unitDetail.getBillingUnit().equalsIgnoreCase(unitDetail.getInwardUnit())) {
                     amt = totalFinishMtr * rate;
-                }
-                else if(unitDetail.getBillingUnit().equalsIgnoreCase("meter") && unitDetail.getInwardUnit().equalsIgnoreCase("weight"))
-                {
+                } else if (unitDetail.getBillingUnit().equalsIgnoreCase("meter") && unitDetail.getInwardUnit().equalsIgnoreCase("weight")) {
                     //convert meter to weight
                     //totalFinishMtr = (totalFinishMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
                     //totalBatchMtr = (totalBatchMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
                     amt = totalFinishMtr * rate;
 
-                }
-                else if(unitDetail.getBillingUnit().equalsIgnoreCase("weight") && unitDetail.getInwardUnit().equalsIgnoreCase("meter"))
-                {
+                } else if (unitDetail.getBillingUnit().equalsIgnoreCase("weight") && unitDetail.getInwardUnit().equalsIgnoreCase("meter")) {
                     //convert weight to meter
                     //totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     amt = totalFinishMtr * rate;
 
                 }
-
-
-
 
 
                 greyPcs = batchDao.getTotalPcsByBatchIdWithoutExtra(batchDataList.get(0).getBatchId());
@@ -1795,26 +1783,16 @@ public class DispatchMastImpl {
             //set the quality with batch data
             qualityBillByInvoiceNumber.setPchallanRef(batch.getPchallanRef());
             qualityBillByInvoiceNumber.setBatchId(batch.getPchallanRef());
-            if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase(dispatchDataList.get(0).getInwardUnit())) {
+
+
+            if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("weight")) {
+                totalMtr = (totalMtr / 100) * dispatchDataList.get(0).getWtPer100m();
+                //finishMtr = (finishMtr / 100) * dispatchDataList.get(0).getWtPer100m();
                 qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
                 qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
-            } else {
-
-                if(dispatchDataList.get(0).getInwardUnit().equalsIgnoreCase("weight") && dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter")) {
-
-                    //totalMtr = (totalMtr * 100) / dispatchDataList.get(0).getWtPer100m();
-                    //finishMtr = (finishMtr * 100) / dispatchDataList.get(0).getWtPer100m();
-                    qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
-                    qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
-                }
-                else if(dispatchDataList.get(0).getInwardUnit().equalsIgnoreCase("meter") && dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("weight"))
-                {
-                    totalMtr = (totalMtr / 100) * dispatchDataList.get(0).getWtPer100m();
-                    //finishMtr = (finishMtr / 100) * dispatchDataList.get(0).getWtPer100m();
-                    qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
-                    qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
-                }
             }
+
+
             //Count the total amt based on quality rate and total finish mtr
             amt = (rate + shadeRate) * finishMtr;
 
@@ -1867,7 +1845,7 @@ public class DispatchMastImpl {
                     // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
                     //only from 0-29 object are going to store in list
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, limit);
-                    newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList,dispatchDataList.get(0).getWtPer100m(),dispatchDataList.get(0).getInwardUnit(),dispatchDataList.get(0).getBillingUnit());
+                    newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, dispatchDataList.get(0).getWtPer100m(), dispatchDataList.get(0).getInwardUnit(), dispatchDataList.get(0).getBillingUnit());
                     BatchWithGr newBatchWithGr = new BatchWithGr(batch);
                     newBatchWithGr.setBillingUnit(dispatchDataList.get(0).getBillingUnit());
                     newBatchWithGr.setBatchDataList(newBatchList);
@@ -1880,7 +1858,7 @@ public class DispatchMastImpl {
                 //for remaining gr
                 if (remainingGrFrom > 0) {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
-                    newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList,dispatchDataList.get(0).getWtPer100m(),dispatchDataList.get(0).getInwardUnit(),dispatchDataList.get(0).getBillingUnit());
+                    newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, dispatchDataList.get(0).getWtPer100m(), dispatchDataList.get(0).getInwardUnit(), dispatchDataList.get(0).getBillingUnit());
                     BatchWithGr newBatchWithGr = new BatchWithGr(batch);
                     newBatchWithGr.setBillingUnit(dispatchDataList.get(0).getBillingUnit());
                     newBatchWithGr.setBatchDataList(newBatchList);
@@ -1891,7 +1869,7 @@ public class DispatchMastImpl {
                 //batchWithGrList.add(batchWithGr);
             } else {
                 //for perfect gr lst which is 30
-                batchDataList = conversionMtrAndFinishMtrWithWtUnit(batchDataList,dispatchDataList.get(0).getWtPer100m(),dispatchDataList.get(0).getInwardUnit(),dispatchDataList.get(0).getBillingUnit());
+                batchDataList = conversionMtrAndFinishMtrWithWtUnit(batchDataList, dispatchDataList.get(0).getWtPer100m(), dispatchDataList.get(0).getInwardUnit(), dispatchDataList.get(0).getBillingUnit());
                 batchWithGr.setBatchDataList(batchDataList);
                 batchWithGr.setBillingUnit(dispatchDataList.get(0).getBillingUnit());
                 batchWithGrList.add(batchWithGr);
@@ -1919,42 +1897,25 @@ public class DispatchMastImpl {
     }
 
     private List<BatchData> conversionMtrAndFinishMtrWithWtUnit(List<BatchData> newBatchList, Double wtPer100m, String inwardUnit, String billingUnit) {
-        List<BatchData> batchDataList=new ArrayList<>();
-       /* List<BatchData> newBatchList = new ArrayList<>();
-        newBatchList.addAll(batchList);
-       */ //change as per the condition
-        if(inwardUnit.equalsIgnoreCase(billingUnit))
-        {
-            batchDataList = newBatchList;
+        List<BatchData> batchDataList = new ArrayList<>();
+
+        //convert as per the requirement
+        if (billingUnit.equalsIgnoreCase("weight")) {
+            //change batch data list
+            for (BatchData batchData : newBatchList) {
+                BatchData batch = new BatchData(batchData);
+                batch.setMtr((batchData.getMtr() / 100) * wtPer100m);
+                //batch.setFinishMtr((batchData.getFinishMtr()/100)*wtPer100m);
+                batchDataList.add(batch);
+            }
+
         }
         else
         {
-            //convert as per the requirement
-            if(inwardUnit.equalsIgnoreCase("meter") && billingUnit.equalsIgnoreCase("weight"))
-            {
-                //change batch data list
-                for(BatchData batchData:newBatchList)
-                {
-                    BatchData batch = new BatchData(batchData);
-                    batch.setMtr((batchData.getMtr()/100)*wtPer100m);
-                    //batch.setFinishMtr((batchData.getFinishMtr()/100)*wtPer100m);
-                    batchDataList.add(batch);
-                }
-
-            }
-            else if(inwardUnit.equalsIgnoreCase("weight") && billingUnit.equalsIgnoreCase("meter"))
-            {
-                //change batch data list
-                for(BatchData batchData:newBatchList)
-                {
-                    BatchData batch = new BatchData(batchData);
-                    //batch.setMtr((batchData.getMtr()*100)/wtPer100m);
-                    //batch.setFinishMtr((batchData.getFinishMtr()*100)/wtPer100m);
-                    batchDataList.add(batch);
-                }
-            }
-
+            batchDataList = newBatchList;
         }
+
+
         return batchDataList;
 
     }
@@ -2008,7 +1969,7 @@ public class DispatchMastImpl {
 
             //quality record
 
-            String billingUnit=null;
+            String billingUnit = null;
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
             Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQualityId());
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
@@ -2031,7 +1992,7 @@ public class DispatchMastImpl {
 
             } else {
                 batchDataList = batchDao.getBatchByPChallanRefAndInvoiceNumber(batchAndStockId.getPchallanRef(), String.valueOf(createDispatch.getInvoiceNo()));
-                billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(String.valueOf(createDispatch.getInvoiceNo()),batchDataList.get(0).getId());
+                billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(String.valueOf(createDispatch.getInvoiceNo()), batchDataList.get(0).getId());
             }
             for (BatchData batchData : batchDataList) {
                 totalFinishMtr += batchData.getFinishMtr();
@@ -2077,19 +2038,17 @@ public class DispatchMastImpl {
                     BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
 
                     //convert batch gr also
-                    if(createDispatch.getCreateFlag() == false) {
+                    if (createDispatch.getCreateFlag() == false) {
                         //change gr as per the quality wtper 100
-                        UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(),newBatchList.get(0).getId());
-                        if(unitDetail!=null) {
-                            newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, unitDetail.getWtPer100m(),unitDetail.getInwardUnit(), unitDetail.getBillingUnit());
+                        UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(), newBatchList.get(0).getId());
+                        if (unitDetail != null) {
+                            newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, unitDetail.getWtPer100m(), unitDetail.getInwardUnit(), unitDetail.getBillingUnit());
                             newBatchWithGr.setBillingUnit(unitDetail.getBillingUnit());
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //change gr as per the stock wt100 and quality
                         newBatchWithGr.setBillingUnit(quality.getBillingUnit());
-                        newBatchList =conversionMtrAndFinishMtrWithWtUnit(newBatchList,stockMastExist.getWtPer100m(),quality.getUnit(),quality.getBillingUnit());
+                        newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, stockMastExist.getWtPer100m(), quality.getUnit(), quality.getBillingUnit());
 
                     }
                     newBatchWithGr.setBatchDataList(newBatchList);
@@ -2103,18 +2062,16 @@ public class DispatchMastImpl {
                 BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
                 if (remainingGrFrom > 0) {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
-                    if(createDispatch.getCreateFlag() == false) {
+                    if (createDispatch.getCreateFlag() == false) {
                         //change gr as per the quality wtper 100
-                        UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(),newBatchList.get(0).getId());
-                        if(unitDetail!=null) {
-                            newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, unitDetail.getWtPer100m(),unitDetail.getInwardUnit(), unitDetail.getBillingUnit());
+                        UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(), newBatchList.get(0).getId());
+                        if (unitDetail != null) {
+                            newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, unitDetail.getWtPer100m(), unitDetail.getInwardUnit(), unitDetail.getBillingUnit());
                             newBatchWithGr.setBillingUnit(unitDetail.getBillingUnit());
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //change gr as per the stock wt100 and quality
-                        newBatchList =conversionMtrAndFinishMtrWithWtUnit(newBatchList,stockMastExist.getWtPer100m(),quality.getUnit(),quality.getBillingUnit());
+                        newBatchList = conversionMtrAndFinishMtrWithWtUnit(newBatchList, stockMastExist.getWtPer100m(), quality.getUnit(), quality.getBillingUnit());
                         newBatchWithGr.setBillingUnit(quality.getBillingUnit());
                     }
 
@@ -2129,19 +2086,17 @@ public class DispatchMastImpl {
                 /*batchWithGr.setBatchDataList(batchDataList);
                 batchWithGrList.add(batchWithGr);*/
                 BatchWithGr batchWithGr = new BatchWithGr(batchDataList, batchAndStockId.getPchallanRef(), batchAndStockId.getStockId());
-                if(createDispatch.getCreateFlag() == false) {
+                if (createDispatch.getCreateFlag() == false) {
                     //change gr as per the quality wtper 100
-                    UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(),batchDataList.get(0).getId());
-                    if(unitDetail!=null) {
-                        batchDataList = conversionMtrAndFinishMtrWithWtUnit(batchDataList, unitDetail.getWtPer100m(),unitDetail.getInwardUnit(), unitDetail.getBillingUnit());
+                    UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(), batchDataList.get(0).getId());
+                    if (unitDetail != null) {
+                        batchDataList = conversionMtrAndFinishMtrWithWtUnit(batchDataList, unitDetail.getWtPer100m(), unitDetail.getInwardUnit(), unitDetail.getBillingUnit());
                         batchWithGr.setBillingUnit(unitDetail.getBillingUnit());
                     }
-                }
-                else
-                {
+                } else {
                     //change gr as per the stock wt100 and quality
                     batchWithGr.setBillingUnit(quality.getBillingUnit());
-                    batchDataList =conversionMtrAndFinishMtrWithWtUnit(batchDataList,stockMastExist.getWtPer100m(),quality.getUnit(),quality.getBillingUnit());
+                    batchDataList = conversionMtrAndFinishMtrWithWtUnit(batchDataList, stockMastExist.getWtPer100m(), quality.getUnit(), quality.getBillingUnit());
                 }
                 batchWithGr.setBatchDataList(batchDataList);
                 batchWithGrList.add(batchWithGr);
