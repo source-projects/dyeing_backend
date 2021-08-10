@@ -1416,7 +1416,7 @@ public class DispatchMastImpl {
                 else if(unitDetail.getBillingUnit().equalsIgnoreCase("meter") && unitDetail.getInwardUnit().equalsIgnoreCase("weight"))
                 {
                     //convert meter to weight
-                    totalFinishMtr = (totalFinishMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
+                    //totalFinishMtr = (totalFinishMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
                     //totalBatchMtr = (totalBatchMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
                     amt = totalFinishMtr * rate;
 
@@ -1424,7 +1424,7 @@ public class DispatchMastImpl {
                 else if(unitDetail.getBillingUnit().equalsIgnoreCase("weight") && unitDetail.getInwardUnit().equalsIgnoreCase("meter"))
                 {
                     //convert weight to meter
-                    totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
+                    //totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     amt = totalFinishMtr * rate;
 
@@ -1803,14 +1803,14 @@ public class DispatchMastImpl {
                 if(dispatchDataList.get(0).getInwardUnit().equalsIgnoreCase("weight") && dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter")) {
 
                     //totalMtr = (totalMtr * 100) / dispatchDataList.get(0).getWtPer100m();
-                    finishMtr = (finishMtr * 100) / dispatchDataList.get(0).getWtPer100m();
+                    //finishMtr = (finishMtr * 100) / dispatchDataList.get(0).getWtPer100m();
                     qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
                     qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
                 }
                 else if(dispatchDataList.get(0).getInwardUnit().equalsIgnoreCase("meter") && dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("weight"))
                 {
                     totalMtr = (totalMtr / 100) * dispatchDataList.get(0).getWtPer100m();
-                    finishMtr = (finishMtr / 100) * dispatchDataList.get(0).getWtPer100m();
+                    //finishMtr = (finishMtr / 100) * dispatchDataList.get(0).getWtPer100m();
                     qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
                     qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
                 }
@@ -1937,7 +1937,7 @@ public class DispatchMastImpl {
                 {
                     BatchData batch = new BatchData(batchData);
                     batch.setMtr((batchData.getMtr()/100)*wtPer100m);
-                    batch.setFinishMtr((batchData.getFinishMtr()/100)*wtPer100m);
+                    //batch.setFinishMtr((batchData.getFinishMtr()/100)*wtPer100m);
                     batchDataList.add(batch);
                 }
 
@@ -1949,7 +1949,7 @@ public class DispatchMastImpl {
                 {
                     BatchData batch = new BatchData(batchData);
                     //batch.setMtr((batchData.getMtr()*100)/wtPer100m);
-                    batch.setFinishMtr((batchData.getFinishMtr()*100)/wtPer100m);
+                    //batch.setFinishMtr((batchData.getFinishMtr()*100)/wtPer100m);
                     batchDataList.add(batch);
                 }
             }
