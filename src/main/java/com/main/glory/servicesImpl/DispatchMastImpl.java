@@ -1405,21 +1405,14 @@ public class DispatchMastImpl {
                 //String billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
                 UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
                 Double wtPer100m = dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(invoiceNumber, batchDataList.get(0).getId());
-                if (unitDetail.getBillingUnit().equalsIgnoreCase(unitDetail.getInwardUnit())) {
-                    amt = totalFinishMtr * rate;
-                } else if (unitDetail.getBillingUnit().equalsIgnoreCase("meter") && unitDetail.getInwardUnit().equalsIgnoreCase("weight")) {
-                    //convert meter to weight
-                    //totalFinishMtr = (totalFinishMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
-                    //totalBatchMtr = (totalBatchMtr * 100) / (wtPer100m == null ? 1 : wtPer100m);
-                    amt = totalFinishMtr * rate;
-
-                } else if (unitDetail.getBillingUnit().equalsIgnoreCase("weight") && unitDetail.getInwardUnit().equalsIgnoreCase("meter")) {
+                if (unitDetail.getBillingUnit().equalsIgnoreCase("weight")) {
                     //convert weight to meter
                     //totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
                     totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
-                    amt = totalFinishMtr * rate;
+
 
                 }
+                amt = totalFinishMtr * rate;
 
 
                 greyPcs = batchDao.getTotalPcsByBatchIdWithoutExtra(batchDataList.get(0).getBatchId());
