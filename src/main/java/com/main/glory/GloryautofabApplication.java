@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.util.Map;
 
 
-@ComponentScan({"com.main.glory.controller","com.main.glory.servicesImpl","com.main.glory.config","com.main.glory.filters","com.main.glory.utils","com.main.glory.*"})
+@ComponentScan({"com.main.glory.controller","com.main.glory.PaginationModel","com.main.glory.servicesImpl","com.main.glory.config","com.main.glory.filters","com.main.glory.utils","com.main.glory.*"})
 @EnableJpaRepositories({"com.main.glory.Dao"})
 @SpringBootApplication
 @EnableTransactionManagement

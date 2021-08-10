@@ -1795,7 +1795,7 @@ public class DispatchMastImpl {
             //set the quality with batch data
             qualityBillByInvoiceNumber.setPchallanRef(batch.getPchallanRef());
             qualityBillByInvoiceNumber.setBatchId(batch.getPchallanRef());
-            if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("meter") && dispatchDataList.get(0).getInwardUnit().equalsIgnoreCase("meter")) {
+            if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase(dispatchDataList.get(0).getInwardUnit())) {
                 qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
                 qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
             } else {
