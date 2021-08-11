@@ -1306,6 +1306,22 @@ public class StockBatchServiceImpl {
         else
             return Precision.round(values, 2);
     }
+    public static List<BatchData> changeInFormattedDecimal(List<BatchData> batchDataList) {
+        List<BatchData> newList = new ArrayList<>();
+        //df2.setMaximumFractionDigits(2);
+        if (batchDataList == null)
+            return null;
+        else {
+            for (BatchData batchData : batchDataList) {
+                BatchData batch = new BatchData(batchData);
+                batch.setFinishMtr(Precision.round(batchData.getFinishMtr(), 2));
+                batch.setMtr(Precision.round(batchData.getMtr(), 2));
+                //batch.setWt(Precision.round(batchData.getFinishMtr(), 2));
+                newList.add(batch);
+            }
+            return newList;
+        }
+    }
 
     public List<GetAllBatch> getBatchListByQualityWithoutProductionPlan(Long qualityId) throws Exception {
         List<GetAllBatch> list = new ArrayList<>();
