@@ -26,6 +26,7 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1776,7 +1777,8 @@ public class DispatchMastImpl {
             //set the quality with batch data
             qualityBillByInvoiceNumber.setPchallanRef(batch.getPchallanRef());
             qualityBillByInvoiceNumber.setBatchId(batch.getPchallanRef());
-
+            qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
+            qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
 
             if (dispatchDataList.get(0).getBillingUnit().equalsIgnoreCase("weight")) {
                 totalMtr = (totalMtr / 100) * dispatchDataList.get(0).getWtPer100m();
@@ -1897,7 +1899,8 @@ public class DispatchMastImpl {
             //change batch data list
             for (BatchData batchData : newBatchList) {
                 BatchData batch = new BatchData(batchData);
-                batch.setMtr((batchData.getMtr() / 100) * wtPer100m);
+                batch.setMtr(Precision.round(((batch.getMtr() / 100) * wtPer100m), 2));
+
                 //batch.setFinishMtr((batchData.getFinishMtr()/100)*wtPer100m);
                 batchDataList.add(batch);
             }
@@ -1996,7 +1999,22 @@ public class DispatchMastImpl {
             totalFinishMtr = stockBatchService.changeInFormattedDecimal(totalFinishMtr);
             totalMtr = stockBatchService.changeInFormattedDecimal(totalMtr);
 
+            if(billingUnit.equalsIgnoreCase("weight"))
+            {
+                if(createDispatch.getCreateFlag() == true)
+                {
+                    totalMtr = (totalMtr/100) *stockMast.getWtPer100m();
+                }
+                else
+                {
+                    totalMtr = (totalMtr/100) * dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(String.valueOf(createDispatch.getInvoiceNo()), batchDataList.get(0).getId());
+                }
+            }
+
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality, totalFinishMtr, totalMtr, totalPcs, qualityName, batchAndStockId.getPchallanRef(), stockMastExist);
+
+            //change the grey mtr total as per the billing unit
+
             qualityBillByInvoiceNumber.setAmt(stockBatchService.changeInFormattedDecimal(qualityBillByInvoiceNumber.getAmt()));
             qualityBillByInvoiceNumber.setBillingUnit(billingUnit);
             //set the rate as well if it is coming and change the amt as well
@@ -2028,6 +2046,9 @@ public class DispatchMastImpl {
                     //only from 0-29 object are going to store in list
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, limit);
 
+
+                    //change in gr in the format
+                    newBatchList = StockBatchServiceImpl.changeInFormattedDecimal(newBatchList);
                     BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
 
                     //convert batch gr also
@@ -2055,6 +2076,9 @@ public class DispatchMastImpl {
                 BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
                 if (remainingGrFrom > 0) {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
+                    //change in gr in the format
+                    newBatchList = StockBatchServiceImpl.changeInFormattedDecimal(newBatchList);
+
                     if (createDispatch.getCreateFlag() == false) {
                         //change gr as per the quality wtper 100
                         UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(), newBatchList.get(0).getId());
@@ -2076,8 +2100,9 @@ public class DispatchMastImpl {
                 //batchWithGrList.add(batchWithGr);
             } else {
                 //for perfect gr lst which is 30
-                /*batchWithGr.setBatchDataList(batchDataList);
-                batchWithGrList.add(batchWithGr);*/
+
+                //change in gr in the format
+                batchDataList = StockBatchServiceImpl.changeInFormattedDecimal(batchDataList);
                 BatchWithGr batchWithGr = new BatchWithGr(batchDataList, batchAndStockId.getPchallanRef(), batchAndStockId.getStockId());
                 if (createDispatch.getCreateFlag() == false) {
                     //change gr as per the quality wtper 100
