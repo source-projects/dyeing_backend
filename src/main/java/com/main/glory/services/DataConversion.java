@@ -13,8 +13,14 @@ public class DataConversion {
     
 
     public static Date stringToDate(String s) throws ParseException{
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        if (s==null){
+            return null ;
+        }
+        
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
         LocalDate date = LocalDate.parse(s, inputFormatter);
+        System.out.println(s);
+        System.out.println(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()).toString());
         return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 

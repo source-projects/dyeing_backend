@@ -7,6 +7,8 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.Dao.quality.QualityNameDao;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -19,6 +21,7 @@ import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.*;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
@@ -27,6 +30,11 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -84,6 +92,9 @@ public class DispatchMastImpl {
 
     @Autowired
     QualityNameDao qualityNameDao;
+
+    @Autowired
+    SpecificationManager<DispatchMast> specificationManager;
 
 
     public Long saveDispatch(CreateDispatch dispatchList, Long userId) throws Exception {
@@ -1325,7 +1336,7 @@ public class DispatchMastImpl {
 
         dispatchMastDao.deleteByInvoicePostFix(invoiceNo);
 
-    }
+    } 
 
     public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(Filter filter) throws Exception {
         Date from = null;
@@ -2128,4 +2139,26 @@ public class DispatchMastImpl {
         return partyWithBatchByInvoice;
 
     }
+
+    public FilterResponse<DispatchMast> getpaginatedDispatchData(PaginatedData data){
+        Pageable pageable =PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1);
+        
+        Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters());
+        System.out.println(spec.toString());
+        Page<DispatchMast> dispatchMastList;
+        
+        if (spec==null)
+        dispatchMastList = dispatchMastDao.findAll(pageable);
+
+        else
+        dispatchMastList = dispatchMastDao.findAll(spec, pageable);
+
+        // if(data.getSortBy()!=null)
+        // dispatchMastList.getSort().by(data.getSortBy());
+        
+        FilterResponse<DispatchMast> response=new FilterResponse<DispatchMast>(dispatchMastList.toList(),dispatchMastList.getNumber()+1,dispatchMastList.getSize(),dispatchMastList.getTotalPages());
+        return response;
+        
+    }
+
 }

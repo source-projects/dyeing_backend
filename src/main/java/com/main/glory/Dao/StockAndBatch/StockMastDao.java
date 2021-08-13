@@ -1,9 +1,13 @@
 package com.main.glory.Dao.StockAndBatch;
 
+import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.quality.Quality;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -84,5 +88,24 @@ public interface StockMastDao extends JpaRepository<StockMast, Long> {
 
     @Query("select x from StockMast x where x.receiveDate>=:from AND x.receiveDate<=:to AND x.isProductionPlanned=true")
     List<StockMast> getAllStockByRecievedDate(Date from,Date to);
+
+    @Query("select x from StockMast x where (:id=x.id OR :id IS NULL) AND (:stockInType=x.stockInType OR :stockInType IS NULL) AND (:partyId=x.partyId OR :partyId IS NULL) AND (:billNo=x.billNo OR :billNo IS NULL) AND (:billDate=x.billDate OR :billDate IS NULL) AND (:chlDate=x.chlDate OR :chlDate IS NULL) AND (:unit=x.unit OR :unit IS NULL) AND  (:updatedBy=x.updatedBy OR :updatedBy IS NULL) AND (:createdBy=x.createdBy OR :createdBy IS NULL) AND (:userHeadId=x.userHeadId OR :userHeadId IS NULL) AND (:isProductionPlanned=x.isProductionPlanned OR :isProductionPlanned IS NULL) AND (:createdDate=x.createdDate OR :createdDate IS NULL) AND (Date(:receiveDate)=Date(x.receiveDate) OR :receiveDate IS NULL) AND (:updatedDate=x.updatedDate OR :updatedDate IS NULL) AND (:qualityId=x.qualityId OR :qualityId IS NULL)")
+    Page<StockMast> getAllFilteredStockMastPaged(Long id,
+    String stockInType,
+    Long partyId,
+    String billNo,
+    Date billDate,
+    Date chlDate,
+    String unit,
+    Long updatedBy,
+    Long createdBy,
+    Long userHeadId,
+    Boolean isProductionPlanned,
+    Date createdDate,
+    Date receiveDate,
+    Date updatedDate,
+    Long qualityId,Pageable pageable);
+
+    
 
 }

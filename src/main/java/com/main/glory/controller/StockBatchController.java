@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
@@ -11,6 +12,7 @@ import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.services.AllStockDateWiseData;
 import com.main.glory.services.DataConversion;
+import com.main.glory.services.DataFilterService;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -41,6 +43,8 @@ public class StockBatchController extends ControllerConfig {
     @Autowired
     AllStockDateWiseData allStockDateWiseData;
     
+    @Autowired
+    DataFilterService dataFilterService;
      
 
     @Autowired
@@ -804,5 +808,25 @@ public class StockBatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
     }
+
+    @PostMapping("/stockMast/filter")
+    public ResponseEntity<GeneralResponse<List<StockMast>, Object>> getFilteredStockMast(@RequestParam("pageSize") int pageSize,@RequestParam("pageNumber") int pagePumber ,@RequestBody StockMastFilter filter) throws Exception {
+        GeneralResponse<List<StockMast>, Object> response;
+        try {
+            List<StockMast> flag = dataFilterService.getFilteredStockMast(filter,pageSize,pagePumber);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
 
 }

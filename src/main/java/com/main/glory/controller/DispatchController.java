@@ -1,26 +1,35 @@
 package com.main.glory.controller;
 
-
+import org.springframework.data.domain.Sort;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
+import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+
 import javax.servlet.http.HttpServletRequest;
+
+import java.net.http.HttpHeaders;
 import java.util.List;
 
 @RestController
@@ -578,5 +587,26 @@ public class DispatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping("/dispatch/getDispatchMastData")
+    public ResponseEntity<GeneralResponse<FilterResponse<DispatchMast>, Object>> getDispatchData(@RequestBody PaginatedData data){
+        GeneralResponse<FilterResponse<DispatchMast>,Object> result;
+        try{
+
+            FilterResponse<DispatchMast> x =(FilterResponse<DispatchMast>) dispatchMastService.getpaginatedDispatchData(data);
+            if(!x.getData().isEmpty())
+            result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+}
+
 
 }
