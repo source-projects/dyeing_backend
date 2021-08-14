@@ -32,6 +32,7 @@ import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -2141,10 +2142,26 @@ public class DispatchMastImpl {
     }
 
     public FilterResponse<DispatchMast> getpaginatedDispatchData(PaginatedData data){
-        Pageable pageable =PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1);
-        
+                
         Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters());
-        System.out.println(spec.toString());
+        String sortBy;
+        if(data.getSortBy()==null)
+        sortBy="id";
+
+        else
+        sortBy=data.getSortBy();
+
+        Direction sortOrder;
+
+        if(data.getSortOrder()==null ||data.getSortOrder()=="ASC")
+        sortOrder=Direction.ASC;
+
+        else
+        sortOrder=Direction.DESC;
+
+        Pageable pageable=PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1, sortOrder, sortBy);
+
+        
         Page<DispatchMast> dispatchMastList;
         
         if (spec==null)
@@ -2153,9 +2170,6 @@ public class DispatchMastImpl {
         else
         dispatchMastList = dispatchMastDao.findAll(spec, pageable);
 
-        // if(data.getSortBy()!=null)
-        // dispatchMastList.getSort().by(data.getSortBy());
-        
         FilterResponse<DispatchMast> response=new FilterResponse<DispatchMast>(dispatchMastList.toList(),dispatchMastList.getNumber()+1,dispatchMastList.getSize(),dispatchMastList.getTotalPages());
         return response;
         

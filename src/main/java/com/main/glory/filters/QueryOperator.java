@@ -7,5 +7,6 @@ public enum QueryOperator {
     EQUALS,
     LIKE,
     NOT_EQ,
-    IN, NOT_EQUALS
+    IN, 
+    NOT_EQUALS
 }

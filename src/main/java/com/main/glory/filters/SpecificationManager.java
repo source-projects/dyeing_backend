@@ -1,7 +1,11 @@
 package com.main.glory.filters;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import com.main.glory.services.DataConversion;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -74,6 +78,18 @@ public class SpecificationManager<T> {
         }
         else if(fieldType.isAssignableFrom(Boolean.class)) {
           return Boolean.valueOf(value);
+        }
+        
+        else if(fieldType.isAssignableFrom(Date.class)) {
+          Date date=Date.from(Instant.now());
+          try{
+            date=DataConversion.stringToDate(value);
+          }
+          catch(Exception e){
+            System.out.println(e.getMessage());
+          }
+          System.out.println(date.toString());
+          return date;
         }
          return null;
        }
