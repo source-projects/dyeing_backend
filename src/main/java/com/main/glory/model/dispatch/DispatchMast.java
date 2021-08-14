@@ -1,5 +1,6 @@
 package com.main.glory.model.dispatch;
 
+
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.dispatch.request.CreateDispatch;
 import lombok.*;
@@ -16,9 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
+
 @Entity
-public class DispatchMast {
+public class DispatchMast{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;

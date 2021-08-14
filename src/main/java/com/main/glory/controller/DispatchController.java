@@ -1,6 +1,9 @@
 package com.main.glory.controller;
 
 import org.springframework.data.domain.Sort;
+
+import com.main.glory.Dao.FilterDao;
+import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
@@ -16,6 +19,7 @@ import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
 import com.main.glory.model.machine.request.PaginatedData;
+import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +53,13 @@ public class DispatchController extends ControllerConfig {
     Boolean debugAll;
 
     @Autowired
+    DispatchMastDao dispatchMastDao;
+
+    @Autowired
     DispatchMastImpl dispatchMastService;
+
+    @Autowired
+    FilterService<DispatchMast, DispatchMastDao> filterService;
 
     @PostMapping("/dispatch/")
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
@@ -593,13 +603,13 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<FilterResponse<DispatchMast>,Object> result;
         try{
 
-            FilterResponse<DispatchMast> x =(FilterResponse<DispatchMast>) dispatchMastService.getpaginatedDispatchData(data);
+            FilterResponse<DispatchMast> x = filterService.getpaginatedSortedFilteredData(data);
             if(!x.getData().isEmpty())
             result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
                 result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            // logService.saveLog(result,request,debugAll);
         } catch (Exception e){
             e.printStackTrace();
             result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
