@@ -1784,7 +1784,7 @@ public class DispatchMastImpl {
                 totalMtr = (totalMtr / 100) * dispatchDataList.get(0).getWtPer100m();
                 //finishMtr = (finishMtr / 100) * dispatchDataList.get(0).getWtPer100m();
                 qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
-                qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
+                //qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
             }
 
 
@@ -1820,6 +1820,8 @@ public class DispatchMastImpl {
                 Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
                 batchDataList.add(batchData.get());
             }
+
+            batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
 
             //change the list respone if the size is greater than 30 object
 
@@ -1990,6 +1992,9 @@ public class DispatchMastImpl {
                 batchDataList = batchDao.getBatchByPChallanRefAndInvoiceNumber(batchAndStockId.getPchallanRef(), String.valueOf(createDispatch.getInvoiceNo()));
                 billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(String.valueOf(createDispatch.getInvoiceNo()), batchDataList.get(0).getId());
             }
+
+            //sort data by sequence id
+            batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
             for (BatchData batchData : batchDataList) {
                 totalFinishMtr += batchData.getFinishMtr();
                 totalPcs++;
