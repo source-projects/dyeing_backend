@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import com.main.glory.services.DataConversion;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -29,19 +35,57 @@ public class SpecificationManager<T> {
                  castToRequiredType(root.get(input.getField()).getJavaType(), 
                                     input.getValue()));
           
-          case GREATER_THAN:
-             return (root, query, criteriaBuilder) -> 
-                criteriaBuilder.gt(root.get(input.getField()),
-                 (Number) castToRequiredType(
-                        root.get(input.getField()).getJavaType(), 
-                                    input.getValue()));
-          
           case LESS_THAN:
-             return (root, query, criteriaBuilder) -> 
-                criteriaBuilder.lt(root.get(input.getField()),
-                 (Number) castToRequiredType(
+          return new Specification<T>() {
+            @Override
+            public Predicate toPredicate(Root<T> root, 
+                            CriteriaQuery<?> query, 
+                            CriteriaBuilder criteriaBuilder) {
+
+              if(root.get(input.getField()).getJavaType().isAssignableFrom(Date.class))
+                return              criteriaBuilder.lessThan(root.get(input.getField()),(Date)castToRequiredType(
+                  root.get(input.getField()).getJavaType(), 
+                              input.getValue()) );
+              else
+                return criteriaBuilder.lt(root.get(input.getField()),
+                (Number) castToRequiredType(
                         root.get(input.getField()).getJavaType(), 
                                     input.getValue()));
+  
+            }
+            };
+
+          
+          case GREATER_THAN:
+          return new Specification<T>() {
+            @Override
+            public Predicate toPredicate(Root<T> root, 
+                           CriteriaQuery<?> query, 
+                           CriteriaBuilder criteriaBuilder) {
+
+              if(root.get(input.getField()).getJavaType().isAssignableFrom(Date.class))
+                return  criteriaBuilder.greaterThan(root.get(input.getField()),(Date)castToRequiredType(
+                  root.get(input.getField()).getJavaType(), 
+                              input.getValue()) );
+              else
+                return criteriaBuilder.gt(root.get(input.getField()),
+                (Number) castToRequiredType(
+                        root.get(input.getField()).getJavaType(), 
+                                    input.getValue()));
+  
+            }
+           };
+         
+            //  return (root, query, criteriaBuilder) -> 
+            //  criteriaBuilder.lessThan(root.get(input.getField()),(Date)castToRequiredType(
+            //   root.get(input.getField()).getJavaType(), 
+            //               input.getValue()) );
+               
+               
+                //           criteriaBuilder.lt(root.get(input.getField()),
+                // (Number) castToRequiredType(
+                //         root.get(input.getField()).getJavaType(), 
+                //                     input.getValue()));
           
           case LIKE:
             return (root, query, criteriaBuilder) -> 
@@ -90,7 +134,9 @@ public class SpecificationManager<T> {
           }
           System.out.println(date.toString());
           return date;
+          // return date;
         }
+
          return null;
        }
        
@@ -106,7 +152,7 @@ public class SpecificationManager<T> {
        public Specification<T> getSpecificationFromFilters(List<Filter> filter){
          if(filter==null || filter.isEmpty())
          return null;
-         System.out.println("Crearing specification");
+         System.out.println("Creating specification");
          Specification<T> specification = 
                    createSpecification(filter.remove(0));
         
