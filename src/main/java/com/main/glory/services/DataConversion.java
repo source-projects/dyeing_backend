@@ -17,7 +17,7 @@ public class DataConversion {
             return null ;
         }
         
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH);
         LocalDate date = LocalDate.parse(s, inputFormatter);
         System.out.println(s);
         System.out.println(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()).toString());

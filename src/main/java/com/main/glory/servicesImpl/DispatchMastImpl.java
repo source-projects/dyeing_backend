@@ -38,6 +38,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -359,6 +360,85 @@ public class DispatchMastImpl {
 
         return dispatchDataList;
     }
+
+    public FilterResponse<GetAllDispatch> getAllDisptach(String signByParty,int pageIndex,int pageSize) throws Exception {
+
+        List<GetAllDispatch> dispatchDataList = new ArrayList<>();
+        //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
+
+        List<DispatchMast> dispatchList = null;
+        if(signByParty==null|| signByParty.isEmpty())
+        {
+            dispatchList = dispatchMastDao.getAllInvoiceList();
+        }
+        else
+        dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
+
+        List<String> invoiceNumber = new ArrayList<>();
+
+       /* if (dispatchList.isEmpty())
+            throw new Exception("no data found");*/
+        for (DispatchMast dispatchMast : dispatchList) {
+            List<BatchWithTotalMTRandFinishMTR> batchList = new ArrayList<>();
+
+           /* if (!invoiceNumber.contains(dispatchMast.getPostfix())) {
+                invoiceNumber.add(dispatchMast.getPostfix().toString());*/
+            if (dispatchMast == null)
+                continue;
+
+            GetAllDispatch getAllDispatch = new GetAllDispatch(dispatchMast);
+            //System.out.println("invoice:" + dispatchData.getInvoiceNo());
+                /*DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(dispatchData.getPostfix());
+
+                if (dispatchMast == null)
+                    continue;*/
+
+            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if (party == null)
+                continue;
+            //get the batch data
+
+            List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchMast.getPostfix().toString());
+
+            for (GetBatchByInvoice batch : batchListWithInvoiceList) {
+                //list of batches
+                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
+                batchList.add(batchWithTotalMTRandFinishMTR);
+            }
+            getAllDispatch.setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
+            getAllDispatch.setPartyId(party.getId());
+            getAllDispatch.setPartyName(party.getPartyName());
+            getAllDispatch.setBatchList(batchList);
+            getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
+            Double mtr = 0.0;
+            Double finish = 0.0;
+           /* for (BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR : batchList) {
+                mtr += batchWithTotalMTRandFinishMTR.getMTR();
+                finish += batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
+            }*/
+            mtr = batchList.stream().mapToDouble(q->q.getMTR()).sum();
+            finish = batchList.stream().mapToDouble(q->q.getTotalFinishMtr()).sum();
+            getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
+            getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
+
+            dispatchDataList.add(getAllDispatch);
+            //}
+
+
+        }
+
+       /* if (signByParty.equals("true")) {
+            dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == true).collect(Collectors.toList());
+        } else if (signByParty.equals("false")) {
+            dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == false).collect(Collectors.toList());
+        }*/
+        List<GetAllDispatch> data=dispatchDataList.subList((pageIndex-1)*pageSize, Math.min(pageIndex*pageSize, dispatchDataList.size()));
+
+        FilterResponse<GetAllDispatch> response=new FilterResponse<GetAllDispatch>(data,pageIndex,pageSize,dispatchDataList.size());
+        return  response;
+
+    }
+
 
     public PartyWithBatchByInvoice getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
 

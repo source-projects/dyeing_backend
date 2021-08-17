@@ -76,16 +76,6 @@ public class SpecificationManager<T> {
             }
            };
          
-            //  return (root, query, criteriaBuilder) -> 
-            //  criteriaBuilder.lessThan(root.get(input.getField()),(Date)castToRequiredType(
-            //   root.get(input.getField()).getJavaType(), 
-            //               input.getValue()) );
-               
-               
-                //           criteriaBuilder.lt(root.get(input.getField()),
-                // (Number) castToRequiredType(
-                //         root.get(input.getField()).getJavaType(), 
-                //                     input.getValue()));
           
           case LIKE:
             return (root, query, criteriaBuilder) -> 
@@ -132,7 +122,7 @@ public class SpecificationManager<T> {
           catch(Exception e){
             System.out.println(e.getMessage());
           }
-          System.out.println(date.toString());
+          System.out.println(date.getTime());
           return date;
           // return date;
         }

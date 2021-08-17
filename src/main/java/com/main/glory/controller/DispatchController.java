@@ -184,6 +184,27 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping("/dispatch/getAllPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllDispatch>, Object>> getAllDispatchPaginated(@RequestParam(name = "signByParty") String signByParty,@RequestParam(name = "pageIndex") int pageIndex,@RequestParam(name = "pageSize") int pageSize) throws Exception{
+
+        GeneralResponse<FilterResponse<GetAllDispatch>,Object> result;
+        try{
+
+            FilterResponse<GetAllDispatch> x =dispatchMastService.getAllDisptach(signByParty,pageIndex,pageSize);
+            if(!x.getData().isEmpty())
+            result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     @PutMapping("/dispatch/updateDispatch/")
     public ResponseEntity<GeneralResponse<Long,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
         GeneralResponse<Long,Object> result;
@@ -201,6 +222,11 @@ public class DispatchController extends ControllerConfig {
         }
         return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    
+
+
+
     @PutMapping("/dispatch/updateDispatchStatus/{invoiceNo}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         GeneralResponse<Boolean,Object> result;
@@ -602,8 +628,8 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<FilterResponse<DispatchMast>, Object>> getDispatchData(@RequestBody PaginatedData data){
         GeneralResponse<FilterResponse<DispatchMast>,Object> result;
         try{
+
             FilterResponse<DispatchMast> x = dispatchMastService.getpaginatedDispatchData(data);
-            
             if(!x.getData().isEmpty())
             result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
