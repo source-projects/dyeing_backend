@@ -629,7 +629,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<FilterResponse<DispatchMast>,Object> result;
         try{
 
-            FilterResponse<DispatchMast> x = dispatchMastService.getpaginatedDispatchData(data);
+            FilterResponse<DispatchMast> x = filterService.getpaginatedSortedFilteredData(data);
             if(!x.getData().isEmpty())
             result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else

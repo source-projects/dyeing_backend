@@ -24,7 +24,7 @@ public class FilterService<T,D extends FilterDao<T>> {
     D dao;
     public FilterResponse<T> getpaginatedSortedFilteredData(PaginatedData data ){
                 
-        Specification<T> spec =specificationManager.getSpecificationFromFilters( data.getParameters());
+        Specification<T> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
         String sortBy;
         if(data.getSortBy()==null)
         sortBy="id";

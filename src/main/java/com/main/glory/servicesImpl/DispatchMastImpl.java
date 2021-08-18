@@ -2223,7 +2223,7 @@ public class DispatchMastImpl {
 
     public FilterResponse<DispatchMast> getpaginatedDispatchData(PaginatedData data){
                 
-        Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters());
+        Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
         String sortBy;
         if(data.getSortBy()==null)
         sortBy="id";

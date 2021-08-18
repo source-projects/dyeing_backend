@@ -14,6 +14,7 @@ import lombok.Setter;
 public class PaginatedData  {
     private List<Filter> parameters;
     private String sortBy;
+    private boolean isAnd;
     private String sortOrder;
     private int pageIndex;
     private int pageSize;

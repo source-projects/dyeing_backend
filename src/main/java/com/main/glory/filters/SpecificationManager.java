@@ -139,7 +139,7 @@ public class SpecificationManager<T> {
        }
 
 
-       public Specification<T> getSpecificationFromFilters(List<Filter> filter){
+       public Specification<T> getSpecificationFromFilters(List<Filter> filter,boolean isAnd){
          if(filter==null || filter.isEmpty())
          return null;
          System.out.println("Creating specification");
@@ -147,7 +147,11 @@ public class SpecificationManager<T> {
                    createSpecification(filter.remove(0));
         
          for (Filter input : filter) {
+           if (isAnd)
            specification = specification.and(createSpecification(input));
+
+           else
+           specification = specification.or(createSpecification(input));
          }
          return specification;
        }

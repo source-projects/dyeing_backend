@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.party.PartyWithMasterName;
@@ -145,6 +146,67 @@ public class PartyController extends ControllerConfig {
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 
 	}
+
+	@PostMapping(value="/party/all")
+	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestHeader Map headers, @RequestParam(name = "pageSize") int pageSize,@RequestParam(name="pageIndex") int pageIndex,@RequestParam(name="viewLevel") String viewLevel)
+	{
+		GeneralResponse<FilterResponse<PartyWithMasterName>,Object> result;
+
+		try{
+			switch (viewLevel) {
+				case "own":
+					var x = partyServiceImp.getAllPartyDetails(Long.parseLong((String) headers.get("id")),viewLevel,pageSize,pageIndex);
+					if (!x.getData().isEmpty()) {
+						result = new GeneralResponse<>(x, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					}
+					else {
+						result = new GeneralResponse<>(x, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					}
+					break;
+				case "group":
+					var x1 = partyServiceImp.getAllPartyDetails((Long)headers.get("id"),viewLevel,pageSize,pageIndex);
+					if (!x1.getData().isEmpty())
+					{
+						result = new GeneralResponse<>(x1, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					}
+					else {
+						result = new GeneralResponse<>(x1, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					}
+					break;
+				case "all":
+					var x2 = partyServiceImp.getAllPartyDetails(null, null,pageSize,pageIndex);
+					if (!x2.getData().isEmpty()) {
+						//throw new ResponseStatusException(HttpStatus.OK,x2.toString());
+						result = new GeneralResponse<>(x2, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+						//result = ResponseEntity.status(HttpStatus.OK).body(result);
+					}
+					else {
+
+						//response.getHeaders().add("status","404");
+						result = new GeneralResponse<>(x2, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+						//throw new Exception("no");
+						//result = ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+					}
+					break;
+				default:
+					result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+			logService.saveLog(result,request,true);
+
+		}
+		logService.saveLog(result,request,debugAll);
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+	}
+
+
+
+
 
 	@GetMapping(value="/party/{id}")
 	public ResponseEntity<GeneralResponse<PartyWithUserHeadName,Object>> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
@@ -304,4 +366,8 @@ public class PartyController extends ControllerConfig {
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+	
+
+
+
 }
