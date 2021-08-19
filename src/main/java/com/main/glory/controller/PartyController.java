@@ -147,6 +147,8 @@ public class PartyController extends ControllerConfig {
 
 	}
 
+	
+
 	@PostMapping(value="/party/all")
 	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestHeader Map headers, @RequestParam(name = "pageSize") int pageSize,@RequestParam(name="pageIndex") int pageIndex,@RequestParam(name="viewLevel") String viewLevel)
 	{
