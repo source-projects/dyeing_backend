@@ -39,6 +39,7 @@ public class ConsolidatedBillData {
     Double taxAmt;
     Double cgst;
     Double sgst;
+    Double igst;
     Double gstAmt;
     Double netAmt;
     String partyAddress1;
@@ -80,9 +81,10 @@ public class ConsolidatedBillData {
         this.contactNo = party.getContactNo()==null?null:party.getContactNo();
         this.discountAmt = StockBatchServiceImpl.changeInFormattedDecimal((this.amt * this.percentageDiscount)/100);
         this.taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(this.amt - ((this.amt * this.percentageDiscount)/100));
-        this.cgst=StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100);
-        this.sgst=StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100);
-        this.gstAmt=this.cgst+this.sgst;
+        this.igst=this.state.equalsIgnoreCase("Gujarat")?0:StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 5)/100);
+        this.cgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
+        this.sgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
+        this.gstAmt=this.cgst+this.sgst+this.igst;
         this.netAmt = this.taxAmt+this.gstAmt;
     }
 }
