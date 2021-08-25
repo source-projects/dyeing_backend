@@ -19,6 +19,7 @@ public class CreateDispatch {
     Double discount;
     Double cgst;
     Double sgst;
+    Double igst;
     Double taxAmt;
     Double netAmt;
     String password;
