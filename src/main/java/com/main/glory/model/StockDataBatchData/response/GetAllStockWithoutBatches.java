@@ -17,8 +17,8 @@ public class GetAllStockWithoutBatches {
     Long qualityEntryId;
 
     public GetAllStockWithoutBatches(StockMast stockMast) {
-        this.partyId=stockMast.getPartyId();
-        this.qualityEntryId=stockMast.getQualityId();
+        this.partyId=stockMast.getParty().getId();
+        this.qualityEntryId=stockMast.getQuality().getId();
         this.stockId=stockMast.getId();
     }
 }

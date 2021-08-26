@@ -193,8 +193,8 @@ public class BatchImpl {
             throw new Exception("No batch found");
 
         UserData userData = userService.getUserById(stockMast.get().getUserHeadId());
-        String partyName=partyServiceImp.getPartyNameByPartyId(stockMast.get().getPartyId());
-        GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.get().getQualityId());
+        String partyName=partyServiceImp.getPartyNameByPartyId(stockMast.get().getParty().getId());
+        GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.get().getQuality().getId());
         Double mtr=0.0;
         Double wt=0.0;
         for(BatchData batchData:batchDataList)
@@ -211,7 +211,7 @@ public class BatchImpl {
         data.setPcs(batchDataList.size());
         data.setBatchId(batchId);
         data.setControlId(controlId);
-        data.setPartyId(stockMast.get().getPartyId());
+        data.setPartyId(stockMast.get().getParty().getId());
         data.setPartyName(partyName);
         data.setQualityEntryId(quality.getId());
         data.setQualityName(quality.getQualityName());

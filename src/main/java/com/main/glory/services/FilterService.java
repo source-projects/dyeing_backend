@@ -1,7 +1,12 @@
 package com.main.glory.services;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.main.glory.Dao.FilterDao;
+import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 
 import com.main.glory.model.machine.request.PaginatedData;
@@ -22,9 +27,21 @@ public class FilterService<T,D extends FilterDao<T>> {
     
     @Autowired
     D dao;
-    public FilterResponse<T> getpaginatedSortedFilteredData(PaginatedData data ){
-                
-        Specification<T> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
+
+    public String getWhereClause(List<Filter> parameters,HashMap<String,String> tableConversion){
+        String whereClause="";
+        for(int i=0;i<parameters.size();i++){
+            String tableName=parameters.get(i).getTableName();
+            String field=parameters.get(i).getField();
+            String value=parameters.get(i).getValue();
+            String operator=parameters.get(i).getOperation();
+            
+            whereClause+=tableConversion.get(tableName)+"."+field+" "+operator+" "+value;
+        }
+        return whereClause;
+    }
+
+    public Pageable getPageable(PaginatedData data){
         String sortBy;
         if(data.getSortBy()==null)
         sortBy="id";
@@ -41,7 +58,13 @@ public class FilterService<T,D extends FilterDao<T>> {
         sortOrder=Direction.DESC;
 
         Pageable pageable=PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1, sortOrder, sortBy);
+        return pageable;
 
+    }
+    public FilterResponse<T> getpaginatedSortedFilteredData(PaginatedData data ){
+                
+        Specification<T> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
+        Pageable pageable=getPageable(data);
         
         Page<T> filteredList;
         
@@ -55,5 +78,7 @@ public class FilterService<T,D extends FilterDao<T>> {
         return response;
         
     }
+
+    
 
 }

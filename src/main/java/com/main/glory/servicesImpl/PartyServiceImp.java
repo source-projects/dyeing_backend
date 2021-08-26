@@ -180,11 +180,11 @@ public class PartyServiceImp implements PartyServiceInterface {
             if(userData.getUserHeadId()==0)
             {
                 //fr admin
-                partyDetailsList = partyDao.getAllParty();
+                partyDetailsList = partyDao.getAllPartyWithHeadName();
             }
             else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
-                partyDetailsList = partyDao.findByCreatedByAndUserHeadId(id,id);
+                partyDetailsList = partyDao.findByCreatedByAndUserHeadIdWithHeadName(id,id);
             }
             else {
                 UserData opratorUsr = userDao.getUserById(id);

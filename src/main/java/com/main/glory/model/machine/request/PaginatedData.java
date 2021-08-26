@@ -18,11 +18,23 @@ public class PaginatedData  {
     private String sortOrder;
     private int pageIndex;
     private int pageSize;
-    public PaginatedData(List<Filter> parameters, String sortBy, int pageIndex, int pageSize,String sortOrder) {
+    
+    public PaginatedData(List<Filter> parameters, String sortBy, boolean isAnd, String sortOrder, int pageIndex,
+            int pageSize) {
         this.parameters = parameters;
         this.sortBy = sortBy;
+        this.isAnd = isAnd;
+        this.sortOrder = sortOrder;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
-        this.sortOrder=sortOrder;
     }
+
+    public PaginatedData(PaginatedData data) {
+        this.parameters = data.getParameters();
+        this.sortBy = data.getSortBy();
+        this.pageIndex = data.getPageIndex();
+        this.pageSize = data.getPageSize();
+        this.sortOrder=data.getSortBy();
+    }
+
 }

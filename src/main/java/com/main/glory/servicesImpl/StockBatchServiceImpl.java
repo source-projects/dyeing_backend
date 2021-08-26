@@ -7,6 +7,7 @@ import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.*;
 import com.main.glory.model.StockDataBatchData.request.*;
@@ -28,6 +29,8 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import com.main.glory.services.FilterService;
+
 import org.apache.commons.math3.util.Precision;
 import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +106,9 @@ public class StockBatchServiceImpl {
     @Autowired
     PartyDao partyDao;
 
+    @Autowired
+    FilterService<StockMast,StockMastDao> filterService;
+
 
     public List<StockMast> getAllStockBatch(Long qualityId) {
 
@@ -126,14 +132,14 @@ public class StockBatchServiceImpl {
     @Transactional
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
-        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
         Long max = 0l, batchId = 0l;
         Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
-        Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
+        Optional<Quality> quality = qualityDao.findById(stockMast.getQuality().getId());
 
         if (!quality.isPresent()) {
             throw new Exception(ConstantFile.Quality_Data_Not_Found);
@@ -153,8 +159,8 @@ public class StockBatchServiceImpl {
             UserData userData = userDao.getUserById(Long.parseLong(id));
             if (userData.getIsMaster() == false) {
                 //fetch the party record to set the usert head
-                party = partyDao.findByPartyId(stockMast.getPartyId());
-                stockMast.setUserHeadId(party.getUserHeadId());
+                party = partyDao.findByPartyId(stockMast.getParty().getId());
+                stockMast.setUserHeadId(party.getUserData().getId());
             }
             //check the invoice sequence
                /* BatchSequence batchSequence = batchSequneceDao.getBatchSequence();
@@ -177,9 +183,9 @@ public class StockBatchServiceImpl {
             }
 
             //update the quality wt per 100 as well
-            qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
+            qualityDao.updateQualityWtAndMtrKgById(stockMast.getQuality().getId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
             if (create.getUserHeadId() == 0) {
-                create.setUserHeadId(party.getUserHeadId());
+                create.setUserHeadId(party.getUserData().getId());
                 stockMastDao.saveAndFlush(create);
             }
             return x.getId();
@@ -310,6 +316,115 @@ public class StockBatchServiceImpl {
 
     }
 
+
+    @Transactional
+    public FilterResponse<GetAllStockWithPartyNameResponse> getAllStockBatchPaginatedAndFiltered(GetAllStockBatchPaginatedAndFiltered requestParam, Long id) throws Exception {
+        List<GetAllStockWithPartyNameResponse> data = null;
+        List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
+        Pageable pageable=filterService.getPageable(requestParam.getData());
+        Boolean flag = false;
+        Page queryResponse=null;
+        // 0// for(int i=0;i<requestParam.getData().getParameters().size();i++){}
+
+        if (id == null) {
+            queryResponse= stockMastDao.getAllStockWithPartyNameAndQualityNamePaginated(pageable).get();
+            data=queryResponse.getContent();
+            if (!data.isEmpty()) {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                //List<GetAllBatchResponse> batchDataList2 = new ArrayList<>();
+                for (GetAllStockWithPartyNameResponse batchData : data) {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+
+                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
+                    if(trueBatch!=null)
+                    {
+                        batchData.setIsProductionPlanned(true);
+                    }
+                    else
+                    {
+                        batchData.setIsProductionPlanned(false);
+                    }
+                    /*if (batchData.getBatchData().stream().anyMatch(x -> x.getIsProductionPlanned() == true)) {
+                        batchData.setIsProductionPlanned(true);
+                    } else {
+                        batchData.setIsProductionPlanned(false);
+                    }*/
+
+                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
+
+                }
+
+
+            }
+
+
+        } else if (requestParam.getGetBy().equals("own")) {
+
+            queryResponse = stockMastDao.getAllStockWithPartyNameByCreatedByPaginated(pageable,id).get();
+            data=queryResponse.getContent();
+            if (!data.isEmpty()) {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for (GetAllStockWithPartyNameResponse batchData : data) {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
+                    if(trueBatch!=null)
+                    {
+                        batchData.setIsProductionPlanned(true);
+                    }
+                    else
+                    {
+                        batchData.setIsProductionPlanned(false);
+                    }
+                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
+
+                }
+
+
+            }
+        } else if (requestParam.getGetBy().equals("group")) {
+
+            UserData userData = userDao.findUserById(id);
+
+            if (userData.getUserHeadId().equals(userData.getId())) {
+                //master user
+                queryResponse=stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,id, id).get();
+            } else {
+                UserData userOperator = userDao.getUserById(id);
+                queryResponse = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,userOperator.getId(), userOperator.getUserHeadId()).get();
+            }
+            data=queryResponse.getContent();
+            if (!data.isEmpty()) {
+                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
+                for (GetAllStockWithPartyNameResponse batchData : data) {
+                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+
+                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
+                    if(trueBatch!=null)
+                    {
+                        batchData.setIsProductionPlanned(true);
+                    }
+                    else
+                    {
+                        batchData.setIsProductionPlanned(false);
+                    }
+                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
+
+                }
+            }
+        }
+        FilterResponse<GetAllStockWithPartyNameResponse> response=new FilterResponse<GetAllStockWithPartyNameResponse>(list,queryResponse.getNumber()+1,queryResponse.getSize(),queryResponse.getTotalPages());
+
+        return response;
+    }
+
+
+
+
+
     @Transactional
     public List<GetAllStockWithPartyNameResponse> getAllAvailableStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
@@ -324,7 +439,7 @@ public class StockBatchServiceImpl {
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
 
-                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQuality().getId());
                     list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, qualityName));
 
                 }
@@ -342,7 +457,7 @@ public class StockBatchServiceImpl {
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
 
-                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQuality().getId());
                     list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, qualityName));
 
                 }
@@ -365,7 +480,7 @@ public class StockBatchServiceImpl {
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
 
-                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+                    String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQuality().getId());
                     list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, qualityName));
 
                 }
@@ -402,9 +517,9 @@ public class StockBatchServiceImpl {
         }));*/
 
         return list;
-
-
     }
+
+
 
     @Transactional
     public StockMast getStockBatchById(Long id) throws Exception {
@@ -498,8 +613,8 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(Long.parseLong(id));
         if (userData.getIsMaster() == false || stockMast.getUserHeadId() == 0) {
             //fetch the party record to set the usert head
-            Party party = partyDao.findByPartyId(stockMast.getPartyId());
-            stockMast.setUserHeadId(party.getUserHeadId());
+            Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+            stockMast.setUserHeadId(party.getUserData().getId());
         }
         //update record
         StockMast x = new StockMast(stockMast);
@@ -507,7 +622,7 @@ public class StockBatchServiceImpl {
         stockMastDao.save(x);
         //batchDao.saveAll(batchDataList);
         //update the quality wt per 100 as well
-        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
+        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQuality().getId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
 
 
         //update the sequence
@@ -868,10 +983,10 @@ public class StockBatchServiceImpl {
 
         for (GetBatchWithControlId batch : batchData) {
             Optional<StockMast> stockMast = stockMastDao.findById(batch.getControlId());
-            if (stockMast.get().getQualityId() != null && stockMast.get().getPartyId() != null) {
-                Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
+            if (stockMast.get().getQuality().getId() != null && stockMast.get().getParty().getId() != null) {
+                Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
-                Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+                Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                 Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
                 BatchToPartyAndQuality batchToPartyAndQuality = new BatchToPartyAndQuality(quality.get(), party.get(), batch, qualityName.get());
@@ -911,12 +1026,12 @@ public class StockBatchServiceImpl {
                 //System.out.println("stockId:"+batchByMergeBatch.getControlId());
 
                 Optional<StockMast> stockMast = stockMastDao.findById(batchByMergeBatch.getControlId());
-                if (stockMast.get().getQualityId() != null && stockMast.get().getPartyId() != null) {
+                if (stockMast.get().getQuality().getId() != null && stockMast.get().getParty().getId() != null) {
 
-                    Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
+                    Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
                     Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
-                    Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+                    Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                     //check that the process and party shade is exist or not
                     //if not then set the detail by null
@@ -974,11 +1089,11 @@ public class StockBatchServiceImpl {
         if (!stockMast.isPresent())
             throw new Exception(ConstantFile.Batch_Data_Not_Found + batchId);
 
-        Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+        Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
         if (!party.isPresent())
             throw new Exception(ConstantFile.Party_Not_Exist + " for " + batchId);
 
-        Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
+        Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
         if (!quality.isPresent())
             throw new Exception(ConstantFile.Quality_Data_Not_Found + " for :" + batchId);
@@ -1533,11 +1648,11 @@ public class StockBatchServiceImpl {
             if (stockMast == null)
                 continue;
 
-            GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQualityId());
+            GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQuality().getId());
             if (quality == null)
                 continue;
 
-            Party party = partyDao.findByPartyId(stockMast.getPartyId());
+            Party party = partyDao.findByPartyId(stockMast.getParty().getId());
             if (party == null)
                 continue;
 
@@ -1802,9 +1917,9 @@ public class StockBatchServiceImpl {
         Double totalFinish = batchDao.getTotalFinishMtrByBatchAndStock(batchId, stockId);
         Long totalPcs = batchDao.getTotalPcsByBatchAndStockIdWithoutFilter(stockId, batchId);
         StockMast stockMast = stockMastDao.findByStockId(stockId);
-        Party party = partyDao.findByPartyId(stockMast.getPartyId());
-        UserData userData = userDao.getUserById(party.getUserHeadId());
-        Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
+        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+        UserData userData = userDao.getUserById(party.getUserData().getId());
+        Quality quality = qualityDao.getqualityById(stockMast.getQuality().getId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
 
       /*  System.out.println(stockMast.getId());
@@ -2037,12 +2152,12 @@ public class StockBatchServiceImpl {
                 //System.out.println("stockId:"+batchByMergeBatch.getControlId());
 
                 Optional<StockMast> stockMast = stockMastDao.findById(batchByMergeBatch.getControlId());
-                if (stockMast.get().getQualityId() != null && stockMast.get().getPartyId() != null) {
+                if (stockMast.get().getQuality().getId() != null && stockMast.get().getParty().getId() != null) {
 
-                    Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
+                    Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
                     Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
-                    Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+                    Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                     //check that the process and party shade is exist or not
                     //if not then set the detail by null
@@ -2118,12 +2233,12 @@ public class StockBatchServiceImpl {
             //System.out.println("stockId:"+batchByMergeBatch.getControlId());
 
             Optional<StockMast> stockMast = stockMastDao.findById(batch.getControlId());
-            if (stockMast.get().getQualityId() != null && stockMast.get().getPartyId() != null) {
+            if (stockMast.get().getQuality().getId() != null && stockMast.get().getParty().getId() != null) {
 
-                Optional<Quality> quality = qualityDao.findById(stockMast.get().getQualityId());
+                Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
                 Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
-                Optional<Party> party = partyDao.findById(stockMast.get().getPartyId());
+                Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                 //check that the process and party shade is exist or not
                 //if not then set the detail by null
@@ -2370,7 +2485,7 @@ public class StockBatchServiceImpl {
         List<BatchData> batchDataList = new ArrayList<>();
         //check that the party exist with same challan ref
         for (BatchData batchData : stockMast.getBatchData()) {
-            List<BatchData> batchDataExistWithChallanAndPartyId = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batchData.getPchallanRef(), stockMast.getPartyId(), 0l);
+            List<BatchData> batchDataExistWithChallanAndPartyId = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batchData.getPchallanRef(), stockMast.getParty().getId(), 0l);
             if (batchDataExistWithChallanAndPartyId.size() > 0)
                 throw new Exception(ConstantFile.StockBatch_PChallanRef_ExistWithParty);
 
@@ -2392,7 +2507,7 @@ public class StockBatchServiceImpl {
     public Long updatePChallanRef(StockMast stockMast, String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
         for (BatchData batchData : stockMast.getBatchData()) {
-            /*List<BatchData> batchDataExistWithChallanAndPartyId = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batchData.getPchallanRef(),stockMast.getPartyId(),batchData.getId()==null?0l:batchData.getId());
+            /*List<BatchData> batchDataExistWithChallanAndPartyId = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batchData.getPchallanRef(),stockMast.getParty().getId(),batchData.getId()==null?0l:batchData.getId());
             if(batchDataExistWithChallanAndPartyId!=null)
                 throw new Exception(ConstantFile.StockBatch_PChallanRef_ExistWithParty);
             */
@@ -2456,7 +2571,7 @@ public class StockBatchServiceImpl {
             batch.setControlId(stockMast.getId());
 
             //check the challan changes?
-           /* BatchData batchDataExistWithPChallan = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batch.getPchallanRef(),stockMast.getPartyId(),batch.getId());
+           /* BatchData batchDataExistWithPChallan = batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(batch.getPchallanRef(),stockMast.getParty().getId(),batch.getId());
             if(batchDataExistWithPChallan!=null)
                 throw new Exception(ConstantFile.StockBatch_PChallanRef_ExistWithParty);
            */
@@ -2478,8 +2593,8 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(Long.parseLong(id));
         if (userData.getIsMaster() == false || stockMast.getUserHeadId() == 0) {
             //fetch the party record to set the usert head
-            Party party = partyDao.findByPartyId(stockMast.getPartyId());
-            stockMast.setUserHeadId(party.getUserHeadId());
+            Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+            stockMast.setUserHeadId(party.getUserData().getId());
         }
         //update record
         StockMast x = new StockMast(stockMast);

@@ -42,17 +42,17 @@ public class AllStockDateWiseData {
         System.out.println("stockMastList length -"+Integer.toString(stockMastList.size()));
         for(int i=0;i<stockMastList.size();i++){
             StockMast stockMast=stockMastList.get(i);
-            Party party=partyDao.findByPartyId(stockMast.getPartyId());
+            Party party=partyDao.findByPartyId(stockMast.getParty().getId());
             String partyName=party.getPartyName();
             String partyCode=party.getPartyCode();
-            String qualityName=qualityDao.findById(stockMast.getQualityId()).get().getQualityName();
+            String qualityName=qualityDao.findById(stockMast.getQuality().getId()).get().getQualityName();
             Date receiveDate=stockMast.getReceiveDate();
 
 
             
-            if(!dataMap.containsKey(stockMast.getPartyId()))
+            if(!dataMap.containsKey(stockMast.getParty().getId()))
             {
-                dataMap.put(stockMast.getPartyId(),new HashMap<>() {{
+                dataMap.put(stockMast.getParty().getId(),new HashMap<>() {{
                 put("partyName", partyName);
                 put("partyCode", partyCode);
                 }}
@@ -71,13 +71,13 @@ public class AllStockDateWiseData {
                 Double wt=batchData.getWt();
 
 
-                if(dataMap.get(stockMast.getPartyId()).containsKey(batchId)){
-                    StockDateWise stockDateWise=(StockDateWise)dataMap.get(stockMast.getPartyId()).get(batchId);
+                if(dataMap.get(stockMast.getParty().getId()).containsKey(batchId)){
+                    StockDateWise stockDateWise=(StockDateWise)dataMap.get(stockMast.getParty().getId()).get(batchId);
                     stockDateWise.addToTotalMtr(mtr);
                     stockDateWise.addToTotalWT(wt);
                 }
                 else{
-                    dataMap.get(stockMast.getPartyId()).put(batchId, new StockDateWise(batchId,mtr,wt,qualityName,receiveDate,pchallanRef));
+                    dataMap.get(stockMast.getParty().getId()).put(batchId, new StockDateWise(batchId,mtr,wt,qualityName,receiveDate,pchallanRef));
                 }
             
             }

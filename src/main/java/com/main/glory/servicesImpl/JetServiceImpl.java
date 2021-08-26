@@ -930,7 +930,7 @@ public class JetServiceImpl {
         data.setColorTone(shadeMast.get().getColorTone());
         data.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
         data.setQualityId(quality.getQualityId());
-        data.setQualityEntryId(stockMast.getQualityId());
+        data.setQualityEntryId(stockMast.getQuality().getId());
         data.setBatchWt(wt);
         //data.setStockId(productionPlanExist.getStockId());
         data.setBatchId(productionPlanExist.getBatchId());

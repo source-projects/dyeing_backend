@@ -2,11 +2,13 @@ package com.main.glory.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.designation.Designation;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.user.Request.UserAddRequest;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Setter
@@ -20,6 +22,7 @@ public class UserData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+
     String userName;
     String firstName;
     String lastName;
@@ -45,6 +48,11 @@ public class UserData {
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "designationId", referencedColumnName = "id")
     private Designation designationId;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "partyId", referencedColumnName = "id")
+    private List<Party> parties;  
 
     public UserData(UserAddRequest userDataDto) {
         //this.dataEntry=userDataDto.getDataEntry();

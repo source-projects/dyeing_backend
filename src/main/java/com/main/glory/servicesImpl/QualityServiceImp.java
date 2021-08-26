@@ -95,7 +95,7 @@ public class QualityServiceImp  {
         System.out.println(":"+user.getId());
         if(user.getIsMaster()==false || qualityDto.getUserHeadId()==0)
         {
-            qualityDto.setUserHeadId(party.getUserHeadId());
+            qualityDto.setUserHeadId(party.getUserData().getId());
         }
 
         //elese remin the master

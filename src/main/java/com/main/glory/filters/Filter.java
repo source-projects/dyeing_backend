@@ -14,6 +14,8 @@ import java.util.List;
 public class Filter {
     private String field;
     private QueryOperator operator;
+    private String operation;
     private String value;
+    private String tableName;
     private List<String> values;//Used in case of IN operator
 }

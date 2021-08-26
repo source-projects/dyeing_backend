@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
@@ -178,6 +179,62 @@ public class StockBatchController extends ControllerConfig {
         logService.saveLog(result, request, debugAll);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping(value="/stockBatch/allpaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object>> getAllStockBatchPaginatedAndFiltered(@RequestBody GetAllStockBatchPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header) throws Exception {
+        System.out.println("stockBatch/all entered");
+
+        GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object> result;
+        try {
+            FilterResponse<GetAllStockWithPartyNameResponse> stockMast = null;
+            Long id=null;
+            if(header.get("id")!=null)
+            id=Long.parseLong(header.get("id"));
+            
+            switch (requestParam.getGetBy()) {
+                case "own":
+                    stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, id);
+                    if (stockMast == null) {
+                        result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    } else {
+                        result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    }
+                    break;
+
+                case "group":
+                    stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam,id);
+                    if (stockMast == null) {
+                        result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    } else {
+                        result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    }
+                    break;
+
+                case "all":
+                    stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, null);
+                    if (stockMast == null) {
+                        result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    } else {
+                        result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    }
+                    break;
+                default:
+                    result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+        logService.saveLog(result, request, debugAll);
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
 
     @GetMapping("/stockBatch/{id}")
     public ResponseEntity<GeneralResponse<StockMast, Object>> getStockMastById(@PathVariable(value = "id") Long id) {

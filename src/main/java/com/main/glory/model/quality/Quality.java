@@ -27,7 +27,7 @@ import javax.persistence.*;
 public class Quality {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+	Long id;
 	String  qualityId;
 	String qualityName;
 	String qualityType;

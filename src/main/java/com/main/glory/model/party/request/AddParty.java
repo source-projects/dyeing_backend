@@ -7,7 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.main.glory.model.user.UserData;
+
 import java.util.Date;
 
 @AllArgsConstructor
@@ -34,7 +40,9 @@ public class AddParty {
     private String paymentTerms;
     private Double percentageDiscount;
     private Double gstPercentage;
-    private Long userHeadId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userData;
     private String partyCode;
     Long paymentDays;
     Double creditLimit;

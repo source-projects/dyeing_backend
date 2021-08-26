@@ -40,11 +40,11 @@ public class BatchReturn {
 
     public BatchReturn(StockMast stockMast, BatchData batchDataExist, Long chlNo, Date challanDate, Party party, QualityWithQualityNameParty quality) {
         this.stockId = stockMast.getId();
-        this.partyId = stockMast.getPartyId();
+        this.partyId = stockMast.getParty().getId();
         this.partyName = party.getPartyName();
         this.partyCode =party.getPartyCode();
         this.address = party.getPartyAddress1();
-        this.qualityEntryId = stockMast.getQualityId();
+        this.qualityEntryId = stockMast.getQuality().getId();
         this.qualityName = quality.getQualityName();
         this.qualityId = quality.getQualityId();
         this.mtr = batchDataExist.getMtr();

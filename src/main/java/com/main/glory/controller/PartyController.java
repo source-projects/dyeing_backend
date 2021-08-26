@@ -150,7 +150,7 @@ public class PartyController extends ControllerConfig {
 	
 
 	@PostMapping(value="/party/all")
-	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestHeader Map headers, @RequestParam(name = "pageSize") int pageSize,@RequestParam(name="pageIndex") int pageIndex,@RequestParam(name="viewLevel") String viewLevel)
+	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestHeader Map<String,String> headers, @RequestParam(name = "pageSize") int pageSize,@RequestParam(name="pageIndex") int pageIndex,@RequestParam(name="viewLevel") String viewLevel)
 	{
 		GeneralResponse<FilterResponse<PartyWithMasterName>,Object> result;
 
@@ -166,7 +166,7 @@ public class PartyController extends ControllerConfig {
 					}
 					break;
 				case "group":
-					var x1 = partyServiceImp.getAllPartyDetails((Long)headers.get("id"),viewLevel,pageSize,pageIndex);
+					var x1 = partyServiceImp.getAllPartyDetails(Long.parseLong(headers.get("id")),viewLevel,pageSize,pageIndex);
 					if (!x1.getData().isEmpty())
 					{
 						result = new GeneralResponse<>(x1, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
