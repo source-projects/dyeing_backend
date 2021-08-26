@@ -112,6 +112,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query("select new com.main.glory.model.dispatch.response.UnitDetail(d.billingUnit,d.inwardUnit,d.wtPer100m) from DispatchData d where d.invoiceNo=:invoiceNo AND d.batchEntryId=:batchEntryId")
     UnitDetail getUnitDetailByInvoiceNoAndBatchEntryId(String invoiceNo, Long batchEntryId);
 
+    @Query(value = "select * from dispatch_data where invoiceNo=:invoiceNo LIMIT 1",nativeQuery = true)
+    DispatchData getDispatchDataByInvoiceNumber(@Param("invoiceNo") String invoiceNo);
+
 
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
