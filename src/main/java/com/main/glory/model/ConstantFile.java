@@ -90,6 +90,7 @@ public class ConstantFile {
     public static String Invoice_Sequence_Updated = "Data updated successfully";
     public static String Invoice_Sequence_Found = "Invoice Sequence found";
     public static String Invoice_Sequence_Exist = "Data already exist";
+    public static String Invoice_Sequence_Exist_Try_later = "Invoice number is exist ! try after sometime";
     public static String Invoice_Sequence_Not_Found = "Invoice Sequence not found";
     public static String Invoice_Sequence_Greater = "Enter greater sequence";
 

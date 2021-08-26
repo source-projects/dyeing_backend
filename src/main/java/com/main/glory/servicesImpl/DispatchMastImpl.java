@@ -1586,6 +1586,11 @@ public class DispatchMastImpl {
         }
 
 
+        //check that the invoice sequence is exist
+        DispatchData dispatchDataExist = dispatchDataDao.getDispatchDataByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
+        if(dispatchDataExist!=null)
+            throw new Exception(ConstantFile.Invoice_Sequence_Exist_Try_later);
+
         //iterate and change the status
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
             List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef());
