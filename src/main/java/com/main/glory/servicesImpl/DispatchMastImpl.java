@@ -1589,7 +1589,7 @@ public class DispatchMastImpl {
         //check that the invoice sequence is exist
         DispatchData dispatchDataExist = dispatchDataDao.getDispatchDataByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
         if(dispatchDataExist!=null)
-            throw new Exception(ConstantFile.Invoice_Sequence_Exist_Try_later);
+            throw new Exception(ConstantFile.PrinterIsBusy);
 
         //iterate and change the status
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
@@ -1842,7 +1842,7 @@ public class DispatchMastImpl {
                 if (remainingGrFrom > 0) {
                     object++;
                 }
-                for (int x = 1; x < object; x++) {
+                for (int x = 0; x < object; x++) {
                     // to index value is not going to push into the list
                     // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
                     //only from 0-29 object are going to store in list

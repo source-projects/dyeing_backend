@@ -51,10 +51,11 @@ public class ConsolidatedBillData {
     private String gstin;
     String billingUnit;
     String inwardUnit;
+    String deliveryMode;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast,Long greyPcs) {
-
+        this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
         this.invoiceDate = dispatchMast.getCreatedDate();
         this.invoiceNo = dispatchMast.getPostfix();

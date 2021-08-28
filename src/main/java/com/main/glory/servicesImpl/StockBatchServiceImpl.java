@@ -1654,6 +1654,7 @@ public class StockBatchServiceImpl {
 
         //filter the data if the batch is done with jet
         for (GetAllBatch getAllBatch : dataList) {
+            //System.out.println(getAllBatch.getBatchId());
             ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
 
             if (productionPlan == null)
