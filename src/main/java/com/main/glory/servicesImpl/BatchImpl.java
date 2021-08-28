@@ -6,6 +6,9 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetCompleteFinishMtrDetail;
+import com.main.glory.model.jet.JetData;
+import com.main.glory.model.jet.JetStatus;
+import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.user.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,12 @@ public class BatchImpl {
     PartyServiceImp partyServiceImp;
     @Autowired
     QualityServiceImp qualityServiceImp;
+
+
+    @Autowired
+    ProductionPlanImpl productionPlanService;
+    @Autowired
+    JetServiceImpl jetService;
 
     ConstantFile constantFile;
 
@@ -248,5 +257,35 @@ public class BatchImpl {
 
     public List<BatchData> getBatchByMergeBatchId(String batchId) {
         return batchDao.getBatchByMergeBatchId(batchId);
+    }
+
+
+    public void removeBatchFromFinishMtrByProductionId(Long productionId) throws Exception {
+        ProductionPlan productionPlanExist = productionPlanService.getProductionDataById(productionId);
+
+        if(productionPlanExist==null)
+            throw new Exception(ConstantFile.Production_Not_Found);
+
+        JetData jetData = jetService.getJetDataByProductionId(productionId);
+        if(jetData==null)
+            throw new Exception(ConstantFile.Production_Record_Not_Exist_With_Jet);
+
+
+        jetService.updateJetDataStatus(jetData.getId(), JetStatus.inQueue);
+
+        //update batch data also
+        if (productionPlanExist.getIsMergeBatchId())
+        {
+            batchDao.updateFinishMtrSaveAndFinishMtrByMergeBatchId(productionPlanExist.getBatchId(),0.0,false);
+        }
+        else
+        {
+            batchDao.updateFinishMtrSaveAndFinishMtrByBatchId(productionPlanExist.getBatchId(),0.0,false);
+        }
+
+
+
+
+
     }
 }

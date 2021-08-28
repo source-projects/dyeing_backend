@@ -75,6 +75,24 @@ public class BatchFinishMtrController extends ControllerConfig {
 
     }
 
+    @DeleteMapping("/batch/removeBy")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteBatchByProductionId(@RequestParam(name="productionId")Long productionId){
+        GeneralResponse<Boolean,Object> result;
+        try{
+            //System.out.println("deleting batch with id:"+id);
+            batchImpl.removeBatchFromFinishMtrByProductionId(productionId);
+            result = new GeneralResponse<>(true, constantFile.Batch_Data_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(false,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+
+    }
+
     @GetMapping("/batch/{controlId}/{batchId}")
     public ResponseEntity<GeneralResponse<List<BatchData>,Object>> getFinishMtrBatchById(@PathVariable(value = "batchId") String batchId,@PathVariable(value = "controlId") String controlId){
 

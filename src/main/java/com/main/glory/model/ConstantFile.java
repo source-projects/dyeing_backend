@@ -91,6 +91,7 @@ public class ConstantFile {
     public static String Invoice_Sequence_Found = "Invoice Sequence found";
     public static String Invoice_Sequence_Exist = "Data already exist";
     public static String Invoice_Sequence_Exist_Try_later = "Invoice number is exist ! try after sometime";
+
     public static String Invoice_Sequence_Not_Found = "Invoice Sequence not found";
     public static String Invoice_Sequence_Greater = "Enter greater sequence";
 
@@ -432,4 +433,6 @@ public class ConstantFile {
     public static String TagDyeingProcess_Not_Found = "Data not found ";
     public static String TagDyeingProcess_Not_Exist = "Tag sDyeing Process not exist ";
     public static String TagDyeingProcess_Deleted = "Data deleted successfully";
+
+    public static String PrinterIsBusy = "Printer is busy, Try again later";
 }

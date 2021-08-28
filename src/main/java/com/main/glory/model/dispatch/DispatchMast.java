@@ -42,9 +42,11 @@ public class DispatchMast {
     Date signUpdatedDate;
     @ColumnDefault("false")
     Boolean signByParty;
+    String deliveryMode;
 
     public DispatchMast(CreateDispatch dispatchList) {
         //for storing the tax amount
+        this.deliveryMode =dispatchList.getDeliveryMode()==null?null:dispatchList.getDeliveryMode();
         this.percentageDiscount = dispatchList.getPercentageDiscount();
         this.discount= dispatchList.getDiscount();
         this.cgst = dispatchList.getCgst();

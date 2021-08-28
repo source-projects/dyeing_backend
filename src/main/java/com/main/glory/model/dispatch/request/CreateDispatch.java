@@ -27,5 +27,6 @@ public class CreateDispatch {
     Double percentageDiscount;
     String remark;
     Boolean createFlag;//true create api else update api
+    String deliveryMode;
     List<BatchAndStockId> batchAndStockIdList;
 }
