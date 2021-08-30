@@ -452,6 +452,14 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("update BatchData x set x.isFinishMtrSave=:finishMtrFlag,x.finishMtr=:finishMtrValue where x.batchId=:batchId")
     void updateFinishMtrSaveAndFinishMtrByBatchId(String batchId, Double finishMtrValue, Boolean finishMtrFlag);
 
+    @Modifying
+    @Transactional
+    @Query("update BatchData x set x.isBillGenrated=:isBillGenrated,x.finishMtr =:finishMtr,x.isFinishMtrSave=:finishMtrSave where x.id IN (:batchEntryIds)")
+    void updateBillStatusAndFinishMtrAndFinishMtrSaveFlagInListOfBatchEntryId(List<Long> batchEntryIds, Boolean finishMtrSave, Double finishMtr, Boolean isBillGenrated);
+
+
+
+
 
 
 
