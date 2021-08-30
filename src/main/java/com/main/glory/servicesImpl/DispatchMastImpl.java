@@ -1314,7 +1314,8 @@ public class DispatchMastImpl {
         List<Long> batchEntryIds = dispatchDataDao.getBatchEntryIdsByInvoiceNo(String.valueOf(invoiceNo));
 
         if (!batchEntryIds.isEmpty()) {
-            batchDao.updateBillStatusInListOfBatchEntryId(batchEntryIds, false);
+            batchDao.updateBillStatusAndFinishMtrAndFinishMtrSaveFlagInListOfBatchEntryId(batchEntryIds, false,0.0,false);
+            //batchDao.updateBillStatusInListOfBatchEntryId(batchEntryIds, false);
         }
 
         //now delete the dispatch data and then mast info of dispatch
@@ -1839,9 +1840,7 @@ public class DispatchMastImpl {
                 int limit = 30;
                 //divide the entire object because of gr is greter than the limit
 
-                if (remainingGrFrom > 0) {
-                    object++;
-                }
+
                 for (int x = 0; x < object; x++) {
                     // to index value is not going to push into the list
                     // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
