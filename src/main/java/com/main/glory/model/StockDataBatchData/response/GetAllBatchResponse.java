@@ -24,8 +24,8 @@ public class GetAllBatchResponse {
     String qualityName;
 
     public void updateGetAllBatchResponse(BatchData batchData){
-        this.totalMtr+=batchData.getMtr();
-        this.totalWt+=batchData.getWt();
+        if(batchData.getMtr()!=null)this.totalMtr+=batchData.getMtr();
+        if(batchData.getWt()!=null)this.totalWt+=batchData.getWt();
     }
 
 
