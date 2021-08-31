@@ -187,9 +187,9 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object> result;
         try {
             FilterResponse<GetAllStockWithPartyNameResponse> stockMast = null;
-            Long id=null;
-            if(header.get("id")!=null)
-            id=Long.parseLong(header.get("id"));
+            String id=header.get("id");
+            if(id=="")id=null;
+            
             
             switch (requestParam.getGetBy()) {
                 case "own":

@@ -10,12 +10,17 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Builder
 public class Filter {
-    private String field;
+    private List<String> field;
     private QueryOperator operator;
     private String operation;
+    public Filter(List<String> field, QueryOperator operator, String value) {
+        this.field = field;
+        this.operator = operator;
+        this.value = value;
+    }
+
     private String value;
-    private String tableName;
+    
     private List<String> values;//Used in case of IN operator
 }

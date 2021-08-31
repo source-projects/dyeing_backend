@@ -17,7 +17,7 @@ import java.util.List;
 public class GetAllStockWithPartyNameResponse extends StockMast{
 
 
-
+    
     List<GetAllBatchResponse> batchList;
     String partyName;
     String qualityName;
@@ -49,6 +49,10 @@ public class GetAllStockWithPartyNameResponse extends StockMast{
         this.setBatchList(batchDataList);
         this.setQualityName(qualityName);
         this.setBatchData(batchData.getBatchData());
+        this.setQuality(null);
+        this.setBatchData(null);
+        this.setParty(null);
+        
     }
 
 

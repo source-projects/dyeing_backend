@@ -63,12 +63,12 @@ public class StockMast {
     String remark;
     Double wtPer100m;
 
-    @JsonIgnore
+    // @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchData> batchData;
 
-    @JsonIgnore
+    // @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="quality_id", referencedColumnName = "id", insertable = true, updatable = true)    
     Quality quality;

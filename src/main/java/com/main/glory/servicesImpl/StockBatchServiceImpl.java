@@ -7,7 +7,9 @@ import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.*;
 import com.main.glory.model.StockDataBatchData.request.*;
@@ -15,6 +17,7 @@ import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.admin.BatchSequence;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.filters.QueryOperator;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.JetData;
@@ -37,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -79,6 +83,9 @@ public class StockBatchServiceImpl {
 
     @Autowired
     DyeingProcessServiceImpl dyeingProcessService;
+
+    @Autowired
+    SpecificationManager<StockMast> specificationManager;
 
     @Autowired
     JetServiceImpl jetService;
@@ -209,6 +216,7 @@ public class StockBatchServiceImpl {
                 List<GetAllBatchResponse> batchDataList = new ArrayList<>();
                 //List<GetAllBatchResponse> batchDataList2 = new ArrayList<>();
                 for (GetAllStockWithPartyNameResponse batchData : data.get()) {
+
                     batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
                     //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
 
@@ -318,104 +326,95 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public FilterResponse<GetAllStockWithPartyNameResponse> getAllStockBatchPaginatedAndFiltered(GetAllStockBatchPaginatedAndFiltered requestParam, Long id) throws Exception {
+    public FilterResponse<GetAllStockWithPartyNameResponse> getAllStockBatchPaginatedAndFiltered(GetAllStockBatchPaginatedAndFiltered requestParam, String id) throws Exception {
         List<GetAllStockWithPartyNameResponse> data = null;
+        
         List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
         Pageable pageable=filterService.getPageable(requestParam.getData());
         Boolean flag = false;
+        List<Filter> filters=requestParam.getData().getParameters();
+        
+        
         Page queryResponse=null;
-        // 0// for(int i=0;i<requestParam.getData().getParameters().size();i++){}
 
         if (id == null) {
-            queryResponse= stockMastDao.getAllStockWithPartyNameAndQualityNamePaginated(pageable).get();
+            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
+            queryResponse= stockMastDao.findAll(spec,pageable);
             data=queryResponse.getContent();
-            if (!data.isEmpty()) {
-                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
-                //List<GetAllBatchResponse> batchDataList2 = new ArrayList<>();
-                for (GetAllStockWithPartyNameResponse batchData : data) {
-                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
-                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
-
-                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
-                    if(trueBatch!=null)
-                    {
-                        batchData.setIsProductionPlanned(true);
-                    }
-                    else
-                    {
-                        batchData.setIsProductionPlanned(false);
-                    }
-                    /*if (batchData.getBatchData().stream().anyMatch(x -> x.getIsProductionPlanned() == true)) {
-                        batchData.setIsProductionPlanned(true);
-                    } else {
-                        batchData.setIsProductionPlanned(false);
-                    }*/
-
-                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
-
-                }
-
-
-            }
-
 
         } else if (requestParam.getGetBy().equals("own")) {
+            
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+            
+            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
 
-            queryResponse = stockMastDao.getAllStockWithPartyNameByCreatedByPaginated(pageable,id).get();
+            queryResponse = stockMastDao.findAll(spec,pageable);
             data=queryResponse.getContent();
-            if (!data.isEmpty()) {
-                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
-                for (GetAllStockWithPartyNameResponse batchData : data) {
-                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
-
-                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
-                    if(trueBatch!=null)
-                    {
-                        batchData.setIsProductionPlanned(true);
-                    }
-                    else
-                    {
-                        batchData.setIsProductionPlanned(false);
-                    }
-                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
-                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
-
-                }
-
-
-            }
+            
         } else if (requestParam.getGetBy().equals("group")) {
 
-            UserData userData = userDao.findUserById(id);
+            UserData userData = userDao.findUserById(Long.parseLong(id));
 
             if (userData.getUserHeadId().equals(userData.getId())) {
                 //master user
-                queryResponse=stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,id, id).get();
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));            
+            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
+
+                queryResponse=stockMastDao.findAll(spec,pageable);
             } else {
-                UserData userOperator = userDao.getUserById(id);
+                UserData userOperator = userDao.getUserById(Long.parseLong(id));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,Long.toString(userOperator.getUserHeadId())));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));            
+                Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
                 queryResponse = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,userOperator.getId(), userOperator.getUserHeadId()).get();
             }
             data=queryResponse.getContent();
-            if (!data.isEmpty()) {
-                List<GetAllBatchResponse> batchDataList = new ArrayList<>();
-                for (GetAllStockWithPartyNameResponse batchData : data) {
-                    batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
-
-                    BatchData trueBatch = batchDao.findIsProductionPlanTrueByControlId(batchData.getId());
-                    if(trueBatch!=null)
-                    {
-                        batchData.setIsProductionPlanned(true);
-                    }
-                    else
-                    {
-                        batchData.setIsProductionPlanned(false);
-                    }
-                    //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
-                    list.add(new GetAllStockWithPartyNameResponse(batchData, batchDataList, batchData.getQualityName()));
-
-                }
-            }
+            
         }
+
+        if (!data.isEmpty()) {
+                
+            HashMap<String,GetAllBatchResponse> mtrSumData=new HashMap<String,GetAllBatchResponse>();
+            for (StockMast stockMastData : data) {
+                GetAllStockWithPartyNameResponse batchData=new GetAllStockWithPartyNameResponse(stockMastData,stockMastData.getParty().getPartyName(),stockMastData.getQuality().getQualityName());
+                Boolean trueBatch=false;
+                for(BatchData batch:stockMastData.getBatchData()){
+                    if(mtrSumData.containsKey(batch.getBatchId())){
+                        mtrSumData.get(batch.getBatchId()).updateGetAllBatchResponse(batch);
+                    }
+                    else{
+                        mtrSumData.put(batch.getBatchId(),new GetAllBatchResponse(batch.getMtr(),batch.getWt(),batch.getBatchId()));
+                    }
+                    trueBatch=trueBatch||batch.getIsProductionPlanned();
+                }
+                // batchDataList = batchDao.findAllBatchesByControlId(batchData.getId());
+                //String qualityName = qualityNameDao.getQualityNameDetailByQualitytEntryId(batchData.getQualityId());
+
+
+                if(trueBatch)
+                {
+                    batchData.setIsProductionPlanned(true);
+                }
+                else
+                {
+                    batchData.setIsProductionPlanned(false);
+                }
+                /*if (batchData.getBatchData().stream().anyMatch(x -> x.getIsProductionPlanned() == true)) {
+                    batchData.setIsProductionPlanned(true);
+                } else {
+                    batchData.setIsProductionPlanned(false);
+                }*/
+                // batchData.setQuality(null);
+                // batchData.setParty(null);
+
+                list.add(new GetAllStockWithPartyNameResponse(batchData,new ArrayList<GetAllBatchResponse>(mtrSumData.values()), batchData.getQualityName()));
+
+            }
+
+
+        }
+
         FilterResponse<GetAllStockWithPartyNameResponse> response=new FilterResponse<GetAllStockWithPartyNameResponse>(list,queryResponse.getNumber()+1,queryResponse.getSize(),queryResponse.getTotalPages());
 
         return response;
