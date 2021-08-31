@@ -19,6 +19,7 @@ public class CreateDispatch {
     Double discount;
     Double cgst;
     Double sgst;
+    Double igst;
     Double taxAmt;
     Double netAmt;
     String password;
@@ -26,5 +27,6 @@ public class CreateDispatch {
     Double percentageDiscount;
     String remark;
     Boolean createFlag;//true create api else update api
+    String deliveryMode;
     List<BatchAndStockId> batchAndStockIdList;
 }

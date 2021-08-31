@@ -18,6 +18,7 @@ public class BatchWithGr {
     String pchallanRef;
     String batchId;
     Long controlId;
+    String billingUnit;
     List<BatchData> batchDataList;
 
 

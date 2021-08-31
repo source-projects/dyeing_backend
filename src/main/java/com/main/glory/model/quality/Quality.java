@@ -31,7 +31,7 @@ public class Quality {
 	String  qualityId;
 	String qualityName;
 	String qualityType;
-	String unit;
+	String unit;// inward units
 	Long  partyId;
 	Double wtPer100m;
 	Double mtrPerKg;

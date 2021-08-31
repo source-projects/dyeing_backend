@@ -1420,6 +1420,22 @@ public class StockBatchServiceImpl {
         else
             return Precision.round(values, 2);
     }
+    public static List<BatchData> changeInFormattedDecimal(List<BatchData> batchDataList) {
+        List<BatchData> newList = new ArrayList<>();
+        //df2.setMaximumFractionDigits(2);
+        if (batchDataList == null)
+            return null;
+        else {
+            for (BatchData batchData : batchDataList) {
+                BatchData batch = new BatchData(batchData);
+                batch.setFinishMtr(Precision.round(batchData.getFinishMtr(), 2));
+                batch.setMtr(Precision.round(batchData.getMtr(), 2));
+                //batch.setWt(Precision.round(batchData.getFinishMtr(), 2));
+                newList.add(batch);
+            }
+            return newList;
+        }
+    }
 
     public List<GetAllBatch> getBatchListByQualityWithoutProductionPlan(Long qualityId) throws Exception {
         List<GetAllBatch> list = new ArrayList<>();
@@ -1752,6 +1768,7 @@ public class StockBatchServiceImpl {
 
         //filter the data if the batch is done with jet
         for (GetAllBatch getAllBatch : dataList) {
+            //System.out.println(getAllBatch.getBatchId());
             ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
 
             if (productionPlan == null)
@@ -2515,8 +2532,8 @@ public class StockBatchServiceImpl {
             }
             //batchDataList.add(new BatchData(batchData));
 
-            if (batchData.getIsProductionPlanned() == true)
-                throw new Exception(ConstantFile.Batch_Dyeing_Already);
+            /*if (batchData.getIsProductionPlanned() == true)
+                throw new Exception(ConstantFile.Batch_Dyeing_Already);*/
 
         }
 
@@ -2551,6 +2568,8 @@ public class StockBatchServiceImpl {
         for (BatchData batch : stockMast.getBatchData()) {
             if (batch.getBatchId() != null)
                 throw new Exception(ConstantFile.StockBatch_PChallanRef_Update);
+
+
             //System.out.println("coming:"+batch.getId());
             if (batchGr.containsKey(batch.getId())) {
                 BatchData batchData1 = batchDao.getBatchDataById(batch.getId());

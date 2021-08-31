@@ -1,6 +1,7 @@
 package com.main.glory.Dao.Jet;
 
 import com.main.glory.model.jet.JetData;
+import com.main.glory.model.jet.JetStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -28,7 +29,7 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
     void deleteByProductionId(Long productionId);
 
     @Query("select j from JetData j where j.productionId=:id AND j.status='inQueue'")
-    JetData findByProductionId(Long id);
+    JetData findByProductionWithInQueueById(Long id);
 
     @Query("select j from JetData j where j.productionId=:id")
     JetData getJetDataByProductionId(Long id);
@@ -55,4 +56,12 @@ public interface JetDataDao extends JpaRepository<JetData,Long> {
 
     @Query("select j from JetData j where j.status='success'")
     List<JetData> getAllProductionSuccessFromJet();
+
+    @Modifying
+    @Transactional
+    @Query("update JetData j set j.status=:status where j.id=:id")
+    void updateJetStatusById(Long id, JetStatus status);
+
+
+
 }

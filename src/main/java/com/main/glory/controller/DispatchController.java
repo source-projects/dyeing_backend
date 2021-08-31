@@ -437,7 +437,7 @@ public class DispatchController extends ControllerConfig {
     @PostMapping("/dispatch/report/forConslidateBill")
     public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
         GeneralResponse<List<ConsolidatedBillMast>, Object> result;
-        try{
+        try{    
             List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
