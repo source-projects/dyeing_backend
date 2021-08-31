@@ -94,7 +94,7 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("Select q from Quality q where id = :qualityId AND q.partyId =:partyId")
     Optional<Quality> getQualityByEntryIdAndPartyId(Long qualityId, Long partyId);
 
-    @Query("select x from Quality x where x.id = (select s.qualityId from StockMast s where s.id=:controlId)")
+    @Query("select x from Quality x where x.id = (select s.quality.id  from StockMast s where s.id=:controlId)")
     Quality getQualityByStockId(Long controlId);
 
     @Query("select x from Quality x where LOWER(x.qualityId)=LOWER(:qualityId) AND x.id!=:id")
@@ -107,7 +107,7 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("select x from Quality x where LOWER(x.qualityId)=LOWER(:qualityId) AND x.partyId=:partyId AND x.id!=:id")
     Quality getQualityIdIsExistExceptId(String qualityId, Long partyId, Long id);
 
-    /*@Query("select q from Quality q where q.id IN(select s.qualityId from StockBatch s where s.id=:stockId)")
+    /*@Query("select q from Quality q where q.id IN(select s.quality.id  from StockBatch s where s.id=:stockId)")
     Quality getQualityByStockId(Long stockId);*/
 }
 

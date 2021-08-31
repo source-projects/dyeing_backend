@@ -7,6 +7,8 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.Dao.quality.QualityNameDao;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
@@ -19,6 +21,7 @@ import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.*;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
@@ -28,8 +31,15 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,6 +96,9 @@ public class DispatchMastImpl {
     @Autowired
     QualityNameDao qualityNameDao;
 
+    @Autowired
+    SpecificationManager<DispatchMast> specificationManager;
+
 
     public Long saveDispatch(CreateDispatch dispatchList, Long userId) throws Exception {
 
@@ -107,10 +120,10 @@ public class DispatchMastImpl {
 
         StockMast stockMast = stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).getStockId());
 
-        Optional<Party> party = partyDao.findById(stockMast.getPartyId());
+        Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
 
         if (party.isEmpty())
-            throw new Exception("no party found for id:" + stockMast.getPartyId());
+            throw new Exception("no party found for id:" + stockMast.getParty().getId());
 
 
         //check the credit limit invoice password gloryFab123@@
@@ -151,7 +164,7 @@ public class DispatchMastImpl {
 
 
             StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
-            Quality quality = qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+            Quality quality = qualityDao.getqualityById(stockMast1.getQuality().getId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
 
             if (quality == null)
                 throw new Exception("no quality found");
@@ -207,7 +220,7 @@ public class DispatchMastImpl {
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
 
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-            dispatchMast.setUserHeadId(party.get().getUserHeadId());
+            dispatchMast.setUserHeadId(party.get().getUserData().getId());
         } else {
             dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
         }
@@ -347,6 +360,85 @@ public class DispatchMastImpl {
         return dispatchDataList;
     }
 
+    public FilterResponse<GetAllDispatch> getAllDisptach(String signByParty,int pageIndex,int pageSize) throws Exception {
+
+        List<GetAllDispatch> dispatchDataList = new ArrayList<>();
+        //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
+
+        List<DispatchMast> dispatchList = null;
+        if(signByParty==null|| signByParty.isEmpty())
+        {
+            dispatchList = dispatchMastDao.getAllInvoiceList();
+        }
+        else
+        dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
+
+        List<String> invoiceNumber = new ArrayList<>();
+
+       /* if (dispatchList.isEmpty())
+            throw new Exception("no data found");*/
+        for (DispatchMast dispatchMast : dispatchList) {
+            List<BatchWithTotalMTRandFinishMTR> batchList = new ArrayList<>();
+
+           /* if (!invoiceNumber.contains(dispatchMast.getPostfix())) {
+                invoiceNumber.add(dispatchMast.getPostfix().toString());*/
+            if (dispatchMast == null)
+                continue;
+
+            GetAllDispatch getAllDispatch = new GetAllDispatch(dispatchMast);
+            //System.out.println("invoice:" + dispatchData.getInvoiceNo());
+                /*DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(dispatchData.getPostfix());
+
+                if (dispatchMast == null)
+                    continue;*/
+
+            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            if (party == null)
+                continue;
+            //get the batch data
+
+            List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchMast.getPostfix().toString());
+
+            for (GetBatchByInvoice batch : batchListWithInvoiceList) {
+                //list of batches
+                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
+                batchList.add(batchWithTotalMTRandFinishMTR);
+            }
+            getAllDispatch.setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
+            getAllDispatch.setPartyId(party.getId());
+            getAllDispatch.setPartyName(party.getPartyName());
+            getAllDispatch.setBatchList(batchList);
+            getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
+            Double mtr = 0.0;
+            Double finish = 0.0;
+           /* for (BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR : batchList) {
+                mtr += batchWithTotalMTRandFinishMTR.getMTR();
+                finish += batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
+            }*/
+            mtr = batchList.stream().mapToDouble(q->q.getMTR()).sum();
+            finish = batchList.stream().mapToDouble(q->q.getTotalFinishMtr()).sum();
+            getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
+            getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
+
+            dispatchDataList.add(getAllDispatch);
+            //}
+
+
+        }
+
+       /* if (signByParty.equals("true")) {
+            dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == true).collect(Collectors.toList());
+        } else if (signByParty.equals("false")) {
+            dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == false).collect(Collectors.toList());
+        }*/
+        List<GetAllDispatch> data=dispatchDataList.subList((pageIndex-1)*pageSize, Math.min(pageIndex*pageSize, dispatchDataList.size()));
+
+        FilterResponse<GetAllDispatch> response=new FilterResponse<GetAllDispatch>(data,pageIndex,pageSize,dispatchDataList.size());
+        return  response;
+
+    }
+
+
     public PartyWithBatchByInvoice getDispatchByInvoiceNumber(String invoiceNo) throws Exception {
 
         List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList = new ArrayList<>();
@@ -402,7 +494,7 @@ public class DispatchMastImpl {
 
 
         StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
-        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
 
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
@@ -623,7 +715,7 @@ public class DispatchMastImpl {
 
             //System.out.println(batch.getStockId());
             StockMast stockMast = stockBatchService.getStockById(batch.getStockId());
-            Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
+            Optional<Quality> quality = qualityDao.findById(stockMast.getQuality().getId());
 
             if (quality.isEmpty())
                 throw new Exception("no quality found");
@@ -691,7 +783,7 @@ public class DispatchMastImpl {
         //for party data
         if (!batchList.isEmpty()) {
             StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
-            Optional<Party> party = partyDao.findById(stockMast.getPartyId());
+            Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
 
             PartyDataByInvoiceNumber partyDataByInvoiceNumber = new PartyDataByInvoiceNumber(party.get(), qualityBillByInvoiceNumberList, batchWithGrList);
 
@@ -732,7 +824,7 @@ public class DispatchMastImpl {
 
             //System.out.println(batch.getStockId());
             StockMast stockMast = stockBatchService.getStockById(batch.getStockId());
-            Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
+            Optional<Quality> quality = qualityDao.findById(stockMast.getQuality().getId());
 
             if (quality.isEmpty())
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -874,7 +966,7 @@ public class DispatchMastImpl {
 
         //for party data
         StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
-        Optional<Party> party = partyDao.findById(stockMast.getPartyId());
+        Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
 
         PartyDataByInvoiceNumber partyDataByInvoiceNumber = new PartyDataByInvoiceNumber(party.get(), qualityBillByInvoiceNumberList, batchWithGrList, dispatchMast);
 
@@ -957,7 +1049,7 @@ public class DispatchMastImpl {
                 if (stockMast == null)
                     continue;
 
-                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQualityId());
+                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQuality().getId());
                 if (quality == null)
                     continue;
 
@@ -1054,7 +1146,7 @@ public class DispatchMastImpl {
                 if (stockMast == null)
                     continue;
 
-                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQualityId());
+                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQuality().getId());
                 if (quality == null)
                     continue;
 
@@ -1116,7 +1208,7 @@ public class DispatchMastImpl {
         if (stockMast == null)
             throw new Exception(ConstantFile.StockBatch_Exist);
 
-        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
 
@@ -1156,7 +1248,7 @@ public class DispatchMastImpl {
             //quality record
 
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
-            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQualityId());
+            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -1323,7 +1415,7 @@ public class DispatchMastImpl {
 
         dispatchMastDao.deleteByInvoicePostFix(invoiceNo);
 
-    }
+    } 
 
     public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(Filter filter) throws Exception {
         Date from = null;
@@ -1389,7 +1481,7 @@ public class DispatchMastImpl {
                 if (stockMast == null)
                     continue;
 
-                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQualityId());
+                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQuality().getId());
                 if (quality == null)
                     continue;
 
@@ -1562,10 +1654,10 @@ public class DispatchMastImpl {
 
         StockMast stockMast = stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).getStockId());
 
-        Optional<Party> party = partyDao.findById(stockMast.getPartyId());
+        Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
 
         if (party.isEmpty())
-            throw new Exception("no party found for id:" + stockMast.getPartyId());
+            throw new Exception("no party found for id:" + stockMast.getParty().getId());
 
 
         //check the credit limit invoice password gloryFab123@@
@@ -1612,7 +1704,7 @@ public class DispatchMastImpl {
 */
 
             StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
-            Quality quality = qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+            Quality quality = qualityDao.getqualityById(stockMast1.getQuality().getId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
 
             if (quality == null)
                 throw new Exception("no quality found");
@@ -1671,7 +1763,7 @@ public class DispatchMastImpl {
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
 
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-            dispatchMast.setUserHeadId(party.get().getUserHeadId());
+            dispatchMast.setUserHeadId(party.get().getUserData().getId());
         } else {
             dispatchMast.setUserHeadId(party.get().getUserHeadId());
         }
@@ -1736,7 +1828,7 @@ public class DispatchMastImpl {
 
             //System.out.println(batch.getStockId());
             StockMast stockMast = stockBatchService.getStockById(batch.getStockId());
-            Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
+            Optional<Quality> quality = qualityDao.findById(stockMast.getQuality().getId());
 
             if (quality.isEmpty())
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -1882,7 +1974,7 @@ public class DispatchMastImpl {
 
         //for party data
         StockMast stockMast = stockBatchService.getStockById(batchList.get(0).getStockId());
-        Optional<Party> party = partyDao.findById(stockMast.getPartyId());
+        Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
 
         PartyDataByInvoiceNumber partyDataByInvoiceNumber = new PartyDataByInvoiceNumber(party.get(), qualityBillByInvoiceNumberList, batchWithGrList, dispatchMast);
 
@@ -1932,7 +2024,7 @@ public class DispatchMastImpl {
         if (stockMast == null)
             throw new Exception(ConstantFile.StockBatch_Exist);
 
-        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
 
@@ -1973,7 +2065,7 @@ public class DispatchMastImpl {
 
             String billingUnit = null;
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
-            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQualityId());
+            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -2222,7 +2314,7 @@ public class DispatchMastImpl {
 
 
         StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
-        Party party = partyDao.findByPartyId(stockMast.getPartyId());
+        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
 
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
@@ -2243,4 +2335,39 @@ public class DispatchMastImpl {
         return partyWithBatchByInvoice;
 
     }
+
+    public FilterResponse<DispatchMast> getpaginatedDispatchData(PaginatedData data){
+                
+        Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
+        String sortBy;
+        if(data.getSortBy()==null)
+        sortBy="id";
+
+        else
+        sortBy=data.getSortBy();
+
+        Direction sortOrder;
+
+        if(data.getSortOrder()==null ||data.getSortOrder()=="ASC")
+        sortOrder=Direction.ASC;
+
+        else
+        sortOrder=Direction.DESC;
+
+        Pageable pageable=PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1, sortOrder, sortBy);
+
+        
+        Page<DispatchMast> dispatchMastList;
+        
+        if (spec==null)
+        dispatchMastList = dispatchMastDao.findAll(pageable);
+
+        else
+        dispatchMastList = dispatchMastDao.findAll(spec, pageable);
+
+        FilterResponse<DispatchMast> response=new FilterResponse<DispatchMast>(dispatchMastList.toList(),dispatchMastList.getNumber()+1,dispatchMastList.getSize(),dispatchMastList.getTotalPages());
+        return response;
+        
+    }
+
 }

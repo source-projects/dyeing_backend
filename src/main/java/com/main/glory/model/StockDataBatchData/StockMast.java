@@ -5,6 +5,7 @@ import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
@@ -34,8 +35,14 @@ public class StockMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+
     String stockInType;
-    Long partyId;
+    
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="party_id", referencedColumnName = "id", insertable = true, updatable = true)    
+    Party party;
+    
     String billNo;
     Date billDate;
     String chlNo;
@@ -45,18 +52,26 @@ public class StockMast {
     Long createdBy;
     Long userHeadId;
     Boolean isProductionPlanned;
+    
     @ApiModelProperty(hidden = true)
     Date createdDate;
+    
     Date receiveDate;
     @ApiModelProperty(hidden = true)
+    
     Date updatedDate;
     String remark;
     Double wtPer100m;
 
+    // @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchData> batchData;
-    Long qualityId;
+
+    // @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="quality_id", referencedColumnName = "id", insertable = true, updatable = true)    
+    Quality quality;
 
    /* @PreRemove
     public void checkBatches() throws Exception {
@@ -67,7 +82,7 @@ public class StockMast {
     public StockMast(StockMast sm) {
         this.id = sm.id;
         this.stockInType = sm.stockInType;
-        this.partyId = sm.partyId;
+        this.party = sm.party;
         this.billNo=sm.billNo;
         this.billDate = sm.billDate;
         this.chlDate = sm.chlDate;
@@ -75,7 +90,7 @@ public class StockMast {
         this.createdDate = sm.createdDate;
         this.updatedDate = sm.updatedDate;
         this.batchData = sm.batchData;
-        this.qualityId = sm.qualityId;
+        this.quality = sm.quality;
         this.unit = sm.unit;
         this.isProductionPlanned = sm.isProductionPlanned;
         this.createdBy = sm.createdBy;
@@ -89,7 +104,7 @@ public class StockMast {
     public StockMast(AddStockBatch sm) {
         this.id = sm.getId();
         this.stockInType = sm.getStockInType();
-        this.partyId = sm.getPartyId();
+        this.party = sm.getParty();
         this.billDate = sm.getBillDate()==null?null:sm.getBillDate();
         this.billNo = sm.getBillNo()==null?null:sm.getBillNo();
         this.chlDate = sm.getChlDate();
@@ -105,7 +120,7 @@ public class StockMast {
         this.remark = sm.getRemark()==null?null:sm.getRemark();
         this.wtPer100m=sm.getWtPer100m();
         //this.batchData = sm.getBatchData();
-        this.qualityId = sm.getQualityId();
+        this.quality = sm.getQuality();
 
     }
 

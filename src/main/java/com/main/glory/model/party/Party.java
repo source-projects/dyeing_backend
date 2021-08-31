@@ -14,6 +14,8 @@ import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.UserData;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +34,7 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor 
 @AllArgsConstructor
 @Table(name="party")
 public class Party {
@@ -66,7 +68,12 @@ public class Party {
     @ColumnDefault("0.0")
     private Double percentageDiscount;
     private Double gstPercentage;
-    private Long userHeadId;
+
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userData;
+
     private String partyCode;
 
 
@@ -92,7 +99,7 @@ public class Party {
         this.paymentTerms=party.getPaymentTerms();
         this.percentageDiscount=party.getPercentageDiscount();
         this.gstPercentage = party.getGstPercentage();
-        this.userHeadId=party.getUserHeadId();
+        this.userData=party.getUserData();
         this.partyCode=party.getPartyCode();
         this.creditLimit = party.getCreditLimit();
         this.paymentDays = party.getPaymentDays();
@@ -130,7 +137,7 @@ public class Party {
         this.paymentTerms=addParty.getPaymentTerms();
         this.percentageDiscount=addParty.getPercentageDiscount();
         this.gstPercentage=addParty.getGstPercentage();
-        this.userHeadId=addParty.getUserHeadId();
+        this.userData=addParty.getUserData();
         this.partyCode=addParty.getPartyCode();
         this.paymentDays=addParty.getPaymentDays();
         this.creditLimit=addParty.getCreditLimit();

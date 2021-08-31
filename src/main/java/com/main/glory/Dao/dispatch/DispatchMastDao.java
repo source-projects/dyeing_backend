@@ -1,16 +1,28 @@
 package com.main.glory.Dao.dispatch;
 
+import com.main.glory.Dao.FilterDao;
 import com.main.glory.model.dispatch.DispatchMast;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
-public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
+@Primary
+@Repository
+public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query("select MAX(dm.postfix) from DispatchMast dm where prefix=:invoiceType")
     Long getInvoiceNumber(String invoiceType);
 
@@ -56,4 +68,6 @@ public interface DispatchMastDao extends JpaRepository<DispatchMast,Long> {
 
     @Query("select x from DispatchMast x where x.signByParty=:signByParty")
     List<DispatchMast> getAllInvoiceListBySignByParty(Boolean signByParty);
+
+
 }

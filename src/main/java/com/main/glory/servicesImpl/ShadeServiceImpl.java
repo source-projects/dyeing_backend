@@ -113,7 +113,7 @@ public class ShadeServiceImpl {
 		if(userData.getIsMaster()==false) {
 			//get the party record
 			Party party = partyDao.findByPartyId(shadeMast.getPartyId());
-			shadeMast.setUserHeadId(party.getUserHeadId());
+			shadeMast.setUserHeadId(party.getUserData().getId());
 		}
 
 

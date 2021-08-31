@@ -16,6 +16,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.SendEmail;
@@ -168,6 +169,43 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         return partyDetailsList;
     }
+
+    public FilterResponse<PartyWithMasterName> getAllPartyDetails(Long id, String getBy,int pageSize,int pageIndex) throws Exception {
+        List<PartyWithMasterName> partyDetailsList = null;
+        if (id == null) {
+            partyDetailsList = partyDao.getAllParty();
+        } else if (getBy.equals("group")) {
+            UserData userData = userDao.findUserById(id);
+
+            if(userData.getUserHeadId()==0)
+            {
+                //fr admin
+                partyDetailsList = partyDao.getAllPartyWithHeadName();
+            }
+            else if(userData.getUserHeadId().equals(userData.getId())) {
+                //master user
+                partyDetailsList = partyDao.findByCreatedByAndUserHeadIdWithHeadName(id,id);
+            }
+            else {
+                UserData opratorUsr = userDao.getUserById(id);
+                partyDetailsList = partyDao.findByUserHeadId(opratorUsr.getUserHeadId());
+            }
+
+
+
+        } else if (getBy.equals("own")) {
+            partyDetailsList = partyDao.findByCreatedBy(id);
+        }
+
+        /*if (partyDetailsList.isEmpty())
+            throw new Exception(CommonMessage.Party_Not_Found);*/
+        List<PartyWithMasterName> data=partyDetailsList.subList((pageIndex-1)*pageSize, Math.min(pageIndex*pageSize, partyDetailsList.size()));
+
+        FilterResponse<PartyWithMasterName> response=new FilterResponse<PartyWithMasterName>(data,pageIndex,pageSize,partyDetailsList.size());
+        return  response;
+    
+    }
+
 
     @Override
     public PartyWithUserHeadName getPartyDetailById(Long id) throws Exception {

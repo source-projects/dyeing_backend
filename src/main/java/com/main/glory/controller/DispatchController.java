@@ -1,26 +1,39 @@
 package com.main.glory.controller;
 
+import org.springframework.data.domain.Sort;
 
+import com.main.glory.Dao.FilterDao;
+import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
+import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.machine.request.PaginatedData;
+import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+
 import javax.servlet.http.HttpServletRequest;
+
+import java.net.http.HttpHeaders;
 import java.util.List;
 
 @RestController
@@ -40,7 +53,13 @@ public class DispatchController extends ControllerConfig {
     Boolean debugAll;
 
     @Autowired
+    DispatchMastDao dispatchMastDao;
+
+    @Autowired
     DispatchMastImpl dispatchMastService;
+
+    @Autowired
+    FilterService<DispatchMast, DispatchMastDao> filterService;
 
     @PostMapping("/dispatch/")
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
@@ -165,6 +184,27 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping("/dispatch/getAllPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllDispatch>, Object>> getAllDispatchPaginated(@RequestParam(name = "signByParty") String signByParty,@RequestParam(name = "pageIndex") int pageIndex,@RequestParam(name = "pageSize") int pageSize) throws Exception{
+
+        GeneralResponse<FilterResponse<GetAllDispatch>,Object> result;
+        try{
+
+            FilterResponse<GetAllDispatch> x =dispatchMastService.getAllDisptach(signByParty,pageIndex,pageSize);
+            if(!x.getData().isEmpty())
+            result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     @PutMapping("/dispatch/updateDispatch/")
     public ResponseEntity<GeneralResponse<Long,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
         GeneralResponse<Long,Object> result;
@@ -182,6 +222,11 @@ public class DispatchController extends ControllerConfig {
         }
         return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    
+
+
+
     @PutMapping("/dispatch/updateDispatchStatus/{invoiceNo}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         GeneralResponse<Boolean,Object> result;
@@ -578,5 +623,26 @@ public class DispatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping("/dispatch/getDispatchMastData")
+    public ResponseEntity<GeneralResponse<FilterResponse<DispatchMast>, Object>> getDispatchData(@RequestBody PaginatedData data){
+        GeneralResponse<FilterResponse<DispatchMast>,Object> result;
+        try{
+
+            FilterResponse<DispatchMast> x = filterService.getpaginatedSortedFilteredData(data);
+            if(!x.getData().isEmpty())
+            result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            // logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+}
+
 
 }
