@@ -2337,6 +2337,10 @@ public class DispatchMastImpl {
     }
 
     public FilterResponse<DispatchMast> getpaginatedDispatchData(PaginatedData data){
+        
+        System.out.println("page size-"+Integer.toString(data.getPageSize()));
+        System.out.println("page index-"+Integer.toString(data.getPageIndex()));
+
                 
         Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
         String sortBy;
@@ -2354,7 +2358,9 @@ public class DispatchMastImpl {
         else
         sortOrder=Direction.DESC;
 
-        Pageable pageable=PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1, sortOrder, sortBy);
+        System.out.println("page size-"+Integer.toString(data.getPageSize()));
+        System.out.println("page index-"+Integer.toString(data.getPageIndex()));
+        Pageable pageable=PageRequest.of(data.getPageIndex(), data.getPageSize(), sortOrder, sortBy);
 
         
         Page<DispatchMast> dispatchMastList;
@@ -2365,7 +2371,7 @@ public class DispatchMastImpl {
         else
         dispatchMastList = dispatchMastDao.findAll(spec, pageable);
 
-        FilterResponse<DispatchMast> response=new FilterResponse<DispatchMast>(dispatchMastList.toList(),dispatchMastList.getNumber()+1,dispatchMastList.getSize(),dispatchMastList.getTotalPages());
+        FilterResponse<DispatchMast> response=new FilterResponse<DispatchMast>(dispatchMastList.toList(),dispatchMastList.getNumber(),dispatchMastList.getSize(),dispatchMastList.getTotalPages());
         return response;
         
     }
