@@ -416,7 +416,7 @@ public class StockBatchServiceImpl {
 
         }
 
-        FilterResponse<GetAllStockWithPartyNameResponse> response=new FilterResponse<GetAllStockWithPartyNameResponse>(list,queryResponse.getNumber()+1,queryResponse.getSize(),queryResponse.getTotalPages());
+        FilterResponse<GetAllStockWithPartyNameResponse> response=new FilterResponse<GetAllStockWithPartyNameResponse>(list,queryResponse.getNumber(),queryResponse.getSize(),queryResponse.getTotalPages());
 
         return response;
     }
