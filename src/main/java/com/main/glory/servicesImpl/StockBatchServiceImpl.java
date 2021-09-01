@@ -333,12 +333,16 @@ public class StockBatchServiceImpl {
         Pageable pageable=filterService.getPageable(requestParam.getData());
         Boolean flag = false;
         List<Filter> filters=requestParam.getData().getParameters();
+        HashMap<String,String> subModelCase=new HashMap<String,String>();
+        subModelCase.put("qualityName", "quality");
+        subModelCase.put("partyName", "party");
+
         
         
         Page queryResponse=null;
 
         if (id == null) {
-            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
+            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
             queryResponse= stockMastDao.findAll(spec,pageable);
             data=queryResponse.getContent();
 
@@ -346,7 +350,7 @@ public class StockBatchServiceImpl {
             
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
             
-            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
+            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 
             queryResponse = stockMastDao.findAll(spec,pageable);
             data=queryResponse.getContent();
@@ -359,14 +363,14 @@ public class StockBatchServiceImpl {
                 //master user
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));            
-            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
+            Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 
                 queryResponse=stockMastDao.findAll(spec,pageable);
             } else {
                 UserData userOperator = userDao.getUserById(Long.parseLong(id));
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,Long.toString(userOperator.getUserHeadId())));
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));            
-                Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, true);
+                Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
                 queryResponse = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,userOperator.getId(), userOperator.getUserHeadId()).get();
             }
             data=queryResponse.getContent();
