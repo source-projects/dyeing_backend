@@ -59,7 +59,7 @@ public class FilterService<T,D extends FilterDao<T>> {
         else
         sortOrder=Direction.DESC;
 
-        Pageable pageable=PageRequest.of(data.getPageIndex()-1, data.getPageSize()-1, sortOrder, sortBy);
+        Pageable pageable=PageRequest.of(data.getPageIndex(), data.getPageSize(), sortOrder, sortBy);
         return pageable;
 
     }

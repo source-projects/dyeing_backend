@@ -372,6 +372,7 @@ public class StockBatchServiceImpl {
             data=queryResponse.getContent();
             
         }
+        System.out.println("specification craeting completion");
 
         if (!data.isEmpty()) {
                 
