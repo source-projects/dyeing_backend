@@ -3,6 +3,7 @@ package com.main.glory.filters;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,13 +19,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SpecificationManager<T> {
-  private Specification<T> createSpecification(Filter input) {
+  private Specification<T> createSpecification(Filter input,HashMap<String,String> subModelCase) {
     return new Specification<T>() {
       @Override
       public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        var path=root.get(input.getField().get(0));
-        for(int i=1;i<input.getField().size();i++){
-          path=path.get(input.getField().get(i));
+        List<String> attributes=  input.getField();
+        if(subModelCase!=null)
+        if(subModelCase.containsKey(input.getField().get(0)))
+        attributes.add(0, subModelCase.get(input.getField().get(0)));
+
+        var path=root.get(attributes.get(0));
+        for(int i=1;i<attributes.size();i++){
+          path=path.get(attributes.get(i));
         }
         
 
@@ -111,18 +117,18 @@ public class SpecificationManager<T> {
     return lists;
   }
 
-  public Specification<T> getSpecificationFromFilters(List<Filter> filter, boolean isAnd) {
+  public Specification<T> getSpecificationFromFilters(List<Filter> filter, boolean isAnd,HashMap<String,String> subModelCase) {
     if (filter == null || filter.isEmpty())
       return null;
     System.out.println("Creating specification");
-    Specification<T> specification = createSpecification(filter.remove(0));
+    Specification<T> specification = createSpecification(filter.remove(0),subModelCase);
 
     for (Filter input : filter) {
       if (isAnd)
-        specification = specification.and(createSpecification(input));
+        specification = specification.and(createSpecification(input,subModelCase));
 
       else
-        specification = specification.or(createSpecification(input));
+        specification = specification.or(createSpecification(input,subModelCase));
     }
     return specification;
   }

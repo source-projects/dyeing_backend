@@ -2342,7 +2342,7 @@ public class DispatchMastImpl {
         System.out.println("page index-"+Integer.toString(data.getPageIndex()));
 
                 
-        Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
+        Specification<DispatchMast> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd(),null);
         String sortBy;
         if(data.getSortBy()==null)
         sortBy="id";

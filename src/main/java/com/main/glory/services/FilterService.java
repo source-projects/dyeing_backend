@@ -65,7 +65,7 @@ public class FilterService<T,D extends FilterDao<T>> {
     }
     public FilterResponse<T> getpaginatedSortedFilteredData(PaginatedData data ){
                 
-        Specification<T> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd());
+        Specification<T> spec =specificationManager.getSpecificationFromFilters( data.getParameters(),data.isAnd(),null);
         Pageable pageable=getPageable(data);
         
         Page<T> filteredList;
