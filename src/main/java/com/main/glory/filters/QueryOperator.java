@@ -6,7 +6,7 @@ public enum QueryOperator {
     LESS_THAN,
     EQUALS,
     LIKE,
-    NOT_EQ,
     IN, 
-    NOT_EQUALS
+    NOT_EQUALS,
+    IN_RANGE
 }

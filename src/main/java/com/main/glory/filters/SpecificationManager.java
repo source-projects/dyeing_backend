@@ -69,6 +69,10 @@ public class SpecificationManager<T> {
             return criteriaBuilder.in(path)
                 .value(castToRequiredType(path.getJavaType(), input.getValues()));
 
+
+          case IN_RANGE:
+            return criteriaBuilder.between((Expression)path,(Date)castToRequiredType(path.getJavaType(), input.getValues().get(0)),(Date)castToRequiredType(path.getJavaType(), input.getValues().get(1)));
+
           default:
             throw new RuntimeException("Operation not supported yet");
         }
