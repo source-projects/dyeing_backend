@@ -64,6 +64,11 @@ public class SpecificationManager<T> {
 
           case LIKE:
             return criteriaBuilder.like((Expression)path, "%" + input.getValue() + "%");
+          
+            case START_WITH:
+            return criteriaBuilder.like((Expression)path, input.getValue() + "%");
+            case END_WITH:
+            return criteriaBuilder.like((Expression)path, "%" + input.getValue());
 
           case IN:
             return criteriaBuilder.in(path)
