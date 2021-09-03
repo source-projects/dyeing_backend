@@ -8,5 +8,7 @@ public enum QueryOperator {
     LIKE,
     IN, 
     NOT_EQUALS,
-    IN_RANGE
+    IN_RANGE,
+    START_WITH,
+    END_WITH
 }
