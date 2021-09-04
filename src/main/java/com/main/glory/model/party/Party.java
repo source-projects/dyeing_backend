@@ -69,7 +69,6 @@ public class Party {
     private Double percentageDiscount;
     private Double gstPercentage;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData userData;
