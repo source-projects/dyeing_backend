@@ -38,7 +38,7 @@ public class StockMast {
 
     String stockInType;
     
-    @JsonIgnore
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="party_id", referencedColumnName = "id", insertable = true, updatable = true)    
     Party party;

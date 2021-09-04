@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class GetBatchByInvoice {
 
-    @JsonIgnore
+    
     Long batchEntryId;
     String batchId;
     Long stockId;

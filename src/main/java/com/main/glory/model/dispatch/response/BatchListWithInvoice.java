@@ -14,7 +14,6 @@ import java.util.Date;
 @Setter
 public class BatchListWithInvoice {
 
-    @JsonIgnore
     Long batchEntryId;
     String batchId;
     Long stockId;
