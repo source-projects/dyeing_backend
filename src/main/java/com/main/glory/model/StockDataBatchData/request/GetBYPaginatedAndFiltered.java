@@ -8,10 +8,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GetAllStockBatchPaginatedAndFiltered  {
+public class GetBYPaginatedAndFiltered  {
     String getBy;
     PaginatedData data;
-    public GetAllStockBatchPaginatedAndFiltered(String getBy, PaginatedData data) {
+    public GetBYPaginatedAndFiltered(String getBy, PaginatedData data) {
         this.getBy = getBy;
         this.data = data;
     }

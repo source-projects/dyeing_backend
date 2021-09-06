@@ -5,7 +5,12 @@ import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -19,12 +24,19 @@ import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import com.main.glory.services.FilterService;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +48,9 @@ public class ShadeServiceImpl {
 	QualityNameDao qualityNameDao;
 
 	@Autowired
+    SpecificationManager<ShadeMast> specificationManager;
+
+	@Autowired
 	ProductionPlanDao productionPlanDao;
 
 	@Autowired
@@ -43,6 +58,10 @@ public class ShadeServiceImpl {
 	@Autowired
 	APCDao acpDao;
 	
+	@Autowired
+    FilterService<ShadeMast,ShadeMastDao> filterService;
+
+
 	@Autowired
 	UserDao userDao;
 
@@ -401,7 +420,95 @@ public class ShadeServiceImpl {
 		return getAllShadesList;
 	}
 
-    public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(String qualityId, String partyId, String id) throws Exception{
+
+	public FilterResponse<GetAllShade> getAllShadesInfoPaginated(GetBYPaginatedAndFiltered requestParam, String id) throws Exception {
+		List<ShadeMast> shadeMastList = null;
+		String getBy=requestParam.getGetBy();
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        Boolean flag = false;
+        List<Filter> filters=requestParam.getData().getParameters();
+        HashMap<String,String> subModelCase=new HashMap<String,String>();
+        // subModelCase.put("qualityName", "quality");
+        // subModelCase.put("partyName", "party");
+		Page queryResponse=null;
+
+		List<GetAllShade> getAllShadesList = new ArrayList<>();
+		if(id == null){
+			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = shadeMastDao.findAll(spec, pageable);
+		}
+		else if(getBy.equals("own")){
+			filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = shadeMastDao.findAll(spec, pageable);
+				}
+		else if(getBy.equals("group")){
+
+			UserData userData = userDao.findUserById(Long.parseLong(id));
+
+			if(userData.getUserHeadId().equals(userData.getId())) {
+				//master user
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = shadeMastDao.findAll(spec, pageable);
+				
+				
+			}
+			else
+			{
+
+				UserData userOperator=userDao.getUserById(Long.parseLong(id));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,Long.toString( userOperator.getUserHeadId())));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,Long.toString(userOperator.getUserHeadId())));
+			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = shadeMastDao.findAll(spec, pageable);
+				
+			}
+
+
+		}
+		shadeMastList=queryResponse.getContent();
+
+		for (ShadeMast e : shadeMastList) {
+
+			if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
+			{
+				DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
+
+				Optional<Party> party = partyDao.findById(e.getPartyId());
+				Optional<Quality> qualityName=qualityDao.findById(e.getQualityEntryId());
+
+				if(dyeingProcessMast==null)
+					continue;
+
+				if(!qualityName.isPresent())
+					continue;
+				if(!party.isPresent())
+					continue;
+
+				if(e.getShadeDataList()==null || e.getShadeDataList().isEmpty() || e.getShadeDataList().get(0).getSupplierItemId()==null)
+					continue;
+				Optional<QualityName> qualityName1 =qualityNameDao.getQualityNameDetailById(qualityName.get().getQualityNameId());
+
+				if(qualityName1.isEmpty())
+					continue;
+
+				getAllShadesList.add(new GetAllShade(e,party,qualityName,dyeingProcessMast,qualityName1.get()));
+
+			}
+
+		}
+
+		FilterResponse<GetAllShade> response=new FilterResponse<GetAllShade>(getAllShadesList,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
+
+        return response;
+
+	}
+
+
+
+	public List<GetShadeByPartyAndQuality> getShadesByQualityAndPartyId(String qualityId, String partyId, String id) throws Exception{
 
 
 		//get the user record first

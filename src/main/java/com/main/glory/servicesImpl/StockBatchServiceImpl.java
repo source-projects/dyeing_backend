@@ -326,12 +326,12 @@ public class StockBatchServiceImpl {
 
 
     @Transactional
-    public FilterResponse<GetAllStockWithPartyNameResponse> getAllStockBatchPaginatedAndFiltered(GetAllStockBatchPaginatedAndFiltered requestParam, String id) throws Exception {
+    public FilterResponse<GetAllStockWithPartyNameResponse> getAllStockBatchPaginatedAndFiltered(GetBYPaginatedAndFiltered requestParam, String id) throws Exception {
         List<GetAllStockWithPartyNameResponse> data = null;
         
         List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
         Pageable pageable=filterService.getPageable(requestParam.getData());
-        Boolean flag = false;
+        Boolean flag = false; 
         List<Filter> filters=requestParam.getData().getParameters();
         HashMap<String,String> subModelCase=new HashMap<String,String>();
         subModelCase.put("qualityName", "quality");
