@@ -1605,6 +1605,7 @@ public class DispatchMastImpl {
 
         List<BatchWithTotalMTRandFinishMTR> batchDataListByParty = new ArrayList<>();
         List<StockMast> stockMastList = stockBatchService.getStockListByParty(partyId);
+        // System.out.println(stockMastList.size());
         Party party = partyServiceImp.getPartyById(partyId);
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);

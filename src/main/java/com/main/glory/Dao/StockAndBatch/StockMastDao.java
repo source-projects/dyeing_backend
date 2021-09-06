@@ -51,7 +51,7 @@ public interface StockMastDao extends FilterDao<StockMast>  {
  List<StockMast> findByUserHeadId(Long userHeadId);
 
 
- @Query("select sm from StockMast sm where sm.party.id =:partyId AND partyId IS NOT NULL")
+ @Query("select sm from StockMast sm where sm.party.id =:partyId AND :partyId IS NOT NULL")
  List<StockMast> findByPartyId(Long partyId);
 
  //Get all stock list
