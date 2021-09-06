@@ -2,6 +2,10 @@ package com.main.glory.Dao;
 
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
+public interface ShadeMastDao extends FilterDao<ShadeMast> {
 
 
 //	String partyName;
@@ -69,4 +73,5 @@ public interface ShadeMastDao extends JpaRepository<ShadeMast, Long> {
 
 	@Query("select x from ShadeMast x where x.partyShadeNo=:partyShadeNo AND x.qualityEntryId=:qualityEntryId AND x.id!=:shadeId")
     ShadeMast getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(Long qualityEntryId, String partyShadeNo, Long shadeId);
+
 }

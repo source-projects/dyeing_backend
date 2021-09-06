@@ -1,8 +1,10 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -128,6 +130,55 @@ public class ShadeController extends ControllerConfig {
 		logService.saveLog(result,request,debugAll);
 		return new ResponseEntity<>(result ,HttpStatus.valueOf(result .getStatusCode()));
 	}
+
+
+	@PostMapping("/shade/allPaginated")
+	public ResponseEntity<GeneralResponse<FilterResponse<GetAllShade>,Object>> getAllShadesInfoPadinated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header){
+		GeneralResponse<FilterResponse<GetAllShade>,Object> result ;
+		String id=header.get("id");
+        if(id=="")id=null;
+		try{
+			FilterResponse<GetAllShade> shadeMast = null;
+			switch (requestParam.getGetBy()) {
+				case "own":
+					shadeMast = shadeService.getAllShadesInfoPaginated(requestParam, id);
+					if(!shadeMast.getData().isEmpty())
+						result = new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					else
+						result = new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+					break;
+				case "group":
+					shadeMast = shadeService.getAllShadesInfoPaginated(requestParam, id);
+					if(!shadeMast.getData().isEmpty())
+						result = new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					else
+					result =new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+					break;
+				case "all":
+					shadeMast = shadeService.getAllShadesInfoPaginated(null, null);
+					//System.out.println(shadeMast);
+					if(!shadeMast.getData().isEmpty())
+						result =  new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					else
+						result = new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+					break;
+				default:
+					result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+			logService.saveLog(result,request,true);
+		}
+		logService.saveLog(result,request,debugAll);
+		return new ResponseEntity<>(result ,HttpStatus.valueOf(result .getStatusCode()));
+	}
+
+
 
 	@GetMapping("/shade/{id}")
 	public ResponseEntity<GeneralResponse<ShadeMast,Object>> getShadesById(@PathVariable(value = "id") Long id){

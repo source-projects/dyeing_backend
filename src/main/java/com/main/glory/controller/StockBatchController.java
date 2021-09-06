@@ -181,7 +181,7 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @PostMapping(value="/stockBatch/allpaginated")
-    public ResponseEntity<GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object>> getAllStockBatchPaginatedAndFiltered(@RequestBody GetAllStockBatchPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header) throws Exception {
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object>> getAllStockBatchPaginatedAndFiltered(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header) throws Exception {
         System.out.println("stockBatch/all entered");
 
         GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object> result;
@@ -190,7 +190,7 @@ public class StockBatchController extends ControllerConfig {
             String id=header.get("id");
             if(id=="")id=null;
             
-            
+             
             switch (requestParam.getGetBy()) {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, id);
