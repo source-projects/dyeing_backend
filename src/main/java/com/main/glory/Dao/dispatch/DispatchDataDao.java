@@ -115,6 +115,16 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query(value = "select * from dispatch_data where invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
     DispatchData getDispatchDataByInvoiceNumber(@Param("invoiceNo") String invoiceNo);
 
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchEntryId) as batch,dd.stockId,dd.pchallanRef,dd.batchId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.pchallanRef,dd.stockId,dd.batchId")
+    List<GetBatchByInvoice> findPChallanAndBatchIdAndStockByInvoice(String invoiceExist);
+
+    //get the invoice batch by the invoice no and batch id and stock id
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.invoiceNo=:invoiceNo AND dd.batchId=:batchId AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL")
+    List<DispatchData> findByPChallanRefAndBatchIdAndStockIdAndInvoiceNo(Long stockId, String pchallanRef, String batchId, String invoiceNo);
+
+    @Query(value = "select quality_rate from dispatch_data as x where x.batch_id = :batchId AND x.pchallan_ref=:pchallanRef AND x.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
+    Double getQualityRateByInvoiceNoAndBatchIdAndPchallanRef(String invoiceNo, String pchallanRef, String batchId);
+
 
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")

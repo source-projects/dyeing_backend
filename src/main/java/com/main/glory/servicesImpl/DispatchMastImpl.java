@@ -1213,7 +1213,7 @@ public class DispatchMastImpl {
                     // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
                     //only from 0-29 object are going to store in list
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, limit);
-                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getBatchId(), batchAndStockId.getStockId());
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getBatchId(), batchAndStockId.getStockId(),batchAndStockId.getPchallanRef());
                     newBatchWithGr.setBatchDataList(newBatchList);
                     startIndex = limit;
                     limit += 30;
@@ -1224,7 +1224,7 @@ public class DispatchMastImpl {
                 //for remaining gr
                 if (remainingGrFrom > 0) {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
-                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getBatchId(), batchAndStockId.getStockId());
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getBatchId(), batchAndStockId.getStockId(),batchAndStockId.getPchallanRef());
                     newBatchWithGr.setBatchDataList(newBatchList);
                     batchWithGrList.add(newBatchWithGr);
                 }
@@ -1235,7 +1235,7 @@ public class DispatchMastImpl {
                 //for perfect gr lst which is 30
                 /*batchWithGr.setBatchDataList(batchDataList);
                 batchWithGrList.add(batchWithGr);*/
-                batchWithGrList.add(new BatchWithGr(batchDataList, batchAndStockId.getStockId(), batchAndStockId.getBatchId()));
+                batchWithGrList.add(new BatchWithGr(batchDataList, batchAndStockId.getStockId(), batchAndStockId.getBatchId(),batchAndStockId.getPchallanRef()));
             }
 
 
@@ -1580,7 +1580,7 @@ public class DispatchMastImpl {
 
         //check first the data is available or not
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
-            List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef());
+            List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef(),createDispatch.getBatchId());
 
             if (batchDataList.isEmpty())
                 throw new Exception(constantFile.Batch_Data_Not_Found);
@@ -1594,7 +1594,7 @@ public class DispatchMastImpl {
 
         //iterate and change the status
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
-            List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef());
+            List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef(),createDispatch.getBatchId());
 
 
             //get the shade detail skip because of pchallan is in diffrent batch then which shade rate should get
@@ -1718,12 +1718,12 @@ public class DispatchMastImpl {
         DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(invoiceNo));
         String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
         if (invoiceExist == null || invoiceExist == "")
-            throw new Exception(ConstantFile.Dispatch_Found);
+            throw new Exception(ConstantFile.Dispatch_Not_Found);
 
 
         //quality list
 
-        List<GetBatchByInvoice> batchList = dispatchDataDao.findPChallanAndStockByInvoice(invoiceExist);
+        List<GetBatchByInvoice> batchList = dispatchDataDao.findPChallanAndBatchIdAndStockByInvoice(invoiceExist);
 
         for (GetBatchByInvoice batch : batchList) {
             if (batchList.isEmpty())
@@ -1776,13 +1776,13 @@ public class DispatchMastImpl {
 
             //get the rate
 
-            Double rate = dispatchDataList.get(0).getQualityRate();
+            Double rate = dispatchDataDao.getQualityRateByInvoiceNoAndBatchIdAndPchallanRef(invoiceNo,batch.getPchallanRef(),batch.getBatchId());
             shadeRate = dispatchDataList.get(0).getShadeRate();
 
 
             //set the quality with batch data
             qualityBillByInvoiceNumber.setPchallanRef(batch.getPchallanRef());
-            qualityBillByInvoiceNumber.setBatchId(batch.getPchallanRef());
+            qualityBillByInvoiceNumber.setBatchId(batch.getBatchId());
             qualityBillByInvoiceNumber.setTotalMtr(totalMtr);
             qualityBillByInvoiceNumber.setFinishMtr(finishMtr);
 
@@ -1809,10 +1809,10 @@ public class DispatchMastImpl {
         //for batch list
 
 
-        List<GetBatchByInvoice> batchList2 = dispatchDataDao.findPChallanAndStockByInvoice(invoiceExist);
+        //List<GetBatchByInvoice> batchList2 = dispatchDataDao.findPChallanAndStockByInvoice(invoiceExist);
 
         List<BatchWithGr> batchWithGrList = new ArrayList<>();
-        for (GetBatchByInvoice batch : batchList2) {
+        for (GetBatchByInvoice batch : batchList) {
 
             BatchWithGr batchWithGr = new BatchWithGr(batch);
             List<BatchData> batchDataList = new ArrayList<>();
@@ -1820,7 +1820,7 @@ public class DispatchMastImpl {
 
             //batches data
 
-            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
+            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndBatchIdAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), batch.getBatchId(),invoiceNo);
 
             for (DispatchData invoiceBatch : dispatchDataList) {
                 Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
@@ -1946,7 +1946,7 @@ public class DispatchMastImpl {
             //if the create flag is true the check batch data for create
             if (createDispatch.getCreateFlag() == true) {
 
-                List<BatchData> batchDataList = batchDao.getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getPchallanRef());
+                List<BatchData> batchDataList = batchDao.getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenratedAndStockId(batchAndStockId.getPchallanRef(),batchAndStockId.getStockId());
                 if (batchDataList.isEmpty())
                     throw new Exception(ConstantFile.Batch_Data_Not_Exist);
 
@@ -1989,7 +1989,7 @@ public class DispatchMastImpl {
             //batch record
             List<BatchData> batchDataList = null;
             if (createDispatch.getCreateFlag() == true) {
-                batchDataList = batchDao.getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getPchallanRef());
+                batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(batchAndStockId.getStockId(),batchAndStockId.getPchallanRef(),batchAndStockId.getBatchId());
                 billingUnit = quality.getBillingUnit();
 
             } else {
@@ -2020,7 +2020,7 @@ public class DispatchMastImpl {
                 }
             }
 
-            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality, totalFinishMtr, totalMtr, totalPcs, qualityName, batchAndStockId.getPchallanRef(), stockMastExist);
+            QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality, totalFinishMtr, totalMtr, totalPcs, qualityName, batchAndStockId.getPchallanRef(), stockMastExist,batchAndStockId.getBatchId());
 
             //change the grey mtr total as per the billing unit
 
@@ -2046,10 +2046,10 @@ public class DispatchMastImpl {
                 int limit = 30;
                 //divide the entire object because of gr is greater than the limit
 
-                if (remainingGrFrom > 0) {
+              /*  if (remainingGrFrom > 0) {
                     object++;
-                }
-                for (int x = 1; x < object; x++) {
+                }*/
+                for (int x = 0; x < object; x++) {
                     // to index value is not going to push into the list
                     // it mean if the start index is 0 and limit is 30 then the 30's index value is not going to push into the lisy
                     //only from 0-29 object are going to store in list
@@ -2058,7 +2058,7 @@ public class DispatchMastImpl {
 
                     //change in gr in the format
                     newBatchList = StockBatchServiceImpl.changeInFormattedDecimal(newBatchList);
-                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
+                    BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getBatchId(),batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
 
                     //convert batch gr also
                     if (createDispatch.getCreateFlag() == false) {
@@ -2082,7 +2082,7 @@ public class DispatchMastImpl {
                 }
 
                 //for remaining gr
-                BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
+                BatchWithGr newBatchWithGr = new BatchWithGr(batchAndStockId.getBatchId(),batchAndStockId.getStockId(), batchAndStockId.getPchallanRef());
                 if (remainingGrFrom > 0) {
                     List<BatchData> newBatchList = batchDataList.subList(startIndex, batchDataList.size());
                     //change in gr in the format
@@ -2112,7 +2112,7 @@ public class DispatchMastImpl {
 
                 //change in gr in the format
                 batchDataList = StockBatchServiceImpl.changeInFormattedDecimal(batchDataList);
-                BatchWithGr batchWithGr = new BatchWithGr(batchDataList, batchAndStockId.getPchallanRef(), batchAndStockId.getStockId());
+                BatchWithGr batchWithGr = new BatchWithGr(batchDataList, batchAndStockId.getStockId(),batchAndStockId.getBatchId(), batchAndStockId.getPchallanRef());
                 if (createDispatch.getCreateFlag() == false) {
                     //change gr as per the quality wtper 100
                     UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(createDispatch.getInvoiceNo().toString(), batchDataList.get(0).getId());
