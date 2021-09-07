@@ -1745,7 +1745,7 @@ public class DispatchMastImpl {
             Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
             qualityBillByInvoiceNumber.setQualityName(qualityName.get().getQualityName());
 
-            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
+            List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndBatchIdAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), batch.getBatchId(),invoiceNo);
 
             String isMergeBatchId = "";
             for (DispatchData invoiceBatch : dispatchDataList) {

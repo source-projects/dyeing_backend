@@ -1823,6 +1823,8 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(party.getUserHeadId());
         Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+        List<PchallanByBatchId> pchallanByBatchIdList = batchDao.getListOfPchallanByBatchId(batchId);
+
 
       /*  System.out.println(stockMast.getId());
         System.out.println(party.getId());
@@ -1837,6 +1839,13 @@ public class StockBatchServiceImpl {
         can be get and error for userdata
         */
         JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName.get(), totalMtr, totalPcs, totalWt);
+        if(pchallanByBatchIdList.size()==1)
+        {
+            jobCard.setChalNo(pchallanByBatchIdList.get(0).getPchallanRef());
+        }
+        else {
+            jobCard.setChalNo(pchallanByBatchIdList.stream().map(PchallanByBatchId::getPchallanRef).collect(Collectors.joining(",")));
+        }
         jobCard.setBatchId(batchId);
         jobCard.setTotalFinishMtr(totalFinish);
         jobCard.setBatchDataList(batchData);
