@@ -49,12 +49,12 @@ public class GetQualityResponse {
         this.rate = data.getRate();
         this.wtPer100m= data.getWtPer100m();
         this.remark= data.getRemark();
-        this.createdBy=data.getUserCreatedByData().getId();
+        this.createdBy=data.getUserCreatedByData()==null?null:data.getUserCreatedByData().getId();
         this.createdDate=data.getCreatedDate();
         this.updatedBy=data.getUpdatedBy();
         this.updatedDate=data.getUpdatedDate();
         this.qualityDate = data.getQualityDate();
-        this.userHeadId=data.getUserHeadData().getId();
+        this.userHeadId=data.getUserHeadData()==null?null:data.getUserHeadData().getId();
         this.partyName=data.getPartyName();
         this.mtrPerKg=data.getMtrPerKg();
         this.partyCode=data.getPartyCode();

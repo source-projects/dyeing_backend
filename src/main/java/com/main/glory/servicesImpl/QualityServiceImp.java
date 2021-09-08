@@ -154,7 +154,6 @@ public class QualityServiceImp  {
         
 		Page queryResponse=null;
         filters.add(new Filter(new ArrayList<String>(Arrays.asList("partyId")),QueryOperator.GREATER_THAN,"-1"));
-        filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.GREATER_THAN,"-1"));
 
 
 
