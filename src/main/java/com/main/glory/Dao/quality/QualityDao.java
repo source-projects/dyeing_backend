@@ -24,13 +24,13 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query(value = "Select * from quality as qa where qa.quality_id=:qid",nativeQuery = true)
     List<Quality> getQualityListById(@Param("qid") String quality_id);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id=q.userHeadId)) from Quality q where q.partyId IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id in (select p.userHeadId from Party p where p.id in (select qq.partyId from Quality qq where qq.id=q.id)))) from Quality q where q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyName();
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id=q.userHeadId)) from Quality q where q.userHeadId = :userHeadId OR q.createdBy=:userHeadId AND q.partyId IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id in (select p.userHeadId from Party p where p.id in (select qq.partyId from Quality qq where qq.id=q.id)))) from Quality q where q.userHeadId = :userHeadId OR q.createdBy=:userHeadId AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyNameByUserHeadId(Long userHeadId);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id=q.userHeadId)) from Quality q where createdBy = :createdBy AND q.partyId IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id in (select p.userHeadId from Party p where p.id in (select qq.partyId from Quality qq where qq.id=q.id)))) from Quality q where createdBy = :createdBy AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyNameByCreatedBy( Long createdBy);
 
     Optional<Quality> findById(Long qualityId);
@@ -49,7 +49,7 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("select q from Quality q")
     List<Quality> getAllQuality();
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId)) from Quality q where q.userHeadId = :userHeadId OR q.createdBy=:id AND q.partyId IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id in (select p.userHeadId from Party p where p.id in (select qq.partyId from Quality qq where qq.id=q.id)))) from Quality q where q.userHeadId = :userHeadId OR q.createdBy=:id AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyByCreatedAndHeadId(Long id, Long userHeadId);
 
 
@@ -70,7 +70,7 @@ public interface QualityDao extends JpaRepository<Quality, Long>  {
     @Query("select q from Quality q where q.createdBy=:userId")
     List<Quality> getAllQualityCreatedBy(Long userId);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId)) from Quality q where q.userHeadId = :userHeadId AND q.partyId IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, (Select p.partyName from Party p where p.id = q.partyId),(Select p.partyCode from Party p where p.id = q.partyId),(select x.userName from UserData x where x.id in (select p.userHeadId from Party p where p.id in (select qq.partyId from Quality qq where qq.id=q.id)))) from Quality q where q.userHeadId = :userHeadId AND q.partyId IS NOT NULL")
     List<QualityWithPartyName> findQualityByUserHeadId(Long userHeadId);
 
     @Query("select q from Quality q where LOWER(q.qualityId)=LOWER(:quality_id)")
