@@ -333,9 +333,9 @@ public class StockBatchServiceImpl {
         Pageable pageable=filterService.getPageable(requestParam.getData());
         Boolean flag = false; 
         List<Filter> filters=requestParam.getData().getParameters();
-        HashMap<String,String> subModelCase=new HashMap<String,String>();
-        subModelCase.put("qualityName", "quality");
-        subModelCase.put("partyName", "party");
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality","qualityName")));
+        subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party","partyName")));
 
         
         
@@ -1453,11 +1453,11 @@ public class StockBatchServiceImpl {
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(qualityId);
 
 
-        Optional<Party> party = partyDao.findById(qualityExist.get().getPartyId());
+        Optional<Party> party = partyDao.findById(qualityExist.get().getParty().getId());
         if (party.isEmpty())
             throw new Exception(ConstantFile.Party_Not_Exist + qualityId);
 
-        List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(qualityId, qualityExist.get().getPartyId());
+        List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(qualityId, qualityExist.get().getParty().getId());
 
 
         //batch list based on stock id

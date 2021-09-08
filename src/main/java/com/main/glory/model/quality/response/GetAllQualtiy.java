@@ -32,7 +32,7 @@ public class GetAllQualtiy {
         this.qualityType=quality.getQualityType();
         this.billingUnit=quality.getBillingUnit();
         this.unit=quality.getUnit();
-        this.partyId=quality.getPartyId();
+        this.partyId=quality.getParty().getId();
         this.wtPer100m=quality.getWtPer100m();
         this.mtrPerKg=quality.getMtrPerKg();
     }

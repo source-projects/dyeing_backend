@@ -7,6 +7,13 @@ import lombok.Setter;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.main.glory.model.party.Party;
+import com.main.glory.model.user.UserData;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,13 +25,22 @@ public class AddQualityRequest {
     private String qualityName;
     private String qualityType;
     private String unit;
-    private Long partyId;
     private Double wtPer100m;
     private String remark;
-    private Long createdBy;
     private  Long updatedBy;
-    private Long userHeadId;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdById", referencedColumnName = "id", insertable = true, updatable = true)    
+	UserData userCreatedByData;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
+	UserData userHeadData;
+    
     private Double rate;
     Double mtrPerKg;
     String billingUnit;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    	
+	Party  party;
+
 }
