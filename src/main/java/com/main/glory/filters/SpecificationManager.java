@@ -19,14 +19,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SpecificationManager<T> {
-  private Specification<T> createSpecification(Filter input,HashMap<String,String> subModelCase) {
+  private Specification<T> createSpecification(Filter input,HashMap<String,List<String>> subModelCase) {
     return new Specification<T>() {
       @Override
       public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<String> attributes=  input.getField();
         if(subModelCase!=null)
         if(subModelCase.containsKey(input.getField().get(0)))
-        attributes.add(0, subModelCase.get(input.getField().get(0)));
+        attributes= subModelCase.get(input.getField().get(0));
 
         var path=root.get(attributes.get(0));
         for(int i=1;i<attributes.size();i++){
@@ -126,7 +126,7 @@ public class SpecificationManager<T> {
     return lists;
   }
 
-  public Specification<T> getSpecificationFromFilters(List<Filter> filter, boolean isAnd,HashMap<String,String> subModelCase) {
+  public Specification<T> getSpecificationFromFilters(List<Filter> filter, boolean isAnd,HashMap<String,List<String>> subModelCase) {
     if (filter == null || filter.isEmpty())
       return null;
     System.out.println("Creating specification");

@@ -2,12 +2,14 @@ package com.main.glory.model.quality;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
-
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.program.Program;
 import com.main.glory.model.quality.request.AddQualityRequest;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.UserData;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -32,16 +34,27 @@ public class Quality {
 	String qualityName;
 	String qualityType;
 	String unit;// inward units
-	Long  partyId;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    
+	Party  party;
+
 	Double wtPer100m;
 	Double mtrPerKg;
 	String remark;
 	Date createdDate;
-	Long createdBy;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdById", referencedColumnName = "id", insertable = true, updatable = true)    
+	UserData userCreatedByData;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
+	UserData userHeadData;
+	
 	Long updatedBy;
 	Date updatedDate;
 	Date qualityDate;
-	Long userHeadId;
+
+
 	Double rate;
 	@Column(columnDefinition = "varchar(255) default '998821'")
 	String hsn;
@@ -56,16 +69,16 @@ public class Quality {
 		//this.qualityName = other.qualityName;
 		this.qualityType = other.qualityType;
 		this.unit = other.unit;
-		this.partyId = other.partyId;
+		this.party = other.party;
 		this.wtPer100m = other.wtPer100m;
 		this.remark = other.remark;
 		this.createdDate = other.createdDate;
-		this.createdBy = other.createdBy;
+		this.userCreatedByData = other.userCreatedByData;
 		this.updatedBy = other.updatedBy;
 		this.updatedDate = other.updatedDate;
 //		this.qualityDate = other.qualityDate;
 		this.rate= other.rate;
-		this.userHeadId = other.userHeadId;
+		this.userHeadData=other.userHeadData;
 		this.qualityNameId=other.qualityNameId;
 		this.billingUnit=other.getBillingUnit();
 		this.mtrPerKg=other.getMtrPerKg();
@@ -81,12 +94,12 @@ public class Quality {
 		this.qualityNameId=qualityDto.getQualityNameId();
 		this.qualityType=qualityDto.getQualityType();
 		this.unit=qualityDto.getUnit();
-		this.partyId=qualityDto.getPartyId();
+		this.party=qualityDto.getParty();
 		this.wtPer100m=qualityDto.getWtPer100m();
 		this.remark=qualityDto.getRemark();
-		this.createdBy=qualityDto.getCreatedBy();
+		this.userCreatedByData=qualityDto.getUserCreatedByData();
 		this.updatedBy=qualityDto.getUpdatedBy();
-		this.userHeadId=qualityDto.getUserHeadId();
+		this.userHeadData=qualityDto.getUserHeadData();
 		this.rate=qualityDto.getRate();
 		this.billingUnit=qualityDto.getBillingUnit();
 		this.mtrPerKg=qualityDto.getMtrPerKg();

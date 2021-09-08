@@ -49,6 +49,9 @@ public class ShadeServiceImpl {
 
 	@Autowired
     SpecificationManager<ShadeMast> specificationManager;
+	@Autowired
+    FilterService<ShadeMast,ShadeMastDao> filterService;
+
 
 	@Autowired
 	ProductionPlanDao productionPlanDao;
@@ -58,8 +61,6 @@ public class ShadeServiceImpl {
 	@Autowired
 	APCDao acpDao;
 	
-	@Autowired
-    FilterService<ShadeMast,ShadeMastDao> filterService;
 
 
 	@Autowired
@@ -425,9 +426,8 @@ public class ShadeServiceImpl {
 		List<ShadeMast> shadeMastList = null;
 		String getBy=requestParam.getGetBy();
 		Pageable pageable=filterService.getPageable(requestParam.getData());
-        Boolean flag = false;
         List<Filter> filters=requestParam.getData().getParameters();
-        HashMap<String,String> subModelCase=new HashMap<String,String>();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
         // subModelCase.put("qualityName", "quality");
         // subModelCase.put("partyName", "party");
 		Page queryResponse=null;
@@ -453,7 +453,7 @@ public class ShadeServiceImpl {
 			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = shadeMastDao.findAll(spec, pageable);
 				
-				
+			
 			}
 			else
 			{
