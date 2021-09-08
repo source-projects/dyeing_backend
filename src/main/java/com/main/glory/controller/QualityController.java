@@ -121,7 +121,7 @@ public class QualityController extends ControllerConfig {
     }
 
 
-    @GetMapping(value = "/quality/allPaginated")
+    @PostMapping(value = "/quality/allPaginated")
     public ResponseEntity<GeneralResponse<FilterResponse<GetQualityResponse>,Object>> getQualityListPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header) {
         GeneralResponse<FilterResponse<GetQualityResponse>,Object> result;
         String id=header.get("id");
