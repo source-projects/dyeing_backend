@@ -47,7 +47,7 @@ public class QualityWithQualityNameParty {
         this.remark = other.getRemark();
         this.createdDate = other.getCreatedDate();
         this.createdBy = other.getUserCreatedByData().getId();
-        this.updatedBy = other.getUpdatedBy();
+        this.updatedBy = other.getUpdatedBy().getId();
         this.updatedDate = other.getUpdatedDate();
 //		this.qualityDate = other.qualityDate;
         this.rate= other.getRate();

@@ -38,12 +38,12 @@ public class SupplierResponse {
         this.discountPercentage =s.getDiscountPercentage();
         this.gstPercentage=s.getGstPercentage();
         this.remark = s.getRemark();
-        this.createdBy = s.getCreatedBy();
+        this.createdBy = s.getCreatedBy().getId();
         this.createdDate = s.getCreatedDate();
         this.updatedDate = s.getUpdatedDate();
         this.paymentTerms= s.getPaymentTerms();
-        this.updatedBy = s.getUpdatedBy();
-        this.userHeadId = s.getUserHeadId();
+        this.updatedBy = s.getUpdatedBy().getId();
+        this.userHeadId = s.getUserHeadData().getId();
         this.qualityNameId = s.getQualityNameId();
 
     }
