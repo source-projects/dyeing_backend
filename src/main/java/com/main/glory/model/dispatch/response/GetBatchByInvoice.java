@@ -35,4 +35,12 @@ public class GetBatchByInvoice {
         this.pchallanRef = pchallanRef;
         this.stockId = stockId;
     }
+
+
+    public GetBatchByInvoice(Long batchEntryId, Long stockId,String pchallanRef,String batchId) {
+        this.batchEntryId = batchEntryId;
+        this.pchallanRef = pchallanRef;
+        this.stockId = stockId;
+        this.batchId = batchId;
+    }
 }

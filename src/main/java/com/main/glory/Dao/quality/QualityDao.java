@@ -26,13 +26,14 @@ public interface QualityDao extends FilterDao<Quality>  {
     @Query(value = "Select * from quality as qa where qa.quality_id=:qid",nativeQuery = true)
     List<Quality> getQualityListById(@Param("qid") String quality_id);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode) from Quality q where q.party.id IS NOT NULL")
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode,q.userHeadData.userName) from Quality q where q.party.id IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyName();
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode) from Quality q where q.userHeadData.id = :userHeadId OR q.userCreatedByData.id=:userHeadId AND q.party.id IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode,q.userHeadData.userName) from Quality q where q.userHeadData.id = :userHeadId OR q.userCreatedByData.id=:userHeadId AND q.party.id IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyNameByUserHeadId(Long userHeadId);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode) from Quality q where createdBy = :createdBy AND q.party.id IS NOT NULL")
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode,q.userHeadData.userName) from Quality q where createdBy = :createdBy AND q.party.id IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyNameByCreatedBy( Long createdBy);
 
     Optional<Quality> findById(Long qualityId);
@@ -53,7 +54,8 @@ public interface QualityDao extends FilterDao<Quality>  {
     @Query("select q from Quality q")
     List<Quality> getAllQuality();
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode) from Quality q where q.userHeadData.id = :userHeadId OR q.userCreatedByData.id=:id AND q.party.id IS NOT NULL")
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode,q.userHeadData.userName) from Quality q where q.userHeadData.id = :userHeadId OR q.userCreatedByData.id=:id AND q.party.id IS NOT NULL")
     List<QualityWithPartyName> findAllWithPartyByCreatedAndHeadId(Long id, Long userHeadId);
 
 
@@ -74,7 +76,8 @@ public interface QualityDao extends FilterDao<Quality>  {
     @Query("select q from Quality q where q.userCreatedByData.id=:userId")
     List<Quality> getAllQualityCreatedBy(Long userId);
 
-    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode) from Quality q where q.userHeadData.id = :userHeadId AND q.party.id IS NOT NULL")
+
+    @Query("Select new com.main.glory.model.quality.QualityWithPartyName(q, q.party.partyName,q.party.partyCode,q.userHeadData.userName) from Quality q where q.userHeadData.id = :userHeadId AND q.party.id IS NOT NULL")
     List<QualityWithPartyName> findQualityByUserHeadId(Long userHeadId);
 
     @Query("select q from Quality q where LOWER(q.qualityId)=LOWER(:quality_id)")

@@ -44,7 +44,7 @@ public class Quality {
 	String remark;
 	Date createdDate;
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="createdById", referencedColumnName = "id", insertable = true, updatable = true)    
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)
 	UserData userCreatedByData;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    

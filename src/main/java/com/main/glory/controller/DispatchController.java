@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import com.main.glory.model.dispatch.response.SalesReportByMonth;
 import org.springframework.data.domain.Sort;
 
 import com.main.glory.Dao.FilterDao;
@@ -441,6 +442,25 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<List<ConsolidatedBillMast>, Object> result;
         try{    
             List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true
+            );
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/dispatch/report/forSalesReport")
+    public ResponseEntity<GeneralResponse<List<SalesReportByMonth>,Object>> getReportDispatchForSalesReportByFilter(@RequestBody Filter filter) throws Exception{
+        GeneralResponse<List<SalesReportByMonth>, Object> result;
+        try{
+            List<SalesReportByMonth> list = dispatchMastService.getSalesDispatchReportByFiter(filter);
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else

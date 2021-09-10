@@ -3,6 +3,7 @@ package com.main.glory.Dao.dispatch;
 import com.main.glory.Dao.FilterDao;
 import com.main.glory.model.dispatch.DispatchMast;
 
+import com.main.glory.model.dispatch.response.SalesReportByMonth;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,5 +70,6 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query("select x from DispatchMast x where x.signByParty=:signByParty")
     List<DispatchMast> getAllInvoiceListBySignByParty(Boolean signByParty);
 
-
+    @Query("select new com.main.glory.model.dispatch.response.SalesReportByMonth(EXTRACT(MONTH FROM dm.createdDate),(select sum(b.finishMtr) from BatchData b where b.id in (select dd.batchEntryId from DispatchData dd where dd.invoiceNo=dm.postfix)),dm.taxAmt,dm.discount,dm.netAmt) from DispatchMast dm where (:startDate IS NULL OR dm.createdDate>=:startDate) AND (:endDate IS NULL OR dm.createdDate<=:endDate) AND (:partyId IS NULL OR dm.partyId=:partyId) AND (:userHeadId IS NULL OR dm.userHeadId=:userHeadId) ")
+    List<SalesReportByMonth> getInvoiceSaleReportByFilter(Date startDate, Date endDate, Long partyId, Long userHeadId);
 }

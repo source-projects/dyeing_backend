@@ -41,6 +41,7 @@ public class PartyDataByInvoiceNumber {
         this.contactNo=party.getContactNo();
         this.address=party.getPartyAddress1();
         this.GST=party.getGSTIN();
+        this.state = party.getState();
         this.qualityList=qualityBillByInvoiceNumberList;
         this.batchWithGrList=batchWithGrList;
         this.discount = dispatchMast.getDiscount();
@@ -51,6 +52,7 @@ public class PartyDataByInvoiceNumber {
         this.netAmt = Math.floor(dispatchMast.getNetAmt());
         this.percentageDiscount = dispatchMast.getPercentageDiscount();
         this.remark = dispatchMast.getRemark();
+
     }
     public PartyDataByInvoiceNumber(Party party, List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList, List<BatchWithGr> batchWithGrList) {
         this.partyName=party.getPartyName();

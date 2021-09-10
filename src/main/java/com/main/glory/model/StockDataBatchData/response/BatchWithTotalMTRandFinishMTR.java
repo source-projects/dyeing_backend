@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BatchWithTotalMTRandFinishMTR {
+public class    BatchWithTotalMTRandFinishMTR {
     String batchId;
     Long controlId;
     Double WT;
@@ -33,14 +33,17 @@ public class BatchWithTotalMTRandFinishMTR {
         this.totalPcs = totalPcs;
     }
 
-    public BatchWithTotalMTRandFinishMTR(Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs,String pchallanRef) {
+    public BatchWithTotalMTRandFinishMTR(Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs,String pchallanRef,String batchId) {
         this.controlId = controlId;
         this.WT = WT;
         this.MTR = MTR;
         this.totalFinishMtr = totalFinishMtr;
         this.totalPcs = totalPcs;
         this.pchallanRef = pchallanRef;
+        this.batchId = batchId;//group by batch and pchallanRef
     }
+
+
 
 
 

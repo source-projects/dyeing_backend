@@ -42,7 +42,7 @@ public class PartyController extends ControllerConfig {
 	private PartyServiceImp partyServiceImp;
 
 	@PostMapping(value="/party")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
+	public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody AddParty party)
 	{
 		GeneralResponse<Boolean,Object> result;
 		try {

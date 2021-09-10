@@ -37,9 +37,12 @@ public class GetQualityResponse {
     String hsn;//in case sensitive
     Long processId;
     String procecssName;
+    String userHeadName;
 
     public GetQualityResponse(QualityWithPartyName data) {
         this.id= data.getId();
+        this.userHeadName = data.getUserHeadName();
+        this.userHeadId = data.getUserHeadData().getId();
         this.qualityId = data.getQualityId();
         this.qualityName =data.getQualityName();
         this.qualityNameId = data.getQualityNameId();
