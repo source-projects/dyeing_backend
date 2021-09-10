@@ -157,7 +157,7 @@ public class ShadeController extends ControllerConfig {
 
 					break;
 				case "all":
-					shadeMast = shadeService.getAllShadesInfoPaginated(null, null);
+					shadeMast = shadeService.getAllShadesInfoPaginated(requestParam, id);
 					//System.out.println(shadeMast);
 					if(!shadeMast.getData().isEmpty())
 						result =  new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());

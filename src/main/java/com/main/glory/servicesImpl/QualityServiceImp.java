@@ -157,7 +157,7 @@ public class QualityServiceImp  {
 
 
 
-        if (id == null) {
+        if (id == null || getBy.equals("all")) {
             Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = qualityDao.findAll(spec, pageable);
 

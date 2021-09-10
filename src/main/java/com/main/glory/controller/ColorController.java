@@ -171,7 +171,7 @@ public class ColorController extends ControllerConfig {
 					}
 					break;
 				case "all":
-					obj = colorService.getAllPaginated(null,null);
+					obj = colorService.getAllPaginated(requestParam, id);
 					if(!obj.getData().isEmpty()){
 						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
 					} else {

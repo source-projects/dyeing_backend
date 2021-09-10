@@ -202,7 +202,7 @@ public FilterResponse<ColorMastDetails> getAllPaginated(GetBYPaginatedAndFiltere
 		Page queryResponse=null;
         System.out.println(0);
 
-    if (id == null) {
+    if (id == null || getBy.equals("all")){
         System.out.println(2);
         Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
         System.out.println(3);
