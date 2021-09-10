@@ -150,7 +150,7 @@ public class PartyController extends ControllerConfig {
 
 	
 
-	@PostMapping(value="/party/all")
+	@PostMapping(value="/party/allPaginated")
 	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header)
 	{
 		GeneralResponse<FilterResponse<PartyWithMasterName>,Object> result;
@@ -159,46 +159,13 @@ public class PartyController extends ControllerConfig {
 
 
 		try{
-			switch (requestParam.getGetBy()) {
-				case "own":
-					var x = partyServiceImp.getAllPartyDetailsPaginated(requestParam, id);
+			var x = partyServiceImp.getAllPartyDetailsPaginated(requestParam, id);
 					if (!x.getData().isEmpty()) {
 						result = new GeneralResponse<>(x, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 					}
 					else {
 						result = new GeneralResponse<>(x, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 					}
-					break;
-				case "group":
-					var x1 = partyServiceImp.getAllPartyDetailsPaginated(requestParam, id);
-					if (!x1.getData().isEmpty())
-					{
-						result = new GeneralResponse<>(x1, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-					}
-					else {
-						result = new GeneralResponse<>(x1, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-					}
-					break;
-				case "all":
-					var x2 = partyServiceImp.getAllPartyDetailsPaginated(null, null);
-					if (!x2.getData().isEmpty()) {
-						//throw new ResponseStatusException(HttpStatus.OK,x2.toString());
-						result = new GeneralResponse<>(x2, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-						//result = ResponseEntity.status(HttpStatus.OK).body(result);
-					}
-					else {
-
-						//response.getHeaders().add("status","404");
-						result = new GeneralResponse<>(x2, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-						//throw new Exception("no");
-						//result = ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
-					}
-					break;
-				default:
-					result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-
-
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
