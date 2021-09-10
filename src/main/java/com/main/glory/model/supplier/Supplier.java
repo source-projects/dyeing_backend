@@ -2,6 +2,8 @@ package com.main.glory.model.supplier;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.user.UserData;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,22 +30,30 @@ public class Supplier {
     Double discountPercentage;
     Double gstPercentage;
     String remark;
-    Long createdBy;
     @ApiModelProperty(hidden = true)
     Date createdDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
     Long paymentTerms;
-    Long updatedBy;
-    Long userHeadId;
     Long qualityNameId;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
+
+
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 
-    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, String remark, Long createdBy, Date createdDate, Date updatedDate, Long paymentTerms, Long updatedBy, Long userHeadId) {
+    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, String remark, UserData createdBy, Date createdDate, Date updatedDate, Long paymentTerms, UserData updatedBy, UserData userHeadData) {
         this.id = id;
         this.supplierName = supplierName;
         this.discountPercentage = discountPercentage;
@@ -54,7 +64,7 @@ public class Supplier {
         this.updatedDate = updatedDate;
         this.paymentTerms = paymentTerms;
         this.updatedBy = updatedBy;
-        this.userHeadId = userHeadId;
+        this.userHeadData = userHeadData;
     }
 
     @PrePersist

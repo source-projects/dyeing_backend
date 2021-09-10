@@ -6,7 +6,12 @@ import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.color.ColorAcknowledgement;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
@@ -18,12 +23,19 @@ import com.main.glory.model.color.responsemodals.SupplierItemWithLeftColorQty;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.UserData;
+import com.main.glory.services.FilterService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +60,12 @@ public class ColorServiceImpl {
 
     ConstantFile constantFile;
 
+    @Autowired
+    SpecificationManager<ColorMast> specificationManager;
+	@Autowired
+    FilterService<ColorMast,ColorMastDao> filterService;
+
+
     @Transactional
     public void addColor(ColorMast colorMast,String id) throws Exception {
 
@@ -59,7 +77,7 @@ public class ColorServiceImpl {
             Optional<Supplier> supplier = supplierDao.getSupplierById(colorMast.getSupplierId());
             if(supplier.isEmpty())
                 throw new Exception(constantFile.Supplier_Found);
-            colorMast.setUserHeadId(supplier.get().getUserHeadId());
+            colorMast.setUserHeadData(supplier.get().getUserHeadData());
         }
 
 
@@ -142,8 +160,6 @@ public class ColorServiceImpl {
                     }
                 });
 
-
-
             }
             else
             {
@@ -164,17 +180,99 @@ public class ColorServiceImpl {
                 });
 
             }
-
-
-
-
-
     }
 		/*if(colorMastDetails.isEmpty())
                 throw new Exception(commonMessage.Color_Not_Found);
 */
 		return colorMastDetails;
 }
+
+public FilterResponse<ColorMastDetails> getAllPaginated(GetBYPaginatedAndFiltered requestParam, String id) throws Exception {
+    List<ColorMastDetails> colorMastDetails = new ArrayList<>();
+    List<ColorMast> data;
+
+    String getBy=requestParam.getGetBy();
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        List<Filter> filters=requestParam.getData().getParameters();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        subModelCase.put("createdByID",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
+		Page queryResponse=null;
+        System.out.println(0);
+
+    if (id == null) {
+        System.out.println(2);
+        Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+        System.out.println(3);
+        queryResponse = colorMastDao.findAll(spec, pageable);
+        System.out.println(4);
+
+        
+    } else if (getBy.equals("own")) {
+        filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+
+        Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+        queryResponse = colorMastDao.findAll(spec, pageable);
+
+
+        
+    } else if (getBy.equals("group")) {
+        
+        UserData userData = userDao.findUserById(Long.parseLong(id));
+
+        if(userData.getUserHeadId().equals(userData.getId()))
+        {
+            //master user
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+
+            Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+            queryResponse = colorMastDao.findAll(spec, pageable);
+    
+            
+        }
+        else
+        {
+            UserData userOperator=userDao.getUserById(Long.parseLong(id));
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,Long.toString(userOperator.getUserHeadId())));
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,Long.toString(userOperator.getUserHeadId())));
+
+            Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+            queryResponse = colorMastDao.findAll(spec, pageable);
+    
+            // operator
+        }
+}
+    /*if(colorMastDetails.isEmpty())
+            throw new Exception(commonMessage.Color_Not_Found);
+
+
+*/
+System.out.println(1);
+
+data=queryResponse.getContent();
+data.forEach(e -> {
+    try {
+        ColorMastDetails x = new ColorMastDetails(e);
+        String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+        if (!name.isEmpty()) {
+            x.setSupplierName(name);
+            colorMastDetails.add(x);
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+});
+System.out.println(queryResponse.getNumberOfElements());
+
+    FilterResponse<ColorMastDetails> response=new FilterResponse<ColorMastDetails>(colorMastDetails,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
+
+    return response;
+
+}
+
 
     public List<ColorMastDetails> getOne(Long id) {
         List<ColorMast> data = colorMastDao.getAllColorList();

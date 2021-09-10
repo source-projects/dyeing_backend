@@ -50,7 +50,9 @@ public class Quality {
 	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userHeadData;
 	
-	Long updatedBy;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+	UserData updatedBy;
 	Date updatedDate;
 	Date qualityDate;
 

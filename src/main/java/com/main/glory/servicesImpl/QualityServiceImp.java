@@ -114,7 +114,7 @@ public class QualityServiceImp  {
         System.out.println(":"+user.getId());
         if(user.getIsMaster()==false || qualityDto.getUserHeadData().getId()==0)
         {
-            qualityDto.setUserHeadData(party.getUserData());
+            qualityDto.setUserHeadData(party.getUserHeadData());
         }
 
         //elese remin the master
@@ -176,7 +176,7 @@ public class QualityServiceImp  {
             else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 
-                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdById")),QueryOperator.EQUALS,id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
                 Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
                 queryResponse = qualityDao.findAll(spec, pageable);    

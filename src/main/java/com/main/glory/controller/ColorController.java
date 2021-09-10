@@ -2,8 +2,10 @@ package com.main.glory.controller;
 
 import com.main.glory.Dao.SupplierDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.color.ColorAcknowledgement;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
@@ -138,6 +140,62 @@ public class ColorController extends ControllerConfig {
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+
+
+	@PostMapping("/color/allPaginated")
+	public ResponseEntity<GeneralResponse<FilterResponse<ColorMastDetails>,Object>> getColorPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header){
+		GeneralResponse<FilterResponse<ColorMastDetails>,Object> result;
+		String id=header.get("id");
+        if(id=="")id=null;
+
+		try{
+			FilterResponse<ColorMastDetails> obj = null;
+			switch (requestParam.getGetBy()) {
+				case "own":
+					//System.out.println(obj);
+					obj = colorService.getAllPaginated(requestParam, id);
+					if(!obj.getData().isEmpty()){
+						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					} else {
+						result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					}
+
+
+					break;
+				case "group":
+					obj = colorService.getAllPaginated(requestParam, id);
+					if(!obj.getData().isEmpty()){
+						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					} else {
+						result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					}
+					break;
+				case "all":
+					obj = colorService.getAllPaginated(null,null);
+					if(!obj.getData().isEmpty()){
+						result = new GeneralResponse<>(obj, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					} else {
+						result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+					}
+
+					break;
+				default:
+					result = new GeneralResponse<>(null, constantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI());
+
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI());
+			logService.saveLog(result,request,true);
+		}
+		logService.saveLog(result,request,debugAll);
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+	}
+
+
 
 	@DeleteMapping(value = "/color/{id}")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> deleteColorById(@PathVariable(value = "id") Long id) {

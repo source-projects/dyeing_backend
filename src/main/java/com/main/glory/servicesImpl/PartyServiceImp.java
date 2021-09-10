@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +18,16 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.document.request.ToEmailList;
@@ -38,12 +44,16 @@ import com.main.glory.model.user.UserPermission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.party.Party;
+import com.main.glory.services.FilterService;
 import com.main.glory.services.PartyServiceInterface;
 
 import javax.mail.MessagingException;
@@ -76,6 +86,12 @@ public class PartyServiceImp implements PartyServiceInterface {
     ShadeServiceImpl shadeService;
     @Autowired
     StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    SpecificationManager<Party> specificationManager;
+	@Autowired
+    FilterService<Party,PartyDao> filterService;
+
 
     @Autowired
     UserDao userDao;
@@ -164,44 +180,70 @@ public class PartyServiceImp implements PartyServiceInterface {
             partyDetailsList = partyDao.findByCreatedBy(id);
         }
 
-        /*if (partyDetailsList.isEmpty())
-            throw new Exception(CommonMessage.Party_Not_Found);*/
 
         return partyDetailsList;
     }
 
-    public FilterResponse<PartyWithMasterName> getAllPartyDetails(Long id, String getBy,int pageSize,int pageIndex) throws Exception {
+    public FilterResponse<PartyWithMasterName> getAllPartyDetailsPaginated(GetBYPaginatedAndFiltered requestParam, String id) throws Exception {
         List<PartyWithMasterName> partyDetailsList = null;
+        String getBy=requestParam.getGetBy();
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        List<Filter> filters=requestParam.getData().getParameters();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        subModelCase.put("createdByID",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
+		Page queryResponse=null;
+
+
         if (id == null) {
-            partyDetailsList = partyDao.getAllParty();
+            Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = partyDao.findAll(spec, pageable);
+
         } else if (getBy.equals("group")) {
-            UserData userData = userDao.findUserById(id);
+            UserData userData = userDao.findUserById(Long.parseLong(id));
 
             if(userData.getUserHeadId()==0)
             {
                 //fr admin
-                partyDetailsList = partyDao.getAllPartyWithHeadName();
+                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+                queryResponse = partyDao.findAll(spec, pageable);
+    
             }
             else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
-                partyDetailsList = partyDao.findByCreatedByAndUserHeadIdWithHeadName(id,id);
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdById")),QueryOperator.EQUALS,id));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+
+                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+                queryResponse = partyDao.findAll(spec, pageable);
+    
             }
             else {
-                UserData opratorUsr = userDao.getUserById(id);
+                UserData opratorUsr = userDao.getUserById(Long.parseLong(id));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,Long.toString(opratorUsr.getUserHeadId())));
+
+                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+                queryResponse = partyDao.findAll(spec, pageable);
+    
                 partyDetailsList = partyDao.findByUserHeadId(opratorUsr.getUserHeadId());
             }
 
 
 
         } else if (getBy.equals("own")) {
-            partyDetailsList = partyDao.findByCreatedBy(id);
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdById")),QueryOperator.EQUALS,id));
+
+            Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = partyDao.findAll(spec, pageable);
+
         }
 
         /*if (partyDetailsList.isEmpty())
             throw new Exception(CommonMessage.Party_Not_Found);*/
-        List<PartyWithMasterName> data=partyDetailsList.subList((pageIndex-1)*pageSize, Math.min(pageIndex*pageSize, partyDetailsList.size()));
-
-        FilterResponse<PartyWithMasterName> response=new FilterResponse<PartyWithMasterName>(data,pageIndex,pageSize,partyDetailsList.size());
+        partyDetailsList=queryResponse.getContent();
+        FilterResponse<PartyWithMasterName> response=new FilterResponse<PartyWithMasterName>(partyDetailsList,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
         return  response;
     
     }

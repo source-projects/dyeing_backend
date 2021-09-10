@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import com.main.glory.model.user.UserData;
+
 import java.util.Date;
 import java.util.List;
 
@@ -26,9 +29,17 @@ public class ColorMast {
     String chlNo;
     Date chlDate;
     Double billAmount;
-    Long createdBy;
-    Long updatedBy;
-    Long userHeadId;
+    
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
+
     String remark;
     @ApiModelProperty(hidden = true)
     Date createdDate;
@@ -39,7 +50,7 @@ public class ColorMast {
     @JoinColumn(name = "controlId",referencedColumnName = "id")
     List<ColorData> colorDataList;
 
-    public ColorMast(Long id, Long supplierId, String billNo, Date billDate, String chlNo, Date chlDate, Double billAmount, Long createdBy, Long updatedBy, Long userHeadId, String remark, List<ColorData> colorDataList) {
+    public ColorMast(Long id, Long supplierId, String billNo, Date billDate, String chlNo, Date chlDate, Double billAmount, UserData userData, UserData userData2, UserData userData3, String remark, List<ColorData> colorDataList) {
         this.id = id;
         this.supplierId = supplierId;
         this.billNo = billNo;
@@ -47,9 +58,9 @@ public class ColorMast {
         this.chlNo = chlNo;
         this.chlDate = chlDate;
         this.billAmount = billAmount;
-        this.createdBy = createdBy;
-        this.updatedBy = updatedBy;
-        this.userHeadId = userHeadId;
+        this.createdBy = userData;
+        this.updatedBy = userData2;
+        this.userHeadData = userHeadData;
         this.remark = remark;
         this.colorDataList = colorDataList;
     }
@@ -75,7 +86,7 @@ public class ColorMast {
         this.billAmount = other.billAmount;
         this.createdBy = other.createdBy;
         this.updatedBy = other.updatedBy;
-        this.userHeadId = other.userHeadId;
+        this.userHeadData = other.userHeadData;
         this.remark = other.remark;
         this.createdDate = other.createdDate;
         this.colorDataList = other.colorDataList;

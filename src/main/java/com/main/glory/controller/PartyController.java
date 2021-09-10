@@ -7,6 +7,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyReport;
@@ -150,14 +151,17 @@ public class PartyController extends ControllerConfig {
 	
 
 	@PostMapping(value="/party/all")
-	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestHeader Map<String,String> headers, @RequestParam(name = "pageSize") int pageSize,@RequestParam(name="pageIndex") int pageIndex,@RequestParam(name="viewLevel") String viewLevel)
+	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header)
 	{
 		GeneralResponse<FilterResponse<PartyWithMasterName>,Object> result;
+		String id=header.get("id");
+        if(id=="")id=null;
+
 
 		try{
-			switch (viewLevel) {
+			switch (requestParam.getGetBy()) {
 				case "own":
-					var x = partyServiceImp.getAllPartyDetails(Long.parseLong((String) headers.get("id")),viewLevel,pageSize,pageIndex);
+					var x = partyServiceImp.getAllPartyDetailsPaginated(requestParam, id);
 					if (!x.getData().isEmpty()) {
 						result = new GeneralResponse<>(x, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 					}
@@ -166,7 +170,7 @@ public class PartyController extends ControllerConfig {
 					}
 					break;
 				case "group":
-					var x1 = partyServiceImp.getAllPartyDetails(Long.parseLong(headers.get("id")),viewLevel,pageSize,pageIndex);
+					var x1 = partyServiceImp.getAllPartyDetailsPaginated(requestParam, id);
 					if (!x1.getData().isEmpty())
 					{
 						result = new GeneralResponse<>(x1, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -176,7 +180,7 @@ public class PartyController extends ControllerConfig {
 					}
 					break;
 				case "all":
-					var x2 = partyServiceImp.getAllPartyDetails(null, null,pageSize,pageIndex);
+					var x2 = partyServiceImp.getAllPartyDetailsPaginated(null, null);
 					if (!x2.getData().isEmpty()) {
 						//throw new ResponseStatusException(HttpStatus.OK,x2.toString());
 						result = new GeneralResponse<>(x2, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());

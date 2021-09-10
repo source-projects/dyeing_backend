@@ -27,7 +27,9 @@ public class AddQualityRequest {
     private String unit;
     private Double wtPer100m;
     private String remark;
-    private  Long updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
+	UserData updatedBy;
     @ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="createdById", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userCreatedByData;

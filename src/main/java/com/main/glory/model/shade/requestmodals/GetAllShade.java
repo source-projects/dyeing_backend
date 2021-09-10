@@ -6,6 +6,8 @@ import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.UserData;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,10 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,13 +36,21 @@ public class GetAllShade {
     String partyName;
     Long partyId;
     String colorTone;
-    Long userHeadId;
-    Long createdBy;
     String apcNo;
     Boolean pending;
     String colorName;
     Double wtPer100m;
     List<ShadeData> shadeDataList;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
+
 
 
     public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName,DyeingProcessMast dyeingProcessMast) {
@@ -49,7 +63,7 @@ public class GetAllShade {
         this.partyName=party.get().getPartyName();
         this.partyId=party.get().getId();
         this.colorTone=e.getColorTone();
-        this.userHeadId=e.getUserHeadId();
+        this.userHeadData=e.getUserHeadData();
         this.createdBy=e.getCreatedBy();
         this.apcNo=e.getApcNo();
         this.pending=e.getPending();
@@ -68,7 +82,7 @@ public class GetAllShade {
         this.partyName=party.get().getPartyName();
         this.partyId=party.get().getId();
         this.colorTone=e.getColorTone();
-        this.userHeadId=e.getUserHeadId();
+        this.userHeadData=e.getUserHeadData();
         this.createdBy=e.getCreatedBy();
         this.apcNo=e.getApcNo();
         this.pending=e.getPending();

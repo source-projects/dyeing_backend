@@ -1,19 +1,5 @@
 package com.main.glory.model.party;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.main.glory.model.SendEmail;
-import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.request.AddParty;
-import com.main.glory.model.paymentTerm.AdvancePayment;
-import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.program.Program;
-import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -57,10 +43,19 @@ public class Party {
     private String GSTIN;
     private String mailId;
     private Date createdDate;
-    private Long createdBy;
-    private Date updatedDate;
-    private Long updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
+
+    
     private Boolean debtor;
+    private Date updatedDate;
     private Boolean creditor;
     private Boolean internalTransfer;
     private String partyType;
@@ -68,11 +63,6 @@ public class Party {
     @ColumnDefault("0.0")
     private Double percentageDiscount;
     private Double gstPercentage;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
-    private UserData userData;
-
     private String partyCode;
 
 
@@ -98,7 +88,7 @@ public class Party {
         this.paymentTerms=party.getPaymentTerms();
         this.percentageDiscount=party.getPercentageDiscount();
         this.gstPercentage = party.getGstPercentage();
-        this.userData=party.getUserData();
+        this.userHeadData=party.getUserHeadData();
         this.partyCode=party.getPartyCode();
         this.creditLimit = party.getCreditLimit();
         this.paymentDays = party.getPaymentDays();
@@ -136,7 +126,7 @@ public class Party {
         this.paymentTerms=addParty.getPaymentTerms();
         this.percentageDiscount=addParty.getPercentageDiscount();
         this.gstPercentage=addParty.getGstPercentage();
-        this.userData=addParty.getUserData();
+        this.userHeadData=addParty.getUserHeadData();
         this.partyCode=addParty.getPartyCode();
         this.paymentDays=addParty.getPaymentDays();
         this.creditLimit=addParty.getCreditLimit();

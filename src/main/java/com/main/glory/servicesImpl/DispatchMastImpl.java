@@ -220,7 +220,7 @@ public class DispatchMastImpl {
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
 
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-            dispatchMast.setUserHeadId(party.get().getUserData().getId());
+            dispatchMast.setUserHeadId(party.get().getUserHeadData().getId());
         } else {
             dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
         }
@@ -1764,9 +1764,9 @@ public class DispatchMastImpl {
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
 
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-            dispatchMast.setUserHeadId(party.get().getUserData().getId());
+            dispatchMast.setUserHeadId(party.get().getUserHeadData().getId());
         } else {
-            dispatchMast.setUserHeadId(party.get().getUserData().getUserHeadId());
+            dispatchMast.setUserHeadId(party.get().getUserHeadData().getUserHeadId());
         }
 
         dispatchMastDao.save(dispatchMast);

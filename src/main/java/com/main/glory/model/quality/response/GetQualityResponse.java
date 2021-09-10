@@ -51,7 +51,7 @@ public class GetQualityResponse {
         this.remark= data.getRemark();
         this.createdBy=data.getUserCreatedByData()==null?null:data.getUserCreatedByData().getId();
         this.createdDate=data.getCreatedDate();
-        this.updatedBy=data.getUpdatedBy();
+        this.updatedBy=data.getUpdatedBy()==null?null:data.getUpdatedBy().getId();
         this.updatedDate=data.getUpdatedDate();
         this.qualityDate = data.getQualityDate();
         this.userHeadId=data.getUserHeadData()==null?null:data.getUserHeadData().getId();
@@ -74,7 +74,7 @@ public class GetQualityResponse {
         this.remark= data.getRemark();
         this.createdBy=data.getUserCreatedByData().getId();
         this.createdDate=data.getCreatedDate();
-        this.updatedBy=data.getUpdatedBy();
+        this.updatedBy=data.getUpdatedBy().getId();
         this.updatedDate=data.getUpdatedDate();
         this.qualityDate = data.getQualityDate();
         this.userHeadId=data.getUserHeadData().getId();
