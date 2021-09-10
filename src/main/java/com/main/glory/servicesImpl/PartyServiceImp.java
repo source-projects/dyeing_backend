@@ -197,7 +197,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 		Page queryResponse=null;
 
 
-        if (id == null) {
+        if (id == null || getBy.equals("all")) {
             Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = partyDao.findAll(spec, pageable);
 

@@ -256,6 +256,7 @@ public class SupplierServiceImpl {
         if (s.isEmpty())
             throw new Exception("data not added yet");*/
         s = supplierDao.findAllWithoutRates();
+        System.out.println(s.size());
         return s;
     }
 
