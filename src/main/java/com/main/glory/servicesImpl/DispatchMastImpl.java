@@ -277,7 +277,6 @@ public class DispatchMastImpl {
     public List<GetAllDispatch> getAllDisptach(String signByParty) throws Exception {
 
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
-        //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
 
         List<DispatchMast> dispatchList = null;
         if (signByParty == null || signByParty.isEmpty()) {
@@ -285,24 +284,16 @@ public class DispatchMastImpl {
         } else
             dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
 
-        List<String> invoiceNumber = new ArrayList<>();
 
-       /* if (dispatchList.isEmpty())
-            throw new Exception("no data found");*/
         for (DispatchMast dispatchMast : dispatchList) {
             List<BatchWithTotalMTRandFinishMTR> batchList = new ArrayList<>();
 
-           /* if (!invoiceNumber.contains(dispatchMast.getPostfix())) {
-                invoiceNumber.add(dispatchMast.getPostfix().toString());*/
+
             if (dispatchMast == null)
                 continue;
 
             GetAllDispatch getAllDispatch = new GetAllDispatch(dispatchMast);
-            //System.out.println("invoice:" + dispatchData.getInvoiceNo());
-                /*DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(dispatchData.getPostfix());
 
-                if (dispatchMast == null)
-                    continue;*/
 
             Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
             if (party == null)
@@ -323,26 +314,19 @@ public class DispatchMastImpl {
             getAllDispatch.setNetAmt(dispatchMast.getNetAmt());
             Double mtr = 0.0;
             Double finish = 0.0;
-           /* for (BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR : batchList) {
-                mtr += batchWithTotalMTRandFinishMTR.getMTR();
-                finish += batchWithTotalMTRandFinishMTR.getTotalFinishMtr();
-            }*/
+
             mtr = batchList.stream().mapToDouble(q -> q.getMTR()).sum();
             finish = batchList.stream().mapToDouble(q -> q.getTotalFinishMtr()).sum();
             getAllDispatch.setTotalMtr(StockBatchServiceImpl.changeInFormattedDecimal(mtr));
             getAllDispatch.setFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finish));
 
             dispatchDataList.add(getAllDispatch);
-            //}
+
 
 
         }
 
-       /* if (signByParty.equals("true")) {
-            dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == true).collect(Collectors.toList());
-        } else if (signByParty.equals("false")) {
-            dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == false).collect(Collectors.toList());
-        }*/
+
 
         return dispatchDataList;
     }
