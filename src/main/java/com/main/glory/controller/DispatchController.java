@@ -2,17 +2,19 @@ package com.main.glory.controller;
 
 import org.springframework.data.domain.Sort;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.main.glory.Dao.FilterDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
 import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.model.dispatch.DispatchMast;
-import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
@@ -37,6 +39,7 @@ import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -81,7 +84,7 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PostMapping("/dispatch/filter/forConslidateBill")
-    public ResponseEntity<GeneralResponse<List<GetConsolidatedBill>,Object>> getDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetConsolidatedBill>,Object>> getDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<GetConsolidatedBill>, Object> result;
         try{
             List<GetConsolidatedBill> list = dispatchMastService.getDispatchByFilter(filter);
@@ -99,7 +102,7 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping("/dispatch/filter/getBill")
-    public ResponseEntity<GeneralResponse<List<GetBill>,Object>> getDispatchBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetBill>,Object>> getDispatchBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<GetBill>,Object> result;
         try{
             List<GetBill> list = dispatchMastService.getDispatchBillByFilter(filter);
@@ -186,13 +189,13 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping("/dispatch/getAllPaginated")
-    public ResponseEntity<GeneralResponse<FilterResponse<GetAllDispatch>, Object>> getAllDispatchPaginated(@RequestParam(name = "signByParty") String signByParty,@RequestParam(name = "pageIndex") int pageIndex,@RequestParam(name = "pageSize") int pageSize) throws Exception{
-
+    @PostMapping("/dispatch/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllDispatch>, Object>> getAllDispatchPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam) throws Exception{
         GeneralResponse<FilterResponse<GetAllDispatch>,Object> result;
+
         try{
 
-            FilterResponse<GetAllDispatch> x =dispatchMastService.getAllDisptach(signByParty,pageIndex,pageSize);
+            FilterResponse<GetAllDispatch> x =dispatchMastService.getAllDisptach(requestParam);
             if(!x.getData().isEmpty())
             result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -437,7 +440,7 @@ public class DispatchController extends ControllerConfig {
 
     //report by date with consildate bill response
     @PostMapping("/dispatch/report/forConslidateBill")
-    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<ConsolidatedBillMast>, Object> result;
         try{    
             List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);

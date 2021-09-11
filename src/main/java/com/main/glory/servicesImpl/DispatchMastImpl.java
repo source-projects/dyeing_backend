@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.admin.InvoiceSequenceDao;
 import com.main.glory.Dao.quality.QualityDao;
@@ -7,16 +8,18 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.Dao.quality.QualityNameDao;
+import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
-import com.main.glory.model.dispatch.Filter;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
@@ -29,6 +32,8 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
+import com.main.glory.services.FilterService;
+
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +72,12 @@ public class DispatchMastImpl {
     DispatchMastDao dispatchMastDao;
 
     @Autowired
+    SpecificationManager<DispatchMast> specificationManager;
+	@Autowired
+    FilterService<DispatchMast,DispatchMastDao> filterService;
+
+
+    @Autowired
     DispatchDataDao dispatchDataDao;
 
     @Autowired
@@ -95,9 +106,6 @@ public class DispatchMastImpl {
 
     @Autowired
     QualityNameDao qualityNameDao;
-
-    @Autowired
-    SpecificationManager<DispatchMast> specificationManager;
 
 
     public Long saveDispatch(CreateDispatch dispatchList, Long userId) throws Exception {
@@ -360,20 +368,33 @@ public class DispatchMastImpl {
         return dispatchDataList;
     }
 
-    public FilterResponse<GetAllDispatch> getAllDisptach(String signByParty,int pageIndex,int pageSize) throws Exception {
+    public FilterResponse<GetAllDispatch> getAllDisptach(GetBYPaginatedAndFiltered requestParam) throws Exception {
 
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        List<Filter> filters=requestParam.getData().getParameters();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
         //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
+        String signByParty=requestParam.getSignByParty();
+        Page queryResponse=null;
 
         List<DispatchMast> dispatchList = null;
         if(signByParty==null|| signByParty.isEmpty())
         {
-            dispatchList = dispatchMastDao.getAllInvoiceList();
+            Specification<DispatchMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = dispatchMastDao.findAll(spec, pageable);
         }
-        else
-        dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
+        else{
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("signByParty")),QueryOperator.EQUALS,signByParty));
+            Specification<DispatchMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+			queryResponse = dispatchMastDao.findAll(spec, pageable);
+            dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
+
+        }
+        
 
         List<String> invoiceNumber = new ArrayList<>();
+        dispatchList=queryResponse.getContent();
 
        /* if (dispatchList.isEmpty())
             throw new Exception("no data found");*/
@@ -431,9 +452,8 @@ public class DispatchMastImpl {
         } else if (signByParty.equals("false")) {
             dispatchDataList = dispatchDataList.stream().filter(x -> x.getSignByParty() == false).collect(Collectors.toList());
         }*/
-        List<GetAllDispatch> data=dispatchDataList.subList((pageIndex-1)*pageSize, Math.min(pageIndex*pageSize, dispatchDataList.size()));
 
-        FilterResponse<GetAllDispatch> response=new FilterResponse<GetAllDispatch>(data,pageIndex,pageSize,dispatchDataList.size());
+        FilterResponse<GetAllDispatch> response=new FilterResponse<GetAllDispatch>(dispatchDataList,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
         return  response;
 
     }
@@ -996,7 +1016,7 @@ public class DispatchMastImpl {
 
     }
 
-    public List<GetConsolidatedBill> getDispatchByFilter(Filter filter) throws Exception {
+    public List<GetConsolidatedBill> getDispatchByFilter(DispatchFilter filter) throws Exception {
         Date from = null;
         Date to = null;
         //add one day because of timestamp issue
@@ -1087,7 +1107,7 @@ public class DispatchMastImpl {
 
     }
 
-    public List<GetBill> getDispatchBillByFilter(Filter filter) throws Exception {
+    public List<GetBill> getDispatchBillByFilter(DispatchFilter filter) throws Exception {
 
         Date from = null;
         Date to = null;
@@ -1417,7 +1437,7 @@ public class DispatchMastImpl {
 
     } 
 
-    public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(Filter filter) throws Exception {
+    public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(DispatchFilter filter) throws Exception {
         Date from = null;
         Date to = null;
         //add one day because of timestamp issue

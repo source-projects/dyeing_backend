@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 public class GetBYPaginatedAndFiltered  {
     String getBy;
+    String signByParty;
     PaginatedData data;
     public GetBYPaginatedAndFiltered(String getBy, PaginatedData data) {
         this.getBy = getBy;
