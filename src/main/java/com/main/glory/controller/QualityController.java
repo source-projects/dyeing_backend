@@ -173,15 +173,15 @@ public class QualityController extends ControllerConfig {
 
 
     @PutMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody Quality quality) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody AddQuality addQuality) throws Exception {
         GeneralResponse<Boolean,Object> result;
         try {
-            Optional<Party> party = partyDao.findById(quality.getParty().getId());
+            Optional<Party> party = partyDao.findById(addQuality.getPartyId());
             if(party.isEmpty()){
-                throw new Exception(ConstantFile.Party_Not_Exist+quality.getParty().getId());
+                throw new Exception(ConstantFile.Party_Not_Exist+addQuality.getPartyId());
             }
-            if (quality.getId() != null) {
-                boolean flag = qualityServiceImp.updateQuality(quality);
+            if (addQuality.getId() != null) {
+                boolean flag = qualityServiceImp.updateQuality(addQuality);
                 if (flag) {
                     result= new GeneralResponse<>(true, ConstantFile.Quality_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 } else {
