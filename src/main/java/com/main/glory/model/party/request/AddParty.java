@@ -21,7 +21,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AddParty {
-
+Long id;
     private String partyName;
     private String partyAddress1;
     private String partyAddress2;
@@ -31,12 +31,8 @@ public class AddParty {
     private String state;
     private String GSTIN;
     private String mailId;
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
-    private UserData createdBy;
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
-    private UserData updatedBy;    
+    private Long createdBy;
+    private Long updatedBy;    
     private Boolean debtor;
     private Boolean creditor;
     private Boolean internalTransfer;
@@ -44,9 +40,7 @@ public class AddParty {
     private String paymentTerms;
     private Double percentageDiscount;
     private Double gstPercentage;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
-    private UserData userHeadData;
+    private Long userHeadData;
     private String partyCode;
     Long paymentDays;
     Double creditLimit;

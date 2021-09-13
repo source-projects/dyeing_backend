@@ -102,7 +102,10 @@ public class PartyServiceImp implements PartyServiceInterface {
     public void saveParty(AddParty party) throws Exception {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         if (party != null) {
-            Party partyData = new Party(party);
+            UserData userHeadData=userDao.getUserById(party.getUserHeadData());
+            UserData createdBy=userDao.getUserById(party.getCreatedBy());
+            UserData updatedBy=userDao.getUserById(party.getUpdatedBy());
+            Party partyData = new Party(party, userHeadData, createdBy, updatedBy);
 
             if (party.getGSTIN()==null || party.getGSTIN().isEmpty()) {
 
@@ -258,8 +261,15 @@ public class PartyServiceImp implements PartyServiceInterface {
             return partyData;
     }
 
-    @Override
-    public boolean editPartyDetails(Party party) throws Exception {
+    
+    public boolean editPartyDetails(AddParty addParty) throws Exception {
+
+        UserData userHeadData=userDao.getUserById(addParty.getUserHeadData());
+        UserData createdBy=userDao.getUserById(addParty.getCreatedBy());
+        UserData updatedBy=userDao.getUserById(addParty.getUpdatedBy());
+        Party party=new Party(addParty, userHeadData, createdBy, updatedBy);
+        party.setId(addParty.getId());
+
         var partyIndex = partyDao.findById(party.getId());
         Party party1 = partyDao.findByPartyCodeExceptId(party.getPartyCode(),party.getId());
 
@@ -638,5 +648,11 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     public Party getPartyByStockId(Long controlId) {
         return partyDao.findPartyByStockId(controlId);
+    }
+
+    @Override
+    public boolean editPartyDetails(Party pary) throws Exception {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

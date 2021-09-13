@@ -37,7 +37,7 @@ public class GetAllDispatch {
     }
 
     public GetAllDispatch(DispatchMast dispatchData) {
-        this.invoiceNo=dispatchData.getPostfix().toString();
+        this.invoiceNo=dispatchData.getPostfix()==null?"null":dispatchData.getPostfix().toString();
         //this.isSendToParty=dispatchData.getIsSendToParty();
         this.date=dispatchData.getCreatedDate();
     }

@@ -45,6 +45,7 @@ public class PartyController extends ControllerConfig {
 	@PostMapping(value="/party")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
 	{
+		System.out.println("entering /party api controller");
 		GeneralResponse<Boolean,Object> result;
 		try {
 		    partyServiceImp.saveParty(party);
@@ -264,7 +265,7 @@ public class PartyController extends ControllerConfig {
 	}
 
 	@PutMapping(value="/party")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> updateParty(@RequestBody Party party) throws Exception
+	public ResponseEntity<GeneralResponse<Boolean,Object>> updateParty(@RequestBody AddParty party) throws Exception
 	{
 		GeneralResponse<Boolean,Object> result=null;
 		try {

@@ -34,24 +34,24 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query("delete from DispatchMast d where d.postfix=:substring")
     void deleteByInvoicePostFix(Long substring);
 
-    @Query("select q from DispatchMast q where q.partyId=:partyId AND q.postfix!=0 AND q.paymentBunchId IS NULL")
+    @Query("select q from DispatchMast q where q.party.id=:partyId AND q.postfix!=0 AND q.paymentBunchId IS NULL")
     List<DispatchMast> getPendingBillByPartyId(Long partyId);
 
     @Query("select d from DispatchMast d where d.postfix=:substring")
     DispatchMast getDataByInvoiceNumber(Long substring);
 
 
-    //@Query("select d from DispatchMast d where (d.partyId,d.partyId)=(:partyId,NULL) OR (:from IS NULL OR d.createdDate>=:from) OR (:to IS NULL OR d.createdDate<=:to) OR (:userHeadId IS NULL OR d.userHeadId=:userHeadId)")
-    @Query("select d from DispatchMast d where (:from IS NULL OR d.createdDate>=:from) AND (:to IS NULL OR d.createdDate<=:to) AND (:partyId IS NULL OR d.partyId=:partyId) AND (:userHeadId IS NULL OR d.userHeadId=:userHeadId) ")
+    //@Query("select d from DispatchMast d where (d.partyId,d.partyId)=(:partyId,NULL) OR (:from IS NULL OR d.createdDate>=:from) OR (:to IS NULL OR d.createdDate<=:to) OR (:userHeadId IS NULL OR d.userHeadData.id=:userHeadId)")
+    @Query("select d from DispatchMast d where (:from IS NULL OR d.createdDate>=:from) AND (:to IS NULL OR d.createdDate<=:to) AND (:partyId IS NULL OR d.party.id=:partyId) AND (:userHeadId IS NULL OR d.userHeadData.id=:userHeadId) ")
     List<DispatchMast> getInvoiceByFilter(Date from, Date to, Long partyId, Long userHeadId);
 
-    @Query("select d from DispatchMast d where d.partyId=:id")
+    @Query("select d from DispatchMast d where d.party.id=:id")
     List<DispatchMast> getDipatchByPartyId(Long id);
 
-    @Query("select d from DispatchMast d where d.createdBy=:id OR d.userHeadId=:id1")
+    @Query("select d from DispatchMast d where d.createdBy=:id OR d.userHeadData.id=:id1")
     List<DispatchMast> getDispatchByCreatedByAndUserHeadId(Long id, Long id1);
 
-    @Query("select SUM(d.netAmt) from DispatchMast d where d.paymentBunchId IS NULL AND d.partyId=:partyId")
+    @Query("select SUM(d.netAmt) from DispatchMast d where d.paymentBunchId IS NULL AND d.party.id=:partyId")
     Double getTotalPendingAmtByPartyId(Long partyId);
 
     @Query(value = "select * from dispatch_mast as x where x.party_id =:partyId AND x.payment_bunch_id IS NULL order by x.id DESC LIMIT 1",nativeQuery = true)

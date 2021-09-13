@@ -203,7 +203,7 @@ public class DispatchMastImpl {
 
                     dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
 
-                    dispatchData.setCreatedBy(dispatchList.getCreatedBy());
+                    dispatchData.setCreatedBy(dispatchList.getCreatedBy().getId());
                     dispatchData.setIsSendToParty(false);
                     //saveTheList.add(dispatchData);
                     //save the complete batch with gr list to the dispatch data with same invoice number
@@ -222,15 +222,15 @@ public class DispatchMastImpl {
         DispatchMast dispatchMast = new DispatchMast(dispatchList);
         dispatchMast.setSignByParty(false);
         dispatchMast.setPrefix("inv");
-        dispatchMast.setPartyId(party.get().getId());
+        dispatchMast.setParty(party.get());
         dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
         dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
 
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-            dispatchMast.setUserHeadId(party.get().getUserHeadData().getId());
+            dispatchMast.setUserHeadData(party.get().getUserHeadData());
         } else {
-            dispatchMast.setUserHeadId(dispatchList.getUserHeadId());
+            dispatchMast.setUserHeadData(dispatchList.getUserHeadData());
         }
 
         dispatchMastDao.save(dispatchMast);
@@ -325,7 +325,7 @@ public class DispatchMastImpl {
                 if (dispatchMast == null)
                     continue;*/
 
-            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
             if (party == null)
                 continue;
             //get the batch data
@@ -374,6 +374,14 @@ public class DispatchMastImpl {
 		Pageable pageable=filterService.getPageable(requestParam.getData());
         List<Filter> filters=requestParam.getData().getParameters();
         HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("partyCode",new ArrayList<String>(Arrays.asList("party","partyCode")));
+        subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party","partyName")));
+        subModelCase.put("partyId", new ArrayList<String>(Arrays.asList("party","id")));
+        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        subModelCase.put("createdByID",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
+
         //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
         String signByParty=requestParam.getSignByParty();
         Page queryResponse=null;
@@ -413,12 +421,12 @@ public class DispatchMastImpl {
                 if (dispatchMast == null)
                     continue;*/
 
-            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            Party party = dispatchMast.getParty();
             if (party == null)
                 continue;
             //get the batch data
 
-            List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchMast.getPostfix().toString());
+            List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchMast.getPostfix()==null?null:dispatchMast.getPostfix().toString());
 
             for (GetBatchByInvoice batch : batchListWithInvoiceList) {
                 //list of batches
@@ -1044,12 +1052,12 @@ public class DispatchMastImpl {
         //System.out.println(from+":"+to);
         List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getPartyId(), filter.getUserHeadId());
         for (DispatchMast dispatchMast : dispatchMastList) {
-            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
             if (party == null)
                 continue;
 
 
-            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadData().getId());
             if (userData == null)
                 continue;
 
@@ -1142,12 +1150,12 @@ public class DispatchMastImpl {
         for (DispatchMast dispatchMast : dispatchMastList) {
             List<QualityList> qualityLists = new ArrayList<>();
 
-            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
             if (party == null)
                 continue;
 
 
-            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadData().getId());
             if (userData == null)
                 continue;
 
@@ -1468,12 +1476,12 @@ public class DispatchMastImpl {
         for (DispatchMast dispatchMast : dispatchMastList) {
             ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
 
-            Party party = partyServiceImp.getPartyById(dispatchMast.getPartyId());
+            Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
             if (party == null)
                 continue;
 
 
-            UserData userData = userService.getUserById(dispatchMast.getUserHeadId());
+            UserData userData = userService.getUserById(dispatchMast.getUserHeadData().getId());
             if (userData == null)
                 continue;
 
@@ -1759,7 +1767,7 @@ public class DispatchMastImpl {
 
                     dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
 
-                    dispatchData.setCreatedBy(dispatchList.getCreatedBy());
+                    dispatchData.setCreatedBy(dispatchList.getCreatedBy().getId());
                     dispatchData.setIsSendToParty(false);
                     //saveTheList.add(dispatchData);
                     //save the complete batch with gr list to the dispatch data with same invoice number
@@ -1778,15 +1786,15 @@ public class DispatchMastImpl {
         DispatchMast dispatchMast = new DispatchMast(dispatchList);
         dispatchMast.setSignByParty(false);
         dispatchMast.setPrefix("inv");
-        dispatchMast.setPartyId(party.get().getId());
+        dispatchMast.setParty(party.get());
         dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
         dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
         dispatchMast.setPostfix(invoiceSequenceExist.getSequence());
 
         if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-            dispatchMast.setUserHeadId(party.get().getUserHeadData().getId());
+            dispatchMast.setUserHeadData(party.get().getUserHeadData());
         } else {
-            dispatchMast.setUserHeadId(party.get().getUserHeadData().getUserHeadId());
+            dispatchMast.setUserHeadData(party.get().getUserHeadData());
         }
 
         dispatchMastDao.save(dispatchMast);

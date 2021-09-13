@@ -7,15 +7,27 @@ import lombok.Setter;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.main.glory.model.user.UserData;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class CreateDispatch {
     Long invoiceNo;
-    Long createdBy;
-    Long userHeadId;
-    Long updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
     Double discount;
     Double cgst;
     Double sgst;

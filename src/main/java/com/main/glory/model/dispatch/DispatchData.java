@@ -4,6 +4,8 @@ import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.user.UserData;
+
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 

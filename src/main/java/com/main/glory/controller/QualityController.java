@@ -12,6 +12,7 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.AddQuality;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
@@ -54,24 +55,24 @@ public class QualityController extends ControllerConfig {
     Boolean debugAll;
 
     @PostMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody Quality quality,@RequestHeader Map<String, String> headers) {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody AddQuality addQuality,@RequestHeader Map<String, String> headers) {
         GeneralResponse<Boolean,Object> result;
         try{
 
-            Optional<Party> party = partyDao.findById(quality.getParty().getId());
+            Optional<Party> party = partyDao.findById(addQuality.getPartyId());
             if(party.isEmpty()){
                 throw new Exception(ConstantFile.Party_Not_Exist);
             }
 
-            int flag = qualityServiceImp.saveQuality(quality,headers.get("id"));
+            int flag = qualityServiceImp.saveQuality(addQuality,headers.get("id"));
             if (flag == 1)
-                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,quality);
+                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,addQuality);
             else
-                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,quality);
+                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,addQuality);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,quality);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addQuality);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -228,6 +229,7 @@ public class QualityController extends ControllerConfig {
     @GetMapping(value = "/quality/qualityName/get/all")
     public ResponseEntity<GeneralResponse<List<AddQualityName>,Object>> getAllQualityNameData() {
         GeneralResponse<List<AddQualityName>,Object> result;
+        System.out.println("entering /quality/qualityName/get/all");
 
         try {
             var qualityData = qualityServiceImp.getAllQualityNameData();
