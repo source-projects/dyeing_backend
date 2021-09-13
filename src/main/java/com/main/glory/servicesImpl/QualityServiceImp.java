@@ -49,6 +49,7 @@ import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
+import com.main.glory.model.quality.AddQuality;
 import com.main.glory.model.quality.Quality;
 
 @Service("qualityServiceImp")
@@ -100,11 +101,16 @@ public class QualityServiceImp  {
     ModelMapper modelMapper;
 
     
-    public int saveQuality(Quality qualityDto,String id) throws Exception {
+    public int saveQuality(AddQuality addQuality,String id) throws Exception {
+        UserData userHeadData=userDao.getUserById(addQuality.getUserHeadId());
+        UserData createdBy=userDao.getUserById(addQuality.getCreatedBy());
+        UserData updatedBy=userDao.getUserById(addQuality.getUpdatedBy());
+        Party party=partyDao.findByPartyId(addQuality.getPartyId());
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, updatedBy,party);
+
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-        Party party = partyDao.findByPartyId(qualityDto.getParty().getId());
         //Quality quality = new Quality(qualityDto);
 
         System.out.println("header:"+id);
@@ -646,9 +652,10 @@ public class QualityServiceImp  {
 
         List<AddQualityName> list =new ArrayList<>();
         Optional<List<QualityName>> qualityNameList = qualityNameDao.getAllQualityName();
+        System.out.println("qualityNameDao.getAllQualityName");
         if(!qualityNameList.isEmpty()) {
             for (QualityName qualityName : qualityNameList.get()) {
-
+                System.out.println("supplierService.getSupplierByQualityNameId "+Long.toString(qualityName.getId()));
                 List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
                 list.add(new AddQualityName(qualityName,supplierList));
 

@@ -24,6 +24,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name="party")
 public class Party {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false)
@@ -106,7 +107,7 @@ public class Party {
     }
 
 
-    public Party(AddParty addParty)
+    public Party(AddParty addParty,UserData userHeadData,UserData createdBy,UserData updatedBy)
     {
         this.partyName= addParty.getPartyName();
         this.partyAddress1=addParty.getPartyAddress1();
@@ -117,8 +118,6 @@ public class Party {
         this.state=addParty.getState();
         this.GSTIN=addParty.getGSTIN();
         this.mailId=addParty.getMailId();
-        this.createdBy=addParty.getCreatedBy();
-        this.updatedBy=addParty.getUpdatedBy();
         this.debtor=addParty.getDebtor();
         this.creditor=addParty.getCreditor();
         this.internalTransfer=addParty.getInternalTransfer();
@@ -126,10 +125,15 @@ public class Party {
         this.paymentTerms=addParty.getPaymentTerms();
         this.percentageDiscount=addParty.getPercentageDiscount();
         this.gstPercentage=addParty.getGstPercentage();
-        this.userHeadData=addParty.getUserHeadData();
         this.partyCode=addParty.getPartyCode();
         this.paymentDays=addParty.getPaymentDays();
         this.creditLimit=addParty.getCreditLimit();
+
+        
+        this.userHeadData=userHeadData;
+        this.createdBy=createdBy;
+        this.updatedBy=updatedBy;
+
 
     }
 

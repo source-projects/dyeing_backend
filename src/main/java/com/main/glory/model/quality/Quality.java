@@ -68,7 +68,7 @@ public class Quality {
 	public Quality(Quality other) {
 		this.id = other.id;
 		this.qualityId = other.qualityId;
-		//this.qualityName = other.qualityName;
+		this.qualityName = other.qualityName;
 		this.qualityType = other.qualityType;
 		this.unit = other.unit;
 		this.party = other.party;
@@ -78,7 +78,7 @@ public class Quality {
 		this.userCreatedByData = other.userCreatedByData;
 		this.updatedBy = other.updatedBy;
 		this.updatedDate = other.updatedDate;
-//		this.qualityDate = other.qualityDate;
+		this.qualityDate = other.qualityDate;
 		this.rate= other.rate;
 		this.userHeadData=other.userHeadData;
 		this.qualityNameId=other.qualityNameId;
@@ -116,5 +116,32 @@ public class Quality {
 	@PreUpdate
 	protected void onUpdate() {
 		this.updatedDate = new Date(System.currentTimeMillis());
+	}
+
+	public Quality(AddQuality other, UserData userHeadData, UserData createdBy, UserData updatedBy,
+			Party party) {
+
+				this.id = other.id;
+				this.qualityId = other.qualityId;
+				this.qualityName = other.qualityName;
+				this.qualityType = other.qualityType;
+				this.unit = other.unit;
+				this.party =party;
+				this.wtPer100m = other.wtPer100m;
+				this.remark = other.remark;
+				this.createdDate = other.createdDate;
+				this.userCreatedByData = createdBy;
+				this.updatedBy = updatedBy;
+				this.updatedDate = other.updatedDate;
+				this.qualityDate = other.qualityDate;
+				this.rate= other.rate;
+				this.userHeadData=userHeadData;
+				this.qualityNameId=other.qualityNameId;
+				this.billingUnit=other.getBillingUnit();
+				this.mtrPerKg=other.getMtrPerKg();
+				this.processId = other.getProcessId()==null?null:other.getProcessId();
+				this.hsn = other.getHsn();
+		
+		
 	}
 }
