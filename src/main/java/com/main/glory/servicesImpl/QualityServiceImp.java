@@ -288,8 +288,14 @@ public class QualityServiceImp  {
 
 
     
-    public boolean updateQuality(Quality qualityDto) throws Exception {
-        var qualityData = qualityDao.findById(qualityDto.getId());
+    public boolean updateQuality(AddQuality addQuality) throws Exception {
+        UserData userHeadData=userDao.getUserById(addQuality.getUserHeadId());
+        UserData createdBy=userDao.getUserById(addQuality.getCreatedBy());
+        UserData updatedBy=userDao.getUserById(addQuality.getUpdatedBy());
+        Party party=partyDao.findByPartyId(addQuality.getPartyId());
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, updatedBy,party);
+
+        var qualityData = qualityDao.findById(addQuality.getId());
         if (!qualityData.isPresent())
             return false;
         else {

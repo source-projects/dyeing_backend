@@ -28,20 +28,6 @@ public class FilterService<T,D extends FilterDao<T>> {
     @Autowired
     D dao;
 
-    // public String getWhereClause(List<Filter> parameters,HashMap<String,String> tableConversion){
-    //     String whereClause="where ";
-    //     for(int i=0;i<parameters.size();i++){
-    //         String tableName=parameters.get(i).getTableName();
-    //         String field=parameters.get(i).getField();
-    //         String value=parameters.get(i).getValue();
-    //         String operator=parameters.get(i).getOperation();
-    //         if(i!=parameters.size()-1)
-    //         whereClause+=tableConversion.get(tableName)+"."+field+" "+operator+" "+value+" AND ";
-    //         else
-    //         whereClause+=tableConversion.get(tableName)+"."+field+" "+operator+" "+value;
-    //     }
-    //     return whereClause;
-    // }
 
     public Pageable getPageable(PaginatedData data){
         String sortBy;
