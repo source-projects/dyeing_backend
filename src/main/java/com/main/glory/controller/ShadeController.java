@@ -37,23 +37,26 @@ public class ShadeController extends ControllerConfig {
 	Boolean debugAll;
 
 	@PostMapping("/shade")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody ShadeMast shadeMast ,@RequestHeader Map<String, String> headers){
+	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody AddShadeMast addShadeMast ,@RequestHeader Map<String, String> headers){
 		GeneralResponse<Boolean,Object> result;
 		try {
-			if(shadeMast == null){
-				result =  new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+			if(addShadeMast == null){
+				result =  new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,addShadeMast);
 			}else {
-				shadeService.saveShade(shadeMast,headers.get("id"));
-				result = new GeneralResponse<>(true, ConstantFile.Shade_Added, true, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+				shadeService.saveShade(addShadeMast,headers.get("id"));
+				result = new GeneralResponse<>(true, ConstantFile.Shade_Added, true, System.currentTimeMillis(), HttpStatus.OK,addShadeMast);
 			}
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,shadeMast);
+			System.out.println(e.getMessage());
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addShadeMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+
+
 	@GetMapping("/shade/getAPC")
 	public GeneralResponse<GetAPC,Object> getApcNumber(){
 		try {
@@ -241,16 +244,16 @@ public class ShadeController extends ControllerConfig {
 
 
 	@PutMapping(value = "/shade")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> updateShadeById(@RequestBody ShadeMast shadeMast) throws Exception {
+	public ResponseEntity<GeneralResponse<Boolean,Object>> updateShadeById(@RequestBody AddShadeMast addShadeMast) throws Exception {
 		GeneralResponse<Boolean,Object> result;
 
 		try {
-			if (shadeMast.getId() != null) {
-				boolean flag = shadeService.updateShade(shadeMast);
+			if (addShadeMast.getId() != null) {
+				boolean flag = shadeService.updateShade(addShadeMast);
 				if (flag) {
-					result = new GeneralResponse<>(true, ConstantFile.Shade_Updated, true, System.currentTimeMillis(), HttpStatus.OK, shadeMast);
+					result = new GeneralResponse<>(true, ConstantFile.Shade_Updated, true, System.currentTimeMillis(), HttpStatus.OK, addShadeMast);
 				} else {
-					result = new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, shadeMast);
+					result = new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, addShadeMast);
 				}
 				logService.saveLog(result, request, debugAll);
 			} else
@@ -261,7 +264,7 @@ public class ShadeController extends ControllerConfig {
 		}catch (Exception e)
 		{
 			e.printStackTrace();
-			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,shadeMast);
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addShadeMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

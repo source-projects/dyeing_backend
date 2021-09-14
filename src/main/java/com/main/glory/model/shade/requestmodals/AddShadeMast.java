@@ -21,7 +21,7 @@ import javax.persistence.ManyToOne;
 public class AddShadeMast {
 
     String partyShadeNo;
-    
+    Long id;
     Long processId;
     String processName;
     String colorTone;
@@ -34,20 +34,15 @@ public class AddShadeMast {
     String category;
     String remark;
     String apcNo;
+    Long qualityEntryId;
     Boolean pending;
     Double extraRate;
     String colorName;
     List<ShadeData> shadeDataList;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
-    private UserData createdBy;
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
-    private UserData updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
-    private UserData userHeadData;
+    private Long createdBy;
+    private Long updatedBy;
+    private Long userHeadId;
 
 
 
