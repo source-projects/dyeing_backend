@@ -409,7 +409,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
 
     //get all the pchallan by stock id
-    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR,SUM(p.finishMtr) as finishMtr,count(p.id) as count,p.pchallanRef as pchallanRef ) from BatchData p where p.controlId=:id AND p.isProductionPlanned = true AND p.isFinishMtrSave=true AND isBillGenrated=false GROUP BY p.controlId,p.pchallanRef")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR,SUM(p.finishMtr) as finishMtr,count(p.id) as count,p.pchallanRef as pchallanRef,p.batchId as batchId ) from BatchData p where p.controlId=:id AND p.isProductionPlanned = true AND p.isFinishMtrSave=true AND isBillGenrated=false GROUP BY p.controlId,p.pchallanRef,p.batchId")
     List<BatchWithTotalMTRandFinishMTR> getAllPChallanByStockIdWithTotalFinishMtr(Long id);
 
     @Query("select x from BatchData x where x.controlId=:stockId AND x.pchallanRef=:pchallanRef")
@@ -456,6 +456,15 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Transactional
     @Query("update BatchData x set x.isBillGenrated=:isBillGenrated,x.finishMtr =:finishMtr,x.isFinishMtrSave=:finishMtrSave where x.id IN (:batchEntryIds)")
     void updateBillStatusAndFinishMtrAndFinishMtrSaveFlagInListOfBatchEntryId(List<Long> batchEntryIds, Boolean finishMtrSave, Double finishMtr, Boolean isBillGenrated);
+
+    @Query("select b from BatchData b where b.pchallanRef=:pchallanRef AND b.isFinishMtrSave=true AND b.isBillGenrated=false AND b.controlId = :stockId")
+    List<BatchData> getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenratedAndStockId(String pchallanRef, Long stockId);
+
+    @Query("select x from BatchData x where x.controlId=:stockId AND x.pchallanRef=:pchallanRef AND x.batchId =:batchId AND x.isFinishMtrSave=true AND x.isBillGenrated=false")
+    List<BatchData> findByControlIdAndPchallanRefAndBatchIdForBillGenrate(Long stockId, String pchallanRef, String batchId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PchallanByBatchId(x.pchallanRef,COUNT(x.id)) from BatchData x where x.batchId=:batchId GROUP BY x.pchallanRef")
+    List<PchallanByBatchId> getListOfPchallanByBatchId(String batchId);
 
 
 
