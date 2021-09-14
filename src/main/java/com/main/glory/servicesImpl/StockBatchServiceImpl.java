@@ -663,7 +663,7 @@ public class StockBatchServiceImpl {
             throw new Exception("Can't delete the batch, already in production, for id:" + id);
         }
         List<ProductionPlan> productionPlans = productionPlanService.getProductionByStockId(id);
-        if (!productionPlans.isEmpty())
+        if (productionPlans!=null)
             throw new Exception("can't delete the stock , because already sent to production");
 
         stockMastDao.deleteById(id);
@@ -1944,6 +1944,8 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(party.getUserHeadData().getId());
         Quality quality = qualityDao.getqualityById(stockMast.getQuality().getId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+        List<PchallanByBatchId> pchallanByBatchIdList = batchDao.getListOfPchallanByBatchId(batchId);
+
 
       /*  System.out.println(stockMast.getId());
         System.out.println(party.getId());
@@ -1958,6 +1960,13 @@ public class StockBatchServiceImpl {
         can be get and error for userdata
         */
         JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName.get(), totalMtr, totalPcs, totalWt);
+        if(pchallanByBatchIdList.size()==1)
+        {
+            jobCard.setChalNo(pchallanByBatchIdList.get(0).getPchallanRef());
+        }
+        else {
+            jobCard.setChalNo(pchallanByBatchIdList.stream().map(PchallanByBatchId::getPchallanRef).collect(Collectors.joining(",")));
+        }
         jobCard.setBatchId(batchId);
         jobCard.setTotalFinishMtr(totalFinish);
         jobCard.setBatchDataList(batchData);

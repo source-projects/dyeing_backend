@@ -28,14 +28,16 @@ public class BatchWithGr {
         this.pchallanRef = batch.getPchallanRef();
     }
 
-    public BatchWithGr(String batchId,Long controlId) {
+    public BatchWithGr(String batchId,Long controlId,String pchallanRef) {
         this.batchId=batchId;
         this.controlId=controlId;
+        this.pchallanRef = pchallanRef;
     }
-    public BatchWithGr(List<BatchData> batchDataList, Long stockId, String batchId) {
+    public BatchWithGr(List<BatchData> batchDataList, Long stockId, String batchId,String pchallanRef) {
         this.batchId=batchId;
         this.controlId=stockId;
         this.batchDataList=batchDataList;
+        this.pchallanRef = pchallanRef;
     }
 
     //pchallan
