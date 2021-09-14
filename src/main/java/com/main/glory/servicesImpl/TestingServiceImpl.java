@@ -1,10 +1,15 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
+import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.AddStockBatch;
+import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
+
 import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,12 +30,19 @@ public class TestingServiceImpl {
     @Autowired
     BatchDao batchDao;
 
+    @Autowired
+    PartyDao partyDao;
+
+    @Autowired
+    QualityDao qualityDao;
+
 
 
 
     public void saveStockMast(AddStockBatch stockMast) throws Exception {
-
-        StockMast data = new StockMast(stockMast);
+        Party party=partyDao.findById(stockMast.getPartyId()).get();
+        Quality quality=qualityDao.findById(stockMast.getQualityId()).get();
+        StockMast data = new StockMast(stockMast,party,quality);
 
         StockMast x = stockMastDao.save(data);
 
