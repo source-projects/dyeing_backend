@@ -139,14 +139,14 @@ public class StockBatchServiceImpl {
     @Transactional
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
-        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+        Party party = partyDao.findByPartyId(stockMast.getPartyId());
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
         Long max = 0l, batchId = 0l;
         Date dt = new Date(System.currentTimeMillis());
         stockMast.setCreatedDate(dt);
         stockMast.setIsProductionPlanned(false);
-        Optional<Quality> quality = qualityDao.findById(stockMast.getQuality().getId());
+        Optional<Quality> quality = qualityDao.findById(stockMast.getQualityId());
 
         if (!quality.isPresent()) {
             throw new Exception(ConstantFile.Quality_Data_Not_Found);
@@ -166,7 +166,7 @@ public class StockBatchServiceImpl {
             UserData userData = userDao.getUserById(Long.parseLong(id));
             if (userData.getIsMaster() == false) {
                 //fetch the party record to set the usert head
-                party = partyDao.findByPartyId(stockMast.getParty().getId());
+                party = partyDao.findByPartyId(stockMast.getPartyId());
                 stockMast.setUserHeadId(party.getUserHeadData().getId());
             }
             //check the invoice sequence
@@ -181,7 +181,7 @@ public class StockBatchServiceImpl {
 
 
             //add record
-            StockMast x = new StockMast(stockMast);
+            StockMast x = new StockMast(stockMast,party,quality.get());
 
             StockMast create = stockMastDao.saveAndFlush(x);
             for (BatchData batchData : batchDataList) {
@@ -190,7 +190,7 @@ public class StockBatchServiceImpl {
             }
 
             //update the quality wt per 100 as well
-            qualityDao.updateQualityWtAndMtrKgById(stockMast.getQuality().getId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
+            qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
             if (create.getUserHeadId() == 0) {
                 create.setUserHeadId(party.getUserHeadData().getId());
                 stockMastDao.saveAndFlush(create);
@@ -617,16 +617,18 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(Long.parseLong(id));
         if (userData.getIsMaster() == false || stockMast.getUserHeadId() == 0) {
             //fetch the party record to set the usert head
-            Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+            Party party = partyDao.findByPartyId(stockMast.getPartyId());
             stockMast.setUserHeadId(party.getUserHeadData().getId());
         }
+        Party party=partyDao.findById(stockMast.getPartyId()).get();
+        Quality quality=qualityDao.findById(stockMast.getQualityId()).get();
         //update record
-        StockMast x = new StockMast(stockMast);
+        StockMast x = new StockMast(stockMast,party,quality);
         x.setBatchData(batchDataList);
         stockMastDao.save(x);
         //batchDao.saveAll(batchDataList);
         //update the quality wt per 100 as well
-        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQuality().getId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
+        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(), 100 / stockMast.getWtPer100m());
 
 
         //update the sequence

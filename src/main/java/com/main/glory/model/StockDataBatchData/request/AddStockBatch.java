@@ -24,9 +24,7 @@ import java.util.List;
 public class AddStockBatch {
     Long id;
     String stockInType;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="id", referencedColumnName = "id", insertable = true, updatable = true)    
-    Party party;
+    Long partyId;
     String billNo;
     Date billDate;
     String chlNo;
@@ -43,8 +41,6 @@ public class AddStockBatch {
     Double wtPer100m;
     List<BatchData> batchData;
     
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="id", referencedColumnName = "id", insertable = true, updatable = true)    
-    Quality quality;
+    Long qualityId;
 
 }

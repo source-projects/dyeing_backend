@@ -101,10 +101,10 @@ public class StockMast {
         this.wtPer100m=sm.getWtPer100m();
     }
 
-    public StockMast(AddStockBatch sm) {
+    public StockMast(AddStockBatch sm,Party party,Quality quality) {
         this.id = sm.getId();
         this.stockInType = sm.getStockInType();
-        this.party = sm.getParty();
+        this.party = party;
         this.billDate = sm.getBillDate()==null?null:sm.getBillDate();
         this.billNo = sm.getBillNo()==null?null:sm.getBillNo();
         this.chlDate = sm.getChlDate();
@@ -120,7 +120,7 @@ public class StockMast {
         this.remark = sm.getRemark()==null?null:sm.getRemark();
         this.wtPer100m=sm.getWtPer100m();
         //this.batchData = sm.getBatchData();
-        this.quality = sm.getQuality();
+        this.quality =quality;
 
     }
 
