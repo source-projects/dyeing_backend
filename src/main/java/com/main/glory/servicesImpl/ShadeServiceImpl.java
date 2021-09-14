@@ -90,8 +90,13 @@ public class ShadeServiceImpl {
 
 	@Transactional
 
-	public void saveShade(ShadeMast shadeMast,String id) throws Exception{
+	public void saveShade(AddShadeMast addShadeMast,String id) throws Exception{
 		//consider we have data and add directlt
+		UserData userHeadData=userDao.getUserById(addShadeMast.getUserHeadId());
+        UserData createdBy=userDao.getUserById(addShadeMast.getCreatedBy());
+        ShadeMast shadeMast = new ShadeMast(addShadeMast,  createdBy,userHeadData );
+		System.out.println("ShadeMast object created");
+
 		if(shadeMast.getQualityEntryId()==null)
 			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
@@ -103,11 +108,13 @@ public class ShadeServiceImpl {
 		{
 			throw new Exception(ConstantFile.Quality_Data_Not_Found +shadeMast.getQualityEntryId());
 		}
+		System.out.println("Quality object created");
 
 		//check the dyeing process for the shade is available or not
 
 		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
+		System.out.println("DyeingProcessMast object created");
 		//ShadeMast shadeData =  new ShadeMast(shadeMast);
 
 		//shadeMast.setQualityEntryId(quality.get().getId());
@@ -133,16 +140,24 @@ public class ShadeServiceImpl {
 		if(userData.getIsMaster()==false) {
 			//get the party record
 			Party party = partyDao.findByPartyId(shadeMast.getPartyId());
+			if(party==null)
+			throw new Exception(ConstantFile.Party_Not_Exist);
+
 			shadeMast.setUserHeadData(party.getUserHeadData());
 		}
 
+		System.out.println("UserData object created");
 
 
 
+
+	
 
 		//check that shade is exist or not
 		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeMast.getId()==null?0:shadeMast.getId(),shadeMast.getPartyShadeNo(),shadeMast.getQualityEntryId());
 		ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
+
+		System.out.println("ShadeExistWithPartyShadeAndQualityId object created");
 
 		if(shadeMastExist !=null)
 			throw new Exception(ConstantFile.Shade_Exist_Quality_And_PartyShade);
@@ -214,7 +229,11 @@ public class ShadeServiceImpl {
 	}
 
 	
-	public Boolean updateShade(ShadeMast shadeMast) throws Exception {
+	public Boolean updateShade(AddShadeMast addShadeMast) throws Exception {
+		UserData userHeadData=userDao.getUserById(addShadeMast.getUserHeadId());
+        UserData createdBy=userDao.getUserById(addShadeMast.getCreatedBy());
+        ShadeMast shadeMast = new ShadeMast(addShadeMast,  createdBy,userHeadData );
+
 
 		if(shadeMast.getQualityEntryId()==null)
 			throw new Exception(ConstantFile.Quality_Data_Not_Exist);

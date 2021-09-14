@@ -66,22 +66,23 @@ import java.util.List;
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
-	public ShadeMast(AddShadeMast addShadeMast)
+	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData)
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
 		this.id=addShadeMast.getPartyId();
+		this.qualityEntryId=addShadeMast.getQualityEntryId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
 		this.partyId=addShadeMast.getPartyId();
 		this.colorTone=addShadeMast.getColorTone();
-		this.createdBy=addShadeMast.getCreatedBy();
+		this.createdBy=createdBy;
 		this.cuttingId=addShadeMast.getCuttingId();
 		this.remark=addShadeMast.getRemark();
 		this.category=addShadeMast.getCategory();
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
-		this.userHeadData=addShadeMast.getUserHeadData();
+		this.userHeadData=userHeadData;
 		this.extraRate = addShadeMast.getExtraRate();
 		this.colorName=addShadeMast.getColorName();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
