@@ -36,7 +36,10 @@ public class DispatchMast{
 
     Date updatedDate;
     String prefix;
-    Long postfix;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="postfix", referencedColumnName = "invoiceNo", insertable = true, updatable = true)
+    DispatchData dispatchData;
+
     Long paymentBunchId;//payment mast id
     @ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)    
@@ -84,7 +87,7 @@ public class DispatchMast{
         this.sgst = createDispatch.getSgst();
         this.netAmt = createDispatch.getNetAmt();
         this.taxAmt = createDispatch.getTaxAmt();
-        this.postfix =createDispatch.getInvoiceNo();
+        this.dispatchData =createDispatch.getDispatchData();
         this.remark = createDispatch.getRemark();
     }
 

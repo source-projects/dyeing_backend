@@ -64,7 +64,7 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     List<DispatchMast> getInvoiceByDateFilter(Date from, Date to);
 
     @Query("select x from DispatchMast x where x.postfix=:invoiceNo")
-    DispatchMast getDispatchMastByInvoiceNo(Long invoiceNo);
+    DispatchMast getDispatchMastByInvoiceNo(String invoiceNo);
 
     @Query("select x from DispatchMast x where x.signByParty=:signByParty")
     List<DispatchMast> getAllInvoiceListBySignByParty(Boolean signByParty);

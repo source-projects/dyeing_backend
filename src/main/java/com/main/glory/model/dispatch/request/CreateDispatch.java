@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.user.UserData;
 
 @AllArgsConstructor
@@ -18,10 +19,14 @@ import com.main.glory.model.user.UserData;
 @Getter
 @Setter
 public class CreateDispatch {
-    Long invoiceNo;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="postfix", referencedColumnName = "invoiceNo", insertable = true, updatable = true)
+    DispatchData dispatchData;
+
     @ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
+    
     @ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData updatedBy;
