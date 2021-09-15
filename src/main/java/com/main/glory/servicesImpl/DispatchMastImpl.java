@@ -32,6 +32,7 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
+import com.main.glory.services.DataConversion;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
@@ -472,7 +473,7 @@ public class DispatchMastImpl {
             Long totalPcs = 0l;
 
             for (DispatchData dispatchData : dispatchDataList) {
-                BatchData batchData = batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
+                BatchData batchData = dispatchData.getBatchData();
                 if (batchData.getWt() != null) {
                     WT += batchData.getWt();
                     MTR += batchData.getMtr();
@@ -738,10 +739,10 @@ public class DispatchMastImpl {
 
             for (DispatchData invoiceBatch : dispatchDataList) {
 
-                Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
-                if (batchData.get().getMtr() != null && batchData.get().getFinishMtr() != null) {
-                    totalMtr += batchData.get().getMtr();
-                    finishMtr += batchData.get().getFinishMtr();
+                BatchData batchData = invoiceBatch.getBatchData();
+                if (batchData.getMtr() != null && batchData.getFinishMtr() != null) {
+                    totalMtr += batchData.getMtr();
+                    finishMtr += batchData.getFinishMtr();
                     pcs++;
                 }
 
@@ -782,8 +783,8 @@ public class DispatchMastImpl {
 
             for (DispatchData invoiceBatch : dispatchDataList) {
 
-                Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
-                batchDataList.add(batchData.get());
+                BatchData batchData = invoiceBatch.getBatchData();
+                batchDataList.add(batchData);
             }
             batchWithGr.setBatchDataList(batchDataList);
             batchWithGrList.add(batchWithGr);
@@ -850,7 +851,7 @@ public class DispatchMastImpl {
             String isMergeBatchId = "";
             for (DispatchData invoiceBatch : dispatchDataList) {
                 //System.out.println("invoic entry:"+invoiceBatch.getBatchEntryId());
-                BatchData batchData = batchDao.findByBatchEntryId(invoiceBatch.getBatchEntryId());
+                BatchData batchData = invoiceBatch.getBatchData();
                 if (batchData.getMtr() != null && batchData.getFinishMtr() != null) {
                     totalMtr += batchData.getMtr();
                     finishMtr += batchData.getFinishMtr();
@@ -922,8 +923,8 @@ public class DispatchMastImpl {
             List<DispatchData> dispatchDataList = dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(), batch.getBatchId(), invoiceNo);
 
             for (DispatchData invoiceBatch : dispatchDataList) {
-                Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
-                batchDataList.add(batchData.get());
+                BatchData batchData = invoiceBatch.getBatchData();
+                batchDataList.add(batchData);
             }
 
             batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
@@ -1574,6 +1575,51 @@ public class DispatchMastImpl {
     }
 
 
+    public List<MonthlyDispatchReport> getMonthWiseReportDispatch(DispatchFilter filter) throws Exception {
+        Date from = null;
+        Date to = null;
+        //add one day because of timestamp issue
+        if (!filter.getFrom().isEmpty()) {
+            from = DataConversion.stringToDate(filter.getFrom());
+        }
+        if (!filter.getTo().isEmpty()) {
+            to = DataConversion.stringToDate(filter.getTo());
+        }
+        
+        //System.out.println(from+":"+to);
+        HashMap<Integer,MonthlyDispatchReport> data=new HashMap<Integer,MonthlyDispatchReport>();
+
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByDispatchFilter(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getQualityEntryId(), filter.getQualityNameId(), filter.getSignByParty());
+        
+        for (DispatchMast dispatchMast : dispatchMastList) {
+            Date createdDate= dispatchMast.getCreatedDate();
+            int month=createdDate.getMonth()+1;
+            int year=createdDate.getYear()+1;
+            int key=month*10000+year;
+        
+            Double finishMtr=dispatchMast.getDispatchData().getBatchData().getFinishMtr();
+            Double taxAmt=dispatchMast.getTaxAmt();
+            Double discount=dispatchMast.getDiscount();
+            Double netAmt=dispatchMast.getNetAmt();         
+            if(data.containsKey(key)){
+                MonthlyDispatchReport report=data.get(key);
+                report.addDiscount(discount);
+                report.addFinishMtr(finishMtr);
+                report.addNetAmt(netAmt);
+                report.addTaxAmt(taxAmt);
+            }
+            else{
+                data.put(key,new MonthlyDispatchReport(month,finishMtr,taxAmt,discount,year,netAmt));
+            }
+        }
+        List<MonthlyDispatchReport> list=new ArrayList<MonthlyDispatchReport>(data.values());
+
+        return list;
+
+    }
+
+
+
     //only the the rate and discount is updating
     public Long updateDispatch(CreateDispatch createDispatch) throws Exception {
 
@@ -1855,7 +1901,7 @@ public class DispatchMastImpl {
             String isMergeBatchId = "";
             for (DispatchData invoiceBatch : dispatchDataList) {
                 //System.out.println("invoic entry:"+invoiceBatch.getBatchEntryId());
-                BatchData batchData = batchDao.findByBatchEntryId(invoiceBatch.getBatchEntryId());
+                BatchData batchData = invoiceBatch.getBatchData();
                 if (batchData.getMtr() != null && batchData.getFinishMtr() != null) {
                     totalMtr += batchData.getMtr();
                     finishMtr += batchData.getFinishMtr();
@@ -1928,8 +1974,8 @@ public class DispatchMastImpl {
             List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndBatchIdAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), batch.getBatchId(),invoiceNo);
 
             for (DispatchData invoiceBatch : dispatchDataList) {
-                Optional<BatchData> batchData = batchDao.findById(invoiceBatch.getBatchEntryId());
-                batchDataList.add(batchData.get());
+                BatchData batchData = invoiceBatch.getBatchData();
+                batchDataList.add(batchData);
             }
 
             batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
@@ -2293,7 +2339,7 @@ public class DispatchMastImpl {
             Long totalPcs = 0l;
 
             for (DispatchData dispatchData : dispatchDataList) {
-                BatchData batchData = batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
+                BatchData batchData = dispatchData.getBatchData();
                 if (batchData.getWt() != null) {
                     WT += batchData.getWt();
                     MTR += batchData.getMtr();

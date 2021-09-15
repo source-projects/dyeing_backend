@@ -20,6 +20,7 @@ import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.dispatch.response.MonthlyDispatchReport;
 import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
@@ -459,10 +460,10 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PostMapping("/dispatch/monthWiseReport")
-    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getMonthWiseReportDispatch(@RequestBody DispatchFilter filter) throws Exception{
-        GeneralResponse<List<ConsolidatedBillMast>, Object> result;
+    public ResponseEntity<GeneralResponse<List<MonthlyDispatchReport>,Object>> getMonthWiseReportDispatch(@RequestBody DispatchFilter filter) throws Exception{
+        GeneralResponse<List<MonthlyDispatchReport>, Object> result;
         try{    
-            List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
+            List<MonthlyDispatchReport> list = dispatchMastService.getMonthWiseReportDispatch(filter);
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
