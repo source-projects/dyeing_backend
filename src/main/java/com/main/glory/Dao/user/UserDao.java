@@ -18,6 +18,7 @@ import java.util.Optional;
 
 public interface UserDao extends JpaRepository<UserData, Long> {
 
+
     UserData findByUserNameAndPassword(String userName, String password);
 
     List<UserData> findByUserHeadIdGreaterThan(Long id);
