@@ -37,8 +37,9 @@ public class DispatchMast{
     Date updatedDate;
     String prefix;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="postfix", referencedColumnName = "invoiceNo", insertable = true, updatable = true)
+    @JoinColumn(name="postfix", referencedColumnName = "id", insertable = true, updatable = true)
     DispatchData dispatchData;
+    
 
     Long paymentBunchId;//payment mast id
     @ManyToOne(cascade = CascadeType.ALL)

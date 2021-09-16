@@ -1435,7 +1435,7 @@ public class DispatchMastImpl {
         Date to = null;
         //add one day because of timestamp issue
         Calendar c = Calendar.getInstance();
-
+System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
                 "yyyy-MM-dd");
 
@@ -1453,12 +1453,14 @@ public class DispatchMastImpl {
             to = c.getTime();
         }
 
-
+        System.out.println(1);
         List<ConsolidatedBillMast> list = new ArrayList<>();
-
+        System.out.println(1);
         //System.out.println(from+":"+to);
         List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByDateFilter(from, to);
+        System.out.println(1);
         for (DispatchMast dispatchMast : dispatchMastList) {
+            System.out.println(2);
             ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
 
             Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
@@ -1475,6 +1477,7 @@ public class DispatchMastImpl {
             List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
             List<ConsolidatedBillData> consolidatedBillDataList = new ArrayList<>();
             for (GetBatchByInvoice getBatchByInvoice : stockWithBatchList) {
+                System.out.println(3);
                 Double amt = 0.0;
                 Double totalFinishMtr = 0.0;
                 // Double batchFinishMtr=0.0;
@@ -1542,7 +1545,7 @@ public class DispatchMastImpl {
 
 
         }
-
+        System.out.println(1);
         //filter by user head id
         if (filter.getUserHeadId() != null) {
             list = list.stream().filter(p -> p.getUserHeadId().equals(filter.getUserHeadId())).collect(Collectors.toList());
@@ -1569,7 +1572,7 @@ public class DispatchMastImpl {
             list = list.stream().filter(p -> p.getSignByParty().equals(filter.getSignByParty())).collect(Collectors.toList());
         }
 
-
+        System.out.println(1);
         return list;
 
     }
@@ -1579,18 +1582,30 @@ public class DispatchMastImpl {
         Date from = null;
         Date to = null;
         //add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
+                "yyyy-MM-dd");
+
+
         if (!filter.getFrom().isEmpty()) {
-            from = DataConversion.stringToDate(filter.getFrom());
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            //c.add(Calendar.DATE, 1);//adding one day in to because of time issue in created date and 1 day is comming minus from FE
+            from = c.getTime();
         }
         if (!filter.getTo().isEmpty()) {
-            to = DataConversion.stringToDate(filter.getTo());
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            //c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is working,but not working on EC2 because of timezone
+            to = c.getTime();
         }
-        
+
         //System.out.println(from+":"+to);
         HashMap<Integer,MonthlyDispatchReport> data=new HashMap<Integer,MonthlyDispatchReport>();
 
         List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByDispatchFilter(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getQualityEntryId(), filter.getQualityNameId(), filter.getSignByParty());
-        
+        System.out.print(dispatchMastList.size());
         for (DispatchMast dispatchMast : dispatchMastList) {
             Date createdDate= dispatchMast.getCreatedDate();
             int month=createdDate.getMonth()+1;
