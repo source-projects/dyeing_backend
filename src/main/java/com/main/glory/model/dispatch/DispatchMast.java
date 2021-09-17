@@ -40,7 +40,6 @@ public class DispatchMast{
     @JoinColumn(name="postfix", referencedColumnName = "id", insertable = true, updatable = true)
     DispatchData dispatchData;
     
-
     Long paymentBunchId;//payment mast id
     @ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)    
