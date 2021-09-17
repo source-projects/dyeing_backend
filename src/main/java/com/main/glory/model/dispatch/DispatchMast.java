@@ -36,9 +36,11 @@ public class DispatchMast{
 
     Date updatedDate;
     String prefix;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="postfix", referencedColumnName = "id", insertable = true, updatable = true)
-    DispatchData dispatchData;
+
+    String postfix;
+
+    @OneToMany(mappedBy = "dispatchMast", cascade = CascadeType.ALL)
+    List<DispatchData> dispatchDataList;
     
 
     Long paymentBunchId;//payment mast id
