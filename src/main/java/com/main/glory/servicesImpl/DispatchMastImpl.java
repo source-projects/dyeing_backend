@@ -1581,10 +1581,10 @@ public class DispatchMastImpl {
             List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef(),createDispatch.getBatchId());
 
 
-            //get the shade detail skip because of pchallan is in diffrent batch then which shade rate should get
-            /*ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
-             *//*if(productionPlan==null)
-                throw new Exception("no production plan found for batch");*//*
+
+            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
+             if(productionPlan==null)
+                throw new Exception("no production plan found for batch");
 
             ShadeMast shadeMast = null;
             if(productionPlan!=null && productionPlan.getShadeId()!=null)
@@ -1593,7 +1593,7 @@ public class DispatchMastImpl {
                 if(shadeMast==null)
                     throw new Exception("no shade record found");
             }
-*/
+
 
             StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
             Quality quality = qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
@@ -1609,17 +1609,17 @@ public class DispatchMastImpl {
 
                 if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated() == false) {
                     DispatchData dispatchData = null;
-                   /* if(shadeMast!=null)
+                    if(shadeMast!=null)
                     {
                         dispatchData=new DispatchData(batchData,shadeMast,quality,stockMast1);
                         dispatchData.setShadeRate(shadeMast.getExtraRate());
 
                     }
                     else
-                    {*/
+                    {
                     dispatchData = new DispatchData(batchData, quality, stockMast1);
                     dispatchData.setShadeRate(0.0);
-                    /*}*/
+                    }
 
 
                     //check the quality rate is coming or not if coming then change the quality rate
@@ -1760,7 +1760,9 @@ public class DispatchMastImpl {
 
             //get the rate
 
+
             Double rate = dispatchDataDao.getQualityRateByInvoiceNoAndBatchIdAndPchallanRef(invoiceNo,batch.getPchallanRef(),batch.getBatchId());
+            //shadeRate = dispatchDataDao.getShadeRateByInvoiceNoandBatchIdAndPchallanRef(invoiceNo,batch.getPchallanRef(),batch.getBatchId());
             shadeRate = dispatchDataList.get(0).getShadeRate();
 
 
@@ -2220,6 +2222,7 @@ public class DispatchMastImpl {
         if (dispatchMast != null) {
             partyWithBatchByInvoice.setPercentageDiscount(dispatchMast.getPercentageDiscount());
             partyWithBatchByInvoice.setRemark(dispatchMast.getRemark());
+            partyWithBatchByInvoice.setDeliveryMode(dispatchMast.getDeliveryMode());
         }
         //status
         partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));

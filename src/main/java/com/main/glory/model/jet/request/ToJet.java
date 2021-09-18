@@ -15,5 +15,4 @@ public class ToJet {
     Long jetId;
     Long productionId;
     Long sequence;
-
 }

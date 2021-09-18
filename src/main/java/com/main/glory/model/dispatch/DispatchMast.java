@@ -72,6 +72,11 @@ public class DispatchMast {
         this.taxAmt = createDispatch.getTaxAmt();
         this.postfix =createDispatch.getInvoiceNo();
         this.remark = createDispatch.getRemark();
+        this.signByParty = dispatchMast.getSignByParty();
+        this.paymentBunchId = dispatchMast.getPaymentBunchId();
+        this.signUpdatedDate = dispatchMast.getSignUpdatedDate();
+        this.deliveryMode =  createDispatch.getDeliveryMode();
+        this.prefix = dispatchMast.getPrefix();
     }
 
 

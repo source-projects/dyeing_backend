@@ -126,6 +126,8 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     Double getQualityRateByInvoiceNoAndBatchIdAndPchallanRef(String invoiceNo, String pchallanRef, String batchId);
 
 
+    @Query(value = "select quality_rate from dispatch_data as x where x.batch_id = :batchId AND x.pchallan_ref=:pchallanRef AND x.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
+    Double getShadeRateByInvoiceNoandBatchIdAndPchallanRef(String invoiceNo, String pchallanRef, String batchId);
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchEntryId) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);
