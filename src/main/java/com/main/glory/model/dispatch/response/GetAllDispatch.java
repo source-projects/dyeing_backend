@@ -36,9 +36,9 @@ public class GetAllDispatch {
         this.date=dispatchData.getCreatedDate();
     }
 
-    public GetAllDispatch(DispatchMast dispatchData) {
-        this.invoiceNo=dispatchData.getPostfix()==null?"null":dispatchData.getPostfix().toString();
+    public GetAllDispatch(DispatchMast dispatchMast) {
+        this.invoiceNo=dispatchMast.getDispatchData()==null?"null":dispatchMast.getDispatchData().getInvoiceNo();
         //this.isSendToParty=dispatchData.getIsSendToParty();
-        this.date=dispatchData.getCreatedDate();
+        this.date=dispatchMast.getCreatedDate();
     }
 }

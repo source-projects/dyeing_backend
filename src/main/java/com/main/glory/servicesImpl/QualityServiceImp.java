@@ -704,10 +704,10 @@ public class QualityServiceImp  {
             List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByDateFilter(record.getFromDate(),record.getToDate());
             for(DispatchMast dispatchMast:dispatchMastList)
             {
-                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(dispatchMast.getPostfix());
+                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(Long.parseLong(dispatchMast.getDispatchData().getInvoiceNo()));
                 for(QualityWithRateAndTotalMtr qualityWithRateAndTotalMtr:qualityWithRateAndTotalMtrList)
                 {
-                    List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(),dispatchMast.getPostfix());
+                    List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(),Long.parseLong(dispatchMast.getDispatchData().getInvoiceNo()));
 
                     if(!batchIdsByQuality.isEmpty())
                     {
@@ -730,11 +730,11 @@ public class QualityServiceImp  {
             List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByDateFilter(record.getFromDate(),record.getToDate());
             for(DispatchMast dispatchMast:dispatchMastList)
             {
-                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(dispatchMast.getPostfix());
+                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(Long.parseLong(dispatchMast.getDispatchData().getInvoiceNo()));
                 for(QualityWithRateAndTotalMtr qualityWithRateAndTotalMtr:qualityWithRateAndTotalMtrList)
                 {
                     if(qualityWithRateAndTotalMtr.getQualityEntryId().equals(record.getQualityEntryId())) {
-                        List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(), dispatchMast.getPostfix());
+                        List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(), Long.parseLong(dispatchMast.getDispatchData().getInvoiceNo()));
                         if (!batchIdsByQuality.isEmpty()) {
                             Double totalMtr = stockBatchService.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
                             qualityReportList.add(new QualityReport(qualityWithRateAndTotalMtr, totalMtr));

@@ -25,8 +25,10 @@ public class SpecificationManager<T> {
       public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<String> attributes=  input.getField();
         if(subModelCase!=null)
-        if(subModelCase.containsKey(input.getField().get(0)))
-        attributes= subModelCase.get(input.getField().get(0));
+        if(subModelCase.containsKey(input.getField().get(0))){
+          attributes= subModelCase.get(input.getField().get(0));
+        }
+        
 
         var path=root.get(attributes.get(0));
         for(int i=1;i<attributes.size();i++){

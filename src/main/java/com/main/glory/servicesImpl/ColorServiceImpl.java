@@ -211,6 +211,8 @@ public FilterResponse<ColorMastDetails> getAllPaginated(GetBYPaginatedAndFiltere
 
         
     } else if (getBy.equals("own")) {
+        UserData userData = userDao.findUserById(Long.parseLong(id));
+        if(!userData.getUserHeadId().equals(0))
         filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 
         Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
@@ -221,8 +223,14 @@ public FilterResponse<ColorMastDetails> getAllPaginated(GetBYPaginatedAndFiltere
     } else if (getBy.equals("group")) {
         
         UserData userData = userDao.findUserById(Long.parseLong(id));
+if(userData.getUserHeadId().equals(0)){
+    Specification<ColorMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+    queryResponse = colorMastDao.findAll(spec, pageable);
 
-        if(userData.getUserHeadId().equals(userData.getId()))
+
+}
+
+        else if(userData.getUserHeadId().equals(userData.getId()))
         {
             //master user
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
@@ -245,11 +253,6 @@ public FilterResponse<ColorMastDetails> getAllPaginated(GetBYPaginatedAndFiltere
             // operator
         }
 }
-    /*if(colorMastDetails.isEmpty())
-            throw new Exception(commonMessage.Color_Not_Found);
-
-
-*/
 System.out.println(1);
 
 data=queryResponse.getContent();

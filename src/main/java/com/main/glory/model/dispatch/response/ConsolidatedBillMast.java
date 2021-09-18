@@ -25,7 +25,7 @@ public class ConsolidatedBillMast {
     List<ConsolidatedBillData> consolidatedBillDataList;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {
-        this.invoiceNo = dispatchMast.getPostfix();
+        this.invoiceNo = Long.parseLong( dispatchMast.getDispatchData().getInvoiceNo());
         this.createdDate = dispatchMast.getCreatedDate();
         this.partyId = dispatchMast.getParty().getId();
     }

@@ -447,12 +447,14 @@ public class ShadeServiceImpl {
 		Pageable pageable=filterService.getPageable(requestParam.getData());
         List<Filter> filters=requestParam.getData().getParameters();
         HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
-        // subModelCase.put("qualityName", "quality");
-        // subModelCase.put("partyName", "party");
+        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
 		Page queryResponse=null;
 
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
-		if(id == null){
+		if(id == null && getBy.equals("all")){
 			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = shadeMastDao.findAll(spec, pageable);
 		}

@@ -22,7 +22,9 @@ public class DispatchData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    Long batchEntryId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="batchEntryId", referencedColumnName = "id", insertable = true, updatable = true)
+    BatchData batchData;
     String batchId;
     Long stockId;
     String invoiceNo;
@@ -31,7 +33,9 @@ public class DispatchData {
     Date createdDate;
     Long createdBy;
     Long updatedBy;
-    Long qualityEntryId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="qualityEntryId", referencedColumnName = "id", insertable = true, updatable = true)
+    Quality quality;
     Long shadeId;
     Double qualityRate;
     Double shadeRate;
@@ -43,7 +47,7 @@ public class DispatchData {
 
 
     public DispatchData(BatchData batchData) {
-        this.batchEntryId=batchData.getId();
+        this.batchData=batchData;
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
         this.pchallanRef = batchData.getPchallanRef();
@@ -51,10 +55,10 @@ public class DispatchData {
     }
 
     public DispatchData(BatchData batchData, ShadeMast shadeMast, Quality quality, StockMast stockMast) {
-        this.batchEntryId=batchData.getId();
+        this.batchData=batchData;
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
-        this.qualityEntryId=quality.getId();
+        this.quality=quality;
         this.qualityRate=quality.getRate();
         this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
         this.billingUnit = quality.getBillingUnit();
@@ -64,10 +68,10 @@ public class DispatchData {
         //this.shadeRate=shadeMast.getExtraRate();
     }
     public DispatchData(BatchData batchData,  Quality quality,StockMast stockMast) {
-        this.batchEntryId=batchData.getId();
+        this.batchData=batchData;
         this.batchId=batchData.getBatchId();
         this.stockId=batchData.getControlId();
-        this.qualityEntryId=quality.getId();
+        this.quality=quality;
         this.qualityRate=quality.getRate();
         this.inwardUnit = quality.getUnit();
         this.billingUnit = quality.getBillingUnit();

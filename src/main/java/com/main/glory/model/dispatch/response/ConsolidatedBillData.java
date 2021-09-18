@@ -58,7 +58,7 @@ public class ConsolidatedBillData {
         this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
         this.invoiceDate = dispatchMast.getCreatedDate();
-        this.invoiceNo = dispatchMast.getPostfix();
+        this.invoiceNo =Long.parseLong( dispatchMast.getDispatchData().getInvoiceNo());
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName();
         this.qualityId = quality.getQualityId();
