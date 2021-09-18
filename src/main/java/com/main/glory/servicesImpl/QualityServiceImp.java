@@ -154,7 +154,7 @@ public class QualityServiceImp  {
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party","partyName")));
         subModelCase.put("partyId", new ArrayList<String>(Arrays.asList("party","id")));
         subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
-        subModelCase.put("createdByID",new ArrayList<String>(Arrays.asList("userCreatedByData","id")));
+        subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("userCreatedByData","id")));
         subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
         subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("userCreatedByData","userName")));
         
@@ -182,7 +182,7 @@ public class QualityServiceImp  {
             else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
                 
-                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdById")),QueryOperator.EQUALS,id));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
                 Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
                 queryResponse = qualityDao.findAll(spec, pageable);    
@@ -200,6 +200,8 @@ public class QualityServiceImp  {
 
 
         } else if (getBy.equals("own")) {
+            UserData userData = userDao.findUserById(Long.parseLong(id));
+            if(userData.getUserHeadId()!=0)
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
             Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
             queryResponse = qualityDao.findAll(spec, pageable);    

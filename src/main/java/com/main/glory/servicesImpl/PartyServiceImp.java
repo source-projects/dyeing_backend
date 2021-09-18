@@ -236,6 +236,8 @@ public class PartyServiceImp implements PartyServiceInterface {
 
 
         } else if (getBy.equals("own")) {
+            UserData userData = userDao.findUserById(Long.parseLong(id));
+            if(userData.getUserHeadId()!=0)
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 
             Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);

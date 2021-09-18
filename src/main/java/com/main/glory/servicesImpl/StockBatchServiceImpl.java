@@ -336,7 +336,10 @@ public class StockBatchServiceImpl {
         HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
         subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality","qualityName")));
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party","partyName")));
-
+        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
         
         
         Page queryResponse=null;
@@ -347,7 +350,8 @@ public class StockBatchServiceImpl {
             data=queryResponse.getContent();
 
         } else if (requestParam.getGetBy().equals("own")) {
-            
+            UserData userData = userDao.findUserById(Long.parseLong(id));
+            if (!userData.getUserHeadId().equals(0))
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
             
             Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
@@ -358,8 +362,12 @@ public class StockBatchServiceImpl {
         } else if (requestParam.getGetBy().equals("group")) {
 
             UserData userData = userDao.findUserById(Long.parseLong(id));
-
-            if (userData.getUserHeadId().equals(userData.getId())) {
+            if (userData.getUserHeadId().equals(0)){
+                Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+                queryResponse= stockMastDao.findAll(spec,pageable);
+                data=queryResponse.getContent();    
+            }
+            else if (userData.getUserHeadId().equals(userData.getId())) {
                 //master user
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));            
@@ -373,11 +381,11 @@ public class StockBatchServiceImpl {
                 Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
                 queryResponse = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,userOperator.getId(), userOperator.getUserHeadId()).get();
             }
-            data=queryResponse.getContent();
+            
             
         }
         System.out.println("specification craeting completion");
-
+        data=queryResponse.getContent();
         if (!data.isEmpty()) {
                 
             for (StockMast stockMastData : data) {
