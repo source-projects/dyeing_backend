@@ -380,8 +380,9 @@ public class StockBatchServiceImpl {
 
         if (!data.isEmpty()) {
                 
-            HashMap<String,GetAllBatchResponse> mtrSumData=new HashMap<String,GetAllBatchResponse>();
             for (StockMast stockMastData : data) {
+                HashMap<String,GetAllBatchResponse> mtrSumData=new HashMap<String,GetAllBatchResponse>();
+
                 GetAllStockWithPartyNameResponse batchData=new GetAllStockWithPartyNameResponse(stockMastData,stockMastData.getParty().getPartyName(),stockMastData.getQuality().getQualityName());
                 Boolean trueBatch=false;
                 for(BatchData batch:stockMastData.getBatchData()){
@@ -405,13 +406,6 @@ public class StockBatchServiceImpl {
                 {
                     batchData.setIsProductionPlanned(false);
                 }
-                /*if (batchData.getBatchData().stream().anyMatch(x -> x.getIsProductionPlanned() == true)) {
-                    batchData.setIsProductionPlanned(true);
-                } else {
-                    batchData.setIsProductionPlanned(false);
-                }*/
-                // batchData.setQuality(null);
-                // batchData.setParty(null);
 
                 list.add(new GetAllStockWithPartyNameResponse(batchData,new ArrayList<GetAllBatchResponse>(mtrSumData.values()), batchData.getQualityName()));
 

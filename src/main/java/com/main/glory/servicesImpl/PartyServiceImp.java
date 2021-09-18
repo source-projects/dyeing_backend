@@ -194,7 +194,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         List<Filter> filters=requestParam.getData().getParameters();
         HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
         subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
-        subModelCase.put("createdByID",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("createdBy","id")));
         subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
         subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
 		Page queryResponse=null;
@@ -216,7 +216,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             }
             else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
-                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdById")),QueryOperator.EQUALS,id));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
 
                 Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
@@ -236,7 +236,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
 
         } else if (getBy.equals("own")) {
-            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdById")),QueryOperator.EQUALS,id));
+            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 
             Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = partyDao.findAll(spec, pageable);
