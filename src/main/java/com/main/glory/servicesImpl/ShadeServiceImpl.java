@@ -459,6 +459,8 @@ public class ShadeServiceImpl {
 			queryResponse = shadeMastDao.findAll(spec, pageable);
 		}
 		else if(getBy.equals("own")){
+			UserData userData = userDao.findUserById(Long.parseLong(id));
+			if(!userData.getUserHeadId().equals(0)) 
 			filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = shadeMastDao.findAll(spec, pageable);
@@ -466,8 +468,12 @@ public class ShadeServiceImpl {
 		else if(getBy.equals("group")){
 
 			UserData userData = userDao.findUserById(Long.parseLong(id));
+if(userData.getUserHeadId().equals(0)){
+	Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+	queryResponse = shadeMastDao.findAll(spec, pageable);
 
-			if(userData.getUserHeadId().equals(userData.getId())) {
+}
+			else if(userData.getUserHeadId().equals(userData.getId())) {
 				//master user
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
