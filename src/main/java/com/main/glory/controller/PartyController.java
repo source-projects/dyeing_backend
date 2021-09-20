@@ -48,7 +48,7 @@ public class PartyController extends ControllerConfig {
 		System.out.println("entering /party api controller");
 		GeneralResponse<Boolean,Object> result;
 		try {
-		    partyServiceImp.saveParty(party);
+		    partyServiceImp.saveParty(party,headers.get("id"));
 			//System.out.println("har::"+headers.get("id"));
 			//System.out.println(id);
 			result = new GeneralResponse<>(true, ConstantFile.Party_Added, true, System.currentTimeMillis(), HttpStatus.OK,party);

@@ -21,7 +21,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AddParty {
-Long id;
+    Long id;
     private String partyName;
     private String partyAddress1;
     private String partyAddress2;
@@ -40,6 +40,8 @@ Long id;
     private String paymentTerms;
     private Double percentageDiscount;
     private Double gstPercentage;
+    private Date createdDate;
+    private Date updatedDate;
     private Long userHeadData;
     private String partyCode;
     Long paymentDays;

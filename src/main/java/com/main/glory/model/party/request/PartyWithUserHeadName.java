@@ -13,8 +13,6 @@ import lombok.Setter;
 public class PartyWithUserHeadName extends Party {
 
     String userHeadName;
-
-
     public PartyWithUserHeadName(Party party, String userHeadName) {
         super(party);
         this.userHeadName = userHeadName;

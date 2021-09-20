@@ -79,7 +79,7 @@ public interface PartyDao extends FilterDao<Party>  {
 	@Query("select p from Party p where p.createdBy=:userId")
 	List<Party> getAllPartyByCreatedBy(Long userId);
 
-	@Query("select new com.main.glory.model.party.request.PartyWithUserHeadName(p,(select u.firstName from UserData u where u.id=p.userHeadData.id )) from Party p where p.id = :id")
+	@Query("select new com.main.glory.model.party.request.PartyWithUserHeadName(p,p.userHeadData.firstName ) from Party p where p.id = :id")
 	PartyWithUserHeadName findPartyWithUserHeadById(Long id);
 
 	@Query("select p from Party p where LOWER(p.partyName)=LOWER(:name) AND p.id!=:id")

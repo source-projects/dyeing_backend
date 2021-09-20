@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -99,29 +100,21 @@ public class PartyServiceImp implements PartyServiceInterface {
     @Autowired
     ModelMapper modelMapper;
 
-    public void saveParty(AddParty party) throws Exception {
+    public void saveParty(AddParty party,String id) throws Exception {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         if (party != null) {
-            UserData userHeadData=userDao.getUserById(party.getUserHeadData());
-            UserData createdBy=userDao.getUserById(party.getCreatedBy());
-            UserData updatedBy=userDao.getUserById(party.getUpdatedBy());
-            Party partyData = new Party(party, userHeadData, createdBy, updatedBy);
+            
+            UserData createdBy=userDao.getUserById(Long.parseLong(id));
+            UserData userHeadData=userDao.getUserById(createdBy.getUserHeadId());
+        party.setCreatedDate(new Date(System.currentTimeMillis()));
+        party.setUpdatedDate(new Date(System.currentTimeMillis()));
+            Party partyData = new Party(party, userHeadData, createdBy, createdBy);
 
             if (party.getGSTIN()==null || party.getGSTIN().isEmpty()) {
 
                 if (party.getPartyCode().length() < 2 || party.getPartyCode().length() > 5)
                     throw new Exception(ConstantFile.Party_Code_Less);
 
-               // Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
-               /* Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
-
-               *//* if (gstAvailable!=null)
-                    throw new Exception("GST No." + party.getGSTIN() + " is already exist");*//*
-
-                if (partyCodeAvailable!=null)
-                    throw new Exception(ConstantFile.Party_Code_Exist + party.getPartyCode());*/
-
-                //check the partyname exist
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
                 if(partyExistWithName!=null)
                     throw new Exception(ConstantFile.Party_Exist);
@@ -199,7 +192,6 @@ public class PartyServiceImp implements PartyServiceInterface {
         subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
 		Page queryResponse=null;
 
-
         if (id == null || getBy.equals("all")) {
             Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = partyDao.findAll(spec, pageable);
@@ -245,8 +237,6 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         }
 
-        /*if (partyDetailsList.isEmpty())
-            throw new Exception(CommonMessage.Party_Not_Found);*/
         partyDetailsList=queryResponse.getContent();
         FilterResponse<PartyWithMasterName> response=new FilterResponse<PartyWithMasterName>(partyDetailsList,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
         return  response;
@@ -269,6 +259,7 @@ public class PartyServiceImp implements PartyServiceInterface {
         UserData userHeadData=userDao.getUserById(addParty.getUserHeadData());
         UserData createdBy=userDao.getUserById(addParty.getCreatedBy());
         UserData updatedBy=userDao.getUserById(addParty.getUpdatedBy());
+        addParty.setUpdatedDate(new Date(System.currentTimeMillis()));
         Party party=new Party(addParty, userHeadData, createdBy, updatedBy);
         party.setId(addParty.getId());
 
