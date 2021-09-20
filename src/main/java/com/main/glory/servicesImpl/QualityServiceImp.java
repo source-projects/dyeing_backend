@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -102,11 +103,14 @@ public class QualityServiceImp  {
 
     
     public int saveQuality(AddQuality addQuality,String id) throws Exception {
-        UserData userHeadData=userDao.getUserById(addQuality.getUserHeadId());
-        UserData createdBy=userDao.getUserById(addQuality.getCreatedBy());
-        UserData updatedBy=userDao.getUserById(addQuality.getUpdatedBy());
+        
+        UserData createdBy=userDao.getUserById(Long.parseLong(id));
+        UserData userHeadData=userDao.getUserById(createdBy.getUserHeadId());
+        
         Party party=partyDao.findByPartyId(addQuality.getPartyId());
-        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, updatedBy,party);
+        addQuality.setCreatedDate(new Date(System.currentTimeMillis()));
+        addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, createdBy,party);
 
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -290,10 +294,11 @@ public class QualityServiceImp  {
 
 
     
-    public boolean updateQuality(AddQuality addQuality) throws Exception {
+    public boolean updateQuality(AddQuality addQuality,String id) throws Exception {
         UserData userHeadData=userDao.getUserById(addQuality.getUserHeadId());
         UserData createdBy=userDao.getUserById(addQuality.getCreatedBy());
-        UserData updatedBy=userDao.getUserById(addQuality.getUpdatedBy());
+        UserData updatedBy=userDao.getUserById(Long.parseLong(id));
+        addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));        
         Party party=partyDao.findByPartyId(addQuality.getPartyId());
         Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, updatedBy,party);
 

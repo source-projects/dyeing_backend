@@ -44,14 +44,14 @@ public class Quality {
 	String remark;
 	Date createdDate;
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="createdById", referencedColumnName = "id", insertable = true, updatable = true)    
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userCreatedByData;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userHeadData;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData updatedBy;
 	Date updatedDate;
 	Date qualityDate;
@@ -74,10 +74,10 @@ public class Quality {
 		this.party = other.party;
 		this.wtPer100m = other.wtPer100m;
 		this.remark = other.remark;
-		this.createdDate = other.createdDate;
+		this.createdDate = new Date(System.currentTimeMillis());
 		this.userCreatedByData = other.userCreatedByData;
 		this.updatedBy = other.updatedBy;
-		this.updatedDate = other.updatedDate;
+		this.updatedDate = new Date(System.currentTimeMillis());
 		this.qualityDate = other.qualityDate;
 		this.rate= other.rate;
 		this.userHeadData=other.userHeadData;
@@ -111,6 +111,7 @@ public class Quality {
 	@PrePersist
 	protected void onCreate() {
 		this.createdDate = new Date(System.currentTimeMillis());
+		this.updatedDate = new Date(System.currentTimeMillis());
 	}
 
 	@PreUpdate

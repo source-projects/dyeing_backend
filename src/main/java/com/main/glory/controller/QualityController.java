@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -173,7 +174,7 @@ public class QualityController extends ControllerConfig {
 
 
     @PutMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody AddQuality addQuality) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody AddQuality addQuality,HashMap<String,String> headers) throws Exception {
         GeneralResponse<Boolean,Object> result;
         try {
             Optional<Party> party = partyDao.findById(addQuality.getPartyId());
@@ -181,7 +182,7 @@ public class QualityController extends ControllerConfig {
                 throw new Exception(ConstantFile.Party_Not_Exist+addQuality.getPartyId());
             }
             if (addQuality.getId() != null) {
-                boolean flag = qualityServiceImp.updateQuality(addQuality);
+                boolean flag = qualityServiceImp.updateQuality(addQuality,headers.get("id"));
                 if (flag) {
                     result= new GeneralResponse<>(true, ConstantFile.Quality_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 } else {

@@ -1,24 +1,9 @@
 package com.main.glory.model.quality;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.party.Party;
-import com.main.glory.model.productionPlan.ProductionPlan;
-import com.main.glory.model.program.Program;
-import com.main.glory.model.quality.request.AddQualityRequest;
-import com.main.glory.model.shade.ShadeData;
-import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.user.UserData;
-
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.LongAdder;
 
-import javax.persistence.*;
 
 @Setter
 @Getter
@@ -30,7 +15,7 @@ public class AddQuality {
 	String  qualityId;
 	String qualityName;
 	String qualityType;
-	String unit;// inward units
+	String unit;
 	Long  partyId;
 	Double wtPer100m;
 	Double mtrPerKg;
