@@ -147,7 +147,7 @@ public class QualityController extends ControllerConfig {
                         result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     break;
                 case "all":
-                    x = qualityServiceImp.getAllQualityPaginated(null,null);
+                    x = qualityServiceImp.getAllQualityPaginated(requestParam, id);
                     if(!x.getData().isEmpty())
                         result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     else
@@ -174,7 +174,7 @@ public class QualityController extends ControllerConfig {
 
 
     @PutMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody AddQuality addQuality,HashMap<String,String> headers) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody AddQuality addQuality,@RequestHeader HashMap<String,String> headers) throws Exception {
         GeneralResponse<Boolean,Object> result;
         try {
             Optional<Party> party = partyDao.findById(addQuality.getPartyId());

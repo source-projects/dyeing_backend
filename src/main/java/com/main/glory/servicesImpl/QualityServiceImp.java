@@ -301,7 +301,6 @@ public class QualityServiceImp  {
         addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));        
         Party party=partyDao.findByPartyId(addQuality.getPartyId());
         Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, updatedBy,party);
-
         var qualityData = qualityDao.findById(addQuality.getId());
         if (!qualityData.isPresent())
             return false;
