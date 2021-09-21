@@ -32,7 +32,6 @@ public class GetAllStockWithPartyNameResponse extends StockMast{
     public GetAllStockWithPartyNameResponse(GetAllStockWithPartyNameResponse batchData, List<GetAllBatchResponse> batchDataList,String qualityName) {
         this.setId(batchData.getId());
         this.setStockInType(batchData.getStockInType());
-        this.setId(batchData.getParty()==null?null:batchData.getParty().getId());
         this.setPartyName(batchData.partyName);
         this.setBillNo(batchData.getBillNo());
         this.setBillDate(batchData.getBillDate());
