@@ -184,16 +184,20 @@ public class PartyServiceImp implements PartyServiceInterface {
         List<PartyWithMasterName> partyDetailsList = null;
         String getBy=requestParam.getGetBy();
 		Pageable pageable=filterService.getPageable(requestParam.getData());
-        List<Filter> filters=requestParam.getData().getParameters();
+        List<Filter> filtersParam=requestParam.getData().getParameters();
         HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
         subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
         subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("createdBy","id")));
         subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
         subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
 		Page queryResponse=null;
+        Specification<Party> filterSpec=specificationManager.getSpecificationFromFilters(filtersParam, requestParam.getData().isAnd,subModelCase);
+
 
         if (id == null || getBy.equals("all")) {
-            Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+            List<Filter> filters=new ArrayList<Filter>();
+            Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+            spec=spec.and(filterSpec);
 			queryResponse = partyDao.findAll(spec, pageable);
 
         } else if (getBy.equals("group")) {
@@ -202,24 +206,28 @@ public class PartyServiceImp implements PartyServiceInterface {
             if(userData.getUserHeadId()==0)
             {
                 //fr admin
-                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
-                queryResponse = partyDao.findAll(spec, pageable);
+                List<Filter> filters=new ArrayList<Filter>();
+                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                spec=spec.and(filterSpec);
+                    queryResponse = partyDao.findAll(spec, pageable);
     
             }
             else if(userData.getUserHeadId().equals(userData.getId())) {
                 //master user
+                List<Filter> filters=new ArrayList<Filter>();
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
-
-                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                spec=spec.and(filterSpec);
                 queryResponse = partyDao.findAll(spec, pageable);
     
             }
             else {
                 UserData opratorUsr = userDao.getUserById(Long.parseLong(id));
-				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,Long.toString(opratorUsr.getUserHeadId())));
-
-                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
+                List<Filter> filters=new ArrayList<Filter>();
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+                Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                spec=spec.and(filterSpec);
                 queryResponse = partyDao.findAll(spec, pageable);
     
                 partyDetailsList = partyDao.findByUserHeadId(opratorUsr.getUserHeadId());
@@ -229,11 +237,14 @@ public class PartyServiceImp implements PartyServiceInterface {
 
         } else if (getBy.equals("own")) {
             UserData userData = userDao.findUserById(Long.parseLong(id));
+            
+            List<Filter> filters=new ArrayList<Filter>();
             if(userData.getUserHeadId()!=0)
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
-
-            Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
-			queryResponse = partyDao.findAll(spec, pageable);
+            
+            Specification<Party> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+            spec=spec.and(filterSpec);
+            queryResponse = partyDao.findAll(spec, pageable);
 
         }
 
