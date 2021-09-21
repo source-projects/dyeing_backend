@@ -437,7 +437,6 @@ public class ShadeServiceImpl {
 
 			if (userData.getUserHeadId().equals(0)) {
 				queryResponse = shadeMastDao.findAll(filterSpec, pageable);
-
 			} else {
 				List<Filter> filters = new ArrayList<Filter>();
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
@@ -458,7 +457,7 @@ public class ShadeServiceImpl {
 				List<Filter> filters = new ArrayList<Filter>();
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS, id));
-				Specification<ShadeMast> spec = specificationManager.getSpecificationFromFilters(filters, true,
+				Specification<ShadeMast> spec = specificationManager.getSpecificationFromFilters(filters, false,
 						subModelCase);
 				spec = spec.and(filterSpec);
 				queryResponse = shadeMastDao.findAll(spec, pageable);
@@ -468,8 +467,6 @@ public class ShadeServiceImpl {
 
 				UserData userOperator = userDao.getUserById(Long.parseLong(id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS,
-						Long.toString(userOperator.getUserHeadId())));
-				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS,
 						Long.toString(userOperator.getUserHeadId())));
 				Specification<ShadeMast> spec = specificationManager.getSpecificationFromFilters(filters, true,
 						subModelCase);

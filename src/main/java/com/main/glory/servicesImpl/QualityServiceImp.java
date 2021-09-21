@@ -186,7 +186,7 @@ public class QualityServiceImp  {
                 List<Filter> filters=new ArrayList<Filter>();
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
 				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
-                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, false,subModelCase);
                 spec=spec.and(filterSpec);
     
                 queryResponse = qualityDao.findAll(spec, pageable);    
@@ -195,7 +195,7 @@ public class QualityServiceImp  {
             else
             {
                 List<Filter> filters=new ArrayList<Filter>();
-				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
                 Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
                 spec=spec.and(filterSpec);
                 queryResponse = qualityDao.findAll(spec, pageable);
