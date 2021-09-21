@@ -347,7 +347,6 @@ public class StockBatchServiceImpl {
         if (id == null) {
             Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
             queryResponse= stockMastDao.findAll(spec,pageable);
-            data=queryResponse.getContent();
 
         } else if (requestParam.getGetBy().equals("own")) {
             UserData userData = userDao.findUserById(Long.parseLong(id));
@@ -357,7 +356,6 @@ public class StockBatchServiceImpl {
             Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 
             queryResponse = stockMastDao.findAll(spec,pageable);
-            data=queryResponse.getContent();
             
         } else if (requestParam.getGetBy().equals("group")) {
 
@@ -365,7 +363,6 @@ public class StockBatchServiceImpl {
             if (userData.getUserHeadId().equals(0)){
                 Specification<StockMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
                 queryResponse= stockMastDao.findAll(spec,pageable);
-                data=queryResponse.getContent();    
             }
             else if (userData.getUserHeadId().equals(userData.getId())) {
                 //master user
@@ -391,7 +388,7 @@ public class StockBatchServiceImpl {
             for (StockMast stockMastData : data) {
                 HashMap<String,GetAllBatchResponse> mtrSumData=new HashMap<String,GetAllBatchResponse>();
 
-                GetAllStockWithPartyNameResponse batchData=new GetAllStockWithPartyNameResponse(stockMastData,stockMastData.getParty().getPartyName(),stockMastData.getQuality().getQualityName());
+                GetAllStockWithPartyNameResponse batchData=new GetAllStockWithPartyNameResponse(stockMastData,stockMastData.getParty()==null?null:stockMastData.getParty().getPartyName(),stockMastData.getQuality()==null?null:stockMastData.getQuality().getQualityName());
                 Boolean trueBatch=false;
                 for(BatchData batch:stockMastData.getBatchData()){
                     if(mtrSumData.containsKey(batch.getBatchId())){
