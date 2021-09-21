@@ -204,7 +204,7 @@ public class PartyServiceImp implements PartyServiceInterface {
                 List<Filter> filters = new ArrayList<Filter>();
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS, id));
-                Specification<Party> spec = specificationManager.getSpecificationFromFilters(filters, true,
+                Specification<Party> spec = specificationManager.getSpecificationFromFilters(filters, false,
                         subModelCase);
                 spec = spec.and(filterSpec);
                 queryResponse = partyDao.findAll(spec, pageable);
@@ -212,7 +212,7 @@ public class PartyServiceImp implements PartyServiceInterface {
             } else {
                 UserData opratorUsr = userDao.getUserById(Long.parseLong(id));
                 List<Filter> filters = new ArrayList<Filter>();
-                filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS, id));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
                 Specification<Party> spec = specificationManager.getSpecificationFromFilters(filters, true,
                         subModelCase);
                 spec = spec.and(filterSpec);
