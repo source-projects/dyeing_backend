@@ -377,9 +377,7 @@ public class StockBatchServiceImpl {
                 Specification<StockMast> spec = specificationManager.getSpecificationFromFilters(filters,
                         requestParam.getData().isAnd, subModelCase);
                 spec = spec.and(filterSpec);
-
-                queryResponse = stockMastDao.getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(pageable,
-                        userOperator.getId(), userOperator.getUserHeadId()).get();
+                queryResponse = stockMastDao.findAll(spec, pageable);
             }
 
         }
