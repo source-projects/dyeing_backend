@@ -454,7 +454,7 @@ public class ShadeServiceImpl {
 		Page queryResponse=null;
 
 		List<GetAllShade> getAllShadesList = new ArrayList<>();
-		if(id == null && getBy.equals("all")){
+		if(id == null || getBy.equals("all")){
 			Specification<ShadeMast> spec=specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd,subModelCase);
 			queryResponse = shadeMastDao.findAll(spec, pageable);
 		}
