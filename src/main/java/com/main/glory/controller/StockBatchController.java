@@ -189,7 +189,8 @@ public class StockBatchController extends ControllerConfig {
             FilterResponse<GetAllStockWithPartyNameResponse> stockMast = null;
             String id=header.get("id");
             if(id=="")id=null;
-
+            
+             
             switch (requestParam.getGetBy()) {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, id);
@@ -227,7 +228,6 @@ public class StockBatchController extends ControllerConfig {
 
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
             logService.saveLog(result, request, true);
-            
         }
         logService.saveLog(result, request, debugAll);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
