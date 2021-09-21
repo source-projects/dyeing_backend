@@ -336,10 +336,10 @@ public class StockBatchServiceImpl {
         HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
         subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality","qualityName")));
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party","partyName")));
-        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
-        subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("createdBy","id")));
-        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
-        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
+        // subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        // subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("createdBy","id")));
+        // subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        // subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("createdBy","userName")));
         
         
         Page queryResponse=null;

@@ -190,7 +190,6 @@ public class StockBatchController extends ControllerConfig {
             String id=header.get("id");
             if(id=="")id=null;
             
-             
             switch (requestParam.getGetBy()) {
                 case "own":
                     stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, id);
