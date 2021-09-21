@@ -168,10 +168,7 @@ public class QualityServiceImp  {
 
 
         if (id == null || getBy.equals("all")) {
-            List<Filter> filters=new ArrayList<Filter>();
-            Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
-            spec=spec.and(filterSpec);
-			queryResponse = qualityDao.findAll(spec, pageable);
+			queryResponse = qualityDao.findAll(filterSpec, pageable);
 
 
         } else if (getBy.equals("group")) {
@@ -181,10 +178,7 @@ public class QualityServiceImp  {
             {
                 //for admin
                 
-                List<Filter> filters=new ArrayList<Filter>();
-                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
-                spec=spec.and(filterSpec);
-                queryResponse = qualityDao.findAll(spec, pageable);
+                queryResponse = qualityDao.findAll(filterSpec, pageable);
     
             }
             else if(userData.getUserHeadId().equals(userData.getId())) {
@@ -212,15 +206,21 @@ public class QualityServiceImp  {
 
         } else if (getBy.equals("own")) {
             UserData userData = userDao.findUserById(Long.parseLong(id));
-            List<Filter> filters=new ArrayList<Filter>();
             
-            if(userData.getUserHeadId()!=0)
-            filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
-
-            Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
-            spec=spec.and(filterSpec);
-
-            queryResponse = qualityDao.findAll(spec, pageable);    
+            
+            if(userData.getUserHeadId()==0){
+                queryResponse = qualityDao.findAll(filterSpec, pageable);    
+                
+            }
+            else{
+                List<Filter> filters=new ArrayList<Filter>();
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                spec=spec.and(filterSpec);
+    
+                queryResponse = qualityDao.findAll(spec, pageable);    
+    
+            }
 
         }
         qualityListobject=queryResponse.getContent();
