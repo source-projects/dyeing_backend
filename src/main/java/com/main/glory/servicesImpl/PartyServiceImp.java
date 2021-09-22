@@ -104,10 +104,10 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party != null) {
 
             UserData createdBy = userDao.getUserById(Long.parseLong(id));
-            UserData userHeadData = userDao.getUserById(party.getUserHeadData());
-            if(party.getUserHeadData()==0)
+            UserData userHeadData = userDao.getUserById(party.getUserHeadId());
+            if(userHeadData==null)
             throw new Exception(ConstantFile.Party_Not_Found_ByMaster);
-            
+
             party.setCreatedDate(new Date(System.currentTimeMillis()));
             party.setUpdatedDate(new Date(System.currentTimeMillis()));
             Party partyData = new Party(party, userHeadData, createdBy, createdBy);
@@ -261,7 +261,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     public boolean editPartyDetails(AddParty addParty) throws Exception {
 
-        UserData userHeadData = userDao.getUserById(addParty.getUserHeadData());
+        UserData userHeadData = userDao.getUserById(addParty.getUserHeadId());
         UserData createdBy = userDao.getUserById(addParty.getCreatedBy());
         UserData updatedBy = userDao.getUserById(addParty.getUpdatedBy());
         addParty.setUpdatedDate(new Date(System.currentTimeMillis()));

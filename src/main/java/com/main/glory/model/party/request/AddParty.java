@@ -42,7 +42,7 @@ public class AddParty {
     private Double gstPercentage;
     private Date createdDate;
     private Date updatedDate;
-    private Long userHeadData;
+    private Long userHeadId;
     private String partyCode;
     Long paymentDays;
     Double creditLimit;
