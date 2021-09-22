@@ -122,7 +122,7 @@ public class QualityServiceImp  {
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
         System.out.println(":"+user.getId());
-        if(user.getIsMaster()==false || qualityDto.getUserHeadData().getId()==0)
+        if(user.getIsMaster()==false || qualityDto.getUserHeadData()==null)
         {
             qualityDto.setUserHeadData(party.getUserHeadData());
         }
@@ -331,19 +331,9 @@ public class QualityServiceImp  {
             if(qualityExistWithId!=null)
                 throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
-            /*qualityData.get().setPartyId(qualityDto.getPartyId());
-            qualityData.get().setQualityId(qualityDto.getQualityId());
-            qualityData.get().setQualityNameId(qualityDto.getQualityNameId());
-            qualityData.get().setQualityName(qualityDto.getQualityName());
-            qualityData.get().setQualityType(qualityDto.getQualityType());
-            qualityData.get().setUnit(qualityDto.getUnit());
-            qualityData.get().setWtPer100m(qualityDto.getWtPer100m());
-            qualityData.get().setMtrPerKg(qualityDto.getMtrPerKg());
-            qualityData.get().setRemark(qualityDto.getRemark());
-            qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
-            qualityData.get().setQualityDate(qualityDto.getQualityDate());
-            qualityData.get().setRate(qualityDto.getRate());
-            qualityData.get().setBillingUnit(qualityDto.getBillingUnit());*/
+            if(updatedBy.getIsMaster()==false || updatedBy.getUserHeadId()==0)
+            qualityDto.setUserHeadData(party.getUserHeadData());
+
 
             qualityDao.save(qualityDto);
             return true;
