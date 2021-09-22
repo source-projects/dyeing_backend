@@ -104,7 +104,10 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party != null) {
 
             UserData createdBy = userDao.getUserById(Long.parseLong(id));
-            UserData userHeadData = userDao.getUserById(createdBy.getUserHeadId());
+            UserData userHeadData = userDao.getUserById(party.getUserHeadData());
+            if(party.getUserHeadData()==0)
+            throw new Exception(ConstantFile.Party_Not_Found_ByMaster);
+            
             party.setCreatedDate(new Date(System.currentTimeMillis()));
             party.setUpdatedDate(new Date(System.currentTimeMillis()));
             Party partyData = new Party(party, userHeadData, createdBy, createdBy);
