@@ -252,13 +252,13 @@ public class ProductionPlanImpl {
                     StockMast stockMast = stockBatchService.getStockByStockId(batchRespone.getControlId());
                     Party party = partyServiceImp.getPartyById(stockMast.getParty().getId());
                     Quality quality = qualityServiceImp.getQualityByEntryId(stockMast.getQuality().getId());
-                    Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
+                    QualityName qualityName = quality.getQualityName();
 
                     record.setPartyId(record.getPartyId() == null ? party.getId().toString() : record.getPartyId() + "," + party.getId().toString());
                     record.setQualityEntryId(record.getQualityEntryId() == null ? quality.getId().toString() : record.getQualityEntryId() + "," + quality.getId().toString());
                     record.setPartyName(record.getPartyName() == null ? party.getPartyName() : record.getPartyName() + "," + party.getPartyName());
                     record.setQualityId(record.getQualityId() == null ? quality.getQualityId() : record.getQualityId() + "," + quality.getQualityId());
-                    record.setQualityName(record.getQualityName() == null ? qualityName.get().getQualityName() : record.getQualityName() + "," + qualityName.get().getQualityName());
+                    record.setQualityName(record.getQualityName() == null ? qualityName.getQualityName() : record.getQualityName() + "," + qualityName.getQualityName());
                 }
                 record.setIsMergeBatchId(true);
 

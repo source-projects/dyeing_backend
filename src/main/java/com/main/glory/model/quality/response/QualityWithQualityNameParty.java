@@ -52,7 +52,7 @@ public class QualityWithQualityNameParty {
 //		this.qualityDate = other.qualityDate;
         this.rate= other.getRate();
         this.userHeadId = other.getUserHeadData().getId();
-        this.qualityNameId=other.getQualityNameId();
+        this.qualityNameId=other.getQualityName().getId();
         this.billingUnit=other.getBillingUnit();
         this.mtrPerKg=other.getMtrPerKg();
     }

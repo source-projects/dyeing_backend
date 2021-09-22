@@ -390,7 +390,7 @@ public class StockBatchServiceImpl {
 
                 GetAllStockWithPartyNameResponse batchData = new GetAllStockWithPartyNameResponse(stockMastData,
                         stockMastData.getParty() == null ? null : stockMastData.getParty().getPartyName(),
-                        stockMastData.getQuality() == null ? null : stockMastData.getQuality().getQualityName());
+                        stockMastData.getQuality() == null ? null : stockMastData.getQuality().getQualityName().getQualityName());
                 Boolean trueBatch = false;
                 for (BatchData batch : stockMastData.getBatchData()) {
                     if (mtrSumData.containsKey(batch.getBatchId())) {
@@ -975,10 +975,9 @@ public class StockBatchServiceImpl {
 
                 Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
-                Optional<QualityName> qualityName = qualityNameDao
-                        .getQualityNameDetailById(quality.get().getQualityNameId());
+                QualityName qualityName = quality.get().getQualityName();
                 BatchToPartyAndQuality batchToPartyAndQuality = new BatchToPartyAndQuality(quality.get(), party.get(),
-                        batch, qualityName.get());
+                        batch, qualityName);
 
                 // check that the process and party shade is exist or not
                 // if not then set the detail by null
@@ -1020,8 +1019,7 @@ public class StockBatchServiceImpl {
 
                     Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
-                    Optional<QualityName> qualityName = qualityNameDao
-                            .getQualityNameDetailById(quality.get().getQualityNameId());
+                    QualityName qualityName = quality.get().getQualityName();
                     Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                     // check that the process and party shade is exist or not
@@ -1057,8 +1055,8 @@ public class StockBatchServiceImpl {
                             batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
                                     : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName() == null
-                            ? qualityName.get().getQualityName()
-                            : batchToPartyAndQuality.getQualityName() + "," + qualityName.get().getQualityName());
+                            ? qualityName.getQualityName()
+                            : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
 
                 }
 
@@ -1106,7 +1104,7 @@ public class StockBatchServiceImpl {
         batchToPartyAndQuality.setPartyName(party.get().getPartyName());
         batchToPartyAndQuality.setQualityEntryId(quality.get().getId().toString());
         batchToPartyAndQuality.setQualityId(quality.get().getQualityId());
-        batchToPartyAndQuality.setQualityName(quality.get().getQualityName());
+        batchToPartyAndQuality.setQualityName(quality.get().getQualityName().getQualityName());
         batchToPartyAndQuality.setBatchId(batchId);
         batchToPartyAndQuality.setControlId(controlId);
         return batchToPartyAndQuality;
@@ -1357,7 +1355,7 @@ public class StockBatchServiceImpl {
             throw new Exception(constantFile.Quality_Data_Not_Found);
 
         for (Quality quality : qualityListByParty.get()) {
-            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+           QualityName qualityName=quality.getQualityName();
             List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(quality.getId(), partyId);
 
             // batch list based on stock id
@@ -1365,7 +1363,7 @@ public class StockBatchServiceImpl {
                 List<GetBatchWithControlId> batchWithStockList = batchDao
                         .getBatchAndStockListWithoutProductionPlanByStockId(stockMast.getId());
                 for (GetBatchWithControlId getBatchWithControlId : batchWithStockList) {
-                    GetAllBatch getAllBatch = new GetAllBatch(partyExist.get(), quality, qualityName.get());
+                    GetAllBatch getAllBatch = new GetAllBatch(partyExist.get(), quality, qualityName);
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
@@ -1387,7 +1385,7 @@ public class StockBatchServiceImpl {
                 List<GetBatchWithControlId> batchWithStockList = batchDao
                         .getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
                 for (GetBatchWithControlId getBatchWithControlId : batchWithStockList) {
-                    GetAllBatch getAllBatch = new GetAllBatch(partyExist.get(), quality, qualityName.get());
+                    GetAllBatch getAllBatch = new GetAllBatch(partyExist.get(), quality, qualityName);
 
                     getAllBatch.setProductionPlanned(false);
                     getAllBatch.setIsBillGenerated(false);
@@ -1619,7 +1617,7 @@ public class StockBatchServiceImpl {
         }
         Optional<Party> party = partyDao.findById(partyId);
         Optional<Quality> quality = qualityDao.findById(qualityId);
-        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.get().getQualityNameId());
+        QualityName qualityName = quality.get().getQualityName();
 
         // storing all the data of batchName to object
         for (int x = 0; x < controlId.size(); x++) {
@@ -1627,7 +1625,7 @@ public class StockBatchServiceImpl {
                 if (!quality.isPresent() && !party.isPresent())
                     continue;
 
-                getAllBatch = new GetAllBatch(party.get(), quality.get(), qualityName.get());
+                getAllBatch = new GetAllBatch(party.get(), quality.get(), qualityName);
                 getAllBatch.setBatchId(batchName.get(x));
                 getAllBatch.setControlId(controlId.get(x));
                 getAllBatch.setProductionPlanned(productionPlanned.get(x));
@@ -1869,7 +1867,7 @@ public class StockBatchServiceImpl {
         List<StockMast> stockMastList = stockMastDao.getAllStockByPartyIdAndQualityId(partyId, qualityId);
 
         Quality quality = qualityDao.getqualityById(qualityId);
-        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+       QualityName qualityName=quality.getQualityName();;
         if (stockMastList.isEmpty()) {
             return null;
         }
@@ -1905,7 +1903,7 @@ public class StockBatchServiceImpl {
                     /*
                      * if (shadeMast == null) continue;
                      */
-                    BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName.get());
+                    BatchDetail batchDetail1 = new BatchDetail(batchDetail, quality, qualityName);
                     if (shadeMast != null) {
                         batchDetail1.setPartyShadeNo(shadeMast.getPartyShadeNo());
                         batchDetail1.setColorName(shadeMast.getColorName());
@@ -1914,7 +1912,7 @@ public class StockBatchServiceImpl {
                     batchDetailList.add(batchDetail1);
                 } else {
 
-                    batchDetailList.add(new BatchDetail(batchDetail, quality, qualityName.get()));
+                    batchDetailList.add(new BatchDetail(batchDetail, quality, qualityName));
                 }
 
             }
@@ -1943,20 +1941,20 @@ public class StockBatchServiceImpl {
         Party party = partyDao.findByPartyId(stockMast.getParty().getId());
         UserData userData = userDao.getUserById(party.getUserHeadData().getId());
         Quality quality = qualityDao.getqualityById(stockMast.getQuality().getId());
-        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+       QualityName qualityName=quality.getQualityName();;
         List<PchallanByBatchId> pchallanByBatchIdList = batchDao.getListOfPchallanByBatchId(batchId);
 
         /*
          * System.out.println(stockMast.getId()); System.out.println(party.getId());
          * System.out.println(quality.getId());
-         * System.out.println(qualityName.get().getId());
+         * System.out.println(qualityName.getId());
          * System.out.println(userData.getId()); System.out.println(totalMtr);
          * System.out.println(totalPcs); System.out.println(totalWt);
          * System.out.println(totalPcs);
          * 
          * can be get and error for userdata
          */
-        JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName.get(), totalMtr, totalPcs,
+        JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName, totalMtr, totalPcs,
                 totalWt);
         if (pchallanByBatchIdList.size() == 1) {
             jobCard.setChalNo(pchallanByBatchIdList.get(0).getPchallanRef());
@@ -2181,8 +2179,7 @@ public class StockBatchServiceImpl {
 
                     Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
-                    Optional<QualityName> qualityName = qualityNameDao
-                            .getQualityNameDetailById(quality.get().getQualityNameId());
+                    QualityName qualityName = quality.get().getQualityName();
                     Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                     // check that the process and party shade is exist or not
@@ -2218,8 +2215,8 @@ public class StockBatchServiceImpl {
                             batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
                                     : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
                     batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName() == null
-                            ? qualityName.get().getQualityName()
-                            : batchToPartyAndQuality.getQualityName() + "," + qualityName.get().getQualityName());
+                            ? qualityName.getQualityName()
+                            : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
 
                     // System.out.println("batch id for merge batch:"+batch.getBatchId());
                     batchToPartyAndQuality
@@ -2276,8 +2273,7 @@ public class StockBatchServiceImpl {
 
                 Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
 
-                Optional<QualityName> qualityName = qualityNameDao
-                        .getQualityNameDetailById(quality.get().getQualityNameId());
+                QualityName qualityName = quality.get().getQualityName();
                 Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
 
                 // check that the process and party shade is exist or not
@@ -2313,8 +2309,8 @@ public class StockBatchServiceImpl {
                         batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
                                 : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
                 batchToPartyAndQuality.setQualityName(
-                        batchToPartyAndQuality.getQualityName() == null ? qualityName.get().getQualityName()
-                                : batchToPartyAndQuality.getQualityName() + "," + qualityName.get().getQualityName());
+                        batchToPartyAndQuality.getQualityName() == null ? qualityName.getQualityName()
+                                : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
 
                 batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId() == null ? batch.getBatchId()
                         : batchToPartyAndQuality.getBatchId() + "," + batch.getBatchId());
@@ -2378,14 +2374,13 @@ public class StockBatchServiceImpl {
 
             List<Quality> qualityList = qualityDao.getQualityListByPartyIdId(partyId);
             for (Quality quality : qualityList) {
-                Optional<QualityName> qualityNameRate = qualityNameDao
-                        .getQualityNameDetailById(quality.getQualityNameId());
-                if (qualityNameRate.isPresent()) {
+                QualityName qualityNameRate = quality.getQualityName();
+                if (qualityNameRate!=null) {
 
                     Double totalMtr = batchDao.getTotalMtrByQualityIdWithBillGeneratedFlag(quality.getId(), false);
 
                     if (totalMtr != null)
-                        availableStockValue += qualityNameRate.get().getRate() * totalMtr;
+                        availableStockValue += qualityNameRate.getRate() * totalMtr;
 
                 }
 
@@ -2397,13 +2392,13 @@ public class StockBatchServiceImpl {
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
-            Optional<QualityName> qualityNameRate = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-            if (qualityNameRate.isPresent()) {
+            QualityName qualityNameRate = quality.getQualityName();
+            if (qualityNameRate!=null) {
 
                 Double totalMtr = batchDao.getTotalMtrByQualityIdWithBillGeneratedFlag(quality.getId(), false);
 
                 if (totalMtr != null)
-                    availableStockValue += qualityNameRate.get().getRate() * totalMtr;
+                    availableStockValue += qualityNameRate.getRate() * totalMtr;
 
             }
 

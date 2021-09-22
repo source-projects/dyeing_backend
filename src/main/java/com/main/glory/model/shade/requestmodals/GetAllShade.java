@@ -58,7 +58,7 @@ public class GetAllShade {
         this.partyShadeNo=e.getPartyShadeNo();
         this.processId=e.getProcessId();
         this.qualityEntryId=qualityName.get().getId();
-        this.qualityName=qualityName.get().getQualityName();
+        this.qualityName=qualityName.get().getQualityName().getQualityName();
         this.qualityId=qualityName.get().getQualityId();
         this.partyName=party.get().getPartyName();
         this.partyId=party.get().getId();

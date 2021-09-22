@@ -46,14 +46,14 @@ public class QualityBillByInvoiceNumber {
     public QualityBillByInvoiceNumber(Quality quality) {
         this.qualityId=quality.getQualityId();
         this.rate=quality.getRate();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=quality.getQualityName().getQualityName();
         this.hsn=quality.getHsn();
     }
 
 
-    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, Optional<QualityName> qualityName, String pchallanRef, StockMast stockMast,String batchId) {
+    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, QualityName qualityName, String pchallanRef, StockMast stockMast,String batchId) {
         this.qualityId = quality.getQualityId();
-        this.qualityName = qualityName.get().getQualityName();
+        this.qualityName = qualityName.getQualityName();
         this.hsn = quality.getHsn();
         this.rate = quality.getRate();
         this.batchId = batchId;
@@ -64,9 +64,9 @@ public class QualityBillByInvoiceNumber {
         this.amt = this.finishMtr*rate;
         this.pchallanRef = pchallanRef;// batch id can be batch id or pchallan ref
     }
-    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, Optional<QualityName> qualityName, String pchallanRef, StockMast stockMast) {
+    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, QualityName qualityName, String pchallanRef, StockMast stockMast) {
         this.qualityId = quality.getQualityId();
-        this.qualityName = qualityName.get().getQualityName();
+        this.qualityName = qualityName.getQualityName();
         this.hsn = quality.getHsn();
         this.rate = quality.getRate();
         this.batchId = batchId;

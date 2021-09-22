@@ -31,7 +31,6 @@ public class Quality {
     @GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
 	String  qualityId;
-	String qualityName;
 	String qualityType;
 	String unit;// inward units
 
@@ -60,7 +59,10 @@ public class Quality {
 	Double rate;
 	@Column(columnDefinition = "varchar(255) default '998821'")
 	String hsn;
-	Long qualityNameId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="qualityNameId", referencedColumnName = "id", insertable = true, updatable = true)    
+	QualityName qualityName;
+
 	@Column(columnDefinition = "varchar(255) default 'meter'")
 	String billingUnit;
 	Long processId;
@@ -81,7 +83,7 @@ public class Quality {
 		this.qualityDate = other.qualityDate;
 		this.rate= other.rate;
 		this.userHeadData=other.userHeadData;
-		this.qualityNameId=other.qualityNameId;
+		this.qualityName=other.qualityName;
 		this.billingUnit=other.getBillingUnit();
 		this.mtrPerKg=other.getMtrPerKg();
 		this.processId = other.getProcessId()==null?null:other.getProcessId();
@@ -90,23 +92,23 @@ public class Quality {
 	}
 
 	//for adding the quality
-	public Quality(AddQualityRequest qualityDto) {
-		this.qualityId=qualityDto.getQualityId();
-		this.qualityName=qualityDto.getQualityName();
-		this.qualityNameId=qualityDto.getQualityNameId();
-		this.qualityType=qualityDto.getQualityType();
-		this.unit=qualityDto.getUnit();
-		this.party=qualityDto.getParty();
-		this.wtPer100m=qualityDto.getWtPer100m();
-		this.remark=qualityDto.getRemark();
-		this.userCreatedByData=qualityDto.getUserCreatedByData();
-		this.updatedBy=qualityDto.getUpdatedBy();
-		this.userHeadData=qualityDto.getUserHeadData();
-		this.rate=qualityDto.getRate();
-		this.billingUnit=qualityDto.getBillingUnit();
-		this.mtrPerKg=qualityDto.getMtrPerKg();
+	// public Quality(AddQualityRequest qualityDto) {
+	// 	this.qualityId=qualityDto.getQualityId();
+	// 	this.qualityName=qualityDto.getQualityName();
+	// 	this.qualityNameId=qualityDto.getQualityNameId();
+	// 	this.qualityType=qualityDto.getQualityType();
+	// 	this.unit=qualityDto.getUnit();
+	// 	this.party=qualityDto.getParty();
+	// 	this.wtPer100m=qualityDto.getWtPer100m();
+	// 	this.remark=qualityDto.getRemark();
+	// 	this.userCreatedByData=qualityDto.getUserCreatedByData();
+	// 	this.updatedBy=qualityDto.getUpdatedBy();
+	// 	this.userHeadData=qualityDto.getUserHeadData();
+	// 	this.rate=qualityDto.getRate();
+	// 	this.billingUnit=qualityDto.getBillingUnit();
+	// 	this.mtrPerKg=qualityDto.getMtrPerKg();
 
-	}
+	// }
 
 	@PrePersist
 	protected void onCreate() {
@@ -120,11 +122,11 @@ public class Quality {
 	}
 
 	public Quality(AddQuality other, UserData userHeadData, UserData createdBy, UserData updatedBy,
-			Party party) {
+			Party party, QualityName qualityName) {
 
 				this.id = other.id;
 				this.qualityId = other.qualityId;
-				this.qualityName = other.qualityName;
+				this.qualityName = qualityName;
 				this.qualityType = other.qualityType;
 				this.unit = other.unit;
 				this.party =party;
@@ -137,7 +139,6 @@ public class Quality {
 				this.qualityDate = other.qualityDate;
 				this.rate= other.rate;
 				this.userHeadData=userHeadData;
-				this.qualityNameId=other.qualityNameId;
 				this.billingUnit=other.getBillingUnit();
 				this.mtrPerKg=other.getMtrPerKg();
 				this.processId = other.getProcessId()==null?null:other.getProcessId();

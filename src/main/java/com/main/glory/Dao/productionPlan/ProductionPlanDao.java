@@ -103,7 +103,7 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
             "(select c.colorTone from ShadeMast c where c.id=p.shadeId AND p.shadeId IS NOT NULL) AS colorTone," +
-            "(select qq.qualityName from QualityName qq where qq.id =(select c.qualityNameId from Quality c where c.id=:qualityId))AS qualityName," +
+            "(select qq.qualityName from QualityName qq where qq.id =(select c.qualityName.id from Quality c where c.id=:qualityId))AS qualityName," +
             "(select c.qualityId from Quality c where c.id=:qualityId)AS qualityIdRecord," +
             "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
             "(select s.partyShadeNo from ShadeMast s where s.id=p.shadeId) AS partyShadeNo ," +
@@ -118,7 +118,7 @@ public interface ProductionPlanDao extends JpaRepository<ProductionPlan,Long> {
 
     @Query("select new com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData(p," +
             "(select c.colorTone from ShadeMast c where c.id=p.shadeId AND p.shadeId IS NOT NULL) AS colorTone," +
-            "(select qq.qualityName from QualityName qq where qq.id =(select c.qualityNameId from Quality c where c.id=:qualityId))AS qualityName," +
+            "(select qq.qualityName from QualityName qq where qq.id =(select c.qualityName.id from Quality c where c.id=:qualityId))AS qualityName," +
             "(select c.qualityId from Quality c where c.id=:qualityId)AS qualityIdRecord," +
             "(select x.processName from DyeingProcessMast x where x.id = (select s.processId from ShadeMast s where s.id=p.shadeId)) AS processName," +
             "(select s.partyShadeNo from ShadeMast s where s.id=p.shadeId) AS partyShadeNo ," +

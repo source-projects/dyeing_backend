@@ -83,7 +83,7 @@ public interface QualityDao extends FilterDao<Quality>  {
     @Query("select q from Quality q where LOWER(q.qualityId)=LOWER(:quality_id) AND q.id!=:id")
     Optional<Quality> getQualityByIdExceptId(String quality_id, Long id);
 
-    @Query("select q from Quality q where q.qualityNameId=:id")
+    @Query("select q from Quality q where q.qualityName.id=:id")
     Optional<List<Quality>> getAllQualityByQualityNameId(Long id);
 
 
@@ -104,7 +104,7 @@ public interface QualityDao extends FilterDao<Quality>  {
     @Query("select x from Quality x where LOWER(x.qualityId)=LOWER(:qualityId) AND x.id!=:id")
     Quality getQualityByIdWithExcept(String qualityId, Long id);
 
-    @Query("select new com.main.glory.model.quality.response.QualityWithQualityNameParty(q,(select x.qualityName from QualityName x where x.id=q.qualityNameId)) from Quality q where q.id=:key")
+    @Query("select new com.main.glory.model.quality.response.QualityWithQualityNameParty(q,(select x.qualityName from QualityName x where x.id=q.qualityName.id)) from Quality q where q.id=:key")
     Optional<QualityWithQualityNameParty> findByIdWithQualityNameResponse(Long key);
 
 

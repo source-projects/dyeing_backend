@@ -559,8 +559,8 @@ public class PartyServiceImp implements PartyServiceInterface {
                     batchDetailList.add(batchDetail);
                 }
 
-                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-                if (qualityName.isPresent())
+               QualityName qualityName=quality.getQualityName();
+                if (qualityName!=null)
                     qualityWithDetailList.add(new QualityWithDetail(qualityName, stockBatchService
                             .getAvailableStockValueByPartyIdWithQualityEntryId(party.getId(), qualityId)));
 
@@ -586,9 +586,8 @@ public class PartyServiceImp implements PartyServiceInterface {
             }
             partyReport.setBatchDetailList(batchDetailList);
 
-            Optional<QualityName> qualityName = qualityNameDao
-                    .getQualityNameDetailById(qualityExist.getQualityNameId());
-            if (qualityName.isPresent())
+            QualityName qualityName = qualityExist.getQualityName();
+            if (qualityName!=null)
                 qualityWithDetailList.add(new QualityWithDetail(qualityName,
                         stockBatchService.getAvailableStockValueByPartyIdWithQualityEntryId(party.getId(), qualityId)));
 

@@ -110,7 +110,8 @@ public class QualityServiceImp  {
         Party party=partyDao.findByPartyId(addQuality.getPartyId());
         addQuality.setCreatedDate(new Date(System.currentTimeMillis()));
         addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));
-        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, createdBy,party);
+        QualityName qualityName=qualityNameDao.findById(addQuality.getQualityNameId()).get();
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, createdBy,party,qualityName);
 
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -231,10 +232,10 @@ public class QualityServiceImp  {
             else
             data=new QualityWithPartyName(q,q.getParty().getPartyName(), q.getParty().getPartyCode());
             
-            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-            if(qualityName.isEmpty())
+            QualityName qualityName = data.getQualityName();
+            if(qualityName==null)
                 continue;
-            data.setQualityName(qualityName.get().getQualityName());
+            data.setQualityName(qualityName);
             quality.add(new GetQualityResponse(data));
         }
 
@@ -258,8 +259,8 @@ public class QualityServiceImp  {
            /* for(QualityWithPartyName data :qualityListobject)
             {
 
-                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-                if(qualityName.isEmpty())
+                QualityName qualityName = data.getQualityName();
+                if(qualityName==null)
                     continue;
                 data.setQualityName(qualityName.get().getQualityName());
 
@@ -296,10 +297,10 @@ public class QualityServiceImp  {
         }
         for(QualityWithPartyName data :qualityListobject)
         {
-            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-            if(qualityName.isEmpty())
+            QualityName qualityName = data.getQualityName();
+            if(qualityName==null)
                 continue;
-            data.setQualityName(qualityName.get().getQualityName());
+            data.setQualityName(qualityName);
             quality.add(new GetQualityResponse(data));
         }
 
@@ -316,13 +317,14 @@ public class QualityServiceImp  {
         UserData updatedBy=userDao.getUserById(Long.parseLong(id));
         addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));        
         Party party=partyDao.findByPartyId(addQuality.getPartyId());
-        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, updatedBy,party);
+        QualityName qualityName=qualityNameDao.findById(addQuality.getQualityNameId()).get();
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, createdBy,party,qualityName);
         var qualityData = qualityDao.findById(addQuality.getId());
         if (!qualityData.isPresent())
             return false;
         else {
-            Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityDto.getQualityNameId());
-            if(qualityNameExist.isEmpty())
+            QualityName qualityNameExist = qualityDto.getQualityName();
+            if(qualityNameExist==null)
                 throw new Exception("no quality name found");
 
 
@@ -375,7 +377,7 @@ public class QualityServiceImp  {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         GetQualityResponse quality1 = new GetQualityResponse(quality.get());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality1.getQualityNameId());
-        if(qualityName.isEmpty())
+        if(qualityName==null)
             return null;
         quality1.setQualityName(qualityName.get().getQualityName());
         Party party = partyDao.findByPartyId(quality1.getPartyId());
@@ -449,11 +451,11 @@ public class QualityServiceImp  {
                     if (qualityList.get().isEmpty())
                         continue;
 
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-                    if (qualityName.isEmpty())
+                   QualityName qualityName=quality.getQualityName();;
+                    if (qualityName==null)
                         continue;
 
-                    QualityData qualityData = new QualityData(quality, qualityName.get(), partName);
+                    QualityData qualityData = new QualityData(quality, qualityName, partName);
                     if(quality.getProcessId()!=null)
                     {
                         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality.getProcessId());
@@ -521,11 +523,11 @@ public class QualityServiceImp  {
                 partyQuality.setPartyName(party.getPartyName());
                 List<QualityData> qualityDataList = new ArrayList<>();
                 for (Quality quality1 : quality.get()) {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality1.getQualityNameId());
-                    if(qualityName.isEmpty())
+                    QualityName qualityName = quality1.getQualityName();
+                    if(qualityName==null)
                         continue;
 
-                    QualityData qualityData = new QualityData(quality1,qualityName.get());
+                    QualityData qualityData = new QualityData(quality1,qualityName);
                     if(quality1.getProcessId()!=null)
                     {
                         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality1.getProcessId());
@@ -612,14 +614,14 @@ public class QualityServiceImp  {
             if (!partyName.isPresent())
                 continue;
 
-            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-            if(qualityName.isEmpty())
+           QualityName qualityName=quality.getQualityName();;
+            if(qualityName==null)
                 continue;
 
             GetAllQualtiy getAllQualtiy = new GetAllQualtiy(quality);
             getAllQualtiy.setPartyName(partyName.get().getPartyName());
-            getAllQualtiy.setQualityName(qualityName.get().getQualityName());
-            getAllQualtiy.setQualityNameId(qualityName.get().getId());
+            getAllQualtiy.setQualityName(qualityName.getQualityName());
+            getAllQualtiy.setQualityNameId(qualityName.getId());
 
             //check that the dyeing process is exit or not
             if(quality.getProcessId()!=null)
