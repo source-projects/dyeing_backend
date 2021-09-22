@@ -37,7 +37,7 @@ public class GetAllProgram {
         this.programGivenBy=e.getProgramGivenBy();
         this.qualityEntryId=e.getQualityEntryId();
         this.qualityId=quality.getQualityId();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=quality.getQualityName().getQualityName();
         this.qualityType=quality.getQualityType();
         this.userHeadId=e.getUserHeadId();
         this.createdBy=e.getCreatedBy();

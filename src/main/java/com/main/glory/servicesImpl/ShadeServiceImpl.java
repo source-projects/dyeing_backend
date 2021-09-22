@@ -289,13 +289,12 @@ public class ShadeServiceImpl {
 					if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
 							|| e.getShadeDataList().get(0).getSupplierItemId() == null)
 						continue;
-					Optional<QualityName> qualityName1 = qualityNameDao
-							.getQualityNameDetailById(qualityName.get().getQualityNameId());
+					QualityName qualityName1 = qualityName.get().getQualityName();
 
-					if (qualityName1.isEmpty())
+					if (qualityName1==null)
 						continue;
 
-					getAllShadesList.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1.get()));
+					getAllShadesList.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1));
 
 				}
 
@@ -321,13 +320,12 @@ public class ShadeServiceImpl {
 							|| e.getShadeDataList().get(0).getSupplierItemId() == null)
 						continue;
 
-					Optional<QualityName> qualityName1 = qualityNameDao
-							.getQualityNameDetailById(qualityName.get().getQualityNameId());
+					QualityName qualityName1 = qualityName.get().getQualityName();
 
-					if (qualityName1.isEmpty())
+					if (qualityName1==null)
 						continue;
 
-					getAllShadesList.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1.get()));
+					getAllShadesList.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1));
 
 				}
 			}
@@ -358,14 +356,13 @@ public class ShadeServiceImpl {
 								|| e.getShadeDataList().get(0).getSupplierItemId() == null)
 							continue;
 
-						Optional<QualityName> qualityName1 = qualityNameDao
-								.getQualityNameDetailById(qualityName.get().getQualityNameId());
+						QualityName qualityName1 = qualityName.get().getQualityName();
 
-						if (qualityName1.isEmpty())
+						if (qualityName1==null)
 							continue;
 
 						getAllShadesList
-								.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1.get()));
+								.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1));
 
 					}
 				}
@@ -392,14 +389,13 @@ public class ShadeServiceImpl {
 						if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
 								|| e.getShadeDataList().get(0).getSupplierItemId() == null)
 							continue;
-						Optional<QualityName> qualityName1 = qualityNameDao
-								.getQualityNameDetailById(qualityName.get().getQualityNameId());
+						QualityName qualityName1 =qualityName.get().getQualityName();
 
-						if (qualityName1.isEmpty())
+						if (qualityName1==null)
 							continue;
 
 						getAllShadesList
-								.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1.get()));
+								.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1));
 
 					}
 				}
@@ -497,13 +493,12 @@ public class ShadeServiceImpl {
 				if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
 						|| e.getShadeDataList().get(0).getSupplierItemId() == null)
 					continue;
-				Optional<QualityName> qualityName1 = qualityNameDao
-						.getQualityNameDetailById(qualityName.get().getQualityNameId());
+				QualityName qualityName1 = qualityName.get().getQualityName();
 
-				if (qualityName1.isEmpty())
+				if (qualityName1==null)
 					continue;
 
-				getAllShadesList.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1.get()));
+				getAllShadesList.add(new GetAllShade(e, party, qualityName, dyeingProcessMast, qualityName1));
 
 			}
 

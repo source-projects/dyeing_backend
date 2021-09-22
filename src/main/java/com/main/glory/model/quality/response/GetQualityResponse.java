@@ -44,8 +44,8 @@ public class GetQualityResponse {
         this.userHeadName = data.getUserHeadName();
         this.userHeadId = data.getUserHeadData().getId();
         this.qualityId = data.getQualityId();
-        this.qualityName =data.getQualityName();
-        this.qualityNameId = data.getQualityNameId();
+        this.qualityName =data.getQualityName().getQualityName();
+        this.qualityNameId = data.getQualityName().getId();
         this.qualityType = data.getQualityType();
         this.unit=data.getUnit();
         this.partyId = data.getParty().getId();
@@ -67,8 +67,8 @@ public class GetQualityResponse {
     public GetQualityResponse(Quality data) {
         this.id= data.getId();
         this.qualityId = data.getQualityId();
-        this.qualityName =data.getQualityName();
-        this.qualityNameId = data.getQualityNameId();
+        this.qualityName =data.getQualityName().getQualityName();
+        this.qualityNameId = data.getQualityName().getId();
         this.qualityType = data.getQualityType();
         this.unit=data.getUnit();
         this.partyId = data.getParty().getId();

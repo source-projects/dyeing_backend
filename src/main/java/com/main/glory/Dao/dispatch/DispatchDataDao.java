@@ -64,7 +64,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchData.id) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
     List<GetBatchByInvoice> getAllStockByInvoiceNumber(String invoiceNumber);
 
-    @Query("select new com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr(x.quality.id,(select q.qualityName from QualityName q where q.id = (select qq.qualityNameId from Quality qq where qq.id=x.quality.id)),(select q.qualityId from Quality q where q.id=x.quality.id),x.qualityRate) from DispatchData x where x.invoiceNo=:invoiceNo GROUP BY x.quality.id")
+    @Query("select new com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr(x.quality.id,(select q.qualityName from QualityName q where q.id = (select qq.qualityName.id from Quality qq where qq.id=x.quality.id)),(select q.qualityId from Quality q where q.id=x.quality.id),x.qualityRate) from DispatchData x where x.invoiceNo=:invoiceNo GROUP BY x.quality.id")
     List<QualityWithRateAndTotalMtr> getAllQualityByInvoiceNo(String invoiceNo);
 
     @Query("select (x.batchData.id) from DispatchData x where x.invoiceNo=:invoiceNo AND x.quality.id=:qualityEntryId")

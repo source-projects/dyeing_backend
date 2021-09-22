@@ -45,7 +45,7 @@ public class AllStockDateWiseData {
             Party party=partyDao.findByPartyId(stockMast.getParty().getId());
             String partyName=party.getPartyName();
             String partyCode=party.getPartyCode();
-            String qualityName=qualityDao.findById(stockMast.getQuality().getId()).get().getQualityName();
+            String qualityName=stockMast.getQuality().getQualityName().getQualityName();
             Date receiveDate=stockMast.getReceiveDate();
 
 

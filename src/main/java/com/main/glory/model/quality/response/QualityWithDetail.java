@@ -18,10 +18,10 @@ public class QualityWithDetail {
     Double rate;
     Double stockInHand;
 
-    public QualityWithDetail(Optional<QualityName> qualityName, Double availableStockValueByPartyIdWithQualityEntryId) {
-        this.qualityNameId=qualityName.get().getId();
-        this.qualityName=qualityName.get().getQualityName();
-        this.rate =qualityName.get().getRate();
+    public QualityWithDetail(QualityName qualityName, Double availableStockValueByPartyIdWithQualityEntryId) {
+        this.qualityNameId=qualityName.getId();
+        this.qualityName=qualityName.getQualityName();
+        this.rate =qualityName.getRate();
         this.stockInHand = availableStockValueByPartyIdWithQualityEntryId==null?0:availableStockValueByPartyIdWithQualityEntryId;
     }
 }

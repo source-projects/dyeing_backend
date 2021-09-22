@@ -28,7 +28,7 @@ public class GetAllQualtiy {
     public GetAllQualtiy(Quality quality) {
         this.id=quality.getId();
         this.qualityId=quality.getQualityId();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=quality.getQualityName().getQualityName();
         this.qualityType=quality.getQualityType();
         this.billingUnit=quality.getBillingUnit();
         this.unit=quality.getUnit();

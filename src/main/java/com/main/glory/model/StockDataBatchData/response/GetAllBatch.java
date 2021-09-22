@@ -75,7 +75,7 @@ public class GetAllBatch {
         this.partyName=party.getPartyName();
         this.qualityEntryId=quality.get().getId();
         this.qualityId=quality.get().getQualityId();
-        this.qualityName=quality.get().getQualityName();
+        this.qualityName=quality.get().getQualityName().getQualityName();
         this.qualityType=quality.get().getQualityType();
         this.productionPlanned=true;//because it is already getting the data who;s flag is true
         this.isBillGenerated=false;

@@ -18,24 +18,24 @@ import java.util.Optional;
 
 public interface StockMastDao extends FilterDao<StockMast>  {
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameAndQualityName();
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm")
  Optional<Page<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameAndQualityNamePaginated(Pageable pageable);
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyName();
 
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm where createdBy = :createdBy")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm where createdBy = :createdBy")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByCreatedBy(Long createdBy);
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm where createdBy = :createdBy")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm where createdBy = :createdBy")
  Optional<Page<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByCreatedByPaginated(Pageable pageable,Long createdBy);
 
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:userHeadId")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:userHeadId")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByUserHeadId(Long userHeadId);
 
  List<StockMast> findByQualityId(Long qualityId);
@@ -71,10 +71,10 @@ public interface StockMastDao extends FilterDao<StockMast>  {
 @Query("select s from StockMast s where s.id=:stockId")
  StockMast findByStockId(Long stockId);
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:id")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:id")
  Optional<List<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByUserHeadIdAndCreatedBy(Long id, Long userHeadId);
 
- @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:id")
+ @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse(sm, sm.party.partyName,sm.quality.qualityName.qualityName) from StockMast sm where sm.userHeadId = :userHeadId OR sm.createdBy=:id")
  Optional<Page<GetAllStockWithPartyNameResponse>> getAllStockWithPartyNameByUserHeadIdAndCreatedByPaginated(Pageable pageable,Long id, Long userHeadId);
 
 

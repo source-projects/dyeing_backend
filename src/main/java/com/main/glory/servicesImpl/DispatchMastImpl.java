@@ -263,10 +263,10 @@ public class DispatchMastImpl {
                 BatchWithTotalMTRandFinishMTR getBatchWithControlId = new BatchWithTotalMTRandFinishMTR(getBatchWithControlIdData);
                 Quality quality = qualityServiceImp.getQualityByStockId(getBatchWithControlId.getControlId());
                 if (quality != null) {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                    QualityName qualityName = quality.getQualityName();
                     getBatchWithControlId.setRate(quality.getRate());
                     getBatchWithControlId.setQualityId(quality.getQualityId());
-                    getBatchWithControlId.setQualityName(qualityName.get().getQualityName());
+                    getBatchWithControlId.setQualityName(qualityName.getQualityName());
                     getBatchWithControlId.setQualityEntryId(quality.getId());
                 }
                 batchDataListByParty.add(getBatchWithControlId);
@@ -485,10 +485,10 @@ public class DispatchMastImpl {
             if (!dispatchDataList.isEmpty()) {
                 Quality quality = qualityDao.getqualityById(dispatchDataList.get(0).getQuality().getId());
                 if (quality != null) {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                    QualityName qualityName = quality.getQualityName();
                     batchWithTotalMTRandFinishMTR.setQualityEntryId(quality.getId());
                     batchWithTotalMTRandFinishMTR.setQualityId(quality.getQualityId());
-                    batchWithTotalMTRandFinishMTR.setQualityName(qualityName.get().getQualityName());
+                    batchWithTotalMTRandFinishMTR.setQualityName(qualityName.getQualityName());
                     batchWithTotalMTRandFinishMTR.setRate(dispatchDataList.get(0).getQualityRate());
 
                 }
@@ -843,8 +843,8 @@ public class DispatchMastImpl {
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality.get());
-            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
-            qualityBillByInvoiceNumber.setQualityName(qualityName.get().getQualityName());
+            QualityName qualityName = quality.get().getQualityName();
+            qualityBillByInvoiceNumber.setQualityName(qualityName.getQualityName());
 
             List<DispatchData> dispatchDataList = dispatchDataDao.findByBatchIdAndStockIdAndInviceNo(batch.getStockId(), batch.getBatchId(), invoiceNo);
 
@@ -1262,7 +1262,7 @@ public class DispatchMastImpl {
 
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
             Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
-            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
+            QualityName qualityName = quality.getQualityName();
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
@@ -1693,10 +1693,10 @@ System.out.println(1);
                 BatchWithTotalMTRandFinishMTR getBatchWithControlId = new BatchWithTotalMTRandFinishMTR(getBatchWithControlIdData);
                 Quality quality = qualityServiceImp.getQualityByStockId(getBatchWithControlId.getControlId());
                 if (quality != null) {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                    QualityName qualityName = quality.getQualityName();
                     getBatchWithControlId.setRate(quality.getRate());
                     getBatchWithControlId.setQualityId(quality.getQualityId());
-                    getBatchWithControlId.setQualityName(qualityName.get().getQualityName());
+                    getBatchWithControlId.setQualityName(qualityName.getQualityName());
                     getBatchWithControlId.setQualityEntryId(quality.getId());
                 }
                 batchDataListByParty.add(getBatchWithControlId);
@@ -1908,8 +1908,8 @@ System.out.println(1);
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
             QualityBillByInvoiceNumber qualityBillByInvoiceNumber = new QualityBillByInvoiceNumber(quality.get());
-            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.get().getQualityNameId());
-            qualityBillByInvoiceNumber.setQualityName(qualityName.get().getQualityName());
+            QualityName qualityName = quality.get().getQualityName();
+            qualityBillByInvoiceNumber.setQualityName(qualityName.getQualityName());
 
             List<DispatchData> dispatchDataList = dispatchDataDao.findByPChallanRefAndBatchIdAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), batch.getBatchId(),invoiceNo);
 
@@ -2140,7 +2140,7 @@ System.out.println(1);
             String billingUnit = null;
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
             Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
-            Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
+            QualityName qualityName = quality.getQualityName();
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
@@ -2366,10 +2366,10 @@ System.out.println(1);
             if (!dispatchDataList.isEmpty()) {
                 Quality quality = qualityDao.getqualityById(dispatchDataList.get(0).getQuality().getId());
                 if (quality != null) {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+                    QualityName qualityName = quality.getQualityName();
                     batchWithTotalMTRandFinishMTR.setQualityEntryId(quality.getId());
                     batchWithTotalMTRandFinishMTR.setQualityId(quality.getQualityId());
-                    batchWithTotalMTRandFinishMTR.setQualityName(qualityName.get().getQualityName());
+                    batchWithTotalMTRandFinishMTR.setQualityName(qualityName.getQualityName());
                     batchWithTotalMTRandFinishMTR.setRate(dispatchDataList.get(0).getQualityRate());
 
                 }
