@@ -162,7 +162,8 @@ public class QualityServiceImp  {
         subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("userCreatedByData","id")));
         subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
         subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("userCreatedByData","userName")));
-        
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList( "qualityName","qualityName")));
+
 		Page queryResponse=null;
 
         Specification<Quality> filterSpec=specificationManager.getSpecificationFromFilters(filtersParam, requestParam.getData().isAnd,subModelCase);
