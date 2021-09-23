@@ -89,8 +89,13 @@ public class DispatchMast{
         this.sgst = createDispatch.getSgst();
         this.netAmt = createDispatch.getNetAmt();
         this.taxAmt = createDispatch.getTaxAmt();
-        this.dispatchData =createDispatch.getDispatchData();
+        this.dispatchDataList =dispatchMast.getDispatchDataList();
         this.remark = createDispatch.getRemark();
+        this.signByParty = dispatchMast.getSignByParty();
+        this.paymentBunchId = dispatchMast.getPaymentBunchId();
+        this.signUpdatedDate = dispatchMast.getSignUpdatedDate();
+        this.deliveryMode =  createDispatch.getDeliveryMode();
+        this.prefix = dispatchMast.getPrefix();
     }
 
 

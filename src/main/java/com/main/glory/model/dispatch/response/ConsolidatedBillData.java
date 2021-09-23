@@ -52,13 +52,14 @@ public class ConsolidatedBillData {
     String billingUnit;
     String inwardUnit;
     String deliveryMode;
+    Double sharinkage;
 
 
     public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast,Long greyPcs) {
         this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
         this.invoiceDate = dispatchMast.getCreatedDate();
-        this.invoiceNo =Long.parseLong( dispatchMast.getDispatchData().getInvoiceNo());
+        this.invoiceNo =Long.parseLong( dispatchMast.getPostfix());
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName();
         this.qualityId = quality.getQualityId();
@@ -87,5 +88,7 @@ public class ConsolidatedBillData {
         this.sgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.gstAmt=this.cgst+this.sgst+this.igst;
         this.netAmt = this.taxAmt+this.gstAmt;
+        this.sharinkage = StockBatchServiceImpl.changeInFormattedDecimal(((this.totalMtr - this.totalFinishMtr)/this.totalMtr) * 100);
+
     }
 }

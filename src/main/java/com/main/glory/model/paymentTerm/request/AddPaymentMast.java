@@ -27,6 +27,8 @@ public class AddPaymentMast {
     String diffDetail;
     Long createdBy;
     Long updatedBy;
+    Double tdsAmt;
+    String tdsDetail;
     List<PaymentData> paymentData;
     List<PendingInvoice> invoices;
     List<AdvancePaymentIdList> advancePayList;
