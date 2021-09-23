@@ -380,7 +380,7 @@ public class ColorServiceImpl {
         List<ColorData> colorData = colorDataDao.findByItemId(itemId);
         for (ColorData c : colorData) {
             SupplierRate supplierRate = supplierRateDao.getSupplierRateByItemId(c.getItemId());
-            Supplier supplier = supplierDao.findBySupplierId(supplierRate.getSupplierId());
+            Supplier supplier = supplierRate.getSupplier();
             List<ColorBox> colorBoxes = colorBoxDao.getAllBoxByControlIdWithFlag(c.getId(), issued);
             for (ColorBox colorBox : colorBoxes) {
                 list.add(new GetAllBox(colorBox, supplierRate, supplier));

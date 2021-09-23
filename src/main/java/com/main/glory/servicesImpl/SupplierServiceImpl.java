@@ -11,6 +11,8 @@ import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.ShadeData;
+import com.main.glory.model.supplier.AddSupplier;
+import com.main.glory.model.supplier.AddSupplierRate;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
@@ -18,6 +20,8 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
+import com.main.glory.model.user.UserData;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +66,12 @@ public class SupplierServiceImpl {
 
     
     @Transactional
-    public Boolean addSupplier(Supplier supplier,String id) {
+    public Boolean addSupplier(AddSupplier addSupplier,String id) {
+        UserData createdBy=userDao.findUserById(addSupplier.getCreatedBy());
+        QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
+        addSupplier.setCreatedDate(new Date(System.currentTimeMillis()));
+        addSupplier.setUpdatedDate(new Date(System.currentTimeMillis()));
+        Supplier supplier=new Supplier(addSupplier, createdBy, createdBy, null, qualityName);
         try {
             supplierDao.save(supplier);
             return true;
@@ -90,10 +99,14 @@ public class SupplierServiceImpl {
                 throw new Exception("no supplier found");
 
             List<SupplierRate> list=new ArrayList<>();
-            for(SupplierRate s: addSupplierRateRequest.getSupplierRates())
+            for(AddSupplierRate addSupplierRate: addSupplierRateRequest.getAddSupplierRate())
             {
-                SupplierRate supplierRate=new SupplierRate(s);
+                addSupplierRate.setCreatedDate(new Date(System.currentTimeMillis()));
+                addSupplierRate.setUpdatedDate(new Date(System.currentTimeMillis()));
+                SupplierRate supplierRate=new SupplierRate(addSupplierRate,supplierExist);
                 list.add(supplierRate);
+                supplierExist.addSupplierRates(supplierRate);
+
 
             }
             supplierRateDao.saveAll(list);
@@ -119,23 +132,27 @@ public class SupplierServiceImpl {
 
     
     @Transactional
-    public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest) {
+    public Boolean updateSupplier(AddSupplier addSupplier) {
         try {
             //System.out.println(updateSupplierRequest.getId());
-            Supplier supplier = ((Optional<Supplier>) supplierDao.findById(updateSupplierRequest.getId())).get();
+            Supplier supplier = ((Optional<Supplier>) supplierDao.findById(addSupplier.getId())).get();
             if (supplier == null) {
                 return false;
             }
+            UserData updateBy=userDao.findUserById(addSupplier.getUpdatedBy());
+            QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
+    
 
-            supplier.setDiscountPercentage(updateSupplierRequest.getDiscountPercentage());
-            supplier.setGstPercentage(updateSupplierRequest.getGstPercentage());
-            supplier.setPaymentTerms(updateSupplierRequest.getPaymentTerms());
-            supplier.setRemark(updateSupplierRequest.getRemark());
-            supplier.setSupplierName(updateSupplierRequest.getSupplierName());
+            supplier.setDiscountPercentage(addSupplier.getDiscountPercentage());
+            supplier.setGstPercentage(addSupplier.getGstPercentage());
+            supplier.setPaymentTerms(addSupplier.getPaymentTerms());
+            supplier.setRemark(addSupplier.getRemark());
+            supplier.setSupplierName(addSupplier.getSupplierName());
             supplier.setUpdatedDate(new Date(System.currentTimeMillis()));
-            supplier.setUpdatedBy(updateSupplierRequest.getUpdatedBy());
+            supplier.setUpdatedBy(updateBy);
+            supplier.setQualityName(qualityName);
 
-            List<SupplierRate> list=supplierRateDao.getAllSupplierRateBySupplierId(updateSupplierRequest.getId());
+            List<SupplierRate> list=supplierRateDao.getAllSupplierRateBySupplierId(addSupplier.getId());
             supplierDao.save(supplier);
             for(SupplierRate s:list)
             {
@@ -267,9 +284,6 @@ public class SupplierServiceImpl {
             getAllSupplierRateList = supplierRateDao.findWithSupplierName();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             supplierRatesResponses = modelMapper.map(getAllSupplierRateList, List.class);
-            /*if (supplierRatesResponses.isEmpty())
-                throw new Exception("no data found");*/
-
             return supplierRatesResponses;
         } catch (Exception e) {
             e.printStackTrace();
