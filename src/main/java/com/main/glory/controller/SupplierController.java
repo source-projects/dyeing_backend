@@ -5,6 +5,7 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
+import com.main.glory.model.supplier.AddSupplier;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
@@ -58,10 +59,10 @@ public class SupplierController extends ControllerConfig {
     }
 
     @PostMapping("/supplier")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> addSupplier(@RequestBody Supplier supplier,@RequestHeader Map<String, String> headers){
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addSupplier(@RequestBody AddSupplier addSupplier,@RequestHeader Map<String, String> headers){
         GeneralResponse<Boolean,Object> result;
         try{
-            Boolean flag = supplierService.addSupplier(supplier,headers.get("id"));
+            Boolean flag = supplierService.addSupplier(addSupplier,headers.get("id"));
             if(flag) {
                 result= new GeneralResponse<>(true, ConstantFile.Supplier_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
@@ -295,19 +296,19 @@ public class SupplierController extends ControllerConfig {
     }
 
     @PutMapping("/supplier")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateSupplier(@RequestBody UpdateSupplierRequest updateSupplierRequest){
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateSupplier(@RequestBody AddSupplier addSupplier){
         GeneralResponse<Boolean,Object> result;
         try{
-            Boolean flag = supplierService.updateSupplier(updateSupplierRequest);
+            Boolean flag = supplierService.updateSupplier(addSupplier);
             if (flag) {
-                result= new GeneralResponse<>(null, ConstantFile.Supplier_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.Supplier_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addSupplier);
             } else {
-                result= new GeneralResponse<>(null, ConstantFile.Supplier_Invalid_Data, false, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.Supplier_Invalid_Data, false, System.currentTimeMillis(), HttpStatus.OK,addSupplier);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,updateSupplierRequest);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addSupplier);
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

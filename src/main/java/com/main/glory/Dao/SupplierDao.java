@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -53,9 +52,9 @@ public interface SupplierDao extends JpaRepository<Supplier, Long> {
 
     @Modifying
     @Transactional
-    @Query("update Supplier x set x.qualityNameId=:qualityNameId where x.id IN (:supplierIds)")
+    @Query("update Supplier x set x.qualityName.id=:qualityNameId where x.id IN (:supplierIds)")
     void updateSupplierWithQualityNameId(List<Long> supplierIds, Long qualityNameId);
 
-    @Query("select new com.main.glory.model.supplier.responce.SupplierResponse(x) from Supplier x where x.qualityNameId=:qualityNameId")
+    @Query("select new com.main.glory.model.supplier.responce.SupplierResponse(x) from Supplier x where x.qualityName.id=:qualityNameId")
     List<SupplierResponse> getAllSupplierListByQualityNameId(Long qualityNameId);
 }

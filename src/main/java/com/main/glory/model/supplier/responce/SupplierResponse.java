@@ -44,7 +44,7 @@ public class SupplierResponse {
         this.paymentTerms= s.getPaymentTerms();
         this.updatedBy = s.getUpdatedBy()==null?null:s.getUpdatedBy().getId();
         this.userHeadId =s.getUserHeadData()==null?null: s.getUserHeadData().getId();
-        this.qualityNameId = s.getQualityNameId();
+        this.qualityNameId = s.getQualityName().getId();
 
     }
 
