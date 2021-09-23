@@ -316,7 +316,7 @@ public class StockBatchServiceImpl {
         String getBy = requestParam.getGetBy();
         List<Filter> filtersParam = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
-        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName")));
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName","qualityName")));
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
         // subModelCase.put("userHeadId",new
         // ArrayList<String>(Arrays.asList("userHeadData","id")));
