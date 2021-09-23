@@ -44,7 +44,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
 
     //get the invoice batch by the invoice no and batch id and stock id
-    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.batchId=:batchId AND dd.dispatchMast.postfix=:invoiceNo AND dd.batchId IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.batchId=:batchId AND dd.dispatchMast.postfix=:invoiceNo AND dd.batchId IS NOT NULL AND dd.stockId IS NOT NULL  ")
     List<DispatchData> findByBatchIdAndStockIdAndInviceNo(Long stockId, String batchId, String invoiceNo);
 
     @Query("select d from DispatchData d")
@@ -55,7 +55,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Modifying
     @Transactional
-    @Query("delete from DispatchData dd where dd.dispatchMast.postfix=:invoiceNo AND dd.invoiceNo IS NOT NULL")
+    @Query("delete from DispatchData dd where dd.dispatchMast.postfix=:invoiceNo")
     void deleteByInvoiceNo(String invoiceNo);
 
     @Query("select d from DispatchData d where d.dispatchMast.postfix=:invoiceNo")
@@ -103,7 +103,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     List<GetBatchByInvoice> findPChallanAndStockByInvoice(String invoiceExist);
 
     //get the invoice batch by the invoice no and batch id and stock id
-    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.dispatchMast.postfix=:invoiceNo AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL   ")
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.dispatchMast.postfix=:invoiceNo AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL   ")
     List<DispatchData> findByPChallanRefAndStockIdAndInvoiceNo(Long stockId, String pchallanRef, String invoiceNo);
 
     @Query("select x.inwardUnit from DispatchData x where x.batchData.id=:id AND x.dispatchMast.postfix=:invoiceNumber")
@@ -119,7 +119,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     List<GetBatchByInvoice> findPChallanAndBatchIdAndStockByInvoice(String invoiceExist);
 
     //get the invoice batch by the invoice no and batch id and stock id
-    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.dispatchMast.postfix=:invoiceNo AND dd.batchId=:batchId AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL AND dd.invoiceNo IS NOT NULL")
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.dispatchMast.postfix=:invoiceNo AND dd.batchId=:batchId AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL")
     List<DispatchData> findByPChallanRefAndBatchIdAndStockIdAndInvoiceNo(Long stockId, String pchallanRef, String batchId, String invoiceNo);
 
     @Query(value = "select quality_rate from dispatch_data as x where x.batch_id = :batchId AND x.pchallan_ref=:pchallanRef AND x.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)

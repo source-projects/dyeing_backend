@@ -398,7 +398,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("update BatchData x set x.isBillGenrated=:status where x.id IN (:batchEntryIds)")
     void updateBillStatusInListOfBatchEntryId(List<Long> batchEntryIds, Boolean status);
 
-    @Query("select x from BatchData x where x.batchId=:batchId AND x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber)")
+    @Query("select x from BatchData x where x.batchId=:batchId AND x.id in (select d.batchData.id from DispatchData d where d.dispatchMast.postfix=:invoiceNumber)")
     List<BatchData> getBatchByBatchIdAndInvoiceNumber(String batchId, String invoiceNumber);
 
     @Query("select count(x.id) from BatchData x where x.batchId=:batchId")
@@ -421,7 +421,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select b from BatchData b where b.pchallanRef=:pchallanRef AND b.isFinishMtrSave=true AND b.isBillGenrated=false")
     List<BatchData> getBatchesByPChallanRefIdAndFinishMtrSaveWithoutBillGenrated(String pchallanRef);
 
-    @Query("select x from BatchData x where x.pchallanRef=:pchallanRef AND x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber)")
+    @Query("select x from BatchData x where x.pchallanRef=:pchallanRef AND x.id in (select d.batchData.id from DispatchData d where d.dispatchMast.postfix=:invoiceNumber)")
     List<BatchData> getBatchByPChallanRefAndInvoiceNumber(String pchallanRef, String invoiceNumber);
 
 
