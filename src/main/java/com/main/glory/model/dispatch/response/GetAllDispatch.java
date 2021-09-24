@@ -31,13 +31,13 @@ public class GetAllDispatch {
     List<BatchWithTotalMTRandFinishMTR> batchList;
 
     public GetAllDispatch(DispatchData dispatchData) {
-        this.invoiceNo=dispatchData.getInvoiceNo();
+        this.invoiceNo=dispatchData.getDispatchMast().getPostfix();
         this.isSendToParty=dispatchData.getIsSendToParty();
         this.date=dispatchData.getCreatedDate();
     }
 
     public GetAllDispatch(DispatchMast dispatchMast) {
-        this.invoiceNo=dispatchMast.getDispatchData()==null?"null":dispatchMast.getDispatchData().getInvoiceNo();
+        this.invoiceNo=dispatchMast.getDispatchDataList()==null?"null":dispatchMast.getPostfix();
         //this.isSendToParty=dispatchData.getIsSendToParty();
         this.date=dispatchMast.getCreatedDate();
     }

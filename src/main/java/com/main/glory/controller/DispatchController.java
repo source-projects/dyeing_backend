@@ -567,7 +567,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<Long,Object> result;
         try{
 
-            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice);
+            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice,Long.parseLong(request.getHeader("id")));
 
             result= new GeneralResponse<>(invoiceNo, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
 

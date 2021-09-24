@@ -2651,8 +2651,40 @@ public class StockBatchServiceImpl {
         return batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(pchallanRef, partyId, 0l);
     }
 
-    /*
-     * public Quality getQualityByStockId(Long stockId) { return
-     * qualityDao.getQualityByStockId(stockId); }
-     */
+    public List<PendingBatchMast> getAllPendingBatchReport() {
+/*
+
+        List<PendingBatchMast> pendingBatchMastList = new ArrayList<>();
+
+        Map<Long,Party> listParty = new HashMap<>();
+        List<GetBatchWithControlId> batchResponseList = batchDao.findAllBasedOnControlIdAndBatchId();
+        for(GetBatchWithControlId batch : batchResponseList)
+        {
+            StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
+            if(listParty.containsKey(stockMast.getPartyId()))
+            {
+                var arr = pendingBatchMastList.stream().filter(x -> x.getPartyId() == stockMast.getPartyId());
+                System.out.println(arr);
+            }
+            else
+            {
+                Party party = partyDao.findByPartyId(stockMast.getPartyId());
+                listParty.put(party.getId(),party);
+
+                PendingBatchMast pendingBatchMast = new PendingBatchMast(party);
+                List<PendingBatchData> pendingBatchData =new ArrayList<>();
+                pendingBatchData.add(new PendingBatchData(stockMast,batch));
+                pendingBatchMast.setPendingBatchDataList(pendingBatchData);
+                //pendingBatchMast.setPendingBatchDataList().add();
+                pendingBatchMastList.add(pendingBatchMast);
+            }
+        }
+
+        return pendingBatchMastList;
+*/
+        return null;
+    }
+
+
+
 }

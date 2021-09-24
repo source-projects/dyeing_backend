@@ -36,9 +36,11 @@ public class DispatchMast{
 
     Date updatedDate;
     String prefix;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="postfix", referencedColumnName = "id", insertable = true, updatable = true)
-    DispatchData dispatchData;
+
+    String postfix;
+
+    @OneToMany(mappedBy = "dispatchMast", cascade = CascadeType.ALL)
+    List<DispatchData> dispatchDataList;
     
     Long paymentBunchId;//payment mast id
     @ManyToOne(cascade = CascadeType.ALL)
@@ -87,8 +89,13 @@ public class DispatchMast{
         this.sgst = createDispatch.getSgst();
         this.netAmt = createDispatch.getNetAmt();
         this.taxAmt = createDispatch.getTaxAmt();
-        this.dispatchData =createDispatch.getDispatchData();
+        this.dispatchDataList =dispatchMast.getDispatchDataList();
         this.remark = createDispatch.getRemark();
+        this.signByParty = dispatchMast.getSignByParty();
+        this.paymentBunchId = dispatchMast.getPaymentBunchId();
+        this.signUpdatedDate = dispatchMast.getSignUpdatedDate();
+        this.deliveryMode =  createDispatch.getDeliveryMode();
+        this.prefix = dispatchMast.getPrefix();
     }
 
 

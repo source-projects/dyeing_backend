@@ -19,20 +19,10 @@ import com.main.glory.model.user.UserData;
 @Getter
 @Setter
 public class CreateDispatch {
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="postfix", referencedColumnName = "invoiceNo", insertable = true, updatable = true)
-    DispatchData dispatchData;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
-    private UserData createdBy;
-    
-    @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
-    private UserData updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
-    private UserData userHeadData;
+    Long invoiceNo;
+    Long createdBy;
+    Long userHeadId;
+    Long updatedBy;
     Double discount;
     Double cgst;
     Double sgst;
