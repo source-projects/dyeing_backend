@@ -1,7 +1,5 @@
 package com.main.glory.model.dispatch;
 
-
-import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.dispatch.request.CreateDispatch;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.user.UserData;
@@ -10,9 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 

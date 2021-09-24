@@ -28,7 +28,7 @@ public class DispatchData {
     String batchId;
     Long stockId;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="invoiceNo", referencedColumnName = "postfix", insertable = true, updatable = true)
+    @JoinColumn(name="dispatchMastId", referencedColumnName = "id", insertable = true, updatable = true)
     DispatchMast dispatchMast;
 
 
