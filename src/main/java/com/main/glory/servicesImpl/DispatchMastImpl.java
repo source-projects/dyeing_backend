@@ -353,18 +353,15 @@ public class DispatchMastImpl {
     }
 
     public FilterResponse<GetAllDispatch> getAllDisptach(GetBYPaginatedAndFiltered requestParam) throws Exception {
-
+System.out.println("page size-"+requestParam.getData().getPageSize());
+System.out.println("page index-"+requestParam.getData().getPageIndex());
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
         Pageable pageable = filterService.getPageable(requestParam.getData());
         List<Filter> filters = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
-        subModelCase.put("partyCode", new ArrayList<String>(Arrays.asList("party", "partyCode")));
+        subModelCase.put("invoiceNo", new ArrayList<String>(Arrays.asList("postfix")));
+
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
-        subModelCase.put("partyId", new ArrayList<String>(Arrays.asList("party", "id")));
-        subModelCase.put("userHeadId", new ArrayList<String>(Arrays.asList("userHeadData", "id")));
-        subModelCase.put("createdByID", new ArrayList<String>(Arrays.asList("createdBy", "id")));
-        subModelCase.put("userHeadName", new ArrayList<String>(Arrays.asList("userHeadData", "userName")));
-        subModelCase.put("createdByName", new ArrayList<String>(Arrays.asList("createdBy", "userName")));
 
         //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
         String signByParty = requestParam.getSignByParty();
@@ -378,7 +375,6 @@ public class DispatchMastImpl {
             filters.add(new Filter(new ArrayList<String>(Arrays.asList("signByParty")), QueryOperator.EQUALS, signByParty));
             Specification<DispatchMast> spec = specificationManager.getSpecificationFromFilters(filters, requestParam.getData().isAnd, subModelCase);
             queryResponse = dispatchMastDao.findAll(spec, pageable);
-            dispatchList = dispatchMastDao.getAllInvoiceListBySignByParty(Boolean.valueOf(signByParty));
 
         }
 
