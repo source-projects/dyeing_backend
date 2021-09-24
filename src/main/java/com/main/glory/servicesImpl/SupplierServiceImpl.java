@@ -4,11 +4,16 @@ import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.ShadeData;
 import com.main.glory.model.supplier.AddSupplier;
@@ -21,9 +26,13 @@ import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
 import com.main.glory.model.user.UserData;
+import com.main.glory.services.FilterService;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -62,6 +71,11 @@ public class SupplierServiceImpl {
 
     @Autowired
     UserDao userDao;
+    @Autowired
+    SpecificationManager<Supplier> specificationManager;
+	@Autowired
+    FilterService<Supplier,SupplierDao> filterService;
+
 
 
     
@@ -445,5 +459,32 @@ public class SupplierServiceImpl {
 
     public List<SupplierResponse> getSupplierByQualityNameId(Long id) {
         return supplierDao.getAllSupplierListByQualityNameId(id);
+    }
+
+
+    public FilterResponse<GetSupplierPaginatedData> getSupplierPaginatedData(GetBYPaginatedAndFiltered requestParam) {
+        List<Supplier> supplier = null;
+        List<GetSupplierPaginatedData> getSupplierPaginatedDataList =new ArrayList<GetSupplierPaginatedData>();
+
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        List<Filter> filtersParam=requestParam.getData().getParameters();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList( "qualityName","qualityName")));
+
+		Page queryResponse=null;
+
+        Specification<Supplier> filterSpec=specificationManager.getSpecificationFromFilters(filtersParam, requestParam.getData().isAnd,subModelCase);
+
+        queryResponse = supplierDao.findAll(filterSpec, pageable);
+        supplier=queryResponse.getContent();
+        for (int i=0;i<supplier.size();i++){
+            GetSupplierPaginatedData getSupplierPaginatedData=new GetSupplierPaginatedData(supplier.get(i));
+            getSupplierPaginatedDataList.add(getSupplierPaginatedData);
+        }
+        
+        FilterResponse<GetSupplierPaginatedData> response=new FilterResponse<GetSupplierPaginatedData>(getSupplierPaginatedDataList,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
+
+        return response;
+
     }
 }

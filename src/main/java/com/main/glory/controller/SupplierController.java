@@ -1,8 +1,11 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.AddSupplier;
@@ -11,6 +14,7 @@ import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
 import com.main.glory.model.supplier.responce.GetItemWithSupplier;
+import com.main.glory.model.supplier.responce.GetSupplierPaginatedData;
 import com.main.glory.model.supplier.responce.RateAndItem;
 import com.main.glory.model.supplier.responce.SupplierRateResponse;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -76,6 +80,25 @@ public class SupplierController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+    @PostMapping("/supplier/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetSupplierPaginatedData>,Object>> getSupplierPaginatedData(@RequestBody GetBYPaginatedAndFiltered requestParam){
+        GeneralResponse<FilterResponse<GetSupplierPaginatedData>,Object> result;
+        try{
+            FilterResponse<GetSupplierPaginatedData> flag = supplierService.getSupplierPaginatedData(requestParam);
+            if(flag.getData().isEmpty()) {
+                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            } else {
+                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
     @PostMapping("/supplier/rates")
     public ResponseEntity<GeneralResponse<Boolean,Object>> addSupplierRates(@RequestBody AddSupplierRateRequest addSupplierRateRequest){

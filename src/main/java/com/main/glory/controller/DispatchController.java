@@ -455,7 +455,7 @@ public class DispatchController extends ControllerConfig {
             result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
             logService.saveLog(result,request,true
             );
-        }
+        } 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
@@ -567,7 +567,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<Long,Object> result;
         try{
 
-            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice);
+            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice,Long.parseLong(request.getHeader("id")));
 
             result= new GeneralResponse<>(invoiceNo, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
 

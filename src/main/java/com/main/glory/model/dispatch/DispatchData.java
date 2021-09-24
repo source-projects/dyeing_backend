@@ -27,7 +27,11 @@ public class DispatchData {
     BatchData batchData;
     String batchId;
     Long stockId;
-    String invoiceNo;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="invoiceNo", referencedColumnName = "postfix", insertable = true, updatable = true)
+    DispatchMast dispatchMast;
+
+
     @Column(columnDefinition = "boolean default false")
     Boolean isSendToParty;
     Date createdDate;
@@ -60,12 +64,12 @@ public class DispatchData {
         this.stockId=batchData.getControlId();
         this.quality=quality;
         this.qualityRate=quality.getRate();
-        this.shadeId=shadeMast.getId()==null?null:shadeMast.getId();
+        this.shadeId=shadeMast==null?null:shadeMast.getId();
         this.billingUnit = quality.getBillingUnit();
         this.inwardUnit =quality.getUnit();
         this.wtPer100m = stockMast.getWtPer100m();
         this.pchallanRef = batchData.getPchallanRef();
-        //this.shadeRate=shadeMast.getExtraRate();
+        this.shadeRate=shadeMast !=null ? shadeMast.getExtraRate():null;
     }
     public DispatchData(BatchData batchData,  Quality quality,StockMast stockMast) {
         this.batchData=batchData;
