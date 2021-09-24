@@ -51,8 +51,6 @@ public class Supplier {
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData userHeadData;
 
-
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)

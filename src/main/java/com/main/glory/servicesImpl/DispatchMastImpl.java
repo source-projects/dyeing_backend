@@ -1583,7 +1583,7 @@ public class DispatchMastImpl {
         System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat(
                 "yyyy-MM-dd");
-
+ 
 
         if (!filter.getFrom().isEmpty()) {
             from = datetimeFormatter1.parse(filter.getFrom());

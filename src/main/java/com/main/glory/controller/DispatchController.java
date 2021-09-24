@@ -455,7 +455,7 @@ public class DispatchController extends ControllerConfig {
             result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
             logService.saveLog(result,request,true
             );
-        }
+        } 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
