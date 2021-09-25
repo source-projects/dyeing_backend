@@ -122,6 +122,7 @@ public class StockMast {
         this.wtPer100m=sm.getWtPer100m();
         //this.batchData = sm.getBatchData();
         this.quality =quality;
+        this.batchData=sm.getBatchData();
 
     }
 
