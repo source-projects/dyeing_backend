@@ -15,6 +15,7 @@ import com.main.glory.model.StockDataBatchData.*;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.admin.BatchSequence;
+import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.filters.QueryOperator;
@@ -2514,7 +2515,17 @@ public class StockBatchServiceImpl {
     }
 
     // add pchallan record api'ss service
-    public Long addPChallanRef(StockMast stockMast) throws Exception {
+    public Long addPChallanRef(AddStockBatch addStockBatch) throws Exception {
+        Party party = partyDao.findByPartyId(addStockBatch.getPartyId());
+        if (party == null)
+            throw new Exception(ConstantFile.Party_Not_Exist);
+        Optional<Quality> quality = qualityDao.findById(addStockBatch.getQualityId());
+
+        if (!quality.isPresent()) {
+            throw new Exception(ConstantFile.Quality_Data_Not_Found);
+        }
+
+        StockMast stockMast = new StockMast(addStockBatch, party, quality.get());
 
         List<BatchData> batchDataList = new ArrayList<>();
         // check that the party exist with same challan ref
@@ -2540,7 +2551,19 @@ public class StockBatchServiceImpl {
         return x.getId();
     }
 
-    public Long updatePChallanRef(StockMast stockMast, String id) throws Exception {
+    public Long updatePChallanRef(AddStockBatch addStockBatch, String id) throws Exception {
+
+        Party party = partyDao.findByPartyId(addStockBatch.getPartyId());
+        if (party == null)
+            throw new Exception(ConstantFile.Party_Not_Exist);
+        Optional<Quality> quality = qualityDao.findById(addStockBatch.getQualityId());
+
+        if (!quality.isPresent()) {
+            throw new Exception(ConstantFile.Quality_Data_Not_Found);
+        }
+
+        StockMast stockMast = new StockMast(addStockBatch, party, quality.get());
+
         List<BatchData> batchDataList = new ArrayList<>();
         for (BatchData batchData : stockMast.getBatchData()) {
             /*
@@ -2638,8 +2661,8 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(Long.parseLong(id));
         if (userData.getIsMaster() == false || stockMast.getUserHeadId() == 0) {
             // fetch the party record to set the usert head
-            Party party = partyDao.findByPartyId(stockMast.getParty().getId());
-            stockMast.setUserHeadId(party.getUserHeadData().getId());
+            Party party1 = stockMast.getParty();
+            stockMast.setUserHeadId(party1.getUserHeadData().getId());
         }
         // update record
         StockMast x = new StockMast(stockMast);
@@ -2684,6 +2707,36 @@ public class StockBatchServiceImpl {
         return pendingBatchMastList;
 */
         return null;
+    }
+
+    public FilterResponse<BatchReturnResponse> getAllReturnBatchAllPaginated(GetBYPaginatedAndFiltered requestParam) {
+        List<BatchReturnResponse> batchReturnResponseList = new ArrayList<>();
+        Pageable pageable = filterService.getPageable(requestParam.getData());
+        List<Filter> filters = requestParam.getData().getParameters();
+        HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("postfix","qualityName")));
+
+        //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
+        Page queryResponse = null;
+
+        
+        
+        // List<BatchReturnResponse> list = new ArrayList<>();
+
+        // List<BatchReturnMast> returnBatchDetailList = batchReturnMastDao.getAllBatchReturn();
+
+        // returnBatchDetailList.forEach(e -> {
+
+        //     BatchReturnResponse batchReturnResponse = getReturnBatchByChalNo(e.getChlNo());
+        //     if (batchReturnResponse != null)
+        //         list.add(batchReturnResponse);
+
+        // });
+
+        FilterResponse<BatchReturnResponse> response = new FilterResponse<BatchReturnResponse>(batchReturnResponseList, queryResponse.getNumber(), queryResponse.getNumberOfElements(), (int) queryResponse.getTotalElements());
+        return response;
+
+
     }
 
 
