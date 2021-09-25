@@ -718,6 +718,27 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PostMapping("/stockBatch/all/returnBatch/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<BatchReturnResponse>, Object>> getReturnBatchAllPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam) throws Exception {
+        GeneralResponse<FilterResponse<BatchReturnResponse>, Object> result = null;
+        try {
+            FilterResponse<BatchReturnResponse> list = stockBatchService.getAllReturnBatchAllPaginated(requestParam);
+
+            if (!list.getData().isEmpty()) {
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            } else
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
 
     @GetMapping("/stockBatch/get/returnBatch")
     public ResponseEntity<GeneralResponse<BatchReturnResponse, Object>> getReturnBatchByChalNo(@RequestParam(name = "chlNo") Long chlNo) throws Exception {
@@ -815,16 +836,16 @@ public class StockBatchController extends ControllerConfig {
 
     //pchallan api's
     @PostMapping("/stockBatch/add/pchallan")
-    public ResponseEntity<GeneralResponse<Long, Object>> addPchallanStockMast(@RequestBody StockMast stockMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Long, Object>> addPchallanStockMast(@RequestBody AddStockBatch addStockBatch) throws Exception {
         GeneralResponse<Long, Object> result = null;
         try {
-            Long id = stockBatchService.addPChallanRef(stockMast);
-            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, stockMast);
+            Long id = stockBatchService.addPChallanRef(addStockBatch);
+            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, addStockBatch);
 
             logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, stockMast);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, addStockBatch);
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
@@ -832,17 +853,17 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch/update/pchallan")
-    public ResponseEntity<GeneralResponse<Long, Object>> updatePchallanStockMast(@RequestBody StockMast stockMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Long, Object>> updatePchallanStockMast(@RequestBody AddStockBatch addStockBatch) throws Exception {
         GeneralResponse<Long, Object> result = null;
         try {
-            Long id = stockBatchService.updatePChallanRef(stockMast, request.getHeader("id"));
-            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, stockMast);
+            Long id = stockBatchService.updatePChallanRef( addStockBatch, request.getHeader("id"));
+            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, addStockBatch);
 
 
             logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, stockMast);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, addStockBatch);
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));

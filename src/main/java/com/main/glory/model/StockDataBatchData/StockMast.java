@@ -64,8 +64,7 @@ public class StockMast {
     Double wtPer100m;
 
     // @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "controlId", referencedColumnName = "id")
+    @OneToMany(mappedBy="stockMast",cascade = CascadeType.ALL)
     List<BatchData> batchData;
 
     // @JsonIgnore
@@ -121,6 +120,7 @@ public class StockMast {
         this.wtPer100m=sm.getWtPer100m();
         //this.batchData = sm.getBatchData();
         this.quality =quality;
+        this.batchData=sm.getBatchData();
 
     }
 
