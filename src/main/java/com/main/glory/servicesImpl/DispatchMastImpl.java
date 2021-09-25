@@ -32,20 +32,17 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
-import com.main.glory.services.DataConversion;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -809,7 +806,7 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
 
         List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList = new ArrayList<>();
 
-        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(invoiceNo));
+        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(invoiceNo);
         String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
         if (invoiceExist == null || invoiceExist == "")
             throw new Exception(ConstantFile.Dispatch_Found);
@@ -1403,7 +1400,7 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
 
     public void deleteDispatchByInvoiceNo(Long invoiceNo) throws Exception {
         //check invoice is exist or not
-        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(invoiceNo);
+        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(String.valueOf(invoiceNo));
 
         if (dispatchMast == null)
             throw new Exception(ConstantFile.Dispatch_Not_Exist);
@@ -1716,6 +1713,9 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
         if (invoiceSequenceExist == null)
             throw new Exception(constantFile.Invoice_Sequence_Not_Found);
 
+
+        //update batch list
+        List<Long> batchIdListToUpdate = new ArrayList<>();
         //check user exist or not
         UserData userData = userService.getUserById(userId);
 
@@ -1726,7 +1726,7 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
         DispatchMast dispatchMast = new DispatchMast(dispatchList);
         dispatchMast.setSignByParty(false);
         dispatchMast.setPrefix("inv");
-
+        dispatchMast.setPostfix(invoiceSequenceExist.getSequence().toString());
 
 
 
@@ -1734,15 +1734,15 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
 
         StockMast stockMast = stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).getStockId());
 
-        Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
+        Party party = stockMast.getParty();
 
-        if (party.isEmpty())
+        if (party==null)
             throw new Exception("no party found for id:" + stockMast.getParty().getId());
 
 
         //check the credit limit invoice password gloryFab123@@
-        Double pendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.get().getId());
-        if (pendingAmt != null && pendingAmt > party.get().getCreditLimit()) {
+        Double pendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.getId());
+        if (pendingAmt != null && pendingAmt > party.getCreditLimit()) {
             //check the password and allow to create the invoice else throw the exception
             if (dispatchList.getPassword() == null || getPasswordToCreateInvoice(dispatchList.getPassword()) == false) {
                 throw new Exception(ConstantFile.Dispatch_Password_Wrong);
@@ -1776,7 +1776,7 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
 
 
             StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
-            Quality quality = qualityDao.getqualityById(stockMast1.getQuality().getId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+            Quality quality = stockMast1.getQuality();
 
             if (quality == null)
                 throw new Exception("no quality found");
@@ -1805,7 +1805,7 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
                     }
 
 
-                    dispatchData.setDispatchMast(dispatchMast);
+                    dispatchData.setInvoiceNo(dispatchMast.getPostfix());
 
                     dispatchData.setCreatedBy(dispatchList.getCreatedBy());
                     dispatchData.setIsSendToParty(false);
@@ -1814,21 +1814,22 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
                     //dispatchDataDao.save(dispatchData);
                     dispatchDataList.add(dispatchData);
 
-                    batchData.setIsBillGenrated(true);
-                    batchDao.save(batchData);
+
+                    //batchData.setIsBillGenrated(true);
+                    batchIdListToUpdate.add(batchData.getId());
+                    //batchDao.save(batchData);
                 }
             }
         }
 
         //set the dispatch mast values
         dispatchMast.setDispatchDataList(dispatchDataList);
-        dispatchMast.setUserHeadData(party.get().getUserHeadData());
-        dispatchMast.setParty(party.get());
-        dispatchMast.setPostfix(invoiceSequenceExist.getSequence().toString());
+        dispatchMast.setUserHeadData(party.getUserHeadData());
+        dispatchMast.setParty(party);
         if(userData.getIsMaster()==false || userData.getUserHeadId()==0)
         {
-            dispatchMast.setCreatedBy(party.get().getUserHeadData());
-            dispatchMast.setUpdatedBy(party.get().getUserHeadData());
+            dispatchMast.setCreatedBy(party.getUserHeadData());
+            dispatchMast.setUpdatedBy(party.getUserHeadData());
         }
         else {
             dispatchMast.setCreatedBy(userData);
@@ -1843,6 +1844,10 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
 
 
         dispatchMastDao.save(dispatchMast);
+
+        //update the batch list
+        batchDao.updateBillStatusInListOfBatchEntryId(batchIdListToUpdate,true);
+
 
 
         //update the invoice sequence by one
@@ -1888,7 +1893,7 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
     public PartyDataByInvoiceNumber getPChallanPartyWithQualityDispatchBy(String invoiceNo) throws Exception {
         List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList = new ArrayList<>();
 
-        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(invoiceNo));
+        DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(invoiceNo);
         String invoiceExist = dispatchDataDao.findByInvoiceNo(invoiceNo);
         if (invoiceExist == null || invoiceExist == "")
             throw new Exception(ConstantFile.Dispatch_Not_Found);
@@ -2341,8 +2346,8 @@ System.out.println("page index-"+requestParam.getData().getPageIndex());
 
         List<GetBatchByInvoice> list = dispatchDataDao.findPChallanAndStockByInvoice(invoiceNo);
 
-       /* if(list.isEmpty())
-            throw new Exception("no data found");*/
+        if(list.isEmpty())
+            throw new Exception("no data found");
 
         for (GetBatchByInvoice batch : list) {
             BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = new BatchWithTotalMTRandFinishMTR();

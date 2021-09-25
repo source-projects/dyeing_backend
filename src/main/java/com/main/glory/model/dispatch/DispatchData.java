@@ -27,11 +27,8 @@ public class DispatchData {
     BatchData batchData;
     String batchId;
     Long stockId;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="dispatchMastId", referencedColumnName = "id", insertable = true, updatable = true)
-    DispatchMast dispatchMast;
-
-
+    Long controlId;
+    String invoiceNo;
     @Column(columnDefinition = "boolean default false")
     Boolean isSendToParty;
     Date createdDate;

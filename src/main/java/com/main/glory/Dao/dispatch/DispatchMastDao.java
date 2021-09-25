@@ -38,7 +38,7 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     List<DispatchMast> getPendingBillByPartyId(Long partyId);
 
     @Query("select d from DispatchMast d where d.postfix=:substring")
-    DispatchMast getDataByInvoiceNumber(Long substring);
+    DispatchMast getDataByInvoiceNumber(String substring);
 
     // @Query("select d from DispatchMast d where
     // (d.partyId,d.partyId)=(:partyId,NULL) OR (:from IS NULL OR

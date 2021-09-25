@@ -31,7 +31,7 @@ public class GetAllDispatch {
     List<BatchWithTotalMTRandFinishMTR> batchList;
 
     public GetAllDispatch(DispatchData dispatchData) {
-        this.invoiceNo=dispatchData.getDispatchMast().getPostfix();
+        this.invoiceNo=dispatchData.getInvoiceNo();
         this.isSendToParty=dispatchData.getIsSendToParty();
         this.date=dispatchData.getCreatedDate();
     }

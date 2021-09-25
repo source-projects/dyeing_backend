@@ -35,7 +35,8 @@ public class DispatchMast{
 
     String postfix;
 
-    @OneToMany(mappedBy = "dispatchMast", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<DispatchData> dispatchDataList;
     
     Long paymentBunchId;//payment mast id

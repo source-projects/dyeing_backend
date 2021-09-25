@@ -2535,6 +2535,7 @@ public class StockBatchServiceImpl {
         // store pchallan
 
         stockMast.setBatchData(batchDataList);
+
         StockMast x = stockMastDao.save(stockMast);
         return x.getId();
     }

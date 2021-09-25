@@ -23,8 +23,8 @@ public class BatchData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    Double mtr=(double) 0;
-    Double wt=(double) 0;
+    Double mtr;
+    Double wt;
     String batchId;
     Long controlId;
     @ColumnDefault("false")
