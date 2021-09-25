@@ -374,7 +374,6 @@ public class DispatchMastImpl {
         }
 
 
-        List<String> invoiceNumber = new ArrayList<>();
         dispatchList = queryResponse.getContent();
 
        /* if (dispatchList.isEmpty())
@@ -400,12 +399,13 @@ public class DispatchMastImpl {
             //get the batch data
 
             List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao.getAllStockByInvoiceNumber(dispatchMast.getPostfix());
-
+            System.out.println("length of batchList-"+batchListWithInvoiceList.size());
             for (GetBatchByInvoice batch : batchListWithInvoiceList) {
                 //list of batches
                 BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao.getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
                 batchList.add(batchWithTotalMTRandFinishMTR);
             }
+            System.out.println("length of batchList-"+batchList.size());
             getAllDispatch.setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
             getAllDispatch.setPartyId(party.getId());
             getAllDispatch.setPartyName(party.getPartyName());

@@ -90,18 +90,19 @@ public class ShadeServiceImpl {
 		// consider we have data and add directlt
 		UserData userHeadData = userDao.getUserById(addShadeMast.getUserHeadId());
 		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
-		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData);
+		Quality quality=qualityDao.findById(addShadeMast.getQualityEntryId()).get();
+		Party party=partyDao.findById(addShadeMast.getPartyId()).get();
+		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,quality,party);
 		System.out.println("ShadeMast object created");
 
-		if (shadeMast.getQualityEntryId() == null)
+		if (shadeMast.getQuality() == null)
 			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
-		if (shadeMast.getPartyId() == null)
+		if (shadeMast.getParty() == null)
 			throw new Exception(ConstantFile.Party_Not_Exist);
 
-		Quality quality = qualityDao.getqualityById(shadeMast.getQualityEntryId());
 		if (quality == null) {
-			throw new Exception(ConstantFile.Quality_Data_Not_Found + shadeMast.getQualityEntryId());
+			throw new Exception(ConstantFile.Quality_Data_Not_Found + shadeMast.getQuality().getId());
 		}
 		System.out.println("Quality object created");
 
@@ -130,7 +131,6 @@ public class ShadeServiceImpl {
 		UserData userData = userDao.getUserById(Long.parseLong(id));
 		if (userData.getIsMaster() == false) {
 			// get the party record
-			Party party = partyDao.findByPartyId(shadeMast.getPartyId());
 			if (party == null)
 				throw new Exception(ConstantFile.Party_Not_Exist);
 
@@ -142,7 +142,7 @@ public class ShadeServiceImpl {
 		// check that shade is exist or not
 		ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(
 				shadeMast.getId() == null ? 0 : shadeMast.getId(), shadeMast.getPartyShadeNo(),
-				shadeMast.getQualityEntryId());
+				shadeMast.getQuality().getId());
 		ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
 
 		System.out.println("ShadeExistWithPartyShadeAndQualityId object created");
@@ -206,12 +206,14 @@ public class ShadeServiceImpl {
 	public Boolean updateShade(AddShadeMast addShadeMast) throws Exception {
 		UserData userHeadData = userDao.getUserById(addShadeMast.getUserHeadId());
 		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
-		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData);
+		Quality quality=qualityDao.findById(addShadeMast.getQualityEntryId()).get();
+		Party party=partyDao.findById(addShadeMast.getPartyId()).get();
+		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,quality,party);
 
-		if (shadeMast.getQualityEntryId() == null)
+		if (shadeMast.getQuality() == null)
 			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
-		if (shadeMast.getPartyId() == null)
+		if (shadeMast.getParty() == null)
 			throw new Exception(ConstantFile.Party_Not_Exist);
 
 		if (shadeMast.getShadeDataList() == null || shadeMast.getShadeDataList().isEmpty()) {
@@ -233,7 +235,7 @@ public class ShadeServiceImpl {
 			// check that shade is exist or not
 			ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(
 					shadeMast.getId() == null ? 0 : shadeMast.getId(), shadeMast.getPartyShadeNo(),
-					shadeMast.getQualityEntryId());
+					shadeMast.getQuality().getId());
 			ShadeMast shadeMastExist = getShadeExistWithPartyShadeNoAndQualityEntryId(record);
 
 			if (shadeMastExist != null)
@@ -272,18 +274,18 @@ public class ShadeServiceImpl {
 			shadeMastList = shadeMastDao.getAllShadeMast();
 			for (ShadeMast e : shadeMastList) {
 
-				if (e.getPartyId() != null && e.getQualityEntryId() != null) {
+				if (e.getParty() != null && e.getQuality().getId() != null) {
 					DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
 
-					Optional<Party> party = partyDao.findById(e.getPartyId());
-					Optional<Quality> qualityName = qualityDao.findById(e.getQualityEntryId());
+					Party party = e.getParty();
+					Optional<Quality> qualityName = qualityDao.findById(e.getQuality().getId());
 
 					if (dyeingProcessMast == null)
 						continue;
 
 					if (!qualityName.isPresent())
 						continue;
-					if (!party.isPresent())
+					if (party==null)
 						continue;
 
 					if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
@@ -303,18 +305,18 @@ public class ShadeServiceImpl {
 			shadeMastList = shadeMastDao.findAllByCreatedBy(id);
 			for (ShadeMast e : shadeMastList) {
 
-				if (e.getPartyId() != null && e.getQualityEntryId() != null) {
+				if (e.getParty() != null && e.getQuality().getId() != null) {
 					DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
 
-					Optional<Party> party = partyDao.findById(e.getPartyId());
-					Optional<Quality> qualityName = qualityDao.findById(e.getQualityEntryId());
+					Party party = e.getParty();
+					Optional<Quality> qualityName = qualityDao.findById(e.getQuality().getId());
 
 					if (dyeingProcessMast == null)
 						continue;
 
 					if (!qualityName.isPresent())
 						continue;
-					if (!party.isPresent())
+					if (party==null)
 						continue;
 					if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
 							|| e.getShadeDataList().get(0).getSupplierItemId() == null)
@@ -337,19 +339,19 @@ public class ShadeServiceImpl {
 				shadeMastList = shadeMastDao.findAllByCreatedByAndHeadId(id, id);
 				for (ShadeMast e : shadeMastList) {
 
-					if (e.getPartyId() != null && e.getQualityEntryId() != null) {
+					if (e.getParty() != null && e.getQuality().getId() != null) {
 						DyeingProcessMast dyeingProcessMast = dyeingProcessService
 								.getDyeingProcessById(e.getProcessId());
 
-						Optional<Party> party = partyDao.findById(e.getPartyId());
-						Optional<Quality> qualityName = qualityDao.findById(e.getQualityEntryId());
+						Party party = e.getParty();
+						Optional<Quality> qualityName = qualityDao.findById(e.getQuality().getId());
 
 						if (dyeingProcessMast == null)
 							continue;
 
 						if (!qualityName.isPresent())
 							continue;
-						if (!party.isPresent())
+						if (party==null)
 							continue;
 
 						if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
@@ -372,19 +374,19 @@ public class ShadeServiceImpl {
 						userOperator.getUserHeadId());
 				for (ShadeMast e : shadeMastList) {
 
-					if (e.getPartyId() != null && e.getQualityEntryId() != null) {
+					if (e.getParty() != null && e.getQuality().getId() != null) {
 						DyeingProcessMast dyeingProcessMast = dyeingProcessService
 								.getDyeingProcessById(e.getProcessId());
 
-						Optional<Party> party = partyDao.findById(e.getPartyId());
-						Optional<Quality> qualityName = qualityDao.findById(e.getQualityEntryId());
+						Party party = e.getParty();
+						Optional<Quality> qualityName = qualityDao.findById(e.getQuality().getId());
 
 						if (dyeingProcessMast == null)
 							continue;
 
 						if (!qualityName.isPresent())
 							continue;
-						if (!party.isPresent())
+						if (party==null)
 							continue;
 						if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
 								|| e.getShadeDataList().get(0).getSupplierItemId() == null)
@@ -421,6 +423,8 @@ public class ShadeServiceImpl {
 		subModelCase.put("createdBy", new ArrayList<String>(Arrays.asList("createdBy", "id")));
 		subModelCase.put("userHeadName", new ArrayList<String>(Arrays.asList("userHeadData", "userName")));
 		subModelCase.put("createdByName", new ArrayList<String>(Arrays.asList("createdBy", "userName")));
+		subModelCase.put("qualityId", new ArrayList<String>(Arrays.asList("quality", "qualityId")));
+		subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
 		Page queryResponse = null;
 		Specification<ShadeMast> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
 				requestParam.getData().isAnd, subModelCase);
@@ -476,18 +480,18 @@ public class ShadeServiceImpl {
 
 		for (ShadeMast e : shadeMastList) {
 
-			if (e.getPartyId() != null && e.getQualityEntryId() != null) {
+			if (e.getParty() != null && e.getQuality().getId() != null) {
 				DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(e.getProcessId());
 
-				Optional<Party> party = partyDao.findById(e.getPartyId());
-				Optional<Quality> qualityName = qualityDao.findById(e.getQualityEntryId());
+				Party party = e.getParty();
+				Optional<Quality> qualityName = qualityDao.findById(e.getQuality().getId());
 
 				if (dyeingProcessMast == null)
 					continue;
 
 				if (!qualityName.isPresent())
 					continue;
-				if (!party.isPresent())
+				if (party==null)
 					continue;
 
 				if (e.getShadeDataList() == null || e.getShadeDataList().isEmpty()
@@ -668,8 +672,8 @@ public class ShadeServiceImpl {
 		List<GetAllPendingShade> dataList = new ArrayList<>();
 		List<ShadeMast> list = shadeMastDao.getAllPendingShadeMast();
 		for (ShadeMast s : list) {
-			Party party = partyDao.findByPartyId(s.getPartyId());
-			Optional<Quality> quality = qualityDao.findById(s.getQualityEntryId());
+			Party party = s.getParty();
+			Optional<Quality> quality = qualityDao.findById(s.getQuality().getId());
 			DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(s.getProcessId());
 			if (s.getShadeDataList() == null || s.getShadeDataList().isEmpty()
 					|| s.getShadeDataList().get(0).getSupplierItemId() == null) {

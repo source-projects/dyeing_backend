@@ -27,7 +27,7 @@ public class GetSupplierPaginatedData {
         this.supplierName=supplier.getSupplierName();
         this.discountPercentage=supplier.getDiscountPercentage();
         this.gstPercentage=supplier.getGstPercentage();
-        this.qualityName=supplier.getQualityName().getQualityName();
+        this.qualityName=supplier.getQualityName()==null?null:supplier.getQualityName().getQualityName();
         this.remark=supplier.getRemark();
         this.paymentTerms=supplier.getPaymentTerms();
     }
