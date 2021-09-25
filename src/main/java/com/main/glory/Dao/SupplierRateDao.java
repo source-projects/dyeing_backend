@@ -23,7 +23,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
     List<GetAllSupplierRate> findWithSupplierName();
 
 
-    @Query("Select new com.main.glory.model.supplier.responce.ItemWithSupplier(q.id as id,q.itemName as itemName,q.supplier.id as supplierId,SUM(q.rate) as RATE) from SupplierRate q where supplierId IS NOT NULL GROUP BY  id,supplierId")
+    @Query("Select new com.main.glory.model.supplier.responce.ItemWithSupplier(q.id as id,q.itemName as itemName,q.supplier.id as supplierId,SUM(q.rate) as RATE) from SupplierRate q where q.supplier IS NOT NULL")
     List<ItemWithSupplier> findAllSupplierItem();
 
 

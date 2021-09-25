@@ -1441,14 +1441,14 @@ public class DispatchMastImpl {
             to = c.getTime();
         }
 
-        System.out.println(1);
+        //System.out.println(1);
         List<ConsolidatedBillMast> list = new ArrayList<>();
-        System.out.println(1);
+        //System.out.println(1);
         //System.out.println(from+":"+to);
         List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByDateFilter(from, to);
-        System.out.println(1);
+        //System.out.println(1);
         for (DispatchMast dispatchMast : dispatchMastList) {
-            System.out.println(2);
+            //System.out.println(2);
             ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
 
             Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
@@ -1485,7 +1485,7 @@ public class DispatchMastImpl {
                 if (stockMast == null)
                     continue;
 
-                GetQualityResponse quality = qualityServiceImp.getQualityByID(stockMast.getQuality().getId());
+                Quality quality = stockMast.getQuality();
                 if (quality == null)
                     continue;
 
@@ -1881,7 +1881,7 @@ public class DispatchMastImpl {
         //cheange the batch rate as well
         for (BatchAndStockId batcheAndStockId : createDispatch.getBatchAndStockIdList()) {
             //update batch quality rate with pchallan ref id
-            dispatchDataDao.updateQualityRateWithPChallanRefAndInvoiceNo(dispatchMast.getPostfix(), batcheAndStockId.getPchallanRef(), batcheAndStockId.getRate());
+            dispatchDataDao.updateQualityRateWithPChallanRefAndBatchIdAndInvoiceNo(dispatchMast.getPostfix(), batcheAndStockId.getPchallanRef(), batcheAndStockId.getRate(),batcheAndStockId.getBatchId());
         }
         return Long.parseLong(dispatchMast.getPostfix());
 
@@ -2349,7 +2349,7 @@ public class DispatchMastImpl {
 
         for (GetBatchByInvoice batch : list) {
             BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = new BatchWithTotalMTRandFinishMTR();
-
+            batchWithTotalMTRandFinishMTR.setBatchId(batch.getBatchId());
             batchWithTotalMTRandFinishMTR.setPchallanRef(batch.getPchallanRef());
             batchWithTotalMTRandFinishMTR.setControlId(batch.getStockId());
 

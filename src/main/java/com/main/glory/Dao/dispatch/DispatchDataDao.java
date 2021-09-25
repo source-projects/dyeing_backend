@@ -99,7 +99,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     void updateQualityRateWithPChallanRefAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate);
 
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchData.id) as batch,dd.stockId,dd.pchallanRef) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.pchallanRef,dd.stockId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchData.id) as batch,dd.stockId,dd.pchallanRef,dd.batchId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.pchallanRef,dd.stockId")
     List<GetBatchByInvoice> findPChallanAndStockByInvoice(String invoiceExist);
 
     //get the invoice batch by the invoice no and batch id and stock id
@@ -128,6 +128,11 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Query(value = "select quality_rate from dispatch_data as x where x.batch_id = :batchId AND x.pchallan_ref=:pchallanRef AND x.invoice_no=:invoiceNo LIMIT 1",nativeQuery = true)
     Double getShadeRateByInvoiceNoandBatchIdAndPchallanRef(String invoiceNo, String pchallanRef, String batchId);
+
+    @Modifying
+    @Transactional
+    @Query("update DispatchData x set x.qualityRate=:rate where x.pchallanRef=:pchallanRef AND x.invoiceNo=:invoiceNo AND x.batchId=:batchId")
+    void updateQualityRateWithPChallanRefAndBatchIdAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate, String batchId);
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchData.id) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);

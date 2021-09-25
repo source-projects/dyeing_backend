@@ -93,6 +93,7 @@ public class DispatchMast{
         this.signUpdatedDate = dispatchMast.getSignUpdatedDate();
         this.deliveryMode =  createDispatch.getDeliveryMode();
         this.prefix = dispatchMast.getPrefix();
+        this.postfix =dispatchMast.getPostfix();
     }
 
 

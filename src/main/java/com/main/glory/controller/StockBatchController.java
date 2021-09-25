@@ -494,7 +494,7 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Long, Object>> updateStockBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<GeneralResponse<Long, Object>> updateStockBatch(@RequestBody StockMast stockMast, @RequestHeader Map<String, String> headers) {
         GeneralResponse<Long, Object> result;
         try {
             stockBatchService.updateBatch(stockMast, headers.get("id"));

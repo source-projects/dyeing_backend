@@ -549,7 +549,7 @@ public class StockBatchServiceImpl {
             throw new Exception("no data found for StockId: " + id);
     }
 
-    public void updateBatch(AddStockBatch stockMast, String id) throws Exception {
+    public void updateBatch(StockMast stockMast, String id) throws Exception {
         // first check the batch id is null or not
 
         List<BatchData> batchDataList = new ArrayList<>();
@@ -612,21 +612,27 @@ public class StockBatchServiceImpl {
         }
 
         // for data entry user
+        Party party=null;
+        Quality quality=null;
         UserData userData = userDao.getUserById(Long.parseLong(id));
         if (userData.getIsMaster() == false || stockMast.getUserHeadId() == 0) {
             // fetch the party record to set the usert head
-            Party party = partyDao.findByPartyId(stockMast.getPartyId());
+            party = partyDao.findByPartyId(stockMast.getParty().getId());
             stockMast.setUserHeadId(party.getUserHeadData().getId());
         }
-        Party party = partyDao.findById(stockMast.getPartyId()).get();
-        Quality quality = qualityDao.findById(stockMast.getQualityId()).get();
+        else {
+            party = partyDao.findById(stockMast.getParty().getId()).get();
+        }
+        quality = qualityDao.findById(stockMast.getQuality().getId()).get();
         // update record
-        StockMast x = new StockMast(stockMast, party, quality);
-        x.setBatchData(batchDataList);
-        stockMastDao.save(x);
+        stockMast.setQuality(quality);
+        stockMast.setParty(party);
+
+        stockMast.setBatchData(batchDataList);
+        stockMastDao.save(stockMast);
         // batchDao.saveAll(batchDataList);
         // update the quality wt per 100 as well
-        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQualityId(), stockMast.getWtPer100m(),
+        qualityDao.updateQualityWtAndMtrKgById(stockMast.getQuality().getId(), stockMast.getWtPer100m(),
                 100 / stockMast.getWtPer100m());
 
         // update the sequence
