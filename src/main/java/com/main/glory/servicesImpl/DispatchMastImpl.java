@@ -1414,7 +1414,8 @@ public class DispatchMastImpl {
         //now delete the dispatch data and then mast info of dispatch
         //dispatchDataDao.deleteBatchEntryIdByInvoiceNo(String.valueOf(invoiceNo));
 
-        dispatchMastDao.deleteByInvoicePostFix(invoiceNo);
+        dispatchMastDao.deleteByInvoicePostFix(String.valueOf(invoiceNo));
+        dispatchDataDao.deleteByInvoiceNo(String.valueOf(invoiceNo));
 
     }
 
