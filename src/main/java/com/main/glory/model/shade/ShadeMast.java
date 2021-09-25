@@ -2,6 +2,7 @@ package com.main.glory.model.shade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
@@ -31,7 +32,9 @@ import java.util.List;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="qualityEntryId", referencedColumnName = "id", insertable = true, updatable = true)    
 	Quality quality;
-	Long partyId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    
+	Party party;
 	String colorTone;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -69,7 +72,7 @@ import java.util.List;
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
-	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData,Quality quality)
+	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData,Quality quality,Party party)
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
@@ -77,7 +80,7 @@ import java.util.List;
 		this.quality=quality;
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
-		this.partyId=addShadeMast.getPartyId();
+		this.party=party;
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy=createdBy;
 		this.cuttingId=addShadeMast.getCuttingId();
@@ -98,7 +101,7 @@ import java.util.List;
 		this.id=addShadeMast.getId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
-		this.partyId=addShadeMast.getPartyId();
+		this.party=addShadeMast.getParty();
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy=addShadeMast.getCreatedBy();
 		this.cuttingId=addShadeMast.getCuttingId();
@@ -118,7 +121,7 @@ import java.util.List;
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
 		this.quality=addShadeMast.getQuality();
-		this.partyId=addShadeMast.getPartyId();
+		this.party=addShadeMast.getParty();
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy = addShadeMast.getCreatedBy();
 		this.updatedBy = addShadeMast.getUpdatedBy();

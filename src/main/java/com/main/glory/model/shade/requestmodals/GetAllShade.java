@@ -53,15 +53,15 @@ public class GetAllShade {
 
 
 
-    public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName,DyeingProcessMast dyeingProcessMast) {
+    public GetAllShade(ShadeMast e, Party party, Optional<Quality> qualityName,DyeingProcessMast dyeingProcessMast) {
         this.id=e.getId();
         this.partyShadeNo=e.getPartyShadeNo();
         this.processId=e.getProcessId();
         this.qualityEntryId=qualityName.get().getId();
         this.qualityName=qualityName.get().getQualityName().getQualityName();
         this.qualityId=qualityName.get().getQualityId();
-        this.partyName=party.get().getPartyName();
-        this.partyId=party.get().getId();
+        this.partyName=party.getPartyName();
+        this.partyId=party.getId();
         this.colorTone=e.getColorTone();
         this.userHeadData=e.getUserHeadData();
         this.createdBy=e.getCreatedBy();
@@ -72,15 +72,15 @@ public class GetAllShade {
     }
 
 
-    public GetAllShade(ShadeMast e, Optional<Party> party, Optional<Quality> qualityName, DyeingProcessMast dyeingProcessMast, QualityName qualityName1) {
+    public GetAllShade(ShadeMast e, Party party, Optional<Quality> qualityName, DyeingProcessMast dyeingProcessMast, QualityName qualityName1) {
         this.id=e.getId();
         this.partyShadeNo=e.getPartyShadeNo();
         this.processId=e.getProcessId();
         this.qualityEntryId=qualityName.get().getId();
         this.qualityName=qualityName1.getQualityName();
         this.qualityId=qualityName.get().getQualityId();
-        this.partyName=party.get().getPartyName();
-        this.partyId=party.get().getId();
+        this.partyName=party.getPartyName();
+        this.partyId=party.getId();
         this.colorTone=e.getColorTone();
         this.userHeadData=e.getUserHeadData();
         this.createdBy=e.getCreatedBy();
