@@ -290,11 +290,11 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
         for (ShadeMast e : shadeMastList) {
 
-            if(e.getPartyId()!=null && e.getQualityEntryId()!=null)
+            if(e.getPartyId()!=null && e.getQuality()!=null)
             {
-                Optional<Quality> quality = qualityDao.findById(e.getQualityEntryId());
+                Quality quality = e.getQuality();
                 Optional<Party> party=partyDao.findById(e.getPartyId());
-                if(!quality.isPresent() || !party.isPresent()){
+                if(quality==null || !party.isPresent()){
                     continue;
                 }
                 if(e.getId()==null)
@@ -302,7 +302,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
                 ShadeIdwithPartyShadeNo data=new ShadeIdwithPartyShadeNo();
                 data.setId(e.getId());
-                data.setQualityId(quality.get().getQualityId());
+                data.setQualityId(quality.getQualityId());
                 data.setPartyId(e.getPartyId());
                 data.setPartyShadeNo(e.getPartyShadeNo());
                 data.setColorTone(e.getColorTone());

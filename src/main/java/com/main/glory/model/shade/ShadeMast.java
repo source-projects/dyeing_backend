@@ -3,6 +3,7 @@ package com.main.glory.model.shade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import com.main.glory.model.user.UserData;
 
@@ -27,7 +28,9 @@ import java.util.List;
 	Long id;
 	String partyShadeNo;
 	Long processId;
-	Long qualityEntryId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="qualityEntryId", referencedColumnName = "id", insertable = true, updatable = true)    
+	Quality quality;
 	Long partyId;
 	String colorTone;
 
@@ -66,12 +69,12 @@ import java.util.List;
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
-	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData)
+	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData,Quality quality)
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
 		this.id=addShadeMast.getPartyId();
-		this.qualityEntryId=addShadeMast.getQualityEntryId();
+		this.quality=quality;
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
 		this.partyId=addShadeMast.getPartyId();
@@ -114,7 +117,7 @@ import java.util.List;
 		this.id=addShadeMast.getId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
-		this.qualityEntryId=addShadeMast.getQualityEntryId();
+		this.quality=addShadeMast.getQuality();
 		this.partyId=addShadeMast.getPartyId();
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy = addShadeMast.getCreatedBy();
