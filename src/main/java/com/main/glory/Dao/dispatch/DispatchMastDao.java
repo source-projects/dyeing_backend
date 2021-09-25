@@ -32,13 +32,13 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Modifying
     @Transactional
     @Query("delete from DispatchMast d where d.postfix=:substring")
-    void deleteByInvoicePostFix(Long substring);
+    void deleteByInvoicePostFix(String substring);
 
     @Query("select q from DispatchMast q where q.party.id=:partyId AND q.postfix!=0 AND q.paymentBunchId IS NULL")
     List<DispatchMast> getPendingBillByPartyId(Long partyId);
 
     @Query("select d from DispatchMast d where d.postfix=:substring")
-    DispatchMast getDataByInvoiceNumber(Long substring);
+    DispatchMast getDataByInvoiceNumber(String substring);
 
     // @Query("select d from DispatchMast d where
     // (d.partyId,d.partyId)=(:partyId,NULL) OR (:from IS NULL OR

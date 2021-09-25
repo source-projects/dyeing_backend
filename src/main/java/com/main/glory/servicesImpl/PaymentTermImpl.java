@@ -77,7 +77,7 @@ public class PaymentTermImpl {
         //change the status of invoice and assign the paymentBunchId to the
         for(PendingInvoice pendingInvoice:paymentMast.getInvoices())
         {
-            DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(pendingInvoice.getInvoiceNo()));
+            DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(pendingInvoice.getInvoiceNo());
             if(dispatchMast!=null)
             {
                 dispatchMast.setPaymentBunchId(paymentMastToSave.getId());

@@ -35,7 +35,8 @@ public class DispatchMast{
 
     String postfix;
 
-    @OneToMany(mappedBy = "dispatchMast", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<DispatchData> dispatchDataList;
     
     Long paymentBunchId;//payment mast id
@@ -92,6 +93,7 @@ public class DispatchMast{
         this.signUpdatedDate = dispatchMast.getSignUpdatedDate();
         this.deliveryMode =  createDispatch.getDeliveryMode();
         this.prefix = dispatchMast.getPrefix();
+        this.postfix =dispatchMast.getPostfix();
     }
 
 
