@@ -353,8 +353,6 @@ public class DispatchMastImpl {
     }
 
     public FilterResponse<GetAllDispatch> getAllDisptach(GetBYPaginatedAndFiltered requestParam) throws Exception {
-System.out.println("page size-"+requestParam.getData().getPageSize());
-System.out.println("page index-"+requestParam.getData().getPageIndex());
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
         Pageable pageable = filterService.getPageable(requestParam.getData());
         List<Filter> filters = requestParam.getData().getParameters();
