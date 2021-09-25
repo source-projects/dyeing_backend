@@ -41,11 +41,6 @@ public class BatchData {
     String mergeBatchId;
     String pchallanRef;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="stockMastId", referencedColumnName = "id", insertable = true, updatable = true)    
-    StockMast stockMast;
-
-
 
 
    /* @ApiModelProperty(hidden = true)
