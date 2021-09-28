@@ -398,7 +398,7 @@ public class ProductionPlanImpl {
         return productionPlans;
     }
 
-    @Transactional
+
     public Long saveProductionPlanWithJet(AddProductionWithJet productionPlan) throws Exception {
         //check first the batch id is coming batch or merge batch id
         BatchData isMergeBatchId = batchDao.getIsMergeBatchId(productionPlan.getBatchId());//if data is not null then it is merge batch id
@@ -545,7 +545,7 @@ public class ProductionPlanImpl {
 
     }
 
-    @Transactional
+
     public Long saveDirectDyeingSlip(AddDirectBatchToJet record) throws Exception {
         //store direct dyeing slip with jet and with shade or else shade colour
 

@@ -55,7 +55,7 @@ public class QualityProcessImpl {
 	@Autowired
 	ChemicalDao chemicalDao;
 
-	@Transactional
+
 	public void saveQualityProcess(QualityProcessMast qualityProcessMast) throws Exception{
 		QualityProcessMast m = qualityProcessMastDao.save(qualityProcessMast);
 		for (QualityProcessData e : m.getSteps()) {
@@ -95,7 +95,7 @@ public class QualityProcessImpl {
 		qualityProcessDataDao.saveAll(qualityProcessMast.getSteps());
 	}
 
-	@Transactional
+
 	public List<QualityProcessMast> qualityProcessMasts(String getBy, Long id) throws Exception{
 		List<QualityProcessMast> q = null;
 		if(id == null)
@@ -121,7 +121,7 @@ public class QualityProcessImpl {
 		return q;
 	}
 
-	@Transactional
+
 	public QualityProcessMast findById(Long id) throws Exception{
 		Optional<QualityProcessMast> qualityProcessMast = qualityProcessMastDao.findById(id);
 		if(!qualityProcessMast.isPresent()) {
@@ -135,7 +135,7 @@ public class QualityProcessImpl {
 		return qualityProcessMast.get();
 	}
 
-	@Transactional
+
 	public void update(UpdateRequestQualityProcess qualityProcessMast) throws Exception {
 		Optional<QualityProcessMast> q = qualityProcessMastDao.findById(qualityProcessMast.getId());
 		if(!q.isPresent()){

@@ -145,7 +145,6 @@ public class SupplierServiceImpl {
     }
 
     
-    @Transactional
     public Boolean updateSupplier(AddSupplier addSupplier) {
         try {
             //System.out.println(updateSupplierRequest.getId());
