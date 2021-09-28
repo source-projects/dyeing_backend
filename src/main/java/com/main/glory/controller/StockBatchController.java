@@ -718,6 +718,29 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    //pending batch
+    @GetMapping("/stockBatch/pending/report")
+    public ResponseEntity<GeneralResponse<List<PendingBatchMast>, Object>> getAllPendingBatchReport() throws Exception {
+
+        GeneralResponse<List<PendingBatchMast>, Object> result;
+
+        try {
+            List<PendingBatchMast> list = stockBatchService.getAllPendingBatchReport();
+            if (list == null) {
+                result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            } else {
+                result = new GeneralResponse<>(list, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+        logService.saveLog(result, request, debugAll);
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
 
     //pchallan api's
     @PostMapping("/stockBatch/add/pchallan")
@@ -741,7 +764,7 @@ public class StockBatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<Long, Object>> updatePchallanStockMast(@RequestBody StockMast stockMast) throws Exception {
         GeneralResponse<Long, Object> result = null;
         try {
-            Long id = stockBatchService.updatePChallanRef(stockMast,request.getHeader("id"));
+            Long id = stockBatchService.updatePChallanRef(stockMast, request.getHeader("id"));
             result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, stockMast);
 
 
@@ -755,15 +778,13 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/exist/pchallan")
-    public ResponseEntity<GeneralResponse<Boolean, Object>> existPchallanStockMast(@RequestParam(name = "partyId")Long partyId,@RequestParam(name = "pchallanRef")String pchallanRef) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean, Object>> existPchallanStockMast(@RequestParam(name = "partyId") Long partyId, @RequestParam(name = "pchallanRef") String pchallanRef) throws Exception {
         GeneralResponse<Boolean, Object> result = null;
         try {
-            List<BatchData> batchDataList = stockBatchService.getPChallanExistWithParyId(partyId,pchallanRef);
-            if(batchDataList.size()>0) {
+            List<BatchData> batchDataList = stockBatchService.getPChallanExistWithParyId(partyId, pchallanRef);
+            if (batchDataList.size() > 0) {
                 result = new GeneralResponse<>(true, ConstantFile.StockBatch_PChallanRef_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
-            }
-            else
-            {
+            } else {
                 result = new GeneralResponse<>(false, ConstantFile.StockBatch_PChallanRef_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             }
 
@@ -775,7 +796,6 @@ public class StockBatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
-
 
 
 }

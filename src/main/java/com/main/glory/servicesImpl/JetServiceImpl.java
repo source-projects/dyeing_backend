@@ -12,7 +12,6 @@ import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingProcess.DyeingProcessData;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
@@ -40,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service("jetServiceImpl")
-@Transactional
+
 public class JetServiceImpl {
 
     @Autowired
@@ -875,7 +874,7 @@ public class JetServiceImpl {
     }
 
     public Boolean deleteJetDataByProductionId(Long id) throws Exception {
-        JetData jetData = jetDataDao.findByProductionId(id);
+        JetData jetData = jetDataDao.findByProductionWithInQueueById(id);
         if (jetData == null) {
             throw new Exception("production data not found");
         }
@@ -997,7 +996,7 @@ public class JetServiceImpl {
 
     public JetData getJetDataByProductionId(Long productionId) {
 
-        JetData jetData = jetDataDao.findByProductionId(productionId);
+        JetData jetData = jetDataDao.getJetDataByProductionId(productionId);
         return jetData;
 
     }
@@ -1218,5 +1217,9 @@ public class JetServiceImpl {
         //update jet status
         jetDataExist.setStatus(JetStatus.start);
         jetDataDao.save(jetDataExist);
+    }
+
+    public void updateJetDataStatus(Long id, JetStatus inQueue) {
+        jetDataDao.updateJetStatusById(id,inQueue);
     }
 }

@@ -21,6 +21,7 @@ public class PartyWithBatchByInvoice {
     Boolean isSendToParty;
     Double percentageDiscount;
     String remark;
+    String deliveryMode;
     List<BatchWithTotalMTRandFinishMTR> batchWithControlIdList;
 
     public PartyWithBatchByInvoice(List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList, Party party) {

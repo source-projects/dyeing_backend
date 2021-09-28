@@ -93,13 +93,13 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception(ConstantFile.Party_Code_Less);
 
                // Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
-                Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
+               /* Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
 
-               /* if (gstAvailable!=null)
-                    throw new Exception("GST No." + party.getGSTIN() + " is already exist");*/
+               *//* if (gstAvailable!=null)
+                    throw new Exception("GST No." + party.getGSTIN() + " is already exist");*//*
 
                 if (partyCodeAvailable!=null)
-                    throw new Exception(ConstantFile.Party_Code_Exist + party.getPartyCode());
+                    throw new Exception(ConstantFile.Party_Code_Exist + party.getPartyCode());*/
 
                 //check the partyname exist
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
@@ -115,14 +115,14 @@ public class PartyServiceImp implements PartyServiceInterface {
                     throw new Exception(ConstantFile.Party_Code_Less);
 
                 Party gstAvailable = partyDao.findByGSTIN(party.getGSTIN());
-                Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());
+               /* Party partyCodeAvailable = partyDao.findByPartyCode(party.getPartyCode());*/
 
                 if (gstAvailable != null)
                     throw new Exception("GST No." + party.getGSTIN() + " is already exist");
 
-                if (partyCodeAvailable != null)
+                /*if (partyCodeAvailable != null)
                     throw new Exception(ConstantFile.Party_Code_Exist + party.getPartyCode());
-
+*/
                 //check the partyname exist
 
                 Party partyExistWithName = partyDao.getPartyByName(party.getPartyName());
@@ -186,8 +186,8 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (!partyIndex.isPresent())
             throw new Exception("Party dat  a not found for id:" + party.getId());
 
-        if (party1!=null)
-            throw new Exception("Party code should be unique");
+       /* if (party1!=null)
+            throw new Exception("Party code should be unique");*/
 
         //party code length exception
         if (party.getPartyCode().length() < 2 || party.getPartyCode().length() > 5)

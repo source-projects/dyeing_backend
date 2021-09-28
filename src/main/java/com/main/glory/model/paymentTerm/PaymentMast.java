@@ -32,6 +32,8 @@ public class PaymentMast {
     String rdDetail;
     Double cdAmt;
     String cdDetail;
+    Double tdsAmt;
+    String tdsDetail;
     Double amtToPay;
     Double amtPaid;
     Double otherDiff;
@@ -60,6 +62,8 @@ public class PaymentMast {
         this.diffDetail=paymentMast.getDiffDetail();
         this.createdBy=paymentMast.getCreatedBy();
         this.updatedBy=paymentMast.getUpdatedBy();
+        this.tdsAmt = paymentMast.getTdsAmt();
+        this.tdsDetail = paymentMast.getTdsDetail();
 
     }
 

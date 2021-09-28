@@ -48,7 +48,7 @@ public class ColorServiceImpl {
 
     ConstantFile constantFile;
 
-    @Transactional
+
     public void addColor(ColorMast colorMast,String id) throws Exception {
 
         //identify the record is addedby the data entry user
@@ -191,7 +191,7 @@ public class ColorServiceImpl {
         return colorMastDetails;
     }
 
-    @Transactional
+
     public boolean updateColor(ColorMast colorMast) throws Exception {
         Optional<ColorMast> original = colorMastDao.findById(colorMast.getId());
 
@@ -204,7 +204,7 @@ public class ColorServiceImpl {
         return true;
     }
 
-    @Transactional
+
     public boolean deleteColorById(Long id) throws Exception {
         Optional<ColorMast> colorMast = colorMastDao.findById(id);
 

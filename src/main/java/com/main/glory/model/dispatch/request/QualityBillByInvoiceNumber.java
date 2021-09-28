@@ -51,14 +51,27 @@ public class QualityBillByInvoiceNumber {
     }
 
 
-    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, Optional<QualityName> qualityName, String batchId, StockMast stockMast) {
+    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, Optional<QualityName> qualityName, String pchallanRef, StockMast stockMast,String batchId) {
         this.qualityId = quality.getQualityId();
         this.qualityName = qualityName.get().getQualityName();
         this.hsn = quality.getHsn();
         this.rate = quality.getRate();
         this.batchId = batchId;
-        this.totalMtr = quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalMtr:(totalMtr/100)*stockMast.getWtPer100m();
-        this.finishMtr = quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalFinishMtr:(totalFinishMtr/100)*stockMast.getWtPer100m();;
+        this.totalMtr = totalMtr;//quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalMtr:(totalMtr/100)*stockMast.getWtPer100m();
+        this.finishMtr = totalFinishMtr;//quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalFinishMtr:(totalFinishMtr/100)*stockMast.getWtPer100m();;
+        this.pcs = totalPcs;
+        this.pChalNo = stockMast.getChlNo();
+        this.amt = this.finishMtr*rate;
+        this.pchallanRef = pchallanRef;// batch id can be batch id or pchallan ref
+    }
+    public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, Optional<QualityName> qualityName, String pchallanRef, StockMast stockMast) {
+        this.qualityId = quality.getQualityId();
+        this.qualityName = qualityName.get().getQualityName();
+        this.hsn = quality.getHsn();
+        this.rate = quality.getRate();
+        this.batchId = batchId;
+        this.totalMtr = totalMtr;//quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalMtr:(totalMtr/100)*stockMast.getWtPer100m();
+        this.finishMtr = totalFinishMtr;//quality.getBillingUnit().equalsIgnoreCase("meter")==true?totalFinishMtr:(totalFinishMtr/100)*stockMast.getWtPer100m();;
         this.pcs = totalPcs;
         this.pChalNo = stockMast.getChlNo();
         this.amt = this.finishMtr*rate;

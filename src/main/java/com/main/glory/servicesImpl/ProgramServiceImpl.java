@@ -64,7 +64,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
     ShadeServiceImpl shadeService;
 
 
-   @Transactional
+
     public void saveProgram(AddProgramWithProgramRecord program) throws Exception {
 
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -95,7 +95,7 @@ public class ProgramServiceImpl implements ProgramServiceInterface {
 
 
 
-    @Transactional
+
     public List<GetAllProgram> getAllProgram(String getBy, Long id) throws Exception {
 
         List<Program> programList = null;

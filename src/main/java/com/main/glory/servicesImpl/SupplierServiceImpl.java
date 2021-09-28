@@ -61,7 +61,7 @@ public class SupplierServiceImpl {
 
 
     
-    @Transactional
+
     public Boolean addSupplier(Supplier supplier,String id) {
         try {
             supplierDao.save(supplier);
@@ -118,7 +118,7 @@ public class SupplierServiceImpl {
     }
 
     
-    @Transactional
+
     public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest) {
         try {
             //System.out.println(updateSupplierRequest.getId());

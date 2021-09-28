@@ -35,19 +35,23 @@ public class DispatchMast {
     Double percentageDiscount;
     Double cgst;
     Double sgst;
+    Double igst;
     Double taxAmt;
     Double netAmt;
     String remark;
     Date signUpdatedDate;
     @ColumnDefault("false")
     Boolean signByParty;
+    String deliveryMode;
 
     public DispatchMast(CreateDispatch dispatchList) {
         //for storing the tax amount
+        this.deliveryMode =dispatchList.getDeliveryMode()==null?null:dispatchList.getDeliveryMode();
         this.percentageDiscount = dispatchList.getPercentageDiscount();
         this.discount= dispatchList.getDiscount();
         this.cgst = dispatchList.getCgst();
         this.sgst =dispatchList.getSgst();
+        this.igst = dispatchList.getIgst();
         this.taxAmt = dispatchList.getTaxAmt();
         this.netAmt = Math.floor(dispatchList.getNetAmt());
         this.remark = dispatchList.getRemark()==null?null:dispatchList.getRemark();
@@ -68,6 +72,11 @@ public class DispatchMast {
         this.taxAmt = createDispatch.getTaxAmt();
         this.postfix =createDispatch.getInvoiceNo();
         this.remark = createDispatch.getRemark();
+        this.signByParty = dispatchMast.getSignByParty();
+        this.paymentBunchId = dispatchMast.getPaymentBunchId();
+        this.signUpdatedDate = dispatchMast.getSignUpdatedDate();
+        this.deliveryMode =  createDispatch.getDeliveryMode();
+        this.prefix = dispatchMast.getPrefix();
     }
 
 

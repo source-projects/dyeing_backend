@@ -123,7 +123,7 @@ public class StockBatchServiceImpl {
     }
 
 
-    @Transactional
+
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
@@ -190,7 +190,7 @@ public class StockBatchServiceImpl {
     }
 
 
-    @Transactional
+
     public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
         List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
@@ -310,7 +310,7 @@ public class StockBatchServiceImpl {
 
     }
 
-    @Transactional
+
     public List<GetAllStockWithPartyNameResponse> getAllAvailableStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
         List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
@@ -406,7 +406,7 @@ public class StockBatchServiceImpl {
 
     }
 
-    @Transactional
+
     public StockMast getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
@@ -531,7 +531,7 @@ public class StockBatchServiceImpl {
 
     }
 
-    @Transactional
+
     public void deleteStockBatch(Long id) throws Exception {
         Optional<StockMast> stockMast = stockMastDao.findById(id);
         if (stockMast.isEmpty()) {
@@ -542,7 +542,7 @@ public class StockBatchServiceImpl {
             throw new Exception("Can't delete the batch, already in production, for id:" + id);
         }
         List<ProductionPlan> productionPlans = productionPlanService.getProductionByStockId(id);
-        if (!productionPlans.isEmpty())
+        if (productionPlans!=null)
             throw new Exception("can't delete the stock , because already sent to production");
 
         stockMastDao.deleteById(id);
@@ -1306,6 +1306,22 @@ public class StockBatchServiceImpl {
         else
             return Precision.round(values, 2);
     }
+    public static List<BatchData> changeInFormattedDecimal(List<BatchData> batchDataList) {
+        List<BatchData> newList = new ArrayList<>();
+        //df2.setMaximumFractionDigits(2);
+        if (batchDataList == null)
+            return null;
+        else {
+            for (BatchData batchData : batchDataList) {
+                BatchData batch = new BatchData(batchData);
+                batch.setFinishMtr(Precision.round(batchData.getFinishMtr(), 2));
+                batch.setMtr(Precision.round(batchData.getMtr(), 2));
+                //batch.setWt(Precision.round(batchData.getFinishMtr(), 2));
+                newList.add(batch);
+            }
+            return newList;
+        }
+    }
 
     public List<GetAllBatch> getBatchListByQualityWithoutProductionPlan(Long qualityId) throws Exception {
         List<GetAllBatch> list = new ArrayList<>();
@@ -1638,6 +1654,7 @@ public class StockBatchServiceImpl {
 
         //filter the data if the batch is done with jet
         for (GetAllBatch getAllBatch : dataList) {
+            //System.out.println(getAllBatch.getBatchId());
             ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getAllBatch.getBatchId());
 
             if (productionPlan == null)
@@ -1806,6 +1823,8 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(party.getUserHeadId());
         Quality quality = qualityDao.getqualityById(stockMast.getQualityId());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
+        List<PchallanByBatchId> pchallanByBatchIdList = batchDao.getListOfPchallanByBatchId(batchId);
+
 
       /*  System.out.println(stockMast.getId());
         System.out.println(party.getId());
@@ -1820,6 +1839,13 @@ public class StockBatchServiceImpl {
         can be get and error for userdata
         */
         JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName.get(), totalMtr, totalPcs, totalWt);
+        if(pchallanByBatchIdList.size()==1)
+        {
+            jobCard.setChalNo(pchallanByBatchIdList.get(0).getPchallanRef());
+        }
+        else {
+            jobCard.setChalNo(pchallanByBatchIdList.stream().map(PchallanByBatchId::getPchallanRef).collect(Collectors.joining(",")));
+        }
         jobCard.setBatchId(batchId);
         jobCard.setTotalFinishMtr(totalFinish);
         jobCard.setBatchDataList(batchData);
@@ -2492,6 +2518,37 @@ public class StockBatchServiceImpl {
 
     public List<BatchData> getPChallanExistWithParyId(Long partyId, String pchallanRef) {
         return batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(pchallanRef, partyId, 0l);
+    }
+
+    public List<PendingBatchMast> getAllPendingBatchReport() {
+
+        List<PendingBatchMast> pendingBatchMastList = new ArrayList<>();
+
+        Map<Long,Party> listParty = new HashMap<>();
+        List<GetBatchWithControlId> batchResponseList = batchDao.findAllBasedOnControlIdAndBatchId();
+        for(GetBatchWithControlId batch : batchResponseList)
+        {
+            StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
+            if(listParty.containsKey(stockMast.getPartyId()))
+            {
+                var arr = pendingBatchMastList.stream().filter(x -> x.getPartyId() == stockMast.getPartyId());
+                System.out.println(arr);
+            }
+            else
+            {
+                Party party = partyDao.findByPartyId(stockMast.getPartyId());
+                listParty.put(party.getId(),party);
+
+                PendingBatchMast pendingBatchMast = new PendingBatchMast(party);
+                List<PendingBatchData> pendingBatchData =new ArrayList<>();
+                pendingBatchData.add(new PendingBatchData(stockMast,batch));
+                pendingBatchMast.setPendingBatchDataList(pendingBatchData);
+                //pendingBatchMast.setPendingBatchDataList().add();
+                pendingBatchMastList.add(pendingBatchMast);
+            }
+        }
+
+        return pendingBatchMastList;
     }
 
 

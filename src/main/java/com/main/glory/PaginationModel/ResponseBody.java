@@ -1,18 +1,19 @@
-package com.main.glory.model.jet.request;
+package com.main.glory.PaginationModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ToJet {
-    Long jetId;
-    Long productionId;
-    Long sequence;
+public class ResponseBody {
+
+    Object pageContent;
+    Long pageIndex;
+    Long pageSize;
+    Long total;
+
 }
