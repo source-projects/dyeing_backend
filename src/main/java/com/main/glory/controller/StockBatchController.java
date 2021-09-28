@@ -727,7 +727,7 @@ public class StockBatchController extends ControllerConfig {
             if (!list.getData().isEmpty()) {
                 result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
             } else
-                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 
             logService.saveLog(result, request, debugAll);
         } catch (Exception e) {

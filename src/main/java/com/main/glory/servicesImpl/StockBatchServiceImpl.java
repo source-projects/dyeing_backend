@@ -44,6 +44,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import lombok.val;
+
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -317,7 +319,7 @@ public class StockBatchServiceImpl {
         String getBy = requestParam.getGetBy();
         List<Filter> filtersParam = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
-        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName","qualityName")));
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName", "qualityName")));
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
         // subModelCase.put("userHeadId",new
         // ArrayList<String>(Arrays.asList("userHeadData","id")));
@@ -364,8 +366,8 @@ public class StockBatchServiceImpl {
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS, id));
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
 
-                Specification<StockMast> spec = specificationManager.getSpecificationFromFilters(filters,
-                        false, subModelCase);
+                Specification<StockMast> spec = specificationManager.getSpecificationFromFilters(filters, false,
+                        subModelCase);
 
                 spec = spec.and(filterSpec);
 
@@ -391,7 +393,8 @@ public class StockBatchServiceImpl {
 
                 GetAllStockWithPartyNameResponse batchData = new GetAllStockWithPartyNameResponse(stockMastData,
                         stockMastData.getParty() == null ? null : stockMastData.getParty().getPartyName(),
-                        stockMastData.getQuality() == null ? null : stockMastData.getQuality().getQualityName().getQualityName());
+                        stockMastData.getQuality() == null ? null
+                                : stockMastData.getQuality().getQualityName().getQualityName());
                 Boolean trueBatch = false;
                 for (BatchData batch : stockMastData.getBatchData()) {
                     if (mtrSumData.containsKey(batch.getBatchId())) {
@@ -612,15 +615,14 @@ public class StockBatchServiceImpl {
         }
 
         // for data entry user
-        Party party=null;
-        Quality quality=null;
+        Party party = null;
+        Quality quality = null;
         UserData userData = userDao.getUserById(Long.parseLong(id));
         if (userData.getIsMaster() == false || stockMast.getUserHeadId() == 0) {
             // fetch the party record to set the usert head
             party = partyDao.findByPartyId(stockMast.getParty().getId());
             stockMast.setUserHeadId(party.getUserHeadData().getId());
-        }
-        else {
+        } else {
             party = partyDao.findById(stockMast.getParty().getId()).get();
         }
         quality = qualityDao.findById(stockMast.getQuality().getId()).get();
@@ -1061,9 +1063,9 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setQualityEntryId(
                             batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
                                     : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
-                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName() == null
-                            ? qualityName.getQualityName()
-                            : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
+                    batchToPartyAndQuality.setQualityName(
+                            batchToPartyAndQuality.getQualityName() == null ? qualityName.getQualityName()
+                                    : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
 
                 }
 
@@ -1362,7 +1364,7 @@ public class StockBatchServiceImpl {
             throw new Exception(constantFile.Quality_Data_Not_Found);
 
         for (Quality quality : qualityListByParty.get()) {
-           QualityName qualityName=quality.getQualityName();
+            QualityName qualityName = quality.getQualityName();
             List<StockMast> stockMastList = stockMastDao.findByQualityIdAndPartyId(quality.getId(), partyId);
 
             // batch list based on stock id
@@ -1874,7 +1876,8 @@ public class StockBatchServiceImpl {
         List<StockMast> stockMastList = stockMastDao.getAllStockByPartyIdAndQualityId(partyId, qualityId);
 
         Quality quality = qualityDao.getqualityById(qualityId);
-       QualityName qualityName=quality.getQualityName();;
+        QualityName qualityName = quality.getQualityName();
+        ;
         if (stockMastList.isEmpty()) {
             return null;
         }
@@ -1948,21 +1951,20 @@ public class StockBatchServiceImpl {
         Party party = partyDao.findByPartyId(stockMast.getParty().getId());
         UserData userData = userDao.getUserById(party.getUserHeadData().getId());
         Quality quality = qualityDao.getqualityById(stockMast.getQuality().getId());
-       QualityName qualityName=quality.getQualityName();;
+        QualityName qualityName = quality.getQualityName();
+        ;
         List<PchallanByBatchId> pchallanByBatchIdList = batchDao.getListOfPchallanByBatchId(batchId);
 
         /*
          * System.out.println(stockMast.getId()); System.out.println(party.getId());
-         * System.out.println(quality.getId());
-         * System.out.println(qualityName.getId());
+         * System.out.println(quality.getId()); System.out.println(qualityName.getId());
          * System.out.println(userData.getId()); System.out.println(totalMtr);
          * System.out.println(totalPcs); System.out.println(totalWt);
          * System.out.println(totalPcs);
          * 
          * can be get and error for userdata
          */
-        JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName, totalMtr, totalPcs,
-                totalWt);
+        JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName, totalMtr, totalPcs, totalWt);
         if (pchallanByBatchIdList.size() == 1) {
             jobCard.setChalNo(pchallanByBatchIdList.get(0).getPchallanRef());
         } else {
@@ -2221,9 +2223,9 @@ public class StockBatchServiceImpl {
                     batchToPartyAndQuality.setQualityEntryId(
                             batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
                                     : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
-                    batchToPartyAndQuality.setQualityName(batchToPartyAndQuality.getQualityName() == null
-                            ? qualityName.getQualityName()
-                            : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
+                    batchToPartyAndQuality.setQualityName(
+                            batchToPartyAndQuality.getQualityName() == null ? qualityName.getQualityName()
+                                    : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
 
                     // System.out.println("batch id for merge batch:"+batch.getBatchId());
                     batchToPartyAndQuality
@@ -2315,8 +2317,8 @@ public class StockBatchServiceImpl {
                 batchToPartyAndQuality.setQualityEntryId(
                         batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
                                 : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
-                batchToPartyAndQuality.setQualityName(
-                        batchToPartyAndQuality.getQualityName() == null ? qualityName.getQualityName()
+                batchToPartyAndQuality
+                        .setQualityName(batchToPartyAndQuality.getQualityName() == null ? qualityName.getQualityName()
                                 : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
 
                 batchToPartyAndQuality.setBatchId(batchToPartyAndQuality.getBatchId() == null ? batch.getBatchId()
@@ -2382,7 +2384,7 @@ public class StockBatchServiceImpl {
             List<Quality> qualityList = qualityDao.getQualityListByPartyIdId(partyId);
             for (Quality quality : qualityList) {
                 QualityName qualityNameRate = quality.getQualityName();
-                if (qualityNameRate!=null) {
+                if (qualityNameRate != null) {
 
                     Double totalMtr = batchDao.getTotalMtrByQualityIdWithBillGeneratedFlag(quality.getId(), false);
 
@@ -2400,7 +2402,7 @@ public class StockBatchServiceImpl {
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
 
             QualityName qualityNameRate = quality.getQualityName();
-            if (qualityNameRate!=null) {
+            if (qualityNameRate != null) {
 
                 Double totalMtr = batchDao.getTotalMtrByQualityIdWithBillGeneratedFlag(quality.getId(), false);
 
@@ -2682,69 +2684,87 @@ public class StockBatchServiceImpl {
     }
 
     public List<PendingBatchMast> getAllPendingBatchReport() {
-/*
-
-        List<PendingBatchMast> pendingBatchMastList = new ArrayList<>();
-
-        Map<Long,Party> listParty = new HashMap<>();
-        List<GetBatchWithControlId> batchResponseList = batchDao.findAllBasedOnControlIdAndBatchId();
-        for(GetBatchWithControlId batch : batchResponseList)
-        {
-            StockMast stockMast = stockMastDao.findByStockId(batch.getControlId());
-            if(listParty.containsKey(stockMast.getPartyId()))
-            {
-                var arr = pendingBatchMastList.stream().filter(x -> x.getPartyId() == stockMast.getPartyId());
-                System.out.println(arr);
-            }
-            else
-            {
-                Party party = partyDao.findByPartyId(stockMast.getPartyId());
-                listParty.put(party.getId(),party);
-
-                PendingBatchMast pendingBatchMast = new PendingBatchMast(party);
-                List<PendingBatchData> pendingBatchData =new ArrayList<>();
-                pendingBatchData.add(new PendingBatchData(stockMast,batch));
-                pendingBatchMast.setPendingBatchDataList(pendingBatchData);
-                //pendingBatchMast.setPendingBatchDataList().add();
-                pendingBatchMastList.add(pendingBatchMast);
-            }
-        }
-
-        return pendingBatchMastList;
-*/
+        /*
+         * 
+         * List<PendingBatchMast> pendingBatchMastList = new ArrayList<>();
+         * 
+         * Map<Long,Party> listParty = new HashMap<>(); List<GetBatchWithControlId>
+         * batchResponseList = batchDao.findAllBasedOnControlIdAndBatchId();
+         * for(GetBatchWithControlId batch : batchResponseList) { StockMast stockMast =
+         * stockMastDao.findByStockId(batch.getControlId());
+         * if(listParty.containsKey(stockMast.getPartyId())) { var arr =
+         * pendingBatchMastList.stream().filter(x -> x.getPartyId() ==
+         * stockMast.getPartyId()); System.out.println(arr); } else { Party party =
+         * partyDao.findByPartyId(stockMast.getPartyId());
+         * listParty.put(party.getId(),party);
+         * 
+         * PendingBatchMast pendingBatchMast = new PendingBatchMast(party);
+         * List<PendingBatchData> pendingBatchData =new ArrayList<>();
+         * pendingBatchData.add(new PendingBatchData(stockMast,batch));
+         * pendingBatchMast.setPendingBatchDataList(pendingBatchData);
+         * //pendingBatchMast.setPendingBatchDataList().add();
+         * pendingBatchMastList.add(pendingBatchMast); } }
+         * 
+         * return pendingBatchMastList;
+         */
         return null;
     }
 
     public FilterResponse<BatchReturnResponse> getAllReturnBatchAllPaginated(GetBYPaginatedAndFiltered requestParam) {
-        List<BatchReturnResponse> batchReturnResponseList = new ArrayList<>();
-        Pageable pageable = filterService.getPageable(requestParam.getData());
-        List<Filter> filters = requestParam.getData().getParameters();
-        HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
-        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("postfix","qualityName")));
 
-        //List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
-        Page queryResponse = null;
+        List<BatchReturnResponse> list = new ArrayList<>();
+        List<BatchReturnMast> batchReturnMastList = batchReturnMastDao.getAllBatchReturn();
+        List<Filter> parameters = requestParam.getData().getParameters();
+        for (int i = 0; i < batchReturnMastList.size(); i++) {
+            List<BatchReturnData> batchReturnDataList = new ArrayList<BatchReturnData>();
 
-        
-        
-        // List<BatchReturnResponse> list = new ArrayList<>();
+            for (int k = 0; k < batchReturnMastList.get(i).getBatchReturnData().size(); k++) {
+                Boolean condition = requestParam.getData().isAnd;
+                for (int j = 0; j < parameters.size(); j++) {
+                    String val2 = null;
+                    Class fieldType = null;
+                    if (parameters.get(j).getField().get(0).equals("chlNo")) {
+                        fieldType = Long.class;
+                        val2 = Long.toString(batchReturnMastList.get(i).getChlNo());
+                    } else if (parameters.get(j).getField().get(0).equals("partyName")) {
+                        fieldType = String.class;
+                        val2 = batchReturnMastList.get(i).getPartyName();
+                    } else if (parameters.get(j).getField().get(0).equals("qualityName")) {
+                        fieldType = String.class;
+                        val2 = batchReturnMastList.get(i).getBatchReturnData().get(k).getQualityName();
+                    } else if (parameters.get(j).getField().get(0).equals("mtr")) {
+                        fieldType = Double.class;
+                        val2 = Double.toString(batchReturnMastList.get(i).getBatchReturnData().get(k).getMtr());
+                    } else if (parameters.get(j).getField().get(0).equals("wt")) {
+                        fieldType = Double.class;
+                        val2 = Double.toString(batchReturnMastList.get(i).getBatchReturnData().get(k).getWt());
+                    }
+                    if (requestParam.getData().isAnd == true)
+                        condition = condition && specificationManager.getOperationResult(parameters.get(j).getValue(),
+                                val2, fieldType, parameters.get(j).getOperator());
+                    else
+                        condition = condition || specificationManager.getOperationResult(parameters.get(j).getValue(),
+                                val2, fieldType, parameters.get(j).getOperator());
 
-        // List<BatchReturnMast> returnBatchDetailList = batchReturnMastDao.getAllBatchReturn();
+                }
+                if (condition) {
+                    batchReturnDataList.add(batchReturnMastList.get(i).getBatchReturnData().get(k));
+                }
 
-        // returnBatchDetailList.forEach(e -> {
+            }
+            if (batchReturnDataList.size() > 0)
+                list.add(new BatchReturnResponse(batchReturnMastList.get(i), Long.valueOf(batchReturnDataList.size()),
+                        batchReturnDataList, 0d));
 
-        //     BatchReturnResponse batchReturnResponse = getReturnBatchByChalNo(e.getChlNo());
-        //     if (batchReturnResponse != null)
-        //         list.add(batchReturnResponse);
+        }
+        System.out.println(list.size());
 
-        // });
-
-        FilterResponse<BatchReturnResponse> response = new FilterResponse<BatchReturnResponse>(batchReturnResponseList, queryResponse.getNumber(), queryResponse.getNumberOfElements(), (int) queryResponse.getTotalElements());
+        int pageSize = requestParam.getData().getPageSize();
+        int pageIndex = requestParam.getData().getPageIndex();
+        FilterResponse<BatchReturnResponse> response = new FilterResponse<BatchReturnResponse>(
+                list.subList(Integer.min(pageIndex * pageSize,list.size()),Integer.min((pageIndex + 1) * pageSize,list.size())), pageIndex, pageSize, list.size());
         return response;
 
-
     }
-
-
 
 }
