@@ -58,7 +58,7 @@ public class ProductionPlanController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @Transactional
+
     @PostMapping(value="/productionPlan/directDyeingSlip")
     public ResponseEntity<GeneralResponse<Long,Object>> saveDirectBatchToJet(@RequestBody AddDirectBatchToJet productionPlan, @RequestHeader Map<String, String> headers)
     {
@@ -77,7 +77,7 @@ public class ProductionPlanController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @Transactional
+
     @PostMapping(value="/productionPlan/productionPlanWithJet/")
     public ResponseEntity<GeneralResponse<Long,Object>> productionPlanWithJet(@RequestBody AddProductionWithJet productionPlan)
     {

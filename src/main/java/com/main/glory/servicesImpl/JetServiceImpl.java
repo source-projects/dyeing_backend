@@ -39,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service("jetServiceImpl")
-@Transactional
+
 public class JetServiceImpl {
 
     @Autowired

@@ -40,7 +40,7 @@ public class EmployeeServiceImpl {
     *We are getting empId from FE always not id
 
      */
-    @Transactional
+
     public Long addEmployeeRecord(EmployeeMast record) throws Exception {
 
         //employee id should in within 4 digit for qr code so maintain the employee id

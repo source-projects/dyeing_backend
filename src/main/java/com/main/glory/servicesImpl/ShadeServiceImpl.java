@@ -68,7 +68,6 @@ public class ShadeServiceImpl {
 	ModelMapper modelMapper;
 
 
-	@Transactional
 
 	public void saveShade(ShadeMast shadeMast,String id) throws Exception{
 		//consider we have data and add directlt
@@ -237,7 +236,7 @@ public class ShadeServiceImpl {
 		return true;
 	}
 
-	@Transactional
+
 	public boolean deleteShadeById(Long id) throws Exception{
 		Optional<ShadeMast> shadeMast = shadeMastDao.findById(id);
 		// check if this is present in the database
