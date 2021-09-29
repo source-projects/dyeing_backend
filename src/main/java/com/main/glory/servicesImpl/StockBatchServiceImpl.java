@@ -2720,6 +2720,8 @@ public class StockBatchServiceImpl {
 
             for (int k = 0; k < batchReturnMastList.get(i).getBatchReturnData().size(); k++) {
                 Boolean condition = requestParam.getData().isAnd;
+                if(parameters.size()==0)
+                condition=true;
                 for (int j = 0; j < parameters.size(); j++) {
                     String val2 = null;
                     Class fieldType = null;
