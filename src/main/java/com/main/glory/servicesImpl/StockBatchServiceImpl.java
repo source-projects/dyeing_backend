@@ -2722,6 +2722,7 @@ public class StockBatchServiceImpl {
                 Boolean condition = requestParam.getData().isAnd;
                 if(parameters.size()==0)
                 condition=true;
+
                 for (int j = 0; j < parameters.size(); j++) {
                     String val2 = null;
                     Class fieldType = null;
@@ -2731,7 +2732,15 @@ public class StockBatchServiceImpl {
                     } else if (parameters.get(j).getField().get(0).equals("partyName")) {
                         fieldType = String.class;
                         val2 = batchReturnMastList.get(i).getPartyName();
-                    } else if (parameters.get(j).getField().get(0).equals("qualityName")) {
+                    }else if (parameters.get(j).getField().get(0).equals("broker")) {
+                        fieldType = String.class;
+                        val2 = batchReturnMastList.get(i).getBroker();
+                    }
+                    else if (parameters.get(j).getField().get(0).equals("tempoNo")) {
+                        fieldType = String.class;
+                        val2 = batchReturnMastList.get(i).getTempoNo();
+                    }
+                     else if (parameters.get(j).getField().get(0).equals("qualityName")) {
                         fieldType = String.class;
                         val2 = batchReturnMastList.get(i).getBatchReturnData().get(k).getQualityName();
                     } else if (parameters.get(j).getField().get(0).equals("mtr")) {
@@ -2744,6 +2753,7 @@ public class StockBatchServiceImpl {
                     if (requestParam.getData().isAnd == true)
                         condition = condition && specificationManager.getOperationResult(parameters.get(j).getValue(),
                                 val2, fieldType, parameters.get(j).getOperator());
+
                     else
                         condition = condition || specificationManager.getOperationResult(parameters.get(j).getValue(),
                                 val2, fieldType, parameters.get(j).getOperator());
