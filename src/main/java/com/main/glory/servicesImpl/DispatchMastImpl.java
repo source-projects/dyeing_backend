@@ -27,6 +27,7 @@ import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import org.apache.commons.math3.util.Precision;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1581,10 +1582,26 @@ public class DispatchMastImpl {
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
             List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef(),createDispatch.getBatchId());
 
+            StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
+            Quality quality = qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
 
+            if (quality == null)
+                throw new Exception("no quality found");
 
-            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
-             if(productionPlan==null)
+            if (batchDataList.isEmpty())
+                throw new Exception("no batch data found");
+
+            ProductionPlan productionPlan=null;
+            BatchData batchDataExist = batchDataList.get(0);
+            if(batchDataExist.getMergeBatchId()!=null) {
+                productionPlan = productionPlanService.getProductionByBatchId(batchDataExist.getMergeBatchId());
+            }
+            else
+            {
+                productionPlan = productionPlanService.getProductionByBatchId(batchDataExist.getBatchId());
+            }
+
+            if(productionPlan==null)
                 throw new Exception("no production plan found for batch");
 
             ShadeMast shadeMast = null;
@@ -1594,16 +1611,6 @@ public class DispatchMastImpl {
                 if(shadeMast==null)
                     throw new Exception("no shade record found");
             }
-
-
-            StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
-            Quality quality = qualityDao.getqualityById(stockMast1.getQualityId());// qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
-
-            if (quality == null)
-                throw new Exception("no quality found");
-
-            if (batchDataList.isEmpty())
-                throw new Exception("no batch data found");
 
 
             for (BatchData batchData : batchDataList) {
