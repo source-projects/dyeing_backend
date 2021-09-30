@@ -396,7 +396,28 @@ public class StockBatchController extends ControllerConfig {
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
 
+    @PostMapping("/stockBatch/batch/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object>> getAllBatchPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> headers) {
+        GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object> result;
+        try {
+
+            FilterResponse<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetailPaginated(requestParam,headers.get("id"));
+
+            if (batchData.getData().isEmpty())
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+            logService.saveLog(result, request, debugAll);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //batch by quality

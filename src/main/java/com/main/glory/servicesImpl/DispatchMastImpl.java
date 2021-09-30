@@ -1405,26 +1405,19 @@ public class DispatchMastImpl {
 
         // System.out.println(1);
         List<ConsolidatedBillMast> list = new ArrayList<>();
-        // System.out.println(1);
-        // System.out.println(from+":"+to);
-        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByDateFilter(from, to);
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getSignByParty());
         // System.out.println(1);
         for (DispatchMast dispatchMast : dispatchMastList) {
             // System.out.println(2);
             ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
 
-            Party party = partyServiceImp.getPartyById(dispatchMast.getParty().getId());
-            if (party == null)
-                continue;
-
-            UserData userData = userService.getUserById(dispatchMast.getUserHeadData().getId());
-            if (userData == null)
-                continue;
-
+            Party party = dispatchMast.getParty();
+            UserData userData = dispatchMast.getUserHeadData();
             String invoiceNumber = String.valueOf(dispatchMast.getPostfix());
             List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
             List<ConsolidatedBillData> consolidatedBillDataList = new ArrayList<>();
             for (GetBatchByInvoice getBatchByInvoice : stockWithBatchList) {
+
                 System.out.println(3);
                 Double amt = 0.0;
                 Double totalFinishMtr = 0.0;
@@ -1439,6 +1432,7 @@ public class DispatchMastImpl {
 
                 List<BatchData> batchDataList = stockBatchService
                         .getBatchByBatchIdWithInvoiceNuber(getBatchByInvoice.getBatchId(), invoiceNumber);
+
                 if (batchDataList.isEmpty())
                     continue;
 
@@ -1459,10 +1453,6 @@ public class DispatchMastImpl {
                         .sum();
                 totalFinishMtr = batchDataList.stream().filter(x -> x.getBatchId() != null)
                         .mapToDouble(x -> x.getFinishMtr()).sum();
-                /*
-                 * System.out.println(invoiceNumber);
-                 * System.out.println(batchDataList.get(0).getId());
-                 */
                 Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,
                         batchDataList.get(0).getId());
                 // get the billing unit as per change
@@ -1503,43 +1493,6 @@ public class DispatchMastImpl {
                 list.add(consolidatedBillMast);
 
         }
-        System.out.println(1);
-        // filter by user head id
-        if (filter.getUserHeadId() != null) {
-            list = list.stream().filter(p -> p.getUserHeadId().equals(filter.getUserHeadId()))
-                    .collect(Collectors.toList());
-        }
-
-        // filter by party id
-        if (filter.getPartyId() != null) {
-            list = list.stream().filter(p -> p.getPartyId().equals(filter.getPartyId())).collect(Collectors.toList());
-        }
-
-        // filter by quality name id
-        if (filter.getQualityNameId() != null) {
-            list = list.stream()
-                    .filter(p -> p.getConsolidatedBillDataList().stream()
-                            .filter(child -> child.getQualityNameId().equals(filter.getQualityNameId())).findAny()
-                            .isPresent())
-                    .collect(Collectors.toList());
-        }
-
-        // filter by quality name id
-        if (filter.getQualityEntryId() != null) {
-            list = list.stream()
-                    .filter(p -> p.getConsolidatedBillDataList().stream()
-                            .filter(child -> child.getQualityEntryId().equals(filter.getQualityEntryId())).findAny()
-                            .isPresent())
-                    .collect(Collectors.toList());
-        }
-
-        // filter by signByParty
-        if (filter.getSignByParty() != null) {
-            list = list.stream().filter(p -> p.getSignByParty().equals(filter.getSignByParty()))
-                    .collect(Collectors.toList());
-        }
-
-        System.out.println(1);
         return list;
 
     }
