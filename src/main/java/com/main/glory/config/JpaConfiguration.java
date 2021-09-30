@@ -1,6 +1,7 @@
+/*
 package com.main.glory.config;
 
-import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -18,3 +19,4 @@ public class JpaConfiguration implements WebMvcConfigurer {
     }
 
 }
+*/

@@ -32,7 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+
 
 import javax.servlet.http.HttpServletRequest;
 
