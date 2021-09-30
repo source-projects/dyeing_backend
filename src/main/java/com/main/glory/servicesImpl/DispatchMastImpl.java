@@ -1493,6 +1493,23 @@ public class DispatchMastImpl {
                 list.add(consolidatedBillMast);
 
         }
+        if (filter.getQualityNameId() != null) {
+            list = list.stream()
+                    .filter(p -> p.getConsolidatedBillDataList().stream()
+                            .filter(child -> child.getQualityNameId().equals(filter.getQualityNameId())).findAny()
+                            .isPresent())
+                    .collect(Collectors.toList());
+        }
+
+        // filter by quality name id
+        if (filter.getQualityEntryId() != null) {
+            list = list.stream()
+                    .filter(p -> p.getConsolidatedBillDataList().stream()
+                            .filter(child -> child.getQualityEntryId().equals(filter.getQualityEntryId())).findAny()
+                            .isPresent())
+                    .collect(Collectors.toList());
+        }
+
         return list;
 
     }
