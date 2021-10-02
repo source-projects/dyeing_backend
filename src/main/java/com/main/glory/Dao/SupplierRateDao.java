@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
     List<SupplierRate> findBySupplierId(Long aLong);
-    @Query("Select new com.main.glory.model.supplier.GetAllSupplierRate(q, (Select p.supplierName from Supplier p where p.id = q.supplier.id)) from SupplierRate q where supplierId IS NOT NULL")
+    @Query("Select new com.main.glory.model.supplier.GetAllSupplierRate(q, (Select p.supplierName from Supplier p where p.id = q.supplier.id)) from SupplierRate q where supplier IS NOT NULL")
     List<GetAllSupplierRate> findWithSupplierName();
 
 
