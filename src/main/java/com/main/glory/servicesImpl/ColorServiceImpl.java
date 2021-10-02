@@ -197,8 +197,8 @@ public class ColorServiceImpl {
         Pageable pageable = filterService.getPageable(requestParam.getData());
         List<Filter> filtersParam = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
-        subModelCase.put("userHeadId", new ArrayList<String>(Arrays.asList("supplier", "supplierName")));
-        subModelCase.put("supplierName", new ArrayList<String>(Arrays.asList("userHeadData", "id")));
+        subModelCase.put("supplierName", new ArrayList<String>(Arrays.asList("supplier", "supplierName")));
+        subModelCase.put("userHeadId", new ArrayList<String>(Arrays.asList("userHeadData", "id")));
         subModelCase.put("createdByID", new ArrayList<String>(Arrays.asList("createdBy", "id")));
         subModelCase.put("userHeadName", new ArrayList<String>(Arrays.asList("userHeadData", "userName")));
         subModelCase.put("createdByName", new ArrayList<String>(Arrays.asList("createdBy", "userName")));
