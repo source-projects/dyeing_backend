@@ -345,7 +345,7 @@ public class SupplierServiceImpl {
         for (ItemWithSupplier item : itemWithSupplier) {
 
             if (item.getSupplierId() != null) {
-                Supplier supplier = supplierDao.findBySupplierId(item.getSupplierId());
+                Supplier supplier = item.getSupplier();
                 if (supplier==null)
                     continue;
 
