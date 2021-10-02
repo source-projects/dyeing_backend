@@ -18,6 +18,6 @@ public class ColorMastDetails extends ColorMast {
 	// }
 
 	public ColorMastDetails(ColorMast colorMast) {
-		super(colorMast.getId(), colorMast.getSupplierId(), colorMast.getBillNo(), colorMast.getBillDate(), colorMast.getChlNo(), colorMast.getChlDate(), colorMast.getBillAmount(), colorMast.getCreatedBy(), colorMast.getUpdatedBy(), colorMast.getUserHeadData(), colorMast.getRemark(), colorMast.getColorDataList());
+		super(colorMast.getId(), colorMast.getSupplier(), colorMast.getBillNo(), colorMast.getBillDate(), colorMast.getChlNo(), colorMast.getChlDate(), colorMast.getBillAmount(), colorMast.getCreatedBy(), colorMast.getUpdatedBy(), colorMast.getUserHeadData(), colorMast.getRemark(), colorMast.getColorDataList());
 	}
 }
