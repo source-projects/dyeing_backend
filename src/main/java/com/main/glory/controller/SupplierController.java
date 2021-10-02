@@ -86,9 +86,9 @@ public class SupplierController extends ControllerConfig {
         try{
             FilterResponse<GetSupplierPaginatedData> flag = supplierService.getSupplierPaginatedData(requestParam);
             if(flag.getData().isEmpty()) {
-                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
-                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
