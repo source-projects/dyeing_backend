@@ -48,6 +48,7 @@ import lombok.val;
 
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -2889,32 +2890,6 @@ String batchId=null;
         return batchDao.getBatchDataWithPartyIdAndPchallaneRefExceptBatchEntryId(pchallanRef, partyId, 0l);
     }
 
-    public List<PendingBatchMast> getAllPendingBatchReport() {
-        /*
-         * 
-         * List<PendingBatchMast> pendingBatchMastList = new ArrayList<>();
-         * 
-         * Map<Long,Party> listParty = new HashMap<>(); List<GetBatchWithControlId>
-         * batchResponseList = batchDao.findAllBasedOnControlIdAndBatchId();
-         * for(GetBatchWithControlId batch : batchResponseList) { StockMast stockMast =
-         * stockMastDao.findByStockId(batch.getControlId());
-         * if(listParty.containsKey(stockMast.getPartyId())) { var arr =
-         * pendingBatchMastList.stream().filter(x -> x.getPartyId() ==
-         * stockMast.getPartyId()); System.out.println(arr); } else { Party party =
-         * partyDao.findByPartyId(stockMast.getPartyId());
-         * listParty.put(party.getId(),party);
-         * 
-         * PendingBatchMast pendingBatchMast = new PendingBatchMast(party);
-         * List<PendingBatchData> pendingBatchData =new ArrayList<>();
-         * pendingBatchData.add(new PendingBatchData(stockMast,batch));
-         * pendingBatchMast.setPendingBatchDataList(pendingBatchData);
-         * //pendingBatchMast.setPendingBatchDataList().add();
-         * pendingBatchMastList.add(pendingBatchMast); } }
-         * 
-         * return pendingBatchMastList;
-         */
-        return null;
-    }
 
     public FilterResponse<BatchReturnResponse> getAllReturnBatchAllPaginated(GetBYPaginatedAndFiltered requestParam) {
 
@@ -2985,4 +2960,59 @@ String batchId=null;
 
     }
 
+    public List<PendingBatchMast> getBatchReportByFilter(BatchFilterRequest filter) throws Exception {
+
+        List<PendingBatchMast> list ;
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (!filter.getFrom().isEmpty())
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if (!filter.getTo().isEmpty()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            //c.add(Calendar.DATE, 1);// adding one day in to because of time issue in created date
+            to = c.getTime();
+        }
+
+        List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequestWithPendingBatch(from,to,filter.getPartyId(),filter.getQualityNameId(),filter.getQualityEntryId());
+
+        if(stockMastList!=null)
+            throw new Exception(ConstantFile.StockBatch_Not_Found);
+
+        //party id and it's pending request
+        Map<Long,PendingBatchMast> partyList = new HashMap<>();
+
+
+
+        stockMastList.forEach(e->{
+
+            if(partyList.containsKey(e.getParty().getId()))
+            {
+                PendingBatchMast pendingBatchMast = partyList.get(e.getParty().getId());
+                List<PendingBatchData> pendingBatchDataList = pendingBatchMast.getPendingBatchDataList();
+                List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
+                pendingBatchDataList.addAll(newPendingBatchList);
+
+                partyList.put(e.getParty().getId(),pendingBatchMast);
+
+            }
+            else
+            {
+                PendingBatchMast pendingBatchMast = new PendingBatchMast(e);
+                List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
+                pendingBatchMast.setPendingBatchDataList(newPendingBatchList);
+                partyList.put(pendingBatchMast.getPartyId(),pendingBatchMast);
+            }
+
+        });
+
+        list = new ArrayList<PendingBatchMast>(partyList.values());
+        return list;
+
+    }
 }

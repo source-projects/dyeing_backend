@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.ConstantFile;
@@ -832,7 +833,7 @@ public class StockBatchController extends ControllerConfig {
     }
 
     //pending batch
-    @GetMapping("/stockBatch/pending/report")
+   /* @GetMapping("/stockBatch/pending/report")
     public ResponseEntity<GeneralResponse<List<PendingBatchMast>, Object>> getAllPendingBatchReport() throws Exception {
 
         GeneralResponse<List<PendingBatchMast>, Object> result;
@@ -853,7 +854,7 @@ public class StockBatchController extends ControllerConfig {
         }
         logService.saveLog(result, request, debugAll);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
-    }
+    }*/
 
     //pchallan api's
     @PostMapping("/stockBatch/add/pchallan")
@@ -934,6 +935,26 @@ public class StockBatchController extends ControllerConfig {
         GeneralResponse<List<StockMast>, Object> response;
         try {
             List<StockMast> flag = dataFilterService.getFilteredStockMast(filter,pageSize,pagePumber);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
+
+    @PostMapping("stockBatch/pending/forConslidateBatchResponse")
+    public ResponseEntity<GeneralResponse<List<PendingBatchMast>, Object>> getConslidateBatchResponseByFiletr(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<PendingBatchMast>, Object> response;
+        try {
+            List<PendingBatchMast> flag = stockBatchService.getBatchReportByFilter(filter);
 
             if (!flag.isEmpty())
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());

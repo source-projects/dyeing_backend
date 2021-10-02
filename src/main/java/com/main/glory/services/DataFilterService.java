@@ -6,6 +6,8 @@ import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.StockDataBatchData.StockMast;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,4 +24,6 @@ public class DataFilterService {
          
         return stockMastPage.toList();
     }
+
+
 }

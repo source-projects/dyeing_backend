@@ -466,6 +466,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.PchallanByBatchId(x.pchallanRef,COUNT(x.id)) from BatchData x where x.batchId=:batchId GROUP BY x.pchallanRef")
     List<PchallanByBatchId> getListOfPchallanByBatchId(String batchId);
 
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt)) from BatchData x where x.controlId=:id AND x.isProductionPlanned=false GROUP BY x.batchId,x.pchallanRef")
+    List<PendingBatchData> getPendingBatchListByStockId(Long id);
+
 
 
 

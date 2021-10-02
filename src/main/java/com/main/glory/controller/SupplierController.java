@@ -249,12 +249,12 @@ public class SupplierController extends ControllerConfig {
 
 
     @GetMapping("/supplier/all/{getBy}/{id}")
-    public ResponseEntity<GeneralResponse<List,Object>> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
-        GeneralResponse<List,Object> result;
+    public ResponseEntity<GeneralResponse<List<Supplier>,Object>> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
+        GeneralResponse<List<Supplier>,Object> result;
         try{
             switch (getBy) {
                 case "own":
-                    List obj = supplierService.getAllSupplier(getBy, id);
+                    List<Supplier> obj = supplierService.getAllSupplier(getBy, id);
                     if(!obj.isEmpty()){
                         result= new GeneralResponse<>(obj, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else
@@ -262,7 +262,7 @@ public class SupplierController extends ControllerConfig {
 
                     break;
                 case "group":
-                    List obj1 = supplierService.getAllSupplier(getBy, id);
+                    List<Supplier> obj1 = supplierService.getAllSupplier(getBy, id);
 
                     if(!obj1.isEmpty()){
                         result= new GeneralResponse<>(obj1, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -272,7 +272,7 @@ public class SupplierController extends ControllerConfig {
                     break;
 
                 case "all":
-                    List obj2 = supplierService.getAllSupplier(null, null);
+                    List<Supplier> obj2 = supplierService.getAllSupplier(null, null);
                     if(!obj2.isEmpty()){
                         result= new GeneralResponse<>(obj2, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else {

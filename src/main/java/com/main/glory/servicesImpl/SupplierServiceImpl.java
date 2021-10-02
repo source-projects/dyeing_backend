@@ -264,8 +264,8 @@ public class SupplierServiceImpl {
     }
 
     
-    public List getAllSupplier(String getBy, Long id) throws Exception {
-        List s = null;
+    public List<Supplier> getAllSupplier(String getBy, Long id) throws Exception {
+        List<Supplier> s = null;
         /*if (id == null) {
             s = supplierDao.findAllWithoutRates();
         } else if (getBy.equals("own")) {

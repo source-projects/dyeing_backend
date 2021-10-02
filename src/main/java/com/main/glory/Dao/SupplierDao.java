@@ -16,7 +16,7 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface SupplierDao extends FilterDao<Supplier> {
 
-    @Query("select new com.main.glory.model.supplier.Supplier(s.id, s.supplierName, s.discountPercentage, s.gstPercentage, s.remark, s.createdBy, s.createdDate, s.updatedDate, s.paymentTerms, s.updatedBy, s.userHeadData) from Supplier s")
+    @Query("select s from Supplier s")
     List<Supplier> findAllWithoutRates();
 
     @Query("select new com.main.glory.model.supplier.Supplier(s.id, s.supplierName, s.discountPercentage, s.gstPercentage, s.remark, s.createdBy, s.createdDate, s.updatedDate, s.paymentTerms, s.updatedBy, s.userHeadData) from Supplier s where s.userHeadData.id = :userHeadId OR s.createdBy.id=:userHeadId")
