@@ -144,4 +144,79 @@ public class SpecificationManager<T> {
     return specification;
   }
 
+  public static Boolean getOperationResult(String val1,String val2,Class fieldType,QueryOperator operator){
+    if (val1==null){
+      if(val2==null)
+        return true;
+      
+      else
+      return false;
+    }
+    if (fieldType==String.class){
+      String s1=(String) val1;
+      String s2=(String) val2;
+      switch (operator){
+        case EQUALS:
+        return s1.equals(s2);
+        case NOT_EQUALS:
+        return !s1.equals(s2);
+        case LIKE:
+        return s2.contains(s1);
+        case START_WITH:
+        return s2.substring(0, s1.length()).equals(s1);
+        case END_WITH:
+        return s2.substring(s2.length()- s1.length(),s2.length()).equals(s1);
+      }
+      return false;
+    }
+    else if (fieldType==Long.class){
+      Long n1=Long.parseLong(val1);
+      Long n2=Long.parseLong( val2);
+      switch (operator){
+        case EQUALS:
+        return n1==n2;
+        case NOT_EQUALS:
+        return !(n1!=n2);
+        case GREATER_THAN:
+        return n1>n2;
+        case LESS_THAN:
+        return n1<n2;
+      }
+      return false;
+    }
+    else if (fieldType==Double.class){
+      Double n1=Double.parseDouble(val1);
+      Double n2=Double.parseDouble( val2);
+      switch (operator){
+        case EQUALS:
+        return n1==n2;
+        case NOT_EQUALS:
+        return !(n1!=n2);
+        case GREATER_THAN:
+        return n1>n2;
+        case LESS_THAN:
+        return n1<n2;
+      }
+      return false;
+    }
+    else if (fieldType==Integer.class){
+      Integer n1=Integer.getInteger(val1);
+      Integer n2=Integer.getInteger( val2);
+      switch (operator){
+        case EQUALS:
+        return n1==n2;
+        case NOT_EQUALS:
+        return !(n1!=n2);
+        case GREATER_THAN:
+        return n1>n2;
+        case LESS_THAN:
+        return n1<n2;
+      }
+      return false;
+    }
+    
+
+    return true;
+  }
+
 }

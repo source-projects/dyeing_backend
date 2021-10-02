@@ -74,6 +74,9 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query("select d from DispatchMast d where (Date(d.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(d.createdDate)<=Date(:to) OR :to IS NULL) AND (d.userHeadData.id=:userHeadId OR :userHeadId IS NULL) AND (d.signByParty=:signByParty OR :signByParty IS NULL) AND (d.party.id=:partyId OR :partyId IS NULL) order by d.createdDate ASC")
     List<DispatchMast> getInvoiceByDispatchFilter(Date from, Date to, Long userHeadId, Long partyId, Boolean signByParty);
 
+    @Query("select d from DispatchMast d where (Date(d.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(d.createdDate)<=Date(:to) OR :to IS NULL) AND (d.userHeadData.id=:userHeadId OR :userHeadId IS NULL) AND (d.signByParty=:signByParty OR :signByParty IS NULL) AND (d.party.id=:partyId OR :partyId IS NULL) AND (d.party.id=:partyId OR :partyId IS NULL) AND (d.party.id=:partyId OR :partyId IS NULL) AND d.party IS NOT NULL AND d.userHeadData IS NOT NULL")
+    List<DispatchMast> getInvoiceByFilter(Date from, Date to, Long userHeadId, Long partyId, Boolean signByParty);
+
 
 
 }
