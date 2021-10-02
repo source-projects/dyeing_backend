@@ -84,8 +84,6 @@ public class ShadeServiceImpl {
 	@Autowired
 	ModelMapper modelMapper;
 
-	@Transactional
-
 	public void saveShade(AddShadeMast addShadeMast, String id) throws Exception {
 		// consider we have data and add directlt
 		UserData userHeadData = userDao.getUserById(addShadeMast.getUserHeadId());
@@ -251,8 +249,9 @@ public class ShadeServiceImpl {
 		return true;
 	}
 
-	@Transactional
-	public boolean deleteShadeById(Long id) throws Exception {
+
+
+	public boolean deleteShadeById(Long id) throws Exception{
 		Optional<ShadeMast> shadeMast = shadeMastDao.findById(id);
 		// check if this is present in the database
 		if (shadeMast.isEmpty()) {

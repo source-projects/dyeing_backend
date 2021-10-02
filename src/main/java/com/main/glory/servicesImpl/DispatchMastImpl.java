@@ -35,6 +35,7 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -1759,19 +1760,32 @@ public class DispatchMastImpl {
 
         //iterate and change the status
         for (BatchAndStockId createDispatch : dispatchList.getBatchAndStockIdList()) {
+
             List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(createDispatch.getStockId(), createDispatch.getPchallanRef(), createDispatch.getBatchId());
 
+            if (batchDataList.isEmpty())
+                throw new Exception("no batch data found");
 
-            ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
-            if (productionPlan == null)
+            ProductionPlan productionPlan=null;
+            BatchData batchDataExist = batchDataList.get(0);
+            if(batchDataExist.getMergeBatchId()!=null) {
+                productionPlan = productionPlanService.getProductionByBatchId(batchDataExist.getMergeBatchId());
+            }
+            else
+            {
+                productionPlan = productionPlanService.getProductionByBatchId(batchDataExist.getBatchId());
+            }
+
+            if(productionPlan==null)
                 throw new Exception("no production plan found for batch");
 
-            ShadeMast shadeMast = null;
+            Optional<ShadeMast> shadeMast = null;
             if (productionPlan != null && productionPlan.getShadeId() != null) {
-                shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
-                if (shadeMast == null)
+                shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                if (shadeMast.get() == null)
                     throw new Exception("no shade record found");
             }
+
 
 
             StockMast stockMast1 = stockBatchService.getStockById(createDispatch.getStockId());
@@ -1783,14 +1797,13 @@ public class DispatchMastImpl {
             if (batchDataList.isEmpty())
                 throw new Exception("no batch data found");
 
-
             for (BatchData batchData : batchDataList) {
 
                 if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated() == false) {
                     DispatchData dispatchData = null;
-                    if (shadeMast != null) {
-                        dispatchData = new DispatchData(batchData, shadeMast, quality, stockMast1);
-                        dispatchData.setShadeRate(shadeMast.getExtraRate());
+                    if (shadeMast.get() != null) {
+                        dispatchData = new DispatchData(batchData, shadeMast.get(), quality, stockMast1);
+                        dispatchData.setShadeRate(shadeMast.get().getExtraRate());
 
                     } else {
                         dispatchData = new DispatchData(batchData, quality, stockMast1);
