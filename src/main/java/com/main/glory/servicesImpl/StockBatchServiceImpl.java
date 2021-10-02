@@ -931,7 +931,7 @@ public class StockBatchServiceImpl {
     }
 
     public FilterResponse<BatchToPartyAndQuality> getAllBatchDetailPaginated(GetBYPaginatedAndFiltered requestParam,
-            String id) throws Exception {
+            String id,Boolean isProductionPlan) throws Exception {
         List<String> batchIds = new ArrayList<>();
         // get the user record first
         Long userId = Long.parseLong(id);
@@ -979,7 +979,6 @@ public class StockBatchServiceImpl {
             batchDataForMergeBatch = batchDao.findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(userId,
                     userHeadId);
         }
-        Boolean isProductionPlan=null;
         Long partyId=null;
 Long qualityId=null;
 String batchId=null;
@@ -990,8 +989,6 @@ String batchId=null;
             Filter filter=requestParam.getData().getParameters().get(i);
             String field=filter.getField().get(0);
             String value=filter.getValue();
-            if(field.equals("productionPlan"))
-                isProductionPlan=Boolean.parseBoolean(value);
 
             if(field.equals("partyId"))
                 partyId=Long.parseLong(value);
