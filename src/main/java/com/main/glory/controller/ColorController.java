@@ -126,15 +126,15 @@ public class ColorController extends ControllerConfig {
 	}
 
 	@PutMapping("/color")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> updateColor(@RequestBody ColorMast colorMast) {
+	public ResponseEntity<GeneralResponse<Boolean,Object>> updateColor(@RequestBody AddColorMast addColorMast) {
 		GeneralResponse<Boolean,Object> result;
 		try {
-			colorService.updateColor(colorMast);
-			result = new GeneralResponse<>(true, constantFile.Color_Updated, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+			colorService.updateColor(addColorMast);
+			result = new GeneralResponse<>(true, constantFile.Color_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addColorMast);
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,colorMast);
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addColorMast);
 			logService.saveLog(result,request,true);
 
 
