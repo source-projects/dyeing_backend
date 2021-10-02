@@ -24,6 +24,7 @@ public class ColorMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+    
     @ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="supplierId", referencedColumnName = "id", insertable = true, updatable = true)    
     Supplier supplier;
