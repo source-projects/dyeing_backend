@@ -6,6 +6,7 @@ import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
+import com.main.glory.model.color.AddColorMast;
 import com.main.glory.model.color.ColorAcknowledgement;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorMast;
@@ -50,15 +51,15 @@ public class ColorController extends ControllerConfig {
 	ColorServiceImpl colorService;
 
 	@PostMapping("/color")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> addColor(@RequestBody ColorMast colorMast,@RequestHeader Map<String, String> headers){
+	public ResponseEntity<GeneralResponse<Boolean,Object>> addColor(@RequestBody AddColorMast addColorMast,@RequestHeader Map<String, String> headers){
 		GeneralResponse<Boolean,Object> result ;
 		try {
-			Optional<Supplier> supplier = supplierDao.findById(colorMast.getSupplierId());
+			Optional<Supplier> supplier = supplierDao.findById(addColorMast.getSupplierId());
 			if(supplier.isEmpty())
-				result= new GeneralResponse<>(null, constantFile.Supplier_Not_Found+colorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				result= new GeneralResponse<>(null, constantFile.Supplier_Not_Found+addColorMast.getSupplierId(), false, System.currentTimeMillis(), HttpStatus.OK,addColorMast);
 			else {
-				colorService.addColor(colorMast,headers.get("id"));
-				result = new GeneralResponse<>(true, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,colorMast);
+				colorService.addColor(addColorMast,headers.get("id"));
+				result = new GeneralResponse<>(true, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK,addColorMast);
 
 			}
 			logService.saveLog(result,request,debugAll);
@@ -66,9 +67,9 @@ public class ColorController extends ControllerConfig {
 			String msg = e.getMessage();
 			String cause = e.getCause().getMessage();
 			if(cause.equals("BR") || msg.contains("null"))
-				result = new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,colorMast);
+				result = new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addColorMast);
 			else
-			result =new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,colorMast);
+			result =new GeneralResponse<>(false, msg, false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addColorMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

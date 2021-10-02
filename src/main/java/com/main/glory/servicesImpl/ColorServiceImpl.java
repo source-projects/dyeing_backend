@@ -12,6 +12,7 @@ import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
+import com.main.glory.model.color.AddColorMast;
 import com.main.glory.model.color.ColorAcknowledgement;
 import com.main.glory.model.color.ColorBox;
 import com.main.glory.model.color.ColorData;
@@ -67,19 +68,21 @@ public class ColorServiceImpl {
     FilterService<ColorMast, ColorMastDao> filterService;
 
 
-    public void addColor(ColorMast colorMast, String id) throws Exception {
+    public void addColor(AddColorMast addColorMast, String id) throws Exception {
 
 
         // identify the record is addedby the data entry user
         // for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
+        UserData userHead=userDao.getUserById(user.getUserHeadId());
+
+        Optional<Supplier> supplier = supplierDao.getSupplierById(addColorMast.getSupplierId());;
         if (user.getIsMaster() == false) {
-            Optional<Supplier> supplier = supplierDao.getSupplierById(colorMast.getSupplierId());
+            // supplier = supplierDao.getSupplierById(addColorMast.getSupplierId());
             if (supplier.isEmpty())
                 throw new Exception(constantFile.Supplier_Found);
-            colorMast.setUserHeadData(supplier.get().getUserHeadData());
         }
-
+        ColorMast colorMast=new ColorMast(addColorMast,user,user,userHead,supplier.get());
         ColorMast colorMast1 = colorMastDao.save(colorMast);
         colorMast1.getColorDataList().forEach(e -> {
             e.setControlId(colorMast1.getId());
@@ -112,7 +115,7 @@ public class ColorServiceImpl {
             data.forEach(e -> {
                 try {
                     ColorMastDetails x = new ColorMastDetails(e);
-                    String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                    String name = e.getSupplier().getSupplierName();
                     if (!name.isEmpty()) {
                         x.setSupplierName(name);
                         colorMastDetails.add(x);
@@ -131,7 +134,7 @@ public class ColorServiceImpl {
             data.forEach(e -> {
                 try {
                     ColorMastDetails x = new ColorMastDetails(e);
-                    String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                    String name = e.getSupplier().getSupplierName();
                     if (!name.isEmpty()) {
                         x.setSupplierName(name);
                         colorMastDetails.add(x);
@@ -148,7 +151,7 @@ public class ColorServiceImpl {
                 data.forEach(e -> {
                     try {
                         ColorMastDetails x = new ColorMastDetails(e);
-                        String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                        String name = e.getSupplier().getSupplierName();
                         if (!name.isEmpty()) {
                             x.setSupplierName(name);
                             colorMastDetails.add(x);
@@ -166,7 +169,7 @@ public class ColorServiceImpl {
                 data.forEach(e -> {
                     try {
                         ColorMastDetails x = new ColorMastDetails(e);
-                        String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                        String name = e.getSupplier().getSupplierName();
                         if (!name.isEmpty()) {
                             x.setSupplierName(name);
                             colorMastDetails.add(x);
@@ -194,7 +197,8 @@ public class ColorServiceImpl {
         Pageable pageable = filterService.getPageable(requestParam.getData());
         List<Filter> filtersParam = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
-        subModelCase.put("userHeadId", new ArrayList<String>(Arrays.asList("userHeadData", "id")));
+        subModelCase.put("userHeadId", new ArrayList<String>(Arrays.asList("supplier", "supplierName")));
+        subModelCase.put("supplierName", new ArrayList<String>(Arrays.asList("userHeadData", "id")));
         subModelCase.put("createdByID", new ArrayList<String>(Arrays.asList("createdBy", "id")));
         subModelCase.put("userHeadName", new ArrayList<String>(Arrays.asList("userHeadData", "userName")));
         subModelCase.put("createdByName", new ArrayList<String>(Arrays.asList("createdBy", "userName")));
@@ -259,7 +263,7 @@ public class ColorServiceImpl {
         data.forEach(e -> {
             try {
                 ColorMastDetails x = new ColorMastDetails(e);
-                String name = supplierDao.findById(e.getSupplierId()).get().getSupplierName();
+                String name = e.getSupplier().getSupplierName();
                 if (!name.isEmpty()) {
                     x.setSupplierName(name);
                     colorMastDetails.add(x);
@@ -283,7 +287,7 @@ public class ColorServiceImpl {
         data.forEach(e -> {
             try {
                 ColorMastDetails x = new ColorMastDetails(e);
-                x.setSupplierName(supplierDao.findById(e.getSupplierId()).get().getSupplierName());
+                x.setSupplierName(e.getSupplier().getSupplierName());
                 colorMastDetails.add(x);
             } catch (Exception ex) {
                 ex.printStackTrace();
