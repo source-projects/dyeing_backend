@@ -262,8 +262,10 @@ public class ColorServiceImpl {
         data = queryResponse.getContent();
         data.forEach(e -> {
             try {
-                ColorMastDetails x = new ColorMastDetails(e);
                 String name = e.getSupplier().getSupplierName();
+                e.setSupplier(null);
+                ColorMastDetails x = new ColorMastDetails(e);
+                
                 if (!name.isEmpty()) {
                     x.setSupplierName(name);
                     colorMastDetails.add(x);
