@@ -79,7 +79,7 @@ public class SupplierServiceImpl {
 
 
     
-    @Transactional
+
     public Boolean addSupplier(AddSupplier addSupplier,String id) {
         UserData createdBy=userDao.findUserById(addSupplier.getCreatedBy());
         QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
@@ -145,6 +145,7 @@ public class SupplierServiceImpl {
     }
 
     
+
     public Boolean updateSupplier(AddSupplier addSupplier) {
         try {
             //System.out.println(updateSupplierRequest.getId());

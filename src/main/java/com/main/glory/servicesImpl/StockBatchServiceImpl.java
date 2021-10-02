@@ -133,7 +133,10 @@ public class StockBatchServiceImpl {
 
     }
 
-    @Transactional
+
+
+
+
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
@@ -197,7 +200,10 @@ public class StockBatchServiceImpl {
 
     }
 
-    @Transactional
+
+
+
+
     public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
         List<GetAllStockWithPartyNameResponse> list = new ArrayList<>();
@@ -525,6 +531,7 @@ public class StockBatchServiceImpl {
         return list;
     }
 
+
     public StockMast getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
@@ -655,6 +662,7 @@ public class StockBatchServiceImpl {
         }
 
     }
+
 
     public void deleteStockBatch(Long id) throws Exception {
         Optional<StockMast> stockMast = stockMastDao.findById(id);

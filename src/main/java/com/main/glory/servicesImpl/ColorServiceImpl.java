@@ -60,12 +60,15 @@ public class ColorServiceImpl {
 
     ConstantFile constantFile;
 
+
     @Autowired
     SpecificationManager<ColorMast> specificationManager;
     @Autowired
     FilterService<ColorMast, ColorMastDao> filterService;
 
+
     public void addColor(ColorMast colorMast, String id) throws Exception {
+
 
         // identify the record is addedby the data entry user
         // for data entry user
