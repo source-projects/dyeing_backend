@@ -134,10 +134,6 @@ public class StockBatchServiceImpl {
 
     }
 
-
-
-
-
     public Long saveStockBatch(AddStockBatch stockMast, String id) throws Exception {
         List<BatchData> batchDataList = new ArrayList<>();
         Party party = partyDao.findByPartyId(stockMast.getPartyId());
@@ -200,10 +196,6 @@ public class StockBatchServiceImpl {
         }
 
     }
-
-
-
-
 
     public List<GetAllStockWithPartyNameResponse> getAllStockBatch(String getBy, Long id) throws Exception {
         Optional<List<GetAllStockWithPartyNameResponse>> data = null;
@@ -532,7 +524,6 @@ public class StockBatchServiceImpl {
         return list;
     }
 
-
     public StockMast getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
@@ -663,7 +654,6 @@ public class StockBatchServiceImpl {
         }
 
     }
-
 
     public void deleteStockBatch(Long id) throws Exception {
         Optional<StockMast> stockMast = stockMastDao.findById(id);
@@ -932,7 +922,7 @@ public class StockBatchServiceImpl {
     }
 
     public FilterResponse<BatchToPartyAndQuality> getAllBatchDetailPaginated(GetBYPaginatedAndFiltered requestParam,
-            String id) throws Exception {
+            String id, Boolean isProductionPlan) throws Exception {
         List<String> batchIds = new ArrayList<>();
         // get the user record first
         Long userId = Long.parseLong(id);
@@ -980,53 +970,52 @@ public class StockBatchServiceImpl {
             batchDataForMergeBatch = batchDao.findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(userId,
                     userHeadId);
         }
-        Boolean isProductionPlan=null;
-        Long partyId=null;
-Long qualityId=null;
-String batchId=null;
-
+        Long partyId = null;
+        Long qualityId = null;
+        String batchId = null;
 
         // batchData.addAll(batchDataForMergeBatch);
-        for(int i=0;i<requestParam.getData().getParameters().size();i++){
-            Filter filter=requestParam.getData().getParameters().get(i);
-            String field=filter.getField().get(0);
-            String value=filter.getValue();
-            if(field.equals("productionPlan"))
-                isProductionPlan=Boolean.parseBoolean(value);
+        for (int i = 0; i < requestParam.getData().getParameters().size(); i++) {
+            Filter filter = requestParam.getData().getParameters().get(i);
+            String field = filter.getField().get(0);
+            String value = filter.getValue();
 
-            if(field.equals("partyId"))
-                partyId=Long.parseLong(value);
+            if (field.equals("partyId"))
+                partyId = Long.parseLong(value);
 
-            if(field.equals("qualityId"))
-                qualityId=Long.parseLong(value);
+            if (field.equals("qualityId"))
+                qualityId = Long.parseLong(value);
 
-            if(field.equals("batchId"))
-                batchId=value;
+            if (field.equals("batchId"))
+                batchId = value;
 
         }
         for (GetBatchWithControlId batch : batchData) {
-            
+
             Optional<StockMast> stockMast = stockMastDao.findById(batch.getControlId());
             if (stockMast.get().getQuality().getId() != null && stockMast.get().getParty().getId() != null) {
                 Quality quality = stockMast.get().getQuality();
 
                 Party party = stockMast.get().getParty();
-                if(partyId!=party.getId() && partyId!=null)
-                continue;
+                if (partyId != null)
+                    if (partyId != party.getId())
+                        continue;
 
-                if(qualityId!=quality.getId() && qualityId!=null)
-                continue;
+                if (qualityId != null)
+                    if (qualityId != quality.getId())
+                        continue;
 
-                if((!batchId.equals(batch.getBatchId())) && batchId!=null)
-                continue;
+                if (batchId != null)
+                    if ((!batchId.equals(batch.getBatchId())))
+                        continue;
 
-                if(stockMast.get().getIsProductionPlanned()==isProductionPlan && isProductionPlan!=null)
-                continue;
-                
+                if (isProductionPlan != null)
+                    if (stockMast.get().getIsProductionPlanned() != isProductionPlan)
+                        continue;
 
                 QualityName qualityName = quality.getQualityName();
-                BatchToPartyAndQuality batchToPartyAndQuality = new BatchToPartyAndQuality(quality, party,
-                        batch, qualityName);
+                BatchToPartyAndQuality batchToPartyAndQuality = new BatchToPartyAndQuality(quality, party, batch,
+                        qualityName);
 
                 // check that the process and party shade is exist or not
                 // if not then set the detail by null
@@ -1070,18 +1059,22 @@ String batchId=null;
 
                     QualityName qualityName = quality.getQualityName();
                     Party party = stockMast.get().getParty();
-                    if(partyId!=party.getId() && partyId!=null)
-                    continue;
-    
-                    if(qualityId!=quality.getId() && qualityId!=null)
-                    continue;
-    
-                    if((!batchId.equals(batch.getBatchId())) && batchId!=null)
-                    continue;
-    
-                    if(stockMast.get().getIsProductionPlanned()==isProductionPlan && isProductionPlan!=null)
-                    continue;
-    
+                    if (partyId != null)
+                        if (partyId != party.getId())
+                            continue;
+
+                    if (qualityId != null)
+                        if (qualityId != quality.getId())
+                            continue;
+
+                    if (batchId != null)
+                        if ((!batchId.equals(batch.getBatchId())))
+                            continue;
+
+                    if (isProductionPlan != null)
+                        if (stockMast.get().getIsProductionPlanned() != isProductionPlan)
+                            continue;
+
                     batchToPartyAndQuality
                             .setPartyName(batchToPartyAndQuality.getPartyName() == null ? party.getPartyName()
                                     : batchToPartyAndQuality.getPartyName() + "," + party.getPartyName());
@@ -1125,7 +1118,8 @@ String batchId=null;
         int pageSize = requestParam.getData().getPageSize();
         int pageIndex = requestParam.getData().getPageIndex();
         FilterResponse<BatchToPartyAndQuality> response = new FilterResponse<BatchToPartyAndQuality>(
-            getAllBatchWithPartyAndQualities.subList(Integer.min(pageIndex * pageSize, getAllBatchWithPartyAndQualities.size()),
+                getAllBatchWithPartyAndQualities.subList(
+                        Integer.min(pageIndex * pageSize, getAllBatchWithPartyAndQualities.size()),
                         Integer.min((pageIndex + 1) * pageSize, getAllBatchWithPartyAndQualities.size())),
                 pageIndex, pageSize, getAllBatchWithPartyAndQualities.size());
         return response;

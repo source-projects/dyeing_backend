@@ -76,7 +76,7 @@ public class ColorServiceImpl {
         UserData user = userDao.getUserById(Long.parseLong(id));
         UserData userHead=userDao.getUserById(user.getUserHeadId());
 
-        Optional<Supplier> supplier = supplierDao.getSupplierById(addColorMast.getSupplierId());;
+        Optional<Supplier> supplier = supplierDao.getSupplierById(addColorMast.getSupplierId());
         if (user.getIsMaster() == false) {
             // supplier = supplierDao.getSupplierById(addColorMast.getSupplierId());
             if (supplier.isEmpty())
@@ -299,11 +299,21 @@ public class ColorServiceImpl {
     }
 
 
-    public boolean updateColor(ColorMast colorMast) throws Exception {
-        Optional<ColorMast> original = colorMastDao.findById(colorMast.getId());
+    public boolean updateColor(AddColorMast addColorMast) throws Exception {
+        UserData createdBy = userDao.getUserById(addColorMast.getCreatedBy());
+        UserData updatedBy = userDao.getUserById(addColorMast.getCreatedBy());
+        UserData userHead=userDao.getUserById(createdBy.getUserHeadId());
+
+        Optional<Supplier> supplier = supplierDao.getSupplierById(addColorMast.getSupplierId());
+            if (supplier.isEmpty())
+                throw new Exception(constantFile.Supplier_Not_Exist);
+
+        ColorMast colorMast=new ColorMast(addColorMast,createdBy,updatedBy,userHead,supplier.get());
+
+        Optional<ColorMast> original = colorMastDao.findById(addColorMast.getId());
 
         if (original.isEmpty()) {
-            throw new Exception(constantFile.Color_Not_Found + colorMast.getId());
+            throw new Exception(constantFile.Color_Not_Found + addColorMast.getId());
         }
         colorMastDao.save(colorMast);
         colorDataDao.deleteColorWhichIsNull();

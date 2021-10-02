@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -399,12 +400,12 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @PostMapping("/stockBatch/batch/allPaginated")
-    public ResponseEntity<GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object>> getAllBatchPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> headers) {
+    @PostMapping("/stockBatch/batch/allPaginated/{isProductionPlanned}")
+    public ResponseEntity<GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object>> getAllBatchPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> headers,@PathVariable(value="isProductionPlanned") Boolean isProductionPlanned) {
         GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object> result;
         try {
 
-            FilterResponse<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetailPaginated(requestParam,headers.get("id"));
+            FilterResponse<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetailPaginated(requestParam,headers.get("id"),isProductionPlanned);
 
             if (batchData.getData().isEmpty())
                 result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
