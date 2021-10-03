@@ -1,6 +1,10 @@
 package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.*;
+import static java.util.Comparator.comparingInt;
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
 import com.main.glory.Dao.productionPlan.ProductionPlanDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
@@ -33,12 +37,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("ShadeServiceImpl")
 public class ShadeServiceImpl {
@@ -202,11 +201,13 @@ public class ShadeServiceImpl {
 	}
 
 	public Boolean updateShade(AddShadeMast addShadeMast) throws Exception {
+		Boolean setCategory = false;
 		UserData userHeadData = userDao.getUserById(addShadeMast.getUserHeadId());
 		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
 		Quality quality=qualityDao.findById(addShadeMast.getQualityEntryId()).get();
 		Party party=partyDao.findById(addShadeMast.getPartyId()).get();
 		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,quality,party);
+		shadeMast.setShadeDataList(addShadeMast.getShadeDataList());
 
 		if (shadeMast.getQuality() == null)
 			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -216,10 +217,13 @@ public class ShadeServiceImpl {
 
 		if (shadeMast.getShadeDataList() == null || shadeMast.getShadeDataList().isEmpty()) {
 			shadeMast.setPending(true);
+			setCategory = false;
 			if (shadeMast.getCategory() == null)
 				throw new Exception("Select shade category");
-		} else
+		} else {
 			shadeMast.setPending(false);
+			setCategory = true;
+		}
 
 		ShadeMast shadeIndex = shadeMastDao.getShadeMastById(shadeMast.getId());
 		if (shadeIndex == null)
@@ -228,6 +232,7 @@ public class ShadeServiceImpl {
 
 			// System.out.println(shadeMast);
 			List<ProductionPlan> productionPlansList = productionPlanService.getProductionByShadeId(shadeMast.getId());
+			if(setCategory==true)
 			shadeMast = setShadeCatogory(shadeMast);
 
 			// check that shade is exist or not
@@ -610,6 +615,11 @@ public class ShadeServiceImpl {
 		/*
 		 * if(list.isEmpty()) throw new Exception("shade data not found");
 		 */
+
+		//remove duplicate id record
+		list = list.stream()
+				.collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(GetShadeByPartyAndQuality::getId))),
+						ArrayList::new));
 		return list;
 
 	}
@@ -783,5 +793,17 @@ public class ShadeServiceImpl {
 		else
 			return shadeMastDao.getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(record.getQualityEntryId(),
 					record.getPartyShadeNo(), record.getShadeId());
+	}
+
+	public AddShadeMast getById(Long id) {
+		Optional<ShadeMast> shadeMast = shadeMastDao.findById(id);
+		AddShadeMast addShadeMast = null;
+		if(shadeMast.isPresent())
+		{
+
+			addShadeMast = new AddShadeMast(shadeMast.get());
+		}
+		return addShadeMast;
+
 	}
 }

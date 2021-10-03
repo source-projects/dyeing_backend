@@ -2,15 +2,11 @@ package com.main.glory.servicesImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Phrase;
@@ -25,13 +21,11 @@ import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.paymentTerm.PaymentMast;
-import com.main.glory.model.SendEmail;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.document.request.GetDocumentModel;
-import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -44,21 +38,15 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.model.party.Party;
 import com.main.glory.services.FilterService;
 import com.main.glory.services.PartyServiceInterface;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Service("partyServiceImp")
 public class PartyServiceImp implements PartyServiceInterface {
@@ -252,7 +240,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     @Override
     public PartyWithUserHeadName getPartyDetailById(Long id) throws Exception {
-        var partyData = partyDao.findPartyWithUserHeadById(id);
+        PartyWithUserHeadName partyData = partyDao.findPartyWithUserHeadById(id);
         if (partyData == null)
             throw new Exception(ConstantFile.Party_Not_Found);
         else
