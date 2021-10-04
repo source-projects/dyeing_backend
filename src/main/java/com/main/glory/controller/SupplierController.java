@@ -10,7 +10,6 @@ import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.AddSupplier;
 import com.main.glory.model.supplier.Supplier;
-import com.main.glory.model.supplier.requestmodals.SupplierRateDTO;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
