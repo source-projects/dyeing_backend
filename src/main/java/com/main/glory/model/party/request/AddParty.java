@@ -1,6 +1,7 @@
 package com.main.glory.model.party.request;
 
 
+import com.main.glory.model.party.Party;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,4 +48,33 @@ public class AddParty {
     Long paymentDays;
     Double creditLimit;
     Double discount;
+
+    public AddParty(Party party) {
+        this.id = party.getId();
+        this.partyName = party.getPartyName();
+        this.partyAddress1 = party.getPartyAddress1();
+        this.partyAddress2 = party.getPartyAddress2();
+        this.contactNo = party.getContactNo();
+        this.pincode = party.getPincode();
+        this.city = party.getCity();
+        this.state = party.getState();
+        this.GSTIN = party.getGSTIN();
+        this.mailId = party.getMailId();
+        this.createdBy = party.getCreatedBy().getId();
+        this.updatedBy = party.getUpdatedBy().getId();
+        this.debtor = party.getDebtor();
+        this.creditor = party.getCreditor();
+        this.internalTransfer = party.getInternalTransfer();
+        this.partyType = party.getPartyType();
+        this.paymentTerms = party.getPaymentTerms();
+        this.percentageDiscount = party.getPercentageDiscount();
+        this.gstPercentage = party.getGstPercentage();
+        this.createdDate = party.getCreatedDate();
+        this.updatedDate = party.getUpdatedDate()==null?null:party.getUpdatedDate();
+        this.userHeadId = party.getUserHeadData().getId();
+        this.partyCode = party.getPartyCode();
+        this.paymentDays = party.getPaymentDays();
+        this.creditLimit = party.getCreditLimit();
+        //this.discount = party.getPercentageDiscount();
+    }
 }

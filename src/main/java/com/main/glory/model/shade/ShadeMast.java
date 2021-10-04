@@ -76,7 +76,7 @@ import java.util.List;
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
-		this.id=addShadeMast.getPartyId();
+		this.id=addShadeMast.getId();
 		this.quality=quality;
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();

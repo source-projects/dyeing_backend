@@ -10,13 +10,10 @@ import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.AddSupplier;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.requestmodals.SupplierRateDTO;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
-import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
-import com.main.glory.model.supplier.responce.GetItemWithSupplier;
-import com.main.glory.model.supplier.responce.GetSupplierPaginatedData;
-import com.main.glory.model.supplier.responce.RateAndItem;
-import com.main.glory.model.supplier.responce.SupplierRateResponse;
+import com.main.glory.model.supplier.responce.*;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,11 +187,11 @@ public class SupplierController extends ControllerConfig {
     }
 
     @GetMapping("/supplier/rates/all")
-    public ResponseEntity<GeneralResponse<Object,Object>> getAllSupplierRates(){
-        GeneralResponse<Object,Object> result;
+    public ResponseEntity<GeneralResponse<List<GetAllSupplierRatesResponse>,Object>> getAllSupplierRates(){
+        GeneralResponse<List<GetAllSupplierRatesResponse>,Object> result;
         try{
-            Object obj = supplierService.getAllRates();
-            if(obj != null){
+            List<GetAllSupplierRatesResponse> obj = supplierService.getAllRates();
+            if(!obj.isEmpty()){
                 result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
                 result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());

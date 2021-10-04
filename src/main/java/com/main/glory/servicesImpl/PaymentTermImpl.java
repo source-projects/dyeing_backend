@@ -126,7 +126,7 @@ public class PaymentTermImpl {
 
         for (AdvancePayment paymentMast : list)
         {
-        Party partyExist = partyServiceImp.getPartyDetailById(paymentMast.getPartyId());
+        Party partyExist = partyServiceImp.getPartyById(paymentMast.getPartyId());
         if(partyExist==null)
             throw new Exception("no data found for party:"+paymentMast.getPartyId());
 
@@ -142,7 +142,7 @@ public class PaymentTermImpl {
 
         //check the party is exist or not
 
-        Party partyExist=partyServiceImp.getPartyDetailById(partyId);
+        Party partyExist=partyServiceImp.getPartyById(partyId);
         if(partyExist==null)
             throw new Exception("no party found for id:"+partyId);
 

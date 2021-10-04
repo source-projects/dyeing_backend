@@ -184,12 +184,12 @@ public class ShadeController extends ControllerConfig {
 
 
 	@GetMapping("/shade/{id}")
-	public ResponseEntity<GeneralResponse<ShadeMast,Object>> getShadesById(@PathVariable(value = "id") Long id){
-		GeneralResponse<ShadeMast,Object> result;
+	public ResponseEntity<GeneralResponse<AddShadeMast,Object>> getShadesById(@PathVariable(value = "id") Long id){
+		GeneralResponse<AddShadeMast,Object> result;
 		try{
-			Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(id);
+			AddShadeMast shadeMast = shadeService.getById(id);
 			if(shadeMast != null){
-				result = new GeneralResponse<>(shadeMast.get(), ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+				result = new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 			}else{
 				result = new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 			}

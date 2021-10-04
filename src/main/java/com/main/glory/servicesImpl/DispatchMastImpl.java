@@ -1407,6 +1407,22 @@ public class DispatchMastImpl {
         // System.out.println(1);
         List<ConsolidatedBillMast> list = new ArrayList<>();
         List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getSignByParty());
+        if (filter.getQualityNameId() != null) {
+            dispatchMastList = dispatchMastList.stream()
+                    .filter(p -> p.getDispatchDataList().stream()
+                            .filter(child -> child.getQuality().getQualityName().getId().equals(filter.getQualityNameId())).findAny()
+                            .isPresent())
+                    .collect(Collectors.toList());
+        }
+
+        // filter by quality name id
+        if (filter.getQualityEntryId() != null) {
+            dispatchMastList = dispatchMastList.stream()
+                    .filter(p -> p.getDispatchDataList().stream()
+                            .filter(child -> child.getQuality().getId().equals(filter.getQualityEntryId())).findAny()
+                            .isPresent())
+                    .collect(Collectors.toList());
+        }
         // System.out.println(1);
         for (DispatchMast dispatchMast : dispatchMastList) {
             // System.out.println(2);
@@ -1494,22 +1510,7 @@ public class DispatchMastImpl {
                 list.add(consolidatedBillMast);
 
         }
-        if (filter.getQualityNameId() != null) {
-            list = list.stream()
-                    .filter(p -> p.getConsolidatedBillDataList().stream()
-                            .filter(child -> child.getQualityNameId().equals(filter.getQualityNameId())).findAny()
-                            .isPresent())
-                    .collect(Collectors.toList());
-        }
 
-        // filter by quality name id
-        if (filter.getQualityEntryId() != null) {
-            list = list.stream()
-                    .filter(p -> p.getConsolidatedBillDataList().stream()
-                            .filter(child -> child.getQualityEntryId().equals(filter.getQualityEntryId())).findAny()
-                            .isPresent())
-                    .collect(Collectors.toList());
-        }
 
         return list;
 

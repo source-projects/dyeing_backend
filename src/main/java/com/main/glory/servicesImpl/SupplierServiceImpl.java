@@ -22,6 +22,7 @@ import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.requestmodals.SupplierRateDTO;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
@@ -82,10 +83,10 @@ public class SupplierServiceImpl {
 
     public Boolean addSupplier(AddSupplier addSupplier,String id) {
         UserData createdBy=userDao.findUserById(addSupplier.getCreatedBy());
-        QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
+        //QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
         addSupplier.setCreatedDate(new Date(System.currentTimeMillis()));
         addSupplier.setUpdatedDate(new Date(System.currentTimeMillis()));
-        Supplier supplier=new Supplier(addSupplier, createdBy, createdBy, null, qualityName);
+        Supplier supplier=new Supplier(addSupplier, createdBy, createdBy, null, null);
         try {
             supplierDao.save(supplier);
             return true;
@@ -154,7 +155,7 @@ public class SupplierServiceImpl {
                 return false;
             }
             UserData updateBy=userDao.findUserById(addSupplier.getUpdatedBy());
-            QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
+            //QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
     
 
             supplier.setDiscountPercentage(addSupplier.getDiscountPercentage());
@@ -164,7 +165,7 @@ public class SupplierServiceImpl {
             supplier.setSupplierName(addSupplier.getSupplierName());
             supplier.setUpdatedDate(new Date(System.currentTimeMillis()));
             supplier.setUpdatedBy(updateBy);
-            supplier.setQualityName(qualityName);
+            //supplier.setQualityName(qualityName);
 
             List<SupplierRate> list=supplierRateDao.getAllSupplierRateBySupplierId(addSupplier.getId());
             supplierDao.save(supplier);
@@ -291,18 +292,15 @@ public class SupplierServiceImpl {
         return s;
     }
 
-    public Object getAllRates() {
-        try {
+    public List<GetAllSupplierRatesResponse> getAllRates() {
+
             List<GetAllSupplierRate> getAllSupplierRateList = null;
             List<GetAllSupplierRatesResponse> supplierRatesResponses = null;
             getAllSupplierRateList = supplierRateDao.findWithSupplierName();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             supplierRatesResponses = modelMapper.map(getAllSupplierRateList, List.class);
             return supplierRatesResponses;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+
     }
 
     public String getSupplierName(Long id) {

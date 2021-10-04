@@ -1,6 +1,7 @@
 package com.main.glory.model.shade.requestmodals;
 
 import com.main.glory.model.shade.ShadeData;
+import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 
 import lombok.AllArgsConstructor;
@@ -45,5 +46,29 @@ public class AddShadeMast {
     private Long userHeadId;
 
 
+    public AddShadeMast(ShadeMast shadeMast) {
+        this.partyShadeNo = shadeMast.getPartyShadeNo();
+        this.id = shadeMast.getId();
+        this.processId = shadeMast.getProcessId();
+        this.processName = shadeMast.getProcessName();
+        this.colorTone = shadeMast.getColorTone();
+        this.qualityId = shadeMast.getQuality().getQualityId();
+        this.qualityName = shadeMast.getQuality().getQualityName().getQualityName();
+        this.qualityType = shadeMast.getQuality().getQualityType();
+        this.partyId = shadeMast.getParty().getId();
+        this.cuttingId = shadeMast.getCuttingId();
+        this.labColorNo = shadeMast.getLabColorNo();
+        this.category = shadeMast.getCategory();
+        this.remark = shadeMast.getRemark();
+        this.apcNo = shadeMast.getApcNo();
+        this.qualityEntryId = shadeMast.getQuality().getId();
+        this.pending = shadeMast.getPending();
+        this.extraRate = shadeMast.getExtraRate();
+        this.colorName = shadeMast.getColorName();
+        this.shadeDataList = shadeMast.getShadeDataList();
+        this.createdBy = shadeMast.getCreatedBy().getId();
+        this.updatedBy = shadeMast.getUpdatedBy()==null?null:shadeMast.getUpdatedBy().getId();
+        this.userHeadId = shadeMast.getUserHeadData().getId();
+    }
 
 }

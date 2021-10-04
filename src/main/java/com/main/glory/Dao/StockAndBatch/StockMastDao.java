@@ -121,6 +121,6 @@ public interface StockMastDao extends FilterDao<StockMast>  {
 
 
 
-    @Query("select x from StockMast x where (:from IS NULL OR DATE(x.receiveDate)=>DATE(:from)) AND (:to IS NULL OR DATE(x.receiveDate)<=DATE(:to)) AND (:partyId IS NULL OR x.party.id=:partyId) AND (:qualityNameId IS NULL OR x.quality.qualityName.id=:qualityNameId) AND (:qualityEntryId IS NULL OR x.quality.id=:qualityEntryId) AND x.id in (select b.controlId from BatchData b where b.isProductionPlanned=false)")
+    @Query("select x from StockMast x where (:from IS NULL OR DATE(x.receiveDate)>=DATE(:from)) AND (:to IS NULL OR DATE(x.receiveDate)<=DATE(:to)) AND (:partyId IS NULL OR x.party.id=:partyId) AND (:qualityNameId IS NULL OR x.quality.qualityName.id=:qualityNameId) AND (:qualityEntryId IS NULL OR x.quality.id=:qualityEntryId) AND x.id in (select b.controlId from BatchData b where b.isProductionPlanned=false)")
     List<StockMast> filterByBatchFilterRequestWithPendingBatch(Date from, Date to, Long partyId, Long qualityNameId, Long qualityEntryId);
 }

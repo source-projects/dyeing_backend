@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PartyWithUserHeadName extends Party {
+public class PartyWithUserHeadName extends AddParty {
 
     String userHeadName;
     public PartyWithUserHeadName(Party party, String userHeadName) {
