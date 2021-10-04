@@ -22,7 +22,6 @@ import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
 import com.main.glory.model.supplier.Supplier;
-import com.main.glory.model.supplier.requestmodals.SupplierRateDTO;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
@@ -133,11 +132,21 @@ public class SupplierServiceImpl {
     }
 
     
-    public Optional<Supplier> getSupplier(Long id) {
+    public SupplierResponse getSupplier(Long id) {
         try {
-//            Supplier s = supplierDao.findById(id).get();
-            //           return s;
-            return supplierDao.findById(id);
+            SupplierResponse addSupplier =null;
+            Supplier s = supplierDao.findById(id).get();
+
+            if(s !=null)
+            {
+                addSupplier = new SupplierResponse(s);
+                List<SupplierRateDTO> supplierRateDTOS = supplierRateDao.getSupplierDtoResponseBySupplierId(s.getId());
+                addSupplier.setSupplierRates(supplierRateDTOS);
+
+
+            }
+
+            return addSupplier;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

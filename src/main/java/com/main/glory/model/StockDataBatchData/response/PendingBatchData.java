@@ -20,11 +20,12 @@ public class PendingBatchData {
     Double totalBatchWt;
 
 
-    public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt) {
+    public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate) {
         this.batchId = batchId;
         this.pchallanRef = pchallanRef;
         this.totalBatchMtr = totalBatchMtr;
         this.totalBatchWt = totalBatchWt;
+        this.receiveDate = receiveDate;
 
     }
 }

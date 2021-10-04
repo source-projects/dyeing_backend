@@ -2975,7 +2975,7 @@ public class StockBatchServiceImpl {
 
         List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequestWithPendingBatch(from,to,filter.getPartyId(),filter.getQualityNameId(),filter.getQualityEntryId());
 
-        if(stockMastList!=null)
+        if(stockMastList==null)
             throw new Exception(ConstantFile.StockBatch_Not_Found);
 
         //party id and it's pending request
