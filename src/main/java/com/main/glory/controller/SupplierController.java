@@ -140,14 +140,14 @@ public class SupplierController extends ControllerConfig {
 
 
     @GetMapping("/supplier/rate/{id}")
-    public ResponseEntity<GeneralResponse<Object,Object>> getSupplierAlongWithRates(@PathVariable("id") Long id){
-        GeneralResponse<Object,Object> result;
+    public ResponseEntity<GeneralResponse<SupplierResponse,Object>> getSupplierAlongWithRates(@PathVariable("id") Long id){
+        GeneralResponse<SupplierResponse,Object> result;
         try{
             if(id == null){
                 throw new Exception(ConstantFile.Null_Record_Passed);//result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
-            Object obj =  supplierService.getSupplier(id);
+            SupplierResponse obj =  supplierService.getSupplier(id);
             if(obj != null){
                 result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {

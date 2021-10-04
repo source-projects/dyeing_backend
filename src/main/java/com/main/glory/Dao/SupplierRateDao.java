@@ -6,6 +6,7 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.responce.GetItemWithSupplier;
 import com.main.glory.model.supplier.responce.ItemWithSupplier;
+import com.main.glory.model.supplier.responce.SupplierRateDTO;
 import com.main.glory.model.supplier.responce.SupplierRateResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -69,4 +70,7 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
 
     @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,(select ss.supplierName from Supplier ss where ss.id=x.supplier.id)) from SupplierRate x where x.itemType=:type")
     List<SupplierRateResponse> getAllItemWithType(String type);
+
+    @Query("select new com.main.glory.model.supplier.responce.SupplierRateDTO(s.id,s.supplier.id,s.itemName,s.itemType,s.rate,s.discountedRate,s.gstRate,s.userHeadId,s.createdDate,s.createdBy,s.updatedBy) from SupplierRate s where s.supplier.id=:supplierId")
+    List<SupplierRateDTO> getSupplierDtoResponseBySupplierId(Long supplierId);
 }

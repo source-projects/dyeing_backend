@@ -285,11 +285,11 @@ public class AdminServciceImpl {
             for(SupplierResponse supplier:qualityName.getSupplierList())
             {
 
-                Optional<Supplier> supplierExist = supplierService.getSupplier(supplier.getId());
-                if(supplierExist.isEmpty())
+                SupplierResponse supplierExist = supplierService.getSupplier(supplier.getId());
+                if(supplierExist==null)
                     throw new Exception(ConstantFile.Supplier_Not_Exist);
 
-                supplierIds.add(supplierExist.get().getId());
+                supplierIds.add(supplierExist.getId());
 
             }
 
@@ -334,11 +334,11 @@ public class AdminServciceImpl {
             for(SupplierResponse supplier:qualityName.getSupplierList())
             {
 
-                Optional<Supplier> supplierExist = supplierService.getSupplier(supplier.getId());
-                if(supplierExist.isEmpty())
+                SupplierResponse supplierExist = supplierService.getSupplier(supplier.getId());
+                if(supplierExist==null)
                     throw new Exception(ConstantFile.Supplier_Not_Exist);
 
-                supplierIds.add(supplierExist.get().getId());
+                supplierIds.add(supplierExist.getId());
 
             }
             supplierService.updateSupplierWithQualityNameId(supplierIds,qualityName.getId());

@@ -1,13 +1,16 @@
 package com.main.glory.model.supplier.responce;
 
 import com.main.glory.model.supplier.Supplier;
+import com.main.glory.model.supplier.SupplierRate;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +32,7 @@ public class SupplierResponse {
     Long updatedBy;
     Long userHeadId;
     Long qualityNameId;
+    List<SupplierRateDTO> supplierRates;
 
 
     public SupplierResponse(Supplier s)
@@ -45,6 +49,7 @@ public class SupplierResponse {
         this.updatedBy = s.getUpdatedBy()==null?null:s.getUpdatedBy().getId();
         this.userHeadId =s.getUserHeadData()==null?null: s.getUserHeadData().getId();
         this.qualityNameId = s.getQualityName().getId();
+        //this.supplierRateList = new ArrayList<>()s.getSupplierRates();
 
     }
 

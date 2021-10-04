@@ -28,4 +28,20 @@ public class AddSupplier {
     private UserData userHeadId;
     List<Long> supplierRateIds;
 
+
+    public AddSupplier(Supplier s) {
+        this.id = s.getId();
+        this.supplierName = s.getSupplierName();
+        this.discountPercentage = s.getDiscountPercentage();
+        this.gstPercentage = s.getGstPercentage();
+        this.remark = s.getRemark();
+        this.createdDate = s.getCreatedDate();
+        this.updatedDate = s.getUpdatedDate();
+        this.paymentTerms = s.getPaymentTerms();
+        this.qualityNameId = s.getQualityName().getId();
+        this.createdBy = s.getCreatedBy().getId();
+        this.updatedBy = s.getUpdatedBy()==null?null:s.getUpdatedBy().getId();
+        this.userHeadId = null;
+        this.supplierRateIds = supplierRateIds;
+    }
 }
