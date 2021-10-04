@@ -1,6 +1,9 @@
 package com.main.glory.model.StockDataBatchData.request;
 
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +12,7 @@ import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +40,7 @@ public class AddStockBatch {
     String remark;
     Double wtPer100m;
     List<BatchData> batchData;
+    
     Long qualityId;
 
 }

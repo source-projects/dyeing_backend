@@ -34,9 +34,9 @@ public class QualityData {
         this.qualityName=qualityName.getQualityName();
         this.qualityType=quality1.getQualityType();
         this.unit=quality1.getUnit();
-        this.partyId=quality1.getPartyId();
+        this.partyId=quality1.getParty().getId();
         this.wtPer100m=quality1.getWtPer100m();
-        this.qualityNameId = quality1.getQualityNameId();
+        this.qualityNameId = quality1.getQualityName().getId();
         this.processId=quality1.getProcessId();
 
     }
@@ -47,9 +47,9 @@ public class QualityData {
         this.qualityName=qualityName.getQualityName();
         this.qualityType=quality1.getQualityType();
         this.unit=quality1.getUnit();
-        this.partyId=quality1.getPartyId();
+        this.partyId=quality1.getParty().getId();
         this.wtPer100m=quality1.getWtPer100m();
-        this.qualityNameId = quality1.getQualityNameId();
+        this.qualityNameId = quality1.getQualityName().getId();
         this.partyName=partName.getPartyName();
     }
 }

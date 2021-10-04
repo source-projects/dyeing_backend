@@ -2,6 +2,9 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
@@ -9,6 +12,9 @@ import com.main.glory.model.StockDataBatchData.BatchReturn;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
+import com.main.glory.services.AllStockDateWiseData;
+import com.main.glory.services.DataConversion;
+import com.main.glory.services.DataFilterService;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
@@ -19,6 +25,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
+
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +42,13 @@ public class StockBatchController extends ControllerConfig {
 
     @Autowired
     private StockBatchServiceImpl stockBatchService;
+
+    @Autowired
+    AllStockDateWiseData allStockDateWiseData;
+    
+    @Autowired
+    DataFilterService dataFilterService;
+     
 
     @Autowired
     LogServiceImpl logService;
@@ -164,6 +181,62 @@ public class StockBatchController extends ControllerConfig {
         logService.saveLog(result, request, debugAll);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping(value="/stockBatch/allpaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object>> getAllStockBatchPaginatedAndFiltered(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header) throws Exception {
+        System.out.println("stockBatch/all entered");
+
+        GeneralResponse<FilterResponse<GetAllStockWithPartyNameResponse>, Object> result;
+        try {
+            FilterResponse<GetAllStockWithPartyNameResponse> stockMast = null;
+            String id=header.get("id");
+            if(id=="")id=null;
+            
+             
+            switch (requestParam.getGetBy()) {
+                case "own":
+                    stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, id);
+                    if (stockMast == null) {
+                        result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    } else {
+                        result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    }
+                    break;
+
+                case "group":
+                    stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam,id);
+                    if (stockMast == null) {
+                        result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    } else {
+                        result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    }
+                    break;
+
+                case "all":
+                    stockMast = stockBatchService.getAllStockBatchPaginatedAndFiltered(requestParam, null);
+                    if (stockMast == null) {
+                        result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    } else {
+                        result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    }
+                    break;
+                default:
+                    result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+        logService.saveLog(result, request, debugAll);
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
 
     @GetMapping("/stockBatch/{id}")
     public ResponseEntity<GeneralResponse<StockMast, Object>> getStockMastById(@PathVariable(value = "id") Long id) {
@@ -325,7 +398,28 @@ public class StockBatchController extends ControllerConfig {
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
 
+    @PostMapping("/stockBatch/batch/allPaginated/{isProductionPlanned}")
+    public ResponseEntity<GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object>> getAllBatchPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> headers,@PathVariable(value="isProductionPlanned") Boolean isProductionPlanned) {
+        GeneralResponse<FilterResponse<BatchToPartyAndQuality>, Object> result;
+        try {
+
+            FilterResponse<BatchToPartyAndQuality> batchData = stockBatchService.getAllBatchDetailPaginated(requestParam,headers.get("id"),isProductionPlanned);
+
+            if (batchData.getData().isEmpty())
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                result = new GeneralResponse<>(batchData, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+            logService.saveLog(result, request, debugAll);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //batch by quality
@@ -423,7 +517,7 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch")
-    public ResponseEntity<GeneralResponse<Long, Object>> updateStockBatch(@RequestBody AddStockBatch stockMast, @RequestHeader Map<String, String> headers) {
+    public ResponseEntity<GeneralResponse<Long, Object>> updateStockBatch(@RequestBody StockMast stockMast, @RequestHeader Map<String, String> headers) {
         GeneralResponse<Long, Object> result;
         try {
             stockBatchService.updateBatch(stockMast, headers.get("id"));
@@ -647,6 +741,27 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PostMapping("/stockBatch/all/returnBatch/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<BatchReturnResponse>, Object>> getReturnBatchAllPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam) throws Exception {
+        GeneralResponse<FilterResponse<BatchReturnResponse>, Object> result = null;
+        try {
+            FilterResponse<BatchReturnResponse> list = stockBatchService.getAllReturnBatchAllPaginated(requestParam);
+
+            if (!list.getData().isEmpty()) {
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            } else
+                result = new GeneralResponse<>(list, ConstantFile.ReturnStockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
 
     @GetMapping("/stockBatch/get/returnBatch")
     public ResponseEntity<GeneralResponse<BatchReturnResponse, Object>> getReturnBatchByChalNo(@RequestParam(name = "chlNo") Long chlNo) throws Exception {
@@ -719,7 +834,7 @@ public class StockBatchController extends ControllerConfig {
     }
 
     //pending batch
-    @GetMapping("/stockBatch/pending/report")
+   /* @GetMapping("/stockBatch/pending/report")
     public ResponseEntity<GeneralResponse<List<PendingBatchMast>, Object>> getAllPendingBatchReport() throws Exception {
 
         GeneralResponse<List<PendingBatchMast>, Object> result;
@@ -740,20 +855,20 @@ public class StockBatchController extends ControllerConfig {
         }
         logService.saveLog(result, request, debugAll);
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
-    }
+    }*/
 
     //pchallan api's
     @PostMapping("/stockBatch/add/pchallan")
-    public ResponseEntity<GeneralResponse<Long, Object>> addPchallanStockMast(@RequestBody StockMast stockMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Long, Object>> addPchallanStockMast(@RequestBody AddStockBatch addStockBatch) throws Exception {
         GeneralResponse<Long, Object> result = null;
         try {
-            Long id = stockBatchService.addPChallanRef(stockMast);
-            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, stockMast);
+            Long id = stockBatchService.addPChallanRef(addStockBatch);
+            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, addStockBatch);
 
             logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, stockMast);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, addStockBatch);
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
@@ -761,17 +876,17 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PutMapping("/stockBatch/update/pchallan")
-    public ResponseEntity<GeneralResponse<Long, Object>> updatePchallanStockMast(@RequestBody StockMast stockMast) throws Exception {
+    public ResponseEntity<GeneralResponse<Long, Object>> updatePchallanStockMast(@RequestBody AddStockBatch addStockBatch) throws Exception {
         GeneralResponse<Long, Object> result = null;
         try {
-            Long id = stockBatchService.updatePChallanRef(stockMast, request.getHeader("id"));
-            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, stockMast);
+            Long id = stockBatchService.updatePChallanRef( addStockBatch, request.getHeader("id"));
+            result = new GeneralResponse<>(id, ConstantFile.StockBatch_PChallanRef_Added, true, System.currentTimeMillis(), HttpStatus.OK, addStockBatch);
 
 
             logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, stockMast);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, addStockBatch);
             logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
@@ -797,5 +912,64 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PostMapping("/stockBatch/getmtrsum/filterbydate")
+    public ResponseEntity<GeneralResponse<List<AllStockDateWiseDataUnderParty>, Object>> getMtrSumFilterByDate(String from,String to) throws Exception {
+        GeneralResponse<List<AllStockDateWiseDataUnderParty>, Object> response;
+        try {
+            List<AllStockDateWiseDataUnderParty> flag = allStockDateWiseData.getAllStockDateWiseData(from,to);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
+    @PostMapping("/stockMast/filter")
+    public ResponseEntity<GeneralResponse<List<StockMast>, Object>> getFilteredStockMast(@RequestParam("pageSize") int pageSize,@RequestParam("pageNumber") int pagePumber ,@RequestBody StockMastFilter filter) throws Exception {
+        GeneralResponse<List<StockMast>, Object> response;
+        try {
+            List<StockMast> flag = dataFilterService.getFilteredStockMast(filter,pageSize,pagePumber);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
+
+    @PostMapping("stockBatch/pending/forConslidateBatchResponse")
+    public ResponseEntity<GeneralResponse<List<PendingBatchMast>, Object>> getConslidateBatchResponseByFiletr(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<PendingBatchMast>, Object> response;
+        try {
+            List<PendingBatchMast> flag = stockBatchService.getBatchReportByFilter(filter);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
 
 }
+

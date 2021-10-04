@@ -28,11 +28,11 @@ public class GetAllQualtiy {
     public GetAllQualtiy(Quality quality) {
         this.id=quality.getId();
         this.qualityId=quality.getQualityId();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=quality.getQualityName().getQualityName();
         this.qualityType=quality.getQualityType();
         this.billingUnit=quality.getBillingUnit();
         this.unit=quality.getUnit();
-        this.partyId=quality.getPartyId();
+        this.partyId=quality.getParty().getId();
         this.wtPer100m=quality.getWtPer100m();
         this.mtrPerKg=quality.getMtrPerKg();
     }

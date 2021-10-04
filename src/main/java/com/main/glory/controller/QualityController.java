@@ -1,5 +1,6 @@
 package com.main.glory.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,9 +8,12 @@ import java.util.Optional;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.AddQuality;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
@@ -52,24 +56,24 @@ public class QualityController extends ControllerConfig {
     Boolean debugAll;
 
     @PostMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody Quality quality,@RequestHeader Map<String, String> headers) {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> saveQuality(@RequestBody AddQuality addQuality,@RequestHeader Map<String, String> headers) {
         GeneralResponse<Boolean,Object> result;
         try{
 
-            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            Optional<Party> party = partyDao.findById(addQuality.getPartyId());
             if(party.isEmpty()){
                 throw new Exception(ConstantFile.Party_Not_Exist);
             }
 
-            int flag = qualityServiceImp.saveQuality(quality,headers.get("id"));
+            int flag = qualityServiceImp.saveQuality(addQuality,headers.get("id"));
             if (flag == 1)
-                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,quality);
+                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Added, true, System.currentTimeMillis(), HttpStatus.CREATED,addQuality);
             else
-                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,quality);
+                result= new GeneralResponse<>(null, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,addQuality);
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,quality);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addQuality);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
@@ -118,16 +122,67 @@ public class QualityController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+    @PostMapping(value = "/quality/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetQualityResponse>,Object>> getQualityListPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header) {
+        GeneralResponse<FilterResponse<GetQualityResponse>,Object> result;
+        String id=header.get("id");
+        if(id=="")id=null;
+
+        try {
+            FilterResponse<GetQualityResponse> x;
+            switch (requestParam.getGetBy()){
+                case "own":
+                    x = qualityServiceImp.getAllQualityPaginated(requestParam, id);
+                    if(!x.getData().isEmpty())
+                        result =  new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    else
+                        result = new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    break;
+                case "group":
+                    x = qualityServiceImp.getAllQualityPaginated(requestParam, id);
+                    if(!x.getData().isEmpty())
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    else
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    break;
+                case "all":
+                    x = qualityServiceImp.getAllQualityPaginated(requestParam, id);
+                    if(!x.getData().isEmpty())
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    else
+                        result= new GeneralResponse<>(x, ConstantFile.Quality_Data_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+                    break;
+                default:
+                    result= new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        logService.saveLog(result,request,debugAll);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+
+
+
     @PutMapping(value = "/quality")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody Quality quality) throws Exception {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateQualityById(@RequestBody AddQuality addQuality,@RequestHeader HashMap<String,String> headers) throws Exception {
         GeneralResponse<Boolean,Object> result;
         try {
-            Optional<Party> party = partyDao.findById(quality.getPartyId());
+            Optional<Party> party = partyDao.findById(addQuality.getPartyId());
             if(party.isEmpty()){
-                throw new Exception(ConstantFile.Party_Not_Exist+quality.getPartyId());
+                throw new Exception(ConstantFile.Party_Not_Exist+addQuality.getPartyId());
             }
-            if (quality.getId() != null) {
-                boolean flag = qualityServiceImp.updateQuality(quality);
+            if (addQuality.getId() != null) {
+                boolean flag = qualityServiceImp.updateQuality(addQuality,headers.get("id"));
                 if (flag) {
                     result= new GeneralResponse<>(true, ConstantFile.Quality_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 } else {
@@ -175,6 +230,7 @@ public class QualityController extends ControllerConfig {
     @GetMapping(value = "/quality/qualityName/get/all")
     public ResponseEntity<GeneralResponse<List<AddQualityName>,Object>> getAllQualityNameData() {
         GeneralResponse<List<AddQualityName>,Object> result;
+        System.out.println("entering /quality/qualityName/get/all");
 
         try {
             var qualityData = qualityServiceImp.getAllQualityNameData();

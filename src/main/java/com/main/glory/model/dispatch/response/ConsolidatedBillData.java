@@ -2,6 +2,7 @@ package com.main.glory.model.dispatch.response;
 
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import lombok.AllArgsConstructor;
@@ -55,13 +56,13 @@ public class ConsolidatedBillData {
     Double sharinkage;
 
 
-    public ConsolidatedBillData(Party party, GetQualityResponse quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast,Long greyPcs) {
+    public ConsolidatedBillData(Party party, Quality quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast, Long greyPcs) {
         this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
         this.invoiceDate = dispatchMast.getCreatedDate();
-        this.invoiceNo = dispatchMast.getPostfix();
+        this.invoiceNo =Long.parseLong( dispatchMast.getPostfix());
         this.partyName = party.getPartyName();
-        this.qualityName = quality.getQualityName();
+        this.qualityName = quality.getQualityName().getQualityName();
         this.qualityId = quality.getQualityId();
         this.pcs =pcs;
         this.greyPcs = greyPcs;
@@ -71,7 +72,7 @@ public class ConsolidatedBillData {
         this.amt = StockBatchServiceImpl.changeInFormattedDecimal(amt);
         this.partyId = party.getId();
         this.qualityEntryId=quality.getId();
-        this.qualityNameId = quality.getQualityNameId();
+        this.qualityNameId = quality.getQualityName().getId();
         this.discount=dispatchMast.getDiscount();
         this.percentageDiscount=dispatchMast.getPercentageDiscount()==null?0:dispatchMast.getPercentageDiscount();
         this. netAmt=dispatchMast.getNetAmt();

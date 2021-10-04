@@ -17,7 +17,7 @@ import java.util.List;
 public class GetAllStockWithPartyNameResponse extends StockMast{
 
 
-
+    
     List<GetAllBatchResponse> batchList;
     String partyName;
     String qualityName;
@@ -32,7 +32,6 @@ public class GetAllStockWithPartyNameResponse extends StockMast{
     public GetAllStockWithPartyNameResponse(GetAllStockWithPartyNameResponse batchData, List<GetAllBatchResponse> batchDataList,String qualityName) {
         this.setId(batchData.getId());
         this.setStockInType(batchData.getStockInType());
-        this.setPartyId(batchData.getPartyId());
         this.setPartyName(batchData.partyName);
         this.setBillNo(batchData.getBillNo());
         this.setBillDate(batchData.getBillDate());
@@ -49,6 +48,10 @@ public class GetAllStockWithPartyNameResponse extends StockMast{
         this.setBatchList(batchDataList);
         this.setQualityName(qualityName);
         this.setBatchData(batchData.getBatchData());
+        this.setQuality(null);
+        this.setBatchData(null);
+        this.setParty(null);
+        
     }
 
 

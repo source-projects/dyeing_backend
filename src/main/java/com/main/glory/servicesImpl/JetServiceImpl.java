@@ -760,7 +760,7 @@ public class JetServiceImpl {
         int i = 0;
         for (JetMast jetMast : jetMastList) {
             List<GetJetData> jetDataList = new ArrayList<>();
-            List<JetData> existJetDataList = jetDataDao.findByControlId(jetMast.getId());
+            List<JetData> existJetDataList = jetMast.getJetDataList();
 
             for (JetData jetData : existJetDataList) {
                 if (jetData.getStatus().equals(JetStatus.inQueue) || jetData.getStatus().equals(JetStatus.start)) {
@@ -929,7 +929,7 @@ public class JetServiceImpl {
         data.setColorTone(shadeMast.get().getColorTone());
         data.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
         data.setQualityId(quality.getQualityId());
-        data.setQualityEntryId(stockMast.getQualityId());
+        data.setQualityEntryId(stockMast.getQuality().getId());
         data.setBatchWt(wt);
         //data.setStockId(productionPlanExist.getStockId());
         data.setBatchId(productionPlanExist.getBatchId());

@@ -77,7 +77,7 @@ public class PaymentTermImpl {
         //change the status of invoice and assign the paymentBunchId to the
         for(PendingInvoice pendingInvoice:paymentMast.getInvoices())
         {
-            DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(Long.parseLong(pendingInvoice.getInvoiceNo()));
+            DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(pendingInvoice.getInvoiceNo());
             if(dispatchMast!=null)
             {
                 dispatchMast.setPaymentBunchId(paymentMastToSave.getId());
@@ -102,7 +102,7 @@ public class PaymentTermImpl {
 
             Double amt=0.0;
 
-            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPostfix().toString());
+            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPostfix());
             if(data==null)
                 continue;
             for(QualityBillByInvoiceNumber p:data.getQualityList())
@@ -112,7 +112,7 @@ public class PaymentTermImpl {
             GetPendingDispatch getPendingDispatch=new GetPendingDispatch(dispatchMast);
             getPendingDispatch.setAmt(amt);
             getPendingDispatch.setDate(dispatchMast.getCreatedDate().toString());
-            getPendingDispatch.setInvoicNo(dispatchMast.getPostfix().toString());
+            getPendingDispatch.setInvoicNo(dispatchMast.getPostfix());
             list.add(getPendingDispatch);
 
         }
@@ -126,7 +126,7 @@ public class PaymentTermImpl {
 
         for (AdvancePayment paymentMast : list)
         {
-        Party partyExist = partyServiceImp.getPartyDetailById(paymentMast.getPartyId());
+        Party partyExist = partyServiceImp.getPartyById(paymentMast.getPartyId());
         if(partyExist==null)
             throw new Exception("no data found for party:"+paymentMast.getPartyId());
 
@@ -142,7 +142,7 @@ public class PaymentTermImpl {
 
         //check the party is exist or not
 
-        Party partyExist=partyServiceImp.getPartyDetailById(partyId);
+        Party partyExist=partyServiceImp.getPartyById(partyId);
         if(partyExist==null)
             throw new Exception("no party found for id:"+partyId);
 

@@ -4,13 +4,20 @@ import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.color.ColorData;
 import com.main.glory.model.dyeingProcess.DyeingChemicalData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.shade.ShadeData;
+import com.main.glory.model.supplier.AddSupplier;
+import com.main.glory.model.supplier.AddSupplierRate;
 import com.main.glory.model.supplier.GetAllSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
@@ -18,8 +25,14 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
 import com.main.glory.model.supplier.responce.*;
+import com.main.glory.model.user.UserData;
+import com.main.glory.services.FilterService;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -58,11 +71,21 @@ public class SupplierServiceImpl {
 
     @Autowired
     UserDao userDao;
+    @Autowired
+    SpecificationManager<Supplier> specificationManager;
+	@Autowired
+    FilterService<Supplier,SupplierDao> filterService;
+
 
 
     
 
-    public Boolean addSupplier(Supplier supplier,String id) {
+    public Boolean addSupplier(AddSupplier addSupplier,String id) {
+        UserData createdBy=userDao.findUserById(addSupplier.getCreatedBy());
+        //QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
+        addSupplier.setCreatedDate(new Date(System.currentTimeMillis()));
+        addSupplier.setUpdatedDate(new Date(System.currentTimeMillis()));
+        Supplier supplier=new Supplier(addSupplier, createdBy, createdBy, null, null);
         try {
             supplierDao.save(supplier);
             return true;
@@ -90,10 +113,14 @@ public class SupplierServiceImpl {
                 throw new Exception("no supplier found");
 
             List<SupplierRate> list=new ArrayList<>();
-            for(SupplierRate s: addSupplierRateRequest.getSupplierRates())
+            for(AddSupplierRate addSupplierRate: addSupplierRateRequest.getAddSupplierRate())
             {
-                SupplierRate supplierRate=new SupplierRate(s);
+                addSupplierRate.setCreatedDate(new Date(System.currentTimeMillis()));
+                addSupplierRate.setUpdatedDate(new Date(System.currentTimeMillis()));
+                SupplierRate supplierRate=new SupplierRate(addSupplierRate,supplierExist);
                 list.add(supplierRate);
+                supplierExist.addSupplierRates(supplierRate);
+
 
             }
             supplierRateDao.saveAll(list);
@@ -105,11 +132,21 @@ public class SupplierServiceImpl {
     }
 
     
-    public Optional<Supplier> getSupplier(Long id) {
+    public SupplierResponse getSupplier(Long id) {
         try {
-//            Supplier s = supplierDao.findById(id).get();
-            //           return s;
-            return supplierDao.findById(id);
+            SupplierResponse addSupplier =null;
+            Supplier s = supplierDao.findById(id).get();
+
+            if(s !=null)
+            {
+                addSupplier = new SupplierResponse(s);
+                List<SupplierRateDTO> supplierRateDTOS = supplierRateDao.getSupplierDtoResponseBySupplierId(s.getId());
+                addSupplier.setSupplierRates(supplierRateDTOS);
+
+
+            }
+
+            return addSupplier;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -119,23 +156,27 @@ public class SupplierServiceImpl {
 
     
 
-    public Boolean updateSupplier(UpdateSupplierRequest updateSupplierRequest) {
+    public Boolean updateSupplier(AddSupplier addSupplier) {
         try {
             //System.out.println(updateSupplierRequest.getId());
-            Supplier supplier = ((Optional<Supplier>) supplierDao.findById(updateSupplierRequest.getId())).get();
+            Supplier supplier = ((Optional<Supplier>) supplierDao.findById(addSupplier.getId())).get();
             if (supplier == null) {
                 return false;
             }
+            UserData updateBy=userDao.findUserById(addSupplier.getUpdatedBy());
+            //QualityName qualityName=qualityNameDao.findById(addSupplier.getQualityNameId()).get();
+    
 
-            supplier.setDiscountPercentage(updateSupplierRequest.getDiscountPercentage());
-            supplier.setGstPercentage(updateSupplierRequest.getGstPercentage());
-            supplier.setPaymentTerms(updateSupplierRequest.getPaymentTerms());
-            supplier.setRemark(updateSupplierRequest.getRemark());
-            supplier.setSupplierName(updateSupplierRequest.getSupplierName());
+            supplier.setDiscountPercentage(addSupplier.getDiscountPercentage());
+            supplier.setGstPercentage(addSupplier.getGstPercentage());
+            supplier.setPaymentTerms(addSupplier.getPaymentTerms());
+            supplier.setRemark(addSupplier.getRemark());
+            supplier.setSupplierName(addSupplier.getSupplierName());
             supplier.setUpdatedDate(new Date(System.currentTimeMillis()));
-            supplier.setUpdatedBy(updateSupplierRequest.getUpdatedBy());
+            supplier.setUpdatedBy(updateBy);
+            //supplier.setQualityName(qualityName);
 
-            List<SupplierRate> list=supplierRateDao.getAllSupplierRateBySupplierId(updateSupplierRequest.getId());
+            List<SupplierRate> list=supplierRateDao.getAllSupplierRateBySupplierId(addSupplier.getId());
             supplierDao.save(supplier);
             for(SupplierRate s:list)
             {
@@ -233,8 +274,8 @@ public class SupplierServiceImpl {
     }
 
     
-    public List getAllSupplier(String getBy, Long id) throws Exception {
-        List s = null;
+    public List<Supplier> getAllSupplier(String getBy, Long id) throws Exception {
+        List<Supplier> s = null;
         /*if (id == null) {
             s = supplierDao.findAllWithoutRates();
         } else if (getBy.equals("own")) {
@@ -256,24 +297,19 @@ public class SupplierServiceImpl {
         if (s.isEmpty())
             throw new Exception("data not added yet");*/
         s = supplierDao.findAllWithoutRates();
+        System.out.println(s.size());
         return s;
     }
 
-    public Object getAllRates() {
-        try {
+    public List<GetAllSupplierRatesResponse> getAllRates() {
+
             List<GetAllSupplierRate> getAllSupplierRateList = null;
             List<GetAllSupplierRatesResponse> supplierRatesResponses = null;
             getAllSupplierRateList = supplierRateDao.findWithSupplierName();
             modelMapper.getConfiguration().setAmbiguityIgnored(true);
             supplierRatesResponses = modelMapper.map(getAllSupplierRateList, List.class);
-            /*if (supplierRatesResponses.isEmpty())
-                throw new Exception("no data found");*/
-
             return supplierRatesResponses;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+
     }
 
     public String getSupplierName(Long id) {
@@ -316,7 +352,7 @@ public class SupplierServiceImpl {
         for (ItemWithSupplier item : itemWithSupplier) {
 
             if (item.getSupplierId() != null) {
-                Supplier supplier = supplierDao.findBySupplierId(item.getSupplierId());
+                Supplier supplier = item.getSupplier();
                 if (supplier==null)
                     continue;
 
@@ -430,5 +466,32 @@ public class SupplierServiceImpl {
 
     public List<SupplierResponse> getSupplierByQualityNameId(Long id) {
         return supplierDao.getAllSupplierListByQualityNameId(id);
+    }
+
+
+    public FilterResponse<GetSupplierPaginatedData> getSupplierPaginatedData(GetBYPaginatedAndFiltered requestParam) {
+        List<Supplier> supplier = null;
+        List<GetSupplierPaginatedData> getSupplierPaginatedDataList =new ArrayList<GetSupplierPaginatedData>();
+
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        List<Filter> filtersParam=requestParam.getData().getParameters();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList( "qualityName","qualityName")));
+
+		Page queryResponse=null;
+
+        Specification<Supplier> filterSpec=specificationManager.getSpecificationFromFilters(filtersParam, requestParam.getData().isAnd,subModelCase);
+
+        queryResponse = supplierDao.findAll(filterSpec, pageable);
+        supplier=queryResponse.getContent();
+        for (int i=0;i<supplier.size();i++){
+            GetSupplierPaginatedData getSupplierPaginatedData=new GetSupplierPaginatedData(supplier.get(i));
+            getSupplierPaginatedDataList.add(getSupplierPaginatedData);
+        }
+        
+        FilterResponse<GetSupplierPaginatedData> response=new FilterResponse<GetSupplierPaginatedData>(getSupplierPaginatedDataList,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
+
+        return response;
+
     }
 }

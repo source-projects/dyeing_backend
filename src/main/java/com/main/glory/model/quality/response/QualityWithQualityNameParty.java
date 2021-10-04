@@ -42,17 +42,17 @@ public class QualityWithQualityNameParty {
         this.qualityName = qualityName;
         this.qualityType = other.getQualityType();
         this.unit = other.getUnit();
-        this.partyId = other.getPartyId();
+        this.partyId = other.getParty().getId();
         this.wtPer100m = other.getWtPer100m();
         this.remark = other.getRemark();
         this.createdDate = other.getCreatedDate();
-        this.createdBy = other.getCreatedBy();
-        this.updatedBy = other.getUpdatedBy();
+        this.createdBy = other.getUserCreatedByData().getId();
+        this.updatedBy = other.getUpdatedBy().getId();
         this.updatedDate = other.getUpdatedDate();
 //		this.qualityDate = other.qualityDate;
         this.rate= other.getRate();
-        this.userHeadId = other.getUserHeadId();
-        this.qualityNameId=other.getQualityNameId();
+        this.userHeadId = other.getUserHeadData().getId();
+        this.qualityNameId=other.getQualityName().getId();
         this.billingUnit=other.getBillingUnit();
         this.mtrPerKg=other.getMtrPerKg();
     }

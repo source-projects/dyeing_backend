@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.party.request.AddParty;
 import com.main.glory.model.party.request.PartyReport;
@@ -43,9 +45,10 @@ public class PartyController extends ControllerConfig {
 	@PostMapping(value="/party")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
 	{
+		System.out.println("entering /party api controller");
 		GeneralResponse<Boolean,Object> result;
 		try {
-		    partyServiceImp.saveParty(party);
+		    partyServiceImp.saveParty(party,headers.get("id"));
 			//System.out.println("har::"+headers.get("id"));
 			//System.out.println(id);
 			result = new GeneralResponse<>(true, ConstantFile.Party_Added, true, System.currentTimeMillis(), HttpStatus.OK,party);
@@ -146,6 +149,39 @@ public class PartyController extends ControllerConfig {
 
 	}
 
+	
+
+	@PostMapping(value="/party/allPaginated")
+	public ResponseEntity<GeneralResponse<FilterResponse<PartyWithMasterName>,Object>> getPartyListPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header)
+	{
+		GeneralResponse<FilterResponse<PartyWithMasterName>,Object> result;
+		String id=header.get("id");
+        if(id=="")id=null;
+
+
+		try{
+			var x = partyServiceImp.getAllPartyDetailsPaginated(requestParam, id);
+					if (!x.getData().isEmpty()) {
+						result = new GeneralResponse<>(x, ConstantFile.Party_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					}
+					else {
+						result = new GeneralResponse<>(x, ConstantFile.Party_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+			logService.saveLog(result,request,true);
+
+		}
+		logService.saveLog(result,request,debugAll);
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+
+	}
+
+
+
+
+
 	@GetMapping(value="/party/{id}")
 	public ResponseEntity<GeneralResponse<PartyWithUserHeadName,Object>> getPartyDetailsById(@PathVariable(value = "id") Long id) throws Exception {
 
@@ -229,7 +265,7 @@ public class PartyController extends ControllerConfig {
 	}
 
 	@PutMapping(value="/party")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> updateParty(@RequestBody Party party) throws Exception
+	public ResponseEntity<GeneralResponse<Boolean,Object>> updateParty(@RequestBody AddParty party) throws Exception
 	{
 		GeneralResponse<Boolean,Object> result=null;
 		try {
@@ -304,4 +340,8 @@ public class PartyController extends ControllerConfig {
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+	
+
+
+
 }

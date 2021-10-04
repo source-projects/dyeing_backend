@@ -353,6 +353,19 @@ public class ConstantFile {
     public static String Dispatch_Password_Correct="Correct password entered";
     public static String Dispatch_Password_Wrong="Wrong password entered";
 
+    //Dispatch Mast
+    public static String Dispatch_Mast_Added = "Data added successfully";
+    public static String Dispatch_Mast_Not_Added = "Data not added successfully";
+    public static String Dispatch_Mast_Exit= "Dispatch Mast exist";
+    public static String Dispatch_Mast_Not_Exist= "Data not exist";
+    public static String Dispatch_Mast_Updated = "Data updated successfully";
+    public static String Dispatch_Mast_Deleted = "Data deleted successfully";
+    public static String Dispatch_Mast_Found = "Data found ";
+    public static String Dispatch_Mast_Not_Found = "Data not found ";
+    public static String Dispatch_Mast_Password_Correct="Correct password entered";
+    public static String Dispatch_Mast_Password_Wrong="Wrong password entered";
+ 
+
 
     //Supplier
     public static String Supplier_Added = "Data added successfully ";

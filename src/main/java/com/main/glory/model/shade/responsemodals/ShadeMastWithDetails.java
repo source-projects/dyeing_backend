@@ -20,6 +20,7 @@ public class ShadeMastWithDetails extends ShadeMast {
 	String partyName;
 	String qualityName;
 	String qualityType;
+	private ShadeMast shadeMast;
 
 	public ShadeMastWithDetails(Long id, String partyShadeNo, Long processId, Long qualityId, Long partyId, String colorTone, Long createdBy, Long updatedBy, Date createdDate, Date updatedDate, Long userHeadId, Long cuttingId, String remark, String category, String labColorNo, String processName, String acp,Boolean flag) {
 		//super(id, partyShadeNo, processId,  qualityId, partyId, colorTone, createdBy, updatedBy, createdDate, updatedDate, userHeadId, cuttingId, remark, category, labColorNo,processName, acp,flag);
@@ -27,7 +28,7 @@ public class ShadeMastWithDetails extends ShadeMast {
 	}
 
 	public ShadeMastWithDetails(ShadeMast shadeMast) {
-		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQualityEntryId(), shadeMast.getPartyId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadId(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getApcNo(),shadeMast.getPending(),shadeMast.getExtraRate(),shadeMast.getColorName(),shadeMast.getShadeDataList());
+		super(shadeMast.getId(), shadeMast.getPartyShadeNo(), shadeMast.getProcessId(), shadeMast.getQuality().getId(), shadeMast.getParty().getId(), shadeMast.getColorTone(), shadeMast.getCreatedBy(), shadeMast.getUpdatedBy(), shadeMast.getCreatedDate(), shadeMast.getUpdatedDate(), shadeMast.getUserHeadData(), shadeMast.getCuttingId(), shadeMast.getRemark(), shadeMast.getCategory(), shadeMast.getLabColorNo(), shadeMast.getProcessName(),shadeMast.getApcNo(),shadeMast.getPending(),shadeMast.getExtraRate(),shadeMast.getColorName(),shadeMast.getShadeDataList());
 
 	}
 }

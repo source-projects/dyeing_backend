@@ -189,7 +189,7 @@ public class ProductionPlanImpl {
                     Long stockId = batchDao.getControlIdByBatchId(e);
                     StockMast stockMast = stockBatchService.getStockByStockId(stockId);
                     if (stockMast != null) {
-                        GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e, stockMast.getPartyId(), stockMast.getQualityId());
+                        GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e, stockMast.getParty().getId(), stockMast.getQuality().getId());
                         if (data != null)
                             list.add(data);
                     }
@@ -250,15 +250,15 @@ public class ProductionPlanImpl {
                     System.out.println(productionPlanExist.getId()+"batch-"+batchRespone.getBatchId()+"-"+batchRespone.getControlId());
 
                     StockMast stockMast = stockBatchService.getStockByStockId(batchRespone.getControlId());
-                    Party party = partyServiceImp.getPartyById(stockMast.getPartyId());
-                    Quality quality = qualityServiceImp.getQualityByEntryId(stockMast.getQualityId());
-                    Optional<QualityName> qualityName = qualityServiceImp.getQualityNameDataById(quality.getQualityNameId());
+                    Party party = partyServiceImp.getPartyById(stockMast.getParty().getId());
+                    Quality quality = qualityServiceImp.getQualityByEntryId(stockMast.getQuality().getId());
+                    QualityName qualityName = quality.getQualityName();
 
                     record.setPartyId(record.getPartyId() == null ? party.getId().toString() : record.getPartyId() + "," + party.getId().toString());
                     record.setQualityEntryId(record.getQualityEntryId() == null ? quality.getId().toString() : record.getQualityEntryId() + "," + quality.getId().toString());
                     record.setPartyName(record.getPartyName() == null ? party.getPartyName() : record.getPartyName() + "," + party.getPartyName());
                     record.setQualityId(record.getQualityId() == null ? quality.getQualityId() : record.getQualityId() + "," + quality.getQualityId());
-                    record.setQualityName(record.getQualityName() == null ? qualityName.get().getQualityName() : record.getQualityName() + "," + qualityName.get().getQualityName());
+                    record.setQualityName(record.getQualityName() == null ? qualityName.getQualityName() : record.getQualityName() + "," + qualityName.getQualityName());
                 }
                 record.setIsMergeBatchId(true);
 
@@ -279,12 +279,12 @@ public class ProductionPlanImpl {
                 Long stockId = batchDao.getControlIdByBatchId(e);
                 StockMast stockMast = stockBatchService.getStockByStockId(stockId);
                 if (stockMast != null) {
-                    record = productionPlanDao.getProductionWithColorToneByBatchId(e, stockMast.getPartyId(), stockMast.getQualityId());
+                    record = productionPlanDao.getProductionWithColorToneByBatchId(e, stockMast.getParty().getId(), stockMast.getQuality().getId());
                     record.setTotalWt(stockBatchService.changeInFormattedDecimal(record.getTotalWt()));
                     record.setTotalMtr(stockBatchService.changeInFormattedDecimal(record.getTotalMtr()));
                     record.setBatchId(e);
-                    record.setPartyId(stockMast.getPartyId().toString());
-                    record.setQualityEntryId(stockMast.getQualityId().toString());
+                    record.setPartyId(stockMast.getParty().getId().toString());
+                    record.setQualityEntryId(stockMast.getQuality().getId().toString());
 
                 }
 
@@ -341,7 +341,7 @@ public class ProductionPlanImpl {
 
         StockMast stockMast=stockBatchService.getStockByStockId(productionExist.getStockId());
         Double totalWt = batchDao.getAllBatchQtyByBatchIdAndStockId(productionExist.getBatchId(),productionExist.getStockId());
-        Party party=partyServiceImp.getPartyDetailById(stockMast.getPartyId());
+        Party party=partyServiceImp.getPartyDetailById(stockMast.getParty().getId());
         if(productionExist.getShadeId()==null)
         {
             data=new GetBatchDetailByProduction(party,totalWt,stockMast,batchId);

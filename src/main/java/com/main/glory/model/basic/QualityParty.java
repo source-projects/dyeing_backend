@@ -23,9 +23,9 @@ public class QualityParty {
     public QualityParty(Quality quality) {
         this.qualityEntryId=quality.getId();
         this.qualityId=quality.getQualityId();
-        this.qualityName=quality.getQualityName();
+        this.qualityName=quality.getQualityName().getQualityName();
         this.qualityType=quality.getQualityType();
-        this.partyId=quality.getPartyId();
+        this.partyId=quality.getParty().getId();
         this.unit=quality.getUnit();
     }
 }

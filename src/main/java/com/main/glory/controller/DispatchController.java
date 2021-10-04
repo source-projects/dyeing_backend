@@ -1,27 +1,46 @@
 package com.main.glory.controller;
 
+import org.springframework.data.domain.Sort;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.main.glory.Dao.FilterDao;
+import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
-import com.main.glory.model.dispatch.Filter;
+import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.DispatchFilter;
+import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.dispatch.response.MonthlyDispatchReport;
+import com.main.glory.model.machine.request.PaginatedData;
+import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+
 import javax.servlet.http.HttpServletRequest;
+
+import java.net.http.HttpHeaders;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -40,7 +59,13 @@ public class DispatchController extends ControllerConfig {
     Boolean debugAll;
 
     @Autowired
+    DispatchMastDao dispatchMastDao;
+
+    @Autowired
     DispatchMastImpl dispatchMastService;
+
+    @Autowired
+    FilterService<DispatchMast, DispatchMastDao> filterService;
 
     @PostMapping("/dispatch/")
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatch(@RequestBody CreateDispatch dispatchMast) throws Exception{
@@ -60,7 +85,7 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PostMapping("/dispatch/filter/forConslidateBill")
-    public ResponseEntity<GeneralResponse<List<GetConsolidatedBill>,Object>> getDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetConsolidatedBill>,Object>> getDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<GetConsolidatedBill>, Object> result;
         try{
             List<GetConsolidatedBill> list = dispatchMastService.getDispatchByFilter(filter);
@@ -78,7 +103,7 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
     @PostMapping("/dispatch/filter/getBill")
-    public ResponseEntity<GeneralResponse<List<GetBill>,Object>> getDispatchBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<GetBill>,Object>> getDispatchBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<GetBill>,Object> result;
         try{
             List<GetBill> list = dispatchMastService.getDispatchBillByFilter(filter);
@@ -165,6 +190,27 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @PostMapping("/dispatch/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllDispatch>, Object>> getAllDispatchPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam) throws Exception{
+        GeneralResponse<FilterResponse<GetAllDispatch>,Object> result;
+
+        try{
+
+            FilterResponse<GetAllDispatch> x =dispatchMastService.getAllDisptach(requestParam);
+            if(!x.getData().isEmpty())
+            result = new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(x, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     @PutMapping("/dispatch/updateDispatch/")
     public ResponseEntity<GeneralResponse<Long,Object>> updateDispatch(@RequestBody CreateDispatch updateInvoice) throws Exception{
         GeneralResponse<Long,Object> result;
@@ -182,6 +228,11 @@ public class DispatchController extends ControllerConfig {
         }
         return  new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    
+
+
+
     @PutMapping("/dispatch/updateDispatchStatus/{invoiceNo}")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateDispatchStatus(@PathVariable(name="invoiceNo") String invoiceNo) throws Exception{
         GeneralResponse<Boolean,Object> result;
@@ -390,7 +441,7 @@ public class DispatchController extends ControllerConfig {
 
     //report by date with consildate bill response
     @PostMapping("/dispatch/report/forConslidateBill")
-    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody Filter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<ConsolidatedBillMast>, Object> result;
         try{    
             List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
@@ -404,9 +455,29 @@ public class DispatchController extends ControllerConfig {
             result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
             logService.saveLog(result,request,true
             );
+        } 
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/dispatch/monthWiseReport")
+    public ResponseEntity<GeneralResponse<List<MonthlyDispatchReport>,Object>> getMonthWiseReportDispatch(@RequestBody DispatchFilter filter) throws Exception{
+        GeneralResponse<List<MonthlyDispatchReport>, Object> result;
+        try{    
+            List<MonthlyDispatchReport> list = dispatchMastService.getMonthWiseReportDispatch(filter);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true
+            );
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
 
 
 
@@ -496,7 +567,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<Long,Object> result;
         try{
 
-            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice);
+            Long invoiceNo = dispatchMastService.updateDispatchWithPChallan(updateInvoice,Long.parseLong(request.getHeader("id")));
 
             result= new GeneralResponse<>(invoiceNo, constantFile.Dispatch_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateInvoice);
 
@@ -578,5 +649,60 @@ public class DispatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping("/dispatch/getDispatchMastData")
+    public ResponseEntity<GeneralResponse<FilterResponse<DispatchMast>, Object>> getDispatchData(@RequestBody PaginatedData data){
+        GeneralResponse<FilterResponse<DispatchMast>,Object> result;
+        try{
+System.out.println("entered dispatch/getDispatchMastData");
+            FilterResponse<DispatchMast> x = filterService.getpaginatedSortedFilteredData(data);
+            if(!x.getData().isEmpty())
+            result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            // logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+}
+ 
+@PostMapping("/getOperationsForGivenDataType")
+public ResponseEntity<GeneralResponse<List<String>, Object>> getOpeartionList(@RequestParam(name="dataType") String dataType) throws Exception{
+    GeneralResponse<List<String>,Object> result;
+    List<String> x=new ArrayList<String>();
+    try{
+        switch(dataType){
+            case "String":
+            x=Arrays.asList(new String[]{"EQUALS", "LIKE","NOT_EQUALS","START_WITH","END_WITH"});
+            break;
+            
+            case "Number":
+            x=Arrays.asList(new String[]{"GREATER_THAN", "LESS_THAN","EQUALS","NOT_EQUALS"});
+            break;
+            
+            case "Date":
+            x=Arrays.asList(new String[]{"IN_RANGE", "NOT_EQUALS","EQUALS","GREATER_THAN", "LESS_THAN"});
+            break;
+            
+        }
+
+        
+        if(!x.isEmpty())
+        result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+        else
+            result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+        // logService.saveLog(result,request,debugAll);
+    } catch (Exception e){
+        e.printStackTrace();
+        result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+        logService.saveLog(result,request,true);
+    }
+    return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+}
 
 }

@@ -1,5 +1,6 @@
 package com.main.glory.model.supplier.requestmodals;
 
+import com.main.glory.model.supplier.AddSupplierRate;
 import com.main.glory.model.supplier.SupplierRate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,5 +15,5 @@ import java.util.List;
 @Setter
 public class AddSupplierRateRequest{
     Long id;
-    List<SupplierRate> supplierRates;
+    List<AddSupplierRate> addSupplierRate;
 }

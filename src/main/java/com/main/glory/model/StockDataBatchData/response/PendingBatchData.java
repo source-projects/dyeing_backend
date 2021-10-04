@@ -20,10 +20,12 @@ public class PendingBatchData {
     Double totalBatchWt;
 
 
-    public PendingBatchData(StockMast stockMast, GetBatchWithControlId batch) {
-        this.batchId = batch.getBatchId();
-        this.receiveDate = stockMast.getReceiveDate();
-        this.totalBatchMtr = batch.getMTR();
-        this.totalBatchWt = batch.getWT();
+    public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate) {
+        this.batchId = batchId;
+        this.pchallanRef = pchallanRef;
+        this.totalBatchMtr = totalBatchMtr;
+        this.totalBatchWt = totalBatchWt;
+        this.receiveDate = receiveDate;
+
     }
 }

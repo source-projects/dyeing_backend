@@ -1,17 +1,18 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
+import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.supplier.requestmodals.AddSupplierRateRequest;
+import com.main.glory.model.supplier.AddSupplier;
 import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRatesRequest;
 import com.main.glory.model.supplier.requestmodals.UpdateSupplierRequest;
-import com.main.glory.model.supplier.responce.GetAllSupplierWithName;
-import com.main.glory.model.supplier.responce.GetItemWithSupplier;
-import com.main.glory.model.supplier.responce.RateAndItem;
-import com.main.glory.model.supplier.responce.SupplierRateResponse;
+import com.main.glory.model.supplier.responce.*;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.SupplierServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,10 +59,10 @@ public class SupplierController extends ControllerConfig {
     }
 
     @PostMapping("/supplier")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> addSupplier(@RequestBody Supplier supplier,@RequestHeader Map<String, String> headers){
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addSupplier(@RequestBody AddSupplier addSupplier,@RequestHeader Map<String, String> headers){
         GeneralResponse<Boolean,Object> result;
         try{
-            Boolean flag = supplierService.addSupplier(supplier,headers.get("id"));
+            Boolean flag = supplierService.addSupplier(addSupplier,headers.get("id"));
             if(flag) {
                 result= new GeneralResponse<>(true, ConstantFile.Supplier_Added, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
@@ -75,6 +76,25 @@ public class SupplierController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+    @PostMapping("/supplier/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetSupplierPaginatedData>,Object>> getSupplierPaginatedData(@RequestBody GetBYPaginatedAndFiltered requestParam){
+        GeneralResponse<FilterResponse<GetSupplierPaginatedData>,Object> result;
+        try{
+            FilterResponse<GetSupplierPaginatedData> flag = supplierService.getSupplierPaginatedData(requestParam);
+            if(flag.getData().isEmpty()) {
+                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            } else {
+                result= new GeneralResponse<>(flag, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
     @PostMapping("/supplier/rates")
     public ResponseEntity<GeneralResponse<Boolean,Object>> addSupplierRates(@RequestBody AddSupplierRateRequest addSupplierRateRequest){
@@ -119,14 +139,14 @@ public class SupplierController extends ControllerConfig {
 
 
     @GetMapping("/supplier/rate/{id}")
-    public ResponseEntity<GeneralResponse<Object,Object>> getSupplierAlongWithRates(@PathVariable("id") Long id){
-        GeneralResponse<Object,Object> result;
+    public ResponseEntity<GeneralResponse<SupplierResponse,Object>> getSupplierAlongWithRates(@PathVariable("id") Long id){
+        GeneralResponse<SupplierResponse,Object> result;
         try{
             if(id == null){
                 throw new Exception(ConstantFile.Null_Record_Passed);//result= new GeneralResponse<>(null, "Id cannot be null", false, System.currentTimeMillis(), HttpStatus.OK);
             }
 
-            Object obj =  supplierService.getSupplier(id);
+            SupplierResponse obj =  supplierService.getSupplier(id);
             if(obj != null){
                 result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
@@ -166,11 +186,11 @@ public class SupplierController extends ControllerConfig {
     }
 
     @GetMapping("/supplier/rates/all")
-    public ResponseEntity<GeneralResponse<Object,Object>> getAllSupplierRates(){
-        GeneralResponse<Object,Object> result;
+    public ResponseEntity<GeneralResponse<List<GetAllSupplierRatesResponse>,Object>> getAllSupplierRates(){
+        GeneralResponse<List<GetAllSupplierRatesResponse>,Object> result;
         try{
-            Object obj = supplierService.getAllRates();
-            if(obj != null){
+            List<GetAllSupplierRatesResponse> obj = supplierService.getAllRates();
+            if(!obj.isEmpty()){
                 result= new GeneralResponse<>(obj, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
                 result= new GeneralResponse<>(null, ConstantFile.SupplierRate_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -225,12 +245,12 @@ public class SupplierController extends ControllerConfig {
 
 
     @GetMapping("/supplier/all/{getBy}/{id}")
-    public ResponseEntity<GeneralResponse<List,Object>> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
-        GeneralResponse<List,Object> result;
+    public ResponseEntity<GeneralResponse<List<Supplier>,Object>> getAllSupplier(@PathVariable(value = "id") Long id,@PathVariable( value = "getBy") String getBy){
+        GeneralResponse<List<Supplier>,Object> result;
         try{
             switch (getBy) {
                 case "own":
-                    List obj = supplierService.getAllSupplier(getBy, id);
+                    List<Supplier> obj = supplierService.getAllSupplier(getBy, id);
                     if(!obj.isEmpty()){
                         result= new GeneralResponse<>(obj, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else
@@ -238,7 +258,7 @@ public class SupplierController extends ControllerConfig {
 
                     break;
                 case "group":
-                    List obj1 = supplierService.getAllSupplier(getBy, id);
+                    List<Supplier> obj1 = supplierService.getAllSupplier(getBy, id);
 
                     if(!obj1.isEmpty()){
                         result= new GeneralResponse<>(obj1, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -248,7 +268,7 @@ public class SupplierController extends ControllerConfig {
                     break;
 
                 case "all":
-                    List obj2 = supplierService.getAllSupplier(null, null);
+                    List<Supplier> obj2 = supplierService.getAllSupplier(null, null);
                     if(!obj2.isEmpty()){
                         result= new GeneralResponse<>(obj2, ConstantFile.Supplier_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                     } else {
@@ -295,19 +315,19 @@ public class SupplierController extends ControllerConfig {
     }
 
     @PutMapping("/supplier")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateSupplier(@RequestBody UpdateSupplierRequest updateSupplierRequest){
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateSupplier(@RequestBody AddSupplier addSupplier){
         GeneralResponse<Boolean,Object> result;
         try{
-            Boolean flag = supplierService.updateSupplier(updateSupplierRequest);
+            Boolean flag = supplierService.updateSupplier(addSupplier);
             if (flag) {
-                result= new GeneralResponse<>(null, ConstantFile.Supplier_Updated, true, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.Supplier_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addSupplier);
             } else {
-                result= new GeneralResponse<>(null, ConstantFile.Supplier_Invalid_Data, false, System.currentTimeMillis(), HttpStatus.OK,updateSupplierRequest);
+                result= new GeneralResponse<>(null, ConstantFile.Supplier_Invalid_Data, false, System.currentTimeMillis(), HttpStatus.OK,addSupplier);
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,updateSupplierRequest);
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addSupplier);
             logService.saveLog(result,request,debugAll);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

@@ -2,8 +2,12 @@ package com.main.glory.model.shade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.request.BatchDetail;
+import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
+import com.main.glory.model.quality.Quality;
 import com.main.glory.model.shade.requestmodals.AddShadeMast;
+import com.main.glory.model.user.UserData;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -25,16 +29,28 @@ import java.util.List;
 	Long id;
 	String partyShadeNo;
 	Long processId;
-	Long qualityEntryId;
-	Long partyId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="qualityEntryId", referencedColumnName = "id", insertable = true, updatable = true)    
+	Quality quality;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    
+	Party party;
 	String colorTone;
-	Long createdBy;
-	Long updatedBy;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
+
 	@ApiModelProperty(hidden = true)
 	Date createdDate;
 	@ApiModelProperty(hidden = true)
-	Date updatedDate;;
-	Long userHeadId;
+	Date updatedDate;
 	Long cuttingId;
 	String remark;
 	String category;
@@ -56,22 +72,23 @@ import java.util.List;
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
-	public ShadeMast(AddShadeMast addShadeMast)
+	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData,Quality quality,Party party)
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
-		this.id=addShadeMast.getPartyId();
+		this.id=addShadeMast.getId();
+		this.quality=quality;
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
-		this.partyId=addShadeMast.getPartyId();
+		this.party=party;
 		this.colorTone=addShadeMast.getColorTone();
-		this.createdBy=addShadeMast.getCreatedBy();
+		this.createdBy=createdBy;
 		this.cuttingId=addShadeMast.getCuttingId();
 		this.remark=addShadeMast.getRemark();
 		this.category=addShadeMast.getCategory();
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
-		this.userHeadId=addShadeMast.getUserHeadId();
+		this.userHeadData=userHeadData;
 		this.extraRate = addShadeMast.getExtraRate();
 		this.colorName=addShadeMast.getColorName();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
@@ -84,7 +101,7 @@ import java.util.List;
 		this.id=addShadeMast.getId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
-		this.partyId=addShadeMast.getPartyId();
+		this.party=addShadeMast.getParty();
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy=addShadeMast.getCreatedBy();
 		this.cuttingId=addShadeMast.getCuttingId();
@@ -92,7 +109,7 @@ import java.util.List;
 		this.category=addShadeMast.getCategory();
 		this.labColorNo=addShadeMast.getLabColorNo();
 		this.processName=addShadeMast.getProcessName();
-		this.userHeadId=addShadeMast.getUserHeadId();
+		this.userHeadData=addShadeMast.getUserHeadData();
 		this.extraRate=addShadeMast.getExtraRate();
 		//this.shadeDataList=addShadeMast.getShadeDataList();
 	}
@@ -103,14 +120,14 @@ import java.util.List;
 		this.id=addShadeMast.getId();
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
 		this.processId=addShadeMast.getProcessId();
-		this.qualityEntryId=addShadeMast.getQualityEntryId();
-		this.partyId=addShadeMast.getPartyId();
+		this.quality=addShadeMast.getQuality();
+		this.party=addShadeMast.getParty();
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy = addShadeMast.getCreatedBy();
 		this.updatedBy = addShadeMast.getUpdatedBy();
 		this.createdDate = addShadeMast.getCreatedDate();
 		this.updatedDate = addShadeMast.getUpdatedDate();
-		this.userHeadId = addShadeMast.getUserHeadId();
+		this.userHeadData = addShadeMast.getUserHeadData();
 		this.cuttingId=addShadeMast.getCuttingId();
 		this.remark=addShadeMast.getRemark();
 		this.category=addShadeMast.getCategory();
@@ -122,5 +139,11 @@ import java.util.List;
 		this.colorName = addShadeMast.getColorName();
 		this.shadeDataList = addShadeMast.getShadeDataList();
 
+	}
+	public ShadeMast(Long id2, String partyShadeNo2, Long processId2, Long qualityEntryId2, Long partyId2,
+			String colorTone2, UserData createdBy2, UserData updatedBy2, Date createdDate2, Date updatedDate2,
+			UserData userHeadData2, Long cuttingId2, String remark2, String category2, String labColorNo2,
+			String processName2, String apcNo2, Boolean pending2, Double extraRate2, String colorName2,
+			List<ShadeData> shadeDataList2) {
 	}
 }

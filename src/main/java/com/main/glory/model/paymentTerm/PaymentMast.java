@@ -1,9 +1,5 @@
 package com.main.glory.model.paymentTerm;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.main.glory.model.dispatch.DispatchMast;
-import com.main.glory.model.paymentTerm.AdvancePayment;
-import com.main.glory.model.paymentTerm.PaymentData;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

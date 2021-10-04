@@ -1,13 +1,21 @@
 package com.main.glory.servicesImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.basic.PartyQuality;
 import com.main.glory.model.basic.QualityData;
 import com.main.glory.model.basic.QualityParty;
@@ -30,12 +38,19 @@ import com.main.glory.model.supplier.responce.SupplierResponse;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
+import com.main.glory.services.FilterService;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.quality.QualityDao;
+import com.main.glory.model.quality.AddQuality;
 import com.main.glory.model.quality.Quality;
 
 @Service("qualityServiceImp")
@@ -45,6 +60,12 @@ public class QualityServiceImp  {
     SupplierServiceImpl supplierService;
 
     ConstantFile constantFile;
+
+    @Autowired
+    SpecificationManager<Quality> specificationManager;
+	@Autowired
+    FilterService<Quality,QualityDao> filterService;
+
 
     @Autowired
     DyeingProcessServiceImpl dyeingProcessService;
@@ -81,11 +102,20 @@ public class QualityServiceImp  {
     ModelMapper modelMapper;
 
     
-    public int saveQuality(Quality qualityDto,String id) throws Exception {
+    public int saveQuality(AddQuality addQuality,String id) throws Exception {
+        
+        UserData createdBy=userDao.getUserById(Long.parseLong(id));
+        UserData userHeadData=userDao.getUserById(createdBy.getUserHeadId());
+        
+        Party party=partyDao.findByPartyId(addQuality.getPartyId());
+        addQuality.setCreatedDate(new Date(System.currentTimeMillis()));
+        addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));
+        QualityName qualityName=qualityNameDao.findById(addQuality.getQualityNameId()).get();
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, createdBy,party,qualityName);
+
 
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
 
-        Party party = partyDao.findByPartyId(qualityDto.getPartyId());
         //Quality quality = new Quality(qualityDto);
 
         System.out.println("header:"+id);
@@ -93,9 +123,9 @@ public class QualityServiceImp  {
         //for data entry user
         UserData user = userDao.getUserById(Long.parseLong(id));
         System.out.println(":"+user.getId());
-        if(user.getIsMaster()==false || qualityDto.getUserHeadId()==0)
+        if(user.getIsMaster()==false || qualityDto.getUserHeadData()==null)
         {
-            qualityDto.setUserHeadId(party.getUserHeadId());
+            qualityDto.setUserHeadData(party.getUserHeadData());
         }
 
         //elese remin the master
@@ -103,7 +133,7 @@ public class QualityServiceImp  {
         if (quality1 != null)
             throw new Exception("Quality id is already exist");*/
 
-        Quality qualityExistWithId = qualityDao.getQualityIdIsExistExceptId(qualityDto.getQualityId(),qualityDto.getPartyId(),qualityDto.getId()==null?0: qualityDto.getId());
+        Quality qualityExistWithId = qualityDao.getQualityIdIsExistExceptId(qualityDto.getQualityId(),qualityDto.getParty().getId(),qualityDto.getId()==null?0: qualityDto.getId());
         if(qualityExistWithId!=null)
             throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
@@ -117,6 +147,107 @@ public class QualityServiceImp  {
         return 1;
     }
 
+    public FilterResponse<GetQualityResponse> getAllQualityPaginated(GetBYPaginatedAndFiltered requestParam, String id) throws Exception {
+        List<Quality> qualityListobject = null;
+        List<GetQualityResponse> quality = new ArrayList<>();
+
+        String getBy=requestParam.getGetBy();
+		Pageable pageable=filterService.getPageable(requestParam.getData());
+        List<Filter> filtersParam=requestParam.getData().getParameters();
+        HashMap<String,List<String>> subModelCase=new HashMap<String,List<String>>();
+        subModelCase.put("partyCode",new ArrayList<String>(Arrays.asList("party","partyCode")));
+        subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party","partyName")));
+        subModelCase.put("partyId", new ArrayList<String>(Arrays.asList("party","id")));
+        subModelCase.put("userHeadId",new ArrayList<String>(Arrays.asList("userHeadData","id")));
+        subModelCase.put("createdBy",new ArrayList<String>(Arrays.asList("userCreatedByData","id")));
+        subModelCase.put("userHeadName",new ArrayList<String>(Arrays.asList("userHeadData","userName")));
+        subModelCase.put("createdByName",new ArrayList<String>(Arrays.asList("userCreatedByData","userName")));
+        subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList( "qualityName","qualityName")));
+
+		Page queryResponse=null;
+
+        Specification<Quality> filterSpec=specificationManager.getSpecificationFromFilters(filtersParam, requestParam.getData().isAnd,subModelCase);
+
+
+        if (id == null || getBy.equals("all")) {
+			queryResponse = qualityDao.findAll(filterSpec, pageable);
+
+
+        } else if (getBy.equals("group")) {
+            UserData userData = userDao.findUserById(Long.parseLong(id));
+
+            if(userData.getUserHeadId()==0)
+            {
+                //for admin
+                
+                queryResponse = qualityDao.findAll(filterSpec, pageable);
+    
+            }
+            else if(userData.getUserHeadId().equals(userData.getId())) {
+                //master user
+                List<Filter> filters=new ArrayList<Filter>();
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")),QueryOperator.EQUALS,id));
+                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, false,subModelCase);
+                spec=spec.and(filterSpec);
+    
+                queryResponse = qualityDao.findAll(spec, pageable);    
+
+            }
+            else
+            {
+                List<Filter> filters=new ArrayList<Filter>();
+				filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                spec=spec.and(filterSpec);
+                queryResponse = qualityDao.findAll(spec, pageable);
+
+            }
+
+
+
+        } else if (getBy.equals("own")) {
+            UserData userData = userDao.findUserById(Long.parseLong(id));
+            
+            
+            if(userData.getUserHeadId()==0){
+                queryResponse = qualityDao.findAll(filterSpec, pageable);    
+                
+            }
+            else{
+                List<Filter> filters=new ArrayList<Filter>();
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")),QueryOperator.EQUALS,id));
+                Specification<Quality> spec=specificationManager.getSpecificationFromFilters(filters, true,subModelCase);
+                spec=spec.and(filterSpec);
+    
+                queryResponse = qualityDao.findAll(spec, pageable);    
+    
+            }
+
+        }
+        qualityListobject=queryResponse.getContent();
+        for(Quality q :qualityListobject)
+        {QualityWithPartyName data;
+            if(q.getParty()==null)
+            data=new QualityWithPartyName(q,null,null);
+            else
+            data=new QualityWithPartyName(q,q.getParty().getPartyName(), q.getParty().getPartyCode());
+            
+            QualityName qualityName = data.getQualityName();
+            if(qualityName==null)
+                continue;
+            data.setQualityName(qualityName);
+            quality.add(new GetQualityResponse(data));
+        }
+
+       /* if (quality.isEmpty())
+            throw new Exception(CommonMessage.Quality_Data_Not_Added);*/
+        FilterResponse<GetQualityResponse> response=new FilterResponse<GetQualityResponse>(quality,queryResponse.getNumber(),queryResponse.getNumberOfElements() ,(int)queryResponse.getTotalElements());
+
+        return response;
+    }
+
+
 
     
     public List<GetQualityResponse> getAllQuality(Long id, String getBy) throws Exception {
@@ -129,8 +260,8 @@ public class QualityServiceImp  {
            /* for(QualityWithPartyName data :qualityListobject)
             {
 
-                Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-                if(qualityName.isEmpty())
+                QualityName qualityName = data.getQualityName();
+                if(qualityName==null)
                     continue;
                 data.setQualityName(qualityName.get().getQualityName());
 
@@ -167,10 +298,10 @@ public class QualityServiceImp  {
         }
         for(QualityWithPartyName data :qualityListobject)
         {
-            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(data.getQualityNameId());
-            if(qualityName.isEmpty())
+            QualityName qualityName = data.getQualityName();
+            if(qualityName==null)
                 continue;
-            data.setQualityName(qualityName.get().getQualityName());
+            data.setQualityName(qualityName);
             quality.add(new GetQualityResponse(data));
         }
 
@@ -181,34 +312,31 @@ public class QualityServiceImp  {
 
 
     
-    public boolean updateQuality(Quality qualityDto) throws Exception {
-        var qualityData = qualityDao.findById(qualityDto.getId());
+    public boolean updateQuality(AddQuality addQuality,String id) throws Exception {
+        UserData userHeadData=userDao.getUserById(addQuality.getUserHeadId());
+        UserData createdBy=userDao.getUserById(addQuality.getCreatedBy());
+        UserData updatedBy=userDao.getUserById(Long.parseLong(id));
+        addQuality.setUpdatedDate(new Date(System.currentTimeMillis()));        
+        Party party=partyDao.findByPartyId(addQuality.getPartyId());
+        QualityName qualityName=qualityNameDao.findById(addQuality.getQualityNameId()).get();
+        Quality qualityDto = new Quality(addQuality, userHeadData, createdBy, createdBy,party,qualityName);
+        var qualityData = qualityDao.findById(addQuality.getId());
         if (!qualityData.isPresent())
             return false;
         else {
-            Optional<QualityName> qualityNameExist = qualityNameDao.getQualityNameDetailById(qualityDto.getQualityNameId());
-            if(qualityNameExist.isEmpty())
+            QualityName qualityNameExist = qualityDto.getQualityName();
+            if(qualityNameExist==null)
                 throw new Exception("no quality name found");
 
 
             //check the quality except the the given id
-            Quality qualityExistWithId = qualityDao.getQualityIdIsExistExceptId(qualityDto.getQualityId(),qualityDto.getPartyId(),qualityDto.getId());
+            Quality qualityExistWithId = qualityDao.getQualityIdIsExistExceptId(qualityDto.getQualityId(),qualityDto.getParty().getId(),qualityDto.getId());
             if(qualityExistWithId!=null)
                 throw new Exception(ConstantFile.Quality_Data_Exist_With_QualityId);
 
-            /*qualityData.get().setPartyId(qualityDto.getPartyId());
-            qualityData.get().setQualityId(qualityDto.getQualityId());
-            qualityData.get().setQualityNameId(qualityDto.getQualityNameId());
-            qualityData.get().setQualityName(qualityDto.getQualityName());
-            qualityData.get().setQualityType(qualityDto.getQualityType());
-            qualityData.get().setUnit(qualityDto.getUnit());
-            qualityData.get().setWtPer100m(qualityDto.getWtPer100m());
-            qualityData.get().setMtrPerKg(qualityDto.getMtrPerKg());
-            qualityData.get().setRemark(qualityDto.getRemark());
-            qualityData.get().setUpdatedBy(qualityDto.getUpdatedBy());
-            qualityData.get().setQualityDate(qualityDto.getQualityDate());
-            qualityData.get().setRate(qualityDto.getRate());
-            qualityData.get().setBillingUnit(qualityDto.getBillingUnit());*/
+            if(updatedBy.getIsMaster()==false || updatedBy.getUserHeadId()==0)
+            qualityDto.setUserHeadData(party.getUserHeadData());
+
 
             qualityDao.save(qualityDto);
             return true;
@@ -250,7 +378,7 @@ public class QualityServiceImp  {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         GetQualityResponse quality1 = new GetQualityResponse(quality.get());
         Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality1.getQualityNameId());
-        if(qualityName.isEmpty())
+        if(qualityName==null)
             return null;
         quality1.setQualityName(qualityName.get().getQualityName());
         Party party = partyDao.findByPartyId(quality1.getPartyId());
@@ -292,7 +420,7 @@ public class QualityServiceImp  {
 
         QualityParty qualityParties = new QualityParty(qualityLists.get());
 
-        Optional<Party> party = partyDao.findById(qualityLists.get().getPartyId());
+        Optional<Party> party = partyDao.findById(qualityLists.get().getParty().getId());
 
         qualityParties.setPartyName(party.get().getPartyName());
 
@@ -324,11 +452,11 @@ public class QualityServiceImp  {
                     if (qualityList.get().isEmpty())
                         continue;
 
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-                    if (qualityName.isEmpty())
+                   QualityName qualityName=quality.getQualityName();;
+                    if (qualityName==null)
                         continue;
 
-                    QualityData qualityData = new QualityData(quality, qualityName.get(), partName);
+                    QualityData qualityData = new QualityData(quality, qualityName, partName);
                     if(quality.getProcessId()!=null)
                     {
                         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality.getProcessId());
@@ -362,7 +490,7 @@ public class QualityServiceImp  {
         List<Quality> qualities = qualityDao.getAllQuality();
         List<GetAllQualtiy> getAllQualtiyList = new ArrayList<>();
         for (Quality quality : qualities) {
-            Optional<Party> partyName = partyDao.findById(quality.getPartyId());
+            Optional<Party> partyName = partyDao.findById(quality.getParty().getId());
             if (!partyName.isPresent())
                 continue;
 
@@ -396,11 +524,11 @@ public class QualityServiceImp  {
                 partyQuality.setPartyName(party.getPartyName());
                 List<QualityData> qualityDataList = new ArrayList<>();
                 for (Quality quality1 : quality.get()) {
-                    Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality1.getQualityNameId());
-                    if(qualityName.isEmpty())
+                    QualityName qualityName = quality1.getQualityName();
+                    if(qualityName==null)
                         continue;
 
-                    QualityData qualityData = new QualityData(quality1,qualityName.get());
+                    QualityData qualityData = new QualityData(quality1,qualityName);
                     if(quality1.getProcessId()!=null)
                     {
                         DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(quality1.getProcessId());
@@ -483,18 +611,18 @@ public class QualityServiceImp  {
 
         List<GetAllQualtiy> getAllQualtiyList = new ArrayList<>();
         for (Quality quality : qualities) {
-            Optional<Party> partyName = partyDao.findById(quality.getPartyId());
+            Optional<Party> partyName = partyDao.findById(quality.getParty().getId());
             if (!partyName.isPresent())
                 continue;
 
-            Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(quality.getQualityNameId());
-            if(qualityName.isEmpty())
+           QualityName qualityName=quality.getQualityName();;
+            if(qualityName==null)
                 continue;
 
             GetAllQualtiy getAllQualtiy = new GetAllQualtiy(quality);
             getAllQualtiy.setPartyName(partyName.get().getPartyName());
-            getAllQualtiy.setQualityName(qualityName.get().getQualityName());
-            getAllQualtiy.setQualityNameId(qualityName.get().getId());
+            getAllQualtiy.setQualityName(qualityName.getQualityName());
+            getAllQualtiy.setQualityNameId(qualityName.getId());
 
             //check that the dyeing process is exit or not
             if(quality.getProcessId()!=null)
@@ -545,9 +673,10 @@ public class QualityServiceImp  {
 
         List<AddQualityName> list =new ArrayList<>();
         Optional<List<QualityName>> qualityNameList = qualityNameDao.getAllQualityName();
+        System.out.println("qualityNameDao.getAllQualityName");
         if(!qualityNameList.isEmpty()) {
             for (QualityName qualityName : qualityNameList.get()) {
-
+                System.out.println("supplierService.getSupplierByQualityNameId "+Long.toString(qualityName.getId()));
                 List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
                 list.add(new AddQualityName(qualityName,supplierList));
 
@@ -590,10 +719,10 @@ public class QualityServiceImp  {
             List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByDateFilter(record.getFromDate(),record.getToDate());
             for(DispatchMast dispatchMast:dispatchMastList)
             {
-                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(dispatchMast.getPostfix());
+                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(Long.parseLong(dispatchMast.getPostfix()));
                 for(QualityWithRateAndTotalMtr qualityWithRateAndTotalMtr:qualityWithRateAndTotalMtrList)
                 {
-                    List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(),dispatchMast.getPostfix());
+                    List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(),Long.parseLong(dispatchMast.getPostfix()));
 
                     if(!batchIdsByQuality.isEmpty())
                     {
@@ -616,11 +745,11 @@ public class QualityServiceImp  {
             List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByDateFilter(record.getFromDate(),record.getToDate());
             for(DispatchMast dispatchMast:dispatchMastList)
             {
-                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(dispatchMast.getPostfix());
+                List<QualityWithRateAndTotalMtr> qualityWithRateAndTotalMtrList = dispatchMastService.getAllQualityByInvoiceNo(Long.parseLong(dispatchMast.getPostfix()));
                 for(QualityWithRateAndTotalMtr qualityWithRateAndTotalMtr:qualityWithRateAndTotalMtrList)
                 {
                     if(qualityWithRateAndTotalMtr.getQualityEntryId().equals(record.getQualityEntryId())) {
-                        List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(), dispatchMast.getPostfix());
+                        List<Long> batchIdsByQuality = dispatchMastService.getAllBatchEntryIdByQualityAndInvoice(qualityWithRateAndTotalMtr.getQualityEntryId(), Long.parseLong(dispatchMast.getPostfix()));
                         if (!batchIdsByQuality.isEmpty()) {
                             Double totalMtr = stockBatchService.getTotalFinishMtrByBatchEntryIdList(batchIdsByQuality);
                             qualityReportList.add(new QualityReport(qualityWithRateAndTotalMtr, totalMtr));

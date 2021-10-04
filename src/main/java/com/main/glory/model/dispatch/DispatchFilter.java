@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Filter {
+public class DispatchFilter {
     String from;
     String to;
     Long userHeadId;

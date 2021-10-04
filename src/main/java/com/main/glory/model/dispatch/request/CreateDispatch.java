@@ -7,6 +7,13 @@ import lombok.Setter;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.user.UserData;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

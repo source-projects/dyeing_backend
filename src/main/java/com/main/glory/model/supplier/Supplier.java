@@ -2,6 +2,9 @@ package com.main.glory.model.supplier;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.quality.QualityName;
+import com.main.glory.model.user.UserData;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +14,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,22 +33,34 @@ public class Supplier {
     Double discountPercentage;
     Double gstPercentage;
     String remark;
-    Long createdBy;
     @ApiModelProperty(hidden = true)
     Date createdDate;
     @ApiModelProperty(hidden = true)
     Date updatedDate;
     Long paymentTerms;
-    Long updatedBy;
-    Long userHeadId;
-    Long qualityNameId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="qualityNameId", referencedColumnName = "id", insertable = true, updatable = true)    
+	QualityName qualityName;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
+    private UserData createdBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData updatedBy;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
+    private UserData userHeadData;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "supplierId", referencedColumnName = "id")
     @ApiModelProperty(hidden = true)
     List<SupplierRate> supplierRates;
 
-    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, String remark, Long createdBy, Date createdDate, Date updatedDate, Long paymentTerms, Long updatedBy, Long userHeadId) {
+    public void addSupplierRates(SupplierRate supplierRate){
+        this.supplierRates.add(supplierRate);
+    }
+
+    public Supplier(Long id, String supplierName, Double discountPercentage, Double gstPercentage, String remark, UserData createdBy, Date createdDate, Date updatedDate, Long paymentTerms, UserData updatedBy, UserData userHeadData) {
         this.id = id;
         this.supplierName = supplierName;
         this.discountPercentage = discountPercentage;
@@ -54,7 +71,7 @@ public class Supplier {
         this.updatedDate = updatedDate;
         this.paymentTerms = paymentTerms;
         this.updatedBy = updatedBy;
-        this.userHeadId = userHeadId;
+        this.userHeadData = userHeadData;
     }
 
     @PrePersist
@@ -65,6 +82,25 @@ public class Supplier {
     @PreUpdate
     protected void onUpdate() {
         this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
+    public Supplier(AddSupplier addSupplier,UserData createdBy, UserData updatedBy, UserData userHeadData,QualityName qualityName) {
+        this.id = addSupplier.getId();
+        this.supplierName = addSupplier.getSupplierName();
+        this.discountPercentage = addSupplier.getDiscountPercentage();
+        this.gstPercentage = addSupplier.getGstPercentage();
+        this.remark = addSupplier.getRemark();
+        this.createdBy = createdBy;
+        this.createdDate = addSupplier.getCreatedDate();
+        this.updatedDate = addSupplier.getUpdatedDate();
+        this.paymentTerms = addSupplier.getPaymentTerms();
+        this.updatedBy = updatedBy;
+        this.userHeadData = userHeadData;
+        this.qualityName=qualityName;
+        this.supplierRates=new ArrayList<SupplierRate>();
+        
+
+
     }
 }
 

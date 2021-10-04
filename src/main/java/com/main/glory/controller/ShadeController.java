@@ -1,8 +1,10 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.shade.requestmodals.*;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -35,23 +37,26 @@ public class ShadeController extends ControllerConfig {
 	Boolean debugAll;
 
 	@PostMapping("/shade")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody ShadeMast shadeMast ,@RequestHeader Map<String, String> headers){
+	public ResponseEntity<GeneralResponse<Boolean,Object>> addShadeData(@RequestBody AddShadeMast addShadeMast ,@RequestHeader Map<String, String> headers){
 		GeneralResponse<Boolean,Object> result;
 		try {
-			if(shadeMast == null){
-				result =  new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+			if(addShadeMast == null){
+				result =  new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,addShadeMast);
 			}else {
-				shadeService.saveShade(shadeMast,headers.get("id"));
-				result = new GeneralResponse<>(true, ConstantFile.Shade_Added, true, System.currentTimeMillis(), HttpStatus.OK,shadeMast);
+				shadeService.saveShade(addShadeMast,headers.get("id"));
+				result = new GeneralResponse<>(true, ConstantFile.Shade_Added, true, System.currentTimeMillis(), HttpStatus.OK,addShadeMast);
 			}
 			logService.saveLog(result,request,debugAll);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,shadeMast);
+			System.out.println(e.getMessage());
+			result= new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addShadeMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
+
+
 	@GetMapping("/shade/getAPC")
 	public GeneralResponse<GetAPC,Object> getApcNumber(){
 		try {
@@ -129,13 +134,62 @@ public class ShadeController extends ControllerConfig {
 		return new ResponseEntity<>(result ,HttpStatus.valueOf(result .getStatusCode()));
 	}
 
-	@GetMapping("/shade/{id}")
-	public ResponseEntity<GeneralResponse<ShadeMast,Object>> getShadesById(@PathVariable(value = "id") Long id){
-		GeneralResponse<ShadeMast,Object> result;
+
+	@PostMapping("/shade/allPaginated")
+	public ResponseEntity<GeneralResponse<FilterResponse<GetAllShade>,Object>> getAllShadesInfoPadinated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String,String> header){
+		GeneralResponse<FilterResponse<GetAllShade>,Object> result ;
+		String id=header.get("id");
+        if(id=="")id=null;
 		try{
-			Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(id);
+			FilterResponse<GetAllShade> shadeMast = null;
+			switch (requestParam.getGetBy()) {
+				case "own":
+					shadeMast = shadeService.getAllShadesInfoPaginated(requestParam, id);
+					if(!shadeMast.getData().isEmpty())
+						result = new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					else
+						result = new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+					break;
+				case "group":
+					shadeMast = shadeService.getAllShadesInfoPaginated(requestParam, id);
+					if(!shadeMast.getData().isEmpty())
+						result = new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					else
+					result =new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+					break;
+				case "all":
+					shadeMast = shadeService.getAllShadesInfoPaginated(requestParam, id);
+					//System.out.println(shadeMast);
+					if(!shadeMast.getData().isEmpty())
+						result =  new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+					else
+						result = new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+					break;
+				default:
+					result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+			logService.saveLog(result,request,true);
+		}
+		logService.saveLog(result,request,debugAll);
+		return new ResponseEntity<>(result ,HttpStatus.valueOf(result .getStatusCode()));
+	}
+
+
+
+	@GetMapping("/shade/{id}")
+	public ResponseEntity<GeneralResponse<AddShadeMast,Object>> getShadesById(@PathVariable(value = "id") Long id){
+		GeneralResponse<AddShadeMast,Object> result;
+		try{
+			AddShadeMast shadeMast = shadeService.getById(id);
 			if(shadeMast != null){
-				result = new GeneralResponse<>(shadeMast.get(), ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+				result = new GeneralResponse<>(shadeMast, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 			}else{
 				result = new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 			}
@@ -190,16 +244,16 @@ public class ShadeController extends ControllerConfig {
 
 
 	@PutMapping(value = "/shade")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> updateShadeById(@RequestBody ShadeMast shadeMast) throws Exception {
+	public ResponseEntity<GeneralResponse<Boolean,Object>> updateShadeById(@RequestBody AddShadeMast addShadeMast) throws Exception {
 		GeneralResponse<Boolean,Object> result;
 
 		try {
-			if (shadeMast.getId() != null) {
-				boolean flag = shadeService.updateShade(shadeMast);
+			if (addShadeMast.getId() != null) {
+				boolean flag = shadeService.updateShade(addShadeMast);
 				if (flag) {
-					result = new GeneralResponse<>(true, ConstantFile.Shade_Updated, true, System.currentTimeMillis(), HttpStatus.OK, shadeMast);
+					result = new GeneralResponse<>(true, ConstantFile.Shade_Updated, true, System.currentTimeMillis(), HttpStatus.OK, addShadeMast);
 				} else {
-					result = new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, shadeMast);
+					result = new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, addShadeMast);
 				}
 				logService.saveLog(result, request, debugAll);
 			} else
@@ -210,7 +264,7 @@ public class ShadeController extends ControllerConfig {
 		}catch (Exception e)
 		{
 			e.printStackTrace();
-			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,shadeMast);
+			result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,addShadeMast);
 			logService.saveLog(result,request,true);
 		}
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
