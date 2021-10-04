@@ -2385,12 +2385,13 @@ public class StockBatchServiceImpl {
                 // System.out.println("stockId:"+batchByMergeBatch.getControlId());
 
                 Optional<StockMast> stockMast = stockMastDao.findById(batchByMergeBatch.getControlId());
-                if (stockMast.get().getQuality().getId() != null && stockMast.get().getParty().getId() != null) {
+                System.out.println(stockMast.get().getId());
+                if (stockMast.get().getQuality()!= null && stockMast.get().getParty()!= null) {
 
-                    Optional<Quality> quality = qualityDao.findById(stockMast.get().getQuality().getId());
+                    Quality quality = stockMast.get().getQuality();
 
-                    QualityName qualityName = quality.get().getQualityName();
-                    Optional<Party> party = partyDao.findById(stockMast.get().getParty().getId());
+                    QualityName qualityName = quality.getQualityName();
+                    Party party = stockMast.get().getParty();
 
                     // check that the process and party shade is exist or not
                     // if not then set the detail by null
@@ -2413,17 +2414,17 @@ public class StockBatchServiceImpl {
                      */
 
                     batchToPartyAndQuality
-                            .setPartyName(batchToPartyAndQuality.getPartyName() == null ? party.get().getPartyName()
-                                    : batchToPartyAndQuality.getPartyName() + "," + party.get().getPartyName());
+                            .setPartyName(batchToPartyAndQuality.getPartyName() == null ? party.getPartyName()
+                                    : batchToPartyAndQuality.getPartyName() + "," + party.getPartyName());
                     batchToPartyAndQuality
-                            .setQualityId(batchToPartyAndQuality.getQualityId() == null ? quality.get().getQualityId()
-                                    : batchToPartyAndQuality.getQualityId() + "," + quality.get().getQualityId());
+                            .setQualityId(batchToPartyAndQuality.getQualityId() == null ? quality.getQualityId()
+                                    : batchToPartyAndQuality.getQualityId() + "," + quality.getQualityId());
                     batchToPartyAndQuality
-                            .setPartyId(batchToPartyAndQuality.getPartyId() == null ? party.get().getId().toString()
-                                    : batchToPartyAndQuality.getPartyId() + "," + party.get().getId().toString());
+                            .setPartyId(batchToPartyAndQuality.getPartyId() == null ? party.getId().toString()
+                                    : batchToPartyAndQuality.getPartyId() + "," + party.getId().toString());
                     batchToPartyAndQuality.setQualityEntryId(
-                            batchToPartyAndQuality.getQualityEntryId() == null ? quality.get().getId().toString()
-                                    : batchToPartyAndQuality.getQualityEntryId() + "," + quality.get().getId());
+                            batchToPartyAndQuality.getQualityEntryId() == null ? quality.getId().toString()
+                                    : batchToPartyAndQuality.getQualityEntryId() + "," + quality.getId());
                     batchToPartyAndQuality.setQualityName(
                             batchToPartyAndQuality.getQualityName() == null ? qualityName.getQualityName()
                                     : batchToPartyAndQuality.getQualityName() + "," + qualityName.getQualityName());
