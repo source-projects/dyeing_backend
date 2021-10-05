@@ -614,13 +614,13 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/getAllBatchForFinishMtr")
-    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>, Object>> getAllBatchWithoutBillGenerated(@RequestHeader Map<String, String> headers) {
-        GeneralResponse<List<GetAllBatchWithProduction>, Object> response;
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllBatchWithProduction>, Object>> getAllBatchWithoutBillGenerated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String, String> headers) {
+        GeneralResponse<FilterResponse<GetAllBatchWithProduction>, Object> response;
 
         try {
-            List<GetAllBatchWithProduction> flag = stockBatchService.getAllBatchWithoutBillGenerated(headers.get("id"));
+            FilterResponse<GetAllBatchWithProduction>  flag = stockBatchService.getAllBatchWithoutBillGenerated(requestParam,headers.get("id"));
 
-            if (!flag.isEmpty())
+            if (!flag.getData().isEmpty())
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
