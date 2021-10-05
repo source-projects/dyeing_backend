@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SupplierRateResponse extends SupplierRate {
+public class SupplierRateResponse extends SupplierRateDTO {
 
     String supplierName;
 

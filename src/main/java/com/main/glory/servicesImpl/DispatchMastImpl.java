@@ -1571,10 +1571,10 @@ public class DispatchMastImpl {
             Double netAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getNetAmt());
             if (data.containsKey(key)) {
                 MonthlyDispatchReport report = data.get(key);
-                report.addDiscount(discount);
-                report.addFinishMtr(finishMtr);
-                report.addNetAmt(netAmt);
-                report.addTaxAmt(taxAmt);
+                report.addDiscount(StockBatchServiceImpl.changeInFormattedDecimal(discount));
+                report.addFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finishMtr));
+                report.addNetAmt(StockBatchServiceImpl.changeInFormattedDecimal(netAmt));
+                report.addTaxAmt(StockBatchServiceImpl.changeInFormattedDecimal(taxAmt));
             } else {
                 data.put(key, new MonthlyDispatchReport(month, finishMtr, taxAmt, discount, year, netAmt));
             }
