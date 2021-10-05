@@ -41,7 +41,7 @@ import java.util.List;
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
     @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData updatedBy;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
