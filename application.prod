@@ -18,7 +18,7 @@ spring.datasource.tomcat.max-idle=15
 spring.datasource.tomcat.min-idle=8
 spring.datasource.tomcat.default-auto-commit=true
 #spring.jpa.properties.hibernate.generate_statistics=true
-spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.maximum-pool-size=20
 spring.datasource.testOnBorrow=true
 spring.datasource.validationQuery=SELECT 1
 #allow schedule
