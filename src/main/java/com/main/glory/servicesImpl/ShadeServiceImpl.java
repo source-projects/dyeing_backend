@@ -85,11 +85,13 @@ public class ShadeServiceImpl {
 
 	public void saveShade(AddShadeMast addShadeMast, String id) throws Exception {
 		// consider we have data and add directlt
-		UserData userHeadData = userDao.getUserById(addShadeMast.getUserHeadId());
-		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
 		Quality quality=qualityDao.findById(addShadeMast.getQualityEntryId()).get();
 		Party party=partyDao.findById(addShadeMast.getPartyId()).get();
-		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,quality,party);
+		UserData userHeadData = null;
+		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
+		userHeadData = createdBy.getUserHeadId()==0 || createdBy.getIsMaster()==false?party.getUserHeadData():userDao.getUserById(createdBy.getUserHeadId());
+		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,createdBy,quality,party);
+		shadeMast.setShadeDataList(addShadeMast.getShadeDataList());
 		System.out.println("ShadeMast object created");
 
 		if (shadeMast.getQuality() == null)
@@ -202,11 +204,14 @@ public class ShadeServiceImpl {
 
 	public Boolean updateShade(AddShadeMast addShadeMast) throws Exception {
 		Boolean setCategory = false;
-		UserData userHeadData = userDao.getUserById(addShadeMast.getUserHeadId());
+		UserData userHeadData =userDao.getUserById(addShadeMast.getUserHeadId());
 		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
+		UserData updatedBy = userDao.getUserById(addShadeMast.getUpdatedBy());
 		Quality quality=qualityDao.findById(addShadeMast.getQualityEntryId()).get();
 		Party party=partyDao.findById(addShadeMast.getPartyId()).get();
-		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,quality,party);
+
+
+		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,updatedBy,quality,party);
 		shadeMast.setShadeDataList(addShadeMast.getShadeDataList());
 
 		if (shadeMast.getQuality() == null)
