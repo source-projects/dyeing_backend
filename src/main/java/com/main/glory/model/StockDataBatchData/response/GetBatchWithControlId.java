@@ -24,6 +24,13 @@ public class GetBatchWithControlId {
         this.MTR = MTR;
         this.userHeadId=userHeadId;
     }
+    public GetBatchWithControlId(String batchId, Long controlId, Double WT, Double MTR) {
+        this.batchId = batchId;
+        this.controlId = controlId;
+        this.WT = WT;
+        this.MTR = MTR;
+    }
+
 
     public GetBatchWithControlId(String mergeBatchId, String batchId, Long controlId, Double WT, Double MTR,Long userHeadId) {
         this.mergeBatchId = mergeBatchId;
@@ -33,6 +40,14 @@ public class GetBatchWithControlId {
         this.MTR = MTR;
         this.userHeadId=userHeadId;
     }
+    public GetBatchWithControlId(String mergeBatchId, String batchId, Long controlId, Double WT, Double MTR) {
+        this.mergeBatchId = mergeBatchId;
+        this.batchId = batchId;
+        this.controlId = controlId;
+        this.WT = WT;
+        this.MTR = MTR;
+    }
+
     public GetBatchWithControlId(String mergeBatchId,  Double WT, Double MTR,Long userHeadId) {
         this.mergeBatchId = mergeBatchId;
        /* this.batchId = batchId;
@@ -41,6 +56,15 @@ public class GetBatchWithControlId {
         this.MTR = MTR;
         this.userHeadId=userHeadId;
     }
+
+    public GetBatchWithControlId(String mergeBatchId,  Double WT, Double MTR) {
+        this.mergeBatchId = mergeBatchId;
+       /* this.batchId = batchId;
+        this.controlId = controlId;*/
+        this.WT = WT;
+        this.MTR = MTR;
+    }
+
 
     /*  public GetBatchWithControlId(String mergeBatchId, String batchId, Long controlId, Double WT, Double MTR) {
                 this.mergeBatchId = mergeBatchId;

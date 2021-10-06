@@ -16,6 +16,7 @@ public class MonthlyDispatchReport {
     private Double discount;
     private int year;
     private Double netAmt;
+    String unit;
 
     public void addFinishMtr(Double finishMtr){
         this.finishMtr+=finishMtr;
