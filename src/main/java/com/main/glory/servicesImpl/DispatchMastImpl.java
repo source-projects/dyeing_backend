@@ -2338,7 +2338,7 @@ public class DispatchMastImpl {
             batchWithTotalMTRandFinishMTR.setControlId(batch.getStockId());
 
             List<DispatchData> dispatchDataList = dispatchDataDao
-                    .findByPChallanRefAndStockIdAndInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo);
+                    .findByPChallanRefAndStockIdAndBatchIdInvoiceNo(batch.getStockId(), batch.getPchallanRef(), invoiceNo,batch.getBatchId());
             Double WT = 0.0;
             Double MTR = 0.0;
             Double totalFinishMtr = 0.0;
