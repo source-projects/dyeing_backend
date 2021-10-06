@@ -99,7 +99,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     void updateQualityRateWithPChallanRefAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate);
 
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchData.id) as batch,dd.stockId,dd.pchallanRef,dd.batchId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.pchallanRef,dd.stockId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(dd.batchData.id) as batch,dd.stockId,dd.pchallanRef,dd.batchId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.pchallanRef,dd.stockId")
     List<GetBatchByInvoice> findPChallanAndStockByInvoice(String invoiceExist);
 
     //get the invoice batch by the invoice no and batch id and stock id
