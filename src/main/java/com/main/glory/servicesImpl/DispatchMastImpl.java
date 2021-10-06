@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.admin.InvoiceSequenceDao;
@@ -2332,6 +2333,10 @@ public class DispatchMastImpl {
         if (list.isEmpty())
             throw new Exception("no data found");
 
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(list));
+
         for (GetBatchByInvoice batch : list) {
             BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = new BatchWithTotalMTRandFinishMTR();
             batchWithTotalMTRandFinishMTR.setBatchId(batch.getBatchId());
@@ -2380,7 +2385,7 @@ public class DispatchMastImpl {
         }
 
         StockMast stockMast = stockBatchService.getStockById(list.get(0).getStockId());
-        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+        Party party = stockMast.getParty();
 
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
@@ -2398,6 +2403,8 @@ public class DispatchMastImpl {
         // status
         partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));
 
+        System.out.println("*******************************************");
+        System.out.println(objectMapper.writeValueAsString(partyWithBatchByInvoice));
         return partyWithBatchByInvoice;
 
     }
