@@ -65,10 +65,10 @@ public interface SupplierRateDao extends JpaRepository<SupplierRate, Long> {
     @Query("select x from SupplierRate x where x.itemName=:name AND x.supplier.id!=:id")
     SupplierRate getSupplierRateByNameAndExceptId(String name, Long id);
 
-    @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,(select ss.supplierName from Supplier ss where ss.id=x.supplier.id)) from SupplierRate x where x.supplier.id IN (select s.id from Supplier s where s.qualityName.id=:qualityNameId) AND x.itemType=:type")
+    @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,x.supplier.supplierName) from SupplierRate x where x.supplier.id IN (select s.id from Supplier s where s.qualityName.id=:qualityNameId) AND x.itemType=:type")
     List<SupplierRateResponse> getAllItemByQualityNameId(Long qualityNameId, String type);
 
-    @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,(select ss.supplierName from Supplier ss where ss.id=x.supplier.id)) from SupplierRate x where x.itemType=:type")
+    @Query("select new com.main.glory.model.supplier.responce.SupplierRateResponse(x,x.supplier.supplierName) from SupplierRate x where x.itemType=:type")
     List<SupplierRateResponse> getAllItemWithType(String type);
 
     @Query("select new com.main.glory.model.supplier.responce.SupplierRateDTO(s.id,s.supplier.id,s.itemName,s.itemType,s.rate,s.discountedRate,s.gstRate,s.userHeadId,s.createdDate,s.createdBy,s.updatedBy) from SupplierRate s where s.supplier.id=:supplierId")
