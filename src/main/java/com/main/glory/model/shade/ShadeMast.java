@@ -41,7 +41,7 @@ import java.util.List;
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
     @ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
+	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData updatedBy;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
@@ -72,7 +72,7 @@ import java.util.List;
 	@PreUpdate
 	protected void onUpdate(){ this.updatedDate = new Date(System.currentTimeMillis()); }
 
-	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData,Quality quality,Party party)
+	public ShadeMast(AddShadeMast addShadeMast,UserData createdBy,UserData userHeadData,UserData updatedBy,Quality quality,Party party)
 	{
 		this.apcNo =addShadeMast.getApcNo();
 		this.pending=addShadeMast.getPending();
@@ -83,6 +83,7 @@ import java.util.List;
 		this.party=party;
 		this.colorTone=addShadeMast.getColorTone();
 		this.createdBy=createdBy;
+		this.updatedBy = updatedBy;
 		this.cuttingId=addShadeMast.getCuttingId();
 		this.remark=addShadeMast.getRemark();
 		this.category=addShadeMast.getCategory();

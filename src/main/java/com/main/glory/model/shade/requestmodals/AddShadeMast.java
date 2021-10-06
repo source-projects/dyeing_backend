@@ -68,7 +68,7 @@ public class AddShadeMast {
         this.shadeDataList = shadeMast.getShadeDataList();
         this.createdBy = shadeMast.getCreatedBy().getId();
         this.updatedBy = shadeMast.getUpdatedBy()==null?null:shadeMast.getUpdatedBy().getId();
-        this.userHeadId = shadeMast.getUserHeadData().getId();
+        this.userHeadId = shadeMast.getUserHeadData()==null?null:shadeMast.getUserHeadData().getId();
     }
 
 }
