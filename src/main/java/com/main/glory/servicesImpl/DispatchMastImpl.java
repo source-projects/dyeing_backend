@@ -1203,7 +1203,7 @@ public class DispatchMastImpl {
             // quality record
 
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
-            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
+            Quality quality = stockMastExist.getQuality();//qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
             QualityName qualityName = quality.getQualityName();
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -1225,8 +1225,9 @@ public class DispatchMastImpl {
                         .getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(batchAndStockId.getBatchId());
 
             } else {
-                batchDataList = batchDao.getBatchByBatchIdAndInvoiceNumber(batchAndStockId.getBatchId(),
-                        String.valueOf(createDispatch.getInvoiceNo()));
+                batchDataList = batchDao.getBatchByBatchIdAndPchallanRedAndInvoiceNumber(batchAndStockId.getBatchId(),
+                        String.valueOf(createDispatch.getInvoiceNo()),
+                        batchAndStockId.getPchallanRef());
             }
             for (BatchData batchData : batchDataList) {
                 totalFinishMtr += batchData.getFinishMtr();
