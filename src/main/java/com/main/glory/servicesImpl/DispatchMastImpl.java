@@ -2075,7 +2075,7 @@ public class DispatchMastImpl {
         if (stockMast == null)
             throw new Exception(ConstantFile.StockBatch_Exist);
 
-        Party party = partyDao.findByPartyId(stockMast.getParty().getId());
+        Party party = stockMast.getParty();
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
 
@@ -2096,8 +2096,8 @@ public class DispatchMastImpl {
 
             } else {
                 // check only existing of batch records
-                List<BatchData> batchDataList = batchDao.getBatchByPChallanRefAndInvoiceNumber(
-                        batchAndStockId.getPchallanRef(), String.valueOf(createDispatch.getInvoiceNo()));
+                List<BatchData> batchDataList = batchDao.getBatchByBatchIdAndPchallanRedAndInvoiceNumber(batchAndStockId.getBatchId(),String.valueOf(createDispatch.getInvoiceNo()),
+                        batchAndStockId.getPchallanRef() );
                 if (batchDataList.isEmpty())
                     throw new Exception(ConstantFile.Batch_Data_Not_Exist);
 
@@ -2117,7 +2117,7 @@ public class DispatchMastImpl {
 
             String billingUnit = null;
             StockMast stockMastExist = stockBatchService.getStockById(batchAndStockId.getStockId());
-            Quality quality = qualityServiceImp.getQualityByEntryId(stockMastExist.getQuality().getId());
+            Quality quality = stockMastExist.getQuality();
             QualityName qualityName = quality.getQualityName();
             if (quality == null)
                 throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -2140,8 +2140,8 @@ public class DispatchMastImpl {
                 billingUnit = quality.getBillingUnit();
 
             } else {
-                batchDataList = batchDao.getBatchByPChallanRefAndInvoiceNumber(batchAndStockId.getPchallanRef(),
-                        String.valueOf(createDispatch.getInvoiceNo()));
+                batchDataList = batchDao.getBatchByBatchIdAndPchallanRedAndInvoiceNumber(batchAndStockId.getBatchId(),String.valueOf(createDispatch.getInvoiceNo()),
+                        batchAndStockId.getPchallanRef() );
                 billingUnit = dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(
                         String.valueOf(createDispatch.getInvoiceNo()), batchDataList.get(0).getId());
             }
