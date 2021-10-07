@@ -27,13 +27,16 @@ public class AddQualityRequest {
     private String unit;
     private Double wtPer100m;
     private String remark;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="createdById", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userCreatedByData;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userHeadData;
     
@@ -41,7 +44,8 @@ public class AddQualityRequest {
     Double mtrPerKg;
     String billingUnit;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    	
 	Party  party;
 

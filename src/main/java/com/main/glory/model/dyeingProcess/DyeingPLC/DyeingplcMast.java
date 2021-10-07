@@ -20,7 +20,8 @@ public class DyeingplcMast {
     @Column(unique=true)
     Long dyeingProcessMastId;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<DyeingplcData> dyeingplcDataList;
 

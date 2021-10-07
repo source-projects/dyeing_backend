@@ -45,7 +45,8 @@ public class BatchData {
 
    /* @ApiModelProperty(hidden = true)
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "batchEntryId", referencedColumnName = "id")
     List<DispatchData> dispatchData;*/
 
