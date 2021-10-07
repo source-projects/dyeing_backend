@@ -1675,6 +1675,7 @@ public class DispatchMastImpl {
     // create dispatch api's service
 
     public Long createDispatchForPchallan(CreateDispatch dispatchList, Long userId) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
         // check the invoice sequence exist or not
         InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
         if (invoiceSequenceExist == null)
@@ -1756,11 +1757,17 @@ public class DispatchMastImpl {
             if (batchDataList.isEmpty())
                 throw new Exception("no batch data found");
 
+            System.out.println("prod:"+mapper.writeValueAsString(productionPlan));
             for (BatchData batchData : batchDataList) {
 
                 if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated() == false) {
                     DispatchData dispatchData = null;
-                    if (shadeMast.get() != null) {
+
+                    if (productionPlan.getIsDirect()!=true && shadeMast.isPresent()) {
+                        System.out.println("shade:"+mapper.writeValueAsString(shadeMast));
+                        System.out.println("batch:"+mapper.writeValueAsString(batchData));
+                        System.out.println("quality:"+mapper.writeValueAsString(quality));
+                        System.out.println("Stock:"+mapper.writeValueAsString(stockMast1));
                         dispatchData = new DispatchData(batchData, shadeMast.get(), quality, stockMast1);
                         dispatchData.setShadeRate(shadeMast.get().getExtraRate());
 
@@ -2348,7 +2355,7 @@ public class DispatchMastImpl {
             Double WT = 0.0;
             Double MTR = 0.0;
             Double totalFinishMtr = 0.0;
-            Long totalPcs = 0l;
+            Long totalPcs = batch.getBatchEntryId();//total count
 
             for (DispatchData dispatchData : dispatchDataList) {
                 BatchData batchData = dispatchData.getBatchData();
@@ -2356,7 +2363,7 @@ public class DispatchMastImpl {
                     WT += batchData.getWt();
                     MTR += batchData.getMtr();
                     totalFinishMtr += batchData.getFinishMtr();
-                    totalPcs++;
+                    //totalPcs++;
 
                 }
             }
