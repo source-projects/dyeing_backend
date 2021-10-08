@@ -1408,7 +1408,7 @@ public class DispatchMastImpl {
 
         // System.out.println(1);
         List<ConsolidatedBillMast> list = new ArrayList<>();
-        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getSignByParty());
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getUserHeadId(), filter.getPartyId(), null);
         if (filter.getQualityNameId() != null) {
             dispatchMastList = dispatchMastList.stream()
                     .filter(p -> p.getDispatchDataList().stream()
