@@ -1480,8 +1480,7 @@ public class DispatchMastImpl {
                 // batchDataList.get(0).getId());
                 UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,
                         batchDataList.get(0).getId());
-                Double wtPer100m = dispatchDataDao.getWtPer100mByInvoiceAndBatchEntryId(invoiceNumber,
-                        batchDataList.get(0).getId());
+                Double wtPer100m = unitDetail.getWtPer100m();
                 if (unitDetail.getBillingUnit().equalsIgnoreCase("weight")) {
                     // convert weight to meter
                     // totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 :
