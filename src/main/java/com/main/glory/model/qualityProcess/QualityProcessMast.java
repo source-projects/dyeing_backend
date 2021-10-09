@@ -29,7 +29,8 @@ public class QualityProcessMast {
 	Long updatedBy;
 	Long userHeadId;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(referencedColumnName = "id", name = "controlId")
 	List<QualityProcessData> steps;
 

@@ -41,7 +41,8 @@ public class UserData {
     Boolean isMaster;
    /* @Column(columnDefinition = "boolean default false")
     Boolean dataEntry;*/
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserPermission userPermissionData;
 
@@ -50,7 +51,8 @@ public class UserData {
     private Designation designationId;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "partyId", referencedColumnName = "id")
     private List<Party> parties;  
 

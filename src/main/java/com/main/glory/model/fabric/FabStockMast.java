@@ -48,7 +48,8 @@ public class FabStockMast {
 	private Long userHeadId;
 
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(referencedColumnName = "id", name = "controlId")
 	Set<FabStockData> fabStockData;
 

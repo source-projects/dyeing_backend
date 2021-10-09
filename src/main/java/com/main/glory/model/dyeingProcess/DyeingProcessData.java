@@ -35,7 +35,8 @@ public class DyeingProcessData {
     @Transient
     DyeingplcMast dyeingplcMast;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<DyeingChemicalData> dyeingChemicalData;
 
