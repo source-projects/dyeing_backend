@@ -614,11 +614,33 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/getAllBatchForFinishMtr")
-    public ResponseEntity<GeneralResponse<FilterResponse<GetAllBatchWithProduction>, Object>> getAllBatchWithoutBillGenerated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String, String> headers) {
+    public ResponseEntity<GeneralResponse<List<GetAllBatchWithProduction>, Object>> getAllBatchWithoutBillGenerated(@RequestHeader Map<String, String> headers) {
+        GeneralResponse<List<GetAllBatchWithProduction>, Object> response;
+
+        try {
+            List<GetAllBatchWithProduction>  flag = stockBatchService.getAllBatchWithoutBillGenerated(headers.get("id"));
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+
+    }
+
+    @PostMapping("/stockBatch/getAllBatchForFinishMtr/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllBatchWithProduction>, Object>> getAllBatchWithoutBillGeneratedAllPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String, String> headers) {
         GeneralResponse<FilterResponse<GetAllBatchWithProduction>, Object> response;
 
         try {
-            FilterResponse<GetAllBatchWithProduction>  flag = stockBatchService.getAllBatchWithoutBillGenerated(requestParam,headers.get("id"));
+            FilterResponse<GetAllBatchWithProduction>  flag = stockBatchService.getAllBatchWithoutBillGeneratedAllPaginated(requestParam,headers.get("id"));
 
             if (!flag.getData().isEmpty())
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
