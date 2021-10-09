@@ -170,6 +170,30 @@ public class JetController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+    @GetMapping(value="/jet/getAllJetMast")
+    public ResponseEntity<GeneralResponse<List<GetAllJetMast>,Object>> getAllJetMast()  throws Exception {
+
+        GeneralResponse<List<GetAllJetMast>,Object> result;
+        boolean flag;
+        try {
+
+            List<GetAllJetMast> jetMastList = jetService.getAllJetMast();
+            if(!jetMastList.isEmpty())
+                result = new GeneralResponse<>(jetMastList, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(jetMastList, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     //get the jet slip
     @GetMapping(value="/jet/getJetSlipData/{jetId}/{productionId}")
     public ResponseEntity<GeneralResponse<GetJetSlip,Object>> getJetSlipData(@PathVariable(name = "jetId") Long jetId , @PathVariable(name = "productionId") Long productionId)  throws Exception {

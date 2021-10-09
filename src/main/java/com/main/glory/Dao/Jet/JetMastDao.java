@@ -1,6 +1,7 @@
 package com.main.glory.Dao.Jet;
 
 import com.main.glory.model.jet.JetMast;
+import com.main.glory.model.jet.responce.GetAllJetMast;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,7 @@ public interface JetMastDao  extends JpaRepository<JetMast,Long> {
     @Transactional
     @Query("delete from JetMast j where j.id=:id")
     void deleteByJetId(Long id);
+
+    @Query("select new com.main.glory.model.jet.responce.GetAllJetMast(x.id,x.name,x.capacity) from JetMast x")
+    List<GetAllJetMast> getAllJetMast();
 }
