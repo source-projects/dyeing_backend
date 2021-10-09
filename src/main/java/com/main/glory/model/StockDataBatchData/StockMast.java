@@ -39,7 +39,8 @@ public class StockMast {
     String stockInType;
     
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="party_id", referencedColumnName = "id", insertable = true, updatable = true)    
     Party party;
     
@@ -64,12 +65,14 @@ public class StockMast {
     Double wtPer100m;
 
     // @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchData> batchData;
 
     // @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="quality_id", referencedColumnName = "id", insertable = true, updatable = true)    
     Quality quality;
 

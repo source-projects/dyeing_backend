@@ -42,7 +42,8 @@ public class BatchReturnMast {
     Boolean diffDeliveryParty;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<BatchReturnData> batchReturnData;
 

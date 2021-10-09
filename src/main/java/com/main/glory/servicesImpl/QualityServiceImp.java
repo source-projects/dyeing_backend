@@ -171,8 +171,6 @@ public class QualityServiceImp  {
 
         if (id == null || getBy.equals("all")) {
 			queryResponse = qualityDao.findAll(filterSpec, pageable);
-
-
         } else if (getBy.equals("group")) {
             UserData userData = userDao.findUserById(Long.parseLong(id));
 

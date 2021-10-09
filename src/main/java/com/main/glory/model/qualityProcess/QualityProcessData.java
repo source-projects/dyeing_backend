@@ -54,7 +54,8 @@ public class QualityProcessData {
     String dosingPercentage;
     String doseWhileHeating;
     String doseType;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "qualityProcessControlId", referencedColumnName = "id")
     private List<Chemical> dosingChemical;
 

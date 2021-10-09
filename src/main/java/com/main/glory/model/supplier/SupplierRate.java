@@ -19,7 +19,8 @@ public class SupplierRate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="supplierId", referencedColumnName = "id", insertable = true, updatable = true)    
     Supplier supplier;
     String itemName;

@@ -1560,7 +1560,7 @@ public class DispatchMastImpl {
         
             int month = createdDate.getMonth() + 1;
             int year = createdDate.getYear()+1900 ;
-            int key = month * 10000 + year;
+            int key = month * 100000 + year*10;
             System.out.print(dispatchMast.getDispatchDataList().size());
             if(dispatchMast.getDispatchDataList().size()==0)
             continue;
@@ -1571,14 +1571,19 @@ public class DispatchMastImpl {
             Double taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getTaxAmt());
             Double discount = dispatchMast.getDiscount();
             Double netAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getNetAmt());
-            if (data.containsKey(key)) {
-                MonthlyDispatchReport report = data.get(key);
-                report.addDiscount(StockBatchServiceImpl.changeInFormattedDecimal(discount));
-                report.addFinishMtr(StockBatchServiceImpl.changeInFormattedDecimal(finishMtr));
-                report.addNetAmt(StockBatchServiceImpl.changeInFormattedDecimal(netAmt));
-                report.addTaxAmt(StockBatchServiceImpl.changeInFormattedDecimal(taxAmt));
+            int type=0;
+            if (dispatchMast.getDispatchDataList().get(j).getBillingUnit().equals("weight"))
+                type=1;
+
+            if (data.containsKey(key+type)) {
+                MonthlyDispatchReport report = data.get(key+type);
+                report.addDiscount(discount);
+                report.addFinishMtr(finishMtr);
+                report.addNetAmt(netAmt);
+                report.addTaxAmt(taxAmt);
+
             } else {
-                data.put(key, new MonthlyDispatchReport(month, finishMtr, taxAmt, discount, year, netAmt));
+                data.put(key+type, new MonthlyDispatchReport(month, finishMtr, taxAmt, discount, year, netAmt,dispatchMast.getDispatchDataList().get(j).getBillingUnit()));
             }
         }
         }

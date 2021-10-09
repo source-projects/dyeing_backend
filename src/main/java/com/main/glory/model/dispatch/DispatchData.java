@@ -22,7 +22,8 @@ public class DispatchData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="batchEntryId", referencedColumnName = "id", insertable = true, updatable = true)
     BatchData batchData;
     String batchId;
@@ -34,7 +35,8 @@ public class DispatchData {
     Date createdDate;
     Long createdBy;
     Long updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="qualityEntryId", referencedColumnName = "id", insertable = true, updatable = true)
     Quality quality;
     Long shadeId;

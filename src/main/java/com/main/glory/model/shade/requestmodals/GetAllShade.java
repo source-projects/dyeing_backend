@@ -41,13 +41,16 @@ public class GetAllShade {
     String colorName;
     Double wtPer100m;
     List<ShadeData> shadeDataList;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="updatedById", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData userHeadData;
 

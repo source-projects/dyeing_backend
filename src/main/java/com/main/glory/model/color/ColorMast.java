@@ -25,7 +25,8 @@ public class ColorMast {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="supplierId", referencedColumnName = "id", insertable = true, updatable = true)    
     Supplier supplier;
     
@@ -35,13 +36,16 @@ public class ColorMast {
     Date chlDate;
     Double billAmount;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData userHeadData;
 
@@ -51,7 +55,8 @@ public class ColorMast {
     @ApiModelProperty(hidden = true)
     Date updatedDate;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId",referencedColumnName = "id")
     List<ColorData> colorDataList;
 
