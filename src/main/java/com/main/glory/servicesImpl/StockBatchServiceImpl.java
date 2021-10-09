@@ -1578,10 +1578,8 @@ public class StockBatchServiceImpl {
                     getAllBatch.setIsBillGenerated(false);
                     getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
                     getAllBatch.setControlId(getBatchWithControlId.getControlId());
-                    getAllBatch.setTotalWt(
-                            changeInFormattedDecimal(batchDao.getTotalWtByBatchId(getBatchWithControlId.getBatchId())));
-                    getAllBatch.setTotalMtr(changeInFormattedDecimal(
-                            batchDao.getTotalMtrByBatchId(getBatchWithControlId.getBatchId())));
+                    getAllBatch.setTotalWt(changeInFormattedDecimal(getBatchWithControlId.getWT()));
+                    getAllBatch.setTotalMtr(changeInFormattedDecimal(getBatchWithControlId.getMTR()));
                     batchId.add(getAllBatch.getBatchId());
                     // System.out.println();
                     System.out.println(objectMapper.writeValueAsString(getAllBatch));
@@ -1661,7 +1659,7 @@ public class StockBatchServiceImpl {
 
         if (qualityExist.isEmpty())
             throw new Exception(ConstantFile.Quality_Data_Not_Exist + qualityId);
-        Optional<QualityName> qualityName = qualityNameDao.getQualityNameDetailById(qualityId);
+        QualityName qualityName = qualityExist.get().getQualityName();
 
         Optional<Party> party = partyDao.findById(qualityExist.get().getParty().getId());
         if (party.isEmpty())
@@ -1675,7 +1673,7 @@ public class StockBatchServiceImpl {
             List<GetBatchWithControlId> batchWithStockList = batchDao
                     .getBatchAndStockListWithoutProductionPlanByStockId(stockMast.getId());
             for (GetBatchWithControlId getBatchWithControlId : batchWithStockList) {
-                GetAllBatch getAllBatch = new GetAllBatch(party.get(), qualityExist.get(), qualityName.get());
+                GetAllBatch getAllBatch = new GetAllBatch(party.get(), qualityExist.get(), qualityName);
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getBatchId());
@@ -1697,7 +1695,7 @@ public class StockBatchServiceImpl {
                     .getBatchAndStockListWithoutProductionPlanByStockIdAndBasedOnMergeBatchId(stockMast.getId());
 
             for (GetBatchWithControlId getBatchWithControlId : batchWithStockList) {
-                GetAllBatch getAllBatch = new GetAllBatch(party.get(), qualityExist.get(), qualityName.get());
+                GetAllBatch getAllBatch = new GetAllBatch(party.get(), qualityExist.get(), qualityName);
                 getAllBatch.setProductionPlanned(false);
                 getAllBatch.setIsBillGenerated(false);
                 getAllBatch.setBatchId(getBatchWithControlId.getMergeBatchId());

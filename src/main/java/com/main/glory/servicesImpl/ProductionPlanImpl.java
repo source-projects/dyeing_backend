@@ -462,6 +462,9 @@ public class ProductionPlanImpl {
 
 
 
+            ProductionPlan productionPlanExistWithBatchId = productionPlanDao.getProductionByBatchId(productionPlan.getBatchId());
+            if (productionPlanExistWithBatchId != null)
+                throw new Exception(ConstantFile.Production_With_Jet);
             ProductionPlan x = productionPlanDao.save(productionPlanExistWithMergeBatchId);
 
 
