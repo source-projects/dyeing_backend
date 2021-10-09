@@ -466,8 +466,11 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.PchallanByBatchId(x.pchallanRef,COUNT(x.id)) from BatchData x where x.batchId=:batchId GROUP BY x.pchallanRef")
     List<PchallanByBatchId> getListOfPchallanByBatchId(String batchId);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),(select s.receiveDate from StockMast s where s.id=:id)) from BatchData x where x.controlId=:id AND x.isProductionPlanned=false GROUP BY x.batchId,x.pchallanRef")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate,s.quality.qualityName.qualityName,s.quality.qualityId) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
     List<PendingBatchData> getPendingBatchListByStockId(Long id);
+
+    @Query("select x from BatchData x where x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber AND d.pchallanRef=:pchallanRef AND d.batchId=:batchId)")
+    List<BatchData> getBatchByBatchIdAndPchallanRedAndInvoiceNumber(String batchId, String invoiceNumber, String pchallanRef);
 
 
 

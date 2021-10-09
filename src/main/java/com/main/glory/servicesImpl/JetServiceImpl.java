@@ -1222,4 +1222,9 @@ public class JetServiceImpl {
     public void updateJetDataStatus(Long id, JetStatus inQueue) {
         jetDataDao.updateJetStatusById(id,inQueue);
     }
+
+    public List<GetAllJetMast> getAllJetMast() {
+        List<GetAllJetMast> list = jetMastDao.getAllJetMast();
+        return list;
+    }
 }

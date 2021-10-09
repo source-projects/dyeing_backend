@@ -99,7 +99,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     void updateQualityRateWithPChallanRefAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate);
 
 
-    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(SUM(dd.batchData.id) as batch,dd.stockId,dd.pchallanRef,dd.batchId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.pchallanRef,dd.stockId")
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(dd.batchData.id) as batch,dd.stockId,dd.pchallanRef,dd.batchId) from DispatchData dd where dd.invoiceNo=:invoiceExist GROUP BY dd.batchId,dd.pchallanRef,dd.stockId")
     List<GetBatchByInvoice> findPChallanAndStockByInvoice(String invoiceExist);
 
     //get the invoice batch by the invoice no and batch id and stock id
@@ -133,6 +133,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     @Transactional
     @Query("update DispatchData x set x.qualityRate=:rate where x.pchallanRef=:pchallanRef AND x.invoiceNo=:invoiceNo AND x.batchId=:batchId")
     void updateQualityRateWithPChallanRefAndBatchIdAndInvoiceNo(String invoiceNo, String pchallanRef, Double rate, String batchId);
+
+    @Query("select dd from DispatchData dd where dd.stockId =:stockId AND dd.pchallanRef=:pchallanRef AND dd.invoiceNo=:invoiceNo AND dd.batchId=:batchId AND dd.pchallanRef IS NOT NULL AND dd.stockId IS NOT NULL")
+    List<DispatchData> findByPChallanRefAndStockIdAndBatchIdInvoiceNo(Long stockId, String pchallanRef, String invoiceNo, String batchId);
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchData.id) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);

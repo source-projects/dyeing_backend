@@ -25,4 +25,10 @@ public class GetAllJetMast {
         this.name=jetMast.getName();
         this.capacity=jetMast.getCapacity();
     }
+
+    public GetAllJetMast(Long id, String name, Double capacity) {
+        this.id = id;
+        this.name = name;
+        this.capacity = capacity;
+    }
 }
