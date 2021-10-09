@@ -641,7 +641,6 @@ public class StockBatchController extends ControllerConfig {
 
         try {
             FilterResponse<GetAllBatchWithProduction>  flag = stockBatchService.getAllBatchWithoutBillGeneratedAllPaginated(requestParam,headers.get("id"));
-
             if (!flag.getData().isEmpty())
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
