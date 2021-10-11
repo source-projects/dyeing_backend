@@ -1658,9 +1658,9 @@ public class DispatchMastImpl {
                 if (data.containsKey(key)) {
                     MonthlyDispatchPendingReport report = data.get(key);
                     report.addNetAmt(netAmt);
-
+                    report.addDiscount(discount);
                 } else {
-                    data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt));
+                    data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt,partyId,discount,dispatchMast.getParty().getPartyName()));
                 }
             }
         }

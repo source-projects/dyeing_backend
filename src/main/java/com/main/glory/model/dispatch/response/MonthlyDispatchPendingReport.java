@@ -13,7 +13,14 @@ public class MonthlyDispatchPendingReport {
     private int month;
     private int year;
     private Double netAmt;
+    int partyId;
+    private Double discount;
+    String partyName;
 
+
+    public void addDiscount(Double discount){
+        this.discount+=discount;
+    }
 
     public void addNetAmt(Double netAmt){
         this.netAmt+=netAmt;
