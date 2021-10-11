@@ -20,6 +20,7 @@ import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.ConsolidatedBillMast;
 import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.dispatch.response.MonthlyDispatchPendingReport;
 import com.main.glory.model.dispatch.response.MonthlyDispatchReport;
 import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.services.FilterService;
@@ -464,6 +465,25 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<List<MonthlyDispatchReport>, Object> result;
         try{    
             List<MonthlyDispatchReport> list = dispatchMastService.getMonthWiseReportDispatch(filter);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true
+            );
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/dispatch/monthWisePendingReport")
+    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter) throws Exception{
+        GeneralResponse<List<MonthlyDispatchPendingReport>, Object> result;
+        try{    
+            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter);
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
