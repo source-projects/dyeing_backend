@@ -152,7 +152,7 @@ public class BasicController extends ControllerConfig {
             if (!batchDataList.isEmpty()) {
                 result =  new GeneralResponse<>(batchDataList, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             } else {
-                result =  new GeneralResponse<>(null, constantFile.StockBatch_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result =  new GeneralResponse<>(null, constantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {

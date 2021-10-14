@@ -826,10 +826,11 @@ public class StockBatchServiceImpl {
     public List<GetAllBatchWithProduction> getAllBatchByMaster(Long userHeadId) throws Exception {
 
         List<StockMast> stockMastList = stockMastDao.getAllStockByUserHeadId(userHeadId);
-        if (stockMastList.isEmpty())
-            throw new Exception(constantFile.StockBatch_Not_Found_ByMaster);
-
         List<GetAllBatchWithProduction> list = new ArrayList<>();
+        if (stockMastList.isEmpty())
+            return list;
+
+        
         List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
 
         /*
