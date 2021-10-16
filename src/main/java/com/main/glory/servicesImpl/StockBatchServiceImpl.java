@@ -1011,8 +1011,8 @@ public class StockBatchServiceImpl {
                         continue;
 
                 if (isProductionPlan != null)
-                    if (stockMast.get().getIsProductionPlanned() != isProductionPlan)
-                        continue;
+                if (stockMast.get().getIsProductionPlanned().equals(isProductionPlan))
+                    continue;
 
                 QualityName qualityName = quality.getQualityName();
                 BatchToPartyAndQuality batchToPartyAndQuality = new BatchToPartyAndQuality(quality, party, batch,
@@ -1061,11 +1061,11 @@ public class StockBatchServiceImpl {
                     QualityName qualityName = quality.getQualityName();
                     Party party = stockMast.get().getParty();
                     if (partyId != null)
-                        if (partyId != party.getId())
+                        if (partyId.equals( party.getId()))
                             continue;
 
                     if (qualityId != null)
-                        if (qualityId != quality.getId())
+                        if (qualityId.equals( quality.getId()))
                             continue;
 
                     if (batchId != null)
@@ -1073,7 +1073,7 @@ public class StockBatchServiceImpl {
                             continue;
 
                     if (isProductionPlan != null)
-                        if (stockMast.get().getIsProductionPlanned() != isProductionPlan)
+                        if (stockMast.get().getIsProductionPlanned().equals(isProductionPlan))
                             continue;
 
                     batchToPartyAndQuality
