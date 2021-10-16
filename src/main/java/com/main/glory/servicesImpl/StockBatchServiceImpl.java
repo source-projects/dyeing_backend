@@ -1011,8 +1011,8 @@ public class StockBatchServiceImpl {
                         continue;
 
                 if (isProductionPlan != null)
-                    if (stockMast.get().getIsProductionPlanned() != isProductionPlan)
-                        continue;
+                if (stockMast.get().getIsProductionPlanned().equals(isProductionPlan))
+                    continue;
 
                 QualityName qualityName = quality.getQualityName();
                 BatchToPartyAndQuality batchToPartyAndQuality = new BatchToPartyAndQuality(quality, party, batch,
