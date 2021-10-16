@@ -999,11 +999,11 @@ public class StockBatchServiceImpl {
 
                 Party party = stockMast.get().getParty();
                 if (partyId != null)
-                    if (partyId != party.getId())
+                    if (partyId.equals(party.getId()))
                         continue;
 
                 if (qualityId != null)
-                    if (qualityId != quality.getId())
+                    if (qualityId.equals( quality.getId()))
                         continue;
 
                 if (batchId != null)
