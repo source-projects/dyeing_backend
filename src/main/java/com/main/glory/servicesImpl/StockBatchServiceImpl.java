@@ -2016,11 +2016,11 @@ public class StockBatchServiceImpl {
         }
 
         if (partyId != null)
-            if (partyId != getAllBatch.getPartyId())
+            if (!partyId.equals(getAllBatch.getPartyId()))
                 continue;
 
         if (qualityId != null)
-            if (qualityId != getAllBatch.getQualityEntryId())
+            if (!qualityId.equals(getAllBatch.getQualityEntryId()))
                 continue;
 
         if (batchId != null)
