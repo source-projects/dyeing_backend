@@ -1,5 +1,6 @@
 package com.main.glory.Dao.dispatch;
 
+import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
@@ -63,6 +64,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchData.id) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
     List<GetBatchByInvoice> getAllStockByInvoiceNumber(String invoiceNumber);
+
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchData.id) as batchEntryId,d.stockId as stockId,d.pchallanRef,d.batchId as batchId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId,d.pchallanRef")
+    List<GetBatchByInvoice> getAllStockByInvoiceNumberWithPchallen(String invoiceNumber);
 
     @Query("select new com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr(x.quality.id,(select q.qualityName from QualityName q where q.id = (select qq.qualityName.id from Quality qq where qq.id=x.quality.id)),(select q.qualityId from Quality q where q.id=x.quality.id),x.qualityRate) from DispatchData x where x.invoiceNo=:invoiceNo GROUP BY x.quality.id")
     List<QualityWithRateAndTotalMtr> getAllQualityByInvoiceNo(String invoiceNo);
@@ -139,4 +143,11 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchData.id) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(b.batchId,b.stockId,SUM(b.bataData.wt),SUM(b.bataData.mtr),SUM(b.bataData.finishMtr),COUNT(b.id)) from DispatchData b where b.stockId=:stockId AND b.batchId=:batchId AND b.pchallanRef=:pchallanRef AND b.invoiceNo=:invoiceNo")
+    BatchWithTotalMTRandFinishMTR getAllBatchWithTotalMtrAndTotalFinishMtr(String batchId, Long stockId,String pchallanRef,String invoiceNo);
+
+
+
+
 }

@@ -396,12 +396,12 @@ public class DispatchMastImpl {
             // get the batch data
 
             List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao
-                    .getAllStockByInvoiceNumber(dispatchMast.getPostfix());
+                    .getAllStockByInvoiceNumberWithPchallen(dispatchMast.getPostfix());
             System.out.println("length of batchList-" + batchListWithInvoiceList.size());
             for (GetBatchByInvoice batch : batchListWithInvoiceList) {
                 // list of batches
-                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao
-                        .getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
+                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = dispatchDataDao
+                        .getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId(),batch.getPchallanRef(),dispatchMast.getPostfix());
                 batchList.add(batchWithTotalMTRandFinishMTR);
             }
             System.out.println("length of batchList-" + batchList.size());

@@ -145,6 +145,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     BatchWithTotalMTRandFinishMTR getAllBatchWithTotalMtrAndTotalFinishMtr(String batchId, Long stockId);
 
 
+
+
     //get the quality bill responce by stock and batch id 3rd parameter for bill generated or not
    /* @Query("select new com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber(" +
             "(select q.qualityId from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS qualityId," +
