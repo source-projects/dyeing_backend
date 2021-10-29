@@ -144,7 +144,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchData.id) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(b.batchId,b.stockId,SUM(b.bataData.wt),SUM(b.bataData.mtr),SUM(b.bataData.finishMtr),COUNT(b.id)) from DispatchData b where b.stockId=:stockId AND b.batchId=:batchId AND b.pchallanRef=:pchallanRef AND b.invoiceNo=:invoiceNo")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(b.batchId,b.stockId,SUM(b.batchData.wt),SUM(b.batchData.mtr),SUM(b.batchData.finishMtr),COUNT(b.id)) from DispatchData b where b.stockId=:stockId AND b.batchId=:batchId AND b.pchallanRef=:pchallanRef AND b.invoiceNo=:invoiceNo")
     BatchWithTotalMTRandFinishMTR getAllBatchWithTotalMtrAndTotalFinishMtr(String batchId, Long stockId,String pchallanRef,String invoiceNo);
 
 
