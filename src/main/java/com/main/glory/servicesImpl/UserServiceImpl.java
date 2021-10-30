@@ -4,7 +4,12 @@ import com.main.glory.Dao.admin.CompanyDao;
 import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.designation.DesignationDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.GetAllStockWithPartyNameResponse;
 import com.main.glory.model.admin.Company;
 import com.main.glory.model.admin.Department;
@@ -24,13 +29,19 @@ import com.main.glory.model.user.Request.UserUpdateRequest;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.getAllUserInfo;
+import com.main.glory.services.FilterService;
 import com.main.glory.services.UserServiceInterface;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,13 +75,11 @@ public class UserServiceImpl implements UserServiceInterface {
     @Autowired
     TaskServiceImpl taskService;
 
-
     @Autowired
     DepartmentDao departmentDao;
 
     @Autowired
     CompanyDao companyDao;
-
 
     @Autowired
     UserDao userDao;
@@ -84,6 +93,10 @@ public class UserServiceImpl implements UserServiceInterface {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    SpecificationManager<UserData> specificationManager;
+    @Autowired
+    FilterService<UserData, UserDao> filterService;
 
     public UserData getUserById(Long id) {
         var data = userDao.findById(id);
@@ -93,25 +106,24 @@ public class UserServiceImpl implements UserServiceInterface {
             return data.get();
     }
 
-
     public void createUser(UserAddRequest userDataDto, String headerId) throws Exception {
-        //company and designation check
+        // company and designation check
 
-        DepartmentResponse departmentExist =departmentDao.getDepartmentResponseById(userDataDto.getDepartmentId());
-        if(departmentExist==null)
+        DepartmentResponse departmentExist = departmentDao.getDepartmentResponseById(userDataDto.getDepartmentId());
+        if (departmentExist == null)
             throw new Exception("department not found");
 
         Company companyExist = companyDao.getCompanyById(userDataDto.getCompanyId());
-        if(companyExist==null)
+        if (companyExist == null)
             throw new Exception("company not found");
 
         UserData userData = new UserData(userDataDto);
 
-
         Optional<UserData> data = userDao.findByUserName(userData.getUserName());
 
         if (!data.isPresent()) {
-            Optional<Designation> designationData = designationService.getDesignationById(userDataDto.getDesignationId());
+            Optional<Designation> designationData = designationService
+                    .getDesignationById(userDataDto.getDesignationId());
             if (!designationData.isPresent()) {
                 throw new Exception("No such desgination found:" + userDataDto.getDesignationId());
 
@@ -119,39 +131,37 @@ public class UserServiceImpl implements UserServiceInterface {
             userData.setDesignationId(designationData.get());
             userData.setUserPermissionData(userDataDto.getUserPermissionData());
 
-            //System.out.println(userData.toString());
+            // System.out.println(userData.toString());
 
-
-            Long id  = userData.getCreatedBy();
+            Long id = userData.getCreatedBy();
             UserData x = userDao.saveAndFlush(userData);
 
-            Long headId=Long.parseLong(headerId);
-            //System.out.println(headId+":type:"+headId);
-            //if master adding the opeartor then FE will send userHeadId= 0 then store the operator with userHeadID
-            if(x.getUserHeadId()==0)
-            {
-                //then adding opeator by master and set from the header
-                userDao.updateUserHeadId(x.getId(),headId);
+            Long headId = Long.parseLong(headerId);
+            // System.out.println(headId+":type:"+headId);
+            // if master adding the opeartor then FE will send userHeadId= 0 then store the
+            // operator with userHeadID
+            if (x.getUserHeadId() == 0) {
+                // then adding opeator by master and set from the header
+                userDao.updateUserHeadId(x.getId(), headId);
                 return;
             }
 
             // ======else user is added by admin==========
 
-            //identify the user recently added was master/oprator or data-entry from admin
+            // identify the user recently added was master/oprator or data-entry from admin
             UserData user = userDao.getUserById(x.getUserHeadId());
 
-            if(user.getUserHeadId()==0)
-            {
-                //master or data entry  if the isMaster true then user is master else data entry master and for data entry set the user head = usr id
+            if (user.getUserHeadId() == 0) {
+                // master or data entry if the isMaster true then user is master else data entry
+                // master and for data entry set the user head = usr id
                 userDao.updateUserHeadId(x.getId(), x.getId());
             }
-            //else
-            //remain the operator or data entry operator
+            // else
+            // remain the operator or data entry operator
 
         } else {
             throw new Exception("User is already available with username:" + userData.getUserName());
         }
-
 
     }
 
@@ -161,52 +171,45 @@ public class UserServiceImpl implements UserServiceInterface {
 
     public List<getAllUserInfo> getAllHeadUser(String id) throws Exception {
 
-        List<getAllUserInfo> userHeads =new ArrayList<>();
-        //identify the user is master/admin/operator
+        List<getAllUserInfo> userHeads = new ArrayList<>();
+        // identify the user is master/admin/operator
         UserData userData = userDao.getUserById(Long.parseLong(id));
 
-        //admin requesting
-        if(userData.getUserHeadId()==0 || userData.getIsMaster()==false)
-        {
+        // admin requesting
+        if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
 
-            List<UserData> list =userDao.getAllUserHeadList();
+            List<UserData> list = userDao.getAllUserHeadList();
 
-            for(UserData e : list)
-            {
-                Company company =companyDao.getCompanyById(e.getCompanyId());
-                if(company==null)
+            for (UserData e : list) {
+                Company company = companyDao.getCompanyById(e.getCompanyId());
+                if (company == null)
                     continue;
 
-                Department department= departmentDao.getDepartmentById(e.getDepartmentId());
-                if(department==null)
+                Department department = departmentDao.getDepartmentById(e.getDepartmentId());
+                if (department == null)
                     continue;
-                userHeads.add(new getAllUserInfo(e,company,department));
+                userHeads.add(new getAllUserInfo(e, company, department));
             }
 
-        }
-        else if(userData.getUserHeadId()==userData.getId())
-        {
-            //master
+        } else if (userData.getUserHeadId() == userData.getId()) {
+            // master
 
-                Company company =companyDao.getCompanyById(userData.getCompanyId());
-                Department department= departmentDao.getDepartmentById(userData.getDepartmentId());
-                userHeads.add(new getAllUserInfo(userData,company,department));
+            Company company = companyDao.getCompanyById(userData.getCompanyId());
+            Department department = departmentDao.getDepartmentById(userData.getDepartmentId());
+            userHeads.add(new getAllUserInfo(userData, company, department));
 
-        }
-        else
-        {
-            //operator
+        } else {
+            // operator
             UserData userHead = userDao.getUserById(userData.getUserHeadId());
-            Company company =companyDao.getCompanyById(userHead.getCompanyId());
-            Department department= departmentDao.getDepartmentById(userHead.getDepartmentId());
-            userHeads.add(new getAllUserInfo(userHead,company,department));
-
+            Company company = companyDao.getCompanyById(userHead.getCompanyId());
+            Department department = departmentDao.getDepartmentById(userHead.getDepartmentId());
+            userHeads.add(new getAllUserInfo(userHead, company, department));
 
         }
 
-       /* if(userHeads.isEmpty())
-            throw new Exception(CommonMessage.User_Not_Exist);*/
-
+        /*
+         * if(userHeads.isEmpty()) throw new Exception(CommonMessage.User_Not_Exist);
+         */
 
         return userHeads;
     }
@@ -216,42 +219,44 @@ public class UserServiceImpl implements UserServiceInterface {
         if (!userIndex.isPresent())
             return false;
         else {
-            //check the record is exist or not
-            Optional<List<GetAllStockWithPartyNameResponse>> stockMastList = stockBatchService.getStockByCreatedOrUserHeadId(id);
-            if(stockMastList.isPresent())
+            // check the record is exist or not
+            Optional<List<GetAllStockWithPartyNameResponse>> stockMastList = stockBatchService
+                    .getStockByCreatedOrUserHeadId(id);
+            if (stockMastList.isPresent())
                 throw new Exception(ConstantFile.StockBatch_Exist);
 
             List<Party> parties = partyServiceImp.getPartyByCreatedAndUserHeadId(id);
-            if(!parties.isEmpty())
+            if (!parties.isEmpty())
                 throw new Exception(ConstantFile.Party_Exist);
 
             List<Quality> qualityList = qualityServiceImp.getQualityByCreatedByAndUserHeadId(id);
 
-            if(!qualityList.isEmpty())
+            if (!qualityList.isEmpty())
                 throw new Exception(ConstantFile.Quality_Data_Exist);
 
             List<ShadeMast> shadeMastList = shadeService.getShadeByCreatedByAndUserHeadId(id);
-            if(!shadeMastList.isEmpty())
+            if (!shadeMastList.isEmpty())
                 throw new Exception(ConstantFile.Shade_Exist);
 
-            List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByCreatedByAndUserHeadId(id,id);
-            if(!dispatchMastList.isEmpty())
+            List<DispatchMast> dispatchMastList = dispatchMastService.getDispatchByCreatedByAndUserHeadId(id, id);
+            if (!dispatchMastList.isEmpty())
                 throw new Exception(ConstantFile.Dispatch_Exit);
 
-            List<TaskMast> taskMastList = taskService.getTaskByCreatedByAndAssignUserId(id,id);
-            if(!taskMastList.isEmpty())
+            List<TaskMast> taskMastList = taskService.getTaskByCreatedByAndAssignUserId(id, id);
+            if (!taskMastList.isEmpty())
                 throw new Exception(ConstantFile.Task_Data_Exist);
 
-            List<ColorMast> colorMasts =colorService.getColorByCreatedAndUserHeadId(id,id);
+            List<ColorMast> colorMasts = colorService.getColorByCreatedAndUserHeadId(id, id);
             if (!colorMasts.isEmpty())
                 throw new Exception(ConstantFile.Color_Data_Exist);
 
-            List<DyeingProcessMast> dyeingProcessMastList = dyeingProcessService.dyeingProcessMastDao.getAllDyeingProcessByCreatedAndHead(id,id);
-            if(!dyeingProcessMastList.isEmpty())
+            List<DyeingProcessMast> dyeingProcessMastList = dyeingProcessService.dyeingProcessMastDao
+                    .getAllDyeingProcessByCreatedAndHead(id, id);
+            if (!dyeingProcessMastList.isEmpty())
                 throw new Exception(ConstantFile.DyeingProcess_Data_Exist);
 
-            List<Supplier> supplierList = supplierService.getSupplierByCreatedAndUserHeadId(id,id);
-            if(!supplierList.isEmpty())
+            List<Supplier> supplierList = supplierService.getSupplierByCreatedAndUserHeadId(id, id);
+            if (!supplierList.isEmpty())
                 throw new Exception(ConstantFile.Supplier_Exist);
 
             userDao.deleteById(id);
@@ -260,7 +265,7 @@ public class UserServiceImpl implements UserServiceInterface {
 
     }
 
-    //for All user
+    // for All user
     public List<getAllUserInfo> getAllUser(String getBy, Long id, String s) {
 
         try {
@@ -277,15 +282,15 @@ public class UserServiceImpl implements UserServiceInterface {
                     Company company = companyDao.getCompanyById(e.getCompanyId());
                     Department department = departmentDao.getDepartmentById(e.getDepartmentId());
 
-                    if(company==null || department==null)
+                    if (company == null || department == null)
                         continue;
 
-                    getAllUserInfo userData = new getAllUserInfo(e,company,department);
+                    getAllUserInfo userData = new getAllUserInfo(e, company, department);
                     userData.setCompany(company.getName());
                     getAllUserInfoList.add(userData);
                 }
             } else if (getBy.equals("own")) {
-                userDataList = userDao.findAllByCreatedBy(id,headerId);
+                userDataList = userDao.findAllByCreatedBy(id, headerId);
                 int i = 0;
                 for (UserData e : userDataList) {
                     if (e.getId() == headerId || e.getUserHeadId() == 0)
@@ -293,10 +298,10 @@ public class UserServiceImpl implements UserServiceInterface {
                     Company company = companyDao.getCompanyById(e.getCompanyId());
                     Department department = departmentDao.getDepartmentById(e.getDepartmentId());
 
-                    if(company==null || department==null)
+                    if (company == null || department == null)
                         continue;
 
-                    getAllUserInfo userData = new getAllUserInfo(e,company,department);
+                    getAllUserInfo userData = new getAllUserInfo(e, company, department);
                     userData.setCompany(company.getName());
                     getAllUserInfoList.add(userData);
                 }
@@ -304,8 +309,8 @@ public class UserServiceImpl implements UserServiceInterface {
                 UserData userData = userDao.findUserById(id);
 
                 if (userData.getUserHeadId() == 0) {
-                    //master user
-                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id,headerId);
+                    // master user
+                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id, headerId);
                     int i = 0;
                     for (UserData e : userDataList) {
                         if (e.getId() == headerId)
@@ -313,14 +318,14 @@ public class UserServiceImpl implements UserServiceInterface {
                         Company company = companyDao.getCompanyById(e.getCompanyId());
                         Department department = departmentDao.getDepartmentById(e.getDepartmentId());
 
-                        if(company==null || department==null)
+                        if (company == null || department == null)
                             continue;
 
-                        getAllUserInfo userData1 = new getAllUserInfo(e,company,department);
+                        getAllUserInfo userData1 = new getAllUserInfo(e, company, department);
                         getAllUserInfoList.add(userData1);
                     }
                 } else {
-                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId(),headerId);
+                    userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId(), headerId);
                     int i = 0;
                     for (UserData e : userDataList) {
                         if (e.getId() == headerId)
@@ -329,20 +334,109 @@ public class UserServiceImpl implements UserServiceInterface {
                         Company company = companyDao.getCompanyById(e.getCompanyId());
                         Department department = departmentDao.getDepartmentById(e.getDepartmentId());
 
-                        if(company==null || department==null)
+                        if (company == null || department == null)
                             continue;
 
-                        getAllUserInfo userData1 = new getAllUserInfo(e,company,department);
+                        getAllUserInfo userData1 = new getAllUserInfo(e, company, department);
                         getAllUserInfoList.add(userData1);
                     }
                 }
 
-
             }
             return getAllUserInfoList;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (Exception e)
-        {
+        return null;
+    }
+
+    public FilterResponse<getAllUserInfo> getAllUserAllPaginated(GetBYPaginatedAndFiltered requestParam, String id) {
+
+        try {
+            Long headerId = Long.parseLong(id);
+
+            List<UserData> userDataList = null;
+            List<getAllUserInfo> getAllUserInfoList = new ArrayList<>();
+            String getBy = requestParam.getGetBy();
+            Pageable pageable = filterService.getPageable(requestParam.getData());
+            List<Filter> filtersParam = requestParam.getData().getParameters();
+            HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
+            subModelCase.put("userHeadId", new ArrayList<String>(Arrays.asList("userHeadData", "id")));
+            subModelCase.put("createdBy", new ArrayList<String>(Arrays.asList("createdBy", "id")));
+            subModelCase.put("userHeadName", new ArrayList<String>(Arrays.asList("userHeadData", "userName")));
+            subModelCase.put("createdByName", new ArrayList<String>(Arrays.asList("createdBy", "userName")));
+            Page queryResponse = null;
+            Specification<UserData> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
+                    requestParam.getData().isAnd, subModelCase);
+            List<Filter> filters = new ArrayList<Filter>();
+
+            if (id == null || getBy.equals("all")) {
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.NOT_EQUALS, headerId.toString()));
+                Specification<UserData> spec = specificationManager.getSpecificationFromFilters(filters, false,
+                        subModelCase);
+                spec = spec.and(filterSpec);
+
+                queryResponse = userDao.findAll(filterSpec, pageable);
+
+            } else if (getBy.equals("own")) {
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.NOT_EQUALS, headerId.toString()));
+                filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
+                Specification<UserData> spec = specificationManager.getSpecificationFromFilters(filters, false,
+                        subModelCase);
+                spec = spec.and(filterSpec);
+
+                queryResponse = userDao.findAll(filterSpec, pageable);
+            } else if (getBy.equals("group")) {
+                UserData userData = userDao.findUserById(Long.parseLong(id));
+
+                if (userData.getUserHeadId() == 0) {
+                    // master user
+                    filters.add(new Filter(new ArrayList<String>(Arrays.asList("id")), QueryOperator.NOT_EQUALS, headerId.toString()));
+                    filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
+                    filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS, id));
+                    Specification<UserData> spec = specificationManager.getSpecificationFromFilters(filters, false,
+                            subModelCase);
+                    spec = spec.and(filterSpec);
+    
+                    queryResponse = userDao.findAll(filterSpec, pageable);
+                    // userDataList = userDao.findAllByCreatedByAndUserHeadId(id, id, headerId);
+
+                } else {
+                    filters.add(new Filter(new ArrayList<String>(Arrays.asList("id")), QueryOperator.NOT_EQUALS, headerId.toString()));
+                    filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
+                    filters.add(new Filter(new ArrayList<String>(Arrays.asList("userHeadId")), QueryOperator.EQUALS, userData.getUserHeadId().toString()));
+                    Specification<UserData> spec = specificationManager.getSpecificationFromFilters(filters, false,
+                            subModelCase);
+                    spec = spec.and(filterSpec);
+    
+                    queryResponse = userDao.findAll(filterSpec, pageable);
+                    // userDataList = userDao.findAllByCreatedByAndUserHeadId(id, userData.getUserHeadId(), headerId);
+
+                }
+
+            }
+            userDataList = queryResponse.getContent();
+
+            for (UserData e : userDataList) {
+                if (e.getId() == headerId || e.getUserHeadId() == 0)
+                    continue;
+                Company company = companyDao.getCompanyById(e.getCompanyId());
+                Department department = departmentDao.getDepartmentById(e.getDepartmentId());
+
+                if (company == null || department == null)
+                    continue;
+
+                getAllUserInfo userData = new getAllUserInfo(e, company, department);
+                userData.setCompany(company.getName());
+                getAllUserInfoList.add(userData);
+            }
+
+            FilterResponse<getAllUserInfo> response = new FilterResponse<getAllUserInfo>(getAllUserInfoList,
+                    queryResponse.getNumber(), queryResponse.getNumberOfElements(),
+                    (int) queryResponse.getTotalElements());
+            return response;
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -354,7 +448,7 @@ public class UserServiceImpl implements UserServiceInterface {
         if (!userData1.isPresent()) {
             return 0;
         }
-        //UserData userData2 = modelMapper.map(userData, UserData.class);
+        // UserData userData2 = modelMapper.map(userData, UserData.class);
         Optional<Designation> d = designationService.getDesignationById(userData.getDesignationId());
         if (d.isPresent()) {
             Optional<Designation> designation = designationDao.findById(userData.getDesignationId());
@@ -363,22 +457,20 @@ public class UserServiceImpl implements UserServiceInterface {
             else
                 throw new Exception("Wrong designation id" + userData1.get().getDesignationId());
 
-            if(userData.getPassword()==null || userData.getPassword().isEmpty())
-            {
+            if (userData.getPassword() == null || userData.getPassword().isEmpty()) {
                 userData1.get().setPassword(userData1.get().getPassword());
-            }
-            else {
+            } else {
                 userData1.get().setPassword(userData.getPassword());
             }
-            Company company =companyDao.getCompanyById(userData.getCompanyId());
-            if(company==null)
+            Company company = companyDao.getCompanyById(userData.getCompanyId());
+            if (company == null)
                 throw new Exception("company not found");
 
-            Department departmentExist =departmentDao.getDepartmentById(userData.getDepartmentId());
-            if(departmentExist==null)
+            Department departmentExist = departmentDao.getDepartmentById(userData.getDepartmentId());
+            if (departmentExist == null)
                 throw new Exception("department not found");
 
-            //userData1.get().setId(userData.getId());
+            // userData1.get().setId(userData.getId());
             userData1.get().setUserName(userData.getUserName());
             userData1.get().setFirstName(userData.getFirstName());
             userData1.get().setLastName(userData.getLastName());
@@ -393,15 +485,13 @@ public class UserServiceImpl implements UserServiceInterface {
 
             UserData x = userDao.save(userData1.get());
 
-            //check wether the last record update from admin and become the master or not
+            // check wether the last record update from admin and become the master or not
             UserData userAdmin = userDao.getUserById(x.getUserHeadId());
 
-            if(userAdmin!=null)
-            {
-                if(userAdmin.getUserHeadId()==0)
-                {
-                    //update the recently updated record to master
-                    userDao.updateUserHeadId(x.getId(),x.getId());
+            if (userAdmin != null) {
+                if (userAdmin.getUserHeadId() == 0) {
+                    // update the recently updated record to master
+                    userDao.updateUserHeadId(x.getId(), x.getId());
                 }
             }
 
@@ -424,12 +514,10 @@ public class UserServiceImpl implements UserServiceInterface {
         if (operatorList.isEmpty())
             throw new Exception("no user found");
 
-
         for (UserData operator : operatorList) {
             GetAllOperator getAllOperator = new GetAllOperator(operator);
             getAllOperatorList.add(getAllOperator);
         }
-
 
         return getAllOperatorList;
 
@@ -443,57 +531,54 @@ public class UserServiceImpl implements UserServiceInterface {
         return userData;
     }
 
+    /*
+     * public List<UserData> getAllUserByCompany(String name) { List<UserData> list
+     * = userDao.findByCompanyName(name); return list; }
+     */
 
-    /*public List<UserData> getAllUserByCompany(String name) {
-        List<UserData> list = userDao.findByCompanyName(name);
-        return list;
-    }*/
+    /*
+     * public void updateUserCompanyById(Long id, String name) throws Exception {
+     * UserData userData =userDao.getUserById(id); if(userData==null) throw new
+     * Exception("no user found");
+     * 
+     * userDao.updateCompanyById(id,name);
+     * 
+     * }
+     */
 
-    /*public void updateUserCompanyById(Long id, String name) throws Exception {
-        UserData userData =userDao.getUserById(id);
-        if(userData==null)
-            throw new Exception("no user found");
+    /*
+     * public List<UserData> getAllUserByDepartment(String name) { List<UserData>
+     * userDataList = userDao.getAllUserByDepartment(name); return userDataList; }
+     */
 
-        userDao.updateCompanyById(id,name);
-
-    }*/
-
-   /* public List<UserData> getAllUserByDepartment(String name) {
-        List<UserData> userDataList = userDao.getAllUserByDepartment(name);
-        return userDataList;
-    }*/
-
-   /* public void updateUserByDepartment(Long id, String name) {
-        userDao.updateDepartmentById(id,name);
-    }*/
+    /*
+     * public void updateUserByDepartment(Long id, String name) {
+     * userDao.updateDepartmentById(id,name); }
+     */
 
     public UserIdentification getUserHeadDetail(Long id) throws Exception {
 
-        UserIdentification userIdentification=null;
+        UserIdentification userIdentification = null;
 
         UserData userData = userDao.getUserById(id);
         Designation designation = designationDao.getDesignationById(userData.getDesignationId().getId());
-        if(userData==null)
+        if (userData == null)
             throw new Exception(ConstantFile.User_Not_Exist);
 
-        if(userData.getUserHeadId()==0)
-        {
-            userIdentification=new UserIdentification(userData,designation);
-        }
-        else
-        {
-           UserData userHead = userDao.getUserById(userData.getUserHeadId());
-           Designation designationHead = designationDao.getDesignationById(userHead.getDesignationId().getId());
-           userIdentification=new UserIdentification(userData,designation,userHead,designationHead);
-           if(userHead.getUserHeadId()>0)
-           {
-               UserData superUser = userDao.getUserById(userHead.getUserHeadId());
-               Designation designationSuper = designationDao.getDesignationById(superUser.getDesignationId().getId());
-               userIdentification=new UserIdentification(userData,designation,userHead,designationHead,superUser,designationSuper);
-           }
+        if (userData.getUserHeadId() == 0) {
+            userIdentification = new UserIdentification(userData, designation);
+        } else {
+            UserData userHead = userDao.getUserById(userData.getUserHeadId());
+            Designation designationHead = designationDao.getDesignationById(userHead.getDesignationId().getId());
+            userIdentification = new UserIdentification(userData, designation, userHead, designationHead);
+            if (userHead.getUserHeadId() > 0) {
+                UserData superUser = userDao.getUserById(userHead.getUserHeadId());
+                Designation designationSuper = designationDao.getDesignationById(superUser.getDesignationId().getId());
+                userIdentification = new UserIdentification(userData, designation, userHead, designationHead, superUser,
+                        designationSuper);
+            }
 
         }
-
 
         return userIdentification;
     }
@@ -507,25 +592,23 @@ public class UserServiceImpl implements UserServiceInterface {
         userDao.updateUserByDesignation(designation);
     }
 
-   /* public List<UserData> getUserByCompany(String name) {
-        return userDao.getAllUserByCompany(name);
-    }*/
+    /*
+     * public List<UserData> getUserByCompany(String name) { return
+     * userDao.getAllUserByCompany(name); }
+     */
 
     public Boolean getUserNameExist(String username, Long id) {
-        //id is null then insert request
-        //else update request
-        if(id==null)
-        {
+        // id is null then insert request
+        // else update request
+        if (id == null) {
             UserData userData = userDao.getUserByUserName(username);
-            if(userData!=null)
+            if (userData != null)
                 return true;
             else
                 return false;
-        }
-        else
-        {
-            UserData userData = userDao.getUserByUserNameWithId(username,id);
-            if(userData!=null)
+        } else {
+            UserData userData = userDao.getUserByUserNameWithId(username, id);
+            if (userData != null)
                 return true;
             else
                 return false;

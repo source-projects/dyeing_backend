@@ -2,8 +2,10 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.user.Request.UserAddRequest;
 import com.main.glory.model.user.Request.UserIdentification;
 import com.main.glory.model.user.Request.UserUpdateRequest;
@@ -211,6 +213,59 @@ public class UserController extends ControllerConfig {
         logService.saveLog(result,request,debugAll);
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+
+    @GetMapping("/user/AllUsers/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<getAllUserInfo>,String>> getAllUserPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam,@RequestHeader Map<String, String> headers)
+    {
+        GeneralResponse<FilterResponse<getAllUserInfo>,String> result;
+        FilterResponse<getAllUserInfo> users = null;
+        String id=headers.get("id");
+        String getBy=requestParam.getGetBy();
+        try{
+            switch (requestParam.getGetBy()) {
+                case "own":
+
+                        users = userService.getAllUserAllPaginated(requestParam, id);
+                        if(!users.getData().isEmpty())
+                            result = new GeneralResponse<>(users, ConstantFile.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                        else
+                            result = new GeneralResponse<>(null, ConstantFile.User_Not_Added, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+                        break;
+
+                case "group":
+
+                        users = userService.getAllUserAllPaginated(requestParam, id);
+                        if(!users.getData().isEmpty())
+                            result = new GeneralResponse<>(users, ConstantFile.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                        else
+                            result = new GeneralResponse<>(null, ConstantFile.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+
+                        break;
+                case "all":
+                        users = userService.getAllUserAllPaginated(requestParam, id);
+                        if(!users.getData().isEmpty())
+                            result = new GeneralResponse<>(users, ConstantFile.User_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                        else
+                            result = new GeneralResponse<>(null, ConstantFile.User_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+                        break;
+
+                default:
+                    result = new GeneralResponse<>(null, ConstantFile.GetBy_String_Wrong, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        logService.saveLog(result,request,debugAll);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
     @PostMapping("/user")
     public ResponseEntity<GeneralResponse<Boolean,Object>> createUser(@RequestBody UserAddRequest userData,@RequestHeader Map<String, String> headers) throws Exception{
