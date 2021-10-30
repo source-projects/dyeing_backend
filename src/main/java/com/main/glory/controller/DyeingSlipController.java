@@ -2,8 +2,10 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
@@ -101,6 +103,27 @@ public class DyeingSlipController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @GetMapping("/dyeingSlip/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<SlipFormatData>,Object>> getAllDyeingSlipAllPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam){
+        GeneralResponse<FilterResponse<SlipFormatData>,Object> result;
+        try {
+ 
+            FilterResponse<SlipFormatData> data = dyeingSlipService.getAllDyeingSlipAllPaginated(requestParam);
+                if(data!=null)
+                    result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                else
+                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
     @GetMapping("/dyeingSlip/additionalDyeingslip/all")
     public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object>> getAllAddtionalDyeignSlip(){

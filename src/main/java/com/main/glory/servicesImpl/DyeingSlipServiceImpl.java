@@ -6,8 +6,10 @@ import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipItemDataDao;
 import com.main.glory.Dao.dyeingSlip.DyeingSlipMastDao;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
@@ -231,6 +233,77 @@ public class DyeingSlipServiceImpl {
 
         return list;
     }
+
+
+    public FilterResponse<SlipFormatData> getAllDyeingSlipAllPaginated(GetBYPaginatedAndFiltered requestParam) throws Exception {
+
+        List<SlipFormatData> list =new ArrayList<>();
+        List<DyeingSlipMast> dyeingSlipMastList = dyeingSlipMastDao.getAllDyeingSlip();
+        if(dyeingSlipMastList.isEmpty())
+            throw new Exception(constantFile.DyeingSlip_Not_Found );
+
+        for(DyeingSlipMast dyeingSlipMastExist:dyeingSlipMastList)
+        {
+            List<BatchData> batchDataListExist =batchDao.getBatchByBatchId(dyeingSlipMastExist.getBatchId());
+            if(batchDataListExist==null || batchDataListExist.isEmpty())
+                continue;
+            ObjectMapper objectMapper = new ObjectMapper();
+            //System.out.println(objectMapper.writeValueAsString(dyeingSlipMastExist));
+            Long totalPcs;
+            SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
+            ProductionPlan productionPlan = productionPlanService.getProductionDataById(dyeingSlipMastExist.getProductionId());
+            if(productionPlan==null)
+                continue;
+            GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
+            Double wt = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+            if(productionPlan.getIsMergeBatchId()==true)
+            {
+                totalPcs = batchDao.getTotalPcsByMergeBatchId(productionPlan.getBatchId());
+                wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
+            }
+            else {
+                wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
+                totalPcs = batchDao.getTotalPcsByBatchId(productionPlan.getBatchId());
+
+            }
+            if(productionPlan.getShadeId()!=null)
+            {
+                Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+                slipFormatData.setColorTone(shadeMast.get().getColorTone());
+                slipFormatData.setColorName(shadeMast.get().getColorName());
+                slipFormatData.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+            }
+            else
+            {
+                slipFormatData.setColorTone("#fff");
+                slipFormatData.setColorName("No Color");
+                slipFormatData.setPartyShadeNo("-");
+            }
+
+
+            //System.out.println("batch:"+productionPlan.getBatchId());
+            GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
+
+            slipFormatData.setTotalWt(stockBatchService.changeInFormattedDecimal(wt));
+            slipFormatData.setBatchCount(totalPcs);
+            slipFormatData.setQualityId(record.getQualityId());
+            //slipFormatData.setQualityEntryId(quality.getId());
+            JetMast jetMast =jetService.getJetMastById(slipFormatData.getJetId());
+           /* if(jetMast==null)
+                throw new Exception(ConstantFile.Jet_Not_Exist_With_Name);*/
+            slipFormatData.setJetName(jetMast.getName());
+            list.add(slipFormatData);
+        }
+        int pageSize = requestParam.getData().getPageSize();
+        int pageIndex = requestParam.getData().getPageIndex();
+        FilterResponse<SlipFormatData> response = new FilterResponse<SlipFormatData>(
+                list.subList(Integer.min(pageIndex * pageSize, list.size()),
+                        Integer.min((pageIndex + 1) * pageSize, list.size())),
+                pageIndex, pageSize, list.size());
+        return response;
+
+    }
+
 
     public Long addAdditionalSlipData(AddAddtionalSlip addAdditionDyeingSlipModel) throws Exception {
 
