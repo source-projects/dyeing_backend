@@ -2,8 +2,10 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
 import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import com.main.glory.model.productionPlan.request.AddProductionWithJet;
@@ -156,6 +158,29 @@ public class ProductionPlanController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
+    @PostMapping(value="/productionPlan/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllProductionWithShadeData>,Object>> getAllProductionWithoutJetPlanPaginated(@RequestHeader Map<String, String> headers,@RequestBody GetBYPaginatedAndFiltered requestParam)
+    {
+        GeneralResponse<FilterResponse<GetAllProductionWithShadeData>,Object> result;
+        try {
+            FilterResponse<GetAllProductionWithShadeData> productionPlanRecord = productionPlanService.getAllProductionDataPaginated(headers.get("id"),requestParam);
+            if(productionPlanRecord.getData().isEmpty())
+                result = new GeneralResponse<>(productionPlanRecord, ConstantFile.Production_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(productionPlanRecord, ConstantFile.Production_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
     @GetMapping(value="/productionPlan/all")
     public ResponseEntity<GeneralResponse<List<GetAllProductionWithShadeData>,Object>> getAllProductionWithoutJetPlan(@RequestHeader Map<String, String> headers)

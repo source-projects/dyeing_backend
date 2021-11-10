@@ -1,6 +1,8 @@
 package com.main.glory.Dao.dispatch;
 
+import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
+import com.main.glory.model.dispatch.response.ConsolidatedBillData;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
 import com.main.glory.model.dispatch.response.UnitDetail;
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
@@ -63,6 +66,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchData.id) as batchEntryId,d.batchId as batchId,d.stockId as stockId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
     List<GetBatchByInvoice> getAllStockByInvoiceNumber(String invoiceNumber);
+
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchData.id) as batchEntryId,d.stockId as stockId,d.pchallanRef,d.batchId as batchId) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId,d.pchallanRef")
+    List<GetBatchByInvoice> getAllStockByInvoiceNumberWithPchallen(String invoiceNumber);
 
     @Query("select new com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr(x.quality.id,(select q.qualityName from QualityName q where q.id = (select qq.qualityName.id from Quality qq where qq.id=x.quality.id)),(select q.qualityId from Quality q where q.id=x.quality.id),x.qualityRate) from DispatchData x where x.invoiceNo=:invoiceNo GROUP BY x.quality.id")
     List<QualityWithRateAndTotalMtr> getAllQualityByInvoiceNo(String invoiceNo);
@@ -139,4 +145,28 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     //get All Distapatch list
     //@Query("select new com.main.glory.model.dispatch.response.BatchListWithInvoice(COUNT(dd.batchData.id) as batchEntryId,(dd.batchId) as batchId,(dd.stockId) as stockId,(dd.invoiceNo) as invoiceNo) from DispatchData dd where (:toDate IS NULL OR dd.createdDate <= :toDate AND :fromDate IS NULL OR dd.createdDate >= :fromDate) GROUP BY dd.batchId,dd.stockId,dd.invoiceNo")
     //List<BatchListWithInvoice> getAllDispatchList(Date toDate, Date fromDate);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR(b.batchId,b.stockId,SUM(b.batchData.wt),SUM(b.batchData.mtr),SUM(b.batchData.finishMtr),COUNT(b.id)) from DispatchData b where b.stockId=:stockId AND b.batchId=:batchId AND b.pchallanRef=:pchallanRef AND b.invoiceNo=:invoiceNo")
+    BatchWithTotalMTRandFinishMTR getAllBatchWithTotalMtrAndTotalFinishMtr(String batchId, Long stockId,String pchallanRef,String invoiceNo);
+
+
+    @Query("select new com.main.glory.model.dispatch.response.GetBatchByInvoice(COUNT(d.batchData.id) as batchEntryId,d.batchId as batchId,d.stockId as stockId,(select x from StockMast x where x.id=d.stockId)) from DispatchData d where d.invoiceNo=:invoiceNumber GROUP BY d.batchId,d.stockId")
+    List<GetBatchByInvoice> getAllStockAndBatchByInvoiceNumber(String invoiceNumber);
+
+    //constructor calculation
+//    @Query("select new com.main.glory.model.dispatch.response.ConsolidatedBillData(dd.batchId,count(dd.batchData.id),dm.createdDate,dm.postfix,dd.quality.qualityId,dd.quality.id,dd.quality.qualityName.id,dm.discount,dm.percentageDiscount,dm.netAmt,dm.taxAmt,SUM(dd.batchData.finishMtr),SUM(dd.batchData.mtr),dd.qualityRate,dm.party.city,dm.party.state,dm.party.GSTIN,dm.party.partyName,dm.party.partyAddress1,dm.party.partyAddress2,dm.party.contactNo,dd.billingUnit,dd.inwardUnit,dm.deliveryMode,dd.wtPer100m,dd.quality.qualityName.qualityName,dm.party.userHeadData.userName) from DispatchData dd INNER JOIN DispatchMast dm ON dd.invoiceNo = dm.postfix where  (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND (:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId)AND (Date(dm.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(dm.createdDate)<=Date(:to) OR :to IS NULL) AND(:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) GROUP BY dd.batchId,dd.invoiceNo,dd.quality,dd.qualityRate,dd.wtPer100m,dd.inwardUnit,dd.billingUnit")
+//    List<ConsolidatedBillData> getAllConsolidateResponseByFilter(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId);
+
+
+//    //query calculation with billing unit with inner join of batch Data
+//    @Query("select new com.main.glory.model.dispatch.response.ConsolidatedBillData(dd.batchId,count(dd.batchData.id),dm.createdDate,dm.postfix,dd.quality.qualityId,dm.discount,dm.percentageDiscount,dm.netAmt,SUM(dd.batchData.finishMtr),CASE dd.billingUnit WHEN 'weight' THEN ((SUM(dd.batchData.mtr) / 100) * dd.wtPer100m) ELSE SUM(dd.batchData.mtr) END,dd.qualityRate,dm.party.city,dm.party.state,dm.party.GSTIN,dm.party.partyName,dm.party.partyAddress1,dm.party.partyAddress2,dm.party.contactNo,dd.billingUnit,dd.inwardUnit,dm.deliveryMode,dd.wtPer100m,dd.quality.qualityName.qualityName,dm.party.userHeadData.userName,(dd.qualityRate * SUM(dd.batchData.finishMtr)) as AMT,(dd.qualityRate * SUM(dd.batchData.finishMtr) * dm.percentageDiscount / 100) AS discountAmt,(dd.qualityRate * SUM(dd.batchData.finishMtr) - (dd.qualityRate * SUM(dd.batchData.finishMtr) *dm.percentageDiscount)/100) AS taxAmt) from DispatchData dd INNER JOIN DispatchMast dm ON dd.controlId = dm.id where (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND (:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId) AND (Date(dm.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(dm.createdDate)<=Date(:to) OR :to IS NULL) AND (:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) GROUP BY dd.batchId,dd.invoiceNo,dd.quality,dd.qualityRate,dd.wtPer100m,dd.inwardUnit,dd.billingUnit")
+//    List<ConsolidatedBillData> getAllConsolidateResponseByFilter(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId);
+
+
+
+
+
+
+//    @Query("select new com.main.glory.model.dispatch.response.ConsolidatedBillData(d.batchId,dm.createdDate,dm.party.partyName,d.quality.qualityName.qualityName,count(d.batchData.id),count(d.batchData.id),SUM(d.batchData.mtr),SUM(d.batchData.finishMtr),d.qualityRate,dm.party.userHeadData.userName,d.quality.qualityId,dm.postfix,dm.discount,dm.percentageDiscount,dm.taxAmt,dm.netAmt,dm.party.partyAddress1,dm.party.partyAddress1,dm.party.contactNo,dm.party.city,dm.party.state,dm.party.GSTIN,d.billingUnit,d.inwardUnit,dm.deliveryMode,(select ss.wtPer100m from StockMast ss where ss.id=d.stockId)) from DispatchData as d INNER JOIN DispatchMast as dm on d.invoiceNo=dm.postfix AND d.invoiceNo=:postfix AND d.batchId IS NOT NULL AND d.stockId IS NOT NULL AND d.qualityRate IS NOT NULL AND d.billingUnit IS NOT NULL AND d.inwardUnit IS NOT NULL  GROUP BY d.batchId,d.qualityRate,d.billingUnit,d.inwardUnit,d.stockId")
+//    List<ConsolidatedBillData> getAllConsolidateBatchByInvoiceNumber(String postfix);
 }

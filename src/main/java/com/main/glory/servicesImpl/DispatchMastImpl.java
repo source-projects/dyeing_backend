@@ -36,7 +36,6 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -45,6 +44,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,26 +113,26 @@ public class DispatchMastImpl {
          * invoiceSequenceExist = invoiceSequenceDao.getSequence(); if
          * (invoiceSequenceExist == null) throw new
          * Exception(constantFile.Invoice_Sequence_Not_Found);
-         * 
-         * 
+         *
+         *
          * //check user exist or not UserData userData =
          * userService.getUserById(userId);
-         * 
+         *
          * if (userData == null) throw new Exception(ConstantFile.User_Not_Exist);
-         * 
-         * 
+         *
+         *
          * //party detail by stock
-         * 
+         *
          * StockMast stockMast =
          * stockBatchService.getStockById(dispatchList.getBatchAndStockIdList().get(0).
          * getStockId());
-         * 
+         *
          * Optional<Party> party = partyDao.findById(stockMast.getParty().getId());
-         * 
+         *
          * if (party.isEmpty()) throw new Exception("no party found for id:" +
          * stockMast.getParty().getId());
-         * 
-         * 
+         *
+         *
          * //check the credit limit invoice password gloryFab123@@ Double pendingAmt =
          * paymentTermService.getTotalPendingAmtByPartyId(party.get().getId()); if
          * (pendingAmt != null && pendingAmt > party.get().getCreditLimit()) { //check
@@ -140,96 +140,96 @@ public class DispatchMastImpl {
          * (dispatchList.getPassword() == null ||
          * getPasswordToCreateInvoice(dispatchList.getPassword()) == false) { throw new
          * Exception(ConstantFile.Dispatch_Password_Wrong); } }
-         * 
-         * 
+         *
+         *
          * //check first the data is available or not for (BatchAndStockId
          * createDispatch : dispatchList.getBatchAndStockIdList()) { List<BatchData>
          * batchDataList =
          * batchDao.findByControlIdAndBatchId(createDispatch.getStockId(),
          * createDispatch.getBatchId());
-         * 
+         *
          * if (batchDataList.isEmpty()) throw new
          * Exception(constantFile.Batch_Data_Not_Found); }
-         * 
-         * 
+         *
+         *
          * //iterate and change the status for (BatchAndStockId createDispatch :
          * dispatchList.getBatchAndStockIdList()) { List<BatchData> batchDataList =
          * batchDao.getBatchesByBatchIdAndFinishMtrSaveWithoutBillGenrated(
          * createDispatch.getBatchId());
-         * 
-         * 
+         *
+         *
          * //get the shade detail ProductionPlan productionPlan =
          * productionPlanService.getProductionByBatchId(createDispatch.getBatchId());
          *//*
-            * if(productionPlan==null) throw new
-            * Exception("no production plan found for batch");
-            *//*
-               * 
-               * ShadeMast shadeMast = null; if (productionPlan != null &&
-               * productionPlan.getShadeId() != null) { shadeMast =
-               * shadeService.getShadeById(productionPlan.getShadeId()); if (shadeMast ==
-               * null) throw new Exception("no shade record found"); }
-               * 
-               * 
-               * StockMast stockMast1 =
-               * stockBatchService.getStockById(createDispatch.getStockId()); Quality quality
-               * = qualityDao.getqualityById(stockMast1.getQuality().getId());//
-               * qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
-               * 
-               * if (quality == null) throw new Exception("no quality found");
-               * 
-               * if (batchDataList.isEmpty()) throw new Exception("no batch data found");
-               * 
-               * 
-               * for (BatchData batchData : batchDataList) {
-               * 
-               * if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated()
-               * == false) { DispatchData dispatchData = null; if (shadeMast != null) {
-               * dispatchData = new DispatchData(batchData, shadeMast, quality, stockMast1);
-               * dispatchData.setShadeRate(shadeMast.getExtraRate());
-               * 
-               * } else { dispatchData = new DispatchData(batchData, quality, stockMast1);
-               * dispatchData.setShadeRate(0.0); }
-               * 
-               * 
-               * //check the quality rate is coming or not if coming then change the quality
-               * rate if (createDispatch.getRate() != null && createDispatch.getRate() > 0) {
-               * dispatchData.setQualityRate(createDispatch.getRate()); }
-               * 
-               * 
-               * dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
-               * 
-               * dispatchData.setCreatedBy(dispatchList.getCreatedBy().getId());
-               * dispatchData.setIsSendToParty(false); //saveTheList.add(dispatchData); //save
-               * the complete batch with gr list to the dispatch data with same invoice number
-               * dispatchDataDao.save(dispatchData);
-               * 
-               * batchData.setIsBillGenrated(true); batchDao.save(batchData); } } }
-               * 
-               * 
-               * //increament the invoice number to dispatch mast
-               * 
-               * 
-               * DispatchMast dispatchMast = new DispatchMast(dispatchList);
-               * dispatchMast.setSignByParty(false); dispatchMast.setPrefix("inv");
-               * dispatchMast.setParty(party.get());
-               * dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
-               * dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
-               * dispatchMast.setDispatchData(dispatchDataDao.getDispatchDataByInvoiceNumber(
-               * invoiceSequenceExist.getSequence().toString()));
-               * 
-               * if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
-               * dispatchMast.setUserHeadData(party.get().getUserHeadData()); } else {
-               * dispatchMast.setUserHeadData(dispatchList.getUserHeadData()); }
-               * 
-               * dispatchMastDao.save(dispatchMast);
-               * 
-               * 
-               * //update the invoice sequence by one
-               * invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(),
-               * invoiceSequenceExist.getSequence() + 1); return
-               * invoiceSequenceExist.getSequence();
-               */
+         * if(productionPlan==null) throw new
+         * Exception("no production plan found for batch");
+         *//*
+         *
+         * ShadeMast shadeMast = null; if (productionPlan != null &&
+         * productionPlan.getShadeId() != null) { shadeMast =
+         * shadeService.getShadeById(productionPlan.getShadeId()); if (shadeMast ==
+         * null) throw new Exception("no shade record found"); }
+         *
+         *
+         * StockMast stockMast1 =
+         * stockBatchService.getStockById(createDispatch.getStockId()); Quality quality
+         * = qualityDao.getqualityById(stockMast1.getQuality().getId());//
+         * qualityServiceImp.getQualityByEntryId(productionPlan.getQualityEntryId());
+         *
+         * if (quality == null) throw new Exception("no quality found");
+         *
+         * if (batchDataList.isEmpty()) throw new Exception("no batch data found");
+         *
+         *
+         * for (BatchData batchData : batchDataList) {
+         *
+         * if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated()
+         * == false) { DispatchData dispatchData = null; if (shadeMast != null) {
+         * dispatchData = new DispatchData(batchData, shadeMast, quality, stockMast1);
+         * dispatchData.setShadeRate(shadeMast.getExtraRate());
+         *
+         * } else { dispatchData = new DispatchData(batchData, quality, stockMast1);
+         * dispatchData.setShadeRate(0.0); }
+         *
+         *
+         * //check the quality rate is coming or not if coming then change the quality
+         * rate if (createDispatch.getRate() != null && createDispatch.getRate() > 0) {
+         * dispatchData.setQualityRate(createDispatch.getRate()); }
+         *
+         *
+         * dispatchData.setInvoiceNo(invoiceSequenceExist.getSequence().toString());
+         *
+         * dispatchData.setCreatedBy(dispatchList.getCreatedBy().getId());
+         * dispatchData.setIsSendToParty(false); //saveTheList.add(dispatchData); //save
+         * the complete batch with gr list to the dispatch data with same invoice number
+         * dispatchDataDao.save(dispatchData);
+         *
+         * batchData.setIsBillGenrated(true); batchDao.save(batchData); } } }
+         *
+         *
+         * //increament the invoice number to dispatch mast
+         *
+         *
+         * DispatchMast dispatchMast = new DispatchMast(dispatchList);
+         * dispatchMast.setSignByParty(false); dispatchMast.setPrefix("inv");
+         * dispatchMast.setParty(party.get());
+         * dispatchMast.setCreatedBy(dispatchList.getCreatedBy());
+         * dispatchMast.setUpdatedBy(dispatchList.getUpdatedBy());
+         * dispatchMast.setDispatchData(dispatchDataDao.getDispatchDataByInvoiceNumber(
+         * invoiceSequenceExist.getSequence().toString()));
+         *
+         * if (userData.getUserHeadId() == 0 || userData.getIsMaster() == false) {
+         * dispatchMast.setUserHeadData(party.get().getUserHeadData()); } else {
+         * dispatchMast.setUserHeadData(dispatchList.getUserHeadData()); }
+         *
+         * dispatchMastDao.save(dispatchMast);
+         *
+         *
+         * //update the invoice sequence by one
+         * invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(),
+         * invoiceSequenceExist.getSequence() + 1); return
+         * invoiceSequenceExist.getSequence();
+         */
         return null;
     }
 
@@ -275,7 +275,7 @@ public class DispatchMastImpl {
          * party.getCreditLimit()) { list.add(new
          * BatchWithTotalMTRandFinishMTRWithPendingBill(e, true)); } else { list.add(new
          * BatchWithTotalMTRandFinishMTRWithPendingBill(e, false)); } });
-         * 
+         *
          * } }
          */
 
@@ -386,7 +386,7 @@ public class DispatchMastImpl {
             /*
              * DispatchMast dispatchMast =
              * dispatchMastDao.getDataByInvoiceNumber(dispatchData.getPostfix());
-             * 
+             *
              * if (dispatchMast == null) continue;
              */
 
@@ -396,12 +396,12 @@ public class DispatchMastImpl {
             // get the batch data
 
             List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao
-                    .getAllStockByInvoiceNumber(dispatchMast.getPostfix());
-            System.out.println("length of batchList-" + batchListWithInvoiceList.size());
+                    .getAllStockByInvoiceNumberWithPchallen(dispatchMast.getPostfix());
+            //System.out.println("length of batchList-" + batchListWithInvoiceList.size());
             for (GetBatchByInvoice batch : batchListWithInvoiceList) {
                 // list of batches
-                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = batchDao
-                        .getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId());
+                BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = dispatchDataDao
+                        .getAllBatchWithTotalMtrAndTotalFinishMtr(batch.getBatchId(), batch.getStockId(), batch.getPchallanRef(), dispatchMast.getPostfix());
                 batchList.add(batchWithTotalMTRandFinishMTR);
             }
             System.out.println("length of batchList-" + batchList.size());
@@ -522,138 +522,138 @@ public class DispatchMastImpl {
 
     /*
      * public Boolean updateDispatch(UpdateInvoice updateInvoice) throws Exception{
-     * 
-     * 
+     *
+     *
      * //check the invoice number is exist String
      * invoiceExist=dispatchDataDao.findByInvoiceNo(updateInvoice.getInvoiceNo());
      * if(invoiceExist==null) throw new
      * Exception("no invoice found for invoice:"+updateInvoice.getInvoiceNo());
-     * 
+     *
      * //for the new data List<DispatchData> saveTheList=new ArrayList<>();
-     * 
+     *
      * //update invoice Map<String,Long> availbleBatchInInvoice = new HashMap<>();
-     * 
+     *
      * Map<String,Long> comingBatches = new HashMap<>();
-     * 
+     *
      * List<GetBatchByInvoice> availableBatches =
      * dispatchDataDao.findBatchAndStockByInvoice(updateInvoice.getInvoiceNo());
-     * 
+     *
      * if(availableBatches.isEmpty()) throw new
      * Exception("this invoice is empty create new one");
-     * 
+     *
      *//*
-        * 
-        * if the batch list coming empty with the given invoice,so
-        * 
-        * considering that invoice should be deleted
-        * 
-        * delete this invoice
-        * 
-        *//*
-           * 
-           * if(updateInvoice.getBatchAndStockIdList().isEmpty()) { //get the batch entry
-           * and change the flag List<DispatchData>
-           * dispatchDataList=dispatchDataDao.getBatchByInvoiceNo(updateInvoice.
-           * getInvoiceNo());
-           * 
-           * for(DispatchData dispatchData:dispatchDataList) { //change the batch status
-           * BatchData
-           * batchData=batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
-           * batchData.setIsBillGenrated(false); batchDao.save(batchData); } //delete all
-           * the batches from the dispatch
-           * dispatchDataDao.deleteByInvoiceNo(updateInvoice.getInvoiceNo());
-           * 
-           * //delete the master entry also
-           * dispatchMastDao.deleteByInvoicePostFix(Long.parseLong(updateInvoice.
-           * getInvoiceNo().substring(3))); return true;
-           * 
-           * }
-           * 
-           * 
-           * 
-           * 
-           * 
-           * //coming batch list for(BatchAndStockId
-           * createDispatch:updateInvoice.getBatchAndStockIdList()) {
-           * comingBatches.put(createDispatch.getBatchId(),createDispatch.getStockId()); }
-           * 
-           * //available batch list for(GetBatchByInvoice
-           * getBatchByInvoice:availableBatches) {
-           * availbleBatchInInvoice.put(getBatchByInvoice.getBatchId(),getBatchByInvoice.
-           * getStockId()); }
-           * 
-           * //Update functionality if coming batch is not in avaialable in the avaialable
-           * batch list for (Map.Entry<String,Long> entry : comingBatches.entrySet()) {
-           * 
-           * 
-           * //System.out.println(entry.getKey()); if(!availbleBatchInInvoice.isEmpty()) {
-           * 
-           * //if the data is found then remove from the available batch list to delete
-           * the batch later if(availbleBatchInInvoice.containsKey(entry.getKey())) {
-           * if(availbleBatchInInvoice.get(entry.getKey()).equals(entry.getValue()))
-           * availbleBatchInInvoice.remove(entry.getKey(),entry.getValue()); } else { //if
-           * the batch is not availbale in existing list //get the batch data
-           * List<BatchData> batchDataList =
-           * batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
-           * 
-           * for(BatchData batchData:batchDataList) {
-           * 
-           * if(batchData.getIsFinishMtrSave()==true &&
-           * batchData.getIsBillGenrated()==false) { DispatchData dispatchData=new
-           * DispatchData(batchData);
-           * 
-           * dispatchData.setInvoiceNo(updateInvoice.getInvoiceNo());
-           * 
-           * dispatchData.setCreatedBy(updateInvoice.getCreatedBy());
-           * 
-           * dispatchData.setUpdatedBy(updateInvoice.getUpdatedBy());
-           * 
-           * saveTheList.add(dispatchData); batchData.setIsBillGenrated(true);
-           * batchDao.save(batchData); } } dispatchDataDao.saveAll(saveTheList);
-           * 
-           * }
-           * 
-           * 
-           * } else//if batch is not availale then insert the new entry { //get the batch
-           * data List<BatchData> batchDataList =
-           * batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
-           * 
-           * for(BatchData batchData:batchDataList) {
-           * 
-           * if(batchData.getIsFinishMtrSave()==true &&
-           * batchData.getIsBillGenrated()==false) { DispatchData dispatchData=new
-           * DispatchData(batchData);
-           * 
-           * dispatchData.setInvoiceNo(updateInvoice.getInvoiceNo());
-           * 
-           * dispatchData.setCreatedBy(updateInvoice.getCreatedBy());
-           * 
-           * dispatchData.setUpdatedBy(updateInvoice.getUpdatedBy());
-           * 
-           * saveTheList.add(dispatchData); batchData.setIsBillGenrated(true);
-           * batchDao.save(batchData); } } dispatchDataDao.saveAll(saveTheList); }
-           * 
-           * 
-           * }
-           * 
-           * 
-           * 
-           * //now remove the batch which is not coming from the FE and remain it in
-           * available batch list of invoice if(!availbleBatchInInvoice.isEmpty()) { for
-           * (Map.Entry<String,Long> entry : availbleBatchInInvoice.entrySet()) {
-           * List<BatchData>
-           * batchDataList=batchDao.findByControlIdAndBatchId(entry.getValue(),entry.
-           * getKey()); for(BatchData batchData:batchDataList) {
-           * batchData.setIsBillGenrated(false); batchDao.save(batchData);
-           * dispatchDataDao.deleteByBatchEntryId(batchData.getId()); }
-           * 
-           * } return true;
-           * 
-           * } else return true;
-           * 
-           * 
-           * }
-           */
+     *
+     * if the batch list coming empty with the given invoice,so
+     *
+     * considering that invoice should be deleted
+     *
+     * delete this invoice
+     *
+     *//*
+     *
+     * if(updateInvoice.getBatchAndStockIdList().isEmpty()) { //get the batch entry
+     * and change the flag List<DispatchData>
+     * dispatchDataList=dispatchDataDao.getBatchByInvoiceNo(updateInvoice.
+     * getInvoiceNo());
+     *
+     * for(DispatchData dispatchData:dispatchDataList) { //change the batch status
+     * BatchData
+     * batchData=batchDao.findByBatchEntryId(dispatchData.getBatchEntryId());
+     * batchData.setIsBillGenrated(false); batchDao.save(batchData); } //delete all
+     * the batches from the dispatch
+     * dispatchDataDao.deleteByInvoiceNo(updateInvoice.getInvoiceNo());
+     *
+     * //delete the master entry also
+     * dispatchMastDao.deleteByInvoicePostFix(Long.parseLong(updateInvoice.
+     * getInvoiceNo().substring(3))); return true;
+     *
+     * }
+     *
+     *
+     *
+     *
+     *
+     * //coming batch list for(BatchAndStockId
+     * createDispatch:updateInvoice.getBatchAndStockIdList()) {
+     * comingBatches.put(createDispatch.getBatchId(),createDispatch.getStockId()); }
+     *
+     * //available batch list for(GetBatchByInvoice
+     * getBatchByInvoice:availableBatches) {
+     * availbleBatchInInvoice.put(getBatchByInvoice.getBatchId(),getBatchByInvoice.
+     * getStockId()); }
+     *
+     * //Update functionality if coming batch is not in avaialable in the avaialable
+     * batch list for (Map.Entry<String,Long> entry : comingBatches.entrySet()) {
+     *
+     *
+     * //System.out.println(entry.getKey()); if(!availbleBatchInInvoice.isEmpty()) {
+     *
+     * //if the data is found then remove from the available batch list to delete
+     * the batch later if(availbleBatchInInvoice.containsKey(entry.getKey())) {
+     * if(availbleBatchInInvoice.get(entry.getKey()).equals(entry.getValue()))
+     * availbleBatchInInvoice.remove(entry.getKey(),entry.getValue()); } else { //if
+     * the batch is not availbale in existing list //get the batch data
+     * List<BatchData> batchDataList =
+     * batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
+     *
+     * for(BatchData batchData:batchDataList) {
+     *
+     * if(batchData.getIsFinishMtrSave()==true &&
+     * batchData.getIsBillGenrated()==false) { DispatchData dispatchData=new
+     * DispatchData(batchData);
+     *
+     * dispatchData.setInvoiceNo(updateInvoice.getInvoiceNo());
+     *
+     * dispatchData.setCreatedBy(updateInvoice.getCreatedBy());
+     *
+     * dispatchData.setUpdatedBy(updateInvoice.getUpdatedBy());
+     *
+     * saveTheList.add(dispatchData); batchData.setIsBillGenrated(true);
+     * batchDao.save(batchData); } } dispatchDataDao.saveAll(saveTheList);
+     *
+     * }
+     *
+     *
+     * } else//if batch is not availale then insert the new entry { //get the batch
+     * data List<BatchData> batchDataList =
+     * batchDao.findByControlIdAndBatchId(entry.getValue(),entry.getKey());
+     *
+     * for(BatchData batchData:batchDataList) {
+     *
+     * if(batchData.getIsFinishMtrSave()==true &&
+     * batchData.getIsBillGenrated()==false) { DispatchData dispatchData=new
+     * DispatchData(batchData);
+     *
+     * dispatchData.setInvoiceNo(updateInvoice.getInvoiceNo());
+     *
+     * dispatchData.setCreatedBy(updateInvoice.getCreatedBy());
+     *
+     * dispatchData.setUpdatedBy(updateInvoice.getUpdatedBy());
+     *
+     * saveTheList.add(dispatchData); batchData.setIsBillGenrated(true);
+     * batchDao.save(batchData); } } dispatchDataDao.saveAll(saveTheList); }
+     *
+     *
+     * }
+     *
+     *
+     *
+     * //now remove the batch which is not coming from the FE and remain it in
+     * available batch list of invoice if(!availbleBatchInInvoice.isEmpty()) { for
+     * (Map.Entry<String,Long> entry : availbleBatchInInvoice.entrySet()) {
+     * List<BatchData>
+     * batchDataList=batchDao.findByControlIdAndBatchId(entry.getValue(),entry.
+     * getKey()); for(BatchData batchData:batchDataList) {
+     * batchData.setIsBillGenrated(false); batchDao.save(batchData);
+     * dispatchDataDao.deleteByBatchEntryId(batchData.getId()); }
+     *
+     * } return true;
+     *
+     * } else return true;
+     *
+     *
+     * }
+     */
 
     public Boolean updateDispatchStatus(String invoiceNo) throws Exception {
 
@@ -818,10 +818,10 @@ public class DispatchMastImpl {
              * productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.
              * getBatchId(),batch.getStockId()); if(productionPlan==null) continue;
              *//*
-                * Optional<ShadeMast> shadeMast = null; if(productionPlan.getShadeId()!=null)
-                * shadeService.getShadeMastById(productionPlan.getShadeId());
-                *//*
-                  */
+             * Optional<ShadeMast> shadeMast = null; if(productionPlan.getShadeId()!=null)
+             * shadeService.getShadeMastById(productionPlan.getShadeId());
+             *//*
+             */
 
             Double shadeRate = 0.0;
             /*
@@ -881,6 +881,7 @@ public class DispatchMastImpl {
 
             // change the list respone if the size is greater than 30 object
 
+            batchDataList.sort(Comparator.comparing(BatchData::getSequenceId));
             if (batchDataList.size() > 30) {
 
                 int i = 0;
@@ -1213,11 +1214,11 @@ public class DispatchMastImpl {
             // batchDao.getQualityBillByStockAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
 
             Double totalMtr = 0.0; // ;=
-                                   // batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            // batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
             Double totalFinishMtr = 0.0;// =
-                                        // batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+            // batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
             Long totalPcs = 0l;// =
-                               // batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            // batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
 
             // batch record
             List<BatchData> batchDataList = null;
@@ -1387,7 +1388,7 @@ public class DispatchMastImpl {
         Date to = null;
         // add one day because of timestamp issue
         Calendar c = Calendar.getInstance();
-        System.out.println(1);
+        //System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
         if (!filter.getFrom().isEmpty()) {
@@ -1431,11 +1432,11 @@ public class DispatchMastImpl {
             Party party = dispatchMast.getParty();
             UserData userData = dispatchMast.getUserHeadData();
             String invoiceNumber = String.valueOf(dispatchMast.getPostfix());
-            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockByInvoiceNumber(invoiceNumber);
+            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockAndBatchByInvoiceNumber(invoiceNumber);
             List<ConsolidatedBillData> consolidatedBillDataList = new ArrayList<>();
             for (GetBatchByInvoice getBatchByInvoice : stockWithBatchList) {
 
-                System.out.println(3);
+                //System.out.println(3);
                 Double amt = 0.0;
                 Double totalFinishMtr = 0.0;
                 // Double batchFinishMtr=0.0;
@@ -1447,13 +1448,16 @@ public class DispatchMastImpl {
                 if (getBatchByInvoice.getBatchId() == null)
                     continue;
 
-                List<BatchData> batchDataList = stockBatchService
-                        .getBatchByBatchIdWithInvoiceNuber(getBatchByInvoice.getBatchId(), invoiceNumber);
+//                List<BatchData> batchDataList =
+//                        stockBatchService
+//                        .getBatchByBatchIdWithInvoiceNuber(getBatchByInvoice.getBatchId(), invoiceNumber);
+
+                List<BatchData> batchDataList = dispatchMast.getDispatchDataList().stream().map(DispatchData::getBatchData).collect(Collectors.toList()).stream().filter(p -> p.getBatchId().equalsIgnoreCase(getBatchByInvoice.getBatchId())).collect(Collectors.toList());
 
                 if (batchDataList.isEmpty())
                     continue;
 
-                StockMast stockMast = stockBatchService.getStockByStockId(getBatchByInvoice.getStockId());
+                StockMast stockMast = getBatchByInvoice.getStockMast();
                 if (stockMast == null)
                     continue;
 
@@ -1461,42 +1465,36 @@ public class DispatchMastImpl {
                 if (quality == null)
                     continue;
 
-                /*
-                 * for (BatchData batchData : batchDataList) { totalBatchMtr +=
-                 * batchData.getMtr(); //batchFinishMtr +=batchData.getFinishMtr();
-                 * totalFinishMtr += batchData.getFinishMtr(); }
-                 */
                 totalBatchMtr = batchDataList.stream().filter(x -> x.getBatchId() != null).mapToDouble(x -> x.getMtr())
                         .sum();
                 totalFinishMtr = batchDataList.stream().filter(x -> x.getBatchId() != null)
                         .mapToDouble(x -> x.getFinishMtr()).sum();
-                Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,
-                        batchDataList.get(0).getId());
-                // get the billing unit as per change
-                // String billingUnit =
-                // dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber,
-                // batchDataList.get(0).getId());
-                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,
-                        batchDataList.get(0).getId());
-                Double wtPer100m = unitDetail.getWtPer100m();
-                if (unitDetail.getBillingUnit().equalsIgnoreCase("weight")) {
+//                Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,
+//                        batchDataList.get(0).getId());
+
+                DispatchData rate = dispatchMast.getDispatchDataList().stream().filter(x -> x.getBatchData().getId().equals(batchDataList.get(0).getId())).findAny().orElse(null);
+
+//                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,
+//                        batchDataList.get(0).getId());
+                Double wtPer100m = rate.getWtPer100m();
+                if (rate.getBillingUnit().equalsIgnoreCase("weight")) {
                     // convert weight to meter
                     // totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 :
                     // wtPer100m);
                     totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
 
                 }
-                amt = totalFinishMtr * rate;
+                amt = totalFinishMtr * rate.getQualityRate();
 
-                greyPcs = batchDao.getTotalPcsByBatchIdWithoutExtra(batchDataList.get(0).getBatchId());
+                greyPcs = batchDataList.stream().count();
                 // batchFinishMtr = 0.0;
 
                 ConsolidatedBillData consolidatedBillData = new ConsolidatedBillData(party, quality,
                         getBatchByInvoice.getBatchId(), getBatchByInvoice.getBatchEntryId(), totalBatchMtr,
-                        totalFinishMtr, amt, rate, dispatchMast, greyPcs);
+                        totalFinishMtr, amt, rate.getQualityRate(), dispatchMast, greyPcs);
                 consolidatedBillData.setHeadName(userData.getFirstName());
-                consolidatedBillData.setBillingUnit(unitDetail.getBillingUnit());
-                consolidatedBillData.setInwardUnit(unitDetail.getInwardUnit());
+                consolidatedBillData.setBillingUnit(rate.getBillingUnit());
+                consolidatedBillData.setInwardUnit(rate.getInwardUnit());
                 consolidatedBillDataList.add(consolidatedBillData);
 
             }
@@ -1599,7 +1597,7 @@ public class DispatchMastImpl {
             @Override
             public int compare(MonthlyDispatchReport o1, MonthlyDispatchReport o2) {
                 return o1.getYear() * 100 + o1.getMonth() - (o2.getYear() * 100 + o2.getMonth()); // salary is also
-                                                                                                  // positive integer
+                // positive integer
             }
 
         });
@@ -1660,7 +1658,7 @@ public class DispatchMastImpl {
                     report.addNetAmt(netAmt);
                     report.addDiscount(discount);
                 } else {
-                    data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt,partyId,discount,dispatchMast.getParty().getPartyName()));
+                    data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt, partyId, discount, dispatchMast.getParty().getPartyName()));
                 }
             }
         }
@@ -1938,7 +1936,9 @@ public class DispatchMastImpl {
 
     }
 
+
     public PartyDataByInvoiceNumber getPChallanPartyWithQualityDispatchBy(String invoiceNo) throws Exception {
+
         List<QualityBillByInvoiceNumber> qualityBillByInvoiceNumberList = new ArrayList<>();
 
         DispatchMast dispatchMast = dispatchMastDao.getDataByInvoiceNumber(invoiceNo);
@@ -1990,10 +1990,10 @@ public class DispatchMastImpl {
              * productionPlan=productionPlanService.getProductionDataByBatchAndStock(batch.
              * getBatchId(),batch.getStockId()); if(productionPlan==null) continue;
              *//*
-                * Optional<ShadeMast> shadeMast = null; if(productionPlan.getShadeId()!=null)
-                * shadeService.getShadeMastById(productionPlan.getShadeId());
-                *//*
-                  */
+             * Optional<ShadeMast> shadeMast = null; if(productionPlan.getShadeId()!=null)
+             * shadeService.getShadeMastById(productionPlan.getShadeId());
+             *//*
+             */
 
             Double shadeRate = 0.0;
             /*
@@ -2129,7 +2129,7 @@ public class DispatchMastImpl {
     }
 
     private List<BatchData> conversionMtrAndFinishMtrWithWtUnit(List<BatchData> newBatchList, Double wtPer100m,
-            String inwardUnit, String billingUnit) {
+                                                                String inwardUnit, String billingUnit) {
         List<BatchData> batchDataList = new ArrayList<>();
 
         // convert as per the requirement
@@ -2214,11 +2214,11 @@ public class DispatchMastImpl {
             // batchDao.getQualityBillByStockAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId(),false);
 
             Double totalMtr = 0.0; // ;=
-                                   // batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            // batchDao.getTotalMtrByControlIdAndBatchId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
             Double totalFinishMtr = 0.0;// =
-                                        // batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
+            // batchDao.getTotalFinishMtrByBatchAndStock(batchAndStockId.getBatchId(),batchAndStockId.getStockId());
             Long totalPcs = 0l;// =
-                               // batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
+            // batchDao.getTotalPcsByBatchAndStockId(batchAndStockId.getStockId(),batchAndStockId.getBatchId());
 
             // batch record
             List<BatchData> batchDataList = null;
@@ -2535,5 +2535,158 @@ public class DispatchMastImpl {
         return response;
 
     }
+
+    public List<ConsolidatedBillData> getConsolidateDispatchBillByFilterNew(DispatchFilter filter) throws ParseException {
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+        //System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom()!=null) {
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+            // created date and 1 day is comming minus from FE
+            from = c.getTime();
+        }
+        if (filter.getTo()!=null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+            // working,but not working on EC2 because of timezone
+            to = c.getTime();
+        }
+
+//        List<ConsolidatedBillData> list = dispatchDataDao.getAllConsolidateResponseByFilter(from, to, filter.getUserHeadId(),
+//                filter.getPartyId(),filter.getQualityNameId(),filter.getQualityEntryId());
+
+//        list.forEach(e->{
+//
+//            e.setGreyPcs(batchDao.getTotalPcsByBatchIdWithoutExtra(e.getBatchId()));
+//
+//        });
+
+
+       /* // System.out.println(1);
+        List<ConsolidatedBillMast> list = new ArrayList<>();
+        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getUserHeadId(),
+                filter.getPartyId(), null);
+        if (filter.getQualityNameId() != null) {
+            dispatchMastList = dispatchMastList.stream().filter(p -> p.getDispatchDataList().stream()
+                    .filter(child -> child.getQuality().getQualityName().getId().equals(filter.getQualityNameId()))
+                    .findAny().isPresent()).collect(Collectors.toList());
+        }
+
+        // filter by quality name id
+        if (filter.getQualityEntryId() != null) {
+            dispatchMastList = dispatchMastList.stream()
+                    .filter(p -> p.getDispatchDataList().stream()
+                            .filter(child -> child.getQuality().getId().equals(filter.getQualityEntryId())).findAny()
+                            .isPresent())
+                    .collect(Collectors.toList());
+        }
+        // System.out.println(1);
+        for (DispatchMast dispatchMast : dispatchMastList) {
+            // System.out.println(2);
+            ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
+
+            Party party = dispatchMast.getParty();
+            UserData userData = dispatchMast.getUserHeadData();
+            String invoiceNumber = String.valueOf(dispatchMast.getPostfix());
+            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockAndBatchByInvoiceNumber(invoiceNumber);
+            //List<ConsolidatedBillData> consolidatedBillDataList = new ArrayList<>();
+           *//* for (GetBatchByInvoice getBatchByInvoice : stockWithBatchList) {
+
+               *//**//* //System.out.println(3);
+                Double amt = 0.0;
+                Double totalFinishMtr = 0.0;
+                // Double batchFinishMtr=0.0;
+                Double totalBatchMtr = 0.0;
+                Long greyPcs;
+
+                // getBatchByInvoice.
+                // getBatchByInvoice.getBatchEntryId()//sum of getBatchByInvoice
+                if (getBatchByInvoice.getBatchId() == null)
+                    continue;
+
+//                List<BatchData> batchDataList =
+//                        stockBatchService
+//                        .getBatchByBatchIdWithInvoiceNuber(getBatchByInvoice.getBatchId(), invoiceNumber);
+
+                List<BatchData> batchDataList = dispatchMast.getDispatchDataList().stream().map(DispatchData::getBatchData).collect(Collectors.toList()).stream().filter(p -> p.getBatchId().equalsIgnoreCase(getBatchByInvoice.getBatchId())).collect(Collectors.toList());
+
+                if (batchDataList.isEmpty())
+                    continue;
+
+                StockMast stockMast = getBatchByInvoice.getStockMast();
+                if (stockMast == null)
+                    continue;
+
+                Quality quality = stockMast.getQuality();
+                if (quality == null)
+                    continue;
+
+                totalBatchMtr = batchDataList.stream().filter(x -> x.getBatchId() != null).mapToDouble(x -> x.getMtr())
+                        .sum();
+                totalFinishMtr = batchDataList.stream().filter(x -> x.getBatchId() != null)
+                        .mapToDouble(x -> x.getFinishMtr()).sum();
+//                Double rate = dispatchDataDao.getQualityRateByInvoiceAndBatchEntryId(invoiceNumber,
+//                        batchDataList.get(0).getId());
+
+                DispatchData rate = dispatchMast.getDispatchDataList().stream().filter(x -> x.getBatchData().getId().equals(batchDataList.get(0).getId())).findAny().orElse(null);
+
+//                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,
+//                        batchDataList.get(0).getId());
+                Double wtPer100m = rate.getWtPer100m();
+                if (rate.getBillingUnit().equalsIgnoreCase("weight")) {
+                    // convert weight to meter
+                    // totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 :wtPer100m);
+                    totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
+
+                }
+                amt = totalFinishMtr * rate.getQualityRate();
+
+                greyPcs = batchDataList.stream().count();
+                // batchFinishMtr = 0.0;
+
+                ConsolidatedBillData consolidatedBillData = new ConsolidatedBillData(party, quality,
+                        getBatchByInvoice.getBatchId(), getBatchByInvoice.getBatchEntryId(), totalBatchMtr,
+                        totalFinishMtr, amt, rate.getQualityRate(), dispatchMast, greyPcs);
+                consolidatedBillData.setHeadName(userData.getFirstName());
+                consolidatedBillData.setBillingUnit(rate.getBillingUnit());
+                consolidatedBillData.setInwardUnit(rate.getInwardUnit());
+                consolidatedBillDataList.add(consolidatedBillData);
+
+ *//**//*
+
+                List<ConsolidatedBillData> consolidatedBillDataList = dispatchDataDao.getAllBatchAndStockByInvoiceNo();
+                consolidatedBillMast.setConsolidatedBillDataList(consolidatedBillDataList);
+
+
+
+
+            }
+           *//*
+
+
+            List<ConsolidatedBillData> consolidatedBillDataList = dispatchDataDao.getAllConsolidateBatchByInvoiceNumber(dispatchMast.getPostfix());
+            consolidatedBillMast
+                    .setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
+            consolidatedBillMast.setUserHeadId(userData.getId());
+            consolidatedBillMast.setHeadName(userData.getFirstName());
+            consolidatedBillMast.setConsolidatedBillDataList(consolidatedBillDataList);
+            System.out.println(1);
+            if (!consolidatedBillDataList.isEmpty())
+                list.add(consolidatedBillMast);
+
+        }
+
+        System.out.println(list.size());*/
+        return list;
+
+    }
+
 
 }

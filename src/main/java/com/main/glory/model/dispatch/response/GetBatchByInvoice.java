@@ -1,6 +1,7 @@
 package com.main.glory.model.dispatch.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +19,19 @@ public class GetBatchByInvoice {
     Long stockId;
     String mergeBatchId;
     String pchallanRef;
+    StockMast stockMast;
 
     public GetBatchByInvoice(Long batchEntryId, String batchId, Long stockId) {
         this.batchEntryId = batchEntryId;
         this.batchId = batchId;
         this.stockId = stockId;
+    }
+
+    public GetBatchByInvoice(Long batchEntryId, String batchId, Long stockId,StockMast stockMast) {
+        this.batchEntryId = batchEntryId;
+        this.batchId = batchId;
+        this.stockId = stockId;
+        this.stockMast  = stockMast;
     }
     public GetBatchByInvoice(Long batchEntryId, String batchId, Long stockId,String mergeBatchId) {
         this.batchEntryId = batchEntryId;
