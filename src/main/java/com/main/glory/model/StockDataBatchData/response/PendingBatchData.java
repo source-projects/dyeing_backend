@@ -20,9 +20,10 @@ public class PendingBatchData {
     Double totalBatchWt;
     String qualityId;
     Long totalPcs;
+    String qualityName;
 
 
-    public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate,String qualityId,Long totalPcs) {
+    public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate,String qualityName,Long totalPcs,String qualityId) {
         this.batchId = batchId;
         this.pchallanRef = pchallanRef;
         this.totalBatchMtr = totalBatchMtr;
@@ -30,6 +31,7 @@ public class PendingBatchData {
         this.receiveDate = receiveDate;
         this.qualityId = qualityId;
         this.totalPcs=totalPcs;
+        this.qualityName = qualityName;
 
     }
 }
