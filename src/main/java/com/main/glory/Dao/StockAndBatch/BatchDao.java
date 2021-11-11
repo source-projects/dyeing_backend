@@ -403,7 +403,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select x from BatchData x where x.batchId=:batchId AND x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber)")
     List<BatchData> getBatchByBatchIdAndInvoiceNumber(String batchId, String invoiceNumber);
 
-    @Query("select count(x.id) from BatchData x where x.batchId=:batchId")
+    @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.isExtra=false")
     Long getTotalPcsByBatchIdWithoutExtra(String batchId);
 
     @Query(value = "select * from batch_data as x where x.pchallan_ref=:pchallanRef AND x.id!=:id AND x.control_id in (select id from stock_mast as s where s.party_id=:partyId)",nativeQuery = true)
@@ -468,7 +468,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.PchallanByBatchId(x.pchallanRef,COUNT(x.id)) from BatchData x where x.batchId=:batchId GROUP BY x.pchallanRef")
     List<PchallanByBatchId> getListOfPchallanByBatchId(String batchId);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate,s.quality.qualityName.qualityName,count(x.id)) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate,s.quality.qualityName.qualityName,count(x.id),s.quality.qualityId) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
     List<PendingBatchData> getPendingBatchListByStockId(Long id);
 
     @Query("select x from BatchData x where x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber AND d.pchallanRef=:pchallanRef AND d.batchId=:batchId)")
