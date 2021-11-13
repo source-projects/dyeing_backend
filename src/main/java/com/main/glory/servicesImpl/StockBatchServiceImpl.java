@@ -3149,8 +3149,8 @@ public class StockBatchServiceImpl {
         List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequestWithPendingBatch(from, to,
                 filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId());
 
-        if (stockMastList == null)
-            throw new Exception(ConstantFile.StockBatch_Not_Found);
+//        if (stockMastList == null)
+//            throw new Exception(ConstantFile.StockBatch_Not_Found);
 
         // party id and it's pending request
         Map<Long, PendingBatchMast> partyList = new HashMap<>();
@@ -3174,7 +3174,10 @@ public class StockBatchServiceImpl {
 
         });
 
+        if(partyList.size() > 0)
         list = new ArrayList<PendingBatchMast>(partyList.values());
+        else
+            list = new ArrayList<>();
         return list;
 
     }

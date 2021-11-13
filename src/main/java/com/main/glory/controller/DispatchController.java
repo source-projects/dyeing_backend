@@ -1,10 +1,7 @@
 package com.main.glory.controller;
 
 import com.main.glory.model.dispatch.response.*;
-import org.springframework.data.domain.Sort;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.main.glory.Dao.FilterDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.filters.FilterResponse;
@@ -12,32 +9,27 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
-import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTRWithPendingBill;
-import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.request.*;
+import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForExcel;
+import com.main.glory.model.dispatch.response.report.ConsolidatedBillMast;
 import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
-
 import javax.servlet.http.HttpServletRequest;
 
-import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -437,7 +429,7 @@ public class DispatchController extends ControllerConfig {
 
 
     //report by date with consildate bill response
-    @PostMapping("/dispatch/report/forConslidateBill")
+    @PostMapping("/dispatch/report/forConslidateReportBill")
     public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
         GeneralResponse<List<ConsolidatedBillMast>, Object> result;
         try{    
@@ -455,11 +447,11 @@ public class DispatchController extends ControllerConfig {
         } 
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    @PostMapping("/dispatch/report/forConslidateBillNew")
-    public ResponseEntity<GeneralResponse<List<ConsolidatedBillData>,Object>> getReportDispatchConsolidateBillByFilterNew(@RequestBody DispatchFilter filter) throws Exception{
-        GeneralResponse<List<ConsolidatedBillData>, Object> result;
+    @PostMapping("/dispatch/report/forConslidateExcelBill")
+    public ResponseEntity<GeneralResponse<List<ConsolidatedBillDataForExcel>,Object>> getReportDispatchConsolidateExcelBillByFilterNew(@RequestBody DispatchFilter filter) throws Exception{
+        GeneralResponse<List<ConsolidatedBillDataForExcel>, Object> result;
         try{
-            List<ConsolidatedBillData> list = dispatchMastService.getConsolidateDispatchBillByFilterNew(filter);
+            List<ConsolidatedBillDataForExcel> list = dispatchMastService.getConsolidateDispatchBillByFilterNew(filter);
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else

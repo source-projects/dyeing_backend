@@ -1,5 +1,6 @@
-package com.main.glory.model.dispatch.response;
+package com.main.glory.model.dispatch.response.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.quality.Quality;
@@ -17,7 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ConsolidatedBillData {
+public class ConsolidatedBillDataForExcel {
     String batchId;
     Date invoiceDate;
     String partyName;
@@ -29,8 +30,11 @@ public class ConsolidatedBillData {
     Double rate;
     Double amt;
     String headName;
+    @JsonIgnore
     Long partyId;
+    @JsonIgnore
     Long qualityEntryId;
+    @JsonIgnore
     Long qualityNameId;
     String qualityId;
     String invoiceNo;
@@ -56,13 +60,13 @@ public class ConsolidatedBillData {
     Double sharinkage;
     Double wtPer100m;
 
-    public ConsolidatedBillData(String batchId, Long pcs,Date invoiceDate,String invoiceNo,String qualityId,
-                               Double discount,Double percentageDiscount,Double netAmt,
-                               Double totalFinishMtr,Double totalMtr,Double rate,
-                               String city, String state,String gstin,String partyName,String  partyAddress1,String partyAddress2,
-                               String contactNo, String billingUnit, String inwardUnit,String deliveryMode,Double wtPer100m,String qualityName,
-                               String headName,
-                               Double amt,Double discountAmt,Double taxAmt)
+    public ConsolidatedBillDataForExcel(String batchId, Long pcs, Date invoiceDate, String invoiceNo, String qualityId,
+                                        Double discount, Double percentageDiscount, Double netAmt,
+                                        Double totalFinishMtr, Double totalMtr, Double rate,
+                                        String city, String state, String gstin, String partyName, String  partyAddress1, String partyAddress2,
+                                        String contactNo, String billingUnit, String inwardUnit, String deliveryMode, Double wtPer100m, String qualityName,
+                                        String headName,
+                                        Double amt, Double discountAmt, Double taxAmt)
     {
         //this.greyPcs = greyPcs;
         this.pcs = pcs;
@@ -105,7 +109,7 @@ public class ConsolidatedBillData {
     }
 
 
-    public ConsolidatedBillData(Party party, Quality quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast, Long greyPcs) {
+    public ConsolidatedBillDataForExcel(Party party, Quality quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast, Long greyPcs) {
         this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
         this.invoiceDate = dispatchMast.getCreatedDate();

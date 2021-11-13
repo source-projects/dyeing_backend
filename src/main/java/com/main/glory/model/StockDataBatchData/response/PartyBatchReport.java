@@ -1,6 +1,6 @@
 package com.main.glory.model.StockDataBatchData.response;
 
-import com.main.glory.model.dispatch.response.ConsolidatedBillData;
+import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForExcel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +15,5 @@ import java.util.List;
 public class PartyBatchReport {
     String partyName;
     String partyCode;
-    List<ConsolidatedBillData> consolidatedBillDataList;
+    List<ConsolidatedBillDataForExcel> consolidatedBillDataList;
 }
