@@ -2,6 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.model.StockDataBatchData.response.GetAllMergeBatchId;
+import com.main.glory.model.StockDataBatchData.response.PendingBatchMast;
 import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.admin.InvoiceSequenceDao;
@@ -26,6 +27,9 @@ import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.*;
+import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForExcel;
+import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForPDF;
+import com.main.glory.model.dispatch.response.report.ConsolidatedBillMast;
 import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -37,7 +41,6 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -1266,19 +1269,20 @@ public class DispatchMastImpl {
     public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(DispatchFilter filter) throws Exception {
         Date from = null;
         Date to = null;
+        List<ConsolidatedBillMast> list = null;
         // add one day because of timestamp issue
         Calendar c = Calendar.getInstance();
         //System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (!filter.getFrom().isEmpty()) {
+        if (filter.getFrom() !=null) {
             from = datetimeFormatter1.parse(filter.getFrom());
             c.setTime(from);
             // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
             // created date and 1 day is comming minus from FE
             from = c.getTime();
         }
-        if (!filter.getTo().isEmpty()) {
+        if (filter.getTo()!= null) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
             // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
@@ -1286,109 +1290,35 @@ public class DispatchMastImpl {
             to = c.getTime();
         }
 
-        // System.out.println(1);
-        List<ConsolidatedBillMast> list = new ArrayList<>();
-        List<DispatchMast> dispatchMastList = dispatchMastDao.getInvoiceByFilter(from, to, filter.getUserHeadId(),
-                filter.getPartyId(), null);
-        if (filter.getQualityNameId() != null) {
-            dispatchMastList = dispatchMastList.stream().filter(p -> p.getDispatchDataList().stream()
-                    .filter(child -> child.getQuality().getQualityName().getId().equals(filter.getQualityNameId()))
-                    .findAny().isPresent()).collect(Collectors.toList());
-        }
+        Map<String, ConsolidatedBillMast> invoiceList = new HashMap<>();
 
-        // filter by quality name id
-        if (filter.getQualityEntryId() != null) {
-            dispatchMastList = dispatchMastList.stream()
-                    .filter(p -> p.getDispatchDataList().stream()
-                            .filter(child -> child.getQuality().getId().equals(filter.getQualityEntryId())).findAny()
-                            .isPresent())
-                    .collect(Collectors.toList());
-        }
-        // System.out.println(1);
-        for (DispatchMast dispatchMast : dispatchMastList) {
-            // System.out.println(2);
-            ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(dispatchMast);
+        List<ConsolidatedBillDataForPDF> consolidatedBillDataForPDFList = dispatchDataDao.getAllConsolidateResponseForPDFReportByFilter(from, to, filter.getUserHeadId(),
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId());
 
-            Party party = dispatchMast.getParty();
-            UserData userData = dispatchMast.getUserHeadData();
-            String invoiceNumber = String.valueOf(dispatchMast.getPostfix());
-            List<GetBatchByInvoice> stockWithBatchList = dispatchDataDao.getAllStockAndBatchByInvoiceNumber(invoiceNumber);
-            List<ConsolidatedBillData> consolidatedBillDataList = new ArrayList<>();
-            for (GetBatchByInvoice getBatchByInvoice : stockWithBatchList) {
-
-                //System.out.println(3);
-                Double amt = 0.0;
-                Double totalFinishMtr = 0.0;
-                // Double batchFinishMtr=0.0;
-                Double totalBatchMtr = 0.0;
-                Long greyPcs;
-
-                // getBatchByInvoice.
-                // getBatchByInvoice.getBatchEntryId()//sum of getBatchByInvoice
-                if (getBatchByInvoice.getBatchId() == null)
-                    continue;
-
-//                List<BatchData> batchDataList = stockBatchService
-//                        .getBatchByBatchIdWithInvoiceNuber(getBatchByInvoice.getBatchId(), invoiceNumber);
-                List<BatchData> batchDataList = dispatchMast.getDispatchDataList().stream().map(DispatchData::getBatchData).collect(Collectors.toList()).stream().filter(p -> p.getBatchId().equalsIgnoreCase(getBatchByInvoice.getBatchId())).collect(Collectors.toList());
-
-                if (batchDataList.isEmpty())
-                    continue;
-
-                StockMast stockMast = getBatchByInvoice.getStockMast();
-                if (stockMast == null)
-                    continue;
-
-                Quality quality = stockMast.getQuality();
-                if (quality == null)
-                    continue;
-
-                /*
-                 * for (BatchData batchData : batchDataList) { totalBatchMtr +=
-                 * batchData.getMtr(); //batchFinishMtr +=batchData.getFinishMtr();
-                 * totalFinishMtr += batchData.getFinishMtr(); }
-                 */
-                totalBatchMtr = batchDataList.stream().filter(x -> x.getBatchId() != null).mapToDouble(x -> x.getMtr())
-                        .sum();
-                totalFinishMtr = batchDataList.stream().filter(x -> x.getBatchId() != null)
-                        .mapToDouble(x -> x.getFinishMtr()).sum();
-                DispatchData rate = dispatchMast.getDispatchDataList().stream().filter(x -> x.getBatchData().getId().equals(batchDataList.get(0).getId())).findAny().orElse(null);
-                // get the billing unit as per change
-                // String billingUnit =
-                // dispatchDataDao.getBillingUnitByInvoiceAndBatchEntryId(invoiceNumber,
-                // batchDataList.get(0).getId());
-//                UnitDetail unitDetail = dispatchDataDao.getUnitDetailByInvoiceNoAndBatchEntryId(invoiceNumber,
-//                        batchDataList.get(0).getId());
-                Double wtPer100m = rate.getWtPer100m();
-                if (rate.getBillingUnit().equalsIgnoreCase("weight")) {
-                    // convert weight to meter
-                    // totalFinishMtr = (totalFinishMtr / 100) * (wtPer100m == null ? 1 :
-                    // wtPer100m);
-                    totalBatchMtr = (totalBatchMtr / 100) * (wtPer100m == null ? 1 : wtPer100m);
-
-                }
-                amt = totalFinishMtr * rate.getQualityRate();
-
-                greyPcs = batchDataList.stream().count();
-                // batchFinishMtr = 0.0;
-
-                ConsolidatedBillData consolidatedBillData = new ConsolidatedBillData(party, quality,
-                        getBatchByInvoice.getBatchId(), getBatchByInvoice.getBatchEntryId(), totalBatchMtr,
-                        totalFinishMtr, amt, rate.getQualityRate(), dispatchMast, greyPcs);
-                consolidatedBillData.setHeadName(userData.getFirstName());
-                consolidatedBillData.setBillingUnit(rate.getBillingUnit());
-                consolidatedBillData.setInwardUnit(rate.getInwardUnit());
-                consolidatedBillDataList.add(consolidatedBillData);
+        consolidatedBillDataForPDFList.forEach(e -> {
+            if(invoiceList.containsKey(e.getInvoiceNo()))
+            {
+                ConsolidatedBillMast consolidatedBillMast = invoiceList.get(e.getInvoiceNo());
+                List<ConsolidatedBillDataForPDF> dataForPDFS = consolidatedBillMast.getConsolidatedBillDataForPDFS();
+                dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
+                consolidatedBillMast.setConsolidatedBillDataForPDFS(dataForPDFS);
+                invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
+            }
+            else
+            {
+                ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(e);
+                List<ConsolidatedBillDataForPDF> dataForPDFS = new ArrayList<>();
+                dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
+                consolidatedBillMast.setConsolidatedBillDataForPDFS(dataForPDFS);
+                invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
 
             }
-            consolidatedBillMast
-                    .setSignByParty(dispatchMast.getSignByParty() == null ? false : dispatchMast.getSignByParty());
-            consolidatedBillMast.setUserHeadId(userData.getId());
-            consolidatedBillMast.setHeadName(userData.getFirstName());
-            consolidatedBillMast.setConsolidatedBillDataList(consolidatedBillDataList);
-            if (!consolidatedBillDataList.isEmpty())
-                list.add(consolidatedBillMast);
+        });
 
+
+        if(invoiceList.size()>0)
+        {
+            list = new ArrayList<>(invoiceList.values());
         }
 
         return list;
@@ -2444,7 +2374,7 @@ public class DispatchMastImpl {
 
     }
 
-    public List<ConsolidatedBillData> getConsolidateDispatchBillByFilterNew(DispatchFilter filter) throws ParseException {
+    public List<ConsolidatedBillDataForExcel> getConsolidateDispatchBillByFilterNew(DispatchFilter filter) throws ParseException {
         Date from = null;
         Date to = null;
         // add one day because of timestamp issue
@@ -2466,7 +2396,7 @@ public class DispatchMastImpl {
             // working,but not working on EC2 because of timezone
             to = c.getTime();
         }
-        List<ConsolidatedBillData> list = dispatchDataDao.getAllConsolidateResponseByFilter(from, to, filter.getUserHeadId(),
+        List<ConsolidatedBillDataForExcel> list = dispatchDataDao.getAllConsolidateResponseByFilter(from, to, filter.getUserHeadId(),
                 filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId());
         return list;
     }

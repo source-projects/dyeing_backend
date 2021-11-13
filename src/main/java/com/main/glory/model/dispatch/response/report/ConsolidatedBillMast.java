@@ -1,4 +1,4 @@
-package com.main.glory.model.dispatch.response;
+package com.main.glory.model.dispatch.response.report;
 
 import com.main.glory.model.dispatch.DispatchMast;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -16,18 +15,23 @@ import java.util.List;
 @Setter
 public class ConsolidatedBillMast {
 
-    Long invoiceNo;
+    String invoiceNo;
     Date createdDate;
-    String headName;
+    /*String headName;
     Long userHeadId;
     Long partyId;
-    Boolean signByParty;
-    List<ConsolidatedBillData> consolidatedBillDataList;
+    Boolean signByParty;*/
+    List<ConsolidatedBillDataForPDF> consolidatedBillDataForPDFS;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {
-        this.invoiceNo = Long.parseLong( dispatchMast.getPostfix());
+        this.invoiceNo = dispatchMast.getPostfix();
         this.createdDate = dispatchMast.getCreatedDate();
-        this.partyId = dispatchMast.getParty().getId();
+        //this.partyId = dispatchMast.getParty().getId();
     }
 
+    public ConsolidatedBillMast(ConsolidatedBillDataForPDF e) {
+        this.invoiceNo = e.getInvoiceNo();
+        this.createdDate = e.getCreatedDate();
+
+    }
 }

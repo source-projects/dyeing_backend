@@ -22,18 +22,21 @@ public class ReportMast {
     Long id;
     String name;
     String type;
-    String url;
+    String urlForExcel;
+    String urlForReport;
 
     public ReportMast(ReportMast reportMast) {
         this.id=reportMast.getId();
         this.name = reportMast.getName();
-        this.url = reportMast.getUrl();
+        this.urlForExcel = reportMast.getUrlForExcel();
+        this.urlForReport = reportMast.getUrlForReport();
         this.type = reportMast.getType();
     }
 
-    public ReportMast(String name, String type, String url) {
+    public ReportMast(String name, String type, String urlForExcel,String urlForReport) {
         this.name = name;
         this.type = type;
-        this.url = url;
+        this.urlForExcel = urlForExcel;
+        this.urlForReport = urlForReport;
     }
 }
