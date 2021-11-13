@@ -82,4 +82,8 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
 
     @Query("select d from DispatchMast d where (:from IS NULL OR Date(d.createdDate)>=Date(:from)) AND (:to IS NULL OR Date(d.createdDate)<=Date(:to)) AND d.paymentBunchId IS NULL")
     List<DispatchMast> getInvoiceByDateFilterAndPaymentBunchIdNull(Date from, Date to);
+
+    @Query(value = "select * from dispatch_mast where postfix=:invoiceNo LIMIT 1",nativeQuery = true)
+    DispatchMast getDispatchMastByInvoiceNumber(@Param("invoiceNo") String invoiceNo);
+
 }
