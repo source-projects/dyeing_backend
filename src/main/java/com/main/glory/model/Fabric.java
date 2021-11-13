@@ -41,7 +41,8 @@ public class Fabric {
 	private Long recordCount;
 
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@Transient
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<FabricInRecord> fabricInRecord;

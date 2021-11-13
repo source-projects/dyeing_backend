@@ -46,6 +46,7 @@ public class MappingPermission {
         mapping.put("po","purchase");
         mapping.put("mg","mergeBatch");
         mapping.put("tt","task");
+        mapping.put("rpt","report");
 
 
     }

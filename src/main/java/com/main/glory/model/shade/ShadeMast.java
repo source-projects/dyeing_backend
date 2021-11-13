@@ -29,21 +29,26 @@ import java.util.List;
 	Long id;
 	String partyShadeNo;
 	Long processId;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="qualityEntryId", referencedColumnName = "id", insertable = true, updatable = true)    
 	Quality quality;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    
 	Party party;
 	String colorTone;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData updatedBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData userHeadData;
 
@@ -62,7 +67,8 @@ import java.util.List;
 	@Column(columnDefinition = "varchar(255) default 'Not mentioned'")
 	String colorName;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name = "controlId", referencedColumnName = "id")
 	List<ShadeData> shadeDataList;
 

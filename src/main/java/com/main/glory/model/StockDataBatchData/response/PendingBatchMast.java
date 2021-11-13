@@ -1,7 +1,6 @@
 package com.main.glory.model.StockDataBatchData.response;
 
 import com.main.glory.model.StockDataBatchData.StockMast;
-import com.main.glory.model.dispatch.response.ConsolidatedBillData;
 import com.main.glory.model.party.Party;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -23,10 +23,12 @@ public class DispatchMast{
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     Date createdDate;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData createdBy;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)
     private UserData userHeadData;
 
@@ -35,12 +37,14 @@ public class DispatchMast{
 
     String postfix;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<DispatchData> dispatchDataList;
     
     Long paymentBunchId;//payment mast id
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)    
     private UserData updatedBy;
     Double discount;
@@ -51,7 +55,8 @@ public class DispatchMast{
     Double taxAmt;
     Double netAmt;
     String remark;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)
     private Party party;
 

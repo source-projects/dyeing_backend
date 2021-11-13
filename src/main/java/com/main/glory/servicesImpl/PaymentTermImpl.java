@@ -1,11 +1,13 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.dispatch.DispatchDataDao;
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.Dao.paymentTerm.AdvancePaymentDao;
 import com.main.glory.Dao.paymentTerm.PaymentDataDao;
 import com.main.glory.Dao.paymentTerm.PaymentMastDao;
 import com.main.glory.Dao.paymentTerm.PaymentTypeDao;
+import com.main.glory.Dao.user.UserDao;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
@@ -17,6 +19,8 @@ import com.main.glory.model.paymentTerm.GetAllPayment;
 import com.main.glory.model.paymentTerm.PaymentData;
 import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.*;
+import com.main.glory.model.user.UserData;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,14 +53,22 @@ public class PaymentTermImpl {
     @Autowired
     AdvancePaymentDao advancePaymentDao;
 
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    PartyDao partyDao;
+
     public Boolean savePayment(AddPaymentMast paymentMast) throws Exception {
 
         //paymentMastDao.save(paymentMast);
         if(!paymentMast.getAmtToPay().equals(paymentMast.getAmtPaid()))
             throw new Exception("please enter right amount");
+        
+        UserData createdBy=userDao.getUserById(paymentMast.getCreatedBy());
+        Party party =partyDao.findByPartyId(paymentMast.getPartyId());
 
-
-        PaymentMast paymentMastToSave=new PaymentMast(paymentMast);
+        PaymentMast paymentMastToSave=new PaymentMast(paymentMast,party,createdBy,createdBy);
 
         paymentMastDao.save(paymentMastToSave);
 

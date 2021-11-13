@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class    BatchWithTotalMTRandFinishMTR {
+public class BatchWithTotalMTRandFinishMTR {
     String batchId;
     Long controlId;
     Double WT;

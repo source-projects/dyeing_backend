@@ -2,6 +2,7 @@ package com.main.glory.Dao.user;
 
 
 
+import com.main.glory.Dao.FilterDao;
 import com.main.glory.model.designation.Designation;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.response.getAllUserInfo;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface UserDao extends JpaRepository<UserData, Long> {
+public interface UserDao extends FilterDao<UserData> {
 
 
     UserData findByUserNameAndPassword(String userName, String password);

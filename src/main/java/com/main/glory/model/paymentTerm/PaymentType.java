@@ -26,13 +26,15 @@ public class PaymentType {
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "payTypeId", referencedColumnName = "id")
     private List<PaymentData> paymentData;
 
     @ApiModelProperty(hidden = true)
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "payTypeId", referencedColumnName = "id")
     private List<AdvancePayment> advancePaymentList;
 

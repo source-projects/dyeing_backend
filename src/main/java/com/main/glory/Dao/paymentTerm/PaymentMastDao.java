@@ -14,10 +14,10 @@ public interface PaymentMastDao extends JpaRepository<PaymentMast,Long> {
     @Query("select p from PaymentMast p where p.id=:paymentBunchId")
     PaymentMast findByPaymentBunchId(Long paymentBunchId);
 
-    @Query("select l from PaymentMast l where l.partyId=:partyId")
+    @Query("select l from PaymentMast l where l.party.id=:partyId")
     List<PaymentMast> findByPartyId(Long partyId);
 
-    @Query("select new com.main.glory.model.paymentTerm.GetAllPayment(x,(select p.partyName from Party p where p.id=x.partyId)) from PaymentMast x")
+    @Query("select new com.main.glory.model.paymentTerm.GetAllPayment(x,(select p.partyName from Party p where p.id=x.party.id)) from PaymentMast x")
     List<GetAllPayment> getAllPaymentWithPartyName();
 
    /* @Query("select new com.main.glory.model.paymentTerm.request.GetAllBank() from")

@@ -37,7 +37,8 @@ public class TaskMast {
     Date updatedDate;
     Date completedDate;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     List<TaskImage> taskImageList;
 

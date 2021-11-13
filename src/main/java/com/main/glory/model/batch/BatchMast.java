@@ -28,7 +28,8 @@ public class BatchMast {
     private Integer userHeadId;
     private Boolean isProductionPlaned;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<OldBatchData> oldBatchData;
 

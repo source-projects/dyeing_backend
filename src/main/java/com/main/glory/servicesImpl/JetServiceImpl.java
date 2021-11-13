@@ -760,7 +760,7 @@ public class JetServiceImpl {
         int i = 0;
         for (JetMast jetMast : jetMastList) {
             List<GetJetData> jetDataList = new ArrayList<>();
-            List<JetData> existJetDataList = jetMast.getJetDataList();
+            List<JetData> existJetDataList = jetDataDao.getAllProductionInTheQueueAndStartByControlId(jetMast.getId());
 
             for (JetData jetData : existJetDataList) {
                 if (jetData.getStatus().equals(JetStatus.inQueue) || jetData.getStatus().equals(JetStatus.start)) {
@@ -1221,5 +1221,10 @@ public class JetServiceImpl {
 
     public void updateJetDataStatus(Long id, JetStatus inQueue) {
         jetDataDao.updateJetStatusById(id,inQueue);
+    }
+
+    public List<GetAllJetMast> getAllJetMast() {
+        List<GetAllJetMast> list = jetMastDao.getAllJetMast();
+        return list;
     }
 }

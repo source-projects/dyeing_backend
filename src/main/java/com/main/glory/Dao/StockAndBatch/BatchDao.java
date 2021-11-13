@@ -145,6 +145,8 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     BatchWithTotalMTRandFinishMTR getAllBatchWithTotalMtrAndTotalFinishMtr(String batchId, Long stockId);
 
 
+
+
     //get the quality bill responce by stock and batch id 3rd parameter for bill generated or not
    /* @Query("select new com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber(" +
             "(select q.qualityId from Quality q where q.id=(select sm.qualityId from StockMast sm where sm.id=:stockId)) AS qualityId," +
@@ -297,7 +299,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p where p.isProductionPlanned = true AND p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND  p.controlId IN (select ss.id from StockMast ss where ss.createdBy=:userId OR ss.userHeadId=:userHeadId) GROUP BY p.mergeBatchId ")
     List<GetBatchWithControlId> getAllMergeBatchWithoutBillGenrated(Long userId, Long userHeadId);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr)) from BatchData p where p.batchId IS NOT NULL AND p.mergeBatchId=:mergeBatchId GROUP BY p.batchId,p.controlId")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr),(select stockMast.userHeadId from StockMast stockMast where stockMast.id=p.controlId)) from BatchData p where p.batchId IS NOT NULL AND p.mergeBatchId=:mergeBatchId GROUP BY p.batchId,p.controlId")
     List<GetBatchWithControlId> getBatchesByMergeBatchId(String mergeBatchId);
 
     @Query("select x from BatchData x where x.batchId=:batchId AND x.mergeBatchId=:mergeBatchId ")
@@ -401,7 +403,7 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select x from BatchData x where x.batchId=:batchId AND x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber)")
     List<BatchData> getBatchByBatchIdAndInvoiceNumber(String batchId, String invoiceNumber);
 
-    @Query("select count(x.id) from BatchData x where x.batchId=:batchId")
+    @Query("select count(x.id) from BatchData x where x.batchId=:batchId AND x.isExtra=false")
     Long getTotalPcsByBatchIdWithoutExtra(String batchId);
 
     @Query(value = "select * from batch_data as x where x.pchallan_ref=:pchallanRef AND x.id!=:id AND x.control_id in (select id from stock_mast as s where s.party_id=:partyId)",nativeQuery = true)
@@ -466,11 +468,14 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.PchallanByBatchId(x.pchallanRef,COUNT(x.id)) from BatchData x where x.batchId=:batchId GROUP BY x.pchallanRef")
     List<PchallanByBatchId> getListOfPchallanByBatchId(String batchId);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate,s.quality.qualityName.qualityName,count(x.id)) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate,s.quality.qualityName.qualityName,count(x.id),s.quality.qualityId) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
     List<PendingBatchData> getPendingBatchListByStockId(Long id);
 
     @Query("select x from BatchData x where x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber AND d.pchallanRef=:pchallanRef AND d.batchId=:batchId)")
     List<BatchData> getBatchByBatchIdAndPchallanRedAndInvoiceNumber(String batchId, String invoiceNumber, String pchallanRef);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllMergeBatchId(count(b.id),b.mergeBatchId) from BatchData b where b.batchId = :batchId AND b.isFinishMtrSave=true AND b.isBillGenrated=false AND b.mergeBatchId IS NOT NULL GROUP BY b.mergeBatchId")
+    List<GetAllMergeBatchId> getAllMergeBatchIdByBatchIdAndFinishMtrSaveAndBillIsNotGenrated(String batchId);
 
 
 

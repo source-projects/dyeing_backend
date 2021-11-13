@@ -34,7 +34,8 @@ public class Quality {
 	String qualityType;
 	String unit;// inward units
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="partyId", referencedColumnName = "id", insertable = true, updatable = true)    
 	Party  party;
 
@@ -42,14 +43,17 @@ public class Quality {
 	Double mtrPerKg;
 	String remark;
 	Date createdDate;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="createdBy", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userCreatedByData;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="userHeadId", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData userHeadData;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="updatedBy", referencedColumnName = "id", insertable = true, updatable = true)    
 	UserData updatedBy;
 	Date updatedDate;
@@ -59,7 +63,8 @@ public class Quality {
 	Double rate;
 	@Column(columnDefinition = "varchar(255) default '998821'")
 	String hsn;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
 	@JoinColumn(name="qualityNameId", referencedColumnName = "id", insertable = true, updatable = true)    
 	QualityName qualityName;
 

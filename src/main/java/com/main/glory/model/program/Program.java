@@ -39,7 +39,8 @@ public class Program {
     private Long userHeadId;
     private String priority;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+    CascadeType.REFRESH })
     @JoinColumn(name = "programControlId", referencedColumnName = "id")
     private List<ProgramRecord> programRecords;
 
