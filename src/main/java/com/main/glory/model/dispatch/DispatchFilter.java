@@ -19,5 +19,6 @@ public class DispatchFilter {
     Long qualityEntryId;
     Long qualityNameId;
     Boolean signByParty;
+    Boolean pendingPayment;//null or false are same
 
 }

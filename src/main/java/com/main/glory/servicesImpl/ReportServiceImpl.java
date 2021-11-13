@@ -6,6 +6,7 @@ import com.main.glory.model.report.ReportMast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("reportServiceImpl")
@@ -57,6 +58,21 @@ public class ReportServiceImpl {
             throw new Exception(ConstantFile.Report_Type_Not_Found);
 
         reportMastDao.deleteById(id);
+
+    }
+
+    public void addAllDefaultReportMastWithUrl() {
+        List<ReportMast> list = new ArrayList<>();
+        list.add(new ReportMast("Pending Report","Stock Batch Module","stockBatch/pending/forConslidateBatchResponse"));
+        list.add(new ReportMast("Invoice Report","Invoice Module","/dispatch/report/forConslidateBillNew"));
+        list.add(new ReportMast("Invoice Payment Pending Report","Invoice Module","/dispatch/monthWisePendingReport?paymentPending="));
+
+        list.forEach(e->{
+            ReportMast reportMastExist = reportMastDao.getReportMastByName(e.getName());
+            if(reportMastExist==null)
+                reportMastDao.save(e);
+        });
+
 
     }
 }

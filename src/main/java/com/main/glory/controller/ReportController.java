@@ -143,4 +143,25 @@ public class ReportController extends ControllerConfig {
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
+
+    //ADD DEFAULT REPORT API WITH URL
+    @GetMapping("/report/addDefaultApi")
+    public ResponseEntity<GeneralResponse<Boolean, Object>> addAllDefaultReportMastWithUrl() {
+        GeneralResponse<Boolean, Object> result;
+        try {
+
+            reportService.addAllDefaultReportMastWithUrl();
+
+            result = new GeneralResponse<>(true, ConstantFile.Report_Type_Added, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
 }
