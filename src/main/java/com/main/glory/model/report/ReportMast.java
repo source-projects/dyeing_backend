@@ -30,4 +30,10 @@ public class ReportMast {
         this.url = reportMast.getUrl();
         this.type = reportMast.getType();
     }
+
+    public ReportMast(String name, String type, String url) {
+        this.name = name;
+        this.type = type;
+        this.url = url;
+    }
 }

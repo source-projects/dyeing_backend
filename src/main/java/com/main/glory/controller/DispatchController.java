@@ -494,10 +494,10 @@ public class DispatchController extends ControllerConfig {
     }
 
     @PostMapping("/dispatch/monthWisePendingReport")
-    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter) throws Exception{
+    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter,@RequestParam(name="paymentPending")Boolean paymentPending) throws Exception{
         GeneralResponse<List<MonthlyDispatchPendingReport>, Object> result;
         try{    
-            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter);
+            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter,paymentPending);
             if(!list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else

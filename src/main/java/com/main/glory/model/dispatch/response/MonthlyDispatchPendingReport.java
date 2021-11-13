@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class MonthlyDispatchPendingReport {
     private int month;
     private int year;
@@ -16,6 +16,8 @@ public class MonthlyDispatchPendingReport {
     int partyId;
     private Double discount;
     String partyName;
+    Double percentageDiscount;
+
 
 
     public void addDiscount(Double discount){
@@ -26,5 +28,22 @@ public class MonthlyDispatchPendingReport {
         this.netAmt+=netAmt;
     }
 
+    public MonthlyDispatchPendingReport(int month, int year, Double netAmt, int partyId, Double discount, String partyName) {
+        this.month = month;
+        this.year = year;
+        this.netAmt = netAmt;
+        this.partyId = partyId;
+        this.discount = discount;
+        this.partyName = partyName;
+    }
 
+    public MonthlyDispatchPendingReport(int month, int year, Double netAmt, int partyId, Double discount, String partyName, Double percentageDiscount) {
+        this.month = month;
+        this.year = year;
+        this.netAmt = netAmt;
+        this.partyId = partyId;
+        this.discount = discount;
+        this.partyName = partyName;
+        this.percentageDiscount = percentageDiscount;
+    }
 }

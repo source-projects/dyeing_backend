@@ -7,10 +7,16 @@ import lombok.Setter;
 
 import javax.persistence.SecondaryTable;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter
 public class GetAllMergeBatchId {
-    String mergeId;
+    Long id;
+    String mergeBatchId;
+
+    public GetAllMergeBatchId(Long id, String mergeBatchId) {
+        this.id = id;
+        this.mergeBatchId = mergeBatchId;
+    }
 }

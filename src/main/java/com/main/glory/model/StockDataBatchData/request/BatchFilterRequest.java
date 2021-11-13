@@ -15,4 +15,5 @@ public class BatchFilterRequest {
     Long partyId;
     Long qualityEntryId;
     Long qualityNameId;
+    Long userHeadId;
 }
