@@ -1944,7 +1944,7 @@ public class StockBatchServiceImpl {
 
         List<GetBatchWithControlId> batchDataForMergeBatch = null;// get all batch for based on mrge batch id
         Long partyId = null;
-        Long qualityId = null;
+        Long qualityEntryId = null;
         String batchId = null;
         Long userHeadFilterId = null;
 
@@ -1958,7 +1958,7 @@ public class StockBatchServiceImpl {
                 partyId = Long.parseLong(value);
 
             if (field.equals("qualityEntryId"))
-                qualityId = Long.parseLong(value);
+                qualityEntryId = Long.parseLong(value);
 
             if (field.equals("batchId"))
                 batchId = value;
@@ -2015,11 +2015,11 @@ public class StockBatchServiceImpl {
             }
 
             if (partyId != null)
-                if (partyId != getAllBatch.getPartyId())
+                if (!partyId.equals( getAllBatch.getPartyId()))
                     continue;
 
-            if (qualityId != null)
-                if (qualityId != getAllBatch.getQualityEntryId())
+            if (qualityEntryId != null)
+                if (!qualityEntryId.equals(getAllBatch.getQualityEntryId()))
                     continue;
 
             if (batchId != null)
@@ -2074,11 +2074,11 @@ public class StockBatchServiceImpl {
                     batchDetail.setProductionPlanned(true);
 
                     if (partyId != null)
-                        if (partyId != batchDetail.getPartyId())
+                        if (!partyId.equals(batchDetail.getPartyId()))
                             continue;
 
-                    if (qualityId != null)
-                        if (qualityId != batchDetail.getQualityEntryId())
+                    if (qualityEntryId != null)
+                        if (!qualityEntryId.equals( batchDetail.getQualityEntryId()))
                             continue;
 
                     if (batchId != null)
