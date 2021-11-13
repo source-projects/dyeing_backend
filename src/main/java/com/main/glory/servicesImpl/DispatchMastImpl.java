@@ -1557,7 +1557,7 @@ public class DispatchMastImpl {
                 if (quality != null) {
                     Double extraRate = 0.0;
                     //for extra rate && check is it merge batch id if yes then go to production plan table to get extra rate
-                    List<GetAllMergeBatchId> getAllMergeBatchIdList = batchDao.getAllMergeBatchIdByBatchIdAndFinishMtrSaveAndBillIsNotGenrated(getBatchWithControlId.getBatchId());
+                   /* List<GetAllMergeBatchId> getAllMergeBatchIdList = batchDao.getAllMergeBatchIdByBatchIdAndFinishMtrSaveAndBillIsNotGenrated(getBatchWithControlId.getBatchId());
                     if (getAllMergeBatchIdList.size() > 0) {
 
                         //get shade id and production detail by using mergebatchid
@@ -1576,7 +1576,7 @@ public class DispatchMastImpl {
                         ProductionPlan productionPlan = productionPlanService.getProductionByBatchId(getBatchWithControlId.getBatchId());
                         ShadeMast shadeMast = shadeService.getShadeById(productionPlan.getShadeId());
                         extraRate += shadeMast.getExtraRate() > 0 ? shadeMast.getExtraRate() : 0;
-                    }
+                    }*/
 
                     QualityName qualityName = quality.getQualityName();
                     getBatchWithControlId.setRate(quality.getRate() + extraRate);
@@ -1731,8 +1731,8 @@ public class DispatchMastImpl {
 
         // increment the invoice number to dispatch mast
         // check that the invoice sequence is exist
-        DispatchData dispatchDataExist = dispatchDataDao
-                .getDispatchDataByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
+        DispatchMast dispatchDataExist = dispatchMastDao
+                .getDispatchMastByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
         if (dispatchDataExist != null)
             throw new Exception(ConstantFile.PrinterIsBusy);
 
