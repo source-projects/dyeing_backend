@@ -1600,6 +1600,8 @@ public class DispatchMastImpl {
         InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
         if (invoiceSequenceExist == null)
             throw new Exception(constantFile.Invoice_Sequence_Not_Found);
+        // update the invoice sequence by one
+        invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(), invoiceSequenceExist.getSequence() + 1);
 
         // update batch list
         List<Long> batchIdListToUpdate = new ArrayList<>();
@@ -1741,8 +1743,7 @@ public class DispatchMastImpl {
         // update the batch list
         batchDao.updateBillStatusInListOfBatchEntryId(batchIdListToUpdate, true);
 
-        // update the invoice sequence by one
-        invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(), invoiceSequenceExist.getSequence() + 1);
+
         return invoiceSequenceExist.getSequence();
 
     }
