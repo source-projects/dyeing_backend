@@ -23,6 +23,7 @@ public class PendingBatchData {
     Double totalBatchMtr;
     Double totalBatchWt;
 
+    @JsonIgnore
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate,String qualityName,Long totalPcs,String qualityId) {
