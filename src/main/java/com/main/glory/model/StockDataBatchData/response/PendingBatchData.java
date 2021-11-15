@@ -1,5 +1,6 @@
 package com.main.glory.model.StockDataBatchData.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
