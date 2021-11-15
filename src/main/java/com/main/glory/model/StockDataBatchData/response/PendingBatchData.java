@@ -1,5 +1,6 @@
 package com.main.glory.model.StockDataBatchData.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class PendingBatchData {
     Double totalBatchMtr;
     Double totalBatchWt;
 
+    @JsonIgnore
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate,String qualityName,Long totalPcs,String qualityId) {
