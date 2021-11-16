@@ -17,12 +17,14 @@ public class PendingBatchMast {
     Long partyId;
     String partyName;
     String partyCode;
+    String headName;
     List<PendingBatchData> pendingBatchDataList;
 
     public PendingBatchMast(Party party) {
         this.partyId = party.getId();
         this.partyName = party.getPartyName();
         this.partyCode = party.getPartyCode();
+        this.headName = party.getUserHeadData().getUserName();
     }
 
 
@@ -30,5 +32,6 @@ public class PendingBatchMast {
         this.partyId = e.getParty().getId();
         this.partyName = e.getParty().getPartyName();
         this.partyCode = e.getParty().getPartyCode();
+        this.headName = e.getParty().getUserHeadData().getUserName();
     }
 }
