@@ -3142,9 +3142,9 @@ public class StockBatchServiceImpl {
 
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (!filter.getFrom().isEmpty())
+        if (filter.getFrom()!=null)
             from = datetimeFormatter1.parse(filter.getFrom());
-        if (!filter.getTo().isEmpty()) {
+        if (filter.getTo()!=null) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
             // c.add(Calendar.DATE, 1);// adding one day in to because of time issue in
@@ -3153,7 +3153,7 @@ public class StockBatchServiceImpl {
         }
 
         List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequestWithPendingBatch(from, to,
-                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId());
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getUserHeadId());
 
 //        if (stockMastList == null)
 //            throw new Exception(ConstantFile.StockBatch_Not_Found);
