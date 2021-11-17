@@ -426,4 +426,8 @@ public class DyeingProcessServiceImpl {
         }
         return list;
     }
+
+    public DyeingProcessMast getDyeingProcessMastById(Long processId) {
+        return dyeingProcessMastDao.getDyeingProcessById(processId);
+    }
 }

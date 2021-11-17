@@ -90,9 +90,14 @@ public class ShadeServiceImpl {
 		UserData userHeadData = null;
 		UserData createdBy = userDao.getUserById(addShadeMast.getCreatedBy());
 		userHeadData = createdBy.getUserHeadId()==0 || createdBy.getIsMaster()==false?party.getUserHeadData():userDao.getUserById(createdBy.getUserHeadId());
+		DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessMastById(addShadeMast.getProcessId());
+
 		ShadeMast shadeMast = new ShadeMast(addShadeMast, createdBy, userHeadData,createdBy,quality,party);
 		shadeMast.setShadeDataList(addShadeMast.getShadeDataList());
 		System.out.println("ShadeMast object created");
+
+		if(dyeingProcessMast == null)
+		throw new Exception(ConstantFile.DyeingProcess_Data_Not_Exist);
 
 		if (shadeMast.getQuality() == null)
 			throw new Exception(ConstantFile.Quality_Data_Not_Exist);
@@ -107,7 +112,7 @@ public class ShadeServiceImpl {
 
 		// check the dyeing process for the shade is available or not
 
-		DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
+		//DyeingProcessMast processMastExist = dyeingProcessService.getDyeingProcessById(shadeMast.getProcessId());
 
 		System.out.println("DyeingProcessMast object created");
 		// ShadeMast shadeData = new ShadeMast(shadeMast);
