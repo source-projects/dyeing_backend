@@ -88,8 +88,8 @@ public class ConsolidatedBillDataForExcel {
         this.qualityName = qualityName;
         this.headName = headName;
         this.discount=discount;
-        this.totalMtr = totalMtr;
-        this.totalFinishMtr = totalFinishMtr;
+        this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
+        this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.rate = rate;
         this.amt = amt;
         //this.greyPcs = greyPcs;

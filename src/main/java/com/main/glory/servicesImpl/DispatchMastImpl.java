@@ -32,6 +32,8 @@ import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForPDF;
 import com.main.glory.model.dispatch.response.report.ConsolidatedBillMast;
 import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.paymentTerm.response.MonthlyDispatchPendingReport;
+import com.main.glory.model.paymentTerm.response.MonthlyDispatchPendingReportData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
@@ -51,6 +53,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1269,7 +1272,7 @@ public class DispatchMastImpl {
     public List<ConsolidatedBillMast> getConsolidateDispatchBillByFilter(DispatchFilter filter) throws Exception {
         Date from = null;
         Date to = null;
-        List<ConsolidatedBillMast> list = null;
+        List<ConsolidatedBillMast> list = new ArrayList<>();
         // add one day because of timestamp issue
         Calendar c = Calendar.getInstance();
         //System.out.println(1);
@@ -1293,7 +1296,7 @@ public class DispatchMastImpl {
         Map<String, ConsolidatedBillMast> invoiceList = new HashMap<>();
 
         List<ConsolidatedBillDataForPDF> consolidatedBillDataForPDFList = dispatchDataDao.getAllConsolidateResponseForPDFReportByFilter(from, to, filter.getUserHeadId(),
-                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId());
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getSignByParty());
 
         consolidatedBillDataForPDFList.forEach(e -> {
             if(invoiceList.containsKey(e.getInvoiceNo()))
@@ -1418,83 +1421,91 @@ public class DispatchMastImpl {
 
     }
 
-    public List<MonthlyDispatchPendingReport> getMonthWiseReportPendingDispatch(DispatchFilter filter, Boolean paymentPending) throws Exception {
-        Date from = null;
-        Date to = null;
-
-        // add one day because of timestamp issue
-        Calendar c = Calendar.getInstance();
-
-        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
-
-        if (filter.getFrom() != null) {
-            from = datetimeFormatter1.parse(filter.getFrom());
-            c.setTime(from);
-            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
-            // created date and 1 day is comming minus from FE
-            from = c.getTime();
-        }
-        if (filter.getTo() != null) {
-            to = datetimeFormatter1.parse(filter.getTo());
-            c.setTime(to);
-            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
-            // working,but not working on EC2 because of timezone
-            to = c.getTime();
-        }
-
-
-//        System.out.println(from.toString() + ":" + to.toString());
-        HashMap<Integer, MonthlyDispatchPendingReport> data = new HashMap<Integer, MonthlyDispatchPendingReport>();
-
-        // quality entryId
-        List<DispatchMast> dispatchMastList = new ArrayList<>();
-        if (paymentPending == true) {
-            dispatchMastList = dispatchMastDao.getInvoiceByDateFilterAndPaymentBunchIdNull(from, to);
-        } else {
-            dispatchMastList = dispatchMastDao.getInvoiceByDateFilterAndPaymentBunchIdNotNull(from, to);
-
-        }
-
-
-        // System.out.print(dispatchMastList.size());
-        for (DispatchMast dispatchMast : dispatchMastList) {
-
-            Date createdDate = dispatchMast.getCreatedDate();
-            int month = createdDate.getMonth() + 1;
-            int year = createdDate.getYear() + 1900;
-            int partyId = dispatchMast.getParty().getId().intValue();
-            int key = (int) (month + year + dispatchMast.getPercentageDiscount() * 100 + 1000000 * partyId);
-            //Double finishMtr = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getDispatchDataList().get(j).getBatchData().getFinishMtr());
-            //Double taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getTaxAmt());
-            Double discount = dispatchMast.getDiscount();
-            Double netAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getNetAmt());
-
-            if (data.containsKey(key)) {
-                MonthlyDispatchPendingReport report = data.get(key);
-                report.addNetAmt(netAmt);
-                report.addDiscount(discount);
-                //System.out.println(partyId+":"+discount);
-            } else {
-                //data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt,partyId,discount,dispatchMast.getParty().getPartyName()));
-                data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt, partyId, discount, dispatchMast.getParty().getPartyName(), dispatchMast.getPercentageDiscount()));
-            }
-
-        }
-
-        List<MonthlyDispatchPendingReport> list = new ArrayList<MonthlyDispatchPendingReport>(data.values());
-        // Collections.sort(list,new Comparator<MonthlyDispatchReport>(){
-
-        // @Override
-        // public int compare(MonthlyDispatchReport o1, MonthlyDispatchReport o2) {
-        // return o1.getYear()*100 +o1.getMonth()- (o2.getYear()*100 +o2.getMonth()); //
-        // salary is also positive integer
-        // }
-
-        // }
-        // );
-        return list;
-
-    }
+//    public List<MonthlyDispatchPendingReport> getMonthWiseReportPendingDispatch(DispatchFilter filter) throws Exception {
+//        Date from = null;
+//        Date to = null;
+//
+//        // add one day because of timestamp issue
+//        Calendar c = Calendar.getInstance();
+//
+//        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+//
+//        if (filter.getFrom() != null) {
+//            from = datetimeFormatter1.parse(filter.getFrom());
+//            c.setTime(from);
+//            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+//            // created date and 1 day is comming minus from FE
+//            from = c.getTime();
+//        }
+//        if (filter.getTo() != null) {
+//            to = datetimeFormatter1.parse(filter.getTo());
+//            c.setTime(to);
+//            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+//            // working,but not working on EC2 because of timezone
+//            to = c.getTime();
+//        }
+//
+//
+////        System.out.println(from.toString() + ":" + to.toString());
+//        //HashMap<Integer, HashMap<String,List<MonthlyDispatchPendingReportData>>> data = new HashMap<>();
+//        List<MonthlyDispatchPendingReport> reportList = new ArrayList<>();
+//
+//        // quality entryId
+//        List<DispatchMast> dispatchMastList = new ArrayList<>();
+//        if (filter.getPendingPayment()!=null && filter.getPendingPayment() == true) {
+//            dispatchMastList = dispatchMastDao.getInvoiceByDateFilterAndPaymentBunchIdNull(from, to);
+//        } else {
+//            dispatchMastList = dispatchMastDao.getInvoiceByDateFilterAndPaymentBunchIdNotNull(from, to);
+//
+//        }
+//
+//
+//        // System.out.print(dispatchMastList.size());
+//        for (DispatchMast dispatchMast : dispatchMastList) {
+//
+//            Date createdDate = dispatchMast.getCreatedDate();
+//            int month = createdDate.getMonth() + 1;
+//            int year = createdDate.getYear() + 1900;
+//            int partyId = dispatchMast.getParty().getId().intValue();
+//            int key = dispatchMast.getPercentageDiscount().intValue();
+//            //int key = (int) (month + year + dispatchMast.getPercentageDiscount() * 100 + 1000000 * partyId);
+//            //Double finishMtr = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getDispatchDataList().get(j).getBatchData().getFinishMtr());
+//            //Double taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getTaxAmt());
+//            Double discount = dispatchMast.getDiscount();
+//            Double netAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getNetAmt());
+//
+//            if (data.containsKey(key)) {
+//                MonthlyDispatchPendingReport report = data.get(key);
+//                report.addNetAmt(netAmt);
+//                report.addDiscount(discount);
+//                //System.out.println(partyId+":"+discount);
+//            } else {
+//                //data.put(key, new MonthlyDispatchPendingReport(month, year, netAmt,partyId,discount,dispatchMast.getParty().getPartyName()));
+//                MonthlyDispatchPendingReport record = new MonthlyDispatchPendingReport(dispatchMast);
+//                List<MonthlyDispatchPendingReportData> list = new ArrayList<>();
+//                list.add(new MonthlyDispatchPendingReportData(month, year, netAmt,partyId,discount,dispatchMast.getParty().getPartyName(),dispatchMast.getParty().getUserHeadData().getUserName()));
+//                HashMap<String, List<MonthlyDispatchPendingReportData>> listMap = new HashMap<>();
+//                listMap.put(Month.of(month).toString()+year,list);
+//                record.setList(listMap);
+//                reportList.add(record);
+//            }
+//
+//        }
+//
+//        List<MonthlyDispatchPendingReport> list = new ArrayList<MonthlyDispatchPendingReport>(data.values());
+//        // Collections.sort(list,new Comparator<MonthlyDispatchReport>(){
+//
+//        // @Override
+//        // public int compare(MonthlyDispatchReport o1, MonthlyDispatchReport o2) {
+//        // return o1.getYear()*100 +o1.getMonth()- (o2.getYear()*100 +o2.getMonth()); //
+//        // salary is also positive integer
+//        // }
+//
+//        // }
+//        // );
+//        return list;
+//
+//    }
 
     // only the the rate and discount is updating
     public Long updateDispatch(CreateDispatch createDispatch) throws Exception {
@@ -2398,7 +2409,7 @@ public class DispatchMastImpl {
             to = c.getTime();
         }
         List<ConsolidatedBillDataForExcel> list = dispatchDataDao.getAllConsolidateResponseByFilter(from, to, filter.getUserHeadId(),
-                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId());
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getSignByParty());
         return list;
     }
 }

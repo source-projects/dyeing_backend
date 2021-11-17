@@ -42,10 +42,10 @@ public class ConsolidatedBillDataForPDF {
         this.partyName = partyName;
         this.qualityName = qualityName;
         this.headName = headName;
-        this.totalMtr = totalMtr;
-        this.totalFinishMtr = totalFinishMtr;
+        this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
+        this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.rate = rate;
-        this.taxAmt = taxAmt;
+        this.taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(taxAmt);
         this.sharinkage = StockBatchServiceImpl.changeInFormattedDecimal(((this.totalMtr - this.totalFinishMtr) / this.totalMtr) * 100);
         this.invoiceNo = invoiceNo;
         this.createdDate = createdDate;

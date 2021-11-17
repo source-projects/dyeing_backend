@@ -485,28 +485,6 @@ public class DispatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @PostMapping("/dispatch/monthWisePendingReport")
-    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter,@RequestParam(name="paymentPending")Boolean paymentPending) throws Exception{
-        GeneralResponse<List<MonthlyDispatchPendingReport>, Object> result;
-        try{    
-            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter,paymentPending);
-            if(!list.isEmpty())
-                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
-            else
-                result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
-            logService.saveLog(result,request,debugAll);
-        } catch (Exception e){
-            e.printStackTrace();
-            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
-            logService.saveLog(result,request,true
-            );
-        }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }
-
-
-
-
     //sign dispatch flag
     @PostMapping("/dispatch/signByParty")
     public ResponseEntity<GeneralResponse<Boolean,Object>> signDispatchByParty(@RequestBody List<UpdateSignDispatch> updateSignDispatchList) throws Exception{
