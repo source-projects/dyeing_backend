@@ -30,6 +30,7 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.quality.response.QualityWithQualityNameParty;
 import com.main.glory.model.shade.ShadeMast;
+import com.main.glory.model.shade.requestmodals.GetAllShade;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
@@ -44,9 +45,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import lombok.val;
+
 
 import javax.transaction.Transactional;
+import java.sql.Array;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -495,23 +497,24 @@ public class StockBatchServiceImpl {
         list.forEach(stock -> {
             int count = 0;// count the production plan gr
             // check the batches is produciton plan
-            for (BatchData batchData : stock.getBatchData()) {
+            if(stock.getBatchData()!=null) {
+                for (BatchData batchData : stock.getBatchData()) {
 
-                if (batchData.getIsProductionPlanned() == true)
-                    count++;
+                    if (batchData.getIsProductionPlanned() == true)
+                        count++;
+                }
+
+                if (count == stock.getBatchData().size())
+                    stock.setIsProductionPlanned(true);
+                else
+                    stock.setIsProductionPlanned(false);
             }
-
-            if (count == stock.getBatchData().size())
-                stock.setIsProductionPlanned(true);
-            else
-                stock.setIsProductionPlanned(false);
-
         });
 
         // get only those who's batches production is not planned
         list = list
-                .stream().filter(stock -> stock.getBatchData().stream()
-                        .filter(batch -> batch.getIsProductionPlanned() == false).findAny().isPresent())
+                .stream().filter(stock -> stock.getBatchData()!=null?stock.getBatchData().stream()
+                        .filter(batch -> batch.getIsProductionPlanned() == false).findAny().isPresent():null)
                 .collect(Collectors.toList());
 
         // to quick count using stream
@@ -544,7 +547,8 @@ public class StockBatchServiceImpl {
             else
                 data.setIsProductionPlanned(false);
 
-            return stockMast;
+            //AddStockBatch record = new AddStockBatch(stockMast);
+            return data;
         } else
             throw new Exception("no data found for StockId: " + id);
     }
@@ -830,7 +834,7 @@ public class StockBatchServiceImpl {
         if (stockMastList.isEmpty())
             return list;
 
-        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
+        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated(null,null,null,null);
 
         /*
          * //filter the batch //get the user record first //Long userId =
@@ -1930,19 +1934,20 @@ public class StockBatchServiceImpl {
     public FilterResponse<GetAllBatchWithProduction> getAllBatchWithoutBillGeneratedAllPaginated(
             GetBYPaginatedAndFiltered requestParam, String id) throws Exception {
         List<GetAllBatchWithProduction> list = new ArrayList<>();
-        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
+        List<GetAllBatch> dataList = null;
 
         // filter the batch
         // get the user record first
         Long userId = Long.parseLong(id);
-
+        Page queryResponse = null;
         UserData userData = userDao.getUserById(userId);
         Long userHeadId = null;
 
+
         UserPermission userPermission = userData.getUserPermissionData();
         Permissions permissions = new Permissions(userPermission.getSb().intValue());
-
-        List<GetBatchWithControlId> batchDataForMergeBatch = null;// get all batch for based on mrge batch id
+        Pageable pageable = filterService.getPageable(requestParam.getData());
+        List<GetBatchWithControlId> batchDataForMergeBatch = new ArrayList<>();// get all batch for based on mrge batch id
         Long partyId = null;
         Long qualityEntryId = null;
         String batchId = null;
@@ -1972,8 +1977,8 @@ public class StockBatchServiceImpl {
         if (permissions.getViewAll()) {
             userId = null;
             userHeadId = null;
-            dataList = batchDao.getAllBatchWithoutBillGenerated();
-            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated();
+            dataList = batchDao.getAllBatchWithoutBillGenerated(partyId,qualityEntryId,userHeadFilterId,batchId);
+            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(partyId,qualityEntryId,userHeadFilterId,batchId);
 
         } else if (permissions.getViewGroup()) {
             // check the user is master or not ?
@@ -1981,22 +1986,22 @@ public class StockBatchServiceImpl {
             if (userData.getUserHeadId() == 0) {
                 userId = null;
                 userHeadId = null;
-                dataList = batchDao.getAllBatchWithoutBillGenerated();
-                batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated();
+                dataList = batchDao.getAllBatchWithoutBillGenerated(partyId,qualityEntryId,userHeadFilterId,batchId);
+                batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(partyId,qualityEntryId,userHeadFilterId,batchId);
 
             } else if (userData.getUserHeadId() > 0) {
                 // check weather master or operator
                 UserData userHead = userDao.getUserById(userData.getUserHeadId());
                 userId = userData.getId();
                 userHeadId = userHead.getId();
-                dataList = batchDao.getAllBatchWithoutBillGenerated(userId, userHeadId);
-                batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(userId, userHeadId);
+                dataList = batchDao.getAllBatchWithoutBillGenerated(partyId,qualityEntryId,userHeadFilterId,batchId);
+                batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(partyId,qualityEntryId,userHeadFilterId,batchId);
             }
         } else if (permissions.getView()) {
             userId = userData.getId();
             userHeadId = null;
-            dataList = batchDao.getAllBatchWithoutBillGenerated(userId, userHeadId);
-            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(userId, userHeadId);
+            dataList = batchDao.getAllBatchWithoutBillGenerated(partyId,qualityEntryId,userHeadFilterId,batchId);
+            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(partyId,qualityEntryId,userHeadFilterId,batchId);
         }
 
         // filter the data if the batch is done with jet
@@ -2007,7 +2012,7 @@ public class StockBatchServiceImpl {
             if (userHeadFilterId != null) {
                 Optional<StockMast> stockMast = stockMastDao.findById(getAllBatch.getControlId());
                 if (stockMast.isPresent()) {
-                    if (userHeadFilterId != stockMast.get().getUserHeadId())
+                    if (!userHeadFilterId.equals( stockMast.get().getParty().getUserHeadData().getId()))
                         continue;
                 } else {
                     continue;
@@ -2098,6 +2103,7 @@ public class StockBatchServiceImpl {
                 list.subList(Integer.min(pageIndex * pageSize, list.size()),
                         Integer.min((pageIndex + 1) * pageSize, list.size())),
                 pageIndex, pageSize, list.size());
+
         return response;
 
     }
@@ -2105,7 +2111,7 @@ public class StockBatchServiceImpl {
     // get All batch who's bill is not generated
     public List<GetAllBatchWithProduction> getAllBatchWithoutBillGenerated(String id) throws Exception {
         List<GetAllBatchWithProduction> list = new ArrayList<>();
-        List<GetAllBatch> dataList = batchDao.getAllBatchWithoutBillGenerated();
+        List<GetAllBatch> dataList = new ArrayList<>();
 
         // filter the batch
         // get the user record first
@@ -2118,12 +2124,12 @@ public class StockBatchServiceImpl {
         Permissions permissions = new Permissions(userPermission.getSb().intValue());
 
         List<GetBatchWithControlId> batchDataForMergeBatch = null;// get all batch for based on mrge batch id
-
+        Pageable pageable = PageRequest.of(2, 20);
         if (permissions.getViewAll()) {
             userId = null;
             userHeadId = null;
-            dataList = batchDao.getAllBatchWithoutBillGenerated();
-            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated();
+            dataList = batchDao.getAllBatchWithoutBillGenerated(null,null,null,null);
+            batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(null,null,null,null);
 
         } else if (permissions.getViewGroup()) {
             // check the user is master or not ?
@@ -2131,8 +2137,8 @@ public class StockBatchServiceImpl {
             if (userData.getUserHeadId() == 0) {
                 userId = null;
                 userHeadId = null;
-                dataList = batchDao.getAllBatchWithoutBillGenerated();
-                batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated();
+                dataList = batchDao.getAllBatchWithoutBillGenerated(null,null,null,null);
+                batchDataForMergeBatch = batchDao.getAllMergeBatchWithoutBillGenrated(null,null,null,null);
 
             } else if (userData.getUserHeadId() > 0) {
                 // check weather master or operator

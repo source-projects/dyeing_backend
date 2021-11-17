@@ -2,6 +2,7 @@ package com.main.glory.model.StockDataBatchData.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +31,9 @@ public class PendingBatchData {
     public PendingBatchData(String batchId, String pchallanRef, Double totalBatchMtr, Double totalBatchWt,Date receiveDate,String qualityName,Long totalPcs,String qualityId) {
         this.batchId = batchId;
         this.pchallanRef = pchallanRef;
-        this.totalBatchMtr = totalBatchMtr;
-        this.totalBatchWt = totalBatchWt;
+        this.totalBatchMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalBatchMtr);
+        this.totalBatchWt = StockBatchServiceImpl.changeInFormattedDecimal(totalBatchWt);
         this.receiveDate = formatter.format(receiveDate);
-        //System.out.println(this.receiveDate);
         this.qualityId = qualityId;
         this.totalPcs=totalPcs;
         this.qualityName = qualityName;

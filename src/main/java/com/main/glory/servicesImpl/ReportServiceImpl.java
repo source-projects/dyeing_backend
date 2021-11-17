@@ -64,8 +64,8 @@ public class ReportServiceImpl {
     public void addAllDefaultReportMastWithUrl() {
         List<ReportMast> list = new ArrayList<>();
         //list.add(new ReportMast("Pending Report","Stock Batch Module","stockBatch/pending/forConslidateBatchResponse"));
-        list.add(new ReportMast("Invoice Report","Invoice Module","/dispatch/report/forConslidateExcelBill","/dispatch/report/forConslidateReportBill"));
-        list.add(new ReportMast("Invoice Payment Pending Report","Invoice Module","/dispatch/monthWisePendingReport?paymentPending=",""));
+        list.add(new ReportMast("Invoice Report","invoice","/dispatch/report/forConslidateExcelBill","/dispatch/report/forConslidateReportBill"));
+        list.add(new ReportMast("Invoice Payment Report","paymentTerm","/paymentTerm/monthWisePendingReport?paymentPending=",""));
 
         list.forEach(e->{
             ReportMast reportMastExist = reportMastDao.getReportMastByName(e.getName());

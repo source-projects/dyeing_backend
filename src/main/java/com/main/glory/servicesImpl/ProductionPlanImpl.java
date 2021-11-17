@@ -243,7 +243,7 @@ public class ProductionPlanImpl {
         List<String> batchId = new ArrayList<>();
 
         String partyId = null;
-        String qualityId = null;
+        String qualityEntryId = null;
         String batch_id = null;
 
         // batchData.addAll(batchDataForMergeBatch);
@@ -255,8 +255,8 @@ public class ProductionPlanImpl {
             if (field.equals("partyId"))
                 partyId = value;
 
-            if (field.equals("qualityId"))
-                qualityId = value;
+            if (field.equals("qualityEntryId"))
+                qualityEntryId = value;
 
             if (field.equals("batchId"))
                 batch_id = value;
@@ -279,11 +279,11 @@ public class ProductionPlanImpl {
                 GetAllProductionWithShadeData record = getProductionWithColorToneByBatchId(e);
 
                 if (partyId != null)
-                    if (partyId.equals(record.getPartyId()))
+                    if (!partyId.equals(record.getPartyId()))
                         continue;
 
-                if (qualityId != null)
-                    if (qualityId.equals(record.getQualityId()))
+                if (qualityEntryId != null)
+                    if (!qualityEntryId.equals(record.getQualityEntryId()))
                         continue;
 
                 if (record != null)
@@ -299,11 +299,11 @@ public class ProductionPlanImpl {
 
                 GetAllProductionWithShadeData record = getProductionWithColorToneByBatchId(e);
                 if (partyId != null)
-                    if (partyId.equals(record.getPartyId()))
+                    if (!partyId.equals(record.getPartyId()))
                         continue;
 
-                if (qualityId != null)
-                    if (qualityId.equals(record.getQualityId()))
+                if (qualityEntryId != null)
+                    if (!qualityEntryId.equals(record.getQualityEntryId()))
                         continue;
 
                 if (record != null)
@@ -331,11 +331,11 @@ public class ProductionPlanImpl {
                         GetAllProductionWithShadeData data = productionPlanDao.getProductionWithColorToneByBatchId(e,
                                 stockMast.getParty().getId(), stockMast.getQuality().getId());
                         if (partyId != null)
-                            if (partyId.equals(data.getPartyId()))
+                            if (!partyId.equals(data.getPartyId()))
                                 continue;
 
-                        if (qualityId != null)
-                            if (qualityId.equals(data.getQualityId()))
+                        if (qualityEntryId != null)
+                            if (!qualityEntryId.equals(data.getQualityId()))
                                 continue;
 
                         if (data != null)

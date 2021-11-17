@@ -4,6 +4,7 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 
+
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.paymentTerm.GetAllPayment;
@@ -12,6 +13,7 @@ import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;
 import com.main.glory.model.paymentTerm.request.GetAllBank;
 import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
+import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.PaymentTermImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class PaymentTermController extends ControllerConfig {
     @Value("${spring.application.debugAll}")
     Boolean debugAll;
 
+
+    @Autowired
+    DispatchMastImpl dispatchMastService;
 
     @PostMapping(value="/paymentTerm/")
     public ResponseEntity<GeneralResponse<Boolean,Object>> savePayment(@RequestBody AddPaymentMast paymentMast) {
@@ -285,6 +290,26 @@ public class PaymentTermController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
     }
 
+
+    /*@PostMapping(value="/paymentTerm/monthWisePendingReport")
+    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter) throws Exception{
+        GeneralResponse<List<MonthlyDispatchPendingReport>, Object> result;
+        try{
+            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter);
+            if(!list.isEmpty())
+                result= new GeneralResponse<>(list, ConstantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            else
+                result = new GeneralResponse<>(null, ConstantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true
+            );
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+*/
 
 
 
