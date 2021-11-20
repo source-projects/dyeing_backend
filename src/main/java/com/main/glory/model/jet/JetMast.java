@@ -22,6 +22,8 @@ public class JetMast {
     String name;
     Double capacity;
     Double liquorRatio;
+    String ip;
+    Long port;
 
 
     
@@ -35,6 +37,8 @@ public class JetMast {
         this.capacity=jetMast.getCapacity();
         this.name=jetMast.getName();
         this.liquorRatio =jetMast.getLiquorRatio();
+        this.ip = jetMast.getIp();
+        this.port = jetMast.getPort();
 
     }
 }

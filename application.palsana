@@ -1,10 +1,10 @@
 # this is the production env for palsana
 spring.jpa.hibernate.ddl-auto=update
-spring.datasource.url=jdbc:mysql://localhost:3306/gloryfabstock2?createDatabaseIfNotExist=true&server=2&useSSL=false&serverTimezone=IST
+spring.datasource.url=jdbc:mysql://localhost:3306/gloryfabstock?createDatabaseIfNotExist=true&server=2&useSSL=false&serverTimezone=IST
 spring.datasource.username=root
 spring.datasource.password=Gloryfab12@@
 #server.port=9000
-spring.datasource.dbname=gloryfabstock2
+spring.datasource.dbname=gloryfabstock
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 #spring.jpa.show-sql=true

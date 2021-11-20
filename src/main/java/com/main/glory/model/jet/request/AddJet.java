@@ -16,6 +16,8 @@ public class AddJet {
     String name;
     Double capacity;
     Double liquorRatio;
+    String ip;
+    Long port;
 
 
     public AddJet(JetMast jetMast) {
@@ -23,5 +25,7 @@ public class AddJet {
         this.name=jetMast.getName();
         this.capacity=jetMast.getCapacity();
         this.liquorRatio=jetMast.getLiquorRatio();
+        this.ip = jetMast.getIp();
+        this.port = jetMast.getPort();
     }
 }
