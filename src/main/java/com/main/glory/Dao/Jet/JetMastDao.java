@@ -31,4 +31,7 @@ public interface JetMastDao  extends JpaRepository<JetMast,Long> {
 
     @Query("select new com.main.glory.model.jet.responce.GetAllJetMast(x.id,x.name,x.capacity) from JetMast x")
     List<GetAllJetMast> getAllJetMast();
+
+    @Query("select x from JetMast x where x.id IN (:array)")
+    List<JetMast> getAllJetByIds(List<Long> array);
 }
