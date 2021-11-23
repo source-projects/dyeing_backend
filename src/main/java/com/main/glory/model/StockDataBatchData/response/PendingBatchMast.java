@@ -18,7 +18,7 @@ public class PendingBatchMast {
     String partyName;
     String partyCode;
     String headName;
-    List<PendingBatchData> pendingBatchDataList;
+    List<PendingBatchData> list;
 
     public PendingBatchMast(Party party) {
         this.partyId = party.getId();

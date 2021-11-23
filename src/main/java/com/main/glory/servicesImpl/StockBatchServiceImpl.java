@@ -3165,7 +3165,7 @@ public class StockBatchServiceImpl {
 
             if (partyList.containsKey(e.getParty().getId())) {
                 PendingBatchMast pendingBatchMast = partyList.get(e.getParty().getId());
-                List<PendingBatchData> pendingBatchDataList = pendingBatchMast.getPendingBatchDataList();
+                List<PendingBatchData> pendingBatchDataList = pendingBatchMast.getList();
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 pendingBatchDataList.addAll(newPendingBatchList);
 
@@ -3174,7 +3174,7 @@ public class StockBatchServiceImpl {
             } else {
                 PendingBatchMast pendingBatchMast = new PendingBatchMast(e);
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
-                pendingBatchMast.setPendingBatchDataList(newPendingBatchList);
+                pendingBatchMast.setList(newPendingBatchList);
                 partyList.put(pendingBatchMast.getPartyId(), pendingBatchMast);
             }
 

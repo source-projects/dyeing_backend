@@ -95,6 +95,50 @@ public class ReportController extends ControllerConfig {
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+    @GetMapping("/report/all/type")
+    public ResponseEntity<GeneralResponse<List<String>, Object>> getAllReportMastType() {
+        GeneralResponse<List<String>, Object> result;
+        try {
+
+            List<String> list = reportService.getAllReportMastType();
+            if (!list.isEmpty())
+                result = new GeneralResponse<>(list, ConstantFile.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            else
+                result = new GeneralResponse<>(list, ConstantFile.Report_Type_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @GetMapping("/report/all/byType")
+    public ResponseEntity<GeneralResponse<List<ReportMast>, Object>> getAllReportMastByType(@RequestParam("name") String type) {
+        GeneralResponse<List<ReportMast>, Object> result;
+        try {
+
+            List<ReportMast> list = reportService.getAllReportMastByType(type);
+            if (!list.isEmpty())
+                result = new GeneralResponse<>(list, ConstantFile.Report_Type_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+            else
+                result = new GeneralResponse<>(list, ConstantFile.Report_Type_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI());
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
     @GetMapping("/report")
     public ResponseEntity<GeneralResponse<ReportMast, Object>> getReportMastById(@RequestParam(name = "id") Long id) {
         GeneralResponse<ReportMast, Object> result;
