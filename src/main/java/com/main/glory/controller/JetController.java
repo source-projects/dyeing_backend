@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -174,15 +175,18 @@ public class JetController extends ControllerConfig {
         GeneralResponse<List<GetAllJetMast>,Object> result;
         boolean flag;
         try {
-            if(jetMastIDs.getArray().size()<=0)
-                throw new Exception(ConstantFile.Null_Record_Passed);
+            if(jetMastIDs.getArray().size()>0) {
 
-            List<GetAllJetMast> jetMastList = jetService.getAllJetDataByJetMastIds(jetMastIDs.getArray());
-            if(!jetMastList.isEmpty())
-                result = new GeneralResponse<>(jetMastList, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
-            else
-                result = new GeneralResponse<>(jetMastList, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
-            logService.saveLog(result,request,debugAll);
+                List<GetAllJetMast> jetMastList = jetService.getAllJetDataByJetMastIds(jetMastIDs.getArray());
+                if (!jetMastList.isEmpty())
+                    result = new GeneralResponse<>(jetMastList, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
+                else
+                    result = new GeneralResponse<>(jetMastList, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
+                logService.saveLog(result, request, debugAll);
+            }
+            else {
+                result = new GeneralResponse<>(new ArrayList<>(), constantFile.Jet_Not_Selected, false, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
+            }
 
         }
         catch(Exception e)

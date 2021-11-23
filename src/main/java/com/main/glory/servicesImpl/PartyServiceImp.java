@@ -257,11 +257,13 @@ public class PartyServiceImp implements PartyServiceInterface {
         party.setId(addParty.getId());
 
         var partyIndex = partyDao.findById(party.getId());
-        Party party1 = partyDao.findByPartyCodeExceptId(party.getPartyCode(), party.getId());
+        //Party party1 = partyDao.findByPartyCodeExceptId(party.getPartyCode(), party.getId());
 
         if (!partyIndex.isPresent())
             throw new Exception("Party dat  a not found for id:" + party.getId());
 
+        Party party1 =partyIndex.get();
+        party.setCreatedBy(partyIndex.get().getCreatedBy());
         /*
          * if (party1!=null) throw new Exception("Party code should be unique");
          */
