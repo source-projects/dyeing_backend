@@ -27,6 +27,7 @@ public class ConstantFile {
     public static String Jet_Exist_With_Production = "Production exist with jet";
     public static String Jet_Exist_Without_Production = "Production not exist with jet";
     public static String Jet_Deleted = "Data deleted successfully";
+    public static String Jet_Not_Selected = "Jet not selected";
     public static String Jet_Record_Exist = "Jet record exist";
     public static String Jet_Record_Completed = "Jet record status Completed";
     public static String Jet_Record_Start = "Jet record status : Started";

@@ -1695,10 +1695,10 @@ public class DispatchMastImpl {
                     DispatchData dispatchData = null;
 
                     if (productionPlan.getIsDirect() != true && shadeMast.isPresent()) {
-                        System.out.println("shade:" + mapper.writeValueAsString(shadeMast));
-                        System.out.println("batch:" + mapper.writeValueAsString(batchData));
-                        System.out.println("quality:" + mapper.writeValueAsString(quality));
-                        System.out.println("Stock:" + mapper.writeValueAsString(stockMast1));
+//                        System.out.println("shade:" + mapper.writeValueAsString(shadeMast));
+//                        System.out.println("batch:" + mapper.writeValueAsString(batchData));
+//                        System.out.println("quality:" + mapper.writeValueAsString(quality));
+//                        System.out.println("Stock:" + mapper.writeValueAsString(stockMast1));
                         dispatchData = new DispatchData(batchData, shadeMast.get(), quality, stockMast1);
                         dispatchData.setShadeRate(shadeMast.get().getExtraRate());
 

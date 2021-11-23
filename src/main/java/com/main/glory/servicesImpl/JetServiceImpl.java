@@ -688,7 +688,7 @@ public class JetServiceImpl {
 
 
             //check existing batch capacity in jet with new batch capacity
-            if ((newBatchCapacity + jetExistingCapacity) >= jetCapacity)
+            if ((newBatchCapacity) >= jetCapacity)
                 throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
 
 
