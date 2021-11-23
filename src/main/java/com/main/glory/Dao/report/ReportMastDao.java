@@ -19,4 +19,10 @@ public interface ReportMastDao extends JpaRepository<ReportMast,Long> {
 
     @Query("select x from ReportMast x")
     List<ReportMast> getAllReportMast();
+
+    @Query("select x.type from ReportMast x GROUP BY x.type")
+    List<String> getAllReportMastType();
+
+    @Query("select x from ReportMast x where LOWER(x.type)=LOWER(:type)")
+    List<ReportMast> getAllReportMastByType(String type);
 }
