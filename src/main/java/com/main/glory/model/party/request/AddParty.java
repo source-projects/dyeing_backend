@@ -60,8 +60,8 @@ public class AddParty {
         this.state = party.getState();
         this.GSTIN = party.getGSTIN();
         this.mailId = party.getMailId();
-        this.createdBy = party.getCreatedBy().getId();
-        this.updatedBy = party.getUpdatedBy().getId();
+        this.createdBy = party.getCreatedBy() == null ? null:party.getCreatedBy().getId();
+        this.updatedBy = party.getUpdatedBy()==null ? null:party.getUpdatedBy().getId();
         this.debtor = party.getDebtor();
         this.creditor = party.getCreditor();
         this.internalTransfer = party.getInternalTransfer();

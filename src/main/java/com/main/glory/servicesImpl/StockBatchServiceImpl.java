@@ -941,39 +941,6 @@ public class StockBatchServiceImpl {
 
         List<BatchToPartyAndQuality> getAllBatchWithPartyAndQualities = new ArrayList<>();
 
-        // filter the record
-        if (permissions.getViewAll()) {
-            userId = null;
-            userHeadId = null;
-            batchData = batchDao.findAllBasedOnControlIdAndBatchId();
-            batchDataForMergeBatch = batchDao.findAllMergeBatch();
-
-        } else if (permissions.getViewGroup()) {
-            // check the user is master or not ?
-            // admin
-            if (userData.getUserHeadId() == 0) {
-                userId = null;
-                userHeadId = null;
-                batchData = batchDao.findAllBasedOnControlIdAndBatchId();
-                batchDataForMergeBatch = batchDao.findAllMergeBatch();
-
-            } else if (userData.getUserHeadId() > 0) {
-                // check weather master or operator
-                UserData userHead = userDao.getUserById(userData.getUserHeadId());
-                userId = userData.getId();
-                userHeadId = userHead.getId();
-                batchData = batchDao.findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(userId, userHeadId);
-                batchDataForMergeBatch = batchDao
-                        .findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(userId, userHeadId);
-
-            }
-        } else if (permissions.getView()) {
-            userId = userData.getId();
-            userHeadId = null;
-            batchData = batchDao.findAllBasedOnControlIdAndBatchIdByCreatedAndHeadId(userId, userHeadId);
-            batchDataForMergeBatch = batchDao.findAllBasedOnControlIdAndBatchIdAndMergeBatchIdByCreatedAndHeadId(userId,
-                    userHeadId);
-        }
         Long partyId = null;
         Long qualityEntryId = null;
         String batchId = null;
@@ -994,6 +961,39 @@ public class StockBatchServiceImpl {
                 batchId = value;
 
         }
+
+        // filter the record
+        if (permissions.getViewAll()) {
+            userId = null;
+            userHeadId = null;
+            batchData = batchDao.findAllBasedOnControlIdAndBatchId(batchId,partyId,qualityEntryId);
+            batchDataForMergeBatch = batchDao.findAllMergeBatch(batchId,partyId,qualityEntryId);
+
+        } else if (permissions.getViewGroup()) {
+            // check the user is master or not ?
+            // admin
+            if (userData.getUserHeadId() == 0) {
+                userId = null;
+                userHeadId = null;
+                batchData = batchDao.findAllBasedOnControlIdAndBatchId(batchId,partyId,qualityEntryId);
+                batchDataForMergeBatch = batchDao.findAllMergeBatch(batchId,partyId,qualityEntryId);
+
+            } else if (userData.getUserHeadId() > 0) {
+                // check weather master or operator
+                UserData userHead = userDao.getUserById(userData.getUserHeadId());
+                userId = userData.getId();
+                userHeadId = userHead.getId();
+                batchData = batchDao.findAllBasedOnControlIdAndBatchId(batchId,partyId,qualityEntryId);
+                batchDataForMergeBatch = batchDao.findAllMergeBatch(batchId,partyId,qualityEntryId);
+
+            }
+        } else if (permissions.getView()) {
+            userId = userData.getId();
+            userHeadId = null;
+            batchData = batchDao.findAllBasedOnControlIdAndBatchId(batchId,partyId,qualityEntryId);
+            batchDataForMergeBatch = batchDao.findAllMergeBatch(batchId,partyId,qualityEntryId);
+        }
+
         for (GetBatchWithControlId batch : batchData) {
 
             Optional<StockMast> stockMast = stockMastDao.findById(batch.getControlId());
@@ -1152,8 +1152,8 @@ public class StockBatchServiceImpl {
         if (permissions.getViewAll()) {
             userId = null;
             userHeadId = null;
-            batchData = batchDao.findAllBasedOnControlIdAndBatchId();
-            batchDataForMergeBatch = batchDao.findAllMergeBatch();
+            batchData = batchDao.findAllBasedOnControlIdAndBatchId(null,null,null);
+            batchDataForMergeBatch = batchDao.findAllMergeBatch(null,null,null);
 
         } else if (permissions.getViewGroup()) {
             // check the user is master or not ?
@@ -1161,8 +1161,8 @@ public class StockBatchServiceImpl {
             if (userData.getUserHeadId() == 0) {
                 userId = null;
                 userHeadId = null;
-                batchData = batchDao.findAllBasedOnControlIdAndBatchId();
-                batchDataForMergeBatch = batchDao.findAllMergeBatch();
+                batchData = batchDao.findAllBasedOnControlIdAndBatchId(null,null,null);
+                batchDataForMergeBatch = batchDao.findAllMergeBatch(null,null,null);
 
             } else if (userData.getUserHeadId() > 0) {
                 // check weather master or operator
@@ -3165,7 +3165,7 @@ public class StockBatchServiceImpl {
 
             if (partyList.containsKey(e.getParty().getId())) {
                 PendingBatchMast pendingBatchMast = partyList.get(e.getParty().getId());
-                List<PendingBatchData> pendingBatchDataList = pendingBatchMast.getPendingBatchDataList();
+                List<PendingBatchData> pendingBatchDataList = pendingBatchMast.getList();
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 pendingBatchDataList.addAll(newPendingBatchList);
 
@@ -3174,7 +3174,7 @@ public class StockBatchServiceImpl {
             } else {
                 PendingBatchMast pendingBatchMast = new PendingBatchMast(e);
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
-                pendingBatchMast.setPendingBatchDataList(newPendingBatchList);
+                pendingBatchMast.setList(newPendingBatchList);
                 partyList.put(pendingBatchMast.getPartyId(), pendingBatchMast);
             }
 

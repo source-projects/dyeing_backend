@@ -4,10 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.jet.request.AddJetData;
-import com.main.glory.model.jet.request.ChangeStatus;
-import com.main.glory.model.jet.request.JetStart;
-import com.main.glory.model.jet.request.UpdateJetData;
+import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.responce.*;
 import com.main.glory.servicesImpl.JetServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -18,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -165,6 +163,36 @@ public class JetController extends ControllerConfig {
         {
             e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @PostMapping(value="/jet/getAllJetMastDetailByIds")
+    public ResponseEntity<GeneralResponse<List<GetAllJetMast>,Object>> getAllJetMastDetailByIds(@RequestBody JetMastIDs jetMastIDs)  throws Exception {
+
+        GeneralResponse<List<GetAllJetMast>,Object> result;
+        boolean flag;
+        try {
+            if(jetMastIDs.getArray().size()>0) {
+
+                List<GetAllJetMast> jetMastList = jetService.getAllJetDataByJetMastIds(jetMastIDs.getArray());
+                if (!jetMastList.isEmpty())
+                    result = new GeneralResponse<>(jetMastList, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
+                else
+                    result = new GeneralResponse<>(jetMastList, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
+                logService.saveLog(result, request, debugAll);
+            }
+            else {
+                result = new GeneralResponse<>(new ArrayList<>(), constantFile.Jet_Not_Selected, false, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
+            }
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,jetMastIDs);
             logService.saveLog(result,request,true);
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));

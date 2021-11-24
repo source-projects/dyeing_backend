@@ -164,4 +164,7 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
     List<ConsolidatedBillDataForPDF> getAllConsolidateResponseForPDFReportByFilter(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId,Boolean signByParty);
 
 
+    //for get group by record
+    //SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 }

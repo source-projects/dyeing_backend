@@ -688,7 +688,7 @@ public class JetServiceImpl {
 
 
             //check existing batch capacity in jet with new batch capacity
-            if ((newBatchCapacity + jetExistingCapacity) >= jetCapacity)
+            if ((newBatchCapacity) >= jetCapacity)
                 throw new Exception("Batch WT is greather than Jet capacity please reduce or remove the Batch");
 
 
@@ -1226,5 +1226,64 @@ public class JetServiceImpl {
     public List<GetAllJetMast> getAllJetMast() {
         List<GetAllJetMast> list = jetMastDao.getAllJetMast();
         return list;
+    }
+
+    public List<GetAllJetMast> getAllJetDataByJetMastIds(List<Long> array) throws Exception {
+        List<JetMast> jetMastList = jetMastDao.getAllJetByIds(array);
+
+        List<GetAllJetMast> getAllJetMast = new ArrayList<>();
+
+        /*if(jetMastList.isEmpty())
+            return  jetMastList;*/
+
+        int i = 0;
+        for (JetMast jetMast : jetMastList) {
+            List<GetJetData> jetDataList = new ArrayList<>();
+            List<JetData> existJetDataList = jetDataDao.getAllProductionInTheQueueAndStartByControlId(jetMast.getId());
+
+            for (JetData jetData : existJetDataList) {
+                if (jetData.getStatus().equals(JetStatus.inQueue) || jetData.getStatus().equals(JetStatus.start)) {
+                    ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
+                    if (productionPlan == null)
+                        continue;
+                    GetAllProductionWithShadeData data = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
+                    GetJetData getJetData = null;
+                    if (productionPlan.getIsDirect() == false) {
+                        ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
+                        if (colorTone != null) {
+                            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
+                            getJetData = new GetJetData(data, jetData, colorTone, dyeingProcessMast);
+                            getJetData.setBatchId(productionPlan.getBatchId());
+                            jetDataList.add(getJetData);
+                        }
+                    } else {
+                        getJetData = new GetJetData(jetData, data);
+                        getJetData.setBatchId(productionPlan.getBatchId());
+                        getJetData.setProcessName("directDyeing");
+                        jetDataList.add(getJetData);
+                    }
+
+
+
+                    /*//getJetData.setBatchId(productionPlan.getBatchId());
+                    if(getJetData.getPartyId()!=null)*/
+
+                }
+
+            }
+
+            GetAllJetMast allJetMast = new GetAllJetMast();
+            allJetMast.setId(jetMast.getId());
+            allJetMast.setCapacity(jetMast.getCapacity());
+            allJetMast.setName(jetMast.getName());
+
+            if (!jetDataList.isEmpty())
+                allJetMast.setJetDataList(jetDataList);
+
+            getAllJetMast.add(allJetMast);
+        }
+
+        return getAllJetMast;
+
     }
 }

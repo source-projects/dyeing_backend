@@ -19,25 +19,34 @@ import java.util.Date;
 @Getter
 @Setter
 public class ConsolidatedBillDataForExcel {
-    String batchId;
+    String invoiceNo;
     Date invoiceDate;
     String partyName;
+    String partyAddress1;
+    String partyAddress2;
+
+    private String city;
+    private String state;
+    private String gstin;
+    String contactNo;
+    String batchId;
+    String qualityId;
     String qualityName;
     Long pcs;
     Long greyPcs;
     Double totalMtr;
     Double totalFinishMtr;
+
     Double rate;
     Double amt;
-    String headName;
     @JsonIgnore
     Long partyId;
     @JsonIgnore
     Long qualityEntryId;
     @JsonIgnore
     Long qualityNameId;
-    String qualityId;
-    String invoiceNo;
+
+
     //new field
     Double discount;
     Double percentageDiscount;
@@ -47,18 +56,13 @@ public class ConsolidatedBillDataForExcel {
     Double igst;
     Double gstAmt;
     Double netAmt;
-    String partyAddress1;
-    String partyAddress2;
-    String contactNo;
     Double discountAmt;
-    private String city;
-    private String state;
-    private String gstin;
     String billingUnit;
     String inwardUnit;
     String deliveryMode;
     Double sharinkage;
     Double wtPer100m;
+    String headName;
 
     public ConsolidatedBillDataForExcel(String batchId, Long pcs, Date invoiceDate, String invoiceNo, String qualityId,
                                         Double discount, Double percentageDiscount, Double netAmt,
