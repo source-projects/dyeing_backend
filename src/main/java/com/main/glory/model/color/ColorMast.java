@@ -75,6 +75,25 @@ public class ColorMast {
         this.colorDataList = colorDataList;
     }
 
+    public ColorMast(ColorMast colorMast) {
+        this.id=colorMast.id;
+        this.supplier=colorMast.supplier;
+        this.billNo=colorMast.getBillNo();
+        this.billDate=colorMast.billDate;
+        this.chlNo=colorMast.chlNo;
+        this.chlDate=colorMast.chlDate;
+        this.billAmount=colorMast.billAmount;
+        this.createdBy=colorMast.createdBy;
+        this.updatedBy=colorMast.updatedBy;
+        this.userHeadData=colorMast.userHeadData;
+        this.remark=colorMast.remark;
+        this.createdDate=colorMast.createdDate;
+        this.updatedDate=colorMast.updatedDate;
+        this.colorDataList=colorMast.colorDataList;
+
+
+    }
+
 
     @PrePersist
     protected void onCreate() {
