@@ -1302,9 +1302,9 @@ public class DispatchMastImpl {
             if(invoiceList.containsKey(e.getInvoiceNo()))
             {
                 ConsolidatedBillMast consolidatedBillMast = invoiceList.get(e.getInvoiceNo());
-                List<ConsolidatedBillDataForPDF> dataForPDFS = consolidatedBillMast.getList();
+                List<ConsolidatedBillDataForPDF> dataForPDFS = consolidatedBillMast.getConsolidatedBillDataForPDFS();
                 dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
-                consolidatedBillMast.setList(dataForPDFS);
+                consolidatedBillMast.setConsolidatedBillDataForPDFS(dataForPDFS);
                 invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
             }
             else
@@ -1312,7 +1312,7 @@ public class DispatchMastImpl {
                 ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(e);
                 List<ConsolidatedBillDataForPDF> dataForPDFS = new ArrayList<>();
                 dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
-                consolidatedBillMast.setList(dataForPDFS);
+                consolidatedBillMast.setConsolidatedBillDataForPDFS(dataForPDFS);
                 invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
 
             }
