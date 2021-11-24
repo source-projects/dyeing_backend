@@ -135,12 +135,12 @@ public class SupplierServiceImpl {
     public SupplierResponse getSupplier(Long id) {
         try {
             SupplierResponse addSupplier =null;
-            Supplier s = supplierDao.findById(id).get();
+            Optional<Supplier> s = supplierDao.findById(id);
 
-            if(s !=null)
+            if(s.isPresent())
             {
-                addSupplier = new SupplierResponse(s);
-                List<SupplierRateDTO> supplierRateDTOS = supplierRateDao.getSupplierDtoResponseBySupplierId(s.getId());
+                addSupplier = new SupplierResponse(s.get());
+                List<SupplierRateDTO> supplierRateDTOS = supplierRateDao.getSupplierDtoResponseBySupplierId(s.get().getId());
                 addSupplier.setSupplierRates(supplierRateDTOS);
 
 

@@ -230,9 +230,7 @@ public class ColorServiceImpl {
             if (userData.getUserHeadId().equals(0)) {
                 queryResponse = colorMastDao.findAll(filterSpec, pageable);
 
-            }
-
-            else if (userData.getUserHeadId().equals(userData.getId())) {
+            } else if (userData.getUserHeadId().equals(userData.getId())) {
                 // master user
                 List<Filter> filters = new ArrayList<Filter>();
                 filters.add(new Filter(new ArrayList<String>(Arrays.asList("createdBy")), QueryOperator.EQUALS, id));
@@ -257,24 +255,26 @@ public class ColorServiceImpl {
                 // operator
             }
         }
-        System.out.println(1);
+        //System.out.println(1);
 
         data = queryResponse.getContent();
-        data.forEach(e -> {
-            try {
+        for (ColorMast colorMast : data)
+        {
+            ColorMast e = new ColorMast(colorMast);
+            if(e.getSupplier()!=null) {
                 String name = e.getSupplier().getSupplierName();
                 e.setSupplier(null);
                 ColorMastDetails x = new ColorMastDetails(e);
-                
+
                 if (!name.isEmpty()) {
                     x.setSupplierName(name);
                     colorMastDetails.add(x);
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
-        });
-        System.out.println(queryResponse.getNumberOfElements());
+
+        }
+
+        //System.out.println(queryResponse.getNumberOfElements());
 
         FilterResponse<ColorMastDetails> response = new FilterResponse<ColorMastDetails>(colorMastDetails,
                 queryResponse.getNumber(), queryResponse.getNumberOfElements(), (int) queryResponse.getTotalElements());

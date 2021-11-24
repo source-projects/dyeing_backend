@@ -671,10 +671,10 @@ public class QualityServiceImp  {
 
         List<AddQualityName> list =new ArrayList<>();
         Optional<List<QualityName>> qualityNameList = qualityNameDao.getAllQualityName();
-        System.out.println("qualityNameDao.getAllQualityName");
+        //System.out.println("qualityNameDao.getAllQualityName");
         if(!qualityNameList.isEmpty()) {
             for (QualityName qualityName : qualityNameList.get()) {
-                System.out.println("supplierService.getSupplierByQualityNameId "+Long.toString(qualityName.getId()));
+          //      System.out.println("supplierService.getSupplierByQualityNameId "+Long.toString(qualityName.getId()));
                 List<SupplierResponse> supplierList = supplierService.getSupplierByQualityNameId(qualityName.getId());
                 list.add(new AddQualityName(qualityName,supplierList));
 
