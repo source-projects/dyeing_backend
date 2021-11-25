@@ -21,7 +21,7 @@ public class ConsolidatedBillMast {
     Long userHeadId;
     Long partyId;
     Boolean signByParty;*/
-    List<ConsolidatedBillDataForPDF> consolidatedBillDataForPDFS;
+    List<ConsolidatedBillDataForPDF> list;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {
         this.invoiceNo = dispatchMast.getPostfix();

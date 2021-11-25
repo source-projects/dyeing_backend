@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -481,6 +483,9 @@ public interface BatchDao extends  JpaRepository<BatchData, Long> {
 
     @Query("select new com.main.glory.model.StockDataBatchData.response.GetAllMergeBatchId(count(b.id),b.mergeBatchId) from BatchData b where b.batchId = :batchId AND b.isFinishMtrSave=true AND b.isBillGenrated=false AND b.mergeBatchId IS NOT NULL GROUP BY b.mergeBatchId")
     List<GetAllMergeBatchId> getAllMergeBatchIdByBatchIdAndFinishMtrSaveAndBillIsNotGenrated(String batchId);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchDataForExcel(sm.party.partyName,sm.party.partyCode,sm.party.userHeadData.firstName,sm.quality.qualityId,sm.quality.qualityName.qualityName,b.pchallanRef,b.batchId,count(b.id),sm.receiveDate,SUM(b.mtr),SUM(b.wt)) from StockMast sm INNER JOIN BatchData b ON b.controlId=sm.id where (:from IS NULL OR DATE(sm.receiveDate)>=DATE(:from)) AND (:to IS NULL OR DATE(sm.receiveDate)<=DATE(:to)) AND (:partyId IS NULL OR sm.party.id=:partyId) AND (:qualityNameId IS NULL OR sm.quality.qualityName.id=:qualityNameId) AND (:qualityEntryId IS NULL OR sm.quality.id=:qualityEntryId) AND (:userHeadId IS NULL OR sm.party.userHeadData.id=:userHeadId) AND b.isBillGenrated = false GROUP BY b.batchId,b.pchallanRef")
+    List<PendingBatchDataForExcel> filterForExcelByBatchFilterRequestWithPendingBatch(Date from, Date to, Long partyId, Long qualityNameId, Long qualityEntryId, Long userHeadId);
 
 
 
