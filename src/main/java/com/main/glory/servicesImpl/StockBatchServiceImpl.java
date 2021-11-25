@@ -3187,4 +3187,48 @@ public class StockBatchServiceImpl {
         return list;
 
     }
+    public List<PendingBatchData> getBatchReportForExcelByFilter(BatchFilterRequest filter) throws Exception {
+
+        List<PendingBatchData> list=new ArrayList<>();
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom()!=null)
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if (filter.getTo()!=null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);// adding one day in to because of time issue in
+            // created date
+            to = c.getTime();
+        }
+
+//        list = batchDao.filterForExcelByBatchFilterRequestWithPendingBatch(from, to,
+//                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getUserHeadId());
+//
+
+        List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequestWithPendingBatch(from, to,
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getUserHeadId());
+
+
+        // party id and it's pending request
+        Map<Long, PendingBatchData> partyList = new HashMap<>();
+
+        stockMastList.forEach(e -> {
+
+            List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
+            if(!newPendingBatchList.isEmpty())
+            {
+                list.addAll(newPendingBatchList);
+            }
+        });
+
+
+        return list;
+
+    }
 }

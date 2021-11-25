@@ -991,6 +991,27 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
     }
 
+    @PostMapping("stockBatch/pending/forConslidateBatchResponseForExcel")
+    public ResponseEntity<GeneralResponse<List<PendingBatchData>, Object>> forConslidateBatchResponseForExcel(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<PendingBatchData>, Object> response;
+        try {
+            List<PendingBatchData> flag = stockBatchService.getBatchReportForExcelByFilter(filter);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
+
+
 
 }
 
