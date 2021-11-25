@@ -3187,9 +3187,9 @@ public class StockBatchServiceImpl {
         return list;
 
     }
-    public List<PendingBatchData> getBatchReportForExcelByFilter(BatchFilterRequest filter) throws Exception {
+    public List<PendingBatchDataForExcel> getBatchReportForExcelByFilter(BatchFilterRequest filter) throws Exception {
 
-        List<PendingBatchData> list=new ArrayList<>();
+        List<PendingBatchDataForExcel> list=new ArrayList<>();
         Date from = null;
         Date to = null;
         // add one day because of timestamp issue
@@ -3216,11 +3216,11 @@ public class StockBatchServiceImpl {
 
 
         // party id and it's pending request
-        Map<Long, PendingBatchData> partyList = new HashMap<>();
+        Map<Long, PendingBatchDataForExcel> partyList = new HashMap<>();
 
         stockMastList.forEach(e -> {
 
-            List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
+            List<PendingBatchDataForExcel> newPendingBatchList = batchDao.getPendingBatchListForExcelByStockId(e.getId());
             if(!newPendingBatchList.isEmpty())
             {
                 list.addAll(newPendingBatchList);
