@@ -250,10 +250,10 @@ public class JetServiceImpl {
 
 
             //existing jet capacity with batch
-            List<JetData> exstingJetData = jetDataDao.findByControlId(jetMastExist.get().getId());
+            /*List<JetData> exstingJetData = jetDataDao.findByControlId(jetMastExist.get().getId());
             for (JetData jetData : exstingJetData) {
                 ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetData.getProductionId());
-                if (productionPlanExits != null) {
+                if (productionPlan != null) {
 
                     Double batchDataQTY = 0.0;
                     if (productionPlan.getIsMergeBatchId() == false)
@@ -265,7 +265,7 @@ public class JetServiceImpl {
                         availableBatchInJetCapacity += batchDataQTY;
 
                 }
-            }
+            }*/
 
 
             //new batch capacity
