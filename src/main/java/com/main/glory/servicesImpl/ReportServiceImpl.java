@@ -66,7 +66,7 @@ public class ReportServiceImpl {
         //list.add(new ReportMast("Pending Report","Stock Batch Module","stockBatch/pending/forConslidateBatchResponse"));
         list.add(new ReportMast("Invoice Report","invoice","/dispatch/report/forConslidateExcelBill","/dispatch/report/forConslidateReportBill"));
         list.add(new ReportMast("Invoice Payment Report","paymentTerm","/paymentTerm/monthWisePendingReport?paymentPending=",""));
-        list.add(new ReportMast("Pending Batch","stockBatch","","stockBatch/pending/forConslidateBatchResponse"));
+        list.add(new ReportMast("Pending Batch","stockBatch","/stockBatch/pending/forConslidateBatchResponseForExcel","/stockBatch/pending/forConslidateBatchResponse"));
 
         list.forEach(e->{
             ReportMast reportMastExist = reportMastDao.getReportMastByName(e.getName());
