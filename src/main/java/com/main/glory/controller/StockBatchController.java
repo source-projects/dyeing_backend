@@ -992,10 +992,10 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @PostMapping("stockBatch/pending/forConslidateBatchResponseForExcel")
-    public ResponseEntity<GeneralResponse<List<PendingBatchData>, Object>> forConslidateBatchResponseForExcel(@RequestBody BatchFilterRequest filter) throws Exception {
-        GeneralResponse<List<PendingBatchData>, Object> response;
+    public ResponseEntity<GeneralResponse<List<PendingBatchDataForExcel>, Object>> forConslidateBatchResponseForExcel(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<PendingBatchDataForExcel>, Object> response;
         try {
-            List<PendingBatchData> flag = stockBatchService.getBatchReportForExcelByFilter(filter);
+            List<PendingBatchDataForExcel> flag = stockBatchService.getBatchReportForExcelByFilter(filter);
 
             if (!flag.isEmpty())
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
