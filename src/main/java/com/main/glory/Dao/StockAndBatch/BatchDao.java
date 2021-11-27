@@ -47,7 +47,7 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
     List<BatchData> findByControlIdAndBatchIdAndIsExtra(Long controlId, String batchId, boolean b);
 
     //get the data for batch without extra batches
-    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p INNER JOIN StockMast sm ON sm.id = p.controlId where (:batchId IS NULL OR p.batchId LIKE ':batchId%')  AND (:partyId IS NULL OR sm.party.id=:partyId) AND (:qualityEntryId IS NULL OR sm.quality.id=:qualityEntryId) AND p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IS NOT NULL AND p.mergeBatchId IS NULL GROUP BY p.batchId,p.controlId ")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.batchId as batchId,p.controlId as controlId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p INNER JOIN StockMast sm ON sm.id = p.controlId where (:batchId IS NULL OR p.batchId LIKE :batchId%)  AND (:partyId IS NULL OR sm.party.id=:partyId) AND (:qualityEntryId IS NULL OR sm.quality.id=:qualityEntryId) AND p.isProductionPlanned = false AND p.isExtra=false AND p.batchId IS NOT NULL AND p.controlId IS NOT NULL AND p.mergeBatchId IS NULL GROUP BY p.batchId,p.controlId ")
     List<GetBatchWithControlId> findAllBasedOnControlIdAndBatchId(String batchId, Long partyId, Long qualityEntryId);
 
     //get the data for batch without extra batches
@@ -469,7 +469,7 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.PchallanByBatchId(x.pchallanRef,COUNT(x.id)) from BatchData x where x.batchId=:batchId GROUP BY x.pchallanRef")
     List<PchallanByBatchId> getListOfPchallanByBatchId(String batchId);
 
-    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate as date,s.quality.qualityName.qualityName,count(x.id),s.quality.qualityId) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate as date,s.quality.qualityName.qualityName,count(x.id),s.quality.qualityId) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false AND x.isExtra=false GROUP BY x.batchId,x.pchallanRef")
     List<PendingBatchData> getPendingBatchListByStockId(Long id);
 
     @Query("select x from BatchData x where x.id in (select d.batchData.id from DispatchData d where d.invoiceNo=:invoiceNumber AND d.pchallanRef=:pchallanRef AND d.batchId=:batchId)")
@@ -480,7 +480,7 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
 
 //    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchDataForExcel(s.party.partyName,s.party.partyCode,s.party.userHeadData.firstName,s.quality.qualityId,s.quality.qualityName.qualityName,x.pchallanRef,x.batchId,Count(x.id),s.receiveDate as date,SUM(x.mtr),SUM(x.wt)) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
 //    List<PendingBatchDataForExcel> getPendingBatchListForExcelByStockId(Long id);
-    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchDataForExcel(s.party.partyName,s.party.partyCode,s.party.userHeadData.firstName,s.quality.qualityId,count(x.id),SUM(x.mtr),SUM(x.wt),x.batchId,x.pchallanRef,s.receiveDate as date,s.quality.qualityName.qualityName) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false GROUP BY x.batchId,x.pchallanRef")
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchDataForExcel(s.party.partyName,s.party.partyCode,s.party.userHeadData.firstName,s.quality.qualityId,count(x.id),SUM(x.mtr),SUM(x.wt),x.batchId,x.pchallanRef,s.receiveDate as date,s.quality.qualityName.qualityName) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isBillGenrated=false AND x.isExtra=false GROUP BY x.batchId,x.pchallanRef")
     List<PendingBatchDataForExcel> getPendingBatchListForExcelByStockId(Long id);
 
 //    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchDataForExcel(sm.party.partyName,sm.party.partyCode,sm.party.userHeadData.firstName,sm.quality.qualityId,sm.quality.qualityName.qualityName,b.pchallanRef,b.batchId,count(b.id),sm.receiveDate,SUM(b.mtr),SUM(b.wt)) from StockMast sm INNER JOIN BatchData b ON b.controlId=sm.id where (:from IS NULL OR DATE(sm.receiveDate)>=DATE(:from)) AND (:to IS NULL OR DATE(sm.receiveDate)<=DATE(:to)) AND (:partyId IS NULL OR sm.party.id=:partyId) AND (:qualityNameId IS NULL OR sm.quality.qualityName.id=:qualityNameId) AND (:qualityEntryId IS NULL OR sm.quality.id=:qualityEntryId) AND (:userHeadId IS NULL OR sm.party.userHeadData.id=:userHeadId) AND b.isBillGenrated = false GROUP BY b.batchId,b.pchallanRef")

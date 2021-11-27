@@ -335,10 +335,10 @@ public class ColorServiceImpl {
         return true;
     }
 
-    public Optional<ColorMast> getColorById(Long id) {
+    public AddColorMast getColorById(Long id) {
         var getData = colorMastDao.findById(id);
         if (getData.isPresent())
-            return getData;
+            return new AddColorMast(getData.get());
         return null;
     }
 
