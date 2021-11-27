@@ -1328,7 +1328,7 @@ public class DispatchMastImpl {
 
     }
 
-    public List<MonthlyDispatchReport> getMonthWiseReportDispatch(DispatchFilter filter) throws Exception {
+   /* public List<MonthlyDispatchReport> getMonthWiseReportDispatch(DispatchFilter filter) throws Exception {
         Date from = null;
         Date to = null;
         // add one day because of timestamp issue
@@ -1336,14 +1336,14 @@ public class DispatchMastImpl {
         System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (!filter.getFrom().isEmpty()) {
+        if (filter.getFrom()!=null) {
             from = datetimeFormatter1.parse(filter.getFrom());
             c.setTime(from);
             // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
             // created date and 1 day is comming minus from FE
             from = c.getTime();
         }
-        if (!filter.getTo().isEmpty()) {
+        if (filter.getTo()!=null) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
             // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
@@ -1351,7 +1351,7 @@ public class DispatchMastImpl {
             to = c.getTime();
         }
 
-        System.out.println(from.toString() + ":" + to.toString());
+        //System.out.println(from.toString() + ":" + to.toString());
         HashMap<Integer, MonthlyDispatchReport> data = new HashMap<Integer, MonthlyDispatchReport>();
 
         // quality entryId
@@ -1378,7 +1378,7 @@ public class DispatchMastImpl {
             int month = createdDate.getMonth() + 1;
             int year = createdDate.getYear() + 1900;
             int key = month * 100000 + year * 10;
-            System.out.print(dispatchMast.getDispatchDataList().size());
+            //System.out.print(dispatchMast.getDispatchDataList().size());
             if (dispatchMast.getDispatchDataList().size() == 0)
                 continue;
 
@@ -1387,7 +1387,7 @@ public class DispatchMastImpl {
                 Double finishMtr = StockBatchServiceImpl.changeInFormattedDecimal(
                         dispatchMast.getDispatchDataList().get(j).getBatchData().getFinishMtr());
                 Double taxAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getTaxAmt());
-                Double discount = dispatchMast.getDiscount();
+                Double discount = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getDiscount());
                 Double netAmt = StockBatchServiceImpl.changeInFormattedDecimal(dispatchMast.getNetAmt());
                 int type = 0;
                 if (dispatchMast.getDispatchDataList().get(j).getBillingUnit().equals("weight"))
@@ -1395,10 +1395,10 @@ public class DispatchMastImpl {
 
                 if (data.containsKey(key + type)) {
                     MonthlyDispatchReport report = data.get(key + type);
-                    report.addDiscount(discount);
+                    //report.addDiscount(discount);
                     report.addFinishMtr(finishMtr);
-                    report.addNetAmt(netAmt);
-                    report.addTaxAmt(taxAmt);
+                    //report.addNetAmt(netAmt);
+                    //report.addTaxAmt(taxAmt);
 
                 } else {
                     data.put(key + type, new MonthlyDispatchReport(month, finishMtr, taxAmt, discount, year, netAmt,
@@ -1420,6 +1420,39 @@ public class DispatchMastImpl {
         return list;
 
     }
+*/
+
+    public List<MonthlyDispatchReport> getMonthWiseReportDispatch(DispatchFilter filter) throws Exception {
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+        System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom()!=null) {
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+            // created date and 1 day is coming minus from FE
+            from = c.getTime();
+        }
+        if (filter.getTo()!=null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+            // working,but not working on EC2 because of timezone
+            to = c.getTime();
+        }
+
+
+
+        //List<MonthlyDispatchReport> list = dispatchDataDao.monthWisePDFReportByFilter(from,to,filter.getUserHeadId());
+
+        return null;
+
+    }
+
 
 //    public List<MonthlyDispatchPendingReport> getMonthWiseReportPendingDispatch(DispatchFilter filter) throws Exception {
 //        Date from = null;

@@ -4,6 +4,7 @@ package com.main.glory.Dao.dispatch;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
+import com.main.glory.model.dispatch.response.MonthlyDispatchReport;
 import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForExcel;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dispatch.response.QualityWithRateAndTotalMtr;
@@ -162,6 +163,9 @@ public interface DispatchDataDao extends JpaRepository<DispatchData, Long> {
 
     @Query("select new com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForPDF(dd.batchId,count(dd.batchData.id),dm.createdDate,dm.postfix,dd.quality.qualityId,SUM(dd.batchData.finishMtr),CASE dd.billingUnit WHEN 'weight' THEN ((SUM(dd.batchData.mtr) / 100) * dd.wtPer100m) ELSE SUM(dd.batchData.mtr) END,dd.qualityRate,dd.quality.qualityName.qualityName,dm.party.partyName,dm.party.userHeadData.userName,(dd.qualityRate * SUM(dd.batchData.finishMtr) - (dd.qualityRate * SUM(dd.batchData.finishMtr) *dm.percentageDiscount)/100) AS taxAmt) from DispatchData dd INNER JOIN DispatchMast dm ON dd.controlId = dm.id where (:signByParty IS NULL OR dm.signByParty=:signByParty) AND (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND (:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId) AND (Date(dm.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(dm.createdDate)<=Date(:to) OR :to IS NULL) AND (:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) GROUP BY dd.batchId,dd.invoiceNo,dd.quality,dd.qualityRate,dd.billingUnit")
     List<ConsolidatedBillDataForPDF> getAllConsolidateResponseForPDFReportByFilter(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId,Boolean signByParty);
+
+    @Query("select new com.main.glory.model.dispatch.response.MonthlyDispatchReport(SUM(dd.batchData.finishMtr),SUM(dm.taxAmt),SUM(dm.discount),function('date_format', dm.createdDate, '%Y, %m') as DateMonth,SUM(dm.netAmt),dd.billingUnit) from DispatchData dd INNER JOIN DispatchMast dm ON dd.controlId = dm.id where (Date(dm.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(dm.createdDate)<=Date(:to) OR :to IS NULL) AND (:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) GROUP BY function('date_format', dd.createdDate, '%Y, %m'),dd.billingUnit")
+    List<MonthlyDispatchReport> monthWisePDFReportByFilter(Date from, Date to, Long userHeadId);
 
 
     //for get group by record

@@ -16,8 +16,8 @@ public class GetAllBatchResponse {
     Double totalWt;
     String batchId;
     public GetAllBatchResponse(Double totalMtr, Double totalWt, String batchId) {
-        this.totalMtr = totalMtr;
-        this.totalWt = totalWt;
+        this.totalMtr = totalMtr==null?0:totalMtr;
+        this.totalWt = totalWt==null?0:totalWt;
         this.batchId = batchId;
     }
 
