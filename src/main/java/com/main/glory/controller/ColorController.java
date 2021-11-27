@@ -214,14 +214,14 @@ public class ColorController extends ControllerConfig {
 	}
 
 	@GetMapping(value = "/color/{id}")
-	public ResponseEntity<GeneralResponse<ColorMast,Object>> getColorDataById(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<GeneralResponse<AddColorMast,Object>> getColorDataById(@PathVariable(value = "id") Long id) {
 
-		GeneralResponse<ColorMast,Object> result;
+		GeneralResponse<AddColorMast,Object> result;
 		try {
 			if (id != null) {
-				var colorData = colorService.getColorById(id);
+				AddColorMast colorData = colorService.getColorById(id);
 				if (colorData != null) {
-					result = new GeneralResponse<>(colorData.get(), constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
+					result = new GeneralResponse<>(colorData, constantFile.Color_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 				} else
 					result = new GeneralResponse<>(null, constantFile.Color_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI());
 				logService.saveLog(result, request, debugAll);

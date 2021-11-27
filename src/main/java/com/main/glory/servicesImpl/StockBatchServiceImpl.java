@@ -399,6 +399,8 @@ public class StockBatchServiceImpl {
                 Boolean trueBatch = false;
                 for (BatchData batch : stockMastData.getBatchData()) {
                     if (mtrSumData.containsKey(batch.getBatchId())) {
+                        //ObjectMapper objectMapper =new ObjectMapper();
+                        //System.out.println("----"+ objectMapper.writeValueAsString(mtrSumData.get(batch.getBatchId())));
                         mtrSumData.get(batch.getBatchId()).updateGetAllBatchResponse(batch);
                     } else {
                         mtrSumData.put(batch.getBatchId(),

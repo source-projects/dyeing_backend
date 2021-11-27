@@ -471,7 +471,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<List<MonthlyDispatchReport>, Object> result;
         try{    
             List<MonthlyDispatchReport> list = dispatchMastService.getMonthWiseReportDispatch(filter);
-            if(!list.isEmpty())
+            if(list !=null || !list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
                 result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
