@@ -12,12 +12,12 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 spring.cache.type=none
 spring.jpa.properties.hibernate.proc.param_null_passing = true
 spring.datasource.tomcat.initial-size=15
-spring.datasource.tomcat.max-wait=20000
+spring.datasource.tomcat.max-wait=40000
 spring.datasource.tomcat.max-active=50
 spring.datasource.tomcat.max-idle=15
 spring.datasource.tomcat.min-idle=8
 spring.datasource.tomcat.default-auto-commit=true
-spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.maximum-pool-size=50
 spring.datasource.testOnBorrow=true
 spring.datasource.validationQuery=SELECT 1
 
