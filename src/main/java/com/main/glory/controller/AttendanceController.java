@@ -326,5 +326,39 @@ public class AttendanceController extends ControllerConfig {
     }
 
 
+    ///Flutter api v2
+    @PostMapping(value="/attendance/latest/byEmployeeIdDateAndSaveFlagV2")
+    public ResponseEntity<GeneralResponse<EmployeeWithAttendance,Object>> getLatestAttendanceByEmployeeIdDateAndSaveFlagV2(@RequestBody GetLatestAttendance record)
+    {
+        GeneralResponse<EmployeeWithAttendance,Object> result;
+        try {
+            if(record==null)
+                throw new Exception(constantFile.Null_Record_Passed);
+
+
+            EmployeeWithAttendance list = attendanceService.getLatestAttendanceRecordByEmployeeIdDateAndSaveFlagV2(record);
+            //System.out.println("har::"+headers.get("empId"));
+            //System.out.println(empId);
+            if(list==null)
+            {
+                result = new GeneralResponse<>(list, constantFile.Attendance_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,record);
+
+            }
+            else {
+                result = new GeneralResponse<>(list, constantFile.Attendance_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            }
+
+
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 }

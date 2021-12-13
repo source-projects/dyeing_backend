@@ -3161,29 +3161,32 @@ public class StockBatchServiceImpl {
 //            throw new Exception(ConstantFile.StockBatch_Not_Found);
 
         // party id and it's pending request
-        Map<Long, PendingBatchMast> partyList = new HashMap<>();
+        Map<Long, PendingBatchMast> qualityList = new HashMap<>();
 
         stockMastList.forEach(e -> {
 
-            if (partyList.containsKey(e.getParty().getId())) {
-                PendingBatchMast pendingBatchMast = partyList.get(e.getParty().getId());
+            if (qualityList.containsKey(e.getQuality().getId())) {
+                PendingBatchMast pendingBatchMast = qualityList.get(e.getQuality().getId());
                 List<PendingBatchData> pendingBatchDataList = pendingBatchMast.getList();
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 pendingBatchDataList.addAll(newPendingBatchList);
-
-                partyList.put(e.getParty().getId(), pendingBatchMast);
+                Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
+                pendingBatchMast.addTotalQualityList(totalMtr);
+                qualityList.put(e.getQuality().getId(), pendingBatchMast);
 
             } else {
                 PendingBatchMast pendingBatchMast = new PendingBatchMast(e);
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
+                Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
+                pendingBatchMast.setTotalQualityMeter(totalMtr!=null?totalMtr:0);
                 pendingBatchMast.setList(newPendingBatchList);
-                partyList.put(pendingBatchMast.getPartyId(), pendingBatchMast);
+                qualityList.put(pendingBatchMast.getQualityEntryId(), pendingBatchMast);
             }
 
         });
 
-        if (partyList.size() > 0)
-            list = new ArrayList<PendingBatchMast>(partyList.values());
+        if (qualityList.size() > 0)
+            list = new ArrayList<PendingBatchMast>(qualityList.values());
         else
             list = new ArrayList<>();
         return list;
