@@ -3166,8 +3166,8 @@ public class StockBatchServiceImpl {
                 pendingBatchDataList.addAll(newPendingBatchList);
                 Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
                 Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
-                pendingBatchMast.addTotalQualityMeter(totalMtr);
-                pendingBatchMast.addTotalQualityWt(totalWt);
+                pendingBatchMast.addTotalQualityMeter(StockBatchServiceImpl.changeInFormattedDecimal(totalMtr));
+                pendingBatchMast.addTotalQualityWt(StockBatchServiceImpl.changeInFormattedDecimal(totalWt));
                 qualityList.put(e.getQuality().getId(), pendingBatchMast);
 
             } else {
@@ -3175,8 +3175,8 @@ public class StockBatchServiceImpl {
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
                 Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
-                pendingBatchMast.setTotalQualityMeter(totalMtr!=null?totalMtr:0);
-                pendingBatchMast.setTotalQualityWt(totalWt!=null?totalWt:0);
+                pendingBatchMast.setTotalQualityMeter(StockBatchServiceImpl.changeInFormattedDecimal(totalMtr!=null?totalMtr:0));
+                pendingBatchMast.setTotalQualityWt(StockBatchServiceImpl.changeInFormattedDecimal(totalWt!=null?totalWt:0));
                 pendingBatchMast.setList(newPendingBatchList);
                 qualityList.put(pendingBatchMast.getQualityEntryId(), pendingBatchMast);
             }
