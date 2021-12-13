@@ -14,8 +14,6 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.*;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
-import com.main.glory.model.admin.BatchSequence;
-import com.main.glory.model.dispatch.response.GetAllDispatch;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.filters.QueryOperator;
@@ -30,14 +28,12 @@ import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.model.quality.response.QualityWithQualityNameParty;
 import com.main.glory.model.shade.ShadeMast;
-import com.main.glory.model.shade.requestmodals.GetAllShade;
 import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,9 +44,7 @@ import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
-import java.sql.Array;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -3171,22 +3165,34 @@ public class StockBatchServiceImpl {
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 pendingBatchDataList.addAll(newPendingBatchList);
                 Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
-                pendingBatchMast.addTotalQualityList(totalMtr);
+                Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
+                pendingBatchMast.addTotalQualityMeter(totalMtr);
+                pendingBatchMast.addTotalQualityWt(totalWt);
                 qualityList.put(e.getQuality().getId(), pendingBatchMast);
 
             } else {
                 PendingBatchMast pendingBatchMast = new PendingBatchMast(e);
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
+                Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
                 pendingBatchMast.setTotalQualityMeter(totalMtr!=null?totalMtr:0);
+                pendingBatchMast.setTotalQualityWt(totalWt!=null?totalWt:0);
                 pendingBatchMast.setList(newPendingBatchList);
                 qualityList.put(pendingBatchMast.getQualityEntryId(), pendingBatchMast);
             }
 
         });
 
-        if (qualityList.size() > 0)
+        if (qualityList.size() > 0) {
             list = new ArrayList<PendingBatchMast>(qualityList.values());
+            Collections.sort(list, new Comparator<PendingBatchMast>() {
+
+                @Override
+                public int compare(PendingBatchMast o1, PendingBatchMast o2) {
+                    return o1.getPartyId().intValue() - o2.getPartyId().intValue();
+                }
+            });
+        }
         else
             list = new ArrayList<>();
         return list;

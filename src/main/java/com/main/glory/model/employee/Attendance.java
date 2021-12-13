@@ -33,6 +33,7 @@ public class Attendance {
     String outUrl;
     @ColumnDefault("false")
     Boolean approved;
+    String status;//Out time Not mention
 
     public Attendance(GetLatestAttendance record, EmployeeMast employeeMast) {
         this.inTime = record.getDate();

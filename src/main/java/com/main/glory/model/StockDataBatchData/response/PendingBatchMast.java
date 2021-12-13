@@ -27,6 +27,7 @@ public class PendingBatchMast {
     @JsonIgnore
     String qualityName;
     Double totalQualityMeter;
+    Double totalQualityWt;
     List<PendingBatchData> list;
 
     public PendingBatchMast(Party party) {
@@ -47,7 +48,11 @@ public class PendingBatchMast {
         this.qualityEntryId = e.getQuality().getId();
     }
 
-    public void addTotalQualityList(Double totalMtr) {
+    public void addTotalQualityMeter(Double totalMtr) {
         this.totalQualityMeter = this.totalQualityMeter+totalMtr;
+    }
+
+    public void addTotalQualityWt(Double totalMtr) {
+        this.totalQualityWt = this.totalQualityWt+totalMtr;
     }
 }

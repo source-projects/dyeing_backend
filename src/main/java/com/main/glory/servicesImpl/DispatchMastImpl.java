@@ -1319,9 +1319,11 @@ public class DispatchMastImpl {
         });
 
 
+
         if(invoiceList.size()>0)
         {
             list = new ArrayList<>(invoiceList.values());
+
         }
 
         return list;

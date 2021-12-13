@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -20,7 +22,7 @@ import java.util.Date;
 @Setter
 public class ConsolidatedBillDataForExcel {
     String invoiceNo;
-    Date invoiceDate;
+    String invoiceDate;
     String partyName;
     String partyAddress1;
     String partyAddress2;
@@ -64,6 +66,10 @@ public class ConsolidatedBillDataForExcel {
     Double wtPer100m;
     String headName;
 
+    @JsonIgnore
+    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+
     public ConsolidatedBillDataForExcel(String batchId, Long pcs, Date invoiceDate, String invoiceNo, String qualityId,
                                         Double discount, Double percentageDiscount, Double netAmt,
                                         Double totalFinishMtr, Double totalMtr, Double rate,
@@ -75,7 +81,7 @@ public class ConsolidatedBillDataForExcel {
         //this.greyPcs = greyPcs;
         this.pcs = pcs;
         this.batchId = batchId;
-        this.invoiceDate = invoiceDate;
+        this.invoiceDate = dateFormat.format(invoiceDate);
         this.invoiceNo =invoiceNo;
         this.qualityId = qualityId;
         this.billingUnit = billingUnit;
@@ -116,7 +122,7 @@ public class ConsolidatedBillDataForExcel {
     public ConsolidatedBillDataForExcel(Party party, Quality quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast, Long greyPcs) {
         this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
-        this.invoiceDate = dispatchMast.getCreatedDate();
+        this.invoiceDate = dateFormat.format(dispatchMast.getCreatedDate());
         this.invoiceNo =dispatchMast.getPostfix();
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName().getQualityName();

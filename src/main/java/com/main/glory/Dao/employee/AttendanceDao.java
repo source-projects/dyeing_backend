@@ -42,4 +42,7 @@ public interface AttendanceDao extends JpaRepository<Attendance,Long> {
 
     @Query("select count(x.id) from Attendance x where DATE(x.inTime) >=DATE(:from) AND DATE(x.inTime)<=DATE(:to) AND x.approved=:flag AND x.controlId=:id")
     Long getApprovedFlagAttendanceByIdAndDateFilter(Date from,Date to,Long id,Boolean flag);
+
+    @Query(value = "select * from attendance as a where a.control_id=:id order by a.id DESC LIMIT 1",nativeQuery = true)
+    Attendance getLatestAttendanceRecordWithoutFilterByEmployeeId(@RequestParam("id") Long id);
 }
