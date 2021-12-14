@@ -1633,8 +1633,10 @@ public class StockBatchServiceImpl {
         // df2.setMaximumFractionDigits(2);
         if (values == null)
             return 0.0;
-        else
-            return Precision.round(values, 2);
+        else{
+            return Math.floor(values * 100) / 100;
+        }
+
     }
 
     public static List<BatchData> changeInFormattedDecimal(List<BatchData> batchDataList) {
