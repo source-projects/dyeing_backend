@@ -24,7 +24,7 @@ jobs:
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       with:
-        host: 15.206.179.225
+        host: 3.110.119.35
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         source: "target/*.jar"
@@ -33,7 +33,7 @@ jobs:
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.3
       with:
-        host: 15.206.179.225
+        host: 3.110.119.35
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         script: |
