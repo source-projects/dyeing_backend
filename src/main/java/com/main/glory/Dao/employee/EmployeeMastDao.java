@@ -39,7 +39,7 @@ public interface EmployeeMastDao extends JpaRepository<EmployeeMast,Long> {
     @Query(value = "select * from employee_mast as x where x.emp_id LIKE :empId% ",nativeQuery = true)
     List<EmployeeMast> getEmployeeByLikeEmpId(@RequestParam("empId") String empId);
 
-    @Query("select new com.main.glory.model.employee.response.MonthlyAttendanceResponse(x.id,x.name,x.empId,(select d from EmployeeData d where d.controlId=x.id AND d.type='profile')) from EmployeeMast x")
+    @Query("select new com.main.glory.model.employee.response.MonthlyAttendanceResponse(em.id,em.name,em.empId,ed) from EmployeeMast em INNER JOIN EmployeeData ed on ed.controlId =em.id and ed.type='profile'")
     List<MonthlyAttendanceResponse> getAllEmployeeNameWithId();
 
    /* @Query("select new com.main.glory.model.employee.response.GetAllEmployee(s," +

@@ -1,5 +1,6 @@
 package com.main.glory.model.hmi;
 
+import com.main.glory.model.dyeingProcess.DyeingProcessMast;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.request.JetStart;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -31,6 +32,11 @@ public class HMIMast {
     Long createdBy;
     Long updatedBy;
     Boolean completed;
+    Boolean scb;
+    Boolean sco;
+    Boolean doseNylon;//true when quality of batch contain CXN
+    Long dyeingProcessMastId;
+
 
     public HMIMast(String lotNo, String shadeno, Double wt, String jetNo) {
         this.batchId = lotNo;
@@ -49,6 +55,19 @@ public class HMIMast {
         this.createdBy = records.getCreatedBy()==null?null:records.getCreatedBy();
         this.updatedBy = records.getUpdatedBy()==null?null: records.getUpdatedBy();
         this.completed = false;
+    }
+
+    public HMIMast(ProductionPlan productionPlan, JetData jetDataExist, Double totalWt, JetStart records, DyeingProcessMast dyeingProcessMast,Boolean doseNylon) {
+        this.jetNo = String.valueOf(jetDataExist.getControlId());
+        this.batchId = productionPlan.getBatchId();
+        this.wt = totalWt;
+        this.productionId = productionPlan.getId();
+        this.shadeNo = productionPlan.getShadeId()==null?"No Shade mention":String.valueOf(productionPlan.getShadeId());
+        this.createdBy = records.getCreatedBy()==null?null:records.getCreatedBy();
+        this.updatedBy = records.getUpdatedBy()==null?null: records.getUpdatedBy();
+        this.completed = false;
+        this.scb = dyeingProcessMast!=null?dyeingProcessMast.getScb():false;
+
     }
 
     @PrePersist

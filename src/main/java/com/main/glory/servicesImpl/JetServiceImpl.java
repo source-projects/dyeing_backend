@@ -19,6 +19,7 @@ import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.hmi.HMIMast;
+import com.main.glory.model.hmi.request.HMIBitChange;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
@@ -1030,7 +1031,7 @@ public class JetServiceImpl {
             throw new Exception(ConstantFile.Jet_Exist_Without_Production);
 
 
-        if(jetDataExist.getStatus().equals(JetStatus.start))
+        if (jetDataExist.getStatus().equals(JetStatus.start))
             throw new Exception(ConstantFile.Jet_Record_Start);
 
         ProductionPlan productionPlan = productionPlanService.getProductionData(productionId);
@@ -1170,6 +1171,7 @@ public class JetServiceImpl {
     public List<JetData> getAllProductionInTheQueue() {
         return jetDataDao.getAllProductionInTheQueue();
     }
+
     public List<JetData> getAllProductionInTheQueueWithStart() {
         return jetDataDao.getAllProductionInTheQueueAndStart();
     }
@@ -1183,35 +1185,66 @@ public class JetServiceImpl {
 
         JetData jetDataExist = jetDataDao.getJetDataByProductionId(record.getProductionId());
 
-        if(jetDataExist==null)
+        if (jetDataExist == null)
             throw new Exception(ConstantFile.Jet_Not_Found);
 
-        if(jetDataExist.getStatus().equals(JetStatus.success))
+        if (jetDataExist.getStatus().equals(JetStatus.success))
             throw new Exception(ConstantFile.Jet_Record_Completed);
 
 
-        if(!jetDataExist.getControlId().toString().equals(record.getJetNo()))
+        if (!jetDataExist.getControlId().toString().equals(record.getJetNo()))
             throw new Exception(ConstantFile.Production_Record_Not_Exist_With_Jet);
 
         ProductionPlan productionPlan = productionPlanService.getProductionDataById(jetDataExist.getProductionId());
 
-        if(productionPlan.getStatus()==false)
+        if (productionPlan.getStatus() == false)
             throw new Exception(ConstantFile.Production_Record_Not_Planned);
 
         //check that batch id is merge batch id or not
         BatchData isMergeBatch = batchDao.getIsMergeBatchId(productionPlan.getBatchId());
         Double totalWt = 0.0;
-        if(isMergeBatch==null)
-        {
+        Boolean doseNylon = false;
+        if (isMergeBatch == null) {
             totalWt = batchDao.getTotalWtByBatchId(productionPlan.getBatchId());
-        }
-        else
-        {
+            //check qualityName contain CXN or not
+            List<Long> stockMastList = batchDao.getStockMastByMergeBatchId(productionPlan.getBatchId());
+            if (stockMastList.size() > 0) {
+                for (Long e : stockMastList) {
+                    StockMast stockMast = stockBatchService.getStockMastById(e);
+                    if (stockMast != null) {
+                        if (stockMast.getQuality().getQualityName().getQualityName().contains("CXN")) {
+                            doseNylon = true;
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+        } else {
             totalWt = batchDao.getTotalWtByMergeBatchId(productionPlan.getBatchId());
+            //check quality name contain CXN
+            Long stockId = batchDao.getStockIdByBatchId(productionPlan.getBatchId());
+
+            if(stockId!=null) {
+                StockMast stockMast = stockBatchService.getStockById(stockId);
+                if (stockMast.getQuality().getQualityName().getQualityName().contains("CXN")) {
+                    doseNylon = true;
+
+                }
+            }
         }
 
-        HMIMast hmiMast = new HMIMast(productionPlan,jetDataExist,totalWt,record);
+        HMIMast hmiMast = null;
+        DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
+        if (dyeingSlipMast != null) {
+            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(dyeingSlipMast.getDyeingProcessMastId());
+            hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record, dyeingProcessMast,doseNylon);
 
+        }
+        else {
+            hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record);
+        }
         hmiMastDao.save(hmiMast);
 
         //update jet status
@@ -1220,7 +1253,7 @@ public class JetServiceImpl {
     }
 
     public void updateJetDataStatus(Long id, JetStatus inQueue) {
-        jetDataDao.updateJetStatusById(id,inQueue);
+        jetDataDao.updateJetStatusById(id, inQueue);
     }
 
     public List<GetAllJetMast> getAllJetMast() {
@@ -1283,7 +1316,48 @@ public class JetServiceImpl {
             getAllJetMast.add(allJetMast);
         }
 
+        getAllJetMast.sort(Comparator.comparing(GetAllJetMast::getId));
         return getAllJetMast;
+
+    }
+
+    public void updateJetDataForHmi(HMIBitChange jetDataToUpdate) throws Exception {
+
+        //jet exist or not
+        JetMast jetMastExist = jetMastDao.getJetMastById(jetDataToUpdate.getJetId());
+        if(jetMastExist==null)
+            throw new Exception(ConstantFile.Jet_Not_Exist);
+
+
+        JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetDataToUpdate.getJetId(),jetDataToUpdate.getProductionId());
+        if(jetDataExist==null)
+            throw new Exception(ConstantFile.Production_Record_Not_Exist_With_Jet);
+
+
+        //if exist then update the record of hmi
+        if(jetDataExist.getStatus().toString().equalsIgnoreCase("start"))
+        {
+            HMIMast hmiMast = hmiMastDao.getHMIMastByProductionId(jetDataExist.getProductionId());
+            if(hmiMast!=null) {
+                //update the record
+                if (jetDataToUpdate.getDoseNylon() != null)
+                {
+                    hmiMast.setDoseNylon(jetDataToUpdate.getDoseNylon());
+                }
+                if(jetDataToUpdate.getSco()!=null)
+                {
+                    hmiMast.setSco(jetDataToUpdate.getSco());
+                }
+
+                hmiMastDao.save(hmiMast);
+            }
+
+        }
+        else
+        {
+            throw new Exception(ConstantFile.Jet_Record_Not_Start);
+        }
+
 
     }
 }

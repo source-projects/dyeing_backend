@@ -29,9 +29,12 @@ public interface JetMastDao  extends JpaRepository<JetMast,Long> {
     @Query("delete from JetMast j where j.id=:id")
     void deleteByJetId(Long id);
 
-    @Query("select new com.main.glory.model.jet.responce.GetAllJetMast(x.id,x.name,x.capacity) from JetMast x")
+    @Query("select new com.main.glory.model.jet.responce.GetAllJetMast(x.id,x.name,x.capacity) from JetMast x order by x.id ASC")
     List<GetAllJetMast> getAllJetMast();
 
     @Query("select x from JetMast x where x.id IN (:array)")
     List<JetMast> getAllJetByIds(List<Long> array);
+
+    @Query("select x from JetMast x where x.id=:jetId")
+    JetMast getJetMastById(Long jetId);
 }

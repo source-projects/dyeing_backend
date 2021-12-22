@@ -29,6 +29,7 @@ public class DyeingProcessMast {
     Date createdDate;
     Date updatedDate;
     String processName;
+    Boolean scb;
 
 
 

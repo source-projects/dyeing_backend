@@ -3,6 +3,7 @@ package com.main.glory.model.StockDataBatchData.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.party.Party;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,10 +50,10 @@ public class PendingBatchMast {
     }
 
     public void addTotalQualityMeter(Double totalMtr) {
-        this.totalQualityMeter = this.totalQualityMeter+totalMtr;
+        this.totalQualityMeter = StockBatchServiceImpl.changeInFormattedDecimal(this.totalQualityMeter+totalMtr);
     }
 
-    public void addTotalQualityWt(Double totalMtr) {
-        this.totalQualityWt = this.totalQualityWt+totalMtr;
+    public void addTotalQualityWt(Double totalQualityWt) {
+        this.totalQualityWt = StockBatchServiceImpl.changeInFormattedDecimal(this.totalQualityWt+totalQualityWt);
     }
 }
