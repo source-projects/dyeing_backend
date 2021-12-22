@@ -57,7 +57,7 @@ public class ConsolidatedBillDataForExcel {
     Double sgst;
     Double igst;
     Double gstAmt;
-    Double netAmt;
+    Long netAmt;
     Double discountAmt;
     String billingUnit;
     String inwardUnit;
@@ -70,6 +70,7 @@ public class ConsolidatedBillDataForExcel {
     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 
+    //this one is using through query
     public ConsolidatedBillDataForExcel(String batchId, Long pcs, Date invoiceDate, String invoiceNo, String qualityId,
                                         Double discount, Double percentageDiscount, Double netAmt,
                                         Double totalFinishMtr, Double totalMtr, Double rate,
@@ -101,18 +102,18 @@ public class ConsolidatedBillDataForExcel {
         this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
         this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.rate = rate;
-        this.amt = amt;
+        this.amt = totalFinishMtr*rate;
         //this.greyPcs = greyPcs;
         this. percentageDiscount=percentageDiscount;
-        this.discountAmt = discountAmt;
+        this.discountAmt = (this.amt/100)*this.percentageDiscount;
 
-        this.netAmt=netAmt;
-        this.taxAmt = taxAmt;
+        //this.netAmt=netAmt;
+        this.taxAmt = this.amt - this.discountAmt;
         this.igst=this.state.equalsIgnoreCase("Gujarat")?0:StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 5)/100);
         this.cgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.sgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.gstAmt=this.cgst+this.sgst+this.igst;
-        this.netAmt = this.taxAmt+this.gstAmt;
+        this.netAmt = Math.round(this.taxAmt+this.gstAmt);
         this.sharinkage = StockBatchServiceImpl.changeInFormattedDecimal(((this.totalMtr - this.totalFinishMtr)/this.totalMtr) * 100);
 
 
@@ -138,7 +139,7 @@ public class ConsolidatedBillDataForExcel {
         this.qualityNameId = quality.getQualityName().getId();
         this.discount=dispatchMast.getDiscount();
         this.percentageDiscount=dispatchMast.getPercentageDiscount()==null?0:dispatchMast.getPercentageDiscount();
-        this. netAmt=dispatchMast.getNetAmt();
+        this. netAmt=dispatchMast.getNetAmt().longValue();
         this.partyAddress1 = party.getPartyAddress1()==null?null:party.getPartyAddress1();
         this.partyAddress2 = party.getPartyAddress2()==null?null:party.getPartyAddress2();
         this.gstin = party.getGSTIN()==null?null:party.getGSTIN();
@@ -151,7 +152,7 @@ public class ConsolidatedBillDataForExcel {
         this.cgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.sgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.gstAmt=this.cgst+this.sgst+this.igst;
-        this.netAmt = this.taxAmt+this.gstAmt;
+        this.netAmt = Math.round(this.taxAmt+this.gstAmt);
         this.sharinkage = StockBatchServiceImpl.changeInFormattedDecimal(((this.totalMtr - this.totalFinishMtr)/this.totalMtr) * 100);
 
     }

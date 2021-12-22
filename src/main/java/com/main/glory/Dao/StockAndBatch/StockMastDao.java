@@ -126,6 +126,6 @@ public interface StockMastDao extends FilterDao<StockMast>  {
     List<StockMast> filterByBatchFilterRequestWithPendingBatch(Date from, Date to, Long partyId, Long qualityNameId, Long qualityEntryId,Long userHeadId);
 
 
-
-
+    @Query("select x from StockMast x where x.id=:e")
+    StockMast getStockMastById(Long e);
 }

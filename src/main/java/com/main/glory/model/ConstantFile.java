@@ -24,6 +24,7 @@ public class ConstantFile {
     public static String Jet_Updated = "Data updated successfully";
     public static String Jet_Exist_With_Name = "jet exist with name";
     public static String Jet_Not_Exist_With_Name = "jet not exist";
+    public static String Jet_Not_Exist = "jet not exist";
     public static String Jet_Exist_With_Production = "Production exist with jet";
     public static String Jet_Exist_Without_Production = "Production not exist with jet";
     public static String Jet_Deleted = "Data deleted successfully";
@@ -32,7 +33,7 @@ public class ConstantFile {
     public static String Jet_Record_Completed = "Jet record status Completed";
     public static String Jet_Record_Start = "Jet record status : Started";
     public static String Jet_Capacity_Exceed = "Jet capacity exceed";
-
+    public static String Jet_Record_Not_Start = "Jet record not Started";
 
     //production
     public static String Production_Found = "Data found";
