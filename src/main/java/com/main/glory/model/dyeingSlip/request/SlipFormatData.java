@@ -23,6 +23,20 @@ public class SlipFormatData extends DyeingSlipMast{
     String jetName;
     String partyName;
 
+    public SlipFormatData(SlipFormatData slipFormatData) {
+        super(slipFormatData);
+        this.totalWt = slipFormatData.getTotalWt();
+        this.totalMeter = slipFormatData.getTotalMeter();
+        this.qualityId = slipFormatData.getQualityId();
+        this.qualityEntryId = slipFormatData.getQualityEntryId();
+        this.partyShadeNo = slipFormatData.getPartyShadeNo();
+        this.batchCount = slipFormatData.getBatchCount();
+        this.colorName=slipFormatData.getColorName();
+        this.colorTone =slipFormatData.getColorTone();
+        this.jetName =slipFormatData.getJetName();
+        this.partyName= slipFormatData.getPartyName();
+    }
+
 
     public SlipFormatData(DyeingSlipMast dyeingSlipMastExist) {
         super(dyeingSlipMastExist);

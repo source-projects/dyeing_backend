@@ -1,6 +1,7 @@
 package com.main.glory.model.jet.responce;
 
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
+import com.main.glory.model.hmi.HMIMast;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetStatus;
 import com.main.glory.model.party.Party;
@@ -39,6 +40,10 @@ public class GetJetData {
     String processName;
     String partyShadeNo;
     Long stockId;
+    Boolean sco;
+    Boolean doseNylone;
+    Boolean isDirect;
+    Long shadeId;
 
 
 
@@ -156,5 +161,49 @@ public class GetJetData {
         this. totalMtr=data.getTotalMtr();
         //this. processName=dyeingProcessMast.getProcessName()==null?null:dyeingProcessMast.getProcessName();
         //this.partyShadeNo=colorTone.getPartyShadeNo()==null?null:colorTone.getPartyShadeNo();
+    }
+
+    public GetJetData(GetAllProductionWithShadeData data, JetData jetData, ShadeMast colorTone, DyeingProcessMast dyeingProcessMast, HMIMast hmiMastExist) {
+        this.id=jetData.getId();
+        this.batchId=data.getBatchId();
+        this.controlId=jetData.getControlId();
+        this.status=jetData.getStatus().toString();
+        this.sequence=jetData.getSequence();
+        this.productionId=jetData.getProductionId();
+        this.colorTone=colorTone==null?null:colorTone.getColorTone();
+        this.partyId=data.getPartyId();
+        this.partyName=data.getPartyName();
+        this.qualityEntryId=data.getQualityEntryId();
+        this.qualityId=data.getQualityId();
+        this.qualityName=data.getQualityName();
+        this.totalWt=data.getTotalWt();
+        this.totalMtr=data.getTotalMtr();
+        this.processName=dyeingProcessMast==null?null:dyeingProcessMast.getProcessName();
+        this.partyShadeNo=colorTone==null?null:colorTone.getPartyShadeNo();
+        this.sco = hmiMastExist!=null? hmiMastExist.getSco() : false;
+        this.doseNylone= hmiMastExist!=null?hmiMastExist.getDoseNylon():false;
+        this.isDirect = data.getIsDirect();
+        this.shadeId = data.getShadeId();
+    }
+
+    public GetJetData(JetData jetData, GetAllProductionWithShadeData data, HMIMast hmiMastExist) {
+        this.id=jetData.getId();
+        this.isDirect = data.getIsDirect();
+        this.shadeId = data.getShadeId();
+        this.controlId=jetData.getControlId();
+        this.status=jetData.getStatus().toString();
+        this.sequence=jetData.getSequence();
+        this.productionId=jetData.getProductionId();
+        this.batchId=data.getBatchId();
+        //this.colorTone=colorTone.getColorTone()==null?null:colorTone.getColorTone();
+        this.partyId=data.getPartyId();
+        this.partyName=data.getPartyName();
+        this.qualityEntryId=data.getQualityEntryId();
+        this. qualityId=data.getQualityId();
+        this. qualityName=data.getQualityName();
+        this. totalWt=data.getTotalWt();
+        this. totalMtr=data.getTotalMtr();
+        this.sco = hmiMastExist!=null?hmiMastExist.getSco():false;
+        this.doseNylone=hmiMastExist!=null?hmiMastExist.getDoseNylon():false;
     }
 }

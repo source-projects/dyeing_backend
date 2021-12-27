@@ -9,6 +9,7 @@ import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
 import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
+import com.main.glory.model.dyeingSlip.request.PrintDyeingSlipMast;
 import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
@@ -43,267 +44,289 @@ public class DyeingSlipController extends ControllerConfig {
     ConstantFile constantFile;
 
     @PutMapping("/dyeingSlip")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDyeingSlip(@RequestBody DyeingSlipMast data){
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Boolean, Object>> updateDyeingSlip(@RequestBody DyeingSlipMast data) {
+        GeneralResponse<Boolean, Object> result;
         try {
-            if(data == null){
-                result = new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,data);
-            }else {
+            if (data == null) {
+                result = new GeneralResponse<>(false, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, data);
+            } else {
                 dyeingSlipService.updateDyeingSlip(data);
-                result = new GeneralResponse<>(true, constantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,data);
+                result = new GeneralResponse<>(true, constantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK, data);
             }
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,data);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, data);
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/dyeingSlip/{batchId}/{productionId}")
-    public ResponseEntity<GeneralResponse<SlipFormatData,Object>> getDyeingSlipByBatchIdProductionId(@PathVariable(name = "batchId") String batchId, @PathVariable(name = "productionId") Long productionId){
-        GeneralResponse<SlipFormatData,Object> result;
+    public ResponseEntity<GeneralResponse<SlipFormatData, Object>> getDyeingSlipByBatchIdProductionId(@PathVariable(name = "batchId") String batchId, @PathVariable(name = "productionId") Long productionId) {
+        GeneralResponse<SlipFormatData, Object> result;
         try {
-            if(batchId == null || productionId == null){
+            if (batchId == null || productionId == null) {
                 throw new Exception(constantFile.Null_Record_Passed);
-            }else {
+            } else {
 
                 SlipFormatData data = dyeingSlipService.getDyeingSlipByBatchStockId(batchId, productionId);
-                if(data!=null)
-                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                if (data != null)
+                    result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
                 else
-                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             }
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @PostMapping("/dyeingSlip/printDyeingSlipBy")
+    public ResponseEntity<GeneralResponse<List<SlipFormatData>, Object>> getDyeingSlipByProductionBatchAndType(@RequestBody PrintDyeingSlipMast record) {
+        GeneralResponse<List<SlipFormatData>, Object> result;
+        try {
+            List<SlipFormatData> data = dyeingSlipService.getDyeingSlipByBatchAndProductionWithType(record);
+            if (data.size() > 0)
+                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, record);
+            else
+                result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, record);
+
+            logService.saveLog(result, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, record);
+            logService.saveLog(result, request, true);
+        }
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/dyeingSlip/all")
-    public ResponseEntity<GeneralResponse<List<SlipFormatData>,Object>> getAllDyeingSlip(){
-        GeneralResponse<List<SlipFormatData>,Object> result;
+    public ResponseEntity<GeneralResponse<List<SlipFormatData>, Object>> getAllDyeingSlip() {
+        GeneralResponse<List<SlipFormatData>, Object> result;
         try {
- 
-                List<SlipFormatData> data = dyeingSlipService.getAllDyeingSlip();
-                if(data!=null)
-                    result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-                else
-                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            List<SlipFormatData> data = dyeingSlipService.getAllDyeingSlip();
+            if (data != null)
+                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     @GetMapping("/dyeingSlip/allPaginated")
-    public ResponseEntity<GeneralResponse<FilterResponse<SlipFormatData>,Object>> getAllDyeingSlipAllPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam){
-        GeneralResponse<FilterResponse<SlipFormatData>,Object> result;
+    public ResponseEntity<GeneralResponse<FilterResponse<SlipFormatData>, Object>> getAllDyeingSlipAllPaginated(@RequestBody GetBYPaginatedAndFiltered requestParam) {
+        GeneralResponse<FilterResponse<SlipFormatData>, Object> result;
         try {
- 
-            FilterResponse<SlipFormatData> data = dyeingSlipService.getAllDyeingSlipAllPaginated(requestParam);
-                if(data!=null)
-                    result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-                else
-                    result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            FilterResponse<SlipFormatData> data = dyeingSlipService.getAllDyeingSlipAllPaginated(requestParam);
+            if (data != null)
+                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping("/dyeingSlip/additionalDyeingslip/all")
-    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object>> getAllAddtionalDyeignSlip(){
-        GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object> result;
+    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>, Object>> getAllAddtionalDyeignSlip() {
+        GeneralResponse<List<GetAllAdditionalDyeingSlip>, Object> result;
         try {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllAdditionalDyeingSlip();
-            if(!data.isEmpty())
-                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (!data.isEmpty())
+                result = new GeneralResponse<>(data, constantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(null, constantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //add addition dyeing slip
     @PostMapping("/dyeingSlip/add/additionalDyeingSlip/")
-    public ResponseEntity<GeneralResponse<Long,Object>> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
-        GeneralResponse<Long,Object> result;
+    public ResponseEntity<GeneralResponse<Long, Object>> addAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
+        GeneralResponse<Long, Object> result;
         try {
-            if(addAdditionDyeingSlipModel ==null)
-            result = new GeneralResponse<>(null, constantFile.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
+            if (addAdditionDyeingSlipModel == null)
+                result = new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
 
             Long id = dyeingSlipService.addAdditionalSlipData(addAdditionDyeingSlipModel);
-            result = new GeneralResponse<>(id, constantFile.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(id, constantFile.DyeingSlip_Added, true, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //update addition dyeing slip
     @PutMapping("/dyeingSlip/update/additionalDyeingSlip/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel){
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Boolean, Object>> updateAddtionalDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
+        GeneralResponse<Boolean, Object> result;
         try {
-            if(addAdditionDyeingSlipModel ==null)
-                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed,false,System.currentTimeMillis(),HttpStatus.OK,addAdditionDyeingSlipModel);
+            if (addAdditionDyeingSlipModel == null)
+                result = new GeneralResponse<>(false, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
 
-           dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
+            dyeingSlipService.updateAddtionalDyeingSlip(addAdditionDyeingSlipModel);
 
-           result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get addition dyeing slip
     @GetMapping("/dyeingSlip/getAdditionalDyeingSlipBy/{id}")
-    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip,Object>> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
-        GeneralResponse<GetAllAdditionalDyeingSlip,Object> result;
+    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip, Object>> getAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id) {
+        GeneralResponse<GetAllAdditionalDyeingSlip, Object> result;
         try {
-            if(id ==null)
+            if (id == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getAdditionalDyeingSlipById(id);
-            if(data!=null)
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (data != null)
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
     //get addition dyeing slip
     @GetMapping("/dyeingSlip/getAdditionalDyeingSlipByForPrint")
-    public ResponseEntity<GeneralResponse<BatchResponseWithSlip,Object>> getAdditionalDyeingSlipByForPrint(@RequestParam(name = "id") Long id){
-        GeneralResponse<BatchResponseWithSlip,Object> result;
+    public ResponseEntity<GeneralResponse<BatchResponseWithSlip, Object>> getAdditionalDyeingSlipByForPrint(@RequestParam(name = "id") Long id) {
+        GeneralResponse<BatchResponseWithSlip, Object> result;
         try {
-            if(id ==null)
+            if (id == null)
                 throw new Exception("null record passed");
 
             BatchResponseWithSlip data = dyeingSlipService.getAdditionalDyeingSlipForPrintById(id);
-            if(data!=null)
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (data != null)
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
+
     @DeleteMapping("/dyeingSlip/deleteAdditionalDyeingSlipBy/{id}")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> deleteAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id){
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Boolean, Object>> deleteAdditionalDyeingSlipBy(@PathVariable(name = "id") Long id) {
+        GeneralResponse<Boolean, Object> result;
         try {
-            if(id ==null)
+            if (id == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
             Boolean data = dyeingSlipService.deleteAdditionalDyeingSlipById(id);
-            if(data)
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (data)
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Deleted, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,debugAll);
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
 
     @GetMapping("/dyeingSlip/directDyeingSlip/all")
-    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object>> getAllDirectDyeignSlip(){
-        GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object> result;
+    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>, Object>> getAllDirectDyeignSlip() {
+        GeneralResponse<List<GetAllAdditionalDyeingSlip>, Object> result;
         try {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllDirectDyeignSlip();
-            if(!data.isEmpty())
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (!data.isEmpty())
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(null, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,debugAll);
+                result = new GeneralResponse<>(null, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //get direct dyeing slip
     @GetMapping("/dyeingSlip/getDirectDyeingSlipBy/{id}")
-    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip,Object>> getDirectDyeingSlipBy(@PathVariable(name = "id") Long id){
-        GeneralResponse<GetAllAdditionalDyeingSlip,Object> result;
+    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip, Object>> getDirectDyeingSlipBy(@PathVariable(name = "id") Long id) {
+        GeneralResponse<GetAllAdditionalDyeingSlip, Object> result;
         try {
-            if(id ==null)
+            if (id == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getDirectDyeingSlipById(id);
-            if(data!=null)
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (data != null)
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //update direct dyeing slip
     @PutMapping("/dyeingSlip/update/directDyeingSlip/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateDirectDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Boolean, Object>> updateDirectDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
+        GeneralResponse<Boolean, Object> result;
         try {
             if (addAdditionDyeingSlipModel == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);
@@ -311,14 +334,14 @@ public class DyeingSlipController extends ControllerConfig {
 
             dyeingSlipService.updateDirectDyeingSlip(addAdditionDyeingSlipModel);
 
-            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
+            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
+            logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -344,8 +367,6 @@ public class DyeingSlipController extends ControllerConfig {
     }*/
 
 
-
-
     //redyeing slip
 
     //we had use the same api for adding the additional dyeing slip and redyeing slip
@@ -353,71 +374,70 @@ public class DyeingSlipController extends ControllerConfig {
     // make only get view delete redyeing slip api
 
     @GetMapping("/dyeingSlip/reDyeingSlip/all")
-    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object>> getAllReDirectDyeingSlip(){
-        GeneralResponse<List<GetAllAdditionalDyeingSlip>,Object> result;
+    public ResponseEntity<GeneralResponse<List<GetAllAdditionalDyeingSlip>, Object>> getAllReDirectDyeingSlip() {
+        GeneralResponse<List<GetAllAdditionalDyeingSlip>, Object> result;
         try {
 
             List<GetAllAdditionalDyeingSlip> data = dyeingSlipService.getAllReDyeignSlip();
-            if(!data.isEmpty())
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (!data.isEmpty())
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(null, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(null, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
-
 
 
     //get re dyeing slip
     @GetMapping("/dyeingSlip/getReDyeingSlipBy")
-    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip,Object>> getReDyeingSlipBy(@RequestParam Long id){
-        GeneralResponse<GetAllAdditionalDyeingSlip,Object> result;
+    public ResponseEntity<GeneralResponse<GetAllAdditionalDyeingSlip, Object>> getReDyeingSlipBy(@RequestParam Long id) {
+        GeneralResponse<GetAllAdditionalDyeingSlip, Object> result;
         try {
-            if(id ==null)
+            if (id == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);//result = new GeneralResponse<>(null,"info can't be null",false,System.currentTimeMillis(),HttpStatus.OK);
 
             GetAllAdditionalDyeingSlip data = dyeingSlipService.getReDyeingSlipById(id);
-            if(data!=null)
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            if (data != null)
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
-                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result = new GeneralResponse<>(data, ConstantFile.DyeingSlip_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
 
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result=  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(result, request, true);
         }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
 
     //update direct dyeing slip
     @PutMapping("/dyeingSlip/update/reDyeingSlip/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> updateReDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
-        GeneralResponse<Boolean,Object> result;
+    public ResponseEntity<GeneralResponse<Boolean, Object>> updateReDyeingSlip(@RequestBody AddAddtionalSlip addAdditionDyeingSlipModel) {
+        GeneralResponse<Boolean, Object> result;
         try {
             if (addAdditionDyeingSlipModel == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);//result = new GeneralResponse<>(false, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
 
             dyeingSlipService.updateReDyeingSlip(addAdditionDyeingSlipModel);
 
-            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
-            logService.saveLog(result,request,debugAll);
+            result = new GeneralResponse<>(true, ConstantFile.DyeingSlip_Updated, true, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
+            logService.saveLog(result, request, debugAll);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,addAdditionDyeingSlipModel);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, addAdditionDyeingSlipModel);
+            logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
@@ -426,31 +446,28 @@ public class DyeingSlipController extends ControllerConfig {
     //get shade item for the direct dyeing slip
 
     @PostMapping("/dyeingSlip/getItemListByShadeAndBatch")
-    public ResponseEntity<GeneralResponse<List<ItemListForDirectDyeing>,Object>> getItemListByShadeAndBatch(@RequestBody GetItemByShadeAndBatch record) {
-        GeneralResponse<List<ItemListForDirectDyeing>,Object> result;
+    public ResponseEntity<GeneralResponse<List<ItemListForDirectDyeing>, Object>> getItemListByShadeAndBatch(@RequestBody GetItemByShadeAndBatch record) {
+        GeneralResponse<List<ItemListForDirectDyeing>, Object> result;
         try {
             if (record == null)
                 throw new Exception(ConstantFile.Null_Record_Passed);//result = new GeneralResponse<>(null, "info can't be null", false, System.currentTimeMillis(), HttpStatus.OK);
 
-            List<ItemListForDirectDyeing> list  = dyeingSlipService.getItemListByShadeAndBatch(record);
+            List<ItemListForDirectDyeing> list = dyeingSlipService.getItemListByShadeAndBatch(record);
 
-            if(!list.isEmpty())
-            result = new GeneralResponse<>(list, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            if (!list.isEmpty())
+                result = new GeneralResponse<>(list, ConstantFile.SupplierRate_Found, true, System.currentTimeMillis(), HttpStatus.OK, record);
             else
-            result = new GeneralResponse<>(list, ConstantFile.SupplierRate_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,record);
+                result = new GeneralResponse<>(list, ConstantFile.SupplierRate_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, record);
 
-            logService.saveLog(result,request,debugAll);
+            logService.saveLog(result, request, debugAll);
 
         } catch (Exception e) {
             e.printStackTrace();
-            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,record);
-            logService.saveLog(result,request,true);
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK, record);
+            logService.saveLog(result, request, true);
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
-
-
-
 
 
 }

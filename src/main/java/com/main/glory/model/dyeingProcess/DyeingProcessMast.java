@@ -39,14 +39,14 @@ public class DyeingProcessMast {
     private List<DyeingProcessData> dyeingProcessData;
 
     public DyeingProcessMast(DyeingProcessMast dyeingProcessMast) {
-        this.id = dyeingProcessMast.getId();
-        this.userHeadId = dyeingProcessMast.getUserHeadId()==null?null:dyeingProcessMast.getUserHeadId();
-        this.createdBy = dyeingProcessMast.getCreatedBy();
-        this.updatedBy = dyeingProcessMast.getUpdatedBy();
-        this.createdDate = dyeingProcessMast.getCreatedDate();
-        this.updatedDate= dyeingProcessMast.getUpdatedDate()==null?null:dyeingProcessMast.getUpdatedDate();
-        this.processName = dyeingProcessMast.getProcessName();
-        this.dyeingProcessData =dyeingProcessMast.getDyeingProcessData();
+        this.id = dyeingProcessMast!=null?dyeingProcessMast.getId():null;
+        this.userHeadId = dyeingProcessMast==null?null:dyeingProcessMast.getUserHeadId();
+        this.createdBy = dyeingProcessMast!=null?dyeingProcessMast.getCreatedBy():null;
+        this.updatedBy = dyeingProcessMast!=null?dyeingProcessMast.getUpdatedBy():null;
+        this.createdDate = dyeingProcessMast!=null?dyeingProcessMast.getCreatedDate():null;
+        this.updatedDate= dyeingProcessMast==null?null:dyeingProcessMast.getUpdatedDate();
+        this.processName = dyeingProcessMast!=null?dyeingProcessMast.getProcessName():null;
+        this.dyeingProcessData =dyeingProcessMast!=null?dyeingProcessMast.getDyeingProcessData():null;
     }
 
 

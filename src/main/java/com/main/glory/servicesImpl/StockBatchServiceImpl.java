@@ -1005,7 +1005,7 @@ public class StockBatchServiceImpl {
                         continue;
 
                 if (batchId != null)
-                    if ((!batch.getBatchId().contains(batchId)))
+                    if (!batch.getBatchId().contains(batchId))
                         continue;
 
 //                if (isProductionPlan != null)
@@ -1067,7 +1067,7 @@ public class StockBatchServiceImpl {
                             continue;
 
                     if (batchId != null)
-                        if ((!batch.getBatchId().contains(batchId)))
+                        if (!batch.getMergeBatchId().contains(batchId))
                             continue;
 
 //                    if (isProductionPlan != null)
@@ -2403,12 +2403,17 @@ public class StockBatchServiceImpl {
             }
 
             if (getAllBatch.getBatchId() != null) {
+                //System.out.println("in stock service:"+getAllBatch.getBatchId());
                 DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
-                DyeingSlipData additionalExist = dyeingSlipService.dyeingSlipDataDao
-                        .getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
-                if (additionalExist == null) {
-                    list.add(getAllBatch);
+                DyeingSlipData additionalExist =null;
+                if(dyeingSlipMast!=null) {
+                    additionalExist = dyeingSlipService.dyeingSlipDataDao
+                            .getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
+                    if (additionalExist == null) {
+                        list.add(getAllBatch);
+                    }
                 }
+
             }
 
         }
@@ -3146,8 +3151,10 @@ public class StockBatchServiceImpl {
                 pendingBatchDataList.addAll(newPendingBatchList);
                 Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
                 Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
+                Long totalPcs = newPendingBatchList.stream().mapToLong(q -> q.getTotalPcs()).sum();
                 pendingBatchMast.addTotalQualityMeter(totalMtr);
                 pendingBatchMast.addTotalQualityWt(totalWt);
+                pendingBatchMast.addTotalQualityPcs(totalPcs);
                 qualityList.put(e.getQuality().getId(), pendingBatchMast);
 
             } else {
@@ -3155,8 +3162,10 @@ public class StockBatchServiceImpl {
                 List<PendingBatchData> newPendingBatchList = batchDao.getPendingBatchListByStockId(e.getId());
                 Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
                 Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
+                Long totalPcs = newPendingBatchList.stream().mapToLong(q -> q.getTotalPcs()).sum();
                 pendingBatchMast.setTotalQualityMeter(StockBatchServiceImpl.changeInFormattedDecimal(totalMtr != null ? totalMtr : 0));
                 pendingBatchMast.setTotalQualityWt(StockBatchServiceImpl.changeInFormattedDecimal(totalWt != null ? totalWt : 0));
+                pendingBatchMast.setTotalPcs(totalPcs);
                 pendingBatchMast.setList(newPendingBatchList);
                 qualityList.put(pendingBatchMast.getQualityEntryId(), pendingBatchMast);
             }
@@ -3225,7 +3234,7 @@ public class StockBatchServiceImpl {
     public FilterResponse<MergeBatchResponse> getAllMergeBatchIdWithPagination(GetBYPaginatedAndFiltered requestParam) {
         // List<GetAllMergeBatchId> list = new ArrayList<>();
 
-        List<GetBatchWithControlId> totalSize = batchDao.findAllMergeBatchWithoutFilter();
+        List<GetBatchWithControlId> totalSize = null;//batchDao.findAllMergeBatchWithoutFilter();
         List<MergeBatchResponse> getAllBatchWithPartyAndQualities = new ArrayList<>();
         //List<MergeBatchId> record = batchDao.getAllMergeBatchId();
         List<GetBatchWithControlId> batchDataForMergeBatch = null;
@@ -3249,6 +3258,7 @@ public class StockBatchServiceImpl {
 
             if (field.equals("batchId"))
                 batchId = value;
+
             if (field.equals("mergeBatchId"))
                 mergeBatchId = value;
 
@@ -3261,10 +3271,9 @@ public class StockBatchServiceImpl {
         } else {
             batchDataForMergeBatch = batchDao.findAllMergeBatchWithFilterWithAndFalseWithPageble(partyName, qualityName, batchId, mergeBatchId, pageable);
             totalSize = batchDao.findAllMergeBatchWithFilterWithAndFalse(partyName, qualityName, batchId, mergeBatchId);
-            //batchDataForMergeBatch = batchDao.findAllMergeBatchWithFilterWithAndFalse(partyName, qualityName, batchId, mergeBatchId);
-            //batchDataForMergeBatch = batchDao.findAllMergeBatchWithFilterWithAndFalse(mergeBatchId,batchId,partyName,qualityName);
+
         }
-      /*  }
+       /* }
         else
             batchDataForMergeBatch = batchDao.findAllMergeBatchWithoutFilter();*/
 
@@ -3315,7 +3324,7 @@ public class StockBatchServiceImpl {
                 batchToPartyAndQuality.setTotalWt(batch.getWT());
                 batchToPartyAndQuality.setMergeBatchId(batch.getMergeBatchId());
 
-                // set the production plag as well
+                // set the production flag as well
                 BatchData isMergeBatch = batchDao.getIsMergeBatchId(batchToPartyAndQuality.getMergeBatchId());
                 if (isMergeBatch != null) {
                     batchToPartyAndQuality.setIsProductionPlanned(isMergeBatch.getIsProductionPlanned());

@@ -29,6 +29,7 @@ public class PendingBatchMast {
     String qualityName;
     Double totalQualityMeter;
     Double totalQualityWt;
+    Long totalPcs;
     List<PendingBatchData> list;
 
     public PendingBatchMast(Party party) {
@@ -55,5 +56,9 @@ public class PendingBatchMast {
 
     public void addTotalQualityWt(Double totalQualityWt) {
         this.totalQualityWt = StockBatchServiceImpl.changeInFormattedDecimal(this.totalQualityWt+totalQualityWt);
+    }
+
+    public void addTotalQualityPcs(Long totalPcs) {
+        this.totalPcs = this.totalPcs+totalPcs;
     }
 }

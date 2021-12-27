@@ -92,7 +92,7 @@ public class MergeBatchController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
-    @GetMapping("/stockBatch/get/mergeBatchList/allPaginated")
+    @PostMapping("/stockBatch/get/mergeBatchList/allPaginated")
     public ResponseEntity<GeneralResponse<FilterResponse<MergeBatchResponse>,Object>> getAllMergeBatchIdWithPagination(@RequestBody GetBYPaginatedAndFiltered requestParam) throws Exception {
         GeneralResponse<FilterResponse<MergeBatchResponse>,Object> result = null;
         try {

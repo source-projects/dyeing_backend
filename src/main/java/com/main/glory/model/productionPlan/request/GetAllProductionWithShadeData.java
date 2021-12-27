@@ -25,6 +25,7 @@ public class GetAllProductionWithShadeData extends ProductionPlan {
     Double totalWt;
     Double totalMtr;
     String partyName;
+    Boolean isDirect;
 
 
 

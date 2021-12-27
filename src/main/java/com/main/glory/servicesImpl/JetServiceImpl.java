@@ -120,19 +120,25 @@ public class JetServiceImpl {
 
 
         ProductionPlan productionPlanExits = productionPlanService.getProductionData(productionId);
-        if (productionPlanExits.getStatus())
-            throw new Exception(ConstantFile.Production_With_Jet);
+//        if (productionPlanExits.getStatus())
+//            throw new Exception(ConstantFile.Production_With_Jet);
 
-        Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
+        Optional<ShadeMast> shadeMast;
+        if (productionPlanExits.getShadeId() == null) {
+            shadeMast = null;
+        } else
+            shadeMast = shadeService.getShadeMastById(productionPlanExits.getShadeId());
 
 
-        if (shadeMast.isEmpty()) {
+        /*if (shadeMast.isEmpty()) {
             throw new Exception("no shade found with id:" + productionPlanExits.getShadeId());
-        }
+        }*/
 
 
         //dyeing process
-        DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
+        DyeingProcessMast dyeingProcessMast = null;
+        if (shadeMast != null && shadeMast.isPresent())
+            dyeingProcessMast = dyeingProcessService.getDyeingProcessById(shadeMast.get().getProcessId());
 
 
         //count the color/chemical amt to deduct
@@ -242,8 +248,8 @@ public class JetServiceImpl {
             if (productionPlanExist == null)
                 throw new Exception("production data not found");
 
-            if (jetDataExistWithProducton.isPresent())
-                throw new Exception(ConstantFile.Production_With_Jet);
+            /*if (jetDataExistWithProducton.isPresent())
+                throw new Exception(ConstantFile.Production_With_Jet);*/
 
 
             //jetCapacity
@@ -376,8 +382,11 @@ public class JetServiceImpl {
 
             // 2. now also enter the entire data of process into the slip table if the above condition is fulfilled as per the requirement
 
-            DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
-            List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
+
+            //do when the shade record is there else skip
+            if (dyeingProcessMast != null) {
+                DyeingSlipMast dyeingSlipMast = new DyeingSlipMast();
+                List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
 
 
 //            //check the slip is already exist or not
@@ -386,114 +395,115 @@ public class JetServiceImpl {
 //                throw new Exception("slip already is exist for batch id:"+productionPlanExits.getBatchId());
 
 
-            //set the dyeing slip master table first
-            dyeingSlipMast.setJetId(jetMastExist.get().getId());
-            dyeingSlipMast.setProductionId(productionPlanExist.getId());
-            dyeingSlipMast.setBatchId(productionPlanExits.getBatchId());
-            //dyeingSlipMast.setStockId(productionPlanExist.getStockId());
+                //set the dyeing slip master table first
+                dyeingSlipMast.setJetId(jetMastExist.get().getId());
+                dyeingSlipMast.setProductionId(productionPlanExist.getId());
+                dyeingSlipMast.setBatchId(productionPlanExits.getBatchId());
+                //dyeingSlipMast.setStockId(productionPlanExist.getStockId());
 
-            for (DyeingProcessData dyeingProcessData : dyeingProcessMast.getDyeingProcessData()) {
-                DyeingSlipData dyeingSlipData = new DyeingSlipData(dyeingProcessData);
-                List<DyeingSlipItemData> slipItemLists = new ArrayList<>();
-                for (DyeingChemicalData dyeingChemicalData : dyeingProcessData.getDyeingChemicalData()) {
+                for (DyeingProcessData dyeingProcessData : dyeingProcessMast.getDyeingProcessData()) {
+                    DyeingSlipData dyeingSlipData = new DyeingSlipData(dyeingProcessData);
+                    List<DyeingSlipItemData> slipItemLists = new ArrayList<>();
+                    for (DyeingChemicalData dyeingChemicalData : dyeingProcessData.getDyeingChemicalData()) {
 
-                    if (dyeingChemicalData.getShadeType().equals(shadeMast.get().getCategory()) || dyeingChemicalData.getShadeType().equals("DEFAULT")) {
-                        DyeingSlipItemData slipItemList = new DyeingSlipItemData();
-                        slipItemList.setItemId(dyeingChemicalData.getItemId());
-                        SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
-                        slipItemList.setItemName(supplierRateItem.getItemName());
+                        if (dyeingChemicalData.getShadeType().equals(shadeMast.get().getCategory()) || dyeingChemicalData.getShadeType().equals("DEFAULT")) {
+                            DyeingSlipItemData slipItemList = new DyeingSlipItemData();
+                            slipItemList.setItemId(dyeingChemicalData.getItemId());
+                            SupplierRate supplierRateItem = supplierService.getSupplierRateByItemId(dyeingChemicalData.getItemId());
+                            slipItemList.setItemName(supplierRateItem.getItemName());
 
-                        String name = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
-                        slipItemList.setSupplierName(name);
+                            String name = supplierService.getSupplierNameByItemId(dyeingChemicalData.getItemId());
+                            slipItemList.setSupplierName(name);
 
-                        Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
-                        slipItemList.setSupplierId(supplier.getId());
+                            Supplier supplier = supplierService.getSupplierByItemId(dyeingChemicalData.getItemId());
+                            slipItemList.setSupplierId(supplier.getId());
 
-                        Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
+                            Optional<SupplierRate> supplierRate = supplierService.getItemById(dyeingChemicalData.getItemId());
 
-                        //for item type is color or not
-                        if (supplierRate.get().getItemType().equals("Color"))
-                            slipItemList.setIsColor(true);
-                        else
-                            slipItemList.setIsColor(false);
-
-
-                        Double amtQty = 0.0;
-                        if (supplierRate.isPresent()) {
+                            //for item type is color or not
                             if (supplierRate.get().getItemType().equals("Color"))
-                                amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
-                            else {
+                                slipItemList.setIsColor(true);
+                            else
+                                slipItemList.setIsColor(false);
 
-                                if (dyeingChemicalData.getByChemical().equals("L")) {
-                                    amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
-                                    //function call to check in the range
-                                    amtQty = getAmountInRange(amtQty);
-                                } else if (dyeingChemicalData.getByChemical().equals("W")) {
+
+                            Double amtQty = 0.0;
+                            if (supplierRate.isPresent()) {
+                                if (supplierRate.get().getItemType().equals("Color"))
                                     amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
-                                    //function call to check in the range
-                                    amtQty = getAmountInRange(amtQty);
-                                } else if (dyeingChemicalData.getByChemical().equals("F")) {
-                                    amtQty = dyeingChemicalData.getConcentration();
-                                    //function call to check in the range
-                                    amtQty = getAmountInRange(amtQty);
+                                else {
+
+                                    if (dyeingChemicalData.getByChemical().equals("L")) {
+                                        amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt * dyeingProcessData.getLiquerRation()) / 1000;
+                                        //function call to check in the range
+                                        amtQty = getAmountInRange(amtQty);
+                                    } else if (dyeingChemicalData.getByChemical().equals("W")) {
+                                        amtQty = (dyeingChemicalData.getConcentration() * totalBatchWt) / 100;
+                                        //function call to check in the range
+                                        amtQty = getAmountInRange(amtQty);
+                                    } else if (dyeingChemicalData.getByChemical().equals("F")) {
+                                        amtQty = dyeingChemicalData.getConcentration();
+                                        //function call to check in the range
+                                        amtQty = getAmountInRange(amtQty);
+                                    }
                                 }
                             }
+
+
+                            slipItemList.setQty(amtQty);
+                            slipItemLists.add(slipItemList);
                         }
-
-
-                        slipItemList.setQty(amtQty);
-                        slipItemLists.add(slipItemList);
                     }
-                }
-                dyeingSlipData.setDyeingSlipItemData(slipItemLists);
-                dyeingSlipDataList.add(dyeingSlipData);
+                    dyeingSlipData.setDyeingSlipItemData(slipItemLists);
+                    dyeingSlipDataList.add(dyeingSlipData);
 
+
+                }
+                dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
+                dyeingSlipMast.setDyeingProcessMastId(dyeingProcessMast.getId());
+                DyeingSlipMast x = dyeingSlipService.saveDyeingSlipMastFromProcess(dyeingSlipMast);
+
+                //****** also add the shade data with the slip of dyeing process of dyeing function
+
+                //get the dyeing function from the dyeing process of batch
+                DyeingSlipData getDyeingProcess = dyeingSlipService.getDyeingProcessDataOnlyBySlipMast(x.getId());
+
+                //if it is exisiting then add shade data with that dyeing process
+                List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
+                if (getDyeingProcess != null) {
+                    //add the privious one item in dyeing list
+
+                    for (DyeingSlipItemData dyeingSlipItemData : getDyeingProcess.getDyeingSlipItemData()) {
+                        dyeingSlipItemDataList.add(dyeingSlipItemData);
+                    }
+
+                    for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
+                        Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
+                        SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
+
+                        DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(shadeData, supplierRate, supplier, totalBatchWt);
+
+                        dyeingSlipItemDataList.add(dyeingSlipItemData);
+                    }
+                } else {
+                    //if not exist then create slip for dyeing with shade data only
+                    getDyeingProcess = new DyeingSlipData();
+                    getDyeingProcess.setControlId(x.getId());
+                    getDyeingProcess.setProcessType("Dyeing");
+                    for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
+                        Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
+                        SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
+
+                        DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(shadeData, supplierRate, supplier, totalBatchWt);
+
+                        dyeingSlipItemDataList.add(dyeingSlipItemData);
+                    }
+
+                }
+                getDyeingProcess.setDyeingSlipItemData(dyeingSlipItemDataList);
+                dyeingSlipService.saveDyeingSlipDataOnly(getDyeingProcess);
 
             }
-            dyeingSlipMast.setDyeingSlipDataList(dyeingSlipDataList);
-            dyeingSlipMast.setDyeingProcessMastId(dyeingProcessMast.getId());
-            DyeingSlipMast x = dyeingSlipService.saveDyeingSlipMastFromProcess(dyeingSlipMast);
-
-            //****** also add the shade data with the slip of dyeing process of dyeing function
-
-            //get the dyeing function from the dyeing process of batch
-            DyeingSlipData getDyeingProcess = dyeingSlipService.getDyeingProcessDataOnlyBySlipMast(x.getId());
-
-            //if it is exisiting then add shade data with that dyeing process
-            List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
-            if (getDyeingProcess != null) {
-                //add the privious one item in dyeing list
-
-                for (DyeingSlipItemData dyeingSlipItemData : getDyeingProcess.getDyeingSlipItemData()) {
-                    dyeingSlipItemDataList.add(dyeingSlipItemData);
-                }
-
-                for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
-                    Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
-                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
-
-                    DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(shadeData, supplierRate, supplier, totalBatchWt);
-
-                    dyeingSlipItemDataList.add(dyeingSlipItemData);
-                }
-            } else {
-                //if not exist then create slip for dyeing with shade data only
-                getDyeingProcess = new DyeingSlipData();
-                getDyeingProcess.setControlId(x.getId());
-                getDyeingProcess.setProcessType("Dyeing");
-                for (ShadeData shadeData : shadeMast.get().getShadeDataList()) {
-                    Supplier supplier = supplierService.getSupplierByItemId(shadeData.getSupplierItemId());
-                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(shadeData.getSupplierItemId());
-
-                    DyeingSlipItemData dyeingSlipItemData = new DyeingSlipItemData(shadeData, supplierRate, supplier, totalBatchWt);
-
-                    dyeingSlipItemDataList.add(dyeingSlipItemData);
-                }
-
-            }
-            getDyeingProcess.setDyeingSlipItemData(dyeingSlipItemDataList);
-            dyeingSlipService.saveDyeingSlipDataOnly(getDyeingProcess);
-
             //if not then create on function and add the shade data with function by the given formula
 
 
@@ -508,20 +518,28 @@ public class JetServiceImpl {
             //get the count of production in existing jet
             List<JetData> existingJetData = jetDataDao.findByControlId(jetDataList.get(0).getControlId());
             if (existingJetData.isEmpty()) {
-                //save the jet data
-                JetData saveJetData = new JetData(addJetData, productionPlanExist);
-                saveJetData.setSequence(1l);
-                jetDataDao.save(saveJetData);
+
+                JetData jetDataExitWithProduction = jetDataDao.getJetDataByProductionId(productionPlanExist.getId());
+                if (jetDataExitWithProduction == null) {
+                    //save the jet data
+                    JetData saveJetData = new JetData(addJetData, productionPlanExist);
+                    saveJetData.setSequence(1l);
+                    jetDataDao.save(saveJetData);
+                }
             } else {
                 for (JetData jetData : existingJetData) {
                     count++;
                 }
                 //save jet with production
                 count = count + 1;
-                JetData saveJetData = new JetData(addJetData, productionPlanExist);
 
-                saveJetData.setSequence(count);
-                jetDataDao.save(saveJetData);
+                //check jetdata record exist with production id
+                JetData jetDataExitWithProduction = jetDataDao.getJetDataByProductionId(productionPlanExist.getId());
+                if (jetDataExitWithProduction == null) {
+                    JetData saveJetData = new JetData(addJetData, productionPlanExist);
+                    saveJetData.setSequence(count);
+                    jetDataDao.save(saveJetData);
+                }
 
 
             }
@@ -1226,7 +1244,7 @@ public class JetServiceImpl {
             //check quality name contain CXN
             Long stockId = batchDao.getStockIdByBatchId(productionPlan.getBatchId());
 
-            if(stockId!=null) {
+            if (stockId != null) {
                 StockMast stockMast = stockBatchService.getStockById(stockId);
                 if (stockMast.getQuality().getQualityName().getQualityName().contains("CXN")) {
                     doseNylon = true;
@@ -1239,10 +1257,9 @@ public class JetServiceImpl {
         DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
         if (dyeingSlipMast != null) {
             DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(dyeingSlipMast.getDyeingProcessMastId());
-            hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record, dyeingProcessMast,doseNylon);
+            hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record, dyeingProcessMast, doseNylon);
 
-        }
-        else {
+        } else {
             hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record);
         }
         hmiMastDao.save(hmiMast);
@@ -1281,16 +1298,24 @@ public class JetServiceImpl {
                         continue;
                     GetAllProductionWithShadeData data = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
                     GetJetData getJetData = null;
+
+                    //get hmi record
+                    HMIMast hmiMastExist = hmiMastDao.getHMIMastByProductionId(productionPlan.getId());
+                    //getJetData.setSco(hmiMastExist==null?false:hmiMastExist.getSco() == true ? true:false);
+                    //getJetData.setDoseNylone(hmiMastExist==null?false:hmiMastExist.getDoseNylon() == true ? true:false);
                     if (productionPlan.getIsDirect() == false) {
                         ShadeMast colorTone = shadeService.getColorToneByProductionId(jetData.getProductionId());
-                        if (colorTone != null) {
-                            DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
-                            getJetData = new GetJetData(data, jetData, colorTone, dyeingProcessMast);
-                            getJetData.setBatchId(productionPlan.getBatchId());
-                            jetDataList.add(getJetData);
-                        }
+
+                        DyeingProcessMast dyeingProcessMast = null;
+                        if(colorTone!=null)
+                        dyeingProcessService.getDyeingProcessById(colorTone.getProcessId());
+
+                        getJetData = new GetJetData(data, jetData, colorTone, dyeingProcessMast, hmiMastExist);
+                        getJetData.setBatchId(productionPlan.getBatchId());
+                        jetDataList.add(getJetData);
+
                     } else {
-                        getJetData = new GetJetData(jetData, data);
+                        getJetData = new GetJetData(jetData, data, hmiMastExist);
                         getJetData.setBatchId(productionPlan.getBatchId());
                         getJetData.setProcessName("directDyeing");
                         jetDataList.add(getJetData);
@@ -1312,6 +1337,8 @@ public class JetServiceImpl {
 
             if (!jetDataList.isEmpty())
                 allJetMast.setJetDataList(jetDataList);
+            else
+                allJetMast.setJetDataList(new ArrayList<>());
 
             getAllJetMast.add(allJetMast);
         }
@@ -1325,36 +1352,31 @@ public class JetServiceImpl {
 
         //jet exist or not
         JetMast jetMastExist = jetMastDao.getJetMastById(jetDataToUpdate.getJetId());
-        if(jetMastExist==null)
+        if (jetMastExist == null)
             throw new Exception(ConstantFile.Jet_Not_Exist);
 
 
-        JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetDataToUpdate.getJetId(),jetDataToUpdate.getProductionId());
-        if(jetDataExist==null)
+        JetData jetDataExist = jetDataDao.jetDataExistWithJetIdAndProductionId(jetDataToUpdate.getJetId(), jetDataToUpdate.getProductionId());
+        if (jetDataExist == null)
             throw new Exception(ConstantFile.Production_Record_Not_Exist_With_Jet);
 
 
         //if exist then update the record of hmi
-        if(jetDataExist.getStatus().toString().equalsIgnoreCase("start"))
-        {
+        if (jetDataExist.getStatus().toString().equalsIgnoreCase("start")) {
             HMIMast hmiMast = hmiMastDao.getHMIMastByProductionId(jetDataExist.getProductionId());
-            if(hmiMast!=null) {
+            if (hmiMast != null) {
                 //update the record
-                if (jetDataToUpdate.getDoseNylon() != null)
-                {
+                if (jetDataToUpdate.getDoseNylon() != null) {
                     hmiMast.setDoseNylon(jetDataToUpdate.getDoseNylon());
                 }
-                if(jetDataToUpdate.getSco()!=null)
-                {
+                if (jetDataToUpdate.getSco() != null) {
                     hmiMast.setSco(jetDataToUpdate.getSco());
                 }
 
                 hmiMastDao.save(hmiMast);
             }
 
-        }
-        else
-        {
+        } else {
             throw new Exception(ConstantFile.Jet_Record_Not_Start);
         }
 

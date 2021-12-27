@@ -118,7 +118,7 @@ public class JetController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    @PutMapping(value="/jet/updateJetDataForHmi")
+    @PostMapping(value="/jet/updateJetDataForHmi")
     public ResponseEntity<GeneralResponse<Boolean,Object>> updateJetDataForHmi(@RequestBody HMIBitChange jetDataToUpdate) throws Exception {
 
         GeneralResponse<Boolean,Object> result;
