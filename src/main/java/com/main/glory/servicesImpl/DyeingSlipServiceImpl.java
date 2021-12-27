@@ -14,9 +14,7 @@ import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
-import com.main.glory.model.dyeingSlip.request.AddAddtionalSlip;
-import com.main.glory.model.dyeingSlip.request.GetItemByShadeAndBatch;
-import com.main.glory.model.dyeingSlip.request.SlipFormatData;
+import com.main.glory.model.dyeingSlip.request.*;
 import com.main.glory.model.dyeingSlip.responce.BatchResponseWithSlip;
 import com.main.glory.model.dyeingSlip.responce.GetAllAdditionalDyeingSlip;
 import com.main.glory.model.dyeingSlip.responce.ItemListForDirectDyeing;
@@ -673,5 +671,121 @@ public class DyeingSlipServiceImpl {
         return dyeingSlipMast;
 
 
+    }
+
+    public List<SlipFormatData> getDyeingSlipByBatchAndProductionWithType(PrintDyeingSlipMast record) throws Exception {
+        List<SlipFormatData> slipFormatDataList = new ArrayList<>();
+
+
+        for(PrintDyeingSlipData printDyeingSlipData: record.getList()) {
+            SlipFormatData slipFormatData = getDyeingSlipByBatchStockId(printDyeingSlipData.getBatchId(), printDyeingSlipData.getProductionId());
+            if (slipFormatData != null)
+            {
+
+                //filter color and chemical and all
+                if(record.getType().equalsIgnoreCase("all"))
+                slipFormatDataList.add(slipFormatData);
+                else
+                {
+                    SlipFormatData filterSlipData = new SlipFormatData(slipFormatData);
+
+                    List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
+                    for(DyeingSlipData slipFormatDataExist:slipFormatData.getDyeingSlipDataList())
+                    {
+                        DyeingSlipData dyeingSlipData = new DyeingSlipData(slipFormatDataExist);
+                        List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
+                        for(DyeingSlipItemData dyeingSlipItemData:slipFormatDataExist.getDyeingSlipItemData()) {
+                            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+                            if (supplierRate.getItemType().equalsIgnoreCase(record.getType())) {
+                                dyeingSlipItemDataList.add(dyeingSlipItemData);
+                            }
+                        }
+                        dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
+                        dyeingSlipDataList.add(dyeingSlipData);
+                    }
+                    filterSlipData.setDyeingSlipDataList(dyeingSlipDataList);
+                    slipFormatDataList.add(filterSlipData);
+                }
+            }
+        }
+
+        return slipFormatDataList;
+
+    }
+
+    private SlipFormatData getDyeingSlipByBatchProductionAndType(String batchId, Long productionId, String type) throws Exception {
+        Party party=null;
+        Long totalPcs;
+        DyeingSlipMast dyeingSlipMastExist = dyeingSlipMastDao.findByBatchIdAndProductionId(batchId, productionId);
+        if(dyeingSlipMastExist==null)
+            throw new Exception(ConstantFile.DyeingSlip_Not_Found);
+
+        //set the color flag
+        int i=0;
+        for(DyeingSlipData dyeingSlipData:dyeingSlipMastExist.getDyeingSlipDataList())
+        {
+            for(DyeingSlipItemData dyeingSlipItemData:dyeingSlipData.getDyeingSlipItemData()) {
+                SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+                if (supplierRate.getItemType().equals("Color")) {
+                    dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(), true);
+                } else {
+                    dyeingSlipItemDataDao.updateIsColorByItemId(supplierRate.getId(), false);
+                }
+                i++;
+            }
+        }
+        SlipFormatData slipFormatData = new SlipFormatData(dyeingSlipMastExist);
+
+        ProductionPlan productionPlan = productionPlanService.getProductionData(dyeingSlipMastExist.getProductionId());
+        GetQualityResponse quality=null;//qualityServiceImp.getQualityByID(productionPlan.getQualityEntryId());
+        Double wt = 0.0;
+        Double mtr = 0.0;//stockBatchService.getWtByControlAndBatchId(dyeingSlipMastExist.getStockId(), dyeingSlipMastExist.getBatchId());
+        if(productionPlan.getIsMergeBatchId()==true)
+        {
+            BatchData isMergeBatchId = batchDao.getIsMergeBatchId(productionPlan.getBatchId());
+            party = partyServiceImp.getPartyByStockId(isMergeBatchId.getControlId());
+            totalPcs = batchDao.getTotalPcsByMergeBatchId(productionPlan.getBatchId());
+            wt = stockBatchService.getWtByMergeBatchId(productionPlan.getBatchId());
+            mtr = stockBatchService.getTotalMtrByMergeBatchId(productionPlan.getBatchId());
+        }
+        else {
+            BatchData batchData = batchDao.getIsBatchId(productionPlan.getBatchId());
+            party = partyServiceImp.getPartyByStockId(batchData.getControlId());
+            wt = stockBatchService.getWtByBatchId(productionPlan.getBatchId());
+            totalPcs = batchDao.getTotalPcsByBatchId(productionPlan.getBatchId());
+            mtr = stockBatchService.getTotalMtrByBatchId(productionPlan.getBatchId());
+
+        }
+        if(productionPlan.getShadeId()!=null)
+        {
+            Optional<ShadeMast> shadeMast = shadeService.getShadeMastById(productionPlan.getShadeId());
+            slipFormatData.setColorTone(shadeMast.get().getColorTone());
+            slipFormatData.setColorName(shadeMast.get().getColorName());
+            slipFormatData.setPartyShadeNo(shadeMast.get().getPartyShadeNo());
+        }
+        else
+        {
+            slipFormatData.setColorTone("#fff");
+            slipFormatData.setColorName("No Color");
+            slipFormatData.setPartyShadeNo("-");
+        }
+
+
+
+        GetAllProductionWithShadeData record = productionPlanService.getProductionWithColorToneByBatchId(productionPlan.getBatchId());
+        slipFormatData.setPartyName(party==null?null:party.getPartyName());
+        slipFormatData.setTotalWt(wt);
+        slipFormatData.setTotalMeter(mtr);
+        slipFormatData.setBatchCount(totalPcs);
+        slipFormatData.setQualityId(record.getQualityId());
+        //slipFormatData.setQualityEntryId(quality.getId());
+        JetMast jetMast =jetService.getJetMastById(slipFormatData.getJetId());
+        if(jetMast==null)
+            throw new Exception(ConstantFile.Jet_Not_Exist_With_Name);
+        slipFormatData.setJetName(jetMast.getName());
+        slipFormatData.setDyeingSlipDataList(dyeingSlipMastExist.getDyeingSlipDataList());
+
+
+        return  slipFormatData;
     }
 }
