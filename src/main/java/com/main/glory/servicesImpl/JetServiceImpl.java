@@ -1108,6 +1108,7 @@ public class JetServiceImpl {
         // 2.remove the dyeing slip from the dyeign slip based on jet and produciton id
         DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
 
+        if(dyeingSlipMast!=null)
         dyeingSlipService.deleteDyeingSlipDataByMastId(dyeingSlipMast.getId());
 
         //3.change the status of production

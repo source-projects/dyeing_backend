@@ -9,6 +9,7 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
+import com.main.glory.model.StockDataBatchData.response.BatchToPartyAndQuality;
 import com.main.glory.model.StockDataBatchData.response.GetBatchDetailByProduction;
 import com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
@@ -578,7 +579,7 @@ public class ProductionPlanImpl {
                 batchDataList = batchDao.getBatchByBatchId(productionPlan.getBatchId());
             }
             if (batchDataList.isEmpty())
-                throw new Exception(ConstantFile.Batch_Data_Not_Found);
+                throw new Exception(ConstantFile.Batch_Data_Not_Exist);
 
             // ProductionPlan shadeAndStockIsExist =
             // productionPlan.findByStockIdAndShadeId(productionPlan.)
