@@ -208,11 +208,11 @@ public class JetController extends ControllerConfig {
                 if (!jetMastList.isEmpty())
                     result = new GeneralResponse<>(jetMastList, constantFile.Jet_Found, true, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
                 else
-                    result = new GeneralResponse<>(jetMastList, constantFile.Jet_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
+                    result = new GeneralResponse<>(jetMastList, constantFile.Jet_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, jetMastIDs);
                 logService.saveLog(result, request, debugAll);
             }
             else {
-                result = new GeneralResponse<>(new ArrayList<>(), constantFile.Jet_Not_Selected, false, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
+                result = new GeneralResponse<>(new ArrayList<>(), constantFile.Jet_Not_Selected, true, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
             }
 
         }
