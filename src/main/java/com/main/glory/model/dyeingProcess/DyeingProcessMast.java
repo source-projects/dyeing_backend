@@ -46,6 +46,7 @@ public class DyeingProcessMast {
         this.createdDate = dyeingProcessMast!=null?dyeingProcessMast.getCreatedDate():null;
         this.updatedDate= dyeingProcessMast==null?null:dyeingProcessMast.getUpdatedDate();
         this.processName = dyeingProcessMast!=null?dyeingProcessMast.getProcessName():null;
+        this.scb = dyeingProcessMast!=null?dyeingProcessMast.getScb():false;
         this.dyeingProcessData =dyeingProcessMast!=null?dyeingProcessMast.getDyeingProcessData():null;
     }
 

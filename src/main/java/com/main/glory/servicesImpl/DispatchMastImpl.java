@@ -232,7 +232,6 @@ public class DispatchMastImpl {
         List<Filter> filters = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
         subModelCase.put("invoiceNo", new ArrayList<String>(Arrays.asList("postfix")));
-
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
 
         // List<DispatchData> dispatchList = dispatchDataDao.getAllDispatch();
@@ -284,7 +283,7 @@ public class DispatchMastImpl {
 
             List<GetBatchByInvoice> batchListWithInvoiceList = dispatchDataDao
                     .getAllStockByInvoiceNumberWithPchallen(dispatchMast.getPostfix());
-            System.out.println("length of batchList-" + batchListWithInvoiceList.size());
+            //System.out.println("length of batchList-" + batchListWithInvoiceList.size());
             for (GetBatchByInvoice batch : batchListWithInvoiceList) {
                 // list of batches
                 BatchWithTotalMTRandFinishMTR batchWithTotalMTRandFinishMTR = dispatchDataDao
