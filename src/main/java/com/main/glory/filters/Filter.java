@@ -14,13 +14,17 @@ public class Filter {
     private List<String> field;
     private QueryOperator operator;
     private String operation;
+    private String value;
+    private List<String> values;//Used in case of IN operator
+
+
     public Filter(List<String> field, QueryOperator operator, String value) {
         this.field = field;
         this.operator = operator;
         this.value = value;
     }
 
-    private String value;
-    
-    private List<String> values;//Used in case of IN operator
+
+
+
 }

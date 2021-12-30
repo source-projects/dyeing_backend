@@ -1258,11 +1258,18 @@ public class JetServiceImpl {
         DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
         if (dyeingSlipMast != null) {
             DyeingProcessMast dyeingProcessMast = dyeingProcessService.getDyeingProcessById(dyeingSlipMast.getDyeingProcessMastId());
+            if(productionPlan.getIsDirect()==true)
+            {
+                hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record, null, doseNylon);
+            }
+            else
             hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record, dyeingProcessMast, doseNylon);
 
         } else {
             hmiMast = new HMIMast(productionPlan, jetDataExist, totalWt, record);
         }
+        hmiMast.setDoseNylon(false);
+        hmiMast.setSco(false);
         hmiMastDao.save(hmiMast);
 
         //update jet status
