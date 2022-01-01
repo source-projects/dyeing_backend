@@ -528,11 +528,11 @@ public class DispatchController extends ControllerConfig {
 
     //create dispatchBy pchallan api's
     @GetMapping("/dispatch/getPChallanByParty/{partyId}")
-    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getPChallanByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getPChallanByParty(/*@RequestBody GetPChallanByPartyAndRF record*/ @PathVariable("partyId") Long partyId) throws Exception{
         GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
         try{
             if(partyId!=null) {
-                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getPChallanByParty(partyId);
+                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getPChallanByParty(partyId,null);
                 if(x.isEmpty())
                     result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
                 else
@@ -548,6 +548,7 @@ public class DispatchController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+
 
     @PostMapping("/dispatch/add")
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatchForPchallan(@RequestBody CreateDispatch dispatchMast) throws Exception{

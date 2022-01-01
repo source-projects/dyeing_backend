@@ -1011,6 +1011,46 @@ public class StockBatchController extends ControllerConfig {
     }
 
 
+    @PostMapping("stockBatch/fabricIn/report/forConslidateBatchResponseForPdf")
+    public ResponseEntity<GeneralResponse<List<FabricInMast>, Object>> forFabricInBatchResponseForPdf(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<FabricInMast>, Object> response;
+        try {
+            List<FabricInMast> flag = stockBatchService.getPdfBatchReportForFabricInByFilter(filter);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
+
+    @PostMapping("stockBatch/fabricIn/report/forConslidateBatchResponseForExcel")
+    public ResponseEntity<GeneralResponse<List<PendingBatchDataForExcel>, Object>> forFabricInBatchResponseForExcel(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<PendingBatchDataForExcel>, Object> response;
+        try {
+            List<PendingBatchDataForExcel> flag = stockBatchService.getExcelBatchReportForFabricInByFilter(filter);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
+
 
 
 }

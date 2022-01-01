@@ -64,6 +64,8 @@ public class DispatchMast{
     @ColumnDefault("false")
     Boolean signByParty;
     String deliveryMode;
+    @ColumnDefault("false")
+    Boolean isRfInvoice;
 
     public DispatchMast(CreateDispatch dispatchList) {
         //for storing the tax amount

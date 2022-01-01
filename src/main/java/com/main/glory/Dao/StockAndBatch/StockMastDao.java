@@ -128,4 +128,10 @@ public interface StockMastDao extends FilterDao<StockMast>  {
 
     @Query("select x from StockMast x where x.id=:e")
     StockMast getStockMastById(Long e);
+
+    @Query("select x from StockMast x where x.party.id=:partyId and (:rfInvoiceFlag IS NULL OR x.isRfInvoice=:rfInvoiceFlag)")
+    List<StockMast> getRFStockMastListByPartyIdAndRfInvoiceFlag(Long partyId, Boolean rfInvoiceFlag);
+
+    @Query("select x from StockMast x where (:from IS NULL OR DATE(x.createdDate)>=DATE(:from)) AND (:to IS NULL OR DATE(x.createdDate)<=DATE(:to)) AND (:partyId IS NULL OR x.party.id=:partyId) AND (:qualityNameId IS NULL OR x.quality.qualityName.id=:qualityNameId) AND (:qualityEntryId IS NULL OR x.quality.id=:qualityEntryId) AND (:userHeadId IS NULL OR x.party.userHeadData.id=:userHeadId)")
+    List<StockMast> filterByBatchFilterRequest(Date from, Date to, Long partyId, Long qualityNameId, Long qualityEntryId, Long userHeadId);
 }
