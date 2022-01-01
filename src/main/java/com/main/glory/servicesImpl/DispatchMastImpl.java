@@ -1577,12 +1577,12 @@ public class DispatchMastImpl {
     }
 
     // pChallan by party id
-    public List<BatchWithTotalMTRandFinishMTR> getPChallanByParty(Long partyId) throws Exception {
+    public List<BatchWithTotalMTRandFinishMTR> getPChallanByParty(Long partyId,Boolean rfInvoiceFlag) throws Exception {
 
         List<BatchWithTotalMTRandFinishMTR> list = new ArrayList<>();
 
         List<BatchWithTotalMTRandFinishMTR> batchDataListByParty = new ArrayList<>();
-        List<StockMast> stockMastList = stockBatchService.getStockListByParty(partyId);
+        List<StockMast> stockMastList = stockBatchService.getRfStockListByPartyAndRfInvoiceFlag(partyId,rfInvoiceFlag);
         // System.out.println(stockMastList.size());
         Party party = partyServiceImp.getPartyById(partyId);
         if (party == null)

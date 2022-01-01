@@ -512,6 +512,12 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
     @Query(value = "select x.control_id from batch_data as x where x.batch_id=:batchId limit 1",nativeQuery = true)
     Long getStockIdByBatchId(@Param("batchId") String batchId);
 
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchData(x.batchId,x.pchallanRef,SUM(x.mtr),SUM(x.wt),s.receiveDate as date,s.quality.qualityName.qualityName,count(x.id),s.quality.qualityId) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isExtra=false GROUP BY x.batchId,x.pchallanRef")
+    List<PendingBatchData> getBatchListByStockIdWithoutExtra(Long id);
+
+    @Query("select new com.main.glory.model.StockDataBatchData.response.PendingBatchDataForExcel(s.party.partyName,s.party.partyCode,s.party.userHeadData.firstName,s.quality.qualityId,count(x.id),SUM(x.mtr),SUM(x.wt),x.batchId,x.pchallanRef,s.receiveDate as date,s.quality.qualityName.qualityName) from BatchData x INNER JOIN StockMast s on x.controlId = s.id where x.controlId=:id AND x.isExtra=false GROUP BY x.batchId,x.pchallanRef")
+    List<PendingBatchDataForExcel> getFabricInBatchListForExcelByStockId(Long id);
+
 //    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p INNER JOIN StockMast sm on sm.id=p.controlId where (:mergeBatchId IS NULL OR p.mergeBatchId = :mergeBatchId) AND (:batchId IS NULL OR p.batchId = :batchId) AND (:partyName IS NULL OR sm.party.partyName LIKE %:partyName%) AND (:qualityName IS NULL OR sm.quality.qualityName.qualityName LIKE %:qualityName%) AND p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND p.controlId IS NOT NULL GROUP BY p.mergeBatchId")
 //    List<GetBatchWithControlId> findAllMergeBatchWithFilterWithAndFalse(String mergeBatchId,String batchId,String partyName,String qualityName);
 

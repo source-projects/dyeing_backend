@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -388,7 +389,7 @@ public class StockBatchServiceImpl {
                 GetAllStockWithPartyNameResponse batchData = new GetAllStockWithPartyNameResponse(stockMastData,
                         stockMastData.getParty() == null ? null : stockMastData.getParty().getPartyName(),
                         stockMastData.getQuality() == null ? null
-                                : stockMastData.getQuality().getQualityName().getQualityName());
+                                : stockMastData.getQuality().getQualityName().getQualityName(),stockMastData.getQuality()!=null?stockMastData.getQuality().getQualityId():null);
                 Boolean trueBatch = false;
                 for (BatchData batch : stockMastData.getBatchData()) {
                     if (mtrSumData.containsKey(batch.getBatchId())) {
@@ -3349,5 +3350,119 @@ public class StockBatchServiceImpl {
     public StockMast getStockMastById(Long e) {
 
         return stockMastDao.getStockMastById(e);
+    }
+
+    public List<StockMast> getRfStockListByPartyAndRfInvoiceFlag(Long partyId, Boolean rfInvoiceFlag) {
+        return stockMastDao.getRFStockMastListByPartyIdAndRfInvoiceFlag(partyId,rfInvoiceFlag);
+    }
+
+    public List<FabricInMast> getPdfBatchReportForFabricInByFilter(BatchFilterRequest filter) throws ParseException {
+        List<FabricInMast> list = new ArrayList<>();
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null)
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if (filter.getTo() != null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);// adding one day in to because of time issue in
+            // created date
+            to = c.getTime();
+        }
+
+        List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequest(from, to,
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(), filter.getUserHeadId());
+
+//        if (stockMastList == null)
+//            throw new Exception(ConstantFile.StockBatch_Not_Found);
+
+        // party id and it's pending request
+        Map<Long, FabricInMast> qualityList = new HashMap<>();
+
+        stockMastList.forEach(e -> {
+
+            if (qualityList.containsKey(e.getQuality().getId())) {
+                FabricInMast fabricInMast = qualityList.get(e.getQuality().getId());
+                List<PendingBatchData> pendingBatchDataList = fabricInMast.getList();
+                List<PendingBatchData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtra(e.getId());
+                pendingBatchDataList.addAll(newPendingBatchList);
+                qualityList.put(e.getQuality().getId(), fabricInMast);
+
+            } else {
+                FabricInMast fabricInMast = new FabricInMast(e);
+                List<PendingBatchData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtra(e.getId());
+//                Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
+//                Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
+//                Long totalPcs = newPendingBatchList.stream().mapToLong(q -> q.getTotalPcs()).sum();
+                fabricInMast.setList(newPendingBatchList);
+                qualityList.put(fabricInMast.getQualityEntryId(), fabricInMast);
+            }
+
+        });
+
+        if (qualityList.size() > 0) {
+            list = new ArrayList<FabricInMast>(qualityList.values());
+            Collections.sort(list, new Comparator<FabricInMast>() {
+
+                @Override
+                public int compare(FabricInMast o1, FabricInMast o2) {
+                    return o1.getPartyId().intValue() - o2.getPartyId().intValue();
+                }
+            });
+        } else
+            list = new ArrayList<>();
+        return list;
+
+
+
+
+    }
+
+    public List<PendingBatchDataForExcel> getExcelBatchReportForFabricInByFilter(BatchFilterRequest filter) throws ParseException {
+        List<PendingBatchDataForExcel> list = new ArrayList<>();
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null)
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if (filter.getTo() != null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);// adding one day in to because of time issue in
+            // created date
+            to = c.getTime();
+        }
+
+//        list = batchDao.filterForExcelByBatchFilterRequestWithPendingBatch(from, to,
+//                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getUserHeadId());
+//
+
+        List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequest(from, to,
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(), filter.getUserHeadId());
+
+
+        // party id and it's pending request
+        Map<Long, PendingBatchDataForExcel> partyList = new HashMap<>();
+
+        stockMastList.forEach(e -> {
+
+            List<PendingBatchDataForExcel> newPendingBatchList = batchDao.getFabricInBatchListForExcelByStockId(e.getId());
+            if (!newPendingBatchList.isEmpty()) {
+                list.addAll(newPendingBatchList);
+            }
+        });
+
+
+        return list;
+
     }
 }

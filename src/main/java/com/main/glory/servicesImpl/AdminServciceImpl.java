@@ -42,6 +42,9 @@ public class AdminServciceImpl {
     @Autowired
     PurchaseImpl purchaseService;
 
+    @Autowired
+    RFSequenceDao rfSequenceDao;
+
    /* @Autowired
     ReceiverByDao receiverByDao;*/
     @Autowired
@@ -625,5 +628,39 @@ public class AdminServciceImpl {
             throw new Exception(constantFile.Dyeing_Slip_Data_Exist);
 
         authorizeDao.deleteByAuthorizeId(id);
+    }
+
+    public void addRFInvoiceSequence(RFSequence record) throws Exception {
+        RFSequence rfInvoiceSequenceExist = rfSequenceDao.getSequence();
+        if(rfInvoiceSequenceExist!=null)
+            throw new Exception(constantFile.RFInvoice_Sequence_Exist);
+
+        rfSequenceDao.save(record);
+    }
+
+    public RFSequence getRFInvoiceSequence() {
+
+
+        RFSequence invoiceSequenceExist = rfSequenceDao.getSequence();
+       /* if(invoiceSequenceExist==null)
+            throw new Exception(commonMessage.Invoice_Sequence_Not_Found);*/
+            return invoiceSequenceExist;
+
+
+    }
+
+    public void updateRFInvoiceSequence(RFSequence invoiceSequence) throws Exception {
+        RFSequence invoiceSequenceExist = rfSequenceDao.getSequenceById(invoiceSequence.getId());
+        if(invoiceSequenceExist==null)
+            throw new Exception(constantFile.RFInvoice_Sequence_Not_Found);
+
+        if(invoiceSequenceExist.getSequence()>invoiceSequence.getSequence())
+            throw new Exception(constantFile.RFInvoice_Sequence_Greater);
+
+        rfSequenceDao.save(invoiceSequence);
+    }
+
+    public RFSequence getRFInvoiceSequenceById(Long id) {
+        return rfSequenceDao.getSequenceById(id);
     }
 }

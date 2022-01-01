@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -63,6 +64,8 @@ public class StockMast {
     Date updatedDate;
     String remark;
     Double wtPer100m;
+    @ColumnDefault("false")
+    Boolean isRfInvoice;
 
     // @JsonIgnore
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
@@ -103,6 +106,7 @@ public class StockMast {
         this.remark =sm.getRemark();
         this.wtPer100m=sm.getWtPer100m();
         this.batchData=sm.getBatchData();
+        this.isRfInvoice = sm.getIsRfInvoice();
     }
 
     public StockMast(AddStockBatch sm,Party party,Quality quality) {
@@ -126,6 +130,7 @@ public class StockMast {
         //this.batchData = sm.getBatchData();
         this.quality =quality;
         this.batchData=sm.getBatchData();
+        this.isRfInvoice = sm.getIsRfInvoice();
 
     }
 
