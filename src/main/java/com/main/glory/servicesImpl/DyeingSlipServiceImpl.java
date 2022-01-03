@@ -692,16 +692,41 @@ public class DyeingSlipServiceImpl {
                     List<DyeingSlipData> dyeingSlipDataList = new ArrayList<>();
                     for(DyeingSlipData slipFormatDataExist:slipFormatData.getDyeingSlipDataList())
                     {
-                        DyeingSlipData dyeingSlipData = new DyeingSlipData(slipFormatDataExist);
-                        List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
-                        for(DyeingSlipItemData dyeingSlipItemData:slipFormatDataExist.getDyeingSlipItemData()) {
-                            SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
-                            if (supplierRate.getItemType().equalsIgnoreCase(record.getType())) {
-                                dyeingSlipItemDataList.add(dyeingSlipItemData);
+                        Optional<DyeingSlipItemData> typeItemExist=null;
+                        if(record.getType().equalsIgnoreCase("Color")) {
+                            typeItemExist = slipFormatDataExist.getDyeingSlipItemData().stream()
+                                    .filter(object -> record.getType().equalsIgnoreCase("Color") && object.getIsColor() == true).findFirst();
+
+                            if(typeItemExist.isPresent()) {
+                                DyeingSlipData dyeingSlipData = new DyeingSlipData(slipFormatDataExist);
+                                List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
+                                for (DyeingSlipItemData dyeingSlipItemData : slipFormatDataExist.getDyeingSlipItemData()) {
+                                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+                                    if (supplierRate.getItemType().equalsIgnoreCase(record.getType())) {
+                                        dyeingSlipItemDataList.add(dyeingSlipItemData);
+                                    }
+                                }
+                                dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
+                                dyeingSlipDataList.add(dyeingSlipData);
+                            }
+
+                        } else if(record.getType().equalsIgnoreCase("Chemical")){
+                            typeItemExist = slipFormatDataExist.getDyeingSlipItemData().stream()
+                                    .filter(object -> record.getType().equalsIgnoreCase("Chemical") && object.getIsColor() == false).findFirst();
+
+                            if(typeItemExist.isPresent()) {
+                                DyeingSlipData dyeingSlipData = new DyeingSlipData(slipFormatDataExist);
+                                List<DyeingSlipItemData> dyeingSlipItemDataList = new ArrayList<>();
+                                for (DyeingSlipItemData dyeingSlipItemData : slipFormatDataExist.getDyeingSlipItemData()) {
+                                    SupplierRate supplierRate = supplierService.getSupplierRateByItemId(dyeingSlipItemData.getItemId());
+                                    if (supplierRate.getItemType().equalsIgnoreCase(record.getType())) {
+                                        dyeingSlipItemDataList.add(dyeingSlipItemData);
+                                    }
+                                }
+                                dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
+                                dyeingSlipDataList.add(dyeingSlipData);
                             }
                         }
-                        dyeingSlipData.setDyeingSlipItemData(dyeingSlipItemDataList);
-                        dyeingSlipDataList.add(dyeingSlipData);
                     }
                     filterSlipData.setDyeingSlipDataList(dyeingSlipDataList);
                     slipFormatDataList.add(filterSlipData);
