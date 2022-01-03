@@ -57,7 +57,7 @@ public class DyeingSlipData {
         this.sequence = dyeingSlipData.getSequence();
         this.isColor = dyeingSlipData.getIsColor();
         this.liquerRation= dyeingSlipData.getLiquerRation();
-        this.dyeingSlipItemData=dyeingSlipData.getDyeingSlipItemData()==null?null:new ArrayList<>();
+        this.dyeingSlipItemData=dyeingSlipData.getDyeingSlipItemData()==null?new ArrayList<>():dyeingSlipData.getDyeingSlipItemData();
     }
 
 
