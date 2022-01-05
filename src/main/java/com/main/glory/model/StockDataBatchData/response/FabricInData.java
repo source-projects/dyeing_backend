@@ -7,34 +7,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @NoArgsConstructor
 @Getter
 @Setter
-public class FabricInV2Data {
-    String batchId;
-    String pchallanRef;
+public class FabricInData {
+
     String qualityName;
     String qualityId;
+    String batchId;
+    String pchallanRef;
     Long totalPcs;
     Double totalMtr;
     Double totalWt;
-    String partyName;
-    String partyCode;
-    Double jobCharge;
+    Double rate;
     Double billingValue;
 
-    public FabricInV2Data(String batchId, String pchallanRef, String qualityName, String qualityId, Long totalPcs, Double totalMtr, Double totalWt, String partyName, String partyCode, Double jobCharge, Double billingValue) {
-        this.batchId = batchId;
-        this.pchallanRef = pchallanRef;
+    public FabricInData(String batchId, String pchallanRef,String qualityName, String qualityId, Long totalPcs, Double totalMtr, Double totalWt, Double rate, Double billingValue) {
         this.qualityName = qualityName;
         this.qualityId = qualityId;
+        this.batchId = batchId;
+        this.pchallanRef = pchallanRef;
         this.totalPcs = totalPcs;
         this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
         this.totalWt = StockBatchServiceImpl.changeInFormattedDecimal(totalWt);
-        this.partyName = partyName;
-        this.partyCode = partyCode;
-        this.jobCharge = jobCharge;
+        this.rate = rate;
         this.billingValue = StockBatchServiceImpl.changeInFormattedDecimal(billingValue);
     }
 }

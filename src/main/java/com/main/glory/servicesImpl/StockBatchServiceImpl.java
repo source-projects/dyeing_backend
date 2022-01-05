@@ -3382,32 +3382,44 @@ public class StockBatchServiceImpl {
 //            throw new Exception(ConstantFile.StockBatch_Not_Found);
 
         // party id and it's pending request
-        Map<Long, FabricInMast> qualityList = new HashMap<>();
+        Map<Long, FabricInMast> partyList = new HashMap<>();
 
         stockMastList.forEach(e -> {
 
-            if (qualityList.containsKey(e.getQuality().getId())) {
-                FabricInMast fabricInMast = qualityList.get(e.getQuality().getId());
-                List<PendingBatchData> pendingBatchDataList = fabricInMast.getList();
-                List<PendingBatchData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtra(e.getId());
+            if (partyList.containsKey(e.getParty().getId())) {
+                List<FabricInData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtraAndFilter(e.getId());
+                Double totalMtr = newPendingBatchList.stream().mapToDouble(FabricInData::getTotalMtr).sum();
+                Double totalWt = newPendingBatchList.stream().mapToDouble(FabricInData::getTotalWt).sum();
+                Long totalPcs = newPendingBatchList.stream().mapToLong(FabricInData::getTotalPcs).sum();
+                Double billingValues = newPendingBatchList.stream().mapToDouble(FabricInData::getBillingValue).sum();
+
+                FabricInMast fabricInMast = partyList.get(e.getParty().getId());
+                fabricInMast.addTotalMtr(totalMtr);
+                fabricInMast.addTotalWt(totalWt);
+                fabricInMast.addTotalPcs(totalPcs);
+                fabricInMast.addBillingValues(billingValues);
+                List<FabricInData> pendingBatchDataList = fabricInMast.getList();
                 pendingBatchDataList.addAll(newPendingBatchList);
+
                 fabricInMast.setList(pendingBatchDataList);
-                qualityList.put(e.getQuality().getId(), fabricInMast);
+                partyList.put(e.getParty().getId(), fabricInMast);
 
             } else {
-                FabricInMast fabricInMast = new FabricInMast(e);
-                List<PendingBatchData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtra(e.getId());
-//                Double totalMtr = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchMtr()).sum();
-//                Double totalWt = newPendingBatchList.stream().mapToDouble(q -> q.getTotalBatchWt()).sum();
-//                Long totalPcs = newPendingBatchList.stream().mapToLong(q -> q.getTotalPcs()).sum();
+
+                List<FabricInData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtraAndFilter(e.getId());
+                Double totalMtr = newPendingBatchList.stream().mapToDouble(FabricInData::getTotalMtr).sum();
+                Double totalWt = newPendingBatchList.stream().mapToDouble(FabricInData::getTotalWt).sum();
+                Long totalPcs = newPendingBatchList.stream().mapToLong(FabricInData::getTotalPcs).sum();
+                Double billingValues = newPendingBatchList.stream().mapToDouble(FabricInData::getBillingValue).sum();
+                FabricInMast fabricInMast = new FabricInMast(e,totalMtr,totalWt,totalPcs,billingValues);
                 fabricInMast.setList(newPendingBatchList);
-                qualityList.put(fabricInMast.getQualityEntryId(), fabricInMast);
+                partyList.put(fabricInMast.getPartyId(), fabricInMast);
             }
 
         });
 
-        if (qualityList.size() > 0) {
-            list = new ArrayList<FabricInMast>(qualityList.values());
+        if (partyList.size() > 0) {
+            list = new ArrayList<FabricInMast>(partyList.values());
             Collections.sort(list, new Comparator<FabricInMast>() {
 
                 @Override
@@ -3504,9 +3516,12 @@ public class StockBatchServiceImpl {
                 Double totalMtr = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalMtr).sum();
                 Double totalWt = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalWt).sum();
                 Long totalPcs = newFabricInMastDataList.stream().mapToLong(FabricInV2Data::getTotalPcs).sum();
+                Double totalBillingValues = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getBillingValue).sum();
+
                 fabricInMast.addTotalMtr(totalMtr);
                 fabricInMast.addTotalWt(totalWt);
                 fabricInMast.addTotalPcs(totalPcs);
+                fabricInMast.addTotalBillingValue(totalBillingValues);
                 existingFabricInMastDataList.addAll(newFabricInMastDataList);
                 fabricInMast.setList(existingFabricInMastDataList);
                 qualityList.put(e.getParty().getUserHeadData().getId(), fabricInMast);
@@ -3517,7 +3532,8 @@ public class StockBatchServiceImpl {
                 Double totalMtr = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalMtr).sum();
                 Double totalWt = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalWt).sum();
                 Long totalPcs = newFabricInMastDataList.stream().mapToLong(FabricInV2Data::getTotalPcs).sum();
-                FabricInV2Mast fabricInMast = new FabricInV2Mast(e,totalPcs,totalMtr,totalWt);
+                Double totalBillingValues = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getBillingValue).sum();
+                FabricInV2Mast fabricInMast = new FabricInV2Mast(e,totalPcs,totalMtr,totalWt,totalBillingValues);
                 fabricInMast.setList(newFabricInMastDataList);
                 qualityList.put(fabricInMast.getId(), fabricInMast);
             }
