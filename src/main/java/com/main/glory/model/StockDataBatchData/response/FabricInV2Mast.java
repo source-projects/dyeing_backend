@@ -21,6 +21,7 @@ public class FabricInV2Mast {
     Double totalMtr;
     Double totalWt;
     Long totalPcs;
+    Double totalBilling;
     List<FabricInV2Data> list;
 
     public FabricInV2Mast(StockMast e) {
@@ -28,12 +29,13 @@ public class FabricInV2Mast {
         this.id = e.getParty().getUserHeadData().getId();
     }
 
-    public FabricInV2Mast(StockMast e, Long totalPcs, Double totalMtr, Double totalWt) {
+    public FabricInV2Mast(StockMast e, Long totalPcs, Double totalMtr, Double totalWt,Double totalBillingValues) {
         this.masterName = e.getParty().getUserHeadData().getFirstName();
         this.id = e.getParty().getUserHeadData().getId();
         this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
         this.totalWt = StockBatchServiceImpl.changeInFormattedDecimal(totalWt);
         this.totalPcs = totalPcs;
+        this.totalBilling = StockBatchServiceImpl.changeInFormattedDecimal(totalBillingValues);
     }
 
     public void addTotalMtr(Double totalMtr) {
@@ -47,5 +49,9 @@ public class FabricInV2Mast {
 
     public void addTotalPcs(Long totalPcs) {
         this.totalPcs = this.totalPcs+totalPcs;
+    }
+
+    public void addTotalBillingValue(Double totalBillingValues) {
+        this.totalBilling = StockBatchServiceImpl.changeInFormattedDecimal(totalBillingValues+this.totalBilling);
     }
 }

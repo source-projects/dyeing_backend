@@ -521,6 +521,9 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.FabricInV2Data(b.batchId,b.pchallanRef,s.quality.qualityName.qualityName,s.quality.qualityId,count(b.id),SUM(b.mtr),SUM(b.wt),s.party.partyName,s.party.partyCode,s.quality.rate,(s.quality.rate * SUM(b.mtr) * 0.9) as billingValues) from BatchData b INNER JOIN StockMast s on b.controlId = s.id where b.controlId=:id AND b.isExtra=false GROUP BY b.batchId,b.pchallanRef")
     List<FabricInV2Data> getBatchListForFabricDataByStockIdWithoutExtraAndFilter(Long id);
 
+    @Query("select new com.main.glory.model.StockDataBatchData.response.FabricInData(b.batchId,b.pchallanRef,s.quality.qualityName.qualityName,s.quality.qualityId,count(b.id),SUM(b.mtr),SUM(b.wt),s.quality.rate,(s.quality.rate * SUM(b.mtr) * 0.9) as billingValues) from BatchData b INNER JOIN StockMast s on b.controlId = s.id where b.controlId=:id AND b.isExtra=false GROUP BY b.batchId,b.pchallanRef")
+    List<FabricInData> getBatchListByStockIdWithoutExtraAndFilter(Long id);
+
 //    @Query("select new com.main.glory.model.StockDataBatchData.response.GetBatchWithControlId(p.mergeBatchId,SUM(p.wt) as WT,SUM(p.mtr) as MTR) from BatchData p INNER JOIN StockMast sm on sm.id=p.controlId where (:mergeBatchId IS NULL OR p.mergeBatchId = :mergeBatchId) AND (:batchId IS NULL OR p.batchId = :batchId) AND (:partyName IS NULL OR sm.party.partyName LIKE %:partyName%) AND (:qualityName IS NULL OR sm.quality.qualityName.qualityName LIKE %:qualityName%) AND p.batchId IS NOT NULL AND p.mergeBatchId IS NOT NULL AND p.controlId IS NOT NULL GROUP BY p.mergeBatchId")
 //    List<GetBatchWithControlId> findAllMergeBatchWithFilterWithAndFalse(String mergeBatchId,String batchId,String partyName,String qualityName);
 
