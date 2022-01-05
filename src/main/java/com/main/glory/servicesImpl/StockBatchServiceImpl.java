@@ -3391,6 +3391,7 @@ public class StockBatchServiceImpl {
                 List<PendingBatchData> pendingBatchDataList = fabricInMast.getList();
                 List<PendingBatchData> newPendingBatchList = batchDao.getBatchListByStockIdWithoutExtra(e.getId());
                 pendingBatchDataList.addAll(newPendingBatchList);
+                fabricInMast.setList(pendingBatchDataList);
                 qualityList.put(e.getQuality().getId(), fabricInMast);
 
             } else {
@@ -3462,6 +3463,71 @@ public class StockBatchServiceImpl {
         });
 
 
+        return list;
+
+    }
+
+    public List<FabricInV2Mast> getPdfBatchReportForFabricInV2ByFilter(BatchFilterRequest filter) throws ParseException {
+        List<FabricInV2Mast> list = new ArrayList<>();
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null)
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if (filter.getTo() != null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);// adding one day in to because of time issue in
+            // created date
+            to = c.getTime();
+        }
+
+        List<StockMast> stockMastList = stockMastDao.filterByBatchFilterRequest(from, to,
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(), filter.getUserHeadId());
+
+//        if (stockMastList == null)
+//            throw new Exception(ConstantFile.StockBatch_Not_Found);
+
+        // party id and it's pending request
+        Map<Long, FabricInV2Mast> qualityList = new HashMap<>();
+
+        stockMastList.forEach(e -> {
+
+            if (qualityList.containsKey(e.getParty().getUserHeadData().getId())) {
+                FabricInV2Mast fabricInMast = qualityList.get(e.getParty().getUserHeadData().getId());
+                List<FabricInV2Data> existingFabricInMastDataList = fabricInMast.getList();
+                List<FabricInV2Data> newFabricInMastDataList = batchDao.getBatchListForFabricDataByStockIdWithoutExtraAndFilter(e.getId());
+                Double totalMtr = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalMtr).sum();
+                Double totalWt = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalWt).sum();
+                Long totalPcs = newFabricInMastDataList.stream().mapToLong(FabricInV2Data::getTotalPcs).sum();
+                fabricInMast.addTotalMtr(totalMtr);
+                fabricInMast.addTotalWt(totalWt);
+                fabricInMast.addTotalPcs(totalPcs);
+                existingFabricInMastDataList.addAll(newFabricInMastDataList);
+                fabricInMast.setList(existingFabricInMastDataList);
+                qualityList.put(e.getParty().getUserHeadData().getId(), fabricInMast);
+
+            } else {
+                //FabricInV2Mast fabricInMast = new FabricInV2Mast(e);
+                List<FabricInV2Data> newFabricInMastDataList = batchDao.getBatchListForFabricDataByStockIdWithoutExtraAndFilter(e.getId());
+                Double totalMtr = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalMtr).sum();
+                Double totalWt = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalWt).sum();
+                Long totalPcs = newFabricInMastDataList.stream().mapToLong(FabricInV2Data::getTotalPcs).sum();
+                FabricInV2Mast fabricInMast = new FabricInV2Mast(e,totalPcs,totalMtr,totalWt);
+                fabricInMast.setList(newFabricInMastDataList);
+                qualityList.put(fabricInMast.getId(), fabricInMast);
+            }
+
+        });
+
+        if (qualityList.size() > 0) {
+            list = new ArrayList<FabricInV2Mast>(qualityList.values());
+        } else
+            list = new ArrayList<>();
         return list;
 
     }

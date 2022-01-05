@@ -21,6 +21,7 @@ import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -1051,6 +1052,24 @@ public class StockBatchController extends ControllerConfig {
     }
 
 
+    @PostMapping("stockBatch/fabricInV2/report/forConslidateBatchResponseForPdf")
+    public ResponseEntity<GeneralResponse<List<FabricInV2Mast>, Object>> forFabricInV2BatchResponseForPdf(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<List<FabricInV2Mast>, Object> response;
+        try {
+            List<FabricInV2Mast> flag = stockBatchService.getPdfBatchReportForFabricInV2ByFilter(filter);
+
+            if (!flag.isEmpty())
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
 
 
 }
