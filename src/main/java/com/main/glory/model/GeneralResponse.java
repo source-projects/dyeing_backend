@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import org.springframework.http.HttpStatus;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 @Getter
 @Setter
 @NoArgsConstructor
