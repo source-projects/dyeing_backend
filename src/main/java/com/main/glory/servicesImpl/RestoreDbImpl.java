@@ -240,7 +240,7 @@ public class RestoreDbImpl {
         if(!backupFile.exists())
             backupFile.createNewFile();
 
-        String cmd="mysqldump --column-statistics=0 --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
+        String cmd="mysqldump --user="+user+" --password="+password+" --databases "+dbname+" -r " + backupFile;
         //System.out.println(cmd);
 
 
