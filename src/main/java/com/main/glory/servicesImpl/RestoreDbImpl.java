@@ -254,7 +254,7 @@ public class RestoreDbImpl {
             if(exitValue==0) {
                 //run the cloudinary as well
                 //backup on the cloud
-                Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                /*Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                         "cloud_name", "dvvqdgl3s",
                         "api_key", "841845242494588",
                         "api_secret", "E1owKNvkJZa131NBcDYEM6mdZSc"));
@@ -273,7 +273,7 @@ public class RestoreDbImpl {
                 databaseBackup.setUrl(uploadResult.get("secure_url").toString());
 
                 databaseBackupDao.save(databaseBackup);
-
+*/
 
             }else {
 
