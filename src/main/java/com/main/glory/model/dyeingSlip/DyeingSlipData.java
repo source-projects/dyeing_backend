@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -48,6 +49,7 @@ public class DyeingSlipData {
     }
 
     public DyeingSlipData(DyeingSlipData dyeingSlipData) {
+        this.id = dyeingSlipData!=null?dyeingSlipData.getId():null;
         this.controlId=dyeingSlipData.getControlId();
         this.processType=dyeingSlipData.getProcessType();
         this.temp=dyeingSlipData.getTemp();
@@ -55,7 +57,8 @@ public class DyeingSlipData {
         this.sequence = dyeingSlipData.getSequence();
         this.isColor = dyeingSlipData.getIsColor();
         this.liquerRation= dyeingSlipData.getLiquerRation();
-        this.dyeingSlipItemData=dyeingSlipData.getDyeingSlipItemData();
+        this.dyeingSlipItemData=dyeingSlipData.getDyeingSlipItemData()==null?new ArrayList<>():dyeingSlipData.getDyeingSlipItemData();
     }
+
 
 }

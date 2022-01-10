@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -20,7 +22,7 @@ import java.util.Date;
 @Setter
 public class ConsolidatedBillDataForExcel {
     String invoiceNo;
-    Date invoiceDate;
+    String invoiceDate;
     String partyName;
     String partyAddress1;
     String partyAddress2;
@@ -55,7 +57,7 @@ public class ConsolidatedBillDataForExcel {
     Double sgst;
     Double igst;
     Double gstAmt;
-    Double netAmt;
+    Long netAmt;
     Double discountAmt;
     String billingUnit;
     String inwardUnit;
@@ -64,6 +66,11 @@ public class ConsolidatedBillDataForExcel {
     Double wtPer100m;
     String headName;
 
+    @JsonIgnore
+    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+
+    //this one is using through query
     public ConsolidatedBillDataForExcel(String batchId, Long pcs, Date invoiceDate, String invoiceNo, String qualityId,
                                         Double discount, Double percentageDiscount, Double netAmt,
                                         Double totalFinishMtr, Double totalMtr, Double rate,
@@ -75,7 +82,7 @@ public class ConsolidatedBillDataForExcel {
         //this.greyPcs = greyPcs;
         this.pcs = pcs;
         this.batchId = batchId;
-        this.invoiceDate = invoiceDate;
+        this.invoiceDate = dateFormat.format(invoiceDate);
         this.invoiceNo =invoiceNo;
         this.qualityId = qualityId;
         this.billingUnit = billingUnit;
@@ -95,18 +102,18 @@ public class ConsolidatedBillDataForExcel {
         this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
         this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.rate = rate;
-        this.amt = amt;
+        this.amt = totalFinishMtr*rate;
         //this.greyPcs = greyPcs;
         this. percentageDiscount=percentageDiscount;
-        this.discountAmt = discountAmt;
+        this.discountAmt = (this.amt/100)*this.percentageDiscount;
 
-        this.netAmt=netAmt;
-        this.taxAmt = taxAmt;
+        //this.netAmt=netAmt;
+        this.taxAmt = this.amt - this.discountAmt;
         this.igst=this.state.equalsIgnoreCase("Gujarat")?0:StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 5)/100);
         this.cgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.sgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.gstAmt=this.cgst+this.sgst+this.igst;
-        this.netAmt = this.taxAmt+this.gstAmt;
+        this.netAmt = Math.round(this.taxAmt+this.gstAmt);
         this.sharinkage = StockBatchServiceImpl.changeInFormattedDecimal(((this.totalMtr - this.totalFinishMtr)/this.totalMtr) * 100);
 
 
@@ -116,7 +123,7 @@ public class ConsolidatedBillDataForExcel {
     public ConsolidatedBillDataForExcel(Party party, Quality quality, String batchId, Long pcs, Double totalBatchMtr, Double totalFinishMtr, Double amt, Double rate, DispatchMast dispatchMast, Long greyPcs) {
         this.deliveryMode = dispatchMast.getDeliveryMode()==null?null:dispatchMast.getDeliveryMode();
         this.batchId = batchId;
-        this.invoiceDate = dispatchMast.getCreatedDate();
+        this.invoiceDate = dateFormat.format(dispatchMast.getCreatedDate());
         this.invoiceNo =dispatchMast.getPostfix();
         this.partyName = party.getPartyName();
         this.qualityName = quality.getQualityName().getQualityName();
@@ -132,7 +139,7 @@ public class ConsolidatedBillDataForExcel {
         this.qualityNameId = quality.getQualityName().getId();
         this.discount=dispatchMast.getDiscount();
         this.percentageDiscount=dispatchMast.getPercentageDiscount()==null?0:dispatchMast.getPercentageDiscount();
-        this. netAmt=dispatchMast.getNetAmt();
+        this. netAmt=dispatchMast.getNetAmt().longValue();
         this.partyAddress1 = party.getPartyAddress1()==null?null:party.getPartyAddress1();
         this.partyAddress2 = party.getPartyAddress2()==null?null:party.getPartyAddress2();
         this.gstin = party.getGSTIN()==null?null:party.getGSTIN();
@@ -145,7 +152,7 @@ public class ConsolidatedBillDataForExcel {
         this.cgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.sgst=this.state.equalsIgnoreCase("Gujarat")?StockBatchServiceImpl.changeInFormattedDecimal((this.taxAmt * 2.5)/100):0;
         this.gstAmt=this.cgst+this.sgst+this.igst;
-        this.netAmt = this.taxAmt+this.gstAmt;
+        this.netAmt = Math.round(this.taxAmt+this.gstAmt);
         this.sharinkage = StockBatchServiceImpl.changeInFormattedDecimal(((this.totalMtr - this.totalFinishMtr)/this.totalMtr) * 100);
 
     }

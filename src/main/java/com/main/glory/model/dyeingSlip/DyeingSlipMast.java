@@ -1,6 +1,7 @@
 package com.main.glory.model.dyeingSlip;
 
 import com.main.glory.model.dyeingSlip.request.AddAdditionDyeingSlipModel;
+import com.main.glory.model.dyeingSlip.request.SlipFormatData;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.AddDirectBatchToJet;
 import lombok.AllArgsConstructor;
@@ -57,6 +58,21 @@ public class DyeingSlipMast {
         this.batchId=dyeingSlipMastExist.batchId;
         this.dyeingProcessMastId = dyeingSlipMastExist.getDyeingProcessMastId()==null?null:dyeingSlipMastExist.getDyeingProcessMastId();
     }
+    public DyeingSlipMast(SlipFormatData dyeingSlipMastExist) {
+        this.id=dyeingSlipMastExist.getId();
+        this.userHeadId=dyeingSlipMastExist.getUserHeadId();
+        this.createdBy=dyeingSlipMastExist.getCreatedBy();
+        this.updatedBy=dyeingSlipMastExist.getUpdatedBy();
+        this.createdDate=dyeingSlipMastExist.getCreatedDate();
+        this.updatedDate=dyeingSlipMastExist.getUpdatedDate();
+        this.stockId=dyeingSlipMastExist.getStockId();
+        this.jetId=dyeingSlipMastExist.getJetId();
+        this.productionId=dyeingSlipMastExist.getProductionId();
+        this.batchId=dyeingSlipMastExist.getBatchId();
+        this.dyeingProcessMastId = dyeingSlipMastExist.getDyeingProcessMastId()==null?null:dyeingSlipMastExist.getDyeingProcessMastId();
+    }
+
+
 
     /*public DyeingSlipMast(AddAdditionDyeingSlipModel addAdditionDyeingSlipModel) {
 

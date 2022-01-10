@@ -1,4 +1,4 @@
-package com.main.glory.model.jet.request;
+package com.main.glory.model.dispatch.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ChangeStatus {
-
-    Long controlId;
-    Long prodcutionId;
-    String status;//complete
-
-
+public class GetPChallanByPartyAndRF {
+    Long partyId;
+    Boolean rfInvoiceFlag;
 }

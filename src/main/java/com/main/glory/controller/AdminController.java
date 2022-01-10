@@ -1411,5 +1411,106 @@ public class AdminController extends ControllerConfig {
     }
 
 
+    //RF sequence
+    @PostMapping(value="/admin/add/rfInvoiceSequence")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> addRFInvoiceSequence(@RequestBody RFSequence record) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
+
+        boolean flag;
+        try {
+            if(record == null)
+                throw new Exception(constantFile.Null_Record_Passed);
+
+            adminService.addRFInvoiceSequence(record);
+            result= new GeneralResponse<>(true, constantFile.Invoice_Sequence_Added, true, System.currentTimeMillis(), HttpStatus.OK,record);
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,record);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @GetMapping(value="/admin/get/rfInvoiceSequence/")
+    public ResponseEntity<GeneralResponse<RFSequence,Object>> getRFInvoiceSequence() throws Exception {
+
+        GeneralResponse<RFSequence,Object> result=null;
+
+        boolean flag;
+        try {
+
+
+            RFSequence invoiceSequence = adminService.getRFInvoiceSequence();
+            if(invoiceSequence!=null)
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+    @PutMapping(value="/admin/update/rfInvoiceSequence/")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateRFInvoiceSequence(@RequestBody RFSequence invoiceSequence) throws Exception {
+
+        GeneralResponse<Boolean,Object> result=null;
+
+        boolean flag;
+        try {
+
+
+            adminService.updateRFInvoiceSequence(invoiceSequence);
+            result= new GeneralResponse<>(true, constantFile.Invoice_Sequence_Updated, true, System.currentTimeMillis(), HttpStatus.OK,invoiceSequence);
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,invoiceSequence);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PutMapping(value="/admin/get/rfInvoiceSequence/{id}")
+    public ResponseEntity<GeneralResponse<RFSequence,Object>> getRFInvoiceSequenceById(@PathVariable(name = "id")Long id) throws Exception {
+
+        GeneralResponse<RFSequence,Object> result=null;
+
+        boolean flag;
+        try {
+            if(id==null)
+                throw new Exception(constantFile.Null_Record_Passed);
+
+            RFSequence invoiceSequence = adminService.getRFInvoiceSequenceById(id);
+            if(invoiceSequence!=null)
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result= new GeneralResponse<>(invoiceSequence, constantFile.Invoice_Sequence_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 }

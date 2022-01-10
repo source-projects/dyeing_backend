@@ -13,4 +13,5 @@ public class AddJetData {
     Long controlId;
     Long sequence;
     Long productionId;
+    Long shadeId;
 }

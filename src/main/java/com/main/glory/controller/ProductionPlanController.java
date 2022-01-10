@@ -119,9 +119,6 @@ public class ProductionPlanController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-
-
-
     @PutMapping(value="/productionPlan/updateProductionPlan/")
     public ResponseEntity<GeneralResponse<Boolean, Object>> updateProductionPlan(@RequestBody ProductionPlan productionPlan, @RequestHeader Map<String, String> headers)
     {

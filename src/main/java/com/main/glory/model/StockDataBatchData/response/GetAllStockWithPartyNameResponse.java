@@ -7,9 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
@@ -21,12 +23,22 @@ public class GetAllStockWithPartyNameResponse extends StockMast{
     List<GetAllBatchResponse> batchList;
     String partyName;
     String qualityName;
+    String batchIds;
+    String qualityId;
 
 
     public GetAllStockWithPartyNameResponse(StockMast stockMast, String partyName,String qualityName) {
         super(stockMast);
         this.partyName = partyName;
         this.qualityName=qualityName;
+
+    }
+    public GetAllStockWithPartyNameResponse(StockMast stockMast, String partyName,String qualityName,String qualityId) {
+        super(stockMast);
+        this.partyName = partyName;
+        this.qualityName=qualityName;
+        this.qualityId=qualityId;
+
     }
 
     public GetAllStockWithPartyNameResponse(GetAllStockWithPartyNameResponse batchData, List<GetAllBatchResponse> batchDataList,String qualityName) {
@@ -51,7 +63,11 @@ public class GetAllStockWithPartyNameResponse extends StockMast{
         this.setQuality(null);
         this.setBatchData(null);
         this.setParty(null);
-        
+        this.qualityId = batchData.qualityId;
+        this.batchIds = batchDataList.stream().map(GetAllBatchResponse::getBatchId)
+                .collect(Collectors.joining(","));
+
+
     }
 
 

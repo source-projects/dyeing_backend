@@ -37,6 +37,7 @@ public class PendingBatchData {
         this.qualityId = qualityId;
         this.totalPcs=totalPcs;
         this.qualityName = qualityName;
+        //this.totalQualityMeter = this.getTotalQualityMeter()==null?this.totalBatchMtr:this.totalQualityMeter+this.totalBatchMtr;
 
     }
 }

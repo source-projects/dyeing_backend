@@ -1,11 +1,14 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.CreateMergeBatch;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchToPartyQualityWithGr;
 import com.main.glory.model.StockDataBatchData.response.MergeBatchResponse;
+import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +78,27 @@ public class MergeBatchController extends ControllerConfig {
             List<MergeBatchResponse> list = stockBatchService.getAllMergeBatchId();
 
             if(!list.isEmpty())
+                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/stockBatch/get/mergeBatchList/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<MergeBatchResponse>,Object>> getAllMergeBatchIdWithPagination(@RequestBody GetBYPaginatedAndFiltered requestParam) throws Exception {
+        GeneralResponse<FilterResponse<MergeBatchResponse>,Object> result = null;
+        try {
+            FilterResponse<MergeBatchResponse> list = stockBatchService.getAllMergeBatchIdWithPagination(requestParam);
+
+            if(!list.getData().isEmpty())
                 result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
                 result = new GeneralResponse<>(list, ConstantFile.MergeBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());

@@ -1,6 +1,7 @@
 package com.main.glory.model.employee;
 
 import com.main.glory.model.employee.request.GetLatestAttendance;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +32,8 @@ public class Attendance {
     Boolean shift; //true:morning
     String url;
     String outUrl;
-    @ColumnDefault("false")
     Boolean approved;
+    String status;//Out time Not mention
 
     public Attendance(GetLatestAttendance record, EmployeeMast employeeMast) {
         this.inTime = record.getDate();
@@ -43,6 +44,7 @@ public class Attendance {
     public void onCreate()
     {
         this.createdDate = new Date(System.currentTimeMillis());
+        this.approved=false;
     }
     @PreUpdate
     public void onUpdate()

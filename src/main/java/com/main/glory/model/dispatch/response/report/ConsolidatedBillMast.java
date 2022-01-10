@@ -1,11 +1,15 @@
 package com.main.glory.model.dispatch.response.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.main.glory.model.dispatch.DispatchMast;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -16,22 +20,25 @@ import java.util.List;
 public class ConsolidatedBillMast {
 
     String invoiceNo;
-    Date createdDate;
+    String createdDate;
     /*String headName;
     Long userHeadId;
     Long partyId;
     Boolean signByParty;*/
+    @JsonIgnore
+    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
     List<ConsolidatedBillDataForPDF> list;
 
     public ConsolidatedBillMast(DispatchMast dispatchMast) {
         this.invoiceNo = dispatchMast.getPostfix();
-        this.createdDate = dispatchMast.getCreatedDate();
+        this.createdDate =dateFormat.format( dispatchMast.getCreatedDate().toString());
         //this.partyId = dispatchMast.getParty().getId();
     }
 
     public ConsolidatedBillMast(ConsolidatedBillDataForPDF e) {
         this.invoiceNo = e.getInvoiceNo();
-        this.createdDate = e.getCreatedDate();
+        this.createdDate = dateFormat.format(e.getCreatedDate());
 
     }
 }

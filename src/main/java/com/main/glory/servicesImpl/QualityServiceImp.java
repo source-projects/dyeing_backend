@@ -235,6 +235,7 @@ public class QualityServiceImp  {
             if(qualityName==null)
                 continue;
             data.setQualityName(qualityName);
+            data.setUserHeadName(q.getParty().getUserHeadData().getFirstName());
             quality.add(new GetQualityResponse(data));
         }
 

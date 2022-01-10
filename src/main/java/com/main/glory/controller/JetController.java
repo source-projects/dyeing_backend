@@ -4,6 +4,7 @@ package com.main.glory.controller;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.hmi.request.HMIBitChange;
 import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.responce.*;
 import com.main.glory.servicesImpl.JetServiceImpl;
@@ -117,6 +118,32 @@ public class JetController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
+    @PostMapping(value="/jet/updateJetDataForHmi")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updateJetDataForHmi(@RequestBody HMIBitChange jetDataToUpdate) throws Exception {
+
+        GeneralResponse<Boolean,Object> result;
+        if(jetDataToUpdate==null)
+        {
+            throw new Exception(constantFile.Null_Record_Passed);
+            //result = new GeneralResponse<Boolean>(false, "jet info is null", false, System.currentTimeMillis(), HttpStatus.OK);
+        }
+
+        boolean flag;
+        try {
+
+            jetService.updateJetDataForHmi(jetDataToUpdate);
+            result = new GeneralResponse<>(null, constantFile.Jet_Updated, true, System.currentTimeMillis(), HttpStatus.OK,jetDataToUpdate);
+
+            logService.saveLog(result,request,debugAll);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            result = new GeneralResponse<>(false, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,jetDataToUpdate);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
 
 
     @GetMapping(value="/jet/getJetData/{id}")
@@ -185,7 +212,7 @@ public class JetController extends ControllerConfig {
                 logService.saveLog(result, request, debugAll);
             }
             else {
-                result = new GeneralResponse<>(new ArrayList<>(), constantFile.Jet_Not_Selected, false, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
+                result = new GeneralResponse<>(new ArrayList<>(), constantFile.Jet_Not_Selected, true, System.currentTimeMillis(), HttpStatus.OK,jetMastIDs);
             }
 
         }

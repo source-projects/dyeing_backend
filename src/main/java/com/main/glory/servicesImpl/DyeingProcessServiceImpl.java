@@ -187,13 +187,15 @@ public class DyeingProcessServiceImpl {
         }
         x.setDyeingProcessData(dyeingProcessDataList);
 */
-        x.getDyeingProcessData().forEach(e->{
-            if (e.getProcessType().equalsIgnoreCase("Dyeing")) {
-                DyeingplcMast dyeingplcMast = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(x.getId());
-                if (dyeingplcMast != null)
-                    e.setDyeingplcMast(dyeingplcMast);
-            }
-        });
+        if(x.getId()!=null) {
+            x.getDyeingProcessData().forEach(e -> {
+                if (e.getProcessType().equalsIgnoreCase("Dyeing")) {
+                    DyeingplcMast dyeingplcMast = dyeingplcMastDao.getDyeingPlcMastByDyeingProcessMastId(x.getId());
+                    if (dyeingplcMast != null)
+                        e.setDyeingplcMast(dyeingplcMast);
+                }
+            });
+        }
 
         return x;
     }
@@ -430,4 +432,7 @@ public class DyeingProcessServiceImpl {
     public DyeingProcessMast getDyeingProcessMastById(Long processId) {
         return dyeingProcessMastDao.getDyeingProcessById(processId);
     }
+
+
+
 }
