@@ -15,8 +15,10 @@ public interface RFSequenceDao extends JpaRepository<RFSequence,Long> {
     @Query("select x from RFSequence x where x.id=:id")
     RFSequence getSequenceById(Long id);
 
+
+
     @Modifying
     @Transactional
     @Query("update RFSequence x set x.sequence=:l where x.id=:id")
-    void RFSequence(Long id, long l);
+    void updateSequenceByOne(Long id, long l);
 }

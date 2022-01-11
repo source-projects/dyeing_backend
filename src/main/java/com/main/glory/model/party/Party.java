@@ -11,6 +11,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.*;
 
 @Entity
@@ -136,4 +137,16 @@ public class Party {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Party party = (Party) o;
+        return id.equals(party.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

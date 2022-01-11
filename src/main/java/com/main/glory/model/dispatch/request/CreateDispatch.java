@@ -35,5 +35,6 @@ public class CreateDispatch {
     String remark;
     Boolean createFlag;//true create api else update api
     String deliveryMode;
+    Boolean rfInvoiceFlag;
     List<BatchAndStockId> batchAndStockIdList;
 }
