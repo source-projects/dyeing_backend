@@ -23,6 +23,7 @@ spring.datasource.testOnBorrow=true
 spring.datasource.validationQuery=SELECT 1
 #allow schedule
 spring.enable.scheduling = true
+spring.application.backup = true
 
 #debug variable
 spring.application.debugAll = true

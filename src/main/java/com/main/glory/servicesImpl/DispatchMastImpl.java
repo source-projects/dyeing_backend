@@ -1,8 +1,10 @@
 package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.main.glory.Dao.admin.RFSequenceDao;
 import com.main.glory.model.StockDataBatchData.response.GetAllMergeBatchId;
 import com.main.glory.model.StockDataBatchData.response.PendingBatchMast;
+import com.main.glory.model.admin.RFSequence;
 import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.admin.InvoiceSequenceDao;
@@ -95,6 +97,9 @@ public class DispatchMastImpl {
 
     @Autowired
     InvoiceSequenceDao invoiceSequenceDao;
+
+    @Autowired
+    RFSequenceDao rfSequenceDao;
 
     @Autowired
     BatchDao batchDao;
@@ -228,7 +233,8 @@ public class DispatchMastImpl {
 
     public FilterResponse<GetAllDispatch> getAllDisptach(GetBYPaginatedAndFiltered requestParam) throws Exception {
         List<GetAllDispatch> dispatchDataList = new ArrayList<>();
-        Pageable pageable = filterService.getPageable(requestParam.getData());
+        Pageable pageable = filterService.getPageableForInvoice(requestParam.getData());
+
         List<Filter> filters = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
         subModelCase.put("invoiceNo", new ArrayList<String>(Arrays.asList("postfix")));
@@ -1582,7 +1588,7 @@ public class DispatchMastImpl {
         List<BatchWithTotalMTRandFinishMTR> list = new ArrayList<>();
 
         List<BatchWithTotalMTRandFinishMTR> batchDataListByParty = new ArrayList<>();
-        List<StockMast> stockMastList = stockBatchService.getRfStockListByPartyAndRfInvoiceFlag(partyId,rfInvoiceFlag);
+        //List<StockMast> stockMastList = stockBatchService.getRfStockListByPartyAndRfInvoiceFlag(partyId,rfInvoiceFlag);
         // System.out.println(stockMastList.size());
         Party party = partyServiceImp.getPartyById(partyId);
         if (party == null)
@@ -1592,13 +1598,13 @@ public class DispatchMastImpl {
          * if(stockMastList.size()<=0) return batchDataListByParty;
          */
 
-        for (StockMast stockMast : stockMastList) {
+
             // System.out.println(stockMast.getId());
             List<BatchWithTotalMTRandFinishMTR> batchDataList = batchDao
-                    .getAllPChallanByStockIdWithTotalFinishMtr(stockMast.getId());
+                    .getAllPChallanByPartyIdAndRfInvoiceFlagWithTotalFinishMtr(partyId,rfInvoiceFlag);
             for (BatchWithTotalMTRandFinishMTR getBatchWithControlIdData : batchDataList) {
                 BatchWithTotalMTRandFinishMTR getBatchWithControlId = new BatchWithTotalMTRandFinishMTR(getBatchWithControlIdData);
-                Quality quality = stockMast.getQuality();
+                Quality quality = getBatchWithControlIdData.getStockMast().getQuality();
                 if (quality != null) {
                     Double extraRate = 0.0;
                     //for extra rate && check is it merge batch id if yes then go to production plan table to get extra rate
@@ -1632,7 +1638,7 @@ public class DispatchMastImpl {
                 batchDataListByParty.add(getBatchWithControlId);
             }
 
-        }
+
 
         return batchDataListByParty;
     }
@@ -1640,13 +1646,33 @@ public class DispatchMastImpl {
     // create dispatch api's service
 
     public Long createDispatchForPchallan(CreateDispatch dispatchList, Long userId) throws Exception {
+        Boolean rfInvoiceFlag=dispatchList.getRfInvoiceFlag();
         ObjectMapper mapper = new ObjectMapper();
         // check the invoice sequence exist or not
-        InvoiceSequence invoiceSequenceExist = invoiceSequenceDao.getSequence();
-        if (invoiceSequenceExist == null)
-            throw new Exception(constantFile.Invoice_Sequence_Not_Found);
-        // update the invoice sequence by one
-        invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(), invoiceSequenceExist.getSequence() + 1);
+
+        InvoiceSequence invoiceSequenceExist =null;
+        RFSequence rfSequenceExist =null;
+        if(!rfInvoiceFlag)
+        {
+            //go with invoice sequence else go with rf invoice
+            invoiceSequenceExist = invoiceSequenceDao.getSequence();
+            if (invoiceSequenceExist == null)
+                throw new Exception(constantFile.Invoice_Sequence_Not_Found);
+            // update the invoice sequence by one
+            invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(), invoiceSequenceExist.getSequence() + 1);
+
+        }
+        else
+        {
+
+            rfSequenceExist = rfSequenceDao.getSequence();
+            if (rfSequenceExist == null)
+                throw new Exception(constantFile.RFInvoice_Sequence_Not_Found);
+            // update the invoice sequence by one
+            rfSequenceDao.updateSequenceByOne(rfSequenceExist.getId(), rfSequenceExist.getSequence() + 1);
+
+        }
+
 
         // update batch list
         List<Long> batchIdListToUpdate = new ArrayList<>();
@@ -1659,8 +1685,15 @@ public class DispatchMastImpl {
         List<DispatchData> dispatchDataList = new ArrayList<>();
         DispatchMast dispatchMast = new DispatchMast(dispatchList);
         dispatchMast.setSignByParty(false);
-        dispatchMast.setPrefix("inv");
-        dispatchMast.setPostfix(invoiceSequenceExist.getSequence().toString());
+        if(dispatchList.getRfInvoiceFlag()==false) {
+            dispatchMast.setPrefix("inv");
+            dispatchMast.setPostfix(invoiceSequenceExist.getSequence().toString());
+        }
+        else
+        {
+            dispatchMast.setPrefix("rf");
+            dispatchMast.setPostfix(rfSequenceExist.getSequence().toString());
+        }
 
         // party detail by stock
 
@@ -1722,7 +1755,7 @@ public class DispatchMastImpl {
             if (batchDataList.isEmpty())
                 throw new Exception("no batch data found");
 
-            System.out.println("prod:" + mapper.writeValueAsString(productionPlan));
+            //System.out.println("prod:" + mapper.writeValueAsString(productionPlan));
             for (BatchData batchData : batchDataList) {
 
                 if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated() == false) {
@@ -1778,10 +1811,21 @@ public class DispatchMastImpl {
 
         // increment the invoice number to dispatch mast
         // check that the invoice sequence is exist
-        DispatchMast dispatchDataExist = dispatchMastDao
-                .getDispatchMastByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
-        if (dispatchDataExist != null)
-            throw new Exception(ConstantFile.PrinterIsBusy);
+        if(dispatchList.getRfInvoiceFlag()==false) {
+            DispatchMast dispatchDataExist = dispatchMastDao
+                    .getDispatchMastByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
+            dispatchMast.setIsRfInvoice(false);
+            if (dispatchDataExist != null)
+                throw new Exception(ConstantFile.PrinterIsBusy);
+        }
+        else
+        {
+            DispatchMast dispatchDataExist = dispatchMastDao
+                    .getDispatchMastByInvoiceNumber(rfSequenceExist.getSequence().toString());
+            dispatchMast.setIsRfInvoice(true);
+            if (dispatchDataExist != null)
+                throw new Exception(ConstantFile.PrinterIsBusy);
+        }
 
         dispatchMastDao.save(dispatchMast);
 
@@ -1789,7 +1833,7 @@ public class DispatchMastImpl {
         batchDao.updateBillStatusInListOfBatchEntryId(batchIdListToUpdate, true);
 
 
-        return invoiceSequenceExist.getSequence();
+        return dispatchList.getRfInvoiceFlag()==false?invoiceSequenceExist.getSequence():rfSequenceExist.getSequence();
 
     }
 

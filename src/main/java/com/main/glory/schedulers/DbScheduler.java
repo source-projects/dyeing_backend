@@ -47,6 +47,9 @@ public class DbScheduler {
     @Value("${spring.datasource.dbname}")
     private String dbname;
 
+    @Value("${spring.application.backup}")
+    Boolean backup;
+
     @Autowired
     DatabaseBackupDao databaseBackupDao;
 
@@ -60,10 +63,11 @@ public class DbScheduler {
     public void forDbBackup() throws IOException, SQLException, ClassNotFoundException, InterruptedException {
 
 
-        LOGGER.log(Level.INFO, "called db at night 12 am");
-        //System.out.println("");
-
-        restoreDbService.backupDb();
+        if(backup==true) {
+            LOGGER.log(Level.INFO, "called db at night 12 am");
+            //System.out.println("");
+            restoreDbService.backupDb();
+        }
 
     }
 }

@@ -28,6 +28,7 @@ public class GetAllDispatch {
     Double totalMtr;
     Double finishMtr;
     Boolean signByParty;
+    Boolean isRfInvoice;
     List<BatchWithTotalMTRandFinishMTR> batchList;
 
     public GetAllDispatch(DispatchData dispatchData) {
@@ -40,5 +41,6 @@ public class GetAllDispatch {
         this.invoiceNo=dispatchMast.getDispatchDataList()==null?"null":dispatchMast.getPostfix();
         //this.isSendToParty=dispatchData.getIsSendToParty();
         this.date=dispatchMast.getCreatedDate();
+        this.isRfInvoice =dispatchMast.getIsRfInvoice();
     }
 }

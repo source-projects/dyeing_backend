@@ -112,7 +112,7 @@ public class DispatchController extends ControllerConfig {
 
 
     //Get batches by the party id
-    @GetMapping("/dispatch/getBatchByParty/{partyId}")
+    @PostMapping("/dispatch/getBatchByParty/{partyId}")
     public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getBatchByParty(@PathVariable(name="partyId") Long partyId) throws Exception{
         GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
         try{
@@ -471,7 +471,7 @@ public class DispatchController extends ControllerConfig {
         GeneralResponse<List<MonthlyDispatchReport>, Object> result;
         try{    
             List<MonthlyDispatchReport> list = dispatchMastService.getMonthWiseReportDispatch(filter);
-            if(list !=null || !list.isEmpty())
+            if(list !=null && !list.isEmpty())
                 result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             else
                 result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
@@ -527,8 +527,31 @@ public class DispatchController extends ControllerConfig {
 
 
     //create dispatchBy pchallan api's
+    @PostMapping("/dispatch/getPChallanByParty")
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getPChallanByParty(@RequestBody GetPChallanByPartyAndRF record /*@PathVariable("partyId") Long partyId*/) throws Exception{
+        GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
+        try{
+            if(record.getPartyId()!=null) {
+                List<BatchWithTotalMTRandFinishMTR> x =dispatchMastService.getPChallanByParty(record.getPartyId(),record.getRfInvoiceFlag());
+                if(x.isEmpty())
+                    result= new GeneralResponse<>(x, constantFile.StockBatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                else
+                    result= new GeneralResponse<>(x, constantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else
+                result= new GeneralResponse<>(null, constantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
     @GetMapping("/dispatch/getPChallanByParty/{partyId}")
-    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getPChallanByParty(/*@RequestBody GetPChallanByPartyAndRF record*/ @PathVariable("partyId") Long partyId) throws Exception{
+    public ResponseEntity<GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object>> getPChallanByPartyId(/*@RequestBody GetPChallanByPartyAndRF record*/ @PathVariable("partyId") Long partyId) throws Exception{
         GeneralResponse<List<BatchWithTotalMTRandFinishMTR>,Object> result;
         try{
             if(partyId!=null) {
