@@ -17,13 +17,14 @@ import java.util.List;
 @Setter
 public class FabricInDetailsMast {
 
-    //@JsonIgnore
+    @JsonIgnore
     Long id;
     String masterName;
     Double totalMtr;
     Double totalWt;
     Double totalBillingValue;
     Long totalPcs;
+    @JsonIgnore
     Long countObject;
     List<FabricInDetailsData> list;
 
@@ -51,12 +52,12 @@ public class FabricInDetailsMast {
     }
 
     public FabricInDetailsMast(UserData key, Double totalMtr, Double totalWt,Long totalPcs,Double totalBillingValue) {
-        this.totalWt = totalWt;
-        this.totalMtr=totalMtr;
+        this.totalWt = StockBatchServiceImpl.changeInFormattedDecimal(totalWt);
+        this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
         this.masterName = key.getFirstName();
         this.id = key.getId();
         this.totalPcs = totalPcs;
-        this.totalBillingValue = totalBillingValue;
+        this.totalBillingValue = StockBatchServiceImpl.changeInFormattedDecimal(totalBillingValue);
     }
 
     public void addTotalMtr(Double totalMtr) {

@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 public class FabricInDetailsData {
-    //@JsonIgnore
+    @JsonIgnore
     Long partyId;
     String partyName;
     String partyCode;
@@ -25,6 +25,7 @@ public class FabricInDetailsData {
     Double totalWt;
     Double totalBillingValue;
     Long totalPcs;
+    @JsonIgnore
     Long countObject;
     @JsonIgnore
     UserData userData;
@@ -62,10 +63,10 @@ public class FabricInDetailsData {
         this.partyCode = key.getPartyCode();
         this.partyId = key.getId();
         this.userData=key.getUserHeadData();
-        this.totalWt = totalWt;
-        this.totalMtr = totalMtr;
+        this.totalWt = StockBatchServiceImpl.changeInFormattedDecimal(totalWt);
+        this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
         this.totalPcs = totalPcs;
-        this.totalBillingValue = billingValue;
+        this.totalBillingValue = StockBatchServiceImpl.changeInFormattedDecimal(billingValue);
     }
 
     public void addTotalMtr(Double totalMtr) {
