@@ -52,10 +52,10 @@ public class FabricInData {
         this.batchId = batchId;
         this.pchallanRef = pchallanRef;
         this.totalPcs = totalPcs;
-        this.totalMtr = (totalMtr);
-        this.totalWt = (totalWt);
+        this.totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalMtr);
+        this.totalWt = StockBatchServiceImpl.changeInFormattedDecimal(totalWt);
         this.rate = rate;
-        this.billingValue = (billingValue);
+        this.billingValue = StockBatchServiceImpl.changeInFormattedDecimal(billingValue);
         this.userData = userData;
         this.party = party;
     }

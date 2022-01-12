@@ -3583,7 +3583,6 @@ public class StockBatchServiceImpl {
             Long totalPcs = entry.getValue().stream().mapToLong(FabricInData::getTotalPcs).sum();
             Double billingValue = entry.getValue().stream().mapToDouble(FabricInData::getBillingValue).sum();
             FabricInDetailsData fabricInDetailsData = new FabricInDetailsData(entry.getKey(),totalPcs,totalMtr,totalWt,billingValue);
-            fabricInDetailsData.setCountObject((long) entry.getValue().size());
             fabricInDetailsData.setList(entry.getValue());
             fabricInDetailsDataList.add(fabricInDetailsData);
 
@@ -3596,11 +3595,8 @@ public class StockBatchServiceImpl {
             Double totalMtr = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalMtr).sum();
             Double totalWt = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalWt).sum();
             Long totalPcs = entry.getValue().stream().mapToLong(FabricInDetailsData::getTotalPcs).sum();
-//            Long totalPcs = entry.getValue().stream().reduce(0L,
-//                    (element1, element2) -> element1 + element2.getTotalPcs(),Long::sum);
             Double billingValue = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalBillingValue).sum();
             FabricInDetailsMast fabricInDetailsMast = new FabricInDetailsMast(entry.getKey(),totalMtr,totalWt,totalPcs,billingValue);
-            fabricInDetailsMast.setCountObject((long) entry.getValue().size());
             fabricInDetailsMast.setList(entry.getValue());
 
             fabricInDetailsMastList.add(fabricInDetailsMast);
