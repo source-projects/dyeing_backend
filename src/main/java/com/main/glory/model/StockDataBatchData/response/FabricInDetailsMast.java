@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class FabricInDetailsMast {
 
-    @JsonIgnore
+    //@JsonIgnore
     Long id;
     String masterName;
     Double totalMtr;

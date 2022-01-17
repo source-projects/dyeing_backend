@@ -3568,28 +3568,26 @@ public class StockBatchServiceImpl {
             to = c.getTime();
         }
 
-        List<FabricInData> newPendingBatchList = batchDao.getBatchListWithPartyAndMasterByStockIdWithoutExtraAndFilter(from,to,filter.getPartyId(),filter.getQualityEntryId(),filter.getUserHeadId(),filter.getQualityNameId());
+        List<FabricInDetailsChildData> newPendingBatchList = batchDao.getBatchListWithoutPchallanWithPartyAndMasterByStockIdWithoutExtraAndFilter(from,to,filter.getPartyId(),filter.getQualityEntryId(),filter.getUserHeadId(),filter.getQualityNameId());
 
         //newPendingBatchList.sort(Comparator.comparing(FabricInData::getBatchId));
 
 //        Map<UserData,List<FabricInData>> masterWiseList = newPendingBatchList.stream().collect(Collectors.groupingBy(FabricInData::getUserData));
-        Map<Party,List<FabricInData>> partyListMap = newPendingBatchList.stream().collect(Collectors.groupingBy(FabricInData::getParty));
+        Map<Party,List<FabricInDetailsChildData>> partyListMap = newPendingBatchList.stream().collect(Collectors.groupingBy(FabricInDetailsChildData::getParty));
         List<FabricInDetailsData> fabricInDetailsDataList = new ArrayList<>();
-
-        for (Map.Entry<Party,List<FabricInData>> entry : partyListMap.entrySet())
-        {
-            Double totalMtr = entry.getValue().stream().mapToDouble(FabricInData::getTotalMtr).sum();
-            Double totalWt = entry.getValue().stream().mapToDouble(FabricInData::getTotalWt).sum();
-            Long totalPcs = entry.getValue().stream().mapToLong(FabricInData::getTotalPcs).sum();
-            Double billingValue = entry.getValue().stream().mapToDouble(FabricInData::getBillingValue).sum();
-            FabricInDetailsData fabricInDetailsData = new FabricInDetailsData(entry.getKey(),totalPcs,totalMtr,totalWt,billingValue);
+        List<FabricInDetailsMast> fabricInDetailsMastList = new ArrayList<>();
+        //Map<Long,FabricInDetailsMast> listOfMasterWithMasterId = new HashMap<>();
+        for (Map.Entry<Party,List<FabricInDetailsChildData>> entry : partyListMap.entrySet()) {
+            Double totalMtr = entry.getValue().stream().mapToDouble(FabricInDetailsChildData::getTotalMtr).sum();
+            Double totalWt = entry.getValue().stream().mapToDouble(FabricInDetailsChildData::getTotalWt).sum();
+            Long totalPcs = entry.getValue().stream().mapToLong(FabricInDetailsChildData::getTotalPcs).sum();
+            Double billingValue = entry.getValue().stream().mapToDouble(FabricInDetailsChildData::getBillingValue).sum();
+            FabricInDetailsData fabricInDetailsData = new FabricInDetailsData(entry.getKey(), totalPcs, totalMtr, totalWt, billingValue);
             fabricInDetailsData.setList(entry.getValue());
             fabricInDetailsDataList.add(fabricInDetailsData);
 
-
         }
         Map<UserData,List<FabricInDetailsData>> faUserDataListMap = fabricInDetailsDataList.stream().collect(Collectors.groupingBy(FabricInDetailsData::getUserData));
-        List<FabricInDetailsMast> fabricInDetailsMastList = new ArrayList<>();
         for (Map.Entry<UserData,List<FabricInDetailsData>> entry : faUserDataListMap.entrySet())
         {
             Double totalMtr = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalMtr).sum();
