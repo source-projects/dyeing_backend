@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 public class FabricInDetailsData {
-    @JsonIgnore
+//    @JsonIgnore
     Long partyId;
     String partyName;
     String partyCode;
@@ -29,7 +29,7 @@ public class FabricInDetailsData {
     Long countObject;
     @JsonIgnore
     UserData userData;
-    List<FabricInData> list;
+    List<FabricInDetailsChildData> list;
 
     public FabricInDetailsData(StockMast e, Long totalPcs, Double totalMtr, Double totalWt, Double totalBillingValues) {
         this.partyId = e.getParty().getId();
