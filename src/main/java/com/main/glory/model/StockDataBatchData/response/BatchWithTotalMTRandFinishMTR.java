@@ -1,5 +1,7 @@
 package com.main.glory.model.StockDataBatchData.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +24,8 @@ public class BatchWithTotalMTRandFinishMTR {
     String qualityName;
     Long qualityEntryId;
     String pchallanRef;
+    @JsonIgnore
+    StockMast stockMast;
 
 
     public BatchWithTotalMTRandFinishMTR(String batchId, Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs) {
@@ -31,6 +35,19 @@ public class BatchWithTotalMTRandFinishMTR {
         this.MTR = StockBatchServiceImpl.changeInFormattedDecimal(MTR);
         this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
         this.totalPcs = totalPcs;
+    }
+
+    //query issue in function
+    //getAllPChallanByPartyIdAndRfInvoiceFlagWithTotalFinishMtr
+    public BatchWithTotalMTRandFinishMTR(String batchId, String pchallanRef,Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs,StockMast sm) {
+        this.batchId = batchId;
+        this.controlId = controlId;
+        this.pchallanRef = pchallanRef;
+        this.WT = StockBatchServiceImpl.changeInFormattedDecimal(WT);
+        this.MTR = StockBatchServiceImpl.changeInFormattedDecimal(MTR);
+        this.totalFinishMtr = StockBatchServiceImpl.changeInFormattedDecimal(totalFinishMtr);
+        this.totalPcs = totalPcs;
+        this.stockMast = sm;
     }
 
     public BatchWithTotalMTRandFinishMTR(Long controlId, Double WT, Double MTR, Double totalFinishMtr, Long totalPcs,String pchallanRef,String batchId) {

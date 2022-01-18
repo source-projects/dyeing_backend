@@ -67,6 +67,24 @@ public class FilterService<T,D extends FilterDao<T>> {
         
     }
 
-    
 
+    public Pageable getPageableForInvoice(PaginatedData data) {
+        String sortBy;
+        if(data.getSortBy()==null)
+            sortBy="postfix";
+
+        else
+            sortBy=data.getSortBy();
+
+        Direction sortOrder;
+
+        if(data.getSortOrder()==null ||data.getSortOrder()=="ASC")
+            sortOrder=Direction.ASC;
+
+        else
+            sortOrder=Direction.DESC;
+
+        Pageable pageable=PageRequest.of(data.getPageIndex(), data.getPageSize(), sortOrder, sortBy);
+        return pageable;
+    }
 }

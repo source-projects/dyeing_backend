@@ -1,5 +1,6 @@
 package com.main.glory.servicesImpl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.StockAndBatch.*;
@@ -48,6 +49,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
@@ -389,7 +391,7 @@ public class StockBatchServiceImpl {
                 GetAllStockWithPartyNameResponse batchData = new GetAllStockWithPartyNameResponse(stockMastData,
                         stockMastData.getParty() == null ? null : stockMastData.getParty().getPartyName(),
                         stockMastData.getQuality() == null ? null
-                                : stockMastData.getQuality().getQualityName().getQualityName(),stockMastData.getQuality()!=null?stockMastData.getQuality().getQualityId():null);
+                                : stockMastData.getQuality().getQualityName().getQualityName(), stockMastData.getQuality() != null ? stockMastData.getQuality().getQualityId() : null);
                 Boolean trueBatch = false;
                 for (BatchData batch : stockMastData.getBatchData()) {
                     if (mtrSumData.containsKey(batch.getBatchId())) {
@@ -1633,6 +1635,7 @@ public class StockBatchServiceImpl {
             return 0.0;
         else {
             return Math.floor(values * 100) / 100;
+            //return values;
         }
 
     }
@@ -2406,8 +2409,8 @@ public class StockBatchServiceImpl {
             if (getAllBatch.getBatchId() != null) {
                 //System.out.println("in stock service:"+getAllBatch.getBatchId());
                 DyeingSlipMast dyeingSlipMast = dyeingSlipService.getDyeingSlipByProductionId(productionPlan.getId());
-                DyeingSlipData additionalExist =null;
-                if(dyeingSlipMast!=null) {
+                DyeingSlipData additionalExist = null;
+                if (dyeingSlipMast != null) {
                     additionalExist = dyeingSlipService.dyeingSlipDataDao
                             .getOnlyAdditionalSlipMastById(dyeingSlipMast.getId());
                     if (additionalExist == null) {
@@ -3353,7 +3356,7 @@ public class StockBatchServiceImpl {
     }
 
     public List<StockMast> getRfStockListByPartyAndRfInvoiceFlag(Long partyId, Boolean rfInvoiceFlag) {
-        return stockMastDao.getRFStockMastListByPartyIdAndRfInvoiceFlag(partyId,rfInvoiceFlag);
+        return stockMastDao.getRFStockMastListByPartyIdAndRfInvoiceFlag(partyId, rfInvoiceFlag);
     }
 
     public List<FabricInMast> getPdfBatchReportForFabricInByFilter(BatchFilterRequest filter) throws ParseException {
@@ -3411,7 +3414,7 @@ public class StockBatchServiceImpl {
                 Double totalWt = newPendingBatchList.stream().mapToDouble(FabricInData::getTotalWt).sum();
                 Long totalPcs = newPendingBatchList.stream().mapToLong(FabricInData::getTotalPcs).sum();
                 Double billingValues = newPendingBatchList.stream().mapToDouble(FabricInData::getBillingValue).sum();
-                FabricInMast fabricInMast = new FabricInMast(e,totalMtr,totalWt,totalPcs,billingValues);
+                FabricInMast fabricInMast = new FabricInMast(e, totalMtr, totalWt, totalPcs, billingValues);
                 fabricInMast.setList(newPendingBatchList);
                 partyList.put(fabricInMast.getPartyId(), fabricInMast);
             }
@@ -3430,8 +3433,6 @@ public class StockBatchServiceImpl {
         } else
             list = new ArrayList<>();
         return list;
-
-
 
 
     }
@@ -3533,7 +3534,7 @@ public class StockBatchServiceImpl {
                 Double totalWt = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getTotalWt).sum();
                 Long totalPcs = newFabricInMastDataList.stream().mapToLong(FabricInV2Data::getTotalPcs).sum();
                 Double totalBillingValues = newFabricInMastDataList.stream().mapToDouble(FabricInV2Data::getBillingValue).sum();
-                FabricInV2Mast fabricInMast = new FabricInV2Mast(e,totalPcs,totalMtr,totalWt,totalBillingValues);
+                FabricInV2Mast fabricInMast = new FabricInV2Mast(e, totalPcs, totalMtr, totalWt, totalBillingValues);
                 fabricInMast.setList(newFabricInMastDataList);
                 qualityList.put(fabricInMast.getId(), fabricInMast);
             }
@@ -3544,6 +3545,65 @@ public class StockBatchServiceImpl {
             list = new ArrayList<FabricInV2Mast>(qualityList.values());
         } else
             list = new ArrayList<>();
+        return list;
+
+    }
+
+    public List<FabricInDetailsMast> getPdfBatchReportForFabricInDetailedReportByFilter(BatchFilterRequest filter) throws ParseException, JsonProcessingException {
+        List<FabricInDetailsMast> list = new ArrayList<>();
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null)
+            from = datetimeFormatter1.parse(filter.getFrom());
+        if (filter.getTo() != null) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);// adding one day in to because of time issue in
+            // created date
+            to = c.getTime();
+        }
+
+        List<FabricInDetailsChildData> newPendingBatchList = batchDao.getBatchListWithoutPchallanWithPartyAndMasterByStockIdWithoutExtraAndFilter(from,to,filter.getPartyId(),filter.getQualityEntryId(),filter.getUserHeadId(),filter.getQualityNameId());
+
+        //newPendingBatchList.sort(Comparator.comparing(FabricInData::getBatchId));
+
+//        Map<UserData,List<FabricInData>> masterWiseList = newPendingBatchList.stream().collect(Collectors.groupingBy(FabricInData::getUserData));
+        Map<Party,List<FabricInDetailsChildData>> partyListMap = newPendingBatchList.stream().collect(Collectors.groupingBy(FabricInDetailsChildData::getParty));
+        List<FabricInDetailsData> fabricInDetailsDataList = new ArrayList<>();
+        List<FabricInDetailsMast> fabricInDetailsMastList = new ArrayList<>();
+        //Map<Long,FabricInDetailsMast> listOfMasterWithMasterId = new HashMap<>();
+        for (Map.Entry<Party,List<FabricInDetailsChildData>> entry : partyListMap.entrySet()) {
+            Double totalMtr = entry.getValue().stream().mapToDouble(FabricInDetailsChildData::getTotalMtr).sum();
+            Double totalWt = entry.getValue().stream().mapToDouble(FabricInDetailsChildData::getTotalWt).sum();
+            Long totalPcs = entry.getValue().stream().mapToLong(FabricInDetailsChildData::getTotalPcs).sum();
+            Double billingValue = entry.getValue().stream().mapToDouble(FabricInDetailsChildData::getBillingValue).sum();
+            FabricInDetailsData fabricInDetailsData = new FabricInDetailsData(entry.getKey(), totalPcs, totalMtr, totalWt, billingValue);
+            fabricInDetailsData.setList(entry.getValue());
+            fabricInDetailsDataList.add(fabricInDetailsData);
+
+        }
+        Map<UserData,List<FabricInDetailsData>> faUserDataListMap = fabricInDetailsDataList.stream().collect(Collectors.groupingBy(FabricInDetailsData::getUserData));
+        for (Map.Entry<UserData,List<FabricInDetailsData>> entry : faUserDataListMap.entrySet())
+        {
+            Double totalMtr = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalMtr).sum();
+            Double totalWt = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalWt).sum();
+            Long totalPcs = entry.getValue().stream().mapToLong(FabricInDetailsData::getTotalPcs).sum();
+            Double billingValue = entry.getValue().stream().mapToDouble(FabricInDetailsData::getTotalBillingValue).sum();
+            FabricInDetailsMast fabricInDetailsMast = new FabricInDetailsMast(entry.getKey(),totalMtr,totalWt,totalPcs,billingValue);
+            fabricInDetailsMast.setList(entry.getValue());
+
+            fabricInDetailsMastList.add(fabricInDetailsMast);
+        }
+        if (fabricInDetailsMastList.size() > 0) {
+            list = new ArrayList<>(fabricInDetailsMastList);
+        } else
+            list = new ArrayList<>();
+
         return list;
 
     }
