@@ -104,34 +104,33 @@ public class PaymentTermImpl {
     }
 
     public List<GetPendingDispatch> getPendingBillByPartyId(Long partyId) throws Exception {
-        List<GetPendingDispatch> list=new ArrayList<>();
+        //List<GetPendingDispatch> list=new ArrayList<>();
 
-        List<DispatchMast> dispatchMastList = dispatchMastService.getPendingDispatchByPartyId(partyId);
+        List<GetPendingDispatch> dispatchMastList = dispatchMastService.getPendingDispatchResponseByPartyId(partyId);
 
-
-        for(DispatchMast dispatchMast:dispatchMastList)
-        {
-
-            Double amt=0.0;
-
-            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPostfix());
-            if(data==null)
-                continue;
-            for(QualityBillByInvoiceNumber p:data.getQualityList())
-            {
-                amt+=p.getAmt();
-            }
-            GetPendingDispatch getPendingDispatch=new GetPendingDispatch(dispatchMast);
-            getPendingDispatch.setAmt(amt);
-            getPendingDispatch.setDate(dispatchMast.getCreatedDate().toString());
-            getPendingDispatch.setInvoicNo(dispatchMast.getPostfix());
-            list.add(getPendingDispatch);
-
-        }
+//        for(DispatchMast dispatchMast:dispatchMastList)
+//        {
+//
+//            Double amt=0.0;
+//
+//            PartyDataByInvoiceNumber data = dispatchMastService.checkInvoiceDataIsAvailable(dispatchMast.getPostfix());
+//            if(data==null)
+//                continue;
+//            for(QualityBillByInvoiceNumber p:data.getQualityList())
+//            {
+//                amt+=p.getAmt();
+//            }
+//            GetPendingDispatch getPendingDispatch=new GetPendingDispatch(dispatchMast);
+//            getPendingDispatch.setAmt(amt);
+//            getPendingDispatch.setDate(dispatchMast.getCreatedDate().toString());
+//            getPendingDispatch.setInvoicNo(dispatchMast.getPostfix());
+//            list.add(getPendingDispatch);
+//
+//        }
 
       /*  if(list.isEmpty())
             throw new Exception("no pending invoice found for party:"+partyId);*/
-        return list;
+        return dispatchMastList;
     }
 
     public Boolean addAdvancePayment(List<AdvancePayment> list) throws Exception {
@@ -161,8 +160,8 @@ public class PaymentTermImpl {
 
 
         List<AdvancePayment> advancePaymentList = advancePaymentDao.findAdvancePaymentByPartyId(partyId);
-        if (advancePaymentList.isEmpty())
-            throw new Exception("no advance payment found for party:"+partyId);
+//        if (advancePaymentList.isEmpty())
+//            throw new Exception("no advance payment found for party:"+partyId);
 
         for(AdvancePayment advancePayment:advancePaymentList)
         {

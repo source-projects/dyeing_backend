@@ -34,6 +34,7 @@ import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForPDF;
 import com.main.glory.model.dispatch.response.report.ConsolidatedBillMast;
 import com.main.glory.model.machine.request.PaginatedData;
 import com.main.glory.model.party.Party;
+import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import com.main.glory.model.paymentTerm.response.MonthlyDispatchPendingReport;
 import com.main.glory.model.paymentTerm.response.MonthlyDispatchPendingReportData;
 import com.main.glory.model.productionPlan.ProductionPlan;
@@ -2489,5 +2490,9 @@ public class DispatchMastImpl {
         List<ConsolidatedBillDataForExcel> list = dispatchDataDao.getAllConsolidateResponseByFilter(from, to, filter.getUserHeadId(),
                 filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getSignByParty());
         return list;
+    }
+
+    public List<GetPendingDispatch> getPendingDispatchResponseByPartyId(Long partyId) {
+        return dispatchMastDao.getPendingBillPaymentResponseByPartyId(partyId);
     }
 }
