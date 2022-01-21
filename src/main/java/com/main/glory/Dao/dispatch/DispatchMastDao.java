@@ -3,6 +3,7 @@ package com.main.glory.Dao.dispatch;
 import com.main.glory.Dao.FilterDao;
 import com.main.glory.model.dispatch.DispatchMast;
 
+import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 @Primary
-@Repository
 public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query("select MAX(dm.postfix) from DispatchMast dm where prefix=:invoiceType")
     Long getInvoiceNumber(String invoiceType);
@@ -86,4 +86,7 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query(value = "select * from dispatch_mast where postfix=:invoiceNo LIMIT 1",nativeQuery = true)
     DispatchMast getDispatchMastByInvoiceNumber(@Param("invoiceNo") String invoiceNo);
 
+
+    @Query("select new com.main.glory.model.paymentTerm.request.GetPendingDispatch(dm.postfix,dm.createdDate,dm.discount+dm.taxAmt,dm.discount,dm.cgst,dm.sgst,dm.taxAmt,dm.netAmt) from DispatchMast dm where dm.party.id=:partyId")
+    List<GetPendingDispatch> getPendingBillPaymentResponseByPartyId(Long partyId);
 }
