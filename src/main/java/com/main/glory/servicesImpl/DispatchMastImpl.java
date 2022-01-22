@@ -2415,10 +2415,11 @@ public class DispatchMastImpl {
             partyWithBatchByInvoice.setPercentageDiscount(dispatchMast.getPercentageDiscount());
             partyWithBatchByInvoice.setRemark(dispatchMast.getRemark());
             partyWithBatchByInvoice.setDeliveryMode(dispatchMast.getDeliveryMode());
+            partyWithBatchByInvoice.setRfInvoiceFlag(dispatchMast.getIsRfInvoice());
         }
         // status
         partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));
-        partyWithBatchByInvoice.setIsRfInvoice(dispatchMast.getIsRfInvoice());
+
 
 //        System.out.println("*******************************************");
 //        System.out.println(objectMapper.writeValueAsString(partyWithBatchByInvoice));
