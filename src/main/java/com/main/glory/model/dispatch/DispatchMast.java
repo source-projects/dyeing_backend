@@ -101,6 +101,7 @@ public class DispatchMast{
         this.deliveryMode =  createDispatch.getDeliveryMode();
         this.prefix = dispatchMast.getPrefix();
         this.postfix =dispatchMast.getPostfix();
+        this.isRfInvoice =dispatchMast.getIsRfInvoice();
     }
 
 

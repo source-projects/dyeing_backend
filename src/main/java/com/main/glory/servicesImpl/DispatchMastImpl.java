@@ -2418,17 +2418,18 @@ public class DispatchMastImpl {
         }
         // status
         partyWithBatchByInvoice.setIsSendToParty(dispatchDataDao.getSendToPartyFlag(invoiceNo));
+        partyWithBatchByInvoice.setIsRfInvoice(dispatchMast.getIsRfInvoice());
 
-        System.out.println("*******************************************");
-        System.out.println(objectMapper.writeValueAsString(partyWithBatchByInvoice));
+//        System.out.println("*******************************************");
+//        System.out.println(objectMapper.writeValueAsString(partyWithBatchByInvoice));
         return partyWithBatchByInvoice;
 
     }
 
     public FilterResponse<DispatchMast> getpaginatedDispatchData(PaginatedData data) {
 
-        System.out.println("page size-" + Integer.toString(data.getPageSize()));
-        System.out.println("page index-" + Integer.toString(data.getPageIndex()));
+//        System.out.println("page size-" + Integer.toString(data.getPageSize()));
+//        System.out.println("page index-" + Integer.toString(data.getPageIndex()));
 
         Specification<DispatchMast> spec = specificationManager.getSpecificationFromFilters(data.getParameters(),
                 data.isAnd(), null);
@@ -2447,8 +2448,8 @@ public class DispatchMastImpl {
         else
             sortOrder = Direction.DESC;
 
-        System.out.println("page size-" + Integer.toString(data.getPageSize()));
-        System.out.println("page index-" + Integer.toString(data.getPageIndex()));
+//        System.out.println("page size-" + Integer.toString(data.getPageSize()));
+//        System.out.println("page index-" + Integer.toString(data.getPageIndex()));
         Pageable pageable = PageRequest.of(data.getPageIndex(), data.getPageSize(), sortOrder, sortBy);
 
         Page<DispatchMast> dispatchMastList;
