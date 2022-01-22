@@ -1783,9 +1783,11 @@ public class DispatchMastImpl {
 
                     // check the quality rate is coming or not if coming then change the quality
                     // rate
-                    if (createDispatch.getRate() != null && createDispatch.getRate() > 0) {
+                    if (createDispatch.getRate() != null) {
                         dispatchData.setQualityRate(createDispatch.getRate());
+                        dispatchData.setShadeRate(createDispatch.getRate());
                     }
+
 
                     dispatchData.setInvoiceNo(dispatchMast.getPostfix());
 
