@@ -40,7 +40,7 @@ public class PaymentMast {
     Date createdDate;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @JoinColumn(name = "party", referencedColumnName = "id", insertable = true, updatable = true)
+    @JoinColumn(name = "party_id", referencedColumnName = "id", insertable = true, updatable = true)
     Party party;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
