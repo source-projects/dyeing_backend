@@ -22,7 +22,7 @@ public class PartyWithBatchByInvoice {
     Double percentageDiscount;
     String remark;
     String deliveryMode;
-    Boolean isRfInvoice;
+    Boolean rfInvoiceFlag;
     List<BatchWithTotalMTRandFinishMTR> batchWithControlIdList;
 
     public PartyWithBatchByInvoice(List<BatchWithTotalMTRandFinishMTR> batchWithTotalMTRandFinishMTRList, Party party) {
