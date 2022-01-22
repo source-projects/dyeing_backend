@@ -1631,7 +1631,13 @@ public class DispatchMastImpl {
                     }*/
 
                     QualityName qualityName = quality.getQualityName();
-                    getBatchWithControlId.setRate(quality.getRate() + extraRate);
+                    if(rfInvoiceFlag==false) {
+                        getBatchWithControlId.setRate(quality.getRate() + extraRate);
+                    }
+                    else
+                    {
+                        getBatchWithControlId.setRate(0.0);
+                    }
                     getBatchWithControlId.setQualityId(quality.getQualityId());
                     getBatchWithControlId.setQualityName(qualityName.getQualityName());
                     getBatchWithControlId.setQualityEntryId(quality.getId());
