@@ -2,8 +2,7 @@ package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.admin.RFSequenceDao;
-import com.main.glory.model.StockDataBatchData.response.GetAllMergeBatchId;
-import com.main.glory.model.StockDataBatchData.response.PendingBatchMast;
+import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.admin.RFSequence;
 import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.Dao.PartyDao;
@@ -21,7 +20,6 @@ import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
-import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.dispatch.DispatchData;
 import com.main.glory.model.dispatch.DispatchMast;
@@ -1435,7 +1433,6 @@ public class DispatchMastImpl {
         Date to = null;
         // add one day because of timestamp issue
         Calendar c = Calendar.getInstance();
-        System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
         if (filter.getFrom()!=null) {
@@ -1454,10 +1451,21 @@ public class DispatchMastImpl {
         }
 
 
-
+        List<MonthlyDispatchReport> returnList = new ArrayList<>();
         List<MonthlyDispatchReport> list = dispatchDataDao.monthWisePDFReportByFilter(from,to,filter.getUserHeadId());
+        Map<String,List<MonthlyDispatchReport>> stringListMap = list.stream().collect(Collectors.groupingBy(MonthlyDispatchReport::getMonth));
+        for (Map.Entry<String,List<MonthlyDispatchReport>> entry : stringListMap.entrySet()) {
 
-        return list;
+            Double totalNetAmt = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getNetAmt).sum();
+            Double totalTaxAmt = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getTaxAmt).sum();
+            Double totalFinishMtr = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getFinishMtr).sum();
+            Double discount = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getDiscount).sum();
+            MonthlyDispatchReport monthlyDispatchReport = new MonthlyDispatchReport(entry.getKey(),totalNetAmt,totalTaxAmt,totalFinishMtr,discount);
+            returnList.add(monthlyDispatchReport);
+        }
+
+
+        return returnList;
 
     }
 
