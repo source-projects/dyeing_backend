@@ -1460,7 +1460,10 @@ public class DispatchMastImpl {
             Double totalTaxAmt = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getTaxAmt).sum();
             Double totalFinishMtr = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getFinishMtr).sum();
             Double discount = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getDiscount).sum();
-            MonthlyDispatchReport monthlyDispatchReport = new MonthlyDispatchReport(entry.getKey(),totalNetAmt,totalTaxAmt,totalFinishMtr,discount);
+            Double cgst = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getCgst).sum();
+            Double sgst = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getSgst).sum();
+            Double igst = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getIgst).sum();
+            MonthlyDispatchReport monthlyDispatchReport = new MonthlyDispatchReport(entry.getKey(),totalNetAmt,totalTaxAmt,totalFinishMtr,discount,cgst,sgst,igst);
             returnList.add(monthlyDispatchReport);
         }
 
