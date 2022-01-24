@@ -18,14 +18,16 @@ import java.util.Objects;
 public class MonthlyDispatchReport {
 
     //private int month;
+    private String month;
     private Double finishMtr;
     private Double taxAmt;
     private Double discount;
     @JsonIgnore
     private int year;
     private Double netAmt;
+    @JsonIgnore
     private String unit;
-    private String month;
+
 
     //@Query("select new com.main.glory.model.dispatch.response.MonthlyDispatchReport(SUM(dd.batchData.finishMtr),SUM(dm.taxAmt),SUM(dm.discount),function('date_format', dm.createdDate, '%Y, %m') as DateMonth,SUM(dm.netAmt),dd.billingUnit) from DispatchData dd INNER JOIN DispatchMast dm ON dd.controlId = dm.id where (Date(dm.createdDate)>=Date(:from) OR :from IS NULL) AND (Date(dm.createdDate)<=Date(:to) OR :to IS NULL) AND (:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) GROUP BY function('date_format', dd.createdDate, '%Y, %m'),dd.billingUnit")
 //    public MonthlyDispatchReport(Double finishMtr, Double taxAmt, Double discount, String month, Double netAmt, String unit) {
