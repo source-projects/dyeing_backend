@@ -35,6 +35,7 @@ import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.FilterService;
 
 import org.apache.commons.math3.util.Precision;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -670,7 +671,19 @@ public class StockBatchServiceImpl {
         if (productionPlans != null)
             throw new Exception("can't delete the stock , because already sent to production");
 
+        //get stock whether the batch is production planned or not by stock id
+        List<BatchData> batchDataListWithProductionPlanned = batchDao.getBatchListWithProductionPlanByStockId(id);
+        if(batchDataListWithProductionPlanned.size()>0)
+        {
+            if(stockMast.get().getIsProductionPlanned()==false)
+            {
+                stockMast.get().setIsProductionPlanned(true);
+            }
+            throw new Exception("can't delete the stock , because batch is already sent to production");
+        }
+        batchDao.deleteByControlId(id);
         stockMastDao.deleteById(id);
+
     }
 
     public List<StockMast> findByQualityId(Long id) {
