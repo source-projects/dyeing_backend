@@ -533,6 +533,14 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
     @Query("select new com.main.glory.model.StockDataBatchData.response.FabricInDetailsChildData(b.batchId,s.quality.qualityName.qualityName,s.quality.qualityId,count(b.id),SUM(b.mtr),SUM(b.wt),s.quality.rate,(s.quality.rate * CASE s.quality.billingUnit WHEN 'weight' THEN SUM(b.wt) ELSE SUM(b.mtr) END * 0.9) as billingValues,s.party,s.party.userHeadData) from BatchData b INNER JOIN StockMast s on b.controlId = s.id  where (:from IS NULL OR DATE(s.createdDate)>=DATE(:from)) AND (:to IS NULL OR DATE(s.createdDate)<=DATE(:to)) AND (:partyId IS NULL OR s.party.id=:partyId) AND (:qualityNameId IS NULL OR s.quality.qualityName.id=:qualityNameId) AND (:qualityEntryId IS NULL OR s.quality.id=:qualityEntryId) AND (:userHeadId IS NULL OR s.party.userHeadData.id=:userHeadId) AND b.batchId IS NOT NULL AND b.isExtra=false GROUP BY b.batchId")
     List<FabricInDetailsChildData> getBatchListWithoutPchallanWithPartyAndMasterByStockIdWithoutExtraAndFilter(Date from, Date to, Long partyId, Long qualityEntryId, Long userHeadId, Long qualityNameId);
 
+    @Query("select bd from BatchData bd where controlId = :id and bd.isProductionPlanned=true")
+    List<BatchData> getBatchListWithProductionPlanByStockId(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("delete from BatchData bd where controlId=:controlId")
+    void deleteByControlId(Long controlId);
+
     /*@Query("select new com.main.glory.model.StockDataBatchData.response.FabricInData(b.batchId,b.pchallanRef,s.quality.qualityName.qualityName,s.quality.qualityId,count(b.id),SUM(b.mtr),SUM(b.wt),s.quality.rate,(s.quality.rate * SUM(b.mtr) * 0.9) as billingValues,s.party,s.party.userHeadData) from BatchData b INNER JOIN StockMast s on b.controlId = s.id  where b.controlId=:id AND b.isExtra=false GROUP BY b.batchId,b.pchallanRef")
     List<FabricInData> getBatchListWithPartyAndMasterByStockIdWithoutExtraAndFilter(Long id);
 */
