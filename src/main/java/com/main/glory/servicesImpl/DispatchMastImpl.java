@@ -1779,18 +1779,18 @@ public class DispatchMastImpl {
                 if (batchData.getIsFinishMtrSave() == true && batchData.getIsBillGenrated() == false) {
                     DispatchData dispatchData = null;
 
-//                    if (productionPlan.getIsDirect() != true && shadeMast.isPresent()) {
-////                        System.out.println("shade:" + mapper.writeValueAsString(shadeMast));
-////                        System.out.println("batch:" + mapper.writeValueAsString(batchData));
-////                        System.out.println("quality:" + mapper.writeValueAsString(quality));
-////                        System.out.println("Stock:" + mapper.writeValueAsString(stockMast1));
-//                        dispatchData = new DispatchData(batchData, shadeMast.get(), quality, stockMast1);
-//                        //dispatchData.setShadeRate(shadeMast.get().getExtraRate());
-//
-//                    } else {
+                    if (productionPlan.getIsDirect() != true && shadeMast.isPresent()) {
+//                        System.out.println("shade:" + mapper.writeValueAsString(shadeMast));
+//                        System.out.println("batch:" + mapper.writeValueAsString(batchData));
+//                        System.out.println("quality:" + mapper.writeValueAsString(quality));
+//                        System.out.println("Stock:" + mapper.writeValueAsString(stockMast1));
+                        dispatchData = new DispatchData(batchData, shadeMast.get(), quality, stockMast1);
+                        dispatchData.setShadeRate(0.0);
+
+                    } else {
                         dispatchData = new DispatchData(batchData, quality, stockMast1);
                         dispatchData.setShadeRate(0.0);
-                    //}
+                    }
 
                     // check the quality rate is coming or not if coming then change the quality
                     // rate
