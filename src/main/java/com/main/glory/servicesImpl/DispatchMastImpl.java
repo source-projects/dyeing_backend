@@ -1773,6 +1773,7 @@ public class DispatchMastImpl {
             if (batchDataList.isEmpty())
                 throw new Exception("no batch data found");
 
+
             //System.out.println("prod:" + mapper.writeValueAsString(productionPlan));
             for (BatchData batchData : batchDataList) {
 
