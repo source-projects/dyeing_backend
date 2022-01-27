@@ -87,6 +87,6 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     DispatchMast getDispatchMastByInvoiceNumber(@Param("invoiceNo") String invoiceNo);
 
 
-    @Query("select new com.main.glory.model.paymentTerm.request.GetPendingDispatch(dm.postfix,dm.createdDate,dm.discount+dm.taxAmt,dm.discount,dm.cgst,dm.sgst,dm.taxAmt,dm.netAmt) from DispatchMast dm where dm.party.id=:partyId")
+    @Query("select new com.main.glory.model.paymentTerm.request.GetPendingDispatch(dm.postfix,dm.createdDate,dm.discount+dm.taxAmt,dm.discount,dm.cgst,dm.sgst,dm.taxAmt,dm.netAmt) from DispatchMast dm where dm.party.id=:partyId AND dm.paymentBunchId IS NULL")
     List<GetPendingDispatch> getPendingBillPaymentResponseByPartyId(Long partyId);
 }
