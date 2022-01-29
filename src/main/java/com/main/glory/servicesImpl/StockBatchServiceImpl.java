@@ -526,13 +526,11 @@ public class StockBatchServiceImpl {
         return list;
     }
 
-    public StockMast getStockBatchById(Long id) throws Exception {
+    public AddStockBatch getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
 
         StockMast stockMast = new StockMast(data);
-        stockMast.setPartyId(data.getParty().getId());
-        stockMast.setQualityId(data.getQuality().getId());
         stockMast.setBatchData(batchDataList);
         if (stockMast != null) {
             int count = 0;// count the production plan gr
@@ -548,8 +546,8 @@ public class StockBatchServiceImpl {
             else
                 data.setIsProductionPlanned(false);
 
-            //AddStockBatch record = new AddStockBatch(stockMast);
-            return data;
+            AddStockBatch record = new AddStockBatch(stockMast);
+            return record;
         } else
             throw new Exception("no data found for StockId: " + id);
     }

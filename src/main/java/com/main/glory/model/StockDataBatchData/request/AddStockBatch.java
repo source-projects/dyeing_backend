@@ -44,6 +44,8 @@ public class AddStockBatch {
     List<BatchData> batchData;
     Long qualityId;
     Boolean isRfInvoice;
+    Party party;
+    Quality quality;
 
     public AddStockBatch(StockMast sm) {
             this.id = sm.getId();
@@ -66,7 +68,8 @@ public class AddStockBatch {
             this.batchData = sm.getBatchData();
             this.qualityId =sm.getQuality().getId();
             this.batchData=sm.getBatchData();
-
+            this.quality=sm.getQuality();
+            this.party=sm.getParty();
 
     }
 }
