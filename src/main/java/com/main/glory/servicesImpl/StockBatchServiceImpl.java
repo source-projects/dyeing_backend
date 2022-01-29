@@ -531,6 +531,8 @@ public class StockBatchServiceImpl {
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
 
         StockMast stockMast = new StockMast(data);
+        stockMast.setPartyId(data.getParty().getId());
+        stockMast.setQualityId(data.getQuality().getId());
         stockMast.setBatchData(batchDataList);
         if (stockMast != null) {
             int count = 0;// count the production plan gr

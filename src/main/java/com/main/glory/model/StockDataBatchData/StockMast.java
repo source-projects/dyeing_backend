@@ -79,6 +79,15 @@ public class StockMast {
     @JoinColumn(name="quality_id", referencedColumnName = "id", insertable = true, updatable = true)    
     Quality quality;
 
+
+
+    //don't use this key's for official use
+    @Transient
+    Long partyId;
+
+    @Transient
+    Long qualityId;
+
    /* @PreRemove
     public void checkBatches() throws Exception {
         if(!this.batchData.isEmpty())
