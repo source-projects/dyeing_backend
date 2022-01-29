@@ -1746,6 +1746,10 @@ public class DispatchMastImpl {
             List<BatchData> batchDataList = batchDao.findByControlIdAndPchallanRefAndBatchIdForBillGenrate(
                     createDispatch.getStockId(), createDispatch.getPchallanRef(), createDispatch.getBatchId());
 
+            if (batchDataList.isEmpty())
+                throw new Exception("no batch data found");
+
+
             ProductionPlan productionPlan = null;
             BatchData batchDataExist = batchDataList.get(0);
             if (batchDataExist.getMergeBatchId() != null) {
@@ -1769,9 +1773,6 @@ public class DispatchMastImpl {
 
             if (quality == null)
                 throw new Exception("no quality found");
-
-            if (batchDataList.isEmpty())
-                throw new Exception("no batch data found");
 
 
             //System.out.println("prod:" + mapper.writeValueAsString(productionPlan));

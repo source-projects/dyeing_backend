@@ -241,15 +241,15 @@ public class StockBatchController extends ControllerConfig {
 
 
     @GetMapping("/stockBatch/{id}")
-    public ResponseEntity<GeneralResponse<StockMast, Object>> getStockMastById(@PathVariable(value = "id") Long id) {
-        GeneralResponse<StockMast, Object> result;
+    public ResponseEntity<GeneralResponse<AddStockBatch, Object>> getStockMastById(@PathVariable(value = "id") Long id) {
+        GeneralResponse<AddStockBatch, Object> result;
         try {
             if (id != null) {
-                StockMast stockMast = stockBatchService.getStockBatchById(id);
+                AddStockBatch stockMast = stockBatchService.getStockBatchById(id);
                 if (stockMast != null) {
                     result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
                 } else {
-                    result = new GeneralResponse<>(null, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                    result = new GeneralResponse<>(stockMast, ConstantFile.StockBatch_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
                 }
             } else {
                 result = new GeneralResponse<>(null, ConstantFile.Null_Record_Passed, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());

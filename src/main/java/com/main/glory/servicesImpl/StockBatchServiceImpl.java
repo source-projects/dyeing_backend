@@ -526,7 +526,7 @@ public class StockBatchServiceImpl {
         return list;
     }
 
-    public StockMast getStockBatchById(Long id) throws Exception {
+    public AddStockBatch getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
 
@@ -546,8 +546,8 @@ public class StockBatchServiceImpl {
             else
                 data.setIsProductionPlanned(false);
 
-            //AddStockBatch record = new AddStockBatch(stockMast);
-            return data;
+            AddStockBatch record = new AddStockBatch(stockMast);
+            return record;
         } else
             throw new Exception("no data found for StockId: " + id);
     }
