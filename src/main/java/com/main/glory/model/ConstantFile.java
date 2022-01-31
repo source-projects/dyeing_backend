@@ -274,7 +274,7 @@ public class ConstantFile {
     public static String Batch_Dyeing_Already = "Batch already dyeing";
 
     //Payment
-    public static String Payment_Exist = "Party data exist";
+    public static String Payment_Exist = "Payment data exist";
     public static String Payment_Found = "Data found";
     public static String Payment_Not_Found = "Data not found";
     public static String Payment_Added = "Data added successfully";

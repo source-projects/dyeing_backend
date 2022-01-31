@@ -1256,6 +1256,9 @@ public class DispatchMastImpl {
         if (dispatchMast == null)
             throw new Exception(ConstantFile.Dispatch_Not_Exist);
 
+        if(dispatchMast.getPaymentBunchId() != null)
+            throw new Exception(ConstantFile.Payment_Exist);
+
         // change that flag of batch data list by invoice number
         List<Long> batchEntryIds = dispatchDataDao.getBatchEntryIdsByInvoiceNo(String.valueOf(invoiceNo));
 
