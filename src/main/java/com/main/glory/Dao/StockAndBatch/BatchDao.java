@@ -541,6 +541,9 @@ public interface BatchDao extends JpaRepository<BatchData, Long> {
     @Query("delete from BatchData bd where controlId=:controlId")
     void deleteByControlId(Long controlId);
 
+    @Query("select bd from BatchData bd where bd.controlId=:controlId and bd.isProductionPlanned=true")
+    List<BatchData> getBatchByControlIdWithProductionPlanTrue(Long controlId);
+
     /*@Query("select new com.main.glory.model.StockDataBatchData.response.FabricInData(b.batchId,b.pchallanRef,s.quality.qualityName.qualityName,s.quality.qualityId,count(b.id),SUM(b.mtr),SUM(b.wt),s.quality.rate,(s.quality.rate * SUM(b.mtr) * 0.9) as billingValues,s.party,s.party.userHeadData) from BatchData b INNER JOIN StockMast s on b.controlId = s.id  where b.controlId=:id AND b.isExtra=false GROUP BY b.batchId,b.pchallanRef")
     List<FabricInData> getBatchListWithPartyAndMasterByStockIdWithoutExtraAndFilter(Long id);
 */

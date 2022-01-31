@@ -382,7 +382,7 @@ public class StockBatchServiceImpl {
             }
 
         }
-        System.out.println("specification craeting completion");
+        //System.out.println("specification craeting completion");
         data = queryResponse.getContent();
         if (!data.isEmpty()) {
 
@@ -529,6 +529,13 @@ public class StockBatchServiceImpl {
     public AddStockBatch getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
+        //get that the on of the batch is production plan or not
+        List<BatchData> batchDataListWithProductionplan = batchDao.getBatchByControlIdWithProductionPlanTrue(data.getId());
+
+        if(batchDataListWithProductionplan.size()>0)
+        {
+            data.setIsProductionPlanned(true);
+        }
 
         StockMast stockMast = new StockMast(data);
         stockMast.setBatchData(batchDataList);
