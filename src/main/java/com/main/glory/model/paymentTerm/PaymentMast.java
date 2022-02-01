@@ -57,6 +57,18 @@ public class PaymentMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<PaymentData> paymentData;
 
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
+
     public PaymentMast(AddPaymentMast paymentMast,Party party,UserData createdBy,UserData updatedBy) {
         this.party = party;
         this.totalBill = paymentMast.getTotalBill();
@@ -94,16 +106,6 @@ public class PaymentMast {
         this.diffDetail = paymentMast.getDiffDetail();
         this.createdBy = paymentMast.getCreatedBy();
         this.updatedBy = paymentMast.getUpdatedBy();
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdDate = new Date(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedDate = new Date(System.currentTimeMillis());
     }
 
 }

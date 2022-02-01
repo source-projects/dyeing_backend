@@ -1,10 +1,12 @@
 package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 
 
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.paymentTerm.GetAllPayment;
@@ -289,6 +291,29 @@ public class PaymentTermController extends ControllerConfig {
         }
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
     }
+
+    @PostMapping(value="/paymentTerm/getAllPayment/allPaginated")
+    public ResponseEntity<GeneralResponse<FilterResponse<PaymentMast>,Object>> getAllPaymentWithPagination(@RequestBody GetBYPaginatedAndFiltered requestParam)
+    {
+        GeneralResponse<FilterResponse<PaymentMast>,Object> result;
+        try {
+
+            FilterResponse<PaymentMast> list = paymentTermService.getAllPaymentWithPartyNameWithPagination(requestParam);
+            if(list!=null && !list.getData().isEmpty())
+                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
+    }
+
 
 
     /*@PostMapping(value="/paymentTerm/monthWisePendingReport")
