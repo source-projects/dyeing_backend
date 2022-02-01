@@ -9,7 +9,7 @@ import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.AdvancePayment;
-import com.main.glory.model.paymentTerm.GetAllPayment;
+import com.main.glory.model.paymentTerm.response.GetAllPayment;
 import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
 import com.main.glory.model.paymentTerm.request.GetAdvancePayment;

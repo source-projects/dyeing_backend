@@ -1,11 +1,8 @@
 package com.main.glory.Dao.paymentTerm;
 
 import com.main.glory.Dao.FilterDao;
-import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.PaymentMast;
-import com.main.glory.model.paymentTerm.GetAllPayment;
-import com.main.glory.model.paymentTerm.request.GetAllBank;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.glory.model.paymentTerm.response.GetAllPayment;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -19,7 +16,7 @@ public interface PaymentMastDao extends FilterDao<PaymentMast> {
     @Query("select l from PaymentMast l where l.party.id=:partyId")
     List<PaymentMast> findByPartyId(Long partyId);
 
-    @Query("select new com.main.glory.model.paymentTerm.GetAllPayment(x,(select p.partyName from Party p where p.id=x.party.id)) from PaymentMast x")
+    @Query("select new com.main.glory.model.paymentTerm.response.GetAllPayment(x,(select p.partyName from Party p where p.id=x.party.id)) from PaymentMast x")
     List<GetAllPayment> getAllPaymentWithPartyName();
 
    /* @Query("select new com.main.glory.model.paymentTerm.request.GetAllBank() from")
