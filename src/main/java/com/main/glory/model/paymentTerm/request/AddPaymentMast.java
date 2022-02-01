@@ -14,6 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 public class AddPaymentMast {
+
+    Long id;
     Long partyId;
     Double totalBill;
     Double GstAmt;

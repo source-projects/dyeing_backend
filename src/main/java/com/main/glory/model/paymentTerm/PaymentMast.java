@@ -70,6 +70,7 @@ public class PaymentMast {
 
 
     public PaymentMast(AddPaymentMast paymentMast,Party party,UserData createdBy,UserData updatedBy) {
+
         this.party = party;
         this.totalBill = paymentMast.getTotalBill();
         this.GstAmt = paymentMast.getGstAmt();

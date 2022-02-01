@@ -60,6 +60,29 @@ public class PaymentTermController extends ControllerConfig {
             logService.saveLog(result,request,debugAll);
         } catch (Exception e) {
             e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,paymentMast);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+
+    @DeleteMapping(value="/paymentTerm/delete")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> deletePaymentMastById(@RequestParam("id")Long id) {
+        GeneralResponse<Boolean,Object> result;
+        try {
+            if(id==null)
+                throw new Exception(ConstantFile.Null_Record_Passed);
+
+            Boolean flag = paymentTermService.deletePaymentById(id);
+            if (flag) {
+                result = new GeneralResponse<>(true, ConstantFile.Payment_Deleted, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            } else {
+                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
             result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
             logService.saveLog(result,request,true);
         }
@@ -293,12 +316,12 @@ public class PaymentTermController extends ControllerConfig {
     }
 
     @PostMapping(value="/paymentTerm/getAllPayment/allPaginated")
-    public ResponseEntity<GeneralResponse<FilterResponse<PaymentMast>,Object>> getAllPaymentWithPagination(@RequestBody GetBYPaginatedAndFiltered requestParam)
+    public ResponseEntity<GeneralResponse<FilterResponse<GetAllPayment>,Object>> getAllPaymentWithPagination(@RequestBody GetBYPaginatedAndFiltered requestParam)
     {
-        GeneralResponse<FilterResponse<PaymentMast>,Object> result;
+        GeneralResponse<FilterResponse<GetAllPayment>,Object> result;
         try {
 
-            FilterResponse<PaymentMast> list = paymentTermService.getAllPaymentWithPartyNameWithPagination(requestParam);
+            FilterResponse<GetAllPayment> list = paymentTermService.getAllPaymentWithPartyNameWithPagination(requestParam);
             if(list!=null && !list.getData().isEmpty())
                 result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             else
@@ -316,25 +339,24 @@ public class PaymentTermController extends ControllerConfig {
 
 
 
-    /*@PostMapping(value="/paymentTerm/monthWisePendingReport")
-    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter) throws Exception{
-        GeneralResponse<List<MonthlyDispatchPendingReport>, Object> result;
-        try{
-            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter);
-            if(!list.isEmpty())
-                result= new GeneralResponse<>(list, ConstantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
-            else
-                result = new GeneralResponse<>(null, ConstantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
-            logService.saveLog(result,request,debugAll);
-        } catch (Exception e){
-            e.printStackTrace();
-            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
-            logService.saveLog(result,request,true
-            );
-        }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-    }
-*/
+//    @PostMapping(value="/paymentTerm/monthWisePendingReport")
+//    public ResponseEntity<GeneralResponse<List<MonthlyDispatchPendingReport>,Object>> getMonthWiseReportPendingDispatch(@RequestBody DispatchFilter filter) throws Exception{
+//        GeneralResponse<List<MonthlyDispatchPendingReport>, Object> result;
+//        try{
+//            List<MonthlyDispatchPendingReport> list = dispatchMastService.getMonthWiseReportPendingDispatch(filter);
+//            if(!list.isEmpty())
+//                result= new GeneralResponse<>(list, ConstantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+//            else
+//                result = new GeneralResponse<>(null, ConstantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+//            logService.saveLog(result,request,debugAll);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            result= new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+//            logService.saveLog(result,request,true
+//            );
+//        }
+//        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+//    }
 
 
 

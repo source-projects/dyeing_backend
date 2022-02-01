@@ -13,11 +13,8 @@ import com.main.glory.filters.FilterResponse;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
-import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
-import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
-import com.main.glory.model.dispatch.request.QualityBillByInvoiceNumber;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.AdvancePayment;
 import com.main.glory.model.paymentTerm.GetAllPayment;
@@ -33,10 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service("paymentServiceImp")
 public class PaymentTermImpl {
@@ -79,16 +73,22 @@ public class PaymentTermImpl {
 
     public Boolean savePayment(AddPaymentMast paymentMast) throws Exception {
 
+        if(paymentMast.getInvoices().size() <= 0)
+            throw new Exception(ConstantFile.Select_Invoice_First);
+
+        if(paymentMast.getAmtToPay() <= 0)
+            throw new Exception(ConstantFile.Payment_Greater_Than_zero);
+
         //paymentMastDao.save(paymentMast);
         if(!paymentMast.getAmtToPay().equals(paymentMast.getAmtPaid()))
-            throw new Exception("please enter right amount");
+            throw new Exception(ConstantFile.Enter_Right_Amount);
         
         UserData createdBy=userDao.getUserById(paymentMast.getCreatedBy());
         Party party =partyDao.findByPartyId(paymentMast.getPartyId());
 
         PaymentMast paymentMastToSave=new PaymentMast(paymentMast,party,createdBy,createdBy);
 
-        paymentMastDao.save(paymentMastToSave);
+        PaymentMast savePaymentMast = paymentMastDao.save(paymentMastToSave);
 
         List<PaymentData> paymentDataList=new ArrayList<>();
         for(PaymentData paymentData:paymentMast.getPaymentData())
@@ -116,6 +116,27 @@ public class PaymentTermImpl {
             }
         }
 
+
+        //update the advance payment if it is coming
+        if(paymentMast.getAdvancePayList().size()>0)
+        {
+            for(AdvancePaymentIdList record:paymentMast.getAdvancePayList())
+            {
+                //check the record is exist or not
+                Optional<AdvancePayment> addPaymentMast = advancePaymentDao.findById(record.getId());
+                if(!addPaymentMast.isPresent())
+                    throw new Exception(ConstantFile.Advance_Payment_Not_Found);
+
+            }
+            for(AdvancePaymentIdList record:paymentMast.getAdvancePayList())
+            {
+                //check the record is exist or not
+                Optional<AdvancePayment> addPaymentMast = advancePaymentDao.findById(record.getId());
+                addPaymentMast.get().setPaymentBunchId(savePaymentMast.getId());
+                advancePaymentDao.save(addPaymentMast.get());
+
+            }
+        }
 
         return true;
 
@@ -280,8 +301,8 @@ public class PaymentTermImpl {
         return dispatchMastDao.getLastPendingDispatchByPartyId(id);
     }
 
-    public FilterResponse<PaymentMast> getAllPaymentWithPartyNameWithPagination(GetBYPaginatedAndFiltered requestParam) {
-        List<PaymentMast> list  = null;
+    public FilterResponse<GetAllPayment> getAllPaymentWithPartyNameWithPagination(GetBYPaginatedAndFiltered requestParam) {
+        List<GetAllPayment> list  = new ArrayList<>();
         Pageable pageable = filterService.getPageable(requestParam.getData());
         List<Filter> filtersParam = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
@@ -291,10 +312,37 @@ public class PaymentTermImpl {
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
         queryResponse = paymentMastDao.findAll(filterSpec, pageable);
 
-        list = queryResponse.getContent();
-        FilterResponse<PaymentMast> response = new FilterResponse<PaymentMast>(list,
+         List<PaymentMast> paymentMastList = queryResponse.getContent();
+         paymentMastList.forEach(e->{
+             list.add(new GetAllPayment(e));
+         });
+        FilterResponse<GetAllPayment> response = new FilterResponse<GetAllPayment>(list,
                 queryResponse.getNumber(), queryResponse.getNumberOfElements(), (int) queryResponse.getTotalElements());
         return response;
 
+    }
+
+    public Boolean deletePaymentById(Long id) {
+
+        Optional<PaymentMast> paymentMast = paymentMastDao.findById(id);
+
+        if(!paymentMast.isPresent())
+            return false;
+
+        paymentMastDao.deleteById(id);
+        paymentDataDao.deleteByControlId(id);
+
+
+        //update invoice because payment has been removed
+        List<Long> dispatchMastIdList = dispatchMastDao.getDispatchMastIdsByPaymentBunchId(id);
+
+        if(dispatchMastIdList.size()>0)
+        {
+            //update and set null to paymentBunchId column
+            dispatchMastDao.updateDispatchMastPaymentBunchIdByMastIdsAndPaymentBunchId(dispatchMastIdList,null);
+        }
+
+
+        return true;
     }
 }
