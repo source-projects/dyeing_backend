@@ -18,4 +18,9 @@ public class GetAllPayment extends PaymentMast {
         super(paymentMast);
         this.partyName = partyName;
     }
+
+    public GetAllPayment(PaymentMast e) {
+        super(e);
+        this.partyName = e.getParty()!=null?null:e.getParty().getPartyName();
+    }
 }
