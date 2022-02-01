@@ -8,7 +8,12 @@ import com.main.glory.Dao.paymentTerm.PaymentDataDao;
 import com.main.glory.Dao.paymentTerm.PaymentMastDao;
 import com.main.glory.Dao.paymentTerm.PaymentTypeDao;
 import com.main.glory.Dao.user.UserDao;
+import com.main.glory.filters.Filter;
+import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
+import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
+import com.main.glory.model.party.PartyWithMasterName;
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.request.PartyDataByInvoiceNumber;
@@ -21,14 +26,27 @@ import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.*;
 import com.main.glory.model.user.UserData;
 
+import com.main.glory.services.FilterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Service("paymentServiceImp")
 public class PaymentTermImpl {
+
+
+    @Autowired
+    SpecificationManager<PaymentMast> specificationManager;
+
+    @Autowired
+    FilterService<PaymentMast, PaymentMastDao> filterService;
 
     @Autowired
     PaymentMastDao paymentMastDao;
@@ -260,5 +278,23 @@ public class PaymentTermImpl {
 
     public DispatchMast getLastUnpaidDispatchByPartyId(Long id) {
         return dispatchMastDao.getLastPendingDispatchByPartyId(id);
+    }
+
+    public FilterResponse<PaymentMast> getAllPaymentWithPartyNameWithPagination(GetBYPaginatedAndFiltered requestParam) {
+        List<PaymentMast> list  = null;
+        Pageable pageable = filterService.getPageable(requestParam.getData());
+        List<Filter> filtersParam = requestParam.getData().getParameters();
+        HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
+        Page queryResponse = null;
+        Specification<PaymentMast> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
+                requestParam.getData().isAnd, subModelCase);
+        subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
+        queryResponse = paymentMastDao.findAll(filterSpec, pageable);
+
+        list = queryResponse.getContent();
+        FilterResponse<PaymentMast> response = new FilterResponse<PaymentMast>(list,
+                queryResponse.getNumber(), queryResponse.getNumberOfElements(), (int) queryResponse.getTotalElements());
+        return response;
+
     }
 }

@@ -70,6 +70,7 @@ public class AddStockBatch {
             this.batchData=sm.getBatchData();
             this.quality=sm.getQuality();
             this.party=sm.getParty();
+            this.isRfInvoice = sm.getIsRfInvoice();
 
     }
 }

@@ -540,19 +540,6 @@ public class StockBatchServiceImpl {
         StockMast stockMast = new StockMast(data);
         stockMast.setBatchData(batchDataList);
         if (stockMast != null) {
-            int count = 0;// count the production plan gr
-            // check the batches is produciton plan
-            for (BatchData batchData : stockMast.getBatchData()) {
-
-                if (batchData.getIsProductionPlanned() == true)
-                    count++;
-            }
-
-            if (count == data.getBatchData().size())
-                data.setIsProductionPlanned(true);
-            else
-                data.setIsProductionPlanned(false);
-
             AddStockBatch record = new AddStockBatch(stockMast);
             return record;
         } else

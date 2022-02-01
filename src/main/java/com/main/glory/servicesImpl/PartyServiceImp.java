@@ -78,6 +78,7 @@ public class PartyServiceImp implements PartyServiceInterface {
 
     @Autowired
     SpecificationManager<Party> specificationManager;
+
     @Autowired
     FilterService<Party, PartyDao> filterService;
 

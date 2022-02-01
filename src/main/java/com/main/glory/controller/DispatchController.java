@@ -683,7 +683,7 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<FilterResponse<DispatchMast>, Object>> getDispatchData(@RequestBody PaginatedData data){
         GeneralResponse<FilterResponse<DispatchMast>,Object> result;
         try{
-System.out.println("entered dispatch/getDispatchMastData");
+
             FilterResponse<DispatchMast> x = filterService.getpaginatedSortedFilteredData(data);
             if(!x.getData().isEmpty())
             result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -699,39 +699,39 @@ System.out.println("entered dispatch/getDispatchMastData");
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 }
  
-@PostMapping("/getOperationsForGivenDataType")
-public ResponseEntity<GeneralResponse<List<String>, Object>> getOpeartionList(@RequestParam(name="dataType") String dataType) throws Exception{
-    GeneralResponse<List<String>,Object> result;
-    List<String> x=new ArrayList<String>();
-    try{
-        switch(dataType){
-            case "String":
-            x=Arrays.asList(new String[]{"EQUALS", "LIKE","NOT_EQUALS","START_WITH","END_WITH"});
-            break;
-            
-            case "Number":
-            x=Arrays.asList(new String[]{"GREATER_THAN", "LESS_THAN","EQUALS","NOT_EQUALS"});
-            break;
-            
-            case "Date":
-            x=Arrays.asList(new String[]{"IN_RANGE", "NOT_EQUALS","EQUALS","GREATER_THAN", "LESS_THAN"});
-            break;
-            
+    @PostMapping("/getOperationsForGivenDataType")
+    public ResponseEntity<GeneralResponse<List<String>, Object>> getOpeartionList(@RequestParam(name="dataType") String dataType) throws Exception{
+        GeneralResponse<List<String>,Object> result;
+        List<String> x=new ArrayList<String>();
+        try{
+            switch(dataType){
+                case "String":
+                x=Arrays.asList(new String[]{"EQUALS", "LIKE","NOT_EQUALS","START_WITH","END_WITH"});
+                break;
+
+                case "Number":
+                x=Arrays.asList(new String[]{"GREATER_THAN", "LESS_THAN","EQUALS","NOT_EQUALS"});
+                break;
+
+                case "Date":
+                x=Arrays.asList(new String[]{"IN_RANGE", "NOT_EQUALS","EQUALS","GREATER_THAN", "LESS_THAN"});
+                break;
+
+            }
+
+
+            if(!x.isEmpty())
+            result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            // logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
         }
-
-        
-        if(!x.isEmpty())
-        result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-        else
-            result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-
-        // logService.saveLog(result,request,debugAll);
-    } catch (Exception e){
-        e.printStackTrace();
-        result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
-        logService.saveLog(result,request,true);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-}
 
 }
