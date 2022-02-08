@@ -103,4 +103,30 @@ public class RestoreDbController extends ControllerConfig {
 
     }*/
 
+
+    @GetMapping("/db/clear/pdffolder")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> clearPdfFolder() {
+        GeneralResponse<Boolean,Object> result;
+        try{
+
+
+            Boolean flag = restoreDb.clearPdfFolder();
+            if(flag)
+            {
+                result = new GeneralResponse<>(true, "Pdf folder cleared Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            }
+            else result =  new GeneralResponse<>(false, "PDF not cleared", false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            logService.saveLog(result,request,debugAll);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result =  new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+
+
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 }

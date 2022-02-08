@@ -31,6 +31,7 @@ import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.Dao.user.UserPermissionDao;
 import com.main.glory.model.database.DatabaseBackup;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -326,6 +327,19 @@ public class RestoreDbImpl {
 
 
 
+        return true;
+    }
+
+    public Boolean clearPdfFolder() throws IOException {
+        String filepath = "pdf";
+        File file = new File(filepath);
+
+        // call deleteDirectory method to delete directory
+        // recursively
+        FileUtils.deleteDirectory(file);
+
+        // delete GFG folder
+        file.delete();
         return true;
     }
 }

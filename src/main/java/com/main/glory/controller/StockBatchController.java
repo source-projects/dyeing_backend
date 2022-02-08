@@ -2,6 +2,7 @@ package com.main.glory.controller;
 
 
 import com.main.glory.config.ControllerConfig;
+import com.main.glory.export.StockBatchExportService;
 import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.filters.StockDataBatchData.StockMastFilter;
@@ -19,16 +20,34 @@ import com.main.glory.services.DataFilterService;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +57,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class StockBatchController extends ControllerConfig {
+
+
 
     @Autowired
     private BatchImpl batchService;
@@ -1073,13 +1094,23 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @PostMapping("/stockBatch/fabricInV2/report/forDetailedBatchResponseForPdf")
-    public ResponseEntity<GeneralResponse<List<FabricInDetailsMast>, Object>> forfabricInDetailedBatchResponseForPdf(@RequestBody BatchFilterRequest filter) throws Exception {
+    public ResponseEntity<GeneralResponse<List<FabricInDetailsMast>, Object>> forfabricInDetailedBatchResponseForPdf(@RequestBody BatchFilterRequest filter, HttpServletResponse servletResponse) throws Exception {
         GeneralResponse<List<FabricInDetailsMast> , Object> response;
         try {
             List<FabricInDetailsMast>  flag = stockBatchService.getPdfBatchReportForFabricInDetailedReportByFilter(filter);
 
-            if (!flag.isEmpty())
+            if (!flag.isEmpty()) {
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+//                servletResponse.setContentType("application/pdf");
+//                DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+//                String currentDateTime = dateFormatter.format(new Date());
+//
+//                String headerKey = "Content-Disposition";
+//                String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+//                servletResponse.setHeader(headerKey, headerValue);
+//                StockBatchExportService exportService = new StockBatchExportService(flag);
+//                exportService.exportFabricInDetail(servletResponse,filter);
+            }
             else
                 response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             //logService.saveLog(response, request, debugAll);
@@ -1091,6 +1122,97 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
     }
 
+    //actual PDF RETURN
+//
+//    @PostMapping(value = "/stockBatch/fabricInV2/report/forDetailedBatchResponseForPdf/download")
+//    public ResponseEntity<Resource> forfabricInDetailedBatchResponseForPdfDownload(@RequestBody BatchFilterRequest filter, HttpServletResponse servletResponse) throws Exception {
+//        GeneralResponse<List<FabricInDetailsMast> , Object> response;
+//        try {
+//            List<FabricInDetailsMast>  flag = stockBatchService.getPdfBatchReportForFabricInDetailedReportByFilter(filter);
+//
+//            if (!flag.isEmpty()) {
+//                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+////                servletResponse.setContentType("application/pdf");
+////                DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+////                String currentDateTime = dateFormatter.format(new Date());
+////
+////                String headerKey = "Content-Disposition";
+////                String headerValue = "attachment; filename=data_" + currentDateTime + ".pdf";
+////                servletResponse.setHeader(headerKey, headerValue);
+//                StockBatchExportService exportService = new StockBatchExportService(flag);
+//                String fileName = exportService.exportFabricInDetail(filter);
+//                File file = new File("pdf/"+fileName);
+//
+//                Path path = Paths.get(file.getAbsolutePath());
+//                ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName);
+//                headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//                headers.add("Pragma", "no-cache");
+//                headers.add("Expires", "0");
+//                headers.setContentType(MediaType.APPLICATION_PDF);
+//
+//                return ResponseEntity.ok()
+//                        .headers(headers)
+//                        .contentLength(file.length())
+//                        .contentType(MediaType.APPLICATION_PDF)
+//                        .body(resource);
+//            }
+//            else
+//                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+//            //logService.saveLog(response, request, debugAll);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+//            //logService.saveLog(response, request, true);
+//        }
+//        //return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+//        return null;
+//    }
+
+
+
+//return blob
+    @PostMapping(value = "/stockBatch/fabricInV2/report/forDetailedBatchResponseForPdf/download")
+    public ResponseEntity<Resource> forfabricInDetailedBatchResponseForPdfDownload(@RequestBody BatchFilterRequest filter, HttpServletRequest request ,HttpServletResponse servletResponse) throws Exception {
+        GeneralResponse<List<FabricInDetailsMast> , Object> response;
+        try {
+            List<FabricInDetailsMast>  flag = stockBatchService.getPdfBatchReportForFabricInDetailedReportByFilter(filter);
+
+            if (!flag.isEmpty()) {
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+
+
+                StockBatchExportService exportService = new StockBatchExportService(flag);
+                String fileName = exportService.exportFabricInDetail(filter);
+                File file = new File("pdf/"+fileName);
+                System.out.println(file.getAbsolutePath());
+                Path filePath = Paths.get(file.getAbsolutePath());
+                Resource resource = new UrlResource(filePath.toUri());;
+                if(resource.exists()) {
+                    String contentType = null;
+                    contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+                    if (contentType == null) {
+                        contentType = "application/octet-stream";
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType(contentType))
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                            .body(resource);
+                }
+
+            }
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            //logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            //logService.saveLog(response, request, true);
+        }
+        //return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+        return null;
+    }
 
 }
 
