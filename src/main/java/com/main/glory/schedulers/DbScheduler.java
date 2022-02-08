@@ -68,6 +68,9 @@ public class DbScheduler {
             //System.out.println("");
             restoreDbService.backupDb();
         }
+        //clear pdf folder
+        LOGGER.log(Level.INFO, "________cleared pdf folder_________");
+        restoreDbService.clearPdfFolder();
 
     }
 }

@@ -3608,8 +3608,13 @@ public class StockBatchServiceImpl {
         }
         if (fabricInDetailsMastList.size() > 0) {
             list = new ArrayList<>(fabricInDetailsMastList);
+
+
+            //create pdf if data is there
+
         } else
             list = new ArrayList<>();
+
 
         return list;
 
