@@ -317,8 +317,10 @@ public class StockBatchServiceImpl {
         String getBy = requestParam.getGetBy();
         List<Filter> filtersParam = requestParam.getData().getParameters();
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
+        subModelCase.put("qualityId", new ArrayList<String>(Arrays.asList("quality", "qualityId")));
         subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName", "qualityName")));
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
+        subModelCase.put("batchList", new ArrayList<String>(Arrays.asList("batchData", "batchId")));
         // subModelCase.put("userHeadId",new
         // ArrayList<String>(Arrays.asList("userHeadData","id")));
         // subModelCase.put("createdBy",new
@@ -329,6 +331,10 @@ public class StockBatchServiceImpl {
         // ArrayList<String>(Arrays.asList("createdBy","userName")));
         Specification<StockMast> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
                 requestParam.getData().isAnd, subModelCase);
+
+
+       // ObjectMapper objectMapper = new ObjectMapper();
+//        System.out.println(filterSpec.toString());
 
         Page queryResponse = null;
 

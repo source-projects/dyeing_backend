@@ -3,8 +3,6 @@ import java.util.List;
 
 import com.main.glory.filters.Filter;
 
-import org.springframework.data.domain.Sort;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +15,7 @@ public class PaginatedData  {
     private int pageIndex;
     private int pageSize;
     public boolean isAnd;
+
     
     public PaginatedData(List<Filter> parameters, String sortBy, boolean isAnd, String sortOrder, int pageIndex,
             int pageSize) {
