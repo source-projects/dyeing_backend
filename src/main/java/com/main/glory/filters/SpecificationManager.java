@@ -134,6 +134,7 @@ public class SpecificationManager<T> {
     System.out.println("Creating specification");
     Specification<T> specification = createSpecification(filter.remove(0),subModelCase);
 
+
     for (Filter input : filter) {
       if (isAnd)
         specification = specification.and(createSpecification(input,subModelCase));

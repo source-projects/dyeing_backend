@@ -49,10 +49,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -1212,6 +1209,34 @@ public class StockBatchController extends ControllerConfig {
         }
         //return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
         return null;
+    }
+
+    @PostMapping(value = "/stockBatch/fabricInV2/report/forDetailedBatchResponseForPdf/downloadBase64")
+    public ResponseEntity<GeneralResponse<String,Object>> forfabricInDetailedBatchResponseForPdfDownloadBase64(@RequestBody BatchFilterRequest filter, HttpServletRequest request ,HttpServletResponse servletResponse) throws Exception {
+        GeneralResponse<String , Object> response = null;
+        try {
+            List<FabricInDetailsMast>  flag = stockBatchService.getPdfBatchReportForFabricInDetailedReportByFilter(filter);
+
+            if (!flag.isEmpty()) {
+                //response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                StockBatchExportService exportService = new StockBatchExportService(flag);
+                String fileName = exportService.exportFabricInDetail(filter);
+                File file = new File("pdf/"+fileName);
+                byte[] fileContent = FileUtils.readFileToByteArray(new File(file.getAbsolutePath()));
+                String encodedString = Base64.getEncoder().encodeToString(fileContent);
+                System.out.println(encodedString);
+                response = new GeneralResponse<>(encodedString, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            }
+            else
+                response = new GeneralResponse<>(null, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            //logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            //logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+        //return response;
     }
 
 }
