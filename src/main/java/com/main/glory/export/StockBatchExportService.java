@@ -108,9 +108,9 @@ public class StockBatchExportService {
         }
 
         masterTable.addCell("TOTAL");
-        Double masterTotalMtr = list.stream().mapToDouble(FabricInDetailsMast::getTotalMtr).sum();
+        Double masterTotalMtr = StockBatchServiceImpl.changeInFormattedDecimal(list.stream().mapToDouble(FabricInDetailsMast::getTotalMtr).sum());
         Long masterTotalPcs = list.stream().mapToLong(FabricInDetailsMast::getTotalPcs).sum();
-        Double masterTotalBillingValues = list.stream().mapToDouble(FabricInDetailsMast::getTotalBillingValue).sum();
+        Double masterTotalBillingValues = StockBatchServiceImpl.changeInFormattedDecimal(list.stream().mapToDouble(FabricInDetailsMast::getTotalBillingValue).sum());
 
         masterTable.addCell(masterTotalPcs.toString());
         masterTable.addCell(masterTotalMtr.toString());
