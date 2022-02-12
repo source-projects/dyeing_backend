@@ -45,6 +45,7 @@ import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -316,6 +317,7 @@ public class StockBatchServiceImpl {
         Boolean flag = false;
         String getBy = requestParam.getGetBy();
         List<Filter> filtersParam = requestParam.getData().getParameters();
+        Filter batchFilter = filtersParam.stream().filter(x->x.getField().get(0).toString().equalsIgnoreCase("batchList")).findFirst().orElse(null);
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
         subModelCase.put("qualityId", new ArrayList<String>(Arrays.asList("quality", "qualityId")));
         subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName", "qualityName")));
@@ -331,6 +333,11 @@ public class StockBatchServiceImpl {
         // ArrayList<String>(Arrays.asList("createdBy","userName")));
         Specification<StockMast> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
                 requestParam.getData().isAnd, subModelCase);
+
+        if(batchFilter!=null)
+        {
+          filterSpec = specificationManager.addJoinSpecification(filterSpec,batchFilter);
+        }
 
 
        // ObjectMapper objectMapper = new ObjectMapper();
@@ -1597,7 +1604,7 @@ public class StockBatchServiceImpl {
                     getAllBatch.setTotalMtr(changeInFormattedDecimal(getBatchWithControlId.getMTR()));
                     batchId.add(getAllBatch.getBatchId());
                     // System.out.println();
-                    System.out.println(objectMapper.writeValueAsString(getAllBatch));
+                    //System.out.println(objectMapper.writeValueAsString(getAllBatch));
                     list.add(getAllBatch);
                 }
             }
@@ -1651,7 +1658,10 @@ public class StockBatchServiceImpl {
             //return values;
         }
 
+
     }
+
+
 
     public static List<BatchData> changeInFormattedDecimal(List<BatchData> batchDataList) {
         List<BatchData> newList = new ArrayList<>();
@@ -3118,7 +3128,7 @@ public class StockBatchServiceImpl {
                         batchReturnDataList, 0d));
 
         }
-        System.out.println(list.size());
+        //System.out.println(list.size());
 
         int pageSize = requestParam.getData().getPageSize();
         int pageIndex = requestParam.getData().getPageIndex();

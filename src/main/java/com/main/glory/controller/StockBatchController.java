@@ -1224,8 +1224,8 @@ public class StockBatchController extends ControllerConfig {
                 File file = new File("pdf/"+fileName);
                 byte[] fileContent = FileUtils.readFileToByteArray(new File(file.getAbsolutePath()));
                 String encodedString = Base64.getEncoder().encodeToString(fileContent);
-                System.out.println(encodedString);
-                response = new GeneralResponse<>(encodedString, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                //System.out.println(encodedString);
+                response = new GeneralResponse<>(encodedString, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             }
             else
                 response = new GeneralResponse<>(null, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
