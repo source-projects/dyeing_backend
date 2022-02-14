@@ -51,11 +51,11 @@ public class UserData {
     @JoinColumn(name = "designationId", referencedColumnName = "id")
     private Designation designationId;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER,cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-    CascadeType.REFRESH })
-    @JoinColumn(name = "partyId", referencedColumnName = "id")
-    private List<Party> parties;  
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.EAGER,cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+//    CascadeType.REFRESH })
+//    @JoinColumn(name = "partyId", referencedColumnName = "id")
+//    private List<Party> parties;
 
     public UserData(UserAddRequest userDataDto) {
         //this.dataEntry=userDataDto.getDataEntry();

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -48,10 +49,10 @@ public class PaymentTermController extends ControllerConfig {
     DispatchMastImpl dispatchMastService;
 
     @PostMapping(value="/paymentTerm/")
-    public ResponseEntity<GeneralResponse<Boolean,Object>> savePayment(@RequestBody AddPaymentMast paymentMast) {
+    public ResponseEntity<GeneralResponse<Boolean,Object>> savePayment(@RequestBody AddPaymentMast paymentMast,@RequestHeader Map<String, String> headers) {
         GeneralResponse<Boolean,Object> result;
         try {
-            Boolean flag = paymentTermService.savePayment(paymentMast);
+            Boolean flag = paymentTermService.savePayment(paymentMast,headers.get("id"));
             if (flag) {
                 result = new GeneralResponse<>(true, ConstantFile.Payment_Added, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
             } else {
@@ -66,6 +67,55 @@ public class PaymentTermController extends ControllerConfig {
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
 
+
+    //update payment
+    @PutMapping(value="/paymentTerm/update")
+    public ResponseEntity<GeneralResponse<Boolean,Object>> updatePaymentMast(@RequestBody AddPaymentMast paymentMast,@RequestHeader Map<String, String> headers) {
+        GeneralResponse<Boolean,Object> result;
+        try {
+            String id = headers.get("id");
+            if(paymentMast == null || id == null)
+                throw new Exception(ConstantFile.Null_Record_Passed);
+
+            Boolean flag = paymentTermService.updatePayment(paymentMast,id);
+            if (flag) {
+                result = new GeneralResponse<>(true, ConstantFile.Payment_Updated, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
+            } else {
+                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,paymentMast);
+            }
+            logService.saveLog(result,request,debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,paymentMast);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    //get the payment detail by paymentBunchId
+    @GetMapping(value="/paymentTerm/getPaymentDetailById")
+    public ResponseEntity<GeneralResponse<AddPaymentMast,Object>> getPaymentDetailById(@RequestParam(name = "paymentBunchId") Long paymentBunchId)
+    {
+        GeneralResponse<AddPaymentMast,Object> result;
+        try {
+            if(paymentBunchId==null)
+                throw new Exception(ConstantFile.Null_Record_Passed);
+
+            AddPaymentMast list = paymentTermService.getPaymentDetailById(paymentBunchId);
+            if(list!=null)
+                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,debugAll);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
+    }
 
     @DeleteMapping(value="/paymentTerm/delete")
     public ResponseEntity<GeneralResponse<Boolean,Object>> deletePaymentMastById(@RequestParam("id")Long id) {
@@ -266,32 +316,6 @@ public class PaymentTermController extends ControllerConfig {
         }
         return new ResponseEntity<>(result, HttpStatus.valueOf(result.getStatusCode()));
     }
-
-    //get the payment detail by paymentBunchId
-    @GetMapping(value="/paymentTerm/getPaymentDetailById/{paymentBunchId}")
-    public ResponseEntity<GeneralResponse<PaymentMast,Object>> getPaymentDetailById(@PathVariable(name = "paymentBunchId") Long paymentBunchId)
-    {
-        GeneralResponse<PaymentMast,Object> result;
-        try {
-            if(paymentBunchId==null)
-                throw new Exception(ConstantFile.Null_Record_Passed);
-
-            PaymentMast list = paymentTermService.getPaymentDetailById(paymentBunchId);
-            if(list!=null)
-                result= new GeneralResponse<>(list, ConstantFile.Payment_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            else
-                result = new GeneralResponse<>(null, ConstantFile.Payment_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,debugAll);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-           result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
-            logService.saveLog(result,request,true);
-        }
-        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode())) ;
-    }
-
 
     @GetMapping(value="/paymentTerm/getAllPayment")
     public ResponseEntity<GeneralResponse<List<GetAllPayment>,Object>> getAllPayment()
