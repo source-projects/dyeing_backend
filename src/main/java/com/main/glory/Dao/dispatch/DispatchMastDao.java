@@ -4,6 +4,7 @@ import com.main.glory.Dao.FilterDao;
 import com.main.glory.model.dispatch.DispatchMast;
 
 import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
+import com.main.glory.model.paymentTerm.request.PendingInvoice;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -97,4 +98,15 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
 
     @Query("select dm.id from DispatchMast dm where dm.paymentBunchId = :paymentBunchId")
     List<Long> getDispatchMastIdsByPaymentBunchId(Long paymentBunchId);
+
+    @Query("select new com.main.glory.model.paymentTerm.request.PendingInvoice(dm.postfix) from DispatchMast dm where dm.paymentBunchId = :paymentBunchId AND dm.paymentBunchId IS NOT NULL")
+    List<PendingInvoice> getInvoiceListByPaymentBunchId(Long paymentBunchId);
+
+    @Query("select dm.postfix from DispatchMast dm where dm.paymentBunchId = :id AND dm.paymentBunchId IS NOT NULL")
+    List<String> getInvoiceNoListByPaymentBunchId(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("update DispatchMast dm set dm.paymentBunchId = :paymentBunchId where dm.postfix = :value")
+    void updateDispatchMastPaymentBunchIdByInvoiceNumberWithPaymentBunchId(String value, Long paymentBunchId);
 }

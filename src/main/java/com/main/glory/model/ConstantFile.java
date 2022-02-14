@@ -275,6 +275,7 @@ public class ConstantFile {
 
     //Payment
     public static String Payment_Exist = "Payment data exist";
+    public static String Payment_Not_Exist = "Payment data not exist";
     public static String Payment_Greater_Than_zero = "Payment should be > 0";
     public static String Payment_Found = "Data found";
     public static String Payment_Not_Found = "Data not found";
@@ -469,4 +470,5 @@ public class ConstantFile {
     public static String Enter_Right_Amount ="please enter right amount";
 
     public static String Advance_Payment_Not_Found = "Advance payment data not found";
+    public static String Advance_Payment_Not_Exist= "Advance payment data not exist";
 }

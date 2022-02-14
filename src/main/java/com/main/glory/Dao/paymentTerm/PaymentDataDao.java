@@ -21,4 +21,9 @@ public interface PaymentDataDao extends JpaRepository<PaymentData,Long> {
     @Transactional
     @Query("delete PaymentData pd where pd.controlId=:id")
     void deleteByControlId(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("delete PaymentData pd where pd.controlId IS NULL")
+    void deletePaymentDataWhoControlIdIsNull();
 }

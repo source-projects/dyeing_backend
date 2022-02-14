@@ -22,9 +22,7 @@ import java.util.List;
 public class PaymentMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(updatable = false, nullable = false)
     Long id;
-    
     Double totalBill;
     Double GstAmt;
     Double rdAmt;
@@ -58,6 +56,7 @@ public class PaymentMast {
     private List<PaymentData> paymentData;
 
 
+
     @PrePersist
     protected void onCreate() {
         this.createdDate = new Date(System.currentTimeMillis());
@@ -70,7 +69,7 @@ public class PaymentMast {
 
 
     public PaymentMast(AddPaymentMast paymentMast,Party party,UserData createdBy,UserData updatedBy) {
-
+        this.id = paymentMast.getId() == null ? null:paymentMast.getId();
         this.party = party;
         this.totalBill = paymentMast.getTotalBill();
         this.GstAmt = paymentMast.getGstAmt();
