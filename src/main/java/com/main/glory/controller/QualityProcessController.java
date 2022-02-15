@@ -1,22 +1,12 @@
 package com.main.glory.controller;
 
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
-import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.party.Party;
-import com.main.glory.model.quality.request.UpdateQualityRequest;
-import com.main.glory.model.qualityProcess.QualityProcessMast;
-import com.main.glory.model.qualityProcess.request.UpdateRequestQualityProcess;
-import com.main.glory.model.qualityProcess.response.ListResponse;
+import com.main.glory.config.ControllerConfig;
 import com.main.glory.servicesImpl.QualityProcessImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import com.main.glory.config.ControllerConfig;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")

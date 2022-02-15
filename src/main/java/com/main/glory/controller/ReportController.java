@@ -4,7 +4,6 @@ import com.main.glory.config.ControllerConfig;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.report.ReportMast;
-import com.main.glory.model.shade.requestmodals.AddShadeMast;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.ReportServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")

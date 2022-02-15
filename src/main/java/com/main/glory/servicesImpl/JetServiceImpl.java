@@ -20,10 +20,10 @@ import com.main.glory.model.dyeingSlip.DyeingSlipItemData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.hmi.HMIMast;
 import com.main.glory.model.hmi.request.HMIBitChange;
-import com.main.glory.model.jet.JetStatus;
-import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.JetData;
 import com.main.glory.model.jet.JetMast;
+import com.main.glory.model.jet.JetStatus;
+import com.main.glory.model.jet.request.*;
 import com.main.glory.model.jet.responce.*;
 import com.main.glory.model.productionPlan.ProductionPlan;
 import com.main.glory.model.productionPlan.request.GetAllProductionWithShadeData;
@@ -35,9 +35,11 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Service("jetServiceImpl")
 

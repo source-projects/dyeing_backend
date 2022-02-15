@@ -8,7 +8,6 @@ import com.main.glory.model.StockDataBatchData.request.CreateMergeBatch;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchToPartyQualityWithGr;
 import com.main.glory.model.StockDataBatchData.response.MergeBatchResponse;
-import com.main.glory.model.quality.response.GetQualityResponse;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

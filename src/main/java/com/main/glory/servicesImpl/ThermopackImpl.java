@@ -2,18 +2,14 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.machine.ThermopackDao;
 import com.main.glory.model.machine.AddMachineInfo.AddThermopackInfo;
-import com.main.glory.model.machine.BoilerMachineRecord;
 import com.main.glory.model.machine.MachineMast;
 import com.main.glory.model.machine.Thermopack;
 import com.main.glory.model.machine.request.GetRecordBasedOnFilter;
 import com.main.glory.model.machine.request.ThermopackRecordBasedOnShift;
-import com.main.glory.model.machine.response.BoilerFilter;
 import com.main.glory.model.machine.response.ThermopackFilterRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

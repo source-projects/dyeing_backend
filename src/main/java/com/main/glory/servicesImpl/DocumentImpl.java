@@ -1,30 +1,24 @@
 package com.main.glory.servicesImpl;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.model.SendEmail;
 import com.main.glory.model.document.request.GetDocumentModel;
 import com.main.glory.model.document.request.ToEmailList;
 import com.main.glory.model.party.Party;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Properties;
 
 @Service("documentImpl")
 public class DocumentImpl {

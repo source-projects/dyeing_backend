@@ -12,7 +12,6 @@ import com.main.glory.model.purchase.Purchase;
 import com.main.glory.model.quality.Quality;
 import com.main.glory.model.quality.QualityName;
 import com.main.glory.model.quality.request.AddQualityName;
-import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.responce.SupplierResponse;
 import com.main.glory.model.task.ReportType;
 import com.main.glory.model.task.TaskMast;
