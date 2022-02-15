@@ -13,16 +13,15 @@ import com.main.glory.filters.FilterResponse;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
-import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.party.Party;
 import com.main.glory.model.paymentTerm.AdvancePayment;
-import com.main.glory.model.paymentTerm.response.GetAllPayment;
 import com.main.glory.model.paymentTerm.PaymentData;
+import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.PaymentType;
 import com.main.glory.model.paymentTerm.request.*;
+import com.main.glory.model.paymentTerm.response.GetAllPayment;
 import com.main.glory.model.user.UserData;
-
 import com.main.glory.services.FilterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

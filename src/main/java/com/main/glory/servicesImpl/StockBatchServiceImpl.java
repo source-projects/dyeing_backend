@@ -3,21 +3,27 @@ package com.main.glory.servicesImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.StockAndBatch.*;
+import com.main.glory.Dao.StockAndBatch.BatchDao;
+import com.main.glory.Dao.StockAndBatch.BatchReturnDataDao;
+import com.main.glory.Dao.StockAndBatch.BatchReturnMastDao;
+import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
-import com.main.glory.model.StockDataBatchData.*;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.BatchReturnData;
+import com.main.glory.model.StockDataBatchData.BatchReturnMast;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
-import com.main.glory.filters.QueryOperator;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.JetData;
@@ -33,9 +39,7 @@ import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.FilterService;
-
 import org.apache.commons.math3.util.Precision;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,15 +47,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {

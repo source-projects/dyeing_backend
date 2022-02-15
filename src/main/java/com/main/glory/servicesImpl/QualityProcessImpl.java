@@ -6,10 +6,6 @@ import com.main.glory.Dao.qualityProcess.ChemicalDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessDataDao;
 import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
-import com.main.glory.model.color.ColorBox;
-import com.main.glory.model.color.ColorData;
-import com.main.glory.model.quality.Quality;
-import com.main.glory.model.quality.request.UpdateQualityRequest;
 import com.main.glory.model.qualityProcess.Chemical;
 import com.main.glory.model.qualityProcess.QualityProcessData;
 import com.main.glory.model.qualityProcess.QualityProcessMast;
@@ -20,14 +16,9 @@ import com.main.glory.model.user.UserData;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.AutoPopulatingList;
 
-import javax.transaction.Transactional;
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.CheckedInputStream;
 
 @Service
 public class QualityProcessImpl {

@@ -1,10 +1,10 @@
 package com.main.glory.servicesImpl;
 
+import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.SupplierRateDao;
 import com.main.glory.Dao.color.ColorBoxDao;
 import com.main.glory.Dao.color.ColorDataDao;
 import com.main.glory.Dao.color.ColorMastDao;
-import com.main.glory.Dao.SupplierDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
@@ -12,11 +12,7 @@ import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
-import com.main.glory.model.color.AddColorMast;
-import com.main.glory.model.color.ColorAcknowledgement;
-import com.main.glory.model.color.ColorBox;
-import com.main.glory.model.color.ColorData;
-import com.main.glory.model.color.ColorMast;
+import com.main.glory.model.color.*;
 import com.main.glory.model.color.request.GetAllBox;
 import com.main.glory.model.color.request.IssueBoxRequest;
 import com.main.glory.model.color.responsemodals.ColorMastDetails;
@@ -25,20 +21,13 @@ import com.main.glory.model.supplier.Supplier;
 import com.main.glory.model.supplier.SupplierRate;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ColorServiceImpl {

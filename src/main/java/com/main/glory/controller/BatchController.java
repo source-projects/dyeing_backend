@@ -1,20 +1,14 @@
 package com.main.glory.controller;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.main.glory.config.ControllerConfig;
-import com.main.glory.model.GeneralResponse;
-import com.main.glory.model.batch.BatchGrDetail;
-import com.main.glory.model.batch.BatchMast;
 import com.main.glory.servicesImpl.BatchServiceImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")

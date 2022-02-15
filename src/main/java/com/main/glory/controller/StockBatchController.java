@@ -3,19 +3,15 @@ package com.main.glory.controller;
 
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.export.StockBatchExportService;
-import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.filters.StockDataBatchData.StockMastFilter;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
 import com.main.glory.model.StockDataBatchData.BatchData;
-import com.main.glory.model.StockDataBatchData.BatchReturn;
 import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
-import com.main.glory.model.user.UserData;
 import com.main.glory.services.AllStockDateWiseData;
-import com.main.glory.services.DataConversion;
 import com.main.glory.services.DataFilterService;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -23,33 +19,22 @@ import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
-
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URLConnection;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
