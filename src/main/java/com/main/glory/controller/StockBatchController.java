@@ -1207,8 +1207,7 @@ public class StockBatchController extends ControllerConfig {
                 StockBatchExportService exportService = new StockBatchExportService(flag);
                 String fileName = exportService.exportFabricInDetail(filter);
                 File file = new File("pdf/"+fileName);
-                byte[] fileContent = FileUtils.readFileToByteArray(new File(file.getAbsolutePath()));
-                String encodedString = Base64.getEncoder().encodeToString(fileContent);
+                String encodedString = StockBatchServiceImpl.getBase64ByFile(file);
                 //System.out.println(encodedString);
                 response = new GeneralResponse<>(encodedString, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             }

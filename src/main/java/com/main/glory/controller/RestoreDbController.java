@@ -110,7 +110,7 @@ public class RestoreDbController extends ControllerConfig {
         try{
 
 
-            Boolean flag = restoreDb.clearPdfFolder();
+            Boolean flag = restoreDb.clearPdfFolder("pdf");
             if(flag)
             {
                 result = new GeneralResponse<>(true, "Pdf folder cleared Successfully", true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());

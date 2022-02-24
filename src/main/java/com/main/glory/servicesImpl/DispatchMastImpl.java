@@ -16,6 +16,7 @@ import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.StockDataBatchData.BatchData;
 import com.main.glory.model.StockDataBatchData.StockMast;
+import com.main.glory.model.StockDataBatchData.request.BatchFilterRequest;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.admin.InvoiceSequence;
@@ -25,6 +26,11 @@ import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.bill.GetBill;
 import com.main.glory.model.dispatch.bill.QualityList;
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportData;
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportMast;
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportSuperMast;
+import com.main.glory.model.dispatch.report.masterWise.PaymentPendingExcelBasedOnPartyandMasterMast;
+import com.main.glory.model.dispatch.report.masterWise.PaymentPendingMasterWiseData;
 import com.main.glory.model.dispatch.request.*;
 import com.main.glory.model.dispatch.response.*;
 import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForExcel;
@@ -41,6 +47,10 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 import org.apache.commons.math3.util.Precision;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +59,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.Style;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -113,6 +125,12 @@ public class DispatchMastImpl {
 
     @Autowired
     QualityNameDao qualityNameDao;
+
+    public static Long getDueDaysUsingTwoDate(Date endDate, Date startDate) {
+        long diff = endDate.getTime() - startDate.getTime();
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        return diffDays;
+    }
 
     public Long saveDispatch(CreateDispatch dispatchList, Long userId) throws Exception {
 
@@ -2516,5 +2534,517 @@ public class DispatchMastImpl {
 
     public List<GetPendingDispatch> getPendingDispatchResponseByPartyId(Long partyId) {
         return dispatchMastDao.getPendingBillPaymentResponseByPartyId(partyId);
+    }
+
+    public PaymentPendingExcelReportSuperMast getPendingPaymentForExcelByFilter(BatchFilterRequest filter) throws ParseException {
+        List<PaymentPendingExcelReportMast> list = new ArrayList<>();
+
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+        //System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null && !filter.getFrom().isBlank()) {
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+            // created date and 1 day is coming minus from FE
+            from = c.getTime();
+        }
+        if (filter.getTo() != null && !filter.getTo().isBlank()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+            // working,but not working on EC2 because of timezone
+            to = c.getTime();
+        }
+        String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+        String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+        List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+                filter.getQualityEntryId());
+        //List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse();
+
+
+        Set<String> stringSet = dispatchMastDao.getAllPendingPaymentDispatchMonthYearResponse(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+                filter.getQualityEntryId());
+
+        Map<Party,List<PaymentPendingExcelReportData>> partyListMap = responseList.stream().collect(Collectors.groupingBy(PaymentPendingExcelReportData::getParty));
+
+
+        for(Map.Entry<Party,List<PaymentPendingExcelReportData>> entry: partyListMap.entrySet())
+        {
+            list.add(new PaymentPendingExcelReportMast(entry.getKey(),entry.getValue()));
+        }
+
+        PaymentPendingExcelReportSuperMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelReportSuperMast(stringSet,list);
+
+        return paymentPendingExcelReportSuperMast;
+    }
+
+
+
+    public String createExcelFileForPaymentPendingExcel(PaymentPendingExcelReportSuperMast paymentPendingExcelReportSuperMast , List<PaymentPendingExcelReportMast> list, BatchFilterRequest filter) throws ParseException {
+
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+        //System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null && !filter.getFrom().isBlank()) {
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+            // created date and 1 day is comming minus from FE
+            from = c.getTime();
+        }
+        if (filter.getTo() != null && !filter.getTo().isBlank()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+            // working,but not working on EC2 because of timezone
+            to = c.getTime();
+        }
+        String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+        String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+
+
+
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("PendingPaymentReport");
+            Font font = workbook.createFont();//Create font
+            font.setBold(true);//Make font bold
+            XSSFCellStyle style = (XSSFCellStyle) workbook.createCellStyle();
+            style.setBorderTop(BorderStyle.MEDIUM);
+            style.setBorderBottom(BorderStyle.MEDIUM);
+            style.setBorderLeft(BorderStyle.MEDIUM);
+            style.setBorderRight(BorderStyle.MEDIUM);
+            style.setFont(font);
+
+            XSSFCellStyle dataStyle = (XSSFCellStyle) workbook.createCellStyle();
+            dataStyle.setBorderTop(BorderStyle.MEDIUM);
+            dataStyle.setBorderBottom(BorderStyle.MEDIUM);
+            dataStyle.setBorderLeft(BorderStyle.MEDIUM);
+            dataStyle.setBorderRight(BorderStyle.MEDIUM);
+
+            //Font redFont = workbook.createFont();
+            //redFont.setColor(IndexedColors.WHITE.getIndex());
+            XSSFCellStyle redDataStyle = (XSSFCellStyle) workbook.createCellStyle();
+            redDataStyle.setBorderTop(BorderStyle.MEDIUM);
+            redDataStyle.setBorderBottom(BorderStyle.MEDIUM);
+            redDataStyle.setBorderLeft(BorderStyle.MEDIUM);
+            redDataStyle.setBorderRight(BorderStyle.MEDIUM);
+            redDataStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
+            redDataStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            //redDataStyle.setFont(redFont);
+            // Header
+            int headersCount=0;
+            int rowIndex=0;
+            Row headerRow = sheet.createRow(rowIndex++);
+            Cell cell = headerRow.createCell(0);
+            cell.setCellValue("Glory Dyeing Mills Pvt. Ltd.");
+            //CellStyle style = cellBorder(cell,workbook);
+            cell.setCellStyle(style);
+
+            headerRow = sheet.createRow(rowIndex++);
+            cell = headerRow.createCell(0);
+            cell.setCellValue("Bills Receivable");
+            cell.setCellStyle(style);
+
+            headerRow = sheet.createRow(rowIndex++);
+            cell = headerRow.createCell(0);
+            cell.setCellValue("From: "+fromDate +"- To: "+toDate);
+            cell.setCellStyle(style);
+
+            //workbook.write(out);
+
+            //headere
+            headerRow = sheet.createRow(rowIndex++);
+            cell = headerRow.createCell(0);
+            cell.setCellValue("Date");
+            cell.setCellStyle(style);
+            headersCount++;
+
+            cell = headerRow.createCell(1);
+            cell.setCellValue("RefNo");
+            cell.setCellStyle(style);
+            headersCount++;
+
+            cell = headerRow.createCell(2);
+            cell.setCellValue("Party Name");
+            cell.setCellStyle(style);
+            headersCount++;
+
+            cell = headerRow.createCell(3);
+            cell.setCellValue("Pending Amt");
+            cell.setCellStyle(style);
+            headersCount++;
+
+            int cellStatus = 4;
+
+            HashMap<String,Integer> columnMap = new HashMap<>();
+            columnMap.put("pendingValue",3);
+            for(String monthYearHeader:paymentPendingExcelReportSuperMast.getMonthYearHeader())
+            {
+                cell = headerRow.createCell(cellStatus);
+                cell.setCellValue(monthYearHeader);
+                cell.setCellStyle(style);
+                columnMap.put(monthYearHeader,cellStatus);
+                cellStatus++;
+                headersCount++;
+            }
+            cell = headerRow.createCell(cellStatus);
+            cell.setCellValue("Due days");
+            cell.setCellStyle(style);
+
+
+            for(PaymentPendingExcelReportMast paymentPendingExcelReportMast : paymentPendingExcelReportSuperMast.getList())
+            {
+                headerRow = sheet.createRow(rowIndex++);
+                //headerRow.setRowStyle(style);
+                cell = headerRow.createCell(2);
+                cell.setCellValue(paymentPendingExcelReportMast.getPartyName());
+                cell.setCellStyle(style);
+
+                cell = headerRow.createCell(3);
+                cell.setCellValue(paymentPendingExcelReportMast.getPartyAddress());
+                cell.setCellStyle(style);
+
+                for(PaymentPendingExcelReportData paymentPendingExcelReportData : paymentPendingExcelReportMast.getList())
+                {
+                    headerRow = sheet.createRow(rowIndex++);
+
+                    //for row and till the cell border
+                    for(int i=0;i<headersCount;i++)
+                    {
+                        cell = headerRow.createCell(i);
+                        cell.setCellStyle(dataStyle);
+                    }
+                    //headerRow.setRowStyle(style);
+                    cell = headerRow.getCell(0);
+                    cell.setCellValue(paymentPendingExcelReportData.getDate());
+                    //cell.setCellStyle(style);
+
+                    cell = headerRow.getCell(1);
+                    cell.setCellValue(paymentPendingExcelReportData.getRefNo());
+                    //cell.setCellStyle(style);
+
+                    cell = headerRow.getCell(3);
+                    cell.setCellValue(paymentPendingExcelReportData.getPendingValue());
+                    //cell.setCellStyle(style);
+
+
+                    if(columnMap.containsKey(paymentPendingExcelReportData.getMonthYear()))
+                    {
+                        cell = headerRow.getCell(columnMap.get(paymentPendingExcelReportData.getMonthYear()));
+                        cell.setCellValue(paymentPendingExcelReportData.getMonthYearValue());
+                        //cell.setCellStyle(style);
+                    }
+
+                    //for due days
+                    if(paymentPendingExcelReportData.getDueDays() > paymentPendingExcelReportMast.getPaymentDays()) {
+                        cell = headerRow.createCell(cellStatus);
+                        cell.setCellValue(paymentPendingExcelReportData.getDueDays());
+                        cell.setCellStyle(redDataStyle);
+                    }
+                    else
+                    {
+                        cell = headerRow.createCell(cellStatus);
+                        cell.setCellValue(paymentPendingExcelReportData.getDueDays());
+                        cell.setCellStyle(dataStyle);
+                    }
+
+
+                }
+
+                Double totalPendingAmt = paymentPendingExcelReportMast.getList().stream().mapToDouble(PaymentPendingExcelReportData::getPendingValue).sum();
+                if(columnMap.containsKey("pendingValue"))
+                {
+                    headerRow = sheet.createRow(rowIndex++);
+                    for(int i=0;i<headersCount;i++)
+                    {
+                        cell = headerRow.createCell(i);
+                        cell.setCellStyle(style);
+                    }
+                    cell = headerRow.getCell(0);
+                    cell.setCellValue("Total");
+
+                    cell = headerRow.getCell(3);
+                    cell.setCellValue(totalPendingAmt);
+                    Map<String,List<PaymentPendingExcelReportData>> dataListMap = paymentPendingExcelReportMast.getList().stream().collect(Collectors.groupingBy(PaymentPendingExcelReportData::getMonthYear));
+                    for(Map.Entry<String,List<PaymentPendingExcelReportData>> entry:dataListMap.entrySet())
+                    {
+                        Double total = paymentPendingExcelReportMast.getList().stream().filter(e->e.getMonthYear().equalsIgnoreCase(entry.getKey())).mapToDouble(PaymentPendingExcelReportData::getMonthYearValue).sum();
+                        if(columnMap.containsKey(entry.getKey()))
+                        {
+                            cell = headerRow.getCell(columnMap.get(entry.getKey()));
+                            cell.setCellValue(total);
+                        }
+                    }
+                }
+            }
+            //System.out.println(columnMap);
+            //store in file
+            File file = new File("excel");
+            if(!file.exists())
+            {
+                file.mkdir();
+            }
+            String fileName = String.valueOf(new Date().getTime())+".xlsx";
+            File outputFile = new File(file+"/"+fileName);
+            try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+                workbook.write(fos);
+            }
+            //System.out.println(outputFile.getAbsolutePath());
+
+            return StockBatchServiceImpl.getBase64ByFile(outputFile);
+
+        } catch (IOException e) {
+            throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
+        }
+
+    }
+
+    private XSSFCellStyle cellBorder(Cell cell, Workbook workbook) {
+        XSSFCellStyle style = (XSSFCellStyle) workbook.createCellStyle();
+        style.setBorderBottom(BorderStyle.MEDIUM);
+        style.setBorderTop(BorderStyle.MEDIUM);
+        style.setBorderLeft(BorderStyle.MEDIUM);
+        style.setBorderRight(BorderStyle.MEDIUM);
+        return style;
+    }
+
+    public String createExcelFileForPaymentPendingExcelBasedOnPartyAndMaster(PaymentPendingExcelBasedOnPartyandMasterMast paymentPendingExcelReportSuperMast, List<PaymentPendingMasterWiseData> list, BatchFilterRequest filter) throws ParseException {
+
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+        //System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null && !filter.getFrom().isBlank()) {
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+            // created date and 1 day is comming minus from FE
+            from = c.getTime();
+        }
+        if (filter.getTo() != null && !filter.getTo().isBlank()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+            // working,but not working on EC2 because of timezone
+            to = c.getTime();
+        }
+        String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+        String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(to);
+
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("PendingPaymentReport");
+            Font font = workbook.createFont();//Create font
+            font.setBold(true);//Make font bold
+            XSSFCellStyle style = (XSSFCellStyle) workbook.createCellStyle();
+            style.setBorderTop(BorderStyle.MEDIUM);
+            style.setBorderBottom(BorderStyle.MEDIUM);
+            style.setBorderLeft(BorderStyle.MEDIUM);
+            style.setBorderRight(BorderStyle.MEDIUM);
+            style.setFont(font);
+
+            XSSFCellStyle dataStyle = (XSSFCellStyle) workbook.createCellStyle();
+            dataStyle.setBorderTop(BorderStyle.MEDIUM);
+            dataStyle.setBorderBottom(BorderStyle.MEDIUM);
+            dataStyle.setBorderLeft(BorderStyle.MEDIUM);
+            dataStyle.setBorderRight(BorderStyle.MEDIUM);
+
+            //Font redFont = workbook.createFont();
+            //redFont.setColor(IndexedColors.WHITE.getIndex());
+            XSSFCellStyle discountCellStyle = (XSSFCellStyle) workbook.createCellStyle();
+            discountCellStyle.setBorderTop(BorderStyle.MEDIUM);
+            discountCellStyle.setBorderBottom(BorderStyle.MEDIUM);
+            discountCellStyle.setBorderLeft(BorderStyle.MEDIUM);
+            discountCellStyle.setBorderRight(BorderStyle.MEDIUM);
+            discountCellStyle.setFillForegroundColor(IndexedColors.BRIGHT_GREEN1.getIndex());
+            discountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            //redDataStyle.setFont(redFont);
+            // Header
+            int headersCount=0;
+            int rowIndex=0;
+            Row headerRow = sheet.createRow(rowIndex++);
+            Cell cell = headerRow.createCell(0);
+            cell.setCellValue("Glory Dyeing Mills Pvt. Ltd.");
+            //CellStyle style = cellBorder(cell,workbook);
+            cell.setCellStyle(style);
+
+            headerRow = sheet.createRow(rowIndex++);
+            cell = headerRow.createCell(0);
+            cell.setCellValue("Bills Receivable");
+            cell.setCellStyle(style);
+
+            headerRow = sheet.createRow(rowIndex++);
+            cell = headerRow.createCell(0);
+            cell.setCellValue("Group Outstandings");
+            cell.setCellStyle(style);
+
+            headerRow = sheet.createRow(rowIndex++);
+            cell = headerRow.createCell(0);
+            cell.setCellValue(fromDate+" To "+toDate);
+            cell.setCellStyle(style);
+
+            Map<UserData,List<PaymentPendingMasterWiseData>> masterWiseMap = paymentPendingExcelReportSuperMast.getList().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getMasterData));
+            for(Map.Entry<UserData,List<PaymentPendingMasterWiseData>> entry: masterWiseMap.entrySet())
+            {
+                headerRow = sheet.createRow(rowIndex++);
+                headerRow = sheet.createRow(rowIndex++);
+                headerRow = sheet.createRow(rowIndex++);
+                cell = headerRow.createCell(0);
+                cell.setCellValue(entry.getKey().getFirstName());
+                cell.setCellStyle(style);
+                //header
+                headerRow = sheet.createRow(rowIndex++);
+                cell = headerRow.createCell(0);
+                cell.setCellValue("Particular");
+                cell.setCellStyle(style);
+                headersCount++;
+
+                cell = headerRow.createCell(1);
+                cell.setCellValue("Pending Amt");
+                cell.setCellStyle(style);
+                headersCount++;
+
+                int cellStatus = 2;
+
+                HashMap<String,Integer> columnMap = new HashMap<>();
+                columnMap.put("pendingValue",1);
+                for(String monthYearHeader:paymentPendingExcelReportSuperMast.getMonthYearHeader())
+                {
+                    cell = headerRow.createCell(cellStatus);
+                    cell.setCellValue(monthYearHeader);
+                    cell.setCellStyle(style);
+                    columnMap.put(monthYearHeader,cellStatus);
+                    cellStatus++;
+                    headersCount++;
+                }
+
+                Map<Double,List<PaymentPendingMasterWiseData>> discountWiseMap = entry.getValue().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getPercentageDiscount));
+                for(Map.Entry<Double,List<PaymentPendingMasterWiseData>> discountWiseEntry : discountWiseMap.entrySet())
+                {
+                    headerRow = sheet.createRow(rowIndex++);
+                    cell = headerRow.createCell(0);
+                    cell.setCellValue(discountWiseEntry.getKey());
+                    cell.setCellStyle(discountCellStyle);
+
+                    Map<Party,List<PaymentPendingMasterWiseData>> partyListMapWithMonthYear = discountWiseEntry.getValue().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getParty));
+                    for(Map.Entry<Party,List<PaymentPendingMasterWiseData>> partyListEntry : partyListMapWithMonthYear.entrySet())
+                    {
+                        headerRow = sheet.createRow(rowIndex++);
+                        cell = headerRow.createCell(0);
+                        cell.setCellValue(partyListEntry.getKey().getPartyName());
+                        cell.setCellStyle(dataStyle);
+
+                        Double totalPendingAmt = partyListEntry.getValue().stream().mapToDouble(PaymentPendingMasterWiseData::getTotalNetAmt).sum();
+                        cell = headerRow.createCell(1);
+                        cell.setCellValue(totalPendingAmt);
+                        cell.setCellStyle(dataStyle);
+
+
+                        for(String monthYears : paymentPendingExcelReportSuperMast.getMonthYearHeader())
+                        {
+                            cell = headerRow.createCell(columnMap.get(monthYears));
+                            cell.setCellStyle(dataStyle);
+                        }
+
+                        for(PaymentPendingMasterWiseData paymentPendingMasterWiseData:partyListEntry.getValue()) {
+                            if(columnMap.containsKey(paymentPendingMasterWiseData.getMonthYear()))
+                            {
+                                cell = headerRow.getCell(columnMap.get(paymentPendingMasterWiseData.getMonthYear()));
+                                cell.setCellValue(paymentPendingMasterWiseData.getTotalNetAmt());
+                                cell.setCellStyle(dataStyle);
+                            }
+                        }
+                    }
+                }
+                headerRow = sheet.createRow(rowIndex++);
+                cell = headerRow.createCell(0);
+                cell.setCellValue("Grand Total");
+                cell.setCellStyle(style);
+
+                Double totalGrandValue = entry.getValue().stream().mapToDouble(PaymentPendingMasterWiseData::getTotalNetAmt).sum();
+                cell = headerRow.createCell(1);
+                cell.setCellValue(totalGrandValue);
+                cell.setCellStyle(style);
+
+                for(String monthYearHeader:paymentPendingExcelReportSuperMast.getMonthYearHeader())
+                {
+                    cell = headerRow.createCell(columnMap.get(monthYearHeader));
+                    Double total = entry.getValue().stream().filter(e->e.getMonthYear().equalsIgnoreCase(monthYearHeader)).mapToDouble(PaymentPendingMasterWiseData :: getTotalNetAmt).sum();
+                    cell.setCellValue(total);
+                    cell.setCellStyle(dataStyle);
+                }
+
+            }
+            //System.out.println(columnMap);
+            //store in file
+            File file = new File("excel");
+            if(!file.exists())
+            {
+                file.mkdir();
+            }
+            String fileName = String.valueOf(new Date().getTime())+".xlsx";
+            File outputFile = new File(file+"/"+fileName);
+            try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+                workbook.write(fos);
+            }
+            //System.out.println(outputFile.getAbsolutePath());
+
+            return StockBatchServiceImpl.getBase64ByFile(outputFile);
+
+        } catch (IOException e) {
+            throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
+        }
+    }
+
+    public PaymentPendingExcelBasedOnPartyandMasterMast getPendingPaymentBasedOnMasterAndPartyForExcelByFilter(BatchFilterRequest filter) throws ParseException {
+
+        Date from = null;
+        Date to = null;
+        // add one day because of timestamp issue
+        Calendar c = Calendar.getInstance();
+        //System.out.println(1);
+        SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (filter.getFrom() != null && !filter.getFrom().isBlank()) {
+            from = datetimeFormatter1.parse(filter.getFrom());
+            c.setTime(from);
+            // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
+            // created date and 1 day is coming minus from FE
+            from = c.getTime();
+        }
+        if (filter.getTo() != null && !filter.getTo().isBlank()) {
+            to = datetimeFormatter1.parse(filter.getTo());
+            c.setTime(to);
+            // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
+            // working,but not working on EC2 because of timezone
+            to = c.getTime();
+        }
+        String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+        String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
+        List<PaymentPendingMasterWiseData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponseBasedOnDiscountAndMonthYear(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+                filter.getQualityEntryId());
+        //List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse();
+
+
+        Set<String> stringSet = dispatchMastDao.getAllPendingPaymentDispatchMonthYearResponse(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+                filter.getQualityEntryId());
+
+
+        PaymentPendingExcelBasedOnPartyandMasterMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelBasedOnPartyandMasterMast(stringSet,responseList);
+
+        return paymentPendingExcelReportSuperMast;
     }
 }

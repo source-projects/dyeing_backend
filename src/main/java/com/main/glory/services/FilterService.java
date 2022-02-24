@@ -1,23 +1,15 @@
 package com.main.glory.services;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.main.glory.Dao.FilterDao;
-import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
-import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
-
 import com.main.glory.model.machine.request.PaginatedData;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -87,4 +79,5 @@ public class FilterService<T,D extends FilterDao<T>> {
         Pageable pageable=PageRequest.of(data.getPageIndex(), data.getPageSize(), sortOrder, sortBy);
         return pageable;
     }
+
 }

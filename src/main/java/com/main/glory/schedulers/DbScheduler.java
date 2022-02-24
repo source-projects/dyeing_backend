@@ -70,7 +70,8 @@ public class DbScheduler {
         }
         //clear pdf folder
         LOGGER.log(Level.INFO, "________cleared pdf folder_________");
-        restoreDbService.clearPdfFolder();
+        restoreDbService.clearPdfFolder("pdf");
+        restoreDbService.clearPdfFolder("excel");
 
     }
 }

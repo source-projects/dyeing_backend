@@ -39,6 +39,7 @@ import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.FilterService;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -116,6 +119,18 @@ public class StockBatchServiceImpl {
 
     @Autowired
     FilterService<StockMast, StockMastDao> filterService;
+
+    public static String getDateInRespectedDateFormat(Date date) {
+        if(date==null)
+            return null;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(date);
+    }
+
+    public static String getBase64ByFile(File file) throws IOException {
+        byte[] fileContent = FileUtils.readFileToByteArray(new File(file.getAbsolutePath()));
+        return Base64.getEncoder().encodeToString(fileContent);
+    }
 
     public List<StockMast> getAllStockBatch(Long qualityId) {
 
@@ -335,10 +350,11 @@ public class StockBatchServiceImpl {
         Specification<StockMast> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
                 requestParam.getData().isAnd, subModelCase);
 
-        if(batchFilter!=null)
-        {
-          filterSpec = specificationManager.addJoinSpecification(filterSpec,batchFilter);
-        }
+//        if(batchFilter!=null && batchFilter.getField().contains("batchList"))
+//        {
+//            batchFilter.setField(new ArrayList<>(Arrays.asList("batchData")));
+//            filterSpec = specificationManager.addJoinSpecification(filterSpec,batchFilter,requestParam.getData().isAnd);
+//        }
 
 
        // ObjectMapper objectMapper = new ObjectMapper();
@@ -630,8 +646,11 @@ public class StockBatchServiceImpl {
             // fetch the party record to set the usert head
             party = partyDao.findByPartyId(stockMast.getParty().getId());
             stockMast.setUserHeadId(party.getUserHeadData().getId());
+            stockMast.setUpdatedBy(userData.getId());
         } else {
             party = partyDao.findById(stockMast.getParty().getId()).get();
+            stockMast.setUserHeadId(party.getUserHeadData().getId());
+            stockMast.setUpdatedBy(userData.getId());
         }
         quality = qualityDao.findById(stockMast.getQuality().getId()).get();
         // update record
