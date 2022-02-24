@@ -322,8 +322,8 @@ public class RestoreDbImpl {
         return true;
     }
 
-    public Boolean clearPdfFolder() throws IOException {
-        String filepath = "pdf";
+    public Boolean clearPdfFolder(String dir) throws IOException {
+        String filepath = dir;
         File file = new File(filepath);
 
         // call deleteDirectory method to delete directory

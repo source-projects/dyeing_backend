@@ -42,7 +42,7 @@ public class PartyController extends ControllerConfig {
 	@PostMapping(value="/party")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
 	{
-		System.out.println("entering /party api controller");
+		//System.out.println("entering /party api controller");
 		GeneralResponse<Boolean,Object> result;
 		try {
 		    partyServiceImp.saveParty(party,headers.get("id"));

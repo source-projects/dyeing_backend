@@ -148,14 +148,11 @@ public class SpecificationManager<T> {
 
 
     for (Filter input : filter) {
-
         if (isAnd)
           specification = specification.and(createSpecification(input, subModelCase));
 
         else
           specification = specification.or(createSpecification(input, subModelCase));
-
-
 
     }
     return specification;
@@ -236,14 +233,6 @@ public class SpecificationManager<T> {
     return true;
   }
 
-  public Specification<T> addJoinSpecification(Specification<T> filterSpec, Filter batchFilter) {
-
-    if(batchFilter.getValue().length()>0)
-    {
-      //filterSpec = getSpecificationFromFiltersForBatchRecord(batchFilter);
-    }
-    return filterSpec;
-  }
 
 
 }
