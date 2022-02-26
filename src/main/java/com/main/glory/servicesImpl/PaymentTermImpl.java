@@ -235,6 +235,47 @@ public class PaymentTermImpl {
         List<AdvancePaymentIdList> advancePaymentIdList = advancePaymentDao.getAdvancePaymentByPaymentBunchId(paymentBunchId);
         addPaymentMast.setAdvancePayList(advancePaymentIdList);
 
+
+        //get pending invoice + existing on for edit option
+        List<GetPendingDispatch> pendingDispatchList = getPendingBillByPartyId(addPaymentMast.getPartyId());
+        List<GetPendingDispatch> existingDispatchResponseList = dispatchMastDao.getPendingDispatchResponseByPaymentBunchId(addPaymentMast.getId());
+        if(pendingDispatchList==null) {
+            pendingDispatchList = new ArrayList<>();
+            pendingDispatchList.addAll(existingDispatchResponseList);
+        }
+        else {
+            pendingDispatchList.addAll(existingDispatchResponseList);
+        }
+        addPaymentMast.setPendingDispatchListWithExisting(pendingDispatchList);
+
+        //get advance payment list with existing one for edit
+        List<GetAdvancePayment> getAdvancePaymentList = getAdvancePayment(addPaymentMast.getPartyId());
+        List<GetAdvancePayment> getExistingAdvancePaymentList = new ArrayList<>();
+
+        Party partyExist = partyServiceImp.getPartyById(addPaymentMast.getPartyId());
+
+        if(getAdvancePaymentList==null) {
+            getAdvancePaymentList = new ArrayList<>();
+            List<AdvancePayment> advancePaymentList = advancePaymentDao.findExistingAdvancePaymentByPaymentBunchId(addPaymentMast.getId());
+            for (AdvancePayment advancePayment : advancePaymentList) {
+                PaymentType paymentType = paymentTypeDao.getPaymentTypeById(advancePayment.getPayTypeId());
+                if (paymentType == null)
+                    continue;
+                getAdvancePaymentList.add(new GetAdvancePayment(advancePayment, partyExist, paymentType));
+            }
+
+        }
+        else
+        {
+            List<AdvancePayment> advancePaymentList = advancePaymentDao.findExistingAdvancePaymentByPaymentBunchId(addPaymentMast.getId());
+            for (AdvancePayment advancePayment : advancePaymentList) {
+                PaymentType paymentType = paymentTypeDao.getPaymentTypeById(advancePayment.getPayTypeId());
+                if (paymentType == null)
+                    continue;
+                getAdvancePaymentList.add(new GetAdvancePayment(advancePayment, partyExist, paymentType));
+            }
+        }
+        addPaymentMast.setAdvancePaymentListWithExisting(getExistingAdvancePaymentList);
         return addPaymentMast;
     }
 
