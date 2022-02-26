@@ -77,7 +77,7 @@ public class PaymentTermImpl {
         if (userData == null)
             throw new Exception(ConstantFile.User_Not_Exist);
 
-        if (paymentMast.getInvoices().size() <= 0)
+        if (paymentMast.getInvoices() == null || paymentMast.getInvoices().size() <= 0)
             throw new Exception(ConstantFile.Select_Invoice_First);
 
         if (paymentMast.getAmtToPay() <= 0)
@@ -126,7 +126,7 @@ public class PaymentTermImpl {
 
 
         //update the advance payment if it is coming
-        if (paymentMast.getAdvancePayList().size() > 0) {
+        if (paymentMast.getAdvancePayList() !=null && paymentMast.getAdvancePayList().size() > 0) {
             for (AdvancePaymentIdList record : paymentMast.getAdvancePayList()) {
                 //check the record is exist or not
                 Optional<AdvancePayment> addPaymentMast = advancePaymentDao.findById(record.getId());
@@ -390,9 +390,11 @@ public class PaymentTermImpl {
         //false means remove the record
         Map<String,Boolean> existingInvoiceNoMap = new HashMap<>();
         //intialize with false
-        existingInvoiceNo.forEach(e->{
-                existingInvoiceNoMap.put(e,false);
-        });
+        if(!existingInvoiceNo.isEmpty()) {
+            existingInvoiceNo.forEach(e -> {
+                existingInvoiceNoMap.put(e, false);
+            });
+        }
 
 
         for (PendingInvoice invoice : addPaymentMast.getInvoices()) {
@@ -411,23 +413,26 @@ public class PaymentTermImpl {
         List<Long> listOfAdvancePaymentId = advancePaymentDao.getAdvancePaymentIdListByPaymentBunchId(addPaymentMast.getId());
         //check for advance payment
         Map<Long,Boolean> existingAdvancePaymentHashMap = new HashMap<>();
-        listOfAdvancePaymentId.forEach(e-> {
-            //store default as false
-            existingAdvancePaymentHashMap.put(e,false);
-        });
+        if(listOfAdvancePaymentId !=null && !listOfAdvancePaymentId.isEmpty()) {
+            listOfAdvancePaymentId.forEach(e -> {
+                //store default as false
+                existingAdvancePaymentHashMap.put(e, false);
+            });
+        }
 
 
         //check coming advance payment is exist or not and update hash mapp as well
         //true mean keep the record or create it, false mean remove the record
+        if(addPaymentMast.getAdvancePayList()!=null) {
+            for (AdvancePaymentIdList advancePaymentIdList : addPaymentMast.getAdvancePayList()) {
+                Optional<AdvancePayment> advancePaymentExist = advancePaymentDao.findById(advancePaymentIdList.getId());
 
-        for (AdvancePaymentIdList advancePaymentIdList : addPaymentMast.getAdvancePayList()) {
-            Optional<AdvancePayment> advancePaymentExist = advancePaymentDao.findById(advancePaymentIdList.getId());
+                if (advancePaymentExist.isEmpty())
+                    throw new Exception(ConstantFile.Advance_Payment_Not_Exist);
 
-            if(advancePaymentExist.isEmpty())
-                throw new Exception(ConstantFile.Advance_Payment_Not_Exist);
+                existingAdvancePaymentHashMap.put(advancePaymentExist.get().getId(), true);
 
-            existingAdvancePaymentHashMap.put(advancePaymentExist.get().getId(),true);
-
+            }
         }
 
 
