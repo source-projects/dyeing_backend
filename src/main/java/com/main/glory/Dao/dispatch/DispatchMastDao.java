@@ -134,4 +134,7 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
 
     @Query("select new com.main.glory.model.dispatch.report.masterWise.PaymentPendingMasterWiseData(dm.party,dm.party.userHeadData,dm.percentageDiscount,SUM(dm.netAmt),concat(UPPER(SUBSTRING(MONTHNAME(dm.createdDate),1,3)),', ',Year(dm.createdDate))) from DispatchMast dm where dm.id in (select dd.controlId from DispatchData dd where (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND (:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId)) AND (Date(dm.createdDate) >= Date(:from) OR :from IS NULL) AND (Date(dm.createdDate) <= Date(:to) OR :to IS NULL) AND (:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) AND dm.paymentBunchId IS NULL AND dm.isRfInvoice = false GROUP BY concat(UPPER(SUBSTRING(MONTHNAME(dm.createdDate),1,3)),', ',Year(dm.createdDate)),dm.percentageDiscount,dm.party,dm.party.userHeadData order by dm.percentageDiscount DESC")
     List<PaymentPendingMasterWiseData> getAllPendingPaymentDispatchResponseBasedOnDiscountAndMonthYear(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId);
+
+    @Query("select new com.main.glory.model.paymentTerm.request.GetPendingDispatch(dm.postfix,dm.createdDate,dm.discount+dm.taxAmt,dm.discount,dm.cgst,dm.sgst,dm.taxAmt,dm.netAmt) from DispatchMast dm where dm.paymentBunchId IS NOT NULL AND dm.paymentBunchId=:paymentBunchId")
+    List<GetPendingDispatch> getPendingDispatchResponseByPaymentBunchId(Long paymentBunchId);
 }

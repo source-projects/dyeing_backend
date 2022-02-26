@@ -27,4 +27,7 @@ public interface AdvancePaymentDao extends JpaRepository<AdvancePayment,Long> {
     @Transactional
     @Query("update AdvancePayment a set a.paymentBunchId = :paymentBunchId where a.id = :id")
     void updateAdvancePaymentBunchIdById(Long id, Long paymentBunchId);
+
+    @Query("select x from AdvancePayment x where x.paymentBunchId=:id AND x.paymentBunchId IS NOT NULL")
+    List<AdvancePayment> findExistingAdvancePaymentByPaymentBunchId(Long id);
 }

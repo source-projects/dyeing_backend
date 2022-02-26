@@ -34,6 +34,8 @@ public class AddPaymentMast {
     List<PaymentData> paymentData;
     List<PendingInvoice> invoices;
     List<AdvancePaymentIdList> advancePayList;
+    List<GetPendingDispatch> pendingDispatchListWithExisting;
+    List<GetAdvancePayment> advancePaymentListWithExisting;
 
 
     public AddPaymentMast(PaymentMast paymentMastExist) {
