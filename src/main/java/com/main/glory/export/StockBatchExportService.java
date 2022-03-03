@@ -125,7 +125,7 @@ public class StockBatchExportService {
             //create the table for master level
 
 
-            PdfPTable table = new PdfPTable(8);
+            PdfPTable table = new PdfPTable(9);
             table.setWidthPercentage(100f);
             //table.setWidths(new float[] {9.5f});
             table.setSpacingBefore(10);
@@ -281,29 +281,28 @@ public class StockBatchExportService {
 
 
         PdfPCell cellBlankRow = new PdfPCell(new Phrase(" "));
+        cellBlankRow.setColspan(9);
+        masterTable.addCell(cellBlankRow);
 
         Font font = FontFactory.getFont(FontFactory.HELVETICA);
         PdfPCell masterCell = new PdfPCell();
         //masterCell.setBackgroundColor(Color.BLUE);
         masterCell.setPadding(5);
         masterCell.setPhrase(new Phrase("Master: " + fabricInDetailsMast.getMasterName()));
-        masterCell.setColspan(8);
+        masterCell.setColspan(9);
         masterTable.addCell(masterCell);
 
         masterTable.completeRow();
-        cellBlankRow.setColspan(8);
-        masterTable.addCell(cellBlankRow);
-
 
         PdfPCell cell = new PdfPCell();
         cell.setBackgroundColor(Color.BLUE);
         cell.setPadding(5);
 
 
-        PdfPTable partyTable = new PdfPTable(8);
-        partyTable.setWidthPercentage(100f);
-        //partyTable.setWidths(new float[] {1.5f,1.5f,1.5f,1.5f,1.5f,1.5f});
-        partyTable.setSpacingBefore(10);
+//        PdfPTable partyTable = new PdfPTable(8);
+//        partyTable.setWidthPercentage(100f);
+//        //partyTable.setWidths(new float[] {1.5f,1.5f,1.5f,1.5f,1.5f,1.5f});
+//        partyTable.setSpacingBefore(10);
 
         for (FabricInDetailsData fabricInDetailsData : fabricInDetailsMast.getList()) {
             PdfPCell partyNameCell = new PdfPCell();
@@ -313,7 +312,7 @@ public class StockBatchExportService {
 
             font.setColor(Color.WHITE);
             partyNameCell.setPhrase(new Phrase("Party Name", font));
-            partyNameCell.setColspan(3);
+            partyNameCell.setColspan(4);
             masterTable.addCell(partyNameCell);
 
             cell.setPhrase(new Phrase("Party Code", font));
@@ -339,7 +338,7 @@ public class StockBatchExportService {
 
             partyNameCell = new PdfPCell();
             partyNameCell.setPadding(5);
-            partyNameCell.setColspan(3);
+            partyNameCell.setColspan(4);
             partyNameCell.setBackgroundColor(partyDataColor);
             partyNameCell.setPhrase(new Phrase(fabricInDetailsData.getPartyName()));
             masterTable.addCell(partyNameCell);
@@ -384,6 +383,8 @@ public class StockBatchExportService {
                 qualityCell.setPadding(5);
 
                 //column header
+                qualityCell.setPhrase(new Phrase("Sr No.", qualityHeaderFont));
+                masterTable.addCell(qualityCell);
                 qualityCell.setPhrase(new Phrase("Quality Name", qualityHeaderFont));
                 masterTable.addCell(qualityCell);
                 qualityCell.setPhrase(new Phrase("Quality Id", qualityHeaderFont));
@@ -403,6 +404,7 @@ public class StockBatchExportService {
 
                 //partyTable.completeRow();
 
+                int i=1;
                 for (FabricInDetailsChildData fabricInDetailsChildData : entry.getValue()) {
                     Font qualityDataFont = new Font(Font.HELVETICA);
                     qualityDataFont.setSize(10);
@@ -410,9 +412,16 @@ public class StockBatchExportService {
                     color = getColorBasedOnMasterAndBillingValues(fabricInDetailsMast.getMasterName(),fabricInDetailsChildData.getBillingValue());
 
                     PdfPCell qualityDataCell = new PdfPCell();
+
+                    qualityDataCell.setBackgroundColor(color);
+                    qualityDataCell.setPhrase(new Phrase(""+(i++),qualityDataFont));
+                    masterTable.addCell(qualityDataCell);
+
                     qualityDataCell.setBackgroundColor(color);
                     qualityDataCell.setPhrase(new Phrase(fabricInDetailsChildData.getQualityName(),qualityDataFont));
                     masterTable.addCell(qualityDataCell);
+
+
 
                     qualityDataCell.setBackgroundColor(color);
                     qualityDataCell.setPhrase(new Phrase(fabricInDetailsChildData.getQualityId(),qualityDataFont));
@@ -453,7 +462,7 @@ public class StockBatchExportService {
                 PdfPCell qualityTotalDataCell = new PdfPCell();
                 //qualityTotalDataCell.setBackgroundColor(color);
                 qualityTotalDataCell.setPhrase(new Phrase("Total",qualityDataFont));
-                qualityTotalDataCell.setColspan(4);
+                qualityTotalDataCell.setColspan(5);
                 masterTable.addCell(qualityTotalDataCell);
 
 
@@ -468,6 +477,7 @@ public class StockBatchExportService {
                 masterTable.addCell(totalPcs.toString());
                 masterTable.addCell(totalBillingValue.toString());
                 masterTable.addCell(cellBlankRow);
+
                 //masterTable.addCell(partyTable);
 
 
