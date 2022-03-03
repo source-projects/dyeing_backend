@@ -1,12 +1,8 @@
 package com.main.glory.servicesImpl;
 
-import com.cloudinary.Cloudinary;
-
-import com.cloudinary.utils.ObjectUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.main.glory.Dao.*;
 import com.main.glory.Dao.Jet.JetDataDao;
 import com.main.glory.Dao.Jet.JetMastDao;
+import com.main.glory.Dao.*;
 import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.Dao.batch.BatchDataDao;
 import com.main.glory.Dao.color.ColorBoxDao;
@@ -31,6 +27,7 @@ import com.main.glory.Dao.qualityProcess.QualityProcessMastDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.Dao.user.UserPermissionDao;
 import com.main.glory.model.database.DatabaseBackup;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -40,16 +37,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -326,6 +319,19 @@ public class RestoreDbImpl {
 
 
 
+        return true;
+    }
+
+    public Boolean clearPdfFolder(String dir) throws IOException {
+        String filepath = dir;
+        File file = new File(filepath);
+
+        // call deleteDirectory method to delete directory
+        // recursively
+        FileUtils.deleteDirectory(file);
+
+        // delete GFG folder
+        file.delete();
         return true;
     }
 }

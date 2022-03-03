@@ -6,14 +6,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.services.DataConversion;
 
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,20 @@ public class SpecificationManager<T> {
         if(subModelCase.containsKey(input.getField().get(0))){
           attributes= subModelCase.get(input.getField().get(0));
         }
-        
+
+//        if(subModelCase.containsKey(input.getField().get(0).equalsIgnoreCase("batchList")))
+//        {
+//          List<Predicate> predicates = new ArrayList<>();
+//
+//          Filter searchFilter = input;
+//          Join<Object, Object> joinParent = root.join("batchData");
+//
+//          //String property = searchFilter.getField().get(0);
+//          Path expression = joinParent.get("batchId");
+//          predicates.add(criteriaBuilder.like(expression, "%" + searchFilter.getValue() + "%"));
+//          return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+//
+//        }
 
         var path=root.get(attributes.get(0));
         for(int i=1;i<attributes.size();i++){
@@ -134,12 +146,14 @@ public class SpecificationManager<T> {
     System.out.println("Creating specification");
     Specification<T> specification = createSpecification(filter.remove(0),subModelCase);
 
-    for (Filter input : filter) {
-      if (isAnd)
-        specification = specification.and(createSpecification(input,subModelCase));
 
-      else
-        specification = specification.or(createSpecification(input,subModelCase));
+    for (Filter input : filter) {
+        if (isAnd)
+          specification = specification.and(createSpecification(input, subModelCase));
+
+        else
+          specification = specification.or(createSpecification(input, subModelCase));
+
     }
     return specification;
   }
@@ -218,5 +232,7 @@ public class SpecificationManager<T> {
 
     return true;
   }
+
+
 
 }

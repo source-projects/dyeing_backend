@@ -1,4 +1,4 @@
-package com.main.glory.model.paymentTerm;
+package com.main.glory.model.paymentTerm.response;
 
 import com.main.glory.model.paymentTerm.PaymentMast;
 import com.main.glory.model.paymentTerm.request.AddPaymentMast;
@@ -17,5 +17,10 @@ public class GetAllPayment extends PaymentMast {
     public GetAllPayment(PaymentMast paymentMast, String partyName) {
         super(paymentMast);
         this.partyName = partyName;
+    }
+
+    public GetAllPayment(PaymentMast e) {
+        super(e);
+        this.partyName = e.getParty()==null?null:e.getParty().getPartyName();
     }
 }

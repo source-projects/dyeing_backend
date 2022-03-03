@@ -1,21 +1,28 @@
 package com.main.glory.controller;
 
-import com.main.glory.model.dispatch.response.*;
-
 import com.main.glory.Dao.dispatch.DispatchMastDao;
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.GeneralResponse;
+import com.main.glory.model.StockDataBatchData.request.BatchFilterRequest;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
 import com.main.glory.model.dispatch.DispatchFilter;
 import com.main.glory.model.dispatch.DispatchMast;
 import com.main.glory.model.dispatch.bill.GetBill;
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportData;
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportMast;
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportSuperMast;
+import com.main.glory.model.dispatch.report.masterWise.PaymentPendingExcelBasedOnPartyandMasterMast;
 import com.main.glory.model.dispatch.request.*;
+import com.main.glory.model.dispatch.response.GetAllDispatch;
+import com.main.glory.model.dispatch.response.GetConsolidatedBill;
+import com.main.glory.model.dispatch.response.MonthlyDispatchReport;
 import com.main.glory.model.dispatch.response.report.ConsolidatedBillDataForExcel;
 import com.main.glory.model.dispatch.response.report.ConsolidatedBillMast;
 import com.main.glory.model.machine.request.PaginatedData;
+import com.main.glory.model.party.Party;
 import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
@@ -26,10 +33,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -573,6 +580,7 @@ public class DispatchController extends ControllerConfig {
     }
 
 
+
     @PostMapping("/dispatch/add")
     public ResponseEntity<GeneralResponse<Long,Object>> createDispatchForPchallan(@RequestBody CreateDispatch dispatchMast) throws Exception{
         GeneralResponse<Long,Object> result;
@@ -682,7 +690,7 @@ public class DispatchController extends ControllerConfig {
     public ResponseEntity<GeneralResponse<FilterResponse<DispatchMast>, Object>> getDispatchData(@RequestBody PaginatedData data){
         GeneralResponse<FilterResponse<DispatchMast>,Object> result;
         try{
-System.out.println("entered dispatch/getDispatchMastData");
+
             FilterResponse<DispatchMast> x = filterService.getpaginatedSortedFilteredData(data);
             if(!x.getData().isEmpty())
             result = new GeneralResponse<FilterResponse<DispatchMast>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
@@ -698,39 +706,84 @@ System.out.println("entered dispatch/getDispatchMastData");
         return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 }
  
-@PostMapping("/getOperationsForGivenDataType")
-public ResponseEntity<GeneralResponse<List<String>, Object>> getOpeartionList(@RequestParam(name="dataType") String dataType) throws Exception{
-    GeneralResponse<List<String>,Object> result;
-    List<String> x=new ArrayList<String>();
-    try{
-        switch(dataType){
-            case "String":
-            x=Arrays.asList(new String[]{"EQUALS", "LIKE","NOT_EQUALS","START_WITH","END_WITH"});
-            break;
-            
-            case "Number":
-            x=Arrays.asList(new String[]{"GREATER_THAN", "LESS_THAN","EQUALS","NOT_EQUALS"});
-            break;
-            
-            case "Date":
-            x=Arrays.asList(new String[]{"IN_RANGE", "NOT_EQUALS","EQUALS","GREATER_THAN", "LESS_THAN"});
-            break;
-            
+    @PostMapping("/getOperationsForGivenDataType")
+    public ResponseEntity<GeneralResponse<List<String>, Object>> getOpeartionList(@RequestParam(name="dataType") String dataType) throws Exception{
+        GeneralResponse<List<String>,Object> result;
+        List<String> x=new ArrayList<String>();
+        try{
+            switch(dataType){
+                case "String":
+                x=Arrays.asList(new String[]{"EQUALS", "LIKE","NOT_EQUALS","START_WITH","END_WITH"});
+                break;
+
+                case "Number":
+                x=Arrays.asList(new String[]{"GREATER_THAN", "LESS_THAN","EQUALS","NOT_EQUALS"});
+                break;
+
+                case "Date":
+                x=Arrays.asList(new String[]{"IN_RANGE", "NOT_EQUALS","EQUALS","GREATER_THAN", "LESS_THAN"});
+                break;
+
+            }
+
+
+            if(!x.isEmpty())
+            result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+            else
+                result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+
+            // logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+            logService.saveLog(result,request,true);
         }
-
-        
-        if(!x.isEmpty())
-        result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-        else
-            result = new GeneralResponse<List<String>, Object>(x, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
-
-        // logService.saveLog(result,request,debugAll);
-    } catch (Exception e){
-        e.printStackTrace();
-        result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
-        logService.saveLog(result,request,true);
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
     }
-    return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
-}
+
+    @PostMapping("/dispatch/report/getInvoicePendingPaymentReportByFilterWithBase64")
+    public ResponseEntity<GeneralResponse<String, Object>> getInvoicePendingPaymentReportByFilter(@RequestBody BatchFilterRequest filter){
+        GeneralResponse<String,Object> result;
+        try{
+
+            PaymentPendingExcelReportSuperMast x = dispatchMastService.getPendingPaymentForExcelByFilter(filter);
+            if(x!=null) {
+                String base64 = dispatchMastService.createExcelFileForPaymentPendingExcel(x,x.getList(),filter);
+                result = new GeneralResponse<>(base64, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK, filter);
+            }
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+
+            // logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
+    @PostMapping("/dispatch/report/getInvoicePendingPaymentBasedOnPartyReportByFilterWithBase64")
+    public ResponseEntity<GeneralResponse<String, Object>> getInvoicePendingPaymentBasedOnPartyReportByFilterWithBase64(@RequestBody BatchFilterRequest filter){
+        GeneralResponse<String,Object> result;
+        try{
+
+            PaymentPendingExcelBasedOnPartyandMasterMast x = dispatchMastService.getPendingPaymentBasedOnMasterAndPartyForExcelByFilter(filter);
+            if(x!=null) {
+                String base64 = dispatchMastService.createExcelFileForPaymentPendingExcelBasedOnPartyAndMaster(x,x.getList(),filter);
+                result = new GeneralResponse<>(base64, constantFile.Dispatch_Mast_Found, true, System.currentTimeMillis(), HttpStatus.OK, filter);
+            }
+            else
+                result = new GeneralResponse<>(null, constantFile.Dispatch_Mast_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+
+            // logService.saveLog(result,request,debugAll);
+        } catch (Exception e){
+            e.printStackTrace();
+            result = new GeneralResponse<>(null,e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,filter);
+            logService.saveLog(result,request,true);
+        }
+        return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+    }
+
 
 }

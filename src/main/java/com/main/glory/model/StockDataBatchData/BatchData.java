@@ -1,6 +1,7 @@
 package com.main.glory.model.StockDataBatchData;
 
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class BatchData {
     Double mtr;
     Double wt;
     String batchId;
+    @NotNull
     Long controlId;
     @ColumnDefault("false")
     Boolean isProductionPlanned;

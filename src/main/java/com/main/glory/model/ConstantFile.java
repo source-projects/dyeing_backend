@@ -274,7 +274,9 @@ public class ConstantFile {
     public static String Batch_Dyeing_Already = "Batch already dyeing";
 
     //Payment
-    public static String Payment_Exist = "Party data exist";
+    public static String Payment_Exist = "Payment data exist";
+    public static String Payment_Not_Exist = "Payment data not exist";
+    public static String Payment_Greater_Than_zero = "Payment should be > 0";
     public static String Payment_Found = "Data found";
     public static String Payment_Not_Found = "Data not found";
     public static String Payment_Added = "Data added successfully";
@@ -462,4 +464,11 @@ public class ConstantFile {
     public static String RFInvoice_Sequence_Greater = "Enter greater sequence";
 
     public static String PrinterIsBusy = "Printer is busy, Try again later";
+
+    public static String Select_Invoice_First = "Select invoice first";
+
+    public static String Enter_Right_Amount ="please enter right amount";
+
+    public static String Advance_Payment_Not_Found = "Advance payment data not found";
+    public static String Advance_Payment_Not_Exist= "Advance payment data not exist";
 }

@@ -22,9 +22,7 @@ import java.util.List;
 public class PaymentMast {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(updatable = false, nullable = false)
     Long id;
-    
     Double totalBill;
     Double GstAmt;
     Double rdAmt;
@@ -40,7 +38,7 @@ public class PaymentMast {
     Date createdDate;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-    @JoinColumn(name = "party", referencedColumnName = "id", insertable = true, updatable = true)
+    @JoinColumn(name = "party_id", referencedColumnName = "id", insertable = true, updatable = true)
     Party party;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
@@ -57,7 +55,21 @@ public class PaymentMast {
     @JoinColumn(name = "controlId", referencedColumnName = "id")
     private List<PaymentData> paymentData;
 
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedDate = new Date(System.currentTimeMillis());
+    }
+
+
     public PaymentMast(AddPaymentMast paymentMast,Party party,UserData createdBy,UserData updatedBy) {
+        this.id = paymentMast.getId() == null ? null:paymentMast.getId();
         this.party = party;
         this.totalBill = paymentMast.getTotalBill();
         this.GstAmt = paymentMast.getGstAmt();
@@ -94,16 +106,6 @@ public class PaymentMast {
         this.diffDetail = paymentMast.getDiffDetail();
         this.createdBy = paymentMast.getCreatedBy();
         this.updatedBy = paymentMast.getUpdatedBy();
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdDate = new Date(System.currentTimeMillis());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedDate = new Date(System.currentTimeMillis());
     }
 
 }

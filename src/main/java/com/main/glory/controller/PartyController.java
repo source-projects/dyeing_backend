@@ -1,8 +1,5 @@
 package com.main.glory.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import com.main.glory.config.ControllerConfig;
 import com.main.glory.filters.FilterResponse;
 import com.main.glory.model.ConstantFile;
@@ -14,16 +11,16 @@ import com.main.glory.model.party.request.PartyReport;
 import com.main.glory.model.party.request.PartyWithName;
 import com.main.glory.model.party.request.PartyWithUserHeadName;
 import com.main.glory.servicesImpl.LogServiceImpl;
+import com.main.glory.servicesImpl.PartyServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.main.glory.model.party.Party;
-import com.main.glory.servicesImpl.PartyServiceImp;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -45,7 +42,7 @@ public class PartyController extends ControllerConfig {
 	@PostMapping(value="/party")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> saveParty(@RequestBody AddParty party, @RequestHeader Map<String, String> headers)
 	{
-		System.out.println("entering /party api controller");
+		//System.out.println("entering /party api controller");
 		GeneralResponse<Boolean,Object> result;
 		try {
 		    partyServiceImp.saveParty(party,headers.get("id"));

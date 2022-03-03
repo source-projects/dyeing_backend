@@ -3,21 +3,27 @@ package com.main.glory.servicesImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.glory.Dao.PartyDao;
-import com.main.glory.Dao.StockAndBatch.*;
+import com.main.glory.Dao.StockAndBatch.BatchDao;
+import com.main.glory.Dao.StockAndBatch.BatchReturnDataDao;
+import com.main.glory.Dao.StockAndBatch.BatchReturnMastDao;
+import com.main.glory.Dao.StockAndBatch.StockMastDao;
 import com.main.glory.Dao.admin.BatchSequneceDao;
 import com.main.glory.Dao.quality.QualityDao;
 import com.main.glory.Dao.quality.QualityNameDao;
 import com.main.glory.Dao.user.UserDao;
 import com.main.glory.filters.Filter;
 import com.main.glory.filters.FilterResponse;
+import com.main.glory.filters.QueryOperator;
 import com.main.glory.filters.SpecificationManager;
 import com.main.glory.model.ConstantFile;
-import com.main.glory.model.StockDataBatchData.*;
+import com.main.glory.model.StockDataBatchData.BatchData;
+import com.main.glory.model.StockDataBatchData.BatchReturnData;
+import com.main.glory.model.StockDataBatchData.BatchReturnMast;
+import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.*;
 import com.main.glory.model.StockDataBatchData.response.*;
 import com.main.glory.model.dispatch.response.GetBatchByInvoice;
 import com.main.glory.model.dyeingProcess.DyeingProcessMast;
-import com.main.glory.filters.QueryOperator;
 import com.main.glory.model.dyeingSlip.DyeingSlipData;
 import com.main.glory.model.dyeingSlip.DyeingSlipMast;
 import com.main.glory.model.jet.JetData;
@@ -33,7 +39,7 @@ import com.main.glory.model.user.Permissions;
 import com.main.glory.model.user.UserData;
 import com.main.glory.model.user.UserPermission;
 import com.main.glory.services.FilterService;
-
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,14 +48,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 @Service("stockBatchServiceImpl")
 public class StockBatchServiceImpl {
@@ -113,6 +119,18 @@ public class StockBatchServiceImpl {
 
     @Autowired
     FilterService<StockMast, StockMastDao> filterService;
+
+    public static String getDateInRespectedDateFormat(Date date) {
+        if(date==null)
+            return null;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(date);
+    }
+
+    public static String getBase64ByFile(File file) throws IOException {
+        byte[] fileContent = FileUtils.readFileToByteArray(new File(file.getAbsolutePath()));
+        return Base64.getEncoder().encodeToString(fileContent);
+    }
 
     public List<StockMast> getAllStockBatch(Long qualityId) {
 
@@ -315,9 +333,12 @@ public class StockBatchServiceImpl {
         Boolean flag = false;
         String getBy = requestParam.getGetBy();
         List<Filter> filtersParam = requestParam.getData().getParameters();
+        Filter batchFilter = filtersParam.stream().filter(x->x.getField().get(0).toString().equalsIgnoreCase("batchList")).findFirst().orElse(null);
         HashMap<String, List<String>> subModelCase = new HashMap<String, List<String>>();
+        subModelCase.put("qualityId", new ArrayList<String>(Arrays.asList("quality", "qualityId")));
         subModelCase.put("qualityName", new ArrayList<String>(Arrays.asList("quality", "qualityName", "qualityName")));
         subModelCase.put("partyName", new ArrayList<String>(Arrays.asList("party", "partyName")));
+        subModelCase.put("batchList", new ArrayList<String>(Arrays.asList("batchData", "batchId")));
         // subModelCase.put("userHeadId",new
         // ArrayList<String>(Arrays.asList("userHeadData","id")));
         // subModelCase.put("createdBy",new
@@ -328,6 +349,16 @@ public class StockBatchServiceImpl {
         // ArrayList<String>(Arrays.asList("createdBy","userName")));
         Specification<StockMast> filterSpec = specificationManager.getSpecificationFromFilters(filtersParam,
                 requestParam.getData().isAnd, subModelCase);
+
+//        if(batchFilter!=null && batchFilter.getField().contains("batchList"))
+//        {
+//            batchFilter.setField(new ArrayList<>(Arrays.asList("batchData")));
+//            filterSpec = specificationManager.addJoinSpecification(filterSpec,batchFilter,requestParam.getData().isAnd);
+//        }
+
+
+       // ObjectMapper objectMapper = new ObjectMapper();
+//        System.out.println(filterSpec.toString());
 
         Page queryResponse = null;
 
@@ -381,7 +412,7 @@ public class StockBatchServiceImpl {
             }
 
         }
-        System.out.println("specification craeting completion");
+        //System.out.println("specification craeting completion");
         data = queryResponse.getContent();
         if (!data.isEmpty()) {
 
@@ -525,28 +556,22 @@ public class StockBatchServiceImpl {
         return list;
     }
 
-    public StockMast getStockBatchById(Long id) throws Exception {
+    public AddStockBatch getStockBatchById(Long id) throws Exception {
         StockMast data = stockMastDao.findByStockId(id);
         List<BatchData> batchDataList = batchDao.findByControlIdWithExtraBatch(data.getId(), false);
+        //get that the on of the batch is production plan or not
+        List<BatchData> batchDataListWithProductionplan = batchDao.getBatchByControlIdWithProductionPlanTrue(data.getId());
+
+        if(batchDataListWithProductionplan.size()>0)
+        {
+            data.setIsProductionPlanned(true);
+        }
 
         StockMast stockMast = new StockMast(data);
         stockMast.setBatchData(batchDataList);
         if (stockMast != null) {
-            int count = 0;// count the production plan gr
-            // check the batches is produciton plan
-            for (BatchData batchData : stockMast.getBatchData()) {
-
-                if (batchData.getIsProductionPlanned() == true)
-                    count++;
-            }
-
-            if (count == data.getBatchData().size())
-                data.setIsProductionPlanned(true);
-            else
-                data.setIsProductionPlanned(false);
-
-            //AddStockBatch record = new AddStockBatch(stockMast);
-            return data;
+            AddStockBatch record = new AddStockBatch(stockMast);
+            return record;
         } else
             throw new Exception("no data found for StockId: " + id);
     }
@@ -621,8 +646,11 @@ public class StockBatchServiceImpl {
             // fetch the party record to set the usert head
             party = partyDao.findByPartyId(stockMast.getParty().getId());
             stockMast.setUserHeadId(party.getUserHeadData().getId());
+            stockMast.setUpdatedBy(userData.getId());
         } else {
             party = partyDao.findById(stockMast.getParty().getId()).get();
+            stockMast.setUserHeadId(party.getUserHeadData().getId());
+            stockMast.setUpdatedBy(userData.getId());
         }
         quality = qualityDao.findById(stockMast.getQuality().getId()).get();
         // update record
@@ -670,7 +698,19 @@ public class StockBatchServiceImpl {
         if (productionPlans != null)
             throw new Exception("can't delete the stock , because already sent to production");
 
+        //get stock whether the batch is production planned or not by stock id
+        List<BatchData> batchDataListWithProductionPlanned = batchDao.getBatchListWithProductionPlanByStockId(id);
+        if(batchDataListWithProductionPlanned.size()>0)
+        {
+            if(stockMast.get().getIsProductionPlanned()==false)
+            {
+                stockMast.get().setIsProductionPlanned(true);
+            }
+            throw new Exception("can't delete the stock , because batch is already sent to production");
+        }
+        batchDao.deleteByControlId(id);
         stockMastDao.deleteById(id);
+
     }
 
     public List<StockMast> findByQualityId(Long id) {
@@ -1584,7 +1624,7 @@ public class StockBatchServiceImpl {
                     getAllBatch.setTotalMtr(changeInFormattedDecimal(getBatchWithControlId.getMTR()));
                     batchId.add(getAllBatch.getBatchId());
                     // System.out.println();
-                    System.out.println(objectMapper.writeValueAsString(getAllBatch));
+                    //System.out.println(objectMapper.writeValueAsString(getAllBatch));
                     list.add(getAllBatch);
                 }
             }
@@ -1638,7 +1678,10 @@ public class StockBatchServiceImpl {
             //return values;
         }
 
+
     }
+
+
 
     public static List<BatchData> changeInFormattedDecimal(List<BatchData> batchDataList) {
         List<BatchData> newList = new ArrayList<>();
@@ -3105,7 +3148,7 @@ public class StockBatchServiceImpl {
                         batchReturnDataList, 0d));
 
         }
-        System.out.println(list.size());
+        //System.out.println(list.size());
 
         int pageSize = requestParam.getData().getPageSize();
         int pageIndex = requestParam.getData().getPageIndex();
@@ -3601,8 +3644,13 @@ public class StockBatchServiceImpl {
         }
         if (fabricInDetailsMastList.size() > 0) {
             list = new ArrayList<>(fabricInDetailsMastList);
+
+
+            //create pdf if data is there
+
         } else
             list = new ArrayList<>();
+
 
         return list;
 

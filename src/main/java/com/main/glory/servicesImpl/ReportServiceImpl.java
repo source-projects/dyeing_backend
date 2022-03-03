@@ -63,10 +63,15 @@ public class ReportServiceImpl {
 
     public void addAllDefaultReportMastWithUrl() {
         List<ReportMast> list = new ArrayList<>();
-        //list.add(new ReportMast("Pending Report","Stock Batch Module","stockBatch/pending/forConslidateBatchResponse"));
+
         list.add(new ReportMast("Invoice Report","invoice","/dispatch/report/forConslidateExcelBill","/dispatch/report/forConslidateReportBill"));
         list.add(new ReportMast("Invoice Payment Report","paymentTerm","/paymentTerm/monthWisePendingReport?paymentPending=",""));
         list.add(new ReportMast("Pending Batch","stockBatch","/stockBatch/pending/forConslidateBatchResponseForExcel","/stockBatch/pending/forConslidateBatchResponse"));
+        list.add(new ReportMast("Attendance report","attendance","/attendance/report/month","/attendance/report/month"));
+        list.add(new ReportMast("Fabric In","stockBatch","/stockBatch/fabricIn/report/forConslidateBatchResponseForExcel","/stockBatch/fabricIn/report/forConslidateBatchResponseForPdf"));
+        list.add(new ReportMast("Fabric In V2","stockBatch","","/stockBatch/fabricInV2/report/forConslidateBatchResponseForPdf"));
+        list.add(new ReportMast("Month Wise","invoice","/dispatch/monthWiseReport","/dispatch/monthWiseReport"));
+        list.add(new ReportMast("Fabric In Detailed","stockBatch","","/stockBatch/fabricInV2/report/forDetailedBatchResponseForPdf"));
 
         list.forEach(e->{
             ReportMast reportMastExist = reportMastDao.getReportMastByName(e.getName());

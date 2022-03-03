@@ -4,7 +4,10 @@ import com.main.glory.Dao.admin.DepartmentDao;
 import com.main.glory.Dao.task.*;
 import com.main.glory.model.ConstantFile;
 import com.main.glory.model.admin.Department;
-import com.main.glory.model.task.*;
+import com.main.glory.model.task.ReportType;
+import com.main.glory.model.task.TaskData;
+import com.main.glory.model.task.TaskMast;
+import com.main.glory.model.task.TaskStatus;
 import com.main.glory.model.task.request.TaskDetail;
 import com.main.glory.model.task.request.TaskFilter;
 import com.main.glory.model.task.response.TaskMastResponse;
@@ -258,7 +261,7 @@ public class TaskServiceImpl {
             TaskMast taskMast = taskMastDao.getTaskMastById(e.getControlId());
             TaskDetail taskDetail = new TaskDetail(e,taskMast);
 
-            System.out.println("user:"+e.getAssignUserId());
+//            System.out.println("user:"+e.getAssignUserId());
 
             UserData userData = userService.getUserById(e.getAssignUserId());
             Department department = departmentDao.getDepartmentById(taskMast.getDepartmentId());

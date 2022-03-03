@@ -31,7 +31,6 @@ import com.main.glory.model.user.response.GetAllOperator;
 import com.main.glory.model.user.response.getAllUserInfo;
 import com.main.glory.services.FilterService;
 import com.main.glory.services.UserServiceInterface;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,11 +38,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserServiceInterface {

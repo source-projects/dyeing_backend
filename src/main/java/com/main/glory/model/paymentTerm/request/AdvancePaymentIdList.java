@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter
 public class AdvancePaymentIdList {
     Long id;
 
+    public AdvancePaymentIdList(Long id) {
+        this.id = id;
+    }
 }

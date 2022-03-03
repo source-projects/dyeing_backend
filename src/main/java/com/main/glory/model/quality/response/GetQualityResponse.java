@@ -85,7 +85,9 @@ public class GetQualityResponse {
         this.mtrPerKg=data.getMtrPerKg();
         this.processId = data.getProcessId();
         this.hsn = data.getHsn();
-        //this.partyName=data.getPartyName();
+        this.partyName=data.getParty()!=null?data.getParty().getPartyName():null;
+        this.partyCode = data.getParty()!=null?data.getParty().getPartyCode():null;
+        this.userHeadName = data.getUserHeadData()!=null?data.getUserHeadData().getFirstName():null;
 
     }
 }

@@ -79,6 +79,7 @@ public class StockMast {
     @JoinColumn(name="quality_id", referencedColumnName = "id", insertable = true, updatable = true)    
     Quality quality;
 
+
    /* @PreRemove
     public void checkBatches() throws Exception {
         if(!this.batchData.isEmpty())

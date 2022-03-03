@@ -3,6 +3,10 @@ package com.main.glory.Dao.dispatch;
 import com.main.glory.Dao.FilterDao;
 import com.main.glory.model.dispatch.DispatchMast;
 
+import com.main.glory.model.dispatch.report.PaymentPendingExcelReportData;
+import com.main.glory.model.dispatch.report.masterWise.PaymentPendingMasterWiseData;
+import com.main.glory.model.paymentTerm.request.GetPendingDispatch;
+import com.main.glory.model.paymentTerm.request.PendingInvoice;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Primary
-@Repository
 public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query("select MAX(dm.postfix) from DispatchMast dm where prefix=:invoiceType")
     Long getInvoiceNumber(String invoiceType);
@@ -86,4 +90,51 @@ public interface DispatchMastDao extends FilterDao<DispatchMast> {
     @Query(value = "select * from dispatch_mast where postfix=:invoiceNo LIMIT 1",nativeQuery = true)
     DispatchMast getDispatchMastByInvoiceNumber(@Param("invoiceNo") String invoiceNo);
 
+
+    @Query("select new com.main.glory.model.paymentTerm.request.GetPendingDispatch(dm.postfix,dm.createdDate,dm.discount+dm.taxAmt,dm.discount,dm.cgst,dm.sgst,dm.taxAmt,dm.netAmt) from DispatchMast dm where dm.party.id=:partyId AND dm.paymentBunchId IS NULL")
+    List<GetPendingDispatch> getPendingBillPaymentResponseByPartyId(Long partyId);
+
+    @Modifying
+    @Transactional
+    @Query("update DispatchMast dm set dm.paymentBunchId =:o where dm.id in (:dispatchMastIdList)")
+    void updateDispatchMastPaymentBunchIdByMastIdsAndPaymentBunchId(List<Long> dispatchMastIdList, Object o);
+
+    @Query("select dm.id from DispatchMast dm where dm.paymentBunchId = :paymentBunchId")
+    List<Long> getDispatchMastIdsByPaymentBunchId(Long paymentBunchId);
+
+    @Query("select new com.main.glory.model.paymentTerm.request.PendingInvoice(dm.postfix) from DispatchMast dm where dm.paymentBunchId = :paymentBunchId AND dm.paymentBunchId IS NOT NULL")
+    List<PendingInvoice> getInvoiceListByPaymentBunchId(Long paymentBunchId);
+
+    @Query("select dm.postfix from DispatchMast dm where dm.paymentBunchId = :id AND dm.paymentBunchId IS NOT NULL")
+    List<String> getInvoiceNoListByPaymentBunchId(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("update DispatchMast dm set dm.paymentBunchId = :paymentBunchId where dm.postfix = :value")
+    void updateDispatchMastPaymentBunchIdByInvoiceNumberWithPaymentBunchId(String value, Long paymentBunchId);
+
+    @Query("select new com.main.glory.model.dispatch.report.PaymentPendingExcelReportData(dm.postfix," +
+            "concat(UPPER(SUBSTRING(MONTHNAME(dm.createdDate),1,3)),', ',Year(dm.createdDate)),dm.createdDate,dm.netAmt,dm.percentageDiscount,dm.party)" +
+            "from DispatchMast dm where dm.id in (select dd.controlId from DispatchData dd where (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND " +
+            "(:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId)) AND " +
+            "(Date(dm.createdDate) >= Date(:from) OR :from IS NULL) AND (Date(dm.createdDate) <= Date(:to) OR :to IS NULL) AND " +
+            "(:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) AND " +
+            "dm.paymentBunchId IS NULL AND dm.isRfInvoice = false")
+    List<PaymentPendingExcelReportData> getAllPendingPaymentDispatchResponse(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId);
+
+    @Query("select "+
+            "concat(UPPER(SUBSTRING(MONTHNAME(dm.createdDate),1,3)),', ',Year(dm.createdDate))" +
+            "from DispatchMast dm where dm.id in (select dd.controlId from DispatchData dd where (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND " +
+            "(:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId)) AND " +
+            "(Date(dm.createdDate) >= Date(:from) OR :from IS NULL) AND (Date(dm.createdDate) <= Date(:to) OR :to IS NULL) AND " +
+            "(:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) AND " +
+            "dm.paymentBunchId IS NULL AND dm.isRfInvoice = false order by dm.createdDate DESC")
+    Set<String> getAllPendingPaymentDispatchMonthYearResponse(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId);
+
+
+    @Query("select new com.main.glory.model.dispatch.report.masterWise.PaymentPendingMasterWiseData(dm.party,dm.party.userHeadData,dm.percentageDiscount,SUM(dm.netAmt),concat(UPPER(SUBSTRING(MONTHNAME(dm.createdDate),1,3)),', ',Year(dm.createdDate))) from DispatchMast dm where dm.id in (select dd.controlId from DispatchData dd where (:qualityEntryId IS NULL OR dd.quality.id=:qualityEntryId) AND (:qualityNameId IS NULL OR dd.quality.qualityName.id=:qualityNameId)) AND (Date(dm.createdDate) >= Date(:from) OR :from IS NULL) AND (Date(dm.createdDate) <= Date(:to) OR :to IS NULL) AND (:userHeadId IS NULL OR dm.userHeadData.id=:userHeadId) AND (:partyId IS NULL OR dm.party.id=:partyId) AND dm.paymentBunchId IS NULL AND dm.isRfInvoice = false GROUP BY concat(UPPER(SUBSTRING(MONTHNAME(dm.createdDate),1,3)),', ',Year(dm.createdDate)),dm.percentageDiscount,dm.party,dm.party.userHeadData order by dm.percentageDiscount DESC")
+    List<PaymentPendingMasterWiseData> getAllPendingPaymentDispatchResponseBasedOnDiscountAndMonthYear(Date from, Date to, Long userHeadId, Long partyId, Long qualityNameId, Long qualityEntryId);
+
+    @Query("select new com.main.glory.model.paymentTerm.request.GetPendingDispatch(dm.postfix,dm.createdDate,dm.discount+dm.taxAmt,dm.discount,dm.cgst,dm.sgst,dm.taxAmt,dm.netAmt) from DispatchMast dm where dm.paymentBunchId IS NOT NULL AND dm.paymentBunchId=:paymentBunchId")
+    List<GetPendingDispatch> getPendingDispatchResponseByPaymentBunchId(Long paymentBunchId);
 }

@@ -2,9 +2,9 @@ package com.main.glory.servicesImpl;
 
 import com.main.glory.Dao.machine.*;
 import com.main.glory.model.ConstantFile;
-import com.main.glory.model.machine.*;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineInfo;
 import com.main.glory.model.machine.AddMachineInfo.AddMachineRecord;
+import com.main.glory.model.machine.*;
 import com.main.glory.model.machine.category.AddCategory;
 import com.main.glory.model.machine.response.GetAllCategory;
 import com.main.glory.model.machine.response.GetAllMachine;
