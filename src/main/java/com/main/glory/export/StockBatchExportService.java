@@ -3,6 +3,8 @@ package com.main.glory.export;
 
 import java.awt.Color;
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,7 +112,8 @@ public class StockBatchExportService {
         masterTable.addCell("TOTAL");
         Double masterTotalMtr = StockBatchServiceImpl.changeInFormattedDecimal(list.stream().mapToDouble(FabricInDetailsMast::getTotalMtr).sum());
         Long masterTotalPcs = list.stream().mapToLong(FabricInDetailsMast::getTotalPcs).sum();
-        Double masterTotalBillingValues = StockBatchServiceImpl.changeInFormattedDecimal(list.stream().mapToDouble(FabricInDetailsMast::getTotalBillingValue).sum());
+        BigDecimal masterTotalBillingValues = BigDecimal.valueOf(StockBatchServiceImpl.changeInFormattedDecimal(list.stream().mapToDouble(FabricInDetailsMast::getTotalBillingValue).sum()));
+
 
         masterTable.addCell(masterTotalPcs.toString());
         masterTable.addCell(masterTotalMtr.toString());
@@ -148,8 +151,9 @@ public class StockBatchExportService {
     }
 
     private String getStringDateFormatted(String from) {
+        //if from is LIKE this : 2022-01-01T00:00:00+05:30
         String[] strings  = from.split("-");
-        return strings[2]+"-"+strings[1]+"-"+strings[0];
+        return strings[2].substring(0,2)+"-"+strings[1]+"-"+strings[0];
     }
 
     private static String getDateInFormat(String date) throws ParseException {
