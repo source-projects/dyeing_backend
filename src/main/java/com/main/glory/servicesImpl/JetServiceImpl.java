@@ -669,7 +669,7 @@ public class JetServiceImpl {
 
 
         } else {
-            //change the production sequnce in between two jet
+            //change the production sequence in between two jet
 
 
             Double newBatchCapacity = 0.0;
