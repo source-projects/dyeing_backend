@@ -978,15 +978,18 @@ public class StockBatchController extends ControllerConfig {
 
 
     @PostMapping("/stockBatch/pending/forConslidateBatchResponse")
-    public ResponseEntity<GeneralResponse<List<PendingBatchMast>, Object>> getConslidateBatchResponseByFiletr(@RequestBody BatchFilterRequest filter) throws Exception {
-        GeneralResponse<List<PendingBatchMast>, Object> response;
+    public ResponseEntity<GeneralResponse<String, Object>> getConslidateBatchResponseByFiletr(@RequestBody BatchFilterRequest filter) throws Exception {
+        GeneralResponse<String, Object> response;
         try {
             List<PendingBatchMast> flag = stockBatchService.getBatchReportByFilter(filter);
 
-            if (!flag.isEmpty())
-                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            if (!flag.isEmpty()) {
+                //create pdf as per the request
+                String base64 = StockBatchExportService.createPdfFileForPendingBatch(flag);
+                response = new GeneralResponse<>(base64, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            }
             else
-                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+                response = new GeneralResponse<>("", ConstantFile.Batch_Data_Not_Found, false, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             logService.saveLog(response, request, debugAll);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,29 +1,28 @@
 package com.main.glory.export;
 
 
-import java.awt.Color;
-import java.io.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.main.glory.model.StockDataBatchData.request.BatchFilterRequest;
+import com.main.glory.model.StockDataBatchData.response.*;
+import com.main.glory.model.quality.Quality;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletResponse;
-
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
-import com.main.glory.model.StockDataBatchData.request.BatchFilterRequest;
-import com.main.glory.model.StockDataBatchData.response.FabricInDetailsChildData;
-import com.main.glory.model.StockDataBatchData.response.FabricInDetailsData;
-import com.main.glory.model.StockDataBatchData.response.FabricInDetailsMast;
-import com.main.glory.model.party.Party;
-import com.main.glory.model.quality.Quality;
-import com.main.glory.model.user.UserData;
-import com.main.glory.servicesImpl.StockBatchServiceImpl;
 
 
 public class StockBatchExportService {
@@ -33,6 +32,102 @@ public class StockBatchExportService {
 
     public StockBatchExportService(List<FabricInDetailsMast> list) {
         this.list = list;
+    }
+
+
+    public static String createPdfFileForPendingBatch(List<PendingBatchMast> list) throws IOException {
+        if(list==null || list.isEmpty())
+        {
+            return "";
+        }
+
+        File pdfDirectory = new File("pdf");
+        if(!pdfDirectory.exists())
+            pdfDirectory.mkdir();
+        String fileName = String.valueOf(new Date().getTime())+".pdf";
+        OutputStream outputStream =
+                new FileOutputStream(new File(pdfDirectory+"/"+fileName));
+        Document document = new Document(PageSize.A4);
+        //PdfWriter.getInstance(document, servletResponse.getOutputStream());
+        PdfWriter.getInstance(document, outputStream);
+
+        document.open();
+        Font boldFont = new Font();
+        boldFont.setStyle(Font.BOLD);
+        boldFont.setSize(10);
+
+        Font dataFont = new Font();
+        dataFont.setSize(8);
+        Paragraph report =new Paragraph("Pending Report",boldFont);
+        report.setAlignment("Center");
+        document.add(report);
+
+        report =new Paragraph(""+ StockBatchServiceImpl.getDateInRespectedDateFormat(new Date()));
+        report.setAlignment("Center");
+        document.add(report);
+
+
+
+        for(PendingBatchMast pendingBatchMast : list) {
+
+            PdfPTable masterTable = new PdfPTable(8);
+            masterTable.setWidthPercentage(90f);
+            masterTable.setSpacingBefore(10);
+
+            report = new Paragraph("Party Name:" + pendingBatchMast.getPartyName() + " Party Code:" + pendingBatchMast.getPartyCode() + " Master Name:" + pendingBatchMast.getHeadName() + " Quality Mtr:" + pendingBatchMast.getTotalQualityMeter() + " Quality Wt:" + pendingBatchMast.getTotalQualityWt() + " Total Pcs:" + pendingBatchMast.getTotalPcs(), boldFont);
+            document.add(report);
+
+            //add header column
+            PdfPCell masterCell = new PdfPCell();
+            masterCell.setPadding(4);
+            masterCell.setPhrase(new Phrase("Quality Id", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Quality Name", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Pchallan Ref", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Batch Id", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Total Pcs", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Receive Date", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Total Mtr", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Total Wt", boldFont));
+            masterTable.addCell(masterCell);
+            for (PendingBatchData pendingBatchData : pendingBatchMast.getList())
+            {
+                PdfPCell dataCell = new PdfPCell();
+                dataCell.setPadding(4);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getQualityId(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getQualityName(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getPchallanRef(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getBatchId(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getTotalPcs().toString(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getReceiveDate(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getTotalBatchMtr().toString(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getTotalBatchWt().toString(),dataFont));
+                masterTable.addCell(dataCell);
+            }
+
+            document.add(masterTable);
+
+        }
+
+        document.close();
+        outputStream.close();
+
+        File newFile = new File("pdf/"+fileName);
+        return StockBatchServiceImpl.getBase64ByFile(newFile);
+
     }
 
 

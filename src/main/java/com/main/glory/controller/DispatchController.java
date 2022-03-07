@@ -437,12 +437,14 @@ public class DispatchController extends ControllerConfig {
 
     //report by date with consildate bill response
     @PostMapping("/dispatch/report/forConslidateReportBill")
-    public ResponseEntity<GeneralResponse<List<ConsolidatedBillMast>,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
-        GeneralResponse<List<ConsolidatedBillMast>, Object> result;
+    public ResponseEntity<GeneralResponse<String,Object>> getReportDispatchConsolidateBillByFilter(@RequestBody DispatchFilter filter) throws Exception{
+        GeneralResponse<String, Object> result;
         try{    
             List<ConsolidatedBillMast> list = dispatchMastService.getConsolidateDispatchBillByFilter(filter);
-            if(!list.isEmpty())
-                result= new GeneralResponse<>(list, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
+            if(!list.isEmpty()) {
+                String base64 = dispatchMastService.createPdfforConsolidateReportBill(list);
+                result = new GeneralResponse<>(base64, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK, filter);
+            }
             else
                 result = new GeneralResponse<>(null, constantFile.Dispatch_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,filter);
             logService.saveLog(result,request,debugAll);

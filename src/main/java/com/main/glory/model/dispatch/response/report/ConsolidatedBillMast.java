@@ -21,6 +21,9 @@ public class ConsolidatedBillMast {
 
     String invoiceNo;
     String createdDate;
+    Double totalMtr;
+    Double totalFinishMtr;
+    Double totalAmt;
     /*String headName;
     Long userHeadId;
     Long partyId;
@@ -39,6 +42,15 @@ public class ConsolidatedBillMast {
     public ConsolidatedBillMast(ConsolidatedBillDataForPDF e) {
         this.invoiceNo = e.getInvoiceNo();
         this.createdDate = dateFormat.format(e.getCreatedDate());
+        this.totalMtr = e.totalMtr;
+        this.totalAmt = e.getTaxAmt();
+        this.totalFinishMtr = e.getTotalFinishMtr();
+    }
 
+
+    public void addTotals(Double totalMtr, Double totalFinishMtr, Double taxAmt) {
+        this.totalMtr += totalMtr;
+        this.totalFinishMtr += totalFinishMtr;
+        this.totalAmt += taxAmt;
     }
 }

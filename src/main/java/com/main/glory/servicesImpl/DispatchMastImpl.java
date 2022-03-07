@@ -1,6 +1,13 @@
 package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.admin.InvoiceSequenceDao;
@@ -19,6 +26,8 @@ import com.main.glory.model.StockDataBatchData.StockMast;
 import com.main.glory.model.StockDataBatchData.request.BatchFilterRequest;
 import com.main.glory.model.StockDataBatchData.request.GetBYPaginatedAndFiltered;
 import com.main.glory.model.StockDataBatchData.response.BatchWithTotalMTRandFinishMTR;
+import com.main.glory.model.StockDataBatchData.response.PendingBatchData;
+import com.main.glory.model.StockDataBatchData.response.PendingBatchMast;
 import com.main.glory.model.admin.InvoiceSequence;
 import com.main.glory.model.admin.RFSequence;
 import com.main.glory.model.dispatch.DispatchData;
@@ -1326,6 +1335,7 @@ public class DispatchMastImpl {
                 List<ConsolidatedBillDataForPDF> dataForPDFS = consolidatedBillMast.getList();
                 dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
                 consolidatedBillMast.setList(dataForPDFS);
+                consolidatedBillMast.addTotals(e.getTotalMtr(),e.getTotalFinishMtr(),e.getTaxAmt());
                 invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
             }
             else
@@ -3046,5 +3056,114 @@ public class DispatchMastImpl {
         PaymentPendingExcelBasedOnPartyandMasterMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelBasedOnPartyandMasterMast(stringSet,responseList);
 
         return paymentPendingExcelReportSuperMast;
+    }
+
+    public String createPdfforConsolidateReportBill(List<ConsolidatedBillMast> list) throws IOException {
+
+        File pdfDirectory = new File("pdf");
+        if(!pdfDirectory.exists())
+            pdfDirectory.mkdir();
+        String fileName = String.valueOf(new Date().getTime())+".pdf";
+        OutputStream outputStream =
+                new FileOutputStream(new File(pdfDirectory+"/"+fileName));
+        Document document = new Document(PageSize.A4);
+        //PdfWriter.getInstance(document, servletResponse.getOutputStream());
+        PdfWriter.getInstance(document, outputStream);
+
+        document.open();
+        com.lowagie.text.Font boldFont = new com.lowagie.text.Font();
+        boldFont.setStyle(com.lowagie.text.Font.BOLD);
+        boldFont.setSize(10);
+
+        com.lowagie.text.Font dataFont = new com.lowagie.text.Font();
+        dataFont.setSize(8);
+        Paragraph report =new Paragraph("Invoice Report",boldFont);
+        report.setAlignment("Center");
+        document.add(report);
+
+        report =new Paragraph(""+ StockBatchServiceImpl.getDateInRespectedDateFormat(new Date()));
+        report.setAlignment("Center");
+        document.add(report);
+
+        PdfPTable totalTable = new PdfPTable(1);
+        totalTable.setWidthPercentage(90f);
+        totalTable.setSpacingBefore(10);
+
+
+        Double totalMtr = list.stream().mapToDouble(ConsolidatedBillMast::getTotalMtr).sum();
+        Double totalFinishMtr = list.stream().mapToDouble(ConsolidatedBillMast::getTotalFinishMtr).sum();
+        Double totalBillingValue = list.stream().mapToDouble(ConsolidatedBillMast::getTotalAmt).sum();
+
+        PdfPCell totalCell = new PdfPCell();
+        totalCell.setPadding(4);
+        totalCell.setPhrase(new Phrase("Total Grey Meter - "+totalMtr));
+        totalTable.addCell(totalCell);
+        totalCell.setPhrase(new Phrase("Total Finish Meter - "+totalFinishMtr));
+        totalTable.addCell(totalCell);
+        totalCell.setPhrase(new Phrase("Total Amount - "+totalBillingValue));
+        totalTable.addCell(totalCell);
+
+
+
+        for(ConsolidatedBillMast consolidatedBillMast : list) {
+
+            PdfPTable masterTable = new PdfPTable(8);
+            masterTable.setWidthPercentage(90f);
+            masterTable.setSpacingBefore(10);
+
+            report = new Paragraph("Party Name:" + pendingBatchMast.getPartyName() + " Party Code:" + pendingBatchMast.getPartyCode() + " Master Name:" + pendingBatchMast.getHeadName() + " Quality Mtr:" + pendingBatchMast.getTotalQualityMeter() + " Quality Wt:" + pendingBatchMast.getTotalQualityWt() + " Total Pcs:" + pendingBatchMast.getTotalPcs(), boldFont);
+            document.add(report);
+
+            //add header column
+            PdfPCell masterCell = new PdfPCell();
+            masterCell.setPadding(4);
+            masterCell.setPhrase(new Phrase("Quality Id", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Quality Name", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Pchallan Ref", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Batch Id", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Total Pcs", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Receive Date", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Total Mtr", boldFont));
+            masterTable.addCell(masterCell);
+            masterCell.setPhrase(new Phrase("Total Wt", boldFont));
+            masterTable.addCell(masterCell);
+            for (PendingBatchData pendingBatchData : pendingBatchMast.getList())
+            {
+                PdfPCell dataCell = new PdfPCell();
+                dataCell.setPadding(4);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getQualityId(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getQualityName(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getPchallanRef(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getBatchId(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getTotalPcs().toString(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getReceiveDate(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getTotalBatchMtr().toString(),dataFont));
+                masterTable.addCell(dataCell);
+                dataCell.setPhrase(new Phrase(pendingBatchData.getTotalBatchWt().toString(),dataFont));
+                masterTable.addCell(dataCell);
+            }
+
+            document.add(masterTable);
+
+        }
+
+        document.close();
+        outputStream.close();
+
+        File newFile = new File("pdf/"+fileName);
+        return StockBatchServiceImpl.getBase64ByFile(newFile);
+
     }
 }
