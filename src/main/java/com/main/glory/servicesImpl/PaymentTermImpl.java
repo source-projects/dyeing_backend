@@ -275,7 +275,7 @@ public class PaymentTermImpl {
                 getAdvancePaymentList.add(new GetAdvancePayment(advancePayment, partyExist, paymentType));
             }
         }
-        addPaymentMast.setAdvancePaymentListWithExisting(getExistingAdvancePaymentList);
+        addPaymentMast.setAdvancePaymentListWithExisting(getAdvancePaymentList);
         return addPaymentMast;
     }
 
