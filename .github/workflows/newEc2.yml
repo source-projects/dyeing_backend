@@ -24,7 +24,7 @@ jobs:
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       with:
-        host: 15.206.179.225
+        host: 3.110.119.35
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         source: "target/*.jar"
@@ -33,16 +33,14 @@ jobs:
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.3
       with:
-        host: 15.206.179.225
+        host: 3.110.119.35
         username: ubuntu
         key: ${{ secrets.GFL_BACKEND_KEY }}
         script: |
-          #sudo rm /home/ubuntu/dyeing_erp/BE/target/*.jar
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
           fuser -k -n tcp 8080
-          #sudo systemctl restart /usr/lib/systemd/system/javaapp.service
           java -jar /home/ubuntu/dyeing_erp/BE/target/*.jar > /home/ubuntu/dyeing_erp/BE/target/server-logs.txt 2>&1 &
           
     - name: slack the message for success
