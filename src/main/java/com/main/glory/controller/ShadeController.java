@@ -337,4 +337,28 @@ public class ShadeController extends ControllerConfig {
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
+	@GetMapping(value="/shade/existWithFactoryShadeNo")
+	public ResponseEntity<GeneralResponse<Boolean,Object>> shadeExistWithFactoryShadeNo(@RequestParam(name = "factoryShadeNo") String factoryShadeNo) throws Exception {
+		GeneralResponse<Boolean,Object> result;
+		//ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeId,partyShadeNo,entryId);
+
+		try {
+
+			ShadeMast flag = shadeService.getShadeExistWithFactoryShadeNo(factoryShadeNo);
+			if (flag!=null) {
+				result =  new GeneralResponse<>(true, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+			} else {
+				result= new GeneralResponse<>(false, ConstantFile.Shade_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+			}
+
+			logService.saveLog(result,request,debugAll);
+		}catch (Exception e )
+		{
+			e.printStackTrace();
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+			logService.saveLog(result,request,true);
+		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+	}
+
 }

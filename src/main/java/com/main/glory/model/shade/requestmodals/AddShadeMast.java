@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 public class AddShadeMast {
 
     String partyShadeNo;
+    String factoryShadeNo;
     Long id;
     Long processId;
     String processName;
@@ -48,6 +49,7 @@ public class AddShadeMast {
 
     public AddShadeMast(ShadeMast shadeMast) {
         this.partyShadeNo = shadeMast.getPartyShadeNo();
+        this.factoryShadeNo = shadeMast.getFactoryShadeNo();
         this.id = shadeMast.getId();
         this.processId = shadeMast.getProcessId();
         this.processName = shadeMast.getProcessName();
