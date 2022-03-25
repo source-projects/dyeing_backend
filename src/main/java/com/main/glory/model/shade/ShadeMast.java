@@ -28,6 +28,7 @@ import java.util.List;
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
 	String partyShadeNo;
+	String factoryShadeNo;
 	Long processId;
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
     CascadeType.REFRESH })
@@ -85,6 +86,7 @@ import java.util.List;
 		this.id=addShadeMast.getId();
 		this.quality=quality;
 		this.partyShadeNo=addShadeMast.getPartyShadeNo();
+		this.factoryShadeNo = addShadeMast.getFactoryShadeNo();
 		this.processId=addShadeMast.getProcessId();
 		this.party=party;
 		this.colorTone=addShadeMast.getColorTone();
