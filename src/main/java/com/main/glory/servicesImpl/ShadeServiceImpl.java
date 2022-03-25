@@ -819,7 +819,7 @@ public class ShadeServiceImpl {
 
 	}
 
-	public ShadeMast getShadeExistWithFactoryShadeNo(String factoryShadeNo) {
-		return shadeMastDao.getShadeMastByFactoryShadeNo(factoryShadeNo);
+	public ShadeMast getShadeExistWithFactoryShadeNo(Long shadeId,String factoryShadeNo) {
+		return shadeMastDao.getShadeMastByFactoryShadeNoExceptShadeId(shadeId,factoryShadeNo);
 	}
 }

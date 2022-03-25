@@ -338,13 +338,13 @@ public class ShadeController extends ControllerConfig {
 	}
 
 	@GetMapping(value="/shade/existWithFactoryShadeNo")
-	public ResponseEntity<GeneralResponse<Boolean,Object>> shadeExistWithFactoryShadeNo(@RequestParam(name = "factoryShadeNo") String factoryShadeNo) throws Exception {
+	public ResponseEntity<GeneralResponse<Boolean,Object>> shadeExistWithFactoryShadeNo(@RequestParam(name = "shadeId") Long shadeId,@RequestParam(name = "factoryShadeNo") String factoryShadeNo) throws Exception {
 		GeneralResponse<Boolean,Object> result;
 		//ShadeExistWithPartyShadeAndQualityId record = new ShadeExistWithPartyShadeAndQualityId(shadeId,partyShadeNo,entryId);
 
 		try {
 
-			ShadeMast flag = shadeService.getShadeExistWithFactoryShadeNo(factoryShadeNo);
+			ShadeMast flag = shadeService.getShadeExistWithFactoryShadeNo(shadeId,factoryShadeNo);
 			if (flag!=null) {
 				result =  new GeneralResponse<>(true, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
 			} else {

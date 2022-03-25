@@ -74,6 +74,6 @@ public interface ShadeMastDao extends FilterDao<ShadeMast> {
 	@Query("select x from ShadeMast x where x.partyShadeNo=:partyShadeNo AND x.quality.id=:qualityEntryId AND x.id!=:shadeId")
     ShadeMast getShadeByPartyShadeNoAndQualityEntryIdWithExceptShadeId(Long qualityEntryId, String partyShadeNo, Long shadeId);
 
-	@Query("select x from ShadeMast x where LOWER(x.factoryShadeNo) = LOWER(:factoryShadeNo)")
-    ShadeMast getShadeMastByFactoryShadeNo(String factoryShadeNo);
+	@Query("select x from ShadeMast x where LOWER(x.factoryShadeNo) = LOWER(:factoryShadeNo) AND x.id != :shadeId")
+    ShadeMast getShadeMastByFactoryShadeNoExceptShadeId(Long shadeId,String factoryShadeNo);
 }
