@@ -31,6 +31,7 @@ public class DyeingSlipMast {
     Date updatedDate;
     Long stockId;
     Long jetId;
+    @Column(unique=true)
     Long productionId;
     String batchId;
     @ColumnDefault("0")
