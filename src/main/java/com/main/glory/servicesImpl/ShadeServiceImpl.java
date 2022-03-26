@@ -822,4 +822,12 @@ public class ShadeServiceImpl {
 	public ShadeMast getShadeExistWithFactoryShadeNo(Long shadeId,String factoryShadeNo) {
 		return shadeMastDao.getShadeMastByFactoryShadeNoExceptShadeId(shadeId,factoryShadeNo);
 	}
+
+	public GetShadeByPartyAndQuality getShadeByFactoryShadeNo(String factoryShadeNo) {
+		GetShadeByPartyAndQuality getShadeByPartyAndQuality=null;
+
+		getShadeByPartyAndQuality = shadeMastDao.getShadeDetailForProductionPlanByFactoryShadeNo(factoryShadeNo);
+
+		return  getShadeByPartyAndQuality;
+	}
 }

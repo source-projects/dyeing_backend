@@ -241,6 +241,25 @@ public class ShadeController extends ControllerConfig {
 		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
 	}
 
+	@GetMapping("/shade/getShadeByFactoryShadeNo")
+	public ResponseEntity<GeneralResponse<GetShadeByPartyAndQuality,Object>> getShadeByFactoryShadeNo(@RequestParam(value = "factoryShadeNo") String factoryShadeNo){
+		GeneralResponse<GetShadeByPartyAndQuality,Object> result;
+		try{
+			GetShadeByPartyAndQuality shadeMastList = shadeService.getShadeByFactoryShadeNo(factoryShadeNo);
+			if(shadeMastList != null){
+				result= new GeneralResponse<>(shadeMastList, ConstantFile.Shade_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+			}else{
+				result= new GeneralResponse<>(null, ConstantFile.Shade_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+			}
+			logService.saveLog(result,request,debugAll);
+		}catch (Exception e){
+			e.printStackTrace();
+			result= new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST,request.getRequestURI()+"?"+request.getQueryString());
+			logService.saveLog(result,request,true);
+		}
+		return new ResponseEntity<>(result,HttpStatus.valueOf(result.getStatusCode()));
+	}
+
 
 	@PutMapping(value = "/shade")
 	public ResponseEntity<GeneralResponse<Boolean,Object>> updateShadeById(@RequestBody AddShadeMast addShadeMast) throws Exception {

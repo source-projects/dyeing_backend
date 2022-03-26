@@ -76,4 +76,7 @@ public interface ShadeMastDao extends FilterDao<ShadeMast> {
 
 	@Query("select x from ShadeMast x where LOWER(x.factoryShadeNo) = LOWER(:factoryShadeNo) AND x.id != :shadeId")
     ShadeMast getShadeMastByFactoryShadeNoExceptShadeId(Long shadeId,String factoryShadeNo);
+
+	@Query("select new com.main.glory.model.shade.requestmodals.GetShadeByPartyAndQuality(sm.id,sm.partyShadeNo,sm.colorTone,sm.party.id,sm.party.partyCode,sm.party.partyName,sm.quality.id,sm.quality.qualityId,sm.quality.qualityName.qualityName,sm.colorName) from ShadeMast sm where sm.factoryShadeNo = :factoryShadeNo")
+    GetShadeByPartyAndQuality getShadeDetailForProductionPlanByFactoryShadeNo(String factoryShadeNo);
 }

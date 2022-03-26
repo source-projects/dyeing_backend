@@ -28,6 +28,7 @@ import java.util.List;
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	Long id;
 	String partyShadeNo;
+	@Column(unique=true)
 	String factoryShadeNo;
 	Long processId;
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
