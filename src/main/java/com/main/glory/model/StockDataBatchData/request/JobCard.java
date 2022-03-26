@@ -38,6 +38,8 @@ public class JobCard {
     Double totalWt;
     Double totalFinishMtr;
     Long totalPcs;
+    Double wtPer100m;
+    String unit;
     List<BatchData> batchDataList;
 
 
@@ -57,5 +59,7 @@ public class JobCard {
         this.totalPcs=totalPcs;
         this.partyCode=party.getPartyCode();
         this.percentageDiscount = party.getPercentageDiscount()==null?0:party.getPercentageDiscount();
+        this.wtPer100m = stockMast.getWtPer100m();
+        this.unit = stockMast.getUnit();
     }
 }
