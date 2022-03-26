@@ -265,6 +265,7 @@ public class ConstantFile {
     //batch
     public static String Batch_Data_Added = "Data added successfully";
     public static String Batch_Data_Updated = "Data updated successfully";
+    public static String Batch_Data_Not_Updated = "Data not updated successfully";
     public static String Batch_Data_Deleted = "Data deleted successfully";
     public static String Batch_Data_Found = "Data found";
     public static String Batch_Id_Found = "Data found ";

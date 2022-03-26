@@ -3655,4 +3655,17 @@ public class StockBatchServiceImpl {
         return list;
 
     }
+
+    public Boolean updateBatchAsPerRequirement(List<BatchData> batchDataList) throws Exception {
+        //check stock is exist or not
+        for(BatchData batchData:batchDataList)
+        {
+            StockMast stockMast = stockMastDao.getStockMastById(batchData.getControlId());
+            if(stockMast==null)
+                throw new Exception(ConstantFile.StockBatch_Not_Exist);
+
+        }
+        batchDao.saveAll(batchDataList);
+        return true;
+    }
 }
