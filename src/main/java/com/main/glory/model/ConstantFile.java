@@ -472,4 +472,5 @@ public class ConstantFile {
 
     public static String Advance_Payment_Not_Found = "Advance payment data not found";
     public static String Advance_Payment_Not_Exist= "Advance payment data not exist";
+    public static String Connect_With_Admin = "Connect With admin to Create invoice";
 }

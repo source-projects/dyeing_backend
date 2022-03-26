@@ -24,6 +24,7 @@ public class AddQualityName {
     Date createdDate;
     Long updatedBy;
     Date updatedDate;
+    Double value;
     Double rate;
     List<SupplierResponse> supplierList;
 

@@ -3668,4 +3668,9 @@ public class StockBatchServiceImpl {
         batchDao.saveAll(batchDataList);
         return true;
     }
+
+    public Double getPendingStockMtrByPartyId(Long partyId) {
+        Double totalMtr = batchDao.getPendingTotalMtrByPartyId(partyId);
+        return totalMtr==null?0.0:totalMtr;
+    }
 }
