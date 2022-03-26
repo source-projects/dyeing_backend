@@ -1223,5 +1223,25 @@ public class StockBatchController extends ControllerConfig {
         //return response;
     }
 
+
+    @PutMapping("/stockBatch/batch/updateBatch")
+    public ResponseEntity<GeneralResponse<Boolean, Object>> updateBatchAsPerRequirement(@RequestBody List<BatchData> batchDataList) throws Exception {
+        GeneralResponse<Boolean, Object> response;
+        try {
+            Boolean flag = stockBatchService.updateBatchAsPerRequirement(batchDataList);
+
+            if (flag==true)
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Updated, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(flag, ConstantFile.Batch_Data_Not_Updated, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
+
 }
 
