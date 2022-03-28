@@ -29,7 +29,6 @@ public class GetJetData {
     Long productionId;
     String batchId;
     String colorTone;
-
     String partyId;
     String partyName;
     String qualityEntryId;
@@ -44,7 +43,8 @@ public class GetJetData {
     Boolean doseNylone;
     Boolean isDirect;
     Long shadeId;
-
+    String colorName;
+    String factoryShadeNo;
 
 
 
@@ -180,6 +180,8 @@ public class GetJetData {
         this.totalMtr=data.getTotalMtr();
         this.processName=dyeingProcessMast==null?null:dyeingProcessMast.getProcessName();
         this.partyShadeNo=colorTone==null?null:colorTone.getPartyShadeNo();
+        this.colorName=colorTone==null?null:colorTone.getColorName();
+        this.factoryShadeNo=colorTone==null?null:colorTone.getFactoryShadeNo();
         this.sco = hmiMastExist!=null? hmiMastExist.getSco() : false;
         this.doseNylone= hmiMastExist!=null?hmiMastExist.getDoseNylon():false;
         this.isDirect = data.getIsDirect();
