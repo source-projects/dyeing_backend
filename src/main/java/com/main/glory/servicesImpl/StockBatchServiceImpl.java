@@ -2373,7 +2373,6 @@ public class StockBatchServiceImpl {
         UserData userData = userDao.getUserById(party.getUserHeadData().getId());
         Quality quality = qualityDao.getqualityById(stockMast.getQuality().getId());
         QualityName qualityName = quality.getQualityName();
-        ;
         List<PchallanByBatchId> pchallanByBatchIdList = batchDao.getListOfPchallanByBatchId(batchId);
 
         /*
@@ -3667,5 +3666,19 @@ public class StockBatchServiceImpl {
         }
         batchDao.saveAll(batchDataList);
         return true;
+    }
+
+    public List<BatchData> getBatchGrByBatchId(String batchId) {
+        List<BatchData> list = null;
+        List<BatchData> batchDataListExist = batchDao.getBatchByBatchId(batchId);
+        if(batchDataListExist == null || batchDataListExist.size() <= 0)
+        {
+            list = batchDao.getBatchByMergeBatchId(batchId);
+            list = list.stream().filter(e->e.getIsBillGenrated()==false && e.getIsFinishMtrSave()==false).collect(Collectors.toList());
+        }
+        else {
+            list = batchDataListExist.stream().filter(e->e.getIsBillGenrated()==false && e.getIsFinishMtrSave()==false).collect(Collectors.toList());
+        }
+        return list;
     }
 }
