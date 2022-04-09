@@ -1243,5 +1243,24 @@ public class StockBatchController extends ControllerConfig {
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
     }
 
+    @GetMapping("/stockBatch/batch/getBatchByBatchId")
+    public ResponseEntity<GeneralResponse<List<BatchData>, Object>> getBatchByBatchId(@RequestParam("batchId") String batchId) throws Exception {
+        GeneralResponse<List<BatchData>, Object> response;
+        try {
+            if(batchId==null || batchId == "")
+                throw new Exception(ConstantFile.Null_Record_Passed);
+            List<BatchData> batchDataList = stockBatchService.getBatchGrByBatchId(batchId);
+            if (!batchDataList.isEmpty())
+                response = new GeneralResponse<>(batchDataList, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            else
+                response = new GeneralResponse<>(batchDataList, ConstantFile.Batch_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, debugAll);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new GeneralResponse<>(null, e.getMessage(), false, System.currentTimeMillis(), HttpStatus.BAD_REQUEST, request.getRequestURI() + "?" + request.getQueryString());
+            logService.saveLog(response, request, true);
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatusCode()));
+    }
 }
 
