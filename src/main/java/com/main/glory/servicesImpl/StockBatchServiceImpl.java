@@ -3668,7 +3668,7 @@ public class StockBatchServiceImpl {
         return true;
     }
 
-    public List<BatchData> getBatchGrByBatchId(String batchId) {
+    public JobCard getBatchGrByBatchId(String batchId) {
         List<BatchData> list = null;
         List<BatchData> batchDataListExist = batchDao.getBatchByBatchId(batchId);
         if(batchDataListExist == null || batchDataListExist.size() <= 0)
@@ -3679,6 +3679,77 @@ public class StockBatchServiceImpl {
         else {
             list = batchDataListExist.stream().filter(e->e.getIsBillGenrated()==false && e.getIsFinishMtrSave()==false).collect(Collectors.toList());
         }
-        return list;
+
+        JobCard jobCard = new JobCard();
+        if(list!=null) {
+            //take all control id from list
+            Set<Long> uniqueStockId = list.stream().map(BatchData::getControlId).collect(
+                    Collectors.toSet());
+
+            for (Long stockId : uniqueStockId) {
+                StockMast stockMast = stockMastDao.findByStockId(stockId);
+                if (stockMast != null) {
+                    createJobCardResponseForMergeBatchId(jobCard, stockMast);
+                }
+            }
+
+            Set<String> uniqueBatchId = list.stream().map(BatchData::getBatchId).collect(
+                    Collectors.toSet());
+            Set<String> uniquePchallanRef = list.stream().map(BatchData::getPchallanRef).collect(
+                    Collectors.toSet());
+            // header record
+            Double totalWt = list.stream().mapToDouble(BatchData::getWt).sum();
+            Double totalMtr = list.stream().mapToDouble(BatchData::getMtr).sum();
+            Double totalFinish = list.stream().mapToDouble(BatchData::getFinishMtr).sum();
+            Long totalPcs = list.stream().count();
+            //JobCard jobCard = new JobCard(stockMast, party, userData, quality, qualityName, totalMtr, totalPcs, totalWt);
+            jobCard.setTotalMtr(totalMtr);
+            jobCard.setTotalWt(totalWt);
+            jobCard.setTotalPcs(totalPcs);
+            jobCard.setChalNo(uniquePchallanRef.stream().collect(Collectors.joining(",")));
+            jobCard.setBatchId(uniqueBatchId.stream().collect(Collectors.joining(",")));
+            jobCard.setTotalFinishMtr(totalFinish);
+            jobCard.setBatchDataList(list);
+        }
+        return jobCard;
+    }
+
+    private void createJobCardResponseForMergeBatchId(JobCard jobCard, StockMast stockMast) {
+        if (jobCard.getPartyName() != null) {
+            jobCard.setPartyName(jobCard.getPartyName() + "," + stockMast.getParty().getPartyName());
+        } else {
+            jobCard.setPartyName(stockMast.getParty().getPartyName());
+        }
+        if (jobCard.getPartyCode() != null) {
+            jobCard.setPartyCode(jobCard.getPartyCode() + "," + stockMast.getParty().getPartyCode());
+        } else {
+            jobCard.setPartyCode(stockMast.getParty().getPartyCode());
+        }
+        if (jobCard.getQualityId() != null) {
+            jobCard.setQualityId(jobCard.getQualityId() + "," + stockMast.getQuality().getQualityId());
+        } else {
+            jobCard.setQualityId(stockMast.getQuality().getQualityId());
+        }
+        if (jobCard.getWtPer100m() != null) {
+            jobCard.setWtPer100m(jobCard.getWtPer100m() + "," + stockMast.getWtPer100m());
+        } else {
+            jobCard.setWtPer100m(stockMast.getWtPer100m().toString());
+        }
+        if (jobCard.getQualityName() != null) {
+            jobCard.setQualityName(jobCard.getQualityName() + "," + stockMast.getQuality().getQualityName().getQualityName());
+        } else {
+            jobCard.setQualityName(stockMast.getQuality().getQualityName().getQualityName());
+        }
+        if (jobCard.getPercentageDiscount() != null) {
+            jobCard.setPercentageDiscount(jobCard.getPercentageDiscount() + "," + stockMast.getParty().getPercentageDiscount());
+        } else {
+            jobCard.setQualityName(stockMast.getParty().getPercentageDiscount().toString());
+        }
+        if (jobCard.getMasterName() != null) {
+            jobCard.setMasterName(jobCard.getMasterName() + "," + stockMast.getParty().getUserHeadData().getUserName());
+        } else {
+            jobCard.setQualityName(stockMast.getParty().getUserHeadData().getUserName());
+        }
+
     }
 }

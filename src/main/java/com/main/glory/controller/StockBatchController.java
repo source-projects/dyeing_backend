@@ -16,6 +16,7 @@ import com.main.glory.services.DataFilterService;
 import com.main.glory.servicesImpl.BatchImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
 import com.main.glory.servicesImpl.StockBatchServiceImpl;
+import netscape.javascript.JSObject;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1244,13 +1245,13 @@ public class StockBatchController extends ControllerConfig {
     }
 
     @GetMapping("/stockBatch/batch/getBatchByBatchId")
-    public ResponseEntity<GeneralResponse<List<BatchData>, Object>> getBatchByBatchId(@RequestParam("batchId") String batchId) throws Exception {
-        GeneralResponse<List<BatchData>, Object> response;
+    public ResponseEntity<GeneralResponse<JobCard, Object>> getBatchByBatchId(@RequestParam("batchId") String batchId) throws Exception {
+        GeneralResponse<JobCard, Object> response;
         try {
             if(batchId==null || batchId == "")
                 throw new Exception(ConstantFile.Null_Record_Passed);
-            List<BatchData> batchDataList = stockBatchService.getBatchGrByBatchId(batchId);
-            if (!batchDataList.isEmpty())
+            JobCard batchDataList = stockBatchService.getBatchGrByBatchId(batchId);
+            if (batchDataList!=null)
                 response = new GeneralResponse<>(batchDataList, ConstantFile.Batch_Data_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());
             else
                 response = new GeneralResponse<>(batchDataList, ConstantFile.Batch_Data_Not_Found, true, System.currentTimeMillis(), HttpStatus.OK, request.getRequestURI() + "?" + request.getQueryString());

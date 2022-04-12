@@ -22,7 +22,7 @@ import java.util.Optional;
 @Setter
 public class JobCard {
     Long partyId;
-    Double percentageDiscount;
+    String percentageDiscount;
     String partyCode;
     String partyName;
     String masterName;
@@ -38,7 +38,7 @@ public class JobCard {
     Double totalWt;
     Double totalFinishMtr;
     Long totalPcs;
-    Double wtPer100m;
+    String wtPer100m;
     String unit;
     List<BatchData> batchDataList;
 
@@ -58,8 +58,8 @@ public class JobCard {
         this.totalWt=totalWt;
         this.totalPcs=totalPcs;
         this.partyCode=party.getPartyCode();
-        this.percentageDiscount = party.getPercentageDiscount()==null?0:party.getPercentageDiscount();
-        this.wtPer100m = stockMast.getWtPer100m();
+        this.percentageDiscount = party.getPercentageDiscount()==null?"0":party.getPercentageDiscount().toString();
+        this.wtPer100m = stockMast.getWtPer100m().toString();
         this.unit = stockMast.getUnit();
     }
 }
