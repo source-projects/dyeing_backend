@@ -24,6 +24,7 @@ public class AddQualityName {
     Date createdDate;
     Long updatedBy;
     Date updatedDate;
+    Double value;
     Double rate;
     List<SupplierResponse> supplierList;
 
@@ -37,6 +38,7 @@ public class AddQualityName {
         this.updatedDate = qualityName.getUpdatedDate();
         this.rate = qualityName.getRate();
         this.supplierList = supplierList.isEmpty()?null:supplierList;
+        this.value = qualityName.getValue();
     }
 
 }

@@ -2133,6 +2133,7 @@ public class DispatchMastImpl {
         if (party == null)
             throw new Exception(ConstantFile.Party_Not_Exist);
 
+
         // check the all the batches and stock is belong to same party or not
         for (BatchAndStockId batchAndStockId : createDispatch.getBatchAndStockIdList()) {
 
@@ -2348,6 +2349,20 @@ public class DispatchMastImpl {
 
         if (batchWithGrList.isEmpty() || qualityBillByInvoiceNumberList.isEmpty())
             throw new Exception(ConstantFile.Batch_Data_Not_Found);
+
+
+        //check credit limit with existing stock and pending batch values
+        Double totalFinishMtr = qualityBillByInvoiceNumberList.stream().mapToDouble(QualityBillByInvoiceNumber::getFinishMtr).sum();
+        Double invoiceTotalMtr = qualityBillByInvoiceNumberList.stream().mapToDouble(QualityBillByInvoiceNumber::getTotalMtr).sum();
+        Double totalRate = qualityBillByInvoiceNumberList.stream().mapToDouble(QualityBillByInvoiceNumber::getRate).sum();
+        Double totalQualityValue = qualityBillByInvoiceNumberList.stream().mapToDouble(QualityBillByInvoiceNumber::getQualityValue).sum();
+        Double currentInvoiceAmt = totalFinishMtr * totalRate;
+        Double totalPendingMtr = stockBatchService.getPendingStockMtrByPartyId(party.getId());
+        Double totalPendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.getId());
+        if((party.getCreditLimit() + (totalPendingMtr - invoiceTotalMtr) * totalQualityValue) > (totalPendingAmt + currentInvoiceAmt)){
+                throw new Exception(constantFile.Connect_With_Admin);
+        }
+
 
         PartyDataByInvoiceNumber partyDataByInvoiceNumber = new PartyDataByInvoiceNumber(party,
                 qualityBillByInvoiceNumberList, batchWithGrList);

@@ -28,6 +28,7 @@ public class QualityName {
     Date updatedDate;
     @ColumnDefault("0")
     Double rate;
+    Double value;
 
     public QualityName(AddQualityName qualityName) {
         this.id = qualityName.getId();
@@ -37,6 +38,7 @@ public class QualityName {
         this.rate = qualityName.getRate();
         this.createdDate = qualityName.getCreatedDate();
         this.updatedDate = qualityName.getUpdatedDate();
+        this.value = qualityName.getValue();
     }
 
     @PrePersist

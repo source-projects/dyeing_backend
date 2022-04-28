@@ -3668,6 +3668,12 @@ public class StockBatchServiceImpl {
         return true;
     }
 
+
+    public Double getPendingStockMtrByPartyId(Long partyId) {
+        Double totalMtr = batchDao.getPendingTotalMtrByPartyId(partyId);
+        return totalMtr == null ? 0.0 : totalMtr;
+    }
+
     public JobCard getBatchGrByBatchId(String batchId) {
         List<BatchData> list = null;
         List<BatchData> batchDataListExist = batchDao.getBatchByBatchId(batchId);
