@@ -65,7 +65,8 @@ public class Party {
     private Double percentageDiscount;
     private Double gstPercentage;
     private String partyCode;
-
+    @ColumnDefault("false")
+    private Boolean blockBilling;
 
     public Party(Party party) {
         this.id=party.getId();
@@ -93,6 +94,7 @@ public class Party {
         this.partyCode=party.getPartyCode();
         this.creditLimit = party.getCreditLimit();
         this.paymentDays = party.getPaymentDays();
+        this.blockBilling = party.getBlockBilling();
     }
 
 
@@ -128,8 +130,7 @@ public class Party {
         this.partyCode=addParty.getPartyCode();
         this.paymentDays=addParty.getPaymentDays();
         this.creditLimit=addParty.getCreditLimit();
-
-        
+        this.blockBilling = addParty.getBlockBilling()?addParty.getBlockBilling():false;
         this.userHeadData=userHeadData;
         this.createdBy=createdBy;
         this.updatedBy=updatedBy;
