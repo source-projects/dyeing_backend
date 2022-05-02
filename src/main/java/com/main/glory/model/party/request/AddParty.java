@@ -48,6 +48,7 @@ public class AddParty {
     Long paymentDays;
     Double creditLimit;
     Double discount;
+    Boolean blockBilling;
 
     public AddParty(Party party) {
         this.id = party.getId();
@@ -75,6 +76,7 @@ public class AddParty {
         this.partyCode = party.getPartyCode();
         this.paymentDays = party.getPaymentDays();
         this.creditLimit = party.getCreditLimit();
+        this.blockBilling = party.getBlockBilling();
         //this.discount = party.getPercentageDiscount();
     }
 }
