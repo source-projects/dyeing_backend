@@ -3749,12 +3749,18 @@ public class StockBatchServiceImpl {
         if (jobCard.getPercentageDiscount() != null) {
             jobCard.setPercentageDiscount(jobCard.getPercentageDiscount() + "," + stockMast.getParty().getPercentageDiscount());
         } else {
-            jobCard.setQualityName(stockMast.getParty().getPercentageDiscount().toString());
+            jobCard.setPercentageDiscount(stockMast.getParty().getPercentageDiscount().toString());
         }
         if (jobCard.getMasterName() != null) {
             jobCard.setMasterName(jobCard.getMasterName() + "," + stockMast.getParty().getUserHeadData().getUserName());
         } else {
-            jobCard.setQualityName(stockMast.getParty().getUserHeadData().getUserName());
+            jobCard.setMasterName(stockMast.getParty().getUserHeadData().getUserName());
+        }
+
+        if (jobCard.getUnit() != null) {
+            jobCard.setUnit(jobCard.getUnit() + "," + stockMast.getUnit());
+        } else {
+            jobCard.setUnit(stockMast.getUnit());
         }
 
     }
