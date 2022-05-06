@@ -3,6 +3,9 @@ package com.main.glory.servicesImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.BaseColor;
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfCell;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
@@ -50,6 +53,7 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 import org.apache.commons.math3.util.Precision;
+import org.apache.maven.plugin.lifecycle.Phase;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Font;
@@ -3082,20 +3086,23 @@ public class DispatchMastImpl {
                 new FileOutputStream(new File(pdfDirectory+"/"+fileName));
         Document document = new Document(PageSize.A4);
         //PdfWriter.getInstance(document, servletResponse.getOutputStream());
-        PdfWriter.getInstance(document, outputStream);
+        PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
         document.open();
 
         com.lowagie.text.Font font = FontFactory.getFont(FontFactory.HELVETICA);
         font.setSize(8);
-        font.setStyle("Bold");
+        font.setStyle(com.lowagie.text.Font.BOLD);
+
         for(String copy : copyType) {
             Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN",font);
             report.setAlignment("Center");
-
-
+            document.add(report);
+            report = new Paragraph(copy,font);
+            report.setAlignment("Right");
 
             document.add(report);
+            document.newPage();
         }
         document.close();
         outputStream.close();
