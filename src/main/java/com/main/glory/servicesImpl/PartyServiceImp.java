@@ -278,6 +278,10 @@ public class PartyServiceImp implements PartyServiceInterface {
         if (party1 != null && party1.getId() != party.getId())
             throw new Exception("GST is already availble");
 
+
+        Double totalPendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.getId());
+        if(party.getCreditLimit() < totalPendingAmt)
+        throw new Exception(ConstantFile.CreditLimit_Can_Not_Be_Less_than_Pending_Amt);
         if (!partyIndex.isPresent())
             return false;
         else

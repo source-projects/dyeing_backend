@@ -473,4 +473,6 @@ public class ConstantFile {
     public static String Advance_Payment_Not_Found = "Advance payment data not found";
     public static String Advance_Payment_Not_Exist= "Advance payment data not exist";
     public static String Connect_With_Admin = "Connect With admin to Create invoice";
+    public static String Payment_Limit_Exceed_OR_Block_Billing = "Payment limit exceed or billing is block, Connect With Admin";
+    public static String CreditLimit_Can_Not_Be_Less_than_Pending_Amt = "Credit limit can't less than Pending Amount";
 }
