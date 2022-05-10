@@ -1,6 +1,9 @@
 package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.BaseColor;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
 import com.main.glory.Dao.admin.InvoiceSequenceDao;
@@ -48,9 +51,13 @@ import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 import org.apache.commons.math3.util.Precision;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,6 +71,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("dispatchMastImpl")
@@ -3061,5 +3069,38 @@ public class DispatchMastImpl {
         PaymentPendingExcelBasedOnPartyandMasterMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelBasedOnPartyandMasterMast(stringSet,responseList);
 
         return paymentPendingExcelReportSuperMast;
+    }
+
+    public String createPdfFileAndReturnBase64(PartyDataByInvoiceNumber partyDataByInvoiceNumber) throws IOException {
+        String[] copyType = {"Original","Duplicate","Triplicate"};
+        File pdfDirectory = new File("pdf");
+
+        if(!pdfDirectory.exists())
+            pdfDirectory.mkdir();
+        String fileName = String.valueOf(new Date().getTime())+".pdf";
+        OutputStream outputStream =
+                new FileOutputStream(new File(pdfDirectory+"/"+fileName));
+        Document document = new Document(PageSize.A4);
+        //PdfWriter.getInstance(document, servletResponse.getOutputStream());
+        PdfWriter.getInstance(document, outputStream);
+
+        document.open();
+
+        com.lowagie.text.Font font = FontFactory.getFont(FontFactory.HELVETICA);
+        font.setSize(8);
+        font.setStyle("Bold");
+        for(String copy : copyType) {
+            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN",font);
+            report.setAlignment("Center");
+
+
+
+            document.add(report);
+        }
+        document.close();
+        outputStream.close();
+
+        return fileName;
+
     }
 }

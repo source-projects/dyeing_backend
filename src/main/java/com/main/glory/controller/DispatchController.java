@@ -26,6 +26,7 @@ import com.main.glory.model.party.Party;
 import com.main.glory.services.FilterService;
 import com.main.glory.servicesImpl.DispatchMastImpl;
 import com.main.glory.servicesImpl.LogServiceImpl;
+import com.main.glory.servicesImpl.StockBatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -618,14 +620,16 @@ public class DispatchController extends ControllerConfig {
 
     //for print invoice
     @GetMapping("/dispatch/getPChallanPartyWithQualityDispatchBy/{id}")
-    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPChallanPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
-        GeneralResponse<PartyDataByInvoiceNumber,Object> result;
+    public ResponseEntity<GeneralResponse<String,Object>> getPChallanPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
+        GeneralResponse<String,Object> result;
         try{
             //id = invoiceNo
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPChallanPartyWithQualityDispatchBy(id);
-
-                result= new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                String fileName = dispatchMastService.createPdfFileAndReturnBase64(x);
+                File file = new File("pdf/"+fileName);
+                String encodedString = StockBatchServiceImpl.getBase64ByFile(file);
+                result= new GeneralResponse<>(encodedString, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
                 result= new GeneralResponse<>(null,ConstantFile.Null_Record_Passed, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());

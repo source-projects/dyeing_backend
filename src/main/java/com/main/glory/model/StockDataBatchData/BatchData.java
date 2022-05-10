@@ -42,6 +42,8 @@ public class BatchData {
     Boolean isFinishMtrSave;
     String mergeBatchId;
     String pchallanRef;
+    @ColumnDefault("false")
+    Boolean avoidCommission;
 
 
 
@@ -65,7 +67,7 @@ public class BatchData {
         this.isBillGenrated=other.isBillGenrated==null?false:other.getIsBillGenrated();
         this.isFinishMtrSave = other.isFinishMtrSave==null?false:other.getIsFinishMtrSave();
         this.pchallanRef = other.getPchallanRef()==null?null:other.getPchallanRef();
-
+        this.avoidCommission = other.getAvoidCommission()==null?false:other.getAvoidCommission();
 
     }
 
