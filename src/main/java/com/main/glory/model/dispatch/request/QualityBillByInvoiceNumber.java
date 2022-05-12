@@ -55,7 +55,7 @@ public class QualityBillByInvoiceNumber {
     public QualityBillByInvoiceNumber(Quality quality, Double totalFinishMtr, Double totalMtr, Long totalPcs, QualityName qualityName, String pchallanRef, StockMast stockMast,String batchId) {
         this.qualityId = quality.getQualityId();
         this.qualityName = qualityName.getQualityName();
-        this.qualityValue = qualityName.getValue();
+        this.qualityValue = qualityName.getQualityValue();
         this.hsn = quality.getHsn();
         this.rate = quality.getRate();
         this.batchId = batchId;

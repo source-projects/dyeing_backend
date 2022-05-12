@@ -38,7 +38,7 @@ public class AddQualityName {
         this.updatedDate = qualityName.getUpdatedDate();
         this.rate = qualityName.getRate();
         this.supplierList = supplierList.isEmpty()?null:supplierList;
-        this.value = qualityName.getValue();
+        this.value = qualityName.getQualityValue();
     }
 
 }
