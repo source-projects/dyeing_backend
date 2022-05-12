@@ -3102,6 +3102,8 @@ public class DispatchMastImpl {
         fontWithSizeFour.setSize(4);
         com.lowagie.text.Font fontWithSizeEight = FontFactory.getFont(FontFactory.HELVETICA);
         fontWithSizeEight.setSize(8);
+        com.lowagie.text.Font fontWithSizeSix = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithSizeEight.setSize(6);
 
 
         //Main Table
@@ -3110,37 +3112,37 @@ public class DispatchMastImpl {
         for(String copy : copyType) {
 
             //invoice header
-            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN",fontWithBoldAndEightSize);
+            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN", fontWithBoldAndEightSize);
             report.setAlignment("Center");
             document.add(report);
 
-            report = new Paragraph(copy,fontWithSizeEight);
+            report = new Paragraph(copy, fontWithSizeEight);
             report.setAlignment("Right");
             document.add(report);
 
             PdfPTable masterTable = new PdfPTable(2);
             masterTable.setWidthPercentage(100f);
             masterTable.setSpacingBefore(1);
-            masterTable.setWidths(new float[]{8f,2f});
+            masterTable.setWidths(new float[]{8f, 2f});
             PdfPCell masterCell = new PdfPCell();
             masterCell.setBorder(Rectangle.LEFT | Rectangle.TOP | Rectangle.BOTTOM);
 
 
             //table header
-            PdfPTable headerTable =new PdfPTable(1);
+            PdfPTable headerTable = new PdfPTable(1);
             headerTable.setWidthPercentage(100f);
             headerTable.setSpacingBefore(1);
-            PdfPCell headerCell = new PdfPCell(new Phrase("GLORY DYEING MILLS PVT. LTD.",fontWithBoldAndTwelveSize));
+            PdfPCell headerCell = new PdfPCell(new Phrase("GLORY DYEING MILLS PVT. LTD.", fontWithBoldAndTwelveSize));
             headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             headerCell.setBorder(Rectangle.NO_BORDER);
             headerTable.addCell(headerCell);
 
-            headerCell.setPhrase(new Phrase("FORMALLY KNOWN AS : MUKESH PROCESSORS PVT. LTD.",fontWithSizeFour));
+            headerCell.setPhrase(new Phrase("FORMALLY KNOWN AS : MUKESH PROCESSORS PVT. LTD.", fontWithSizeFour));
             headerTable.addCell(headerCell);
-            headerCell.setPhrase(new Phrase("A-31, G.E.T.P, (Kala Ghoda), Palsana, Surat E-Mail : dyeing@gloryfab.com",fontWithSizeEight));
+            headerCell.setPhrase(new Phrase("A-31, G.E.T.P, (Kala Ghoda), Palsana, Surat E-Mail : dyeing@gloryfab.com", fontWithSizeEight));
             headerTable.addCell(headerCell);
-            headerCell.setPhrase(new Phrase("GSTIN :- 24AAFCM5028A1Z1 Place Of Supply : Surat",fontWithSizeEight));
+            headerCell.setPhrase(new Phrase("GSTIN :- 24AAFCM5028A1Z1 Place Of Supply : Surat", fontWithSizeEight));
             headerTable.addCell(headerCell);
             masterCell.addElement(headerTable);
             masterTable.addCell(masterCell);
@@ -3151,7 +3153,7 @@ public class DispatchMastImpl {
             masterCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             masterCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             Image imageLogo = Image.getInstance(imageFile.getPath());
-            imageLogo.scaleToFit(50,25);
+            imageLogo.scaleToFit(50, 25);
             masterCell.addElement(imageLogo);
             masterTable.addCell(masterCell);
             mainCell.addElement(masterTable);
@@ -3161,29 +3163,29 @@ public class DispatchMastImpl {
             masterTable = new PdfPTable(2);
             masterTable.setWidthPercentage(100f);
             masterTable.setSpacingBefore(1);
-            masterTable.setWidths(new float[]{7f,3f});
+            masterTable.setWidths(new float[]{7f, 3f});
             PdfPTable partyTable = new PdfPTable(2);
             partyTable.setWidthPercentage(100f);
             //partyTable.setSpacingBefore(1);
-            partyTable.setWidths(new float[]{2f,8f});
-            PdfPCell partyCell = new PdfPCell(new Phrase("Party Name",fontWithBoldAndEightSize));
+            partyTable.setWidths(new float[]{2f, 8f});
+            PdfPCell partyCell = new PdfPCell(new Phrase("Party Name", fontWithBoldAndEightSize));
             partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getPartyName(),fontWithSizeEight));
+            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getPartyName(), fontWithSizeEight));
             partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase("Address",fontWithBoldAndEightSize));
+            partyCell.setPhrase(new Phrase("Address", fontWithBoldAndEightSize));
             partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getAddress().toString(),fontWithSizeEight));
+            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getAddress().toString(), fontWithSizeEight));
             partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase("GSTIN",fontWithBoldAndEightSize));
+            partyCell.setPhrase(new Phrase("GSTIN", fontWithBoldAndEightSize));
             partyTable.addCell(partyCell);
             //GST TABLE
-            PdfPTable gstTable =new PdfPTable(3);
-            PdfPCell gstCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getGST(),fontWithSizeEight));
+            PdfPTable gstTable = new PdfPTable(3);
+            PdfPCell gstCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getGST(), fontWithSizeEight));
             gstCell.setBorder(Rectangle.NO_BORDER);
             gstTable.addCell(gstCell);
-            gstCell = new PdfPCell(new Phrase("Phn No:",fontWithBoldAndEightSize));
+            gstCell = new PdfPCell(new Phrase("Phn No:", fontWithBoldAndEightSize));
             gstTable.addCell(gstCell);
-            gstCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getContactNo(),fontWithSizeEight));
+            gstCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getContactNo(), fontWithSizeEight));
             gstTable.addCell(gstCell);
             partyTable.addCell(gstTable);
 
@@ -3193,13 +3195,13 @@ public class DispatchMastImpl {
 
             //table for invoice detail
             PdfPTable invoiceDetailTable = new PdfPTable(2);
-            PdfPCell invoiceDetailCell = new PdfPCell(new Phrase("Invoice No",fontWithBoldAndEightSize));
+            PdfPCell invoiceDetailCell = new PdfPCell(new Phrase("Invoice No", fontWithBoldAndEightSize));
             invoiceDetailTable.addCell(invoiceDetailCell);
-            invoiceDetailCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getInvoiceNo().toString(),fontWithBoldAndEightSize));
+            invoiceDetailCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getInvoiceNo().toString(), fontWithBoldAndEightSize));
             invoiceDetailTable.addCell(invoiceDetailCell);
-            invoiceDetailCell.setPhrase(new Phrase("Date",fontWithBoldAndEightSize));
+            invoiceDetailCell.setPhrase(new Phrase("Date", fontWithBoldAndEightSize));
             invoiceDetailTable.addCell(invoiceDetailCell);
-            invoiceDetailCell.setPhrase(new Phrase(simpleDateFormat.format(partyDataByInvoiceNumber.getCreatedDate()),fontWithBoldAndEightSize));
+            invoiceDetailCell.setPhrase(new Phrase(simpleDateFormat.format(partyDataByInvoiceNumber.getCreatedDate()), fontWithBoldAndEightSize));
             invoiceDetailTable.addCell(invoiceDetailCell);
             masterTable.addCell(invoiceDetailTable);
             mainCell = new PdfPCell();
@@ -3211,34 +3213,34 @@ public class DispatchMastImpl {
 
             PdfPTable qualityTable = new PdfPTable(10);
             qualityTable.setWidthPercentage(100f);
-            qualityTable.setWidths(new float[]{0.5f,3f,1f,1f,1f,1f,0.5f,1f,0.5f,1f});
+            qualityTable.setWidths(new float[]{0.5f, 3f, 1f, 1f, 1f, 1f, 0.5f, 1f, 0.5f, 1f});
             PdfPCell qualityCell = new PdfPCell();
-            qualityCell.setPhrase(new Phrase("Sr.no",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Sr.no", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Quality",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Quality", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("HSN",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("HSN", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("P.Chl No ",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("P.Chl No ", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Lot No",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Lot No", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Grey(Mtr/Kg)",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Grey(Mtr/Kg)", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Pcs",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Pcs", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Finish(Mtr/kg)",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Finish(Mtr/kg)", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Rate",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Rate", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Amount",fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase("Amount", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            for(int i=0;i<4;i++) {
-                qualityCell.setPhrase(new Phrase(String.valueOf(i+1), fontWithBoldAndEightSize));
+            for (int i = 0; i < 4; i++) {
+                qualityCell.setPhrase(new Phrase(String.valueOf(i + 1), fontWithBoldAndEightSize));
                 qualityTable.addCell(qualityCell);
-                if (partyDataByInvoiceNumber.getQualityList().size() > i){
+                if (partyDataByInvoiceNumber.getQualityList().size() > i) {
                     QualityBillByInvoiceNumber qualityBillByInvoiceNumber = partyDataByInvoiceNumber.getQualityList().get(i);
-                    if(qualityBillByInvoiceNumber!=null) {
+                    if (qualityBillByInvoiceNumber != null) {
                         qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getQualityId(), fontWithSizeEight));
                         qualityTable.addCell(qualityCell);
                         qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getHsn(), fontWithSizeEight));
@@ -3253,27 +3255,21 @@ public class DispatchMastImpl {
                         qualityTable.addCell(qualityCell);
                         qualityCell.setPhrase(new Phrase(StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getFinishMtr()).toString(), fontWithSizeEight));
                         qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(String.format("%.2f",qualityBillByInvoiceNumber.getRate()), fontWithSizeEight));
+                        qualityCell.setPhrase(new Phrase(String.format("%.2f", qualityBillByInvoiceNumber.getRate()), fontWithSizeEight));
                         qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(String.format("%.2f",qualityBillByInvoiceNumber.getAmt()), fontWithSizeEight));
+                        qualityCell.setPhrase(new Phrase(String.format("%.2f", qualityBillByInvoiceNumber.getAmt()), fontWithSizeEight));
                         qualityTable.addCell(qualityCell);
-                    }
-                    else
-                    {
-                        int k=0;
-                        while(k<9)
-                        {
+                    } else {
+                        int k = 0;
+                        while (k < 9) {
                             qualityTable.addCell(blankCell);
                             k++;
                         }
                     }
 
-                }
-                else
-                {
-                    int k=0;
-                    while(k<9)
-                    {
+                } else {
+                    int k = 0;
+                    while (k < 9) {
                         qualityTable.addCell(blankCell);
                         k++;
                     }
@@ -3287,14 +3283,14 @@ public class DispatchMastImpl {
             qualityTable.addCell(blankCell);
             qualityCell.setPhrase(new Phrase("TOTAL", fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getTotalMtr).sum()), fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getTotalMtr).sum()), fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
             qualityCell.setPhrase(new Phrase(String.valueOf(partyDataByInvoiceNumber.getQualityList().stream().mapToLong(QualityBillByInvoiceNumber::getPcs).sum()), fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getFinishMtr).sum()), fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getFinishMtr).sum()), fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
             qualityTable.addCell(blankCell);
-            qualityCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getAmt).sum()), fontWithBoldAndEightSize));
+            qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getAmt).sum()), fontWithBoldAndEightSize));
             qualityTable.addCell(qualityCell);
             mainTable.addCell(qualityTable);
 
@@ -3302,34 +3298,34 @@ public class DispatchMastImpl {
             //REMARK AND TOTAL TABLE
             PdfPTable remarkAndTotalTable = new PdfPTable(2);
             remarkAndTotalTable.setWidthPercentage(100f);
-            remarkAndTotalTable.setWidths(new float[]{6f,4f});
+            remarkAndTotalTable.setWidths(new float[]{6f, 4f});
             PdfPCell remarkAndTotalCell = new PdfPCell();
 
             //REMARK TABLE
             PdfPTable remarkTable = new PdfPTable(1);
             remarkTable.setWidthPercentage(100f);
-            PdfPCell remarkCell = new PdfPCell(new Phrase("REMARK",fontWithBoldAndEightSize));
+            PdfPCell remarkCell = new PdfPCell(new Phrase("REMARK", fontWithBoldAndEightSize));
+            remarkTable.addCell(remarkCell);
             //remarkCell.setBorder(Rectangle.NO_BORDER);
-            remarkCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getRemark(),fontWithSizeEight));
+            remarkCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getRemark(), fontWithSizeEight));
             remarkCell.setFixedHeight(25);
             remarkTable.addCell(remarkCell);
             remarkAndTotalCell.addElement(remarkTable);
             remarkAndTotalTable.addCell(remarkAndTotalCell);
 
 
-
             //Total Table
             PdfPTable invoiceTotalTable = new PdfPTable(2);
             invoiceTotalTable.setWidthPercentage(100f);
-            PdfPCell invoiceTotalCell = new PdfPCell(new Phrase("Discount @3%",fontWithBoldAndEightSize));
+            PdfPCell invoiceTotalCell = new PdfPCell(new Phrase("Discount @3%", fontWithBoldAndEightSize));
             invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getDiscount()),fontWithBoldAndEightSize));
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getDiscount()), fontWithBoldAndEightSize));
             invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase("Taxable Amount",fontWithBoldAndEightSize));
+            invoiceTotalCell.setPhrase(new Phrase("Taxable Amount", fontWithBoldAndEightSize));
             invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getTaxAmt()),fontWithBoldAndEightSize));
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getTaxAmt()), fontWithBoldAndEightSize));
             invoiceTotalTable.addCell(invoiceTotalCell);
-            if(partyDataByInvoiceNumber.getState().equalsIgnoreCase("Gujarat")) {
+            if (partyDataByInvoiceNumber.getState().equalsIgnoreCase("Gujarat")) {
                 invoiceTotalCell.setPhrase(new Phrase("CGST: @2.5% ", fontWithBoldAndEightSize));
                 invoiceTotalTable.addCell(invoiceTotalCell);
                 invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getCgst()), fontWithBoldAndEightSize));
@@ -3338,8 +3334,7 @@ public class DispatchMastImpl {
                 invoiceTotalTable.addCell(invoiceTotalCell);
                 invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getSgst()), fontWithBoldAndEightSize));
                 invoiceTotalTable.addCell(invoiceTotalCell);
-            }
-            else {
+            } else {
                 invoiceTotalCell.setPhrase(new Phrase("IGST: @5% ", fontWithBoldAndEightSize));
                 invoiceTotalTable.addCell(invoiceTotalCell);
                 invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getIgst()), fontWithBoldAndEightSize));
@@ -3358,6 +3353,24 @@ public class DispatchMastImpl {
             mainCell = new PdfPCell();
             mainCell.addElement(remarkAndTotalTable);
             mainTable.addCell(mainCell);
+
+
+            //batch gr table
+            PdfPTable batchMastTable = new PdfPTable(4);
+            batchMastTable.setWidthPercentage(100f);
+            batchMastTable.setWidths(new float[]{25f,25f,25f,25f});
+            //batch data table
+            for (int i = 0; i < 4; i++)
+            {
+                PdfPTable batchDataTable = new PdfPTable(3);
+                PdfPCell batchDataCell = new PdfPCell();
+
+
+
+            }
+
+
+            mainTable.addCell(batchMastTable);
             document.add(mainTable);
             document.newPage();
         }
