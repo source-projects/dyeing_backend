@@ -620,16 +620,13 @@ public class DispatchController extends ControllerConfig {
 
     //for print invoice
     @GetMapping("/dispatch/getPChallanPartyWithQualityDispatchBy/{id}")
-    public ResponseEntity<GeneralResponse<String,Object>> getPChallanPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
-        GeneralResponse<String,Object> result;
+    public ResponseEntity<GeneralResponse<PartyDataByInvoiceNumber,Object>> getPChallanPartyWithQualityDispatchBy(@PathVariable(name="id") String id) throws Exception{
+        GeneralResponse<PartyDataByInvoiceNumber,Object> result;
         try{
             //id = invoiceNo
             if(id!=null) {
                 PartyDataByInvoiceNumber x =dispatchMastService.getPChallanPartyWithQualityDispatchBy(id);
-                String fileName = dispatchMastService.createPdfFileAndReturnBase64(x);
-                File file = new File("pdf/"+fileName);
-                String encodedString = StockBatchServiceImpl.getBase64ByFile(file);
-                result= new GeneralResponse<>(encodedString, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
+                result= new GeneralResponse<>(x, constantFile.Dispatch_Found, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
             }
             else
                 result= new GeneralResponse<>(null,ConstantFile.Null_Record_Passed, true, System.currentTimeMillis(), HttpStatus.OK,request.getRequestURI()+"?"+request.getQueryString());
