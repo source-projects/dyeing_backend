@@ -2367,7 +2367,7 @@ public class DispatchMastImpl {
         Double currentInvoiceAmt = totalFinishMtr * totalRate;
         Double totalPendingMtr = stockBatchService.getPendingStockMtrByPartyId(party.getId());
         Double totalPendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.getId());
-        if((party.getCreditLimit() + (totalPendingMtr - invoiceTotalMtr) * totalQualityValue) > (totalPendingAmt + currentInvoiceAmt) && party.getBlockBilling()){
+        if((party.getCreditLimit() + (totalPendingMtr - invoiceTotalMtr) * totalQualityValue) > (totalPendingAmt + currentInvoiceAmt) && party.getBlockBilling() == true){
                 throw new Exception(constantFile.Payment_Limit_Exceed_OR_Block_Billing);
         }
 

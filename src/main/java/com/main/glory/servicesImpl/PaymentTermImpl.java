@@ -348,7 +348,7 @@ public class PaymentTermImpl {
 
     public Double getTotalPendingAmtByPartyId(Long partyId) {
         Double value = dispatchMastDao.getTotalPendingAmtByPartyId(partyId);
-        return value > 0 ? value : 0;
+        return value != null && value > 0 ? value : 0;
     }
 
     public DispatchMast getLastUnpaidDispatchByPartyId(Long id) {
