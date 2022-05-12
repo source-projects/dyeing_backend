@@ -1,11 +1,10 @@
 package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.BaseColor;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfCell;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.main.glory.Dao.PartyDao;
 import com.main.glory.Dao.StockAndBatch.BatchDao;
@@ -53,15 +52,12 @@ import com.main.glory.model.shade.ShadeMast;
 import com.main.glory.model.user.UserData;
 import com.main.glory.services.FilterService;
 import org.apache.commons.math3.util.Precision;
-import org.apache.maven.plugin.lifecycle.Phase;
-import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,12 +66,15 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.Style;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("dispatchMastImpl")
@@ -3076,11 +3075,13 @@ public class DispatchMastImpl {
     }
 
     public String createPdfFileAndReturnBase64(PartyDataByInvoiceNumber partyDataByInvoiceNumber) throws IOException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String[] copyType = {"Original","Duplicate","Triplicate"};
         File pdfDirectory = new File("pdf");
-
+        String logoUrl = "assest/glory_symbol.png";
         if(!pdfDirectory.exists())
             pdfDirectory.mkdir();
+        File imageFile = new File(logoUrl);
         String fileName = String.valueOf(new Date().getTime())+".pdf";
         OutputStream outputStream =
                 new FileOutputStream(new File(pdfDirectory+"/"+fileName));
@@ -3089,19 +3090,275 @@ public class DispatchMastImpl {
         PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
         document.open();
+        PdfPCell blankCell = new PdfPCell();
+        blankCell.setPhrase(new Phrase(""));
+        com.lowagie.text.Font fontWithBoldAndEightSize = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithBoldAndEightSize.setSize(8);
+        fontWithBoldAndEightSize.setStyle(com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font fontWithBoldAndTwelveSize = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithBoldAndTwelveSize.setSize(12);
+        fontWithBoldAndTwelveSize.setStyle(com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font fontWithSizeFour = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithSizeFour.setSize(4);
+        com.lowagie.text.Font fontWithSizeEight = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithSizeEight.setSize(8);
 
-        com.lowagie.text.Font font = FontFactory.getFont(FontFactory.HELVETICA);
-        font.setSize(8);
-        font.setStyle(com.lowagie.text.Font.BOLD);
 
+        //Main Table
+        PdfPTable mainTable = new PdfPTable(1);
+        PdfPCell mainCell = new PdfPCell();
         for(String copy : copyType) {
-            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN",font);
+
+            //invoice header
+            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN",fontWithBoldAndEightSize);
             report.setAlignment("Center");
             document.add(report);
-            report = new Paragraph(copy,font);
-            report.setAlignment("Right");
 
+            report = new Paragraph(copy,fontWithSizeEight);
+            report.setAlignment("Right");
             document.add(report);
+
+            PdfPTable masterTable = new PdfPTable(2);
+            masterTable.setWidthPercentage(100f);
+            masterTable.setSpacingBefore(1);
+            masterTable.setWidths(new float[]{8f,2f});
+            PdfPCell masterCell = new PdfPCell();
+            masterCell.setBorder(Rectangle.LEFT | Rectangle.TOP | Rectangle.BOTTOM);
+
+
+            //table header
+            PdfPTable headerTable =new PdfPTable(1);
+            headerTable.setWidthPercentage(100f);
+            headerTable.setSpacingBefore(1);
+            PdfPCell headerCell = new PdfPCell(new Phrase("GLORY DYEING MILLS PVT. LTD.",fontWithBoldAndTwelveSize));
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            headerCell.setBorder(Rectangle.NO_BORDER);
+            headerTable.addCell(headerCell);
+
+            headerCell.setPhrase(new Phrase("FORMALLY KNOWN AS : MUKESH PROCESSORS PVT. LTD.",fontWithSizeFour));
+            headerTable.addCell(headerCell);
+            headerCell.setPhrase(new Phrase("A-31, G.E.T.P, (Kala Ghoda), Palsana, Surat E-Mail : dyeing@gloryfab.com",fontWithSizeEight));
+            headerTable.addCell(headerCell);
+            headerCell.setPhrase(new Phrase("GSTIN :- 24AAFCM5028A1Z1 Place Of Supply : Surat",fontWithSizeEight));
+            headerTable.addCell(headerCell);
+            masterCell.addElement(headerTable);
+            masterTable.addCell(masterCell);
+
+            masterCell = new PdfPCell();
+            masterCell.setPadding(1f);
+            masterCell.setBorder(Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM);
+            masterCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            masterCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            Image imageLogo = Image.getInstance(imageFile.getPath());
+            imageLogo.scaleToFit(50,25);
+            masterCell.addElement(imageLogo);
+            masterTable.addCell(masterCell);
+            mainCell.addElement(masterTable);
+            mainTable.addCell(mainCell);
+
+            //party detail
+            masterTable = new PdfPTable(2);
+            masterTable.setWidthPercentage(100f);
+            masterTable.setSpacingBefore(1);
+            masterTable.setWidths(new float[]{7f,3f});
+            PdfPTable partyTable = new PdfPTable(2);
+            partyTable.setWidthPercentage(100f);
+            //partyTable.setSpacingBefore(1);
+            partyTable.setWidths(new float[]{2f,8f});
+            PdfPCell partyCell = new PdfPCell(new Phrase("Party Name",fontWithBoldAndEightSize));
+            partyTable.addCell(partyCell);
+            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getPartyName(),fontWithSizeEight));
+            partyTable.addCell(partyCell);
+            partyCell.setPhrase(new Phrase("Address",fontWithBoldAndEightSize));
+            partyTable.addCell(partyCell);
+            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getAddress().toString(),fontWithSizeEight));
+            partyTable.addCell(partyCell);
+            partyCell.setPhrase(new Phrase("GSTIN",fontWithBoldAndEightSize));
+            partyTable.addCell(partyCell);
+            //GST TABLE
+            PdfPTable gstTable =new PdfPTable(3);
+            PdfPCell gstCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getGST(),fontWithSizeEight));
+            gstCell.setBorder(Rectangle.NO_BORDER);
+            gstTable.addCell(gstCell);
+            gstCell = new PdfPCell(new Phrase("Phn No:",fontWithBoldAndEightSize));
+            gstTable.addCell(gstCell);
+            gstCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getContactNo(),fontWithSizeEight));
+            gstTable.addCell(gstCell);
+            partyTable.addCell(gstTable);
+
+            masterCell = new PdfPCell();
+            masterCell.addElement(partyTable);
+            masterTable.addCell(masterCell);
+
+            //table for invoice detail
+            PdfPTable invoiceDetailTable = new PdfPTable(2);
+            PdfPCell invoiceDetailCell = new PdfPCell(new Phrase("Invoice No",fontWithBoldAndEightSize));
+            invoiceDetailTable.addCell(invoiceDetailCell);
+            invoiceDetailCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getInvoiceNo().toString(),fontWithBoldAndEightSize));
+            invoiceDetailTable.addCell(invoiceDetailCell);
+            invoiceDetailCell.setPhrase(new Phrase("Date",fontWithBoldAndEightSize));
+            invoiceDetailTable.addCell(invoiceDetailCell);
+            invoiceDetailCell.setPhrase(new Phrase(simpleDateFormat.format(partyDataByInvoiceNumber.getCreatedDate()),fontWithBoldAndEightSize));
+            invoiceDetailTable.addCell(invoiceDetailCell);
+            masterTable.addCell(invoiceDetailTable);
+            mainCell = new PdfPCell();
+            mainCell.addElement(masterTable);
+            mainTable.addCell(mainCell);
+
+
+            //quality table
+
+            PdfPTable qualityTable = new PdfPTable(10);
+            qualityTable.setWidthPercentage(100f);
+            qualityTable.setWidths(new float[]{0.5f,3f,1f,1f,1f,1f,0.5f,1f,0.5f,1f});
+            PdfPCell qualityCell = new PdfPCell();
+            qualityCell.setPhrase(new Phrase("Sr.no",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Quality",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("HSN",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("P.Chl No ",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Lot No",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Grey(Mtr/Kg)",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Pcs",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Finish(Mtr/kg)",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Rate",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase("Amount",fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            for(int i=0;i<4;i++) {
+                qualityCell.setPhrase(new Phrase(String.valueOf(i+1), fontWithBoldAndEightSize));
+                qualityTable.addCell(qualityCell);
+                if (partyDataByInvoiceNumber.getQualityList().size() > i){
+                    QualityBillByInvoiceNumber qualityBillByInvoiceNumber = partyDataByInvoiceNumber.getQualityList().get(i);
+                    if(qualityBillByInvoiceNumber!=null) {
+                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getQualityId(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getHsn(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getPchallanRef(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getBatchId(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getTotalMtr()).toString(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getPcs().toString(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getFinishMtr()).toString(), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(String.format("%.2f",qualityBillByInvoiceNumber.getRate()), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                        qualityCell.setPhrase(new Phrase(String.format("%.2f",qualityBillByInvoiceNumber.getAmt()), fontWithSizeEight));
+                        qualityTable.addCell(qualityCell);
+                    }
+                    else
+                    {
+                        int k=0;
+                        while(k<9)
+                        {
+                            qualityTable.addCell(blankCell);
+                            k++;
+                        }
+                    }
+
+                }
+                else
+                {
+                    int k=0;
+                    while(k<9)
+                    {
+                        qualityTable.addCell(blankCell);
+                        k++;
+                    }
+                }
+            }
+
+            //TOTAL QUALITY
+            qualityTable.addCell(blankCell);
+            qualityTable.addCell(blankCell);
+            qualityTable.addCell(blankCell);
+            qualityTable.addCell(blankCell);
+            qualityCell.setPhrase(new Phrase("TOTAL", fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getTotalMtr).sum()), fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase(String.valueOf(partyDataByInvoiceNumber.getQualityList().stream().mapToLong(QualityBillByInvoiceNumber::getPcs).sum()), fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getFinishMtr).sum()), fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            qualityTable.addCell(blankCell);
+            qualityCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getAmt).sum()), fontWithBoldAndEightSize));
+            qualityTable.addCell(qualityCell);
+            mainTable.addCell(qualityTable);
+
+
+            //REMARK AND TOTAL TABLE
+            PdfPTable remarkAndTotalTable = new PdfPTable(2);
+            remarkAndTotalTable.setWidthPercentage(100f);
+            remarkAndTotalTable.setWidths(new float[]{6f,4f});
+            PdfPCell remarkAndTotalCell = new PdfPCell();
+
+            //REMARK TABLE
+            PdfPTable remarkTable = new PdfPTable(1);
+            remarkTable.setWidthPercentage(100f);
+            PdfPCell remarkCell = new PdfPCell(new Phrase("REMARK",fontWithBoldAndEightSize));
+            //remarkCell.setBorder(Rectangle.NO_BORDER);
+            remarkCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getRemark(),fontWithSizeEight));
+            remarkCell.setFixedHeight(25);
+            remarkTable.addCell(remarkCell);
+            remarkAndTotalCell.addElement(remarkTable);
+            remarkAndTotalTable.addCell(remarkAndTotalCell);
+
+
+
+            //Total Table
+            PdfPTable invoiceTotalTable = new PdfPTable(2);
+            invoiceTotalTable.setWidthPercentage(100f);
+            PdfPCell invoiceTotalCell = new PdfPCell(new Phrase("Discount @3%",fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getDiscount()),fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase("Taxable Amount",fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f",partyDataByInvoiceNumber.getTaxAmt()),fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            if(partyDataByInvoiceNumber.getState().equalsIgnoreCase("Gujarat")) {
+                invoiceTotalCell.setPhrase(new Phrase("CGST: @2.5% ", fontWithBoldAndEightSize));
+                invoiceTotalTable.addCell(invoiceTotalCell);
+                invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getCgst()), fontWithBoldAndEightSize));
+                invoiceTotalTable.addCell(invoiceTotalCell);
+                invoiceTotalCell.setPhrase(new Phrase("SGST: @2.5% ", fontWithBoldAndEightSize));
+                invoiceTotalTable.addCell(invoiceTotalCell);
+                invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getSgst()), fontWithBoldAndEightSize));
+                invoiceTotalTable.addCell(invoiceTotalCell);
+            }
+            else {
+                invoiceTotalCell.setPhrase(new Phrase("IGST: @5% ", fontWithBoldAndEightSize));
+                invoiceTotalTable.addCell(invoiceTotalCell);
+                invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getIgst()), fontWithBoldAndEightSize));
+                invoiceTotalTable.addCell(invoiceTotalCell);
+            }
+            invoiceTotalCell.setPhrase(new Phrase("Net Amount", fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getNetAmt()), fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+
+            remarkAndTotalCell = new PdfPCell();
+            remarkAndTotalCell.addElement(invoiceTotalTable);
+            remarkAndTotalTable.addCell(remarkAndTotalCell);
+
+
+            mainCell = new PdfPCell();
+            mainCell.addElement(remarkAndTotalTable);
+            mainTable.addCell(mainCell);
+            document.add(mainTable);
             document.newPage();
         }
         document.close();
