@@ -2371,7 +2371,6 @@ public class DispatchMastImpl {
                 throw new Exception(constantFile.Payment_Limit_Exceed_OR_Block_Billing);
         }
 
-
         PartyDataByInvoiceNumber partyDataByInvoiceNumber = new PartyDataByInvoiceNumber(party,
                 qualityBillByInvoiceNumberList, batchWithGrList);
         // set the percentage discount as well
