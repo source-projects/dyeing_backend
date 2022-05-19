@@ -2,7 +2,6 @@ package com.main.glory.servicesImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -70,7 +69,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -1281,7 +1279,7 @@ public class DispatchMastImpl {
         if (dispatchMast == null)
             throw new Exception(ConstantFile.Dispatch_Not_Exist);
 
-        if(dispatchMast.getPaymentBunchId() != null)
+        if (dispatchMast.getPaymentBunchId() != null)
             throw new Exception(ConstantFile.Payment_Exist);
 
         // change that flag of batch data list by invoice number
@@ -1310,14 +1308,14 @@ public class DispatchMastImpl {
         //System.out.println(1);
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (filter.getFrom() !=null) {
+        if (filter.getFrom() != null) {
             from = datetimeFormatter1.parse(filter.getFrom());
             c.setTime(from);
             // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
             // created date and 1 day is comming minus from FE
             from = c.getTime();
         }
-        if (filter.getTo()!= null) {
+        if (filter.getTo() != null) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
             // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
@@ -1328,32 +1326,27 @@ public class DispatchMastImpl {
         Map<String, ConsolidatedBillMast> invoiceList = new HashMap<>();
 
         List<ConsolidatedBillDataForPDF> consolidatedBillDataForPDFList = dispatchDataDao.getAllConsolidateResponseForPDFReportByFilter(from, to, filter.getUserHeadId(),
-                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getSignByParty());
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(), filter.getSignByParty());
 
         consolidatedBillDataForPDFList.forEach(e -> {
-            if(invoiceList.containsKey(e.getInvoiceNo()))
-            {
+            if (invoiceList.containsKey(e.getInvoiceNo())) {
                 ConsolidatedBillMast consolidatedBillMast = invoiceList.get(e.getInvoiceNo());
                 List<ConsolidatedBillDataForPDF> dataForPDFS = consolidatedBillMast.getList();
                 dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
                 consolidatedBillMast.setList(dataForPDFS);
-                invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
-            }
-            else
-            {
+                invoiceList.put(consolidatedBillMast.getInvoiceNo(), consolidatedBillMast);
+            } else {
                 ConsolidatedBillMast consolidatedBillMast = new ConsolidatedBillMast(e);
                 List<ConsolidatedBillDataForPDF> dataForPDFS = new ArrayList<>();
                 dataForPDFS.add(new ConsolidatedBillDataForPDF(e));
                 consolidatedBillMast.setList(dataForPDFS);
-                invoiceList.put(consolidatedBillMast.getInvoiceNo(),consolidatedBillMast);
+                invoiceList.put(consolidatedBillMast.getInvoiceNo(), consolidatedBillMast);
 
             }
         });
 
 
-
-        if(invoiceList.size()>0)
-        {
+        if (invoiceList.size() > 0) {
             list = new ArrayList<>(invoiceList.values());
 
         }
@@ -1463,14 +1456,14 @@ public class DispatchMastImpl {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat datetimeFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (filter.getFrom()!=null) {
+        if (filter.getFrom() != null) {
             from = datetimeFormatter1.parse(filter.getFrom());
             c.setTime(from);
             // c.add(Calendar.DATE, 1);//adding one day in to because of time issue in
             // created date and 1 day is coming minus from FE
             from = c.getTime();
         }
-        if (filter.getTo()!=null) {
+        if (filter.getTo() != null) {
             to = datetimeFormatter1.parse(filter.getTo());
             c.setTime(to);
             // c.add(Calendar.DATE, 1);//don;t + date because on Palsana, server it is
@@ -1480,9 +1473,9 @@ public class DispatchMastImpl {
 
 
         List<MonthlyDispatchReport> returnList = new ArrayList<>();
-        List<MonthlyDispatchReport> list = dispatchDataDao.monthWisePDFReportByFilter(from,to,filter.getUserHeadId());
-        Map<String,List<MonthlyDispatchReport>> stringListMap = list.stream().collect(Collectors.groupingBy(MonthlyDispatchReport::getMonth));
-        for (Map.Entry<String,List<MonthlyDispatchReport>> entry : stringListMap.entrySet()) {
+        List<MonthlyDispatchReport> list = dispatchDataDao.monthWisePDFReportByFilter(from, to, filter.getUserHeadId());
+        Map<String, List<MonthlyDispatchReport>> stringListMap = list.stream().collect(Collectors.groupingBy(MonthlyDispatchReport::getMonth));
+        for (Map.Entry<String, List<MonthlyDispatchReport>> entry : stringListMap.entrySet()) {
 
             Double totalNetAmt = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getNetAmt).sum();
             Double totalTaxAmt = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getTaxAmt).sum();
@@ -1491,7 +1484,7 @@ public class DispatchMastImpl {
             Double cgst = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getCgst).sum();
             Double sgst = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getSgst).sum();
             Double igst = entry.getValue().stream().mapToDouble(MonthlyDispatchReport::getIgst).sum();
-            MonthlyDispatchReport monthlyDispatchReport = new MonthlyDispatchReport(entry.getKey(),totalNetAmt,totalTaxAmt,totalFinishMtr,discount,cgst,sgst,igst);
+            MonthlyDispatchReport monthlyDispatchReport = new MonthlyDispatchReport(entry.getKey(), totalNetAmt, totalTaxAmt, totalFinishMtr, discount, cgst, sgst, igst);
             returnList.add(monthlyDispatchReport);
         }
 
@@ -1623,7 +1616,7 @@ public class DispatchMastImpl {
     }
 
     // pChallan by party id
-    public List<BatchWithTotalMTRandFinishMTR> getPChallanByParty(Long partyId,Boolean rfInvoiceFlag) throws Exception {
+    public List<BatchWithTotalMTRandFinishMTR> getPChallanByParty(Long partyId, Boolean rfInvoiceFlag) throws Exception {
 
         List<BatchWithTotalMTRandFinishMTR> list = new ArrayList<>();
 
@@ -1639,15 +1632,15 @@ public class DispatchMastImpl {
          */
 
 
-            // System.out.println(stockMast.getId());
-            List<BatchWithTotalMTRandFinishMTR> batchDataList = batchDao
-                    .getAllPChallanByPartyIdAndRfInvoiceFlagWithTotalFinishMtr(partyId,rfInvoiceFlag);
-            for (BatchWithTotalMTRandFinishMTR getBatchWithControlIdData : batchDataList) {
-                BatchWithTotalMTRandFinishMTR getBatchWithControlId = new BatchWithTotalMTRandFinishMTR(getBatchWithControlIdData);
-                Quality quality = getBatchWithControlIdData.getStockMast().getQuality();
-                if (quality != null) {
-                    Double extraRate = 0.0;
-                    //for extra rate && check is it merge batch id if yes then go to production plan table to get extra rate
+        // System.out.println(stockMast.getId());
+        List<BatchWithTotalMTRandFinishMTR> batchDataList = batchDao
+                .getAllPChallanByPartyIdAndRfInvoiceFlagWithTotalFinishMtr(partyId, rfInvoiceFlag);
+        for (BatchWithTotalMTRandFinishMTR getBatchWithControlIdData : batchDataList) {
+            BatchWithTotalMTRandFinishMTR getBatchWithControlId = new BatchWithTotalMTRandFinishMTR(getBatchWithControlIdData);
+            Quality quality = getBatchWithControlIdData.getStockMast().getQuality();
+            if (quality != null) {
+                Double extraRate = 0.0;
+                //for extra rate && check is it merge batch id if yes then go to production plan table to get extra rate
                    /* List<GetAllMergeBatchId> getAllMergeBatchIdList = batchDao.getAllMergeBatchIdByBatchIdAndFinishMtrSaveAndBillIsNotGenrated(getBatchWithControlId.getBatchId());
                     if (getAllMergeBatchIdList.size() > 0) {
 
@@ -1669,21 +1662,18 @@ public class DispatchMastImpl {
                         extraRate += shadeMast.getExtraRate() > 0 ? shadeMast.getExtraRate() : 0;
                     }*/
 
-                    QualityName qualityName = quality.getQualityName();
-                    if(rfInvoiceFlag==false) {
-                        getBatchWithControlId.setRate(quality.getRate() + extraRate);
-                    }
-                    else
-                    {
-                        getBatchWithControlId.setRate(0.0);
-                    }
-                    getBatchWithControlId.setQualityId(quality.getQualityId());
-                    getBatchWithControlId.setQualityName(qualityName.getQualityName());
-                    getBatchWithControlId.setQualityEntryId(quality.getId());
+                QualityName qualityName = quality.getQualityName();
+                if (rfInvoiceFlag == false) {
+                    getBatchWithControlId.setRate(quality.getRate() + extraRate);
+                } else {
+                    getBatchWithControlId.setRate(0.0);
                 }
-                batchDataListByParty.add(getBatchWithControlId);
+                getBatchWithControlId.setQualityId(quality.getQualityId());
+                getBatchWithControlId.setQualityName(qualityName.getQualityName());
+                getBatchWithControlId.setQualityEntryId(quality.getId());
             }
-
+            batchDataListByParty.add(getBatchWithControlId);
+        }
 
 
         return batchDataListByParty;
@@ -1692,14 +1682,13 @@ public class DispatchMastImpl {
     // create dispatch api's service
 
     public Long createDispatchForPchallan(CreateDispatch dispatchList, Long userId) throws Exception {
-        Boolean rfInvoiceFlag=dispatchList.getRfInvoiceFlag();
+        Boolean rfInvoiceFlag = dispatchList.getRfInvoiceFlag();
         ObjectMapper mapper = new ObjectMapper();
         // check the invoice sequence exist or not
 
-        InvoiceSequence invoiceSequenceExist =null;
-        RFSequence rfSequenceExist =null;
-        if(!rfInvoiceFlag)
-        {
+        InvoiceSequence invoiceSequenceExist = null;
+        RFSequence rfSequenceExist = null;
+        if (!rfInvoiceFlag) {
             //go with invoice sequence else go with rf invoice
             invoiceSequenceExist = invoiceSequenceDao.getSequence();
             if (invoiceSequenceExist == null)
@@ -1707,9 +1696,7 @@ public class DispatchMastImpl {
             // update the invoice sequence by one
             invoiceSequenceDao.updateSequenceByOne(invoiceSequenceExist.getId(), invoiceSequenceExist.getSequence() + 1);
 
-        }
-        else
-        {
+        } else {
 
             rfSequenceExist = rfSequenceDao.getSequence();
             if (rfSequenceExist == null)
@@ -1731,12 +1718,10 @@ public class DispatchMastImpl {
         List<DispatchData> dispatchDataList = new ArrayList<>();
         DispatchMast dispatchMast = new DispatchMast(dispatchList);
         dispatchMast.setSignByParty(false);
-        if(dispatchList.getRfInvoiceFlag()==false) {
+        if (dispatchList.getRfInvoiceFlag() == false) {
             dispatchMast.setPrefix("inv");
             dispatchMast.setPostfix(invoiceSequenceExist.getSequence().toString());
-        }
-        else
-        {
+        } else {
             dispatchMast.setPrefix("rf");
             dispatchMast.setPostfix(rfSequenceExist.getSequence().toString());
         }
@@ -1861,15 +1846,13 @@ public class DispatchMastImpl {
 
         // increment the invoice number to dispatch mast
         // check that the invoice sequence is exist
-        if(dispatchList.getRfInvoiceFlag()==false) {
+        if (dispatchList.getRfInvoiceFlag() == false) {
             DispatchMast dispatchDataExist = dispatchMastDao
                     .getDispatchMastByInvoiceNumber(invoiceSequenceExist.getSequence().toString());
             dispatchMast.setIsRfInvoice(false);
             if (dispatchDataExist != null)
                 throw new Exception(ConstantFile.PrinterIsBusy);
-        }
-        else
-        {
+        } else {
             DispatchMast dispatchDataExist = dispatchMastDao
                     .getDispatchMastByInvoiceNumber(rfSequenceExist.getSequence().toString());
             dispatchMast.setIsRfInvoice(true);
@@ -1883,7 +1866,7 @@ public class DispatchMastImpl {
         batchDao.updateBillStatusInListOfBatchEntryId(batchIdListToUpdate, true);
 
 
-        return dispatchList.getRfInvoiceFlag()==false?invoiceSequenceExist.getSequence():rfSequenceExist.getSequence();
+        return dispatchList.getRfInvoiceFlag() == false ? invoiceSequenceExist.getSequence() : rfSequenceExist.getSequence();
 
     }
 
@@ -2370,8 +2353,8 @@ public class DispatchMastImpl {
         Double currentInvoiceAmt = totalFinishMtr * totalRate;
         Double totalPendingMtr = stockBatchService.getPendingStockMtrByPartyId(party.getId());
         Double totalPendingAmt = paymentTermService.getTotalPendingAmtByPartyId(party.getId());
-        if((party.getCreditLimit() + (totalPendingMtr - invoiceTotalMtr) * totalQualityValue) > (totalPendingAmt + currentInvoiceAmt)){
-                throw new Exception(constantFile.Connect_With_Admin);
+        if ((party.getCreditLimit() + (totalPendingMtr - invoiceTotalMtr) * totalQualityValue) > (totalPendingAmt + currentInvoiceAmt)) {
+            throw new Exception(constantFile.Connect_With_Admin);
         }
 
 
@@ -2554,7 +2537,7 @@ public class DispatchMastImpl {
             to = c.getTime();
         }
         List<ConsolidatedBillDataForExcel> list = dispatchDataDao.getAllConsolidateResponseByFilter(from, to, filter.getUserHeadId(),
-                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(),filter.getSignByParty());
+                filter.getPartyId(), filter.getQualityNameId(), filter.getQualityEntryId(), filter.getSignByParty());
         return list;
     }
 
@@ -2588,30 +2571,28 @@ public class DispatchMastImpl {
         }
         String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
         String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
-        List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+        List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getQualityNameId(),
                 filter.getQualityEntryId());
         //List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse();
 
 
-        Set<String> stringSet = dispatchMastDao.getAllPendingPaymentDispatchMonthYearResponse(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+        Set<String> stringSet = dispatchMastDao.getAllPendingPaymentDispatchMonthYearResponse(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getQualityNameId(),
                 filter.getQualityEntryId());
 
-        Map<Party,List<PaymentPendingExcelReportData>> partyListMap = responseList.stream().collect(Collectors.groupingBy(PaymentPendingExcelReportData::getParty));
+        Map<Party, List<PaymentPendingExcelReportData>> partyListMap = responseList.stream().collect(Collectors.groupingBy(PaymentPendingExcelReportData::getParty));
 
 
-        for(Map.Entry<Party,List<PaymentPendingExcelReportData>> entry: partyListMap.entrySet())
-        {
-            list.add(new PaymentPendingExcelReportMast(entry.getKey(),entry.getValue()));
+        for (Map.Entry<Party, List<PaymentPendingExcelReportData>> entry : partyListMap.entrySet()) {
+            list.add(new PaymentPendingExcelReportMast(entry.getKey(), entry.getValue()));
         }
 
-        PaymentPendingExcelReportSuperMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelReportSuperMast(stringSet,list);
+        PaymentPendingExcelReportSuperMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelReportSuperMast(stringSet, list);
 
         return paymentPendingExcelReportSuperMast;
     }
 
 
-
-    public String createExcelFileForPaymentPendingExcel(PaymentPendingExcelReportSuperMast paymentPendingExcelReportSuperMast , List<PaymentPendingExcelReportMast> list, BatchFilterRequest filter) throws ParseException {
+    public String createExcelFileForPaymentPendingExcel(PaymentPendingExcelReportSuperMast paymentPendingExcelReportSuperMast, List<PaymentPendingExcelReportMast> list, BatchFilterRequest filter) throws ParseException {
 
         Date from = null;
         Date to = null;
@@ -2636,8 +2617,6 @@ public class DispatchMastImpl {
         }
         String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
         String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
-
-
 
 
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -2668,8 +2647,8 @@ public class DispatchMastImpl {
             redDataStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             //redDataStyle.setFont(redFont);
             // Header
-            int headersCount=0;
-            int rowIndex=0;
+            int headersCount = 0;
+            int rowIndex = 0;
             Row headerRow = sheet.createRow(rowIndex++);
             Cell cell = headerRow.createCell(0);
             cell.setCellValue("Glory Dyeing Mills Pvt. Ltd.");
@@ -2683,7 +2662,7 @@ public class DispatchMastImpl {
 
             headerRow = sheet.createRow(rowIndex++);
             cell = headerRow.createCell(0);
-            cell.setCellValue("From: "+fromDate +"- To: "+toDate);
+            cell.setCellValue("From: " + fromDate + "- To: " + toDate);
             cell.setCellStyle(style);
 
             //workbook.write(out);
@@ -2712,14 +2691,13 @@ public class DispatchMastImpl {
 
             int cellStatus = 4;
 
-            HashMap<String,Integer> columnMap = new HashMap<>();
-            columnMap.put("pendingValue",3);
-            for(String monthYearHeader:paymentPendingExcelReportSuperMast.getMonthYearHeader())
-            {
+            HashMap<String, Integer> columnMap = new HashMap<>();
+            columnMap.put("pendingValue", 3);
+            for (String monthYearHeader : paymentPendingExcelReportSuperMast.getMonthYearHeader()) {
                 cell = headerRow.createCell(cellStatus);
                 cell.setCellValue(monthYearHeader);
                 cell.setCellStyle(style);
-                columnMap.put(monthYearHeader,cellStatus);
+                columnMap.put(monthYearHeader, cellStatus);
                 cellStatus++;
                 headersCount++;
             }
@@ -2728,8 +2706,7 @@ public class DispatchMastImpl {
             cell.setCellStyle(style);
 
 
-            for(PaymentPendingExcelReportMast paymentPendingExcelReportMast : paymentPendingExcelReportSuperMast.getList())
-            {
+            for (PaymentPendingExcelReportMast paymentPendingExcelReportMast : paymentPendingExcelReportSuperMast.getList()) {
                 headerRow = sheet.createRow(rowIndex++);
                 //headerRow.setRowStyle(style);
                 cell = headerRow.createCell(2);
@@ -2740,13 +2717,11 @@ public class DispatchMastImpl {
                 cell.setCellValue(paymentPendingExcelReportMast.getPartyAddress());
                 cell.setCellStyle(style);
 
-                for(PaymentPendingExcelReportData paymentPendingExcelReportData : paymentPendingExcelReportMast.getList())
-                {
+                for (PaymentPendingExcelReportData paymentPendingExcelReportData : paymentPendingExcelReportMast.getList()) {
                     headerRow = sheet.createRow(rowIndex++);
 
                     //for row and till the cell border
-                    for(int i=0;i<headersCount;i++)
-                    {
+                    for (int i = 0; i < headersCount; i++) {
                         cell = headerRow.createCell(i);
                         cell.setCellStyle(dataStyle);
                     }
@@ -2764,21 +2739,18 @@ public class DispatchMastImpl {
                     //cell.setCellStyle(style);
 
 
-                    if(columnMap.containsKey(paymentPendingExcelReportData.getMonthYear()))
-                    {
+                    if (columnMap.containsKey(paymentPendingExcelReportData.getMonthYear())) {
                         cell = headerRow.getCell(columnMap.get(paymentPendingExcelReportData.getMonthYear()));
                         cell.setCellValue(paymentPendingExcelReportData.getMonthYearValue());
                         //cell.setCellStyle(style);
                     }
 
                     //for due days
-                    if(paymentPendingExcelReportData.getDueDays() > paymentPendingExcelReportMast.getPaymentDays()) {
+                    if (paymentPendingExcelReportData.getDueDays() > paymentPendingExcelReportMast.getPaymentDays()) {
                         cell = headerRow.createCell(cellStatus);
                         cell.setCellValue(paymentPendingExcelReportData.getDueDays());
                         cell.setCellStyle(redDataStyle);
-                    }
-                    else
-                    {
+                    } else {
                         cell = headerRow.createCell(cellStatus);
                         cell.setCellValue(paymentPendingExcelReportData.getDueDays());
                         cell.setCellStyle(dataStyle);
@@ -2788,11 +2760,9 @@ public class DispatchMastImpl {
                 }
 
                 Double totalPendingAmt = paymentPendingExcelReportMast.getList().stream().mapToDouble(PaymentPendingExcelReportData::getPendingValue).sum();
-                if(columnMap.containsKey("pendingValue"))
-                {
+                if (columnMap.containsKey("pendingValue")) {
                     headerRow = sheet.createRow(rowIndex++);
-                    for(int i=0;i<headersCount;i++)
-                    {
+                    for (int i = 0; i < headersCount; i++) {
                         cell = headerRow.createCell(i);
                         cell.setCellStyle(style);
                     }
@@ -2801,12 +2771,10 @@ public class DispatchMastImpl {
 
                     cell = headerRow.getCell(3);
                     cell.setCellValue(totalPendingAmt);
-                    Map<String,List<PaymentPendingExcelReportData>> dataListMap = paymentPendingExcelReportMast.getList().stream().collect(Collectors.groupingBy(PaymentPendingExcelReportData::getMonthYear));
-                    for(Map.Entry<String,List<PaymentPendingExcelReportData>> entry:dataListMap.entrySet())
-                    {
-                        Double total = paymentPendingExcelReportMast.getList().stream().filter(e->e.getMonthYear().equalsIgnoreCase(entry.getKey())).mapToDouble(PaymentPendingExcelReportData::getMonthYearValue).sum();
-                        if(columnMap.containsKey(entry.getKey()))
-                        {
+                    Map<String, List<PaymentPendingExcelReportData>> dataListMap = paymentPendingExcelReportMast.getList().stream().collect(Collectors.groupingBy(PaymentPendingExcelReportData::getMonthYear));
+                    for (Map.Entry<String, List<PaymentPendingExcelReportData>> entry : dataListMap.entrySet()) {
+                        Double total = paymentPendingExcelReportMast.getList().stream().filter(e -> e.getMonthYear().equalsIgnoreCase(entry.getKey())).mapToDouble(PaymentPendingExcelReportData::getMonthYearValue).sum();
+                        if (columnMap.containsKey(entry.getKey())) {
                             cell = headerRow.getCell(columnMap.get(entry.getKey()));
                             cell.setCellValue(total);
                         }
@@ -2816,12 +2784,11 @@ public class DispatchMastImpl {
             //System.out.println(columnMap);
             //store in file
             File file = new File("excel");
-            if(!file.exists())
-            {
+            if (!file.exists()) {
                 file.mkdir();
             }
-            String fileName = String.valueOf(new Date().getTime())+".xlsx";
-            File outputFile = new File(file+"/"+fileName);
+            String fileName = String.valueOf(new Date().getTime()) + ".xlsx";
+            File outputFile = new File(file + "/" + fileName);
             try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                 workbook.write(fos);
             }
@@ -2899,8 +2866,8 @@ public class DispatchMastImpl {
             discountCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             //redDataStyle.setFont(redFont);
             // Header
-            int headersCount=0;
-            int rowIndex=0;
+            int headersCount = 0;
+            int rowIndex = 0;
             Row headerRow = sheet.createRow(rowIndex++);
             Cell cell = headerRow.createCell(0);
             cell.setCellValue("Glory Dyeing Mills Pvt. Ltd.");
@@ -2919,12 +2886,11 @@ public class DispatchMastImpl {
 
             headerRow = sheet.createRow(rowIndex++);
             cell = headerRow.createCell(0);
-            cell.setCellValue(fromDate+" To "+toDate);
+            cell.setCellValue(fromDate + " To " + toDate);
             cell.setCellStyle(style);
 
-            Map<UserData,List<PaymentPendingMasterWiseData>> masterWiseMap = paymentPendingExcelReportSuperMast.getList().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getMasterData));
-            for(Map.Entry<UserData,List<PaymentPendingMasterWiseData>> entry: masterWiseMap.entrySet())
-            {
+            Map<UserData, List<PaymentPendingMasterWiseData>> masterWiseMap = paymentPendingExcelReportSuperMast.getList().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getMasterData));
+            for (Map.Entry<UserData, List<PaymentPendingMasterWiseData>> entry : masterWiseMap.entrySet()) {
                 headerRow = sheet.createRow(rowIndex++);
                 headerRow = sheet.createRow(rowIndex++);
                 headerRow = sheet.createRow(rowIndex++);
@@ -2945,29 +2911,26 @@ public class DispatchMastImpl {
 
                 int cellStatus = 2;
 
-                HashMap<String,Integer> columnMap = new HashMap<>();
-                columnMap.put("pendingValue",1);
-                for(String monthYearHeader:paymentPendingExcelReportSuperMast.getMonthYearHeader())
-                {
+                HashMap<String, Integer> columnMap = new HashMap<>();
+                columnMap.put("pendingValue", 1);
+                for (String monthYearHeader : paymentPendingExcelReportSuperMast.getMonthYearHeader()) {
                     cell = headerRow.createCell(cellStatus);
                     cell.setCellValue(monthYearHeader);
                     cell.setCellStyle(style);
-                    columnMap.put(monthYearHeader,cellStatus);
+                    columnMap.put(monthYearHeader, cellStatus);
                     cellStatus++;
                     headersCount++;
                 }
 
-                Map<Double,List<PaymentPendingMasterWiseData>> discountWiseMap = entry.getValue().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getPercentageDiscount));
-                for(Map.Entry<Double,List<PaymentPendingMasterWiseData>> discountWiseEntry : discountWiseMap.entrySet())
-                {
+                Map<Double, List<PaymentPendingMasterWiseData>> discountWiseMap = entry.getValue().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getPercentageDiscount));
+                for (Map.Entry<Double, List<PaymentPendingMasterWiseData>> discountWiseEntry : discountWiseMap.entrySet()) {
                     headerRow = sheet.createRow(rowIndex++);
                     cell = headerRow.createCell(0);
                     cell.setCellValue(discountWiseEntry.getKey());
                     cell.setCellStyle(discountCellStyle);
 
-                    Map<Party,List<PaymentPendingMasterWiseData>> partyListMapWithMonthYear = discountWiseEntry.getValue().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getParty));
-                    for(Map.Entry<Party,List<PaymentPendingMasterWiseData>> partyListEntry : partyListMapWithMonthYear.entrySet())
-                    {
+                    Map<Party, List<PaymentPendingMasterWiseData>> partyListMapWithMonthYear = discountWiseEntry.getValue().stream().collect(Collectors.groupingBy(PaymentPendingMasterWiseData::getParty));
+                    for (Map.Entry<Party, List<PaymentPendingMasterWiseData>> partyListEntry : partyListMapWithMonthYear.entrySet()) {
                         headerRow = sheet.createRow(rowIndex++);
                         cell = headerRow.createCell(0);
                         cell.setCellValue(partyListEntry.getKey().getPartyName());
@@ -2979,15 +2942,13 @@ public class DispatchMastImpl {
                         cell.setCellStyle(dataStyle);
 
 
-                        for(String monthYears : paymentPendingExcelReportSuperMast.getMonthYearHeader())
-                        {
+                        for (String monthYears : paymentPendingExcelReportSuperMast.getMonthYearHeader()) {
                             cell = headerRow.createCell(columnMap.get(monthYears));
                             cell.setCellStyle(dataStyle);
                         }
 
-                        for(PaymentPendingMasterWiseData paymentPendingMasterWiseData:partyListEntry.getValue()) {
-                            if(columnMap.containsKey(paymentPendingMasterWiseData.getMonthYear()))
-                            {
+                        for (PaymentPendingMasterWiseData paymentPendingMasterWiseData : partyListEntry.getValue()) {
+                            if (columnMap.containsKey(paymentPendingMasterWiseData.getMonthYear())) {
                                 cell = headerRow.getCell(columnMap.get(paymentPendingMasterWiseData.getMonthYear()));
                                 cell.setCellValue(paymentPendingMasterWiseData.getTotalNetAmt());
                                 cell.setCellStyle(dataStyle);
@@ -3005,10 +2966,9 @@ public class DispatchMastImpl {
                 cell.setCellValue(totalGrandValue);
                 cell.setCellStyle(style);
 
-                for(String monthYearHeader:paymentPendingExcelReportSuperMast.getMonthYearHeader())
-                {
+                for (String monthYearHeader : paymentPendingExcelReportSuperMast.getMonthYearHeader()) {
                     cell = headerRow.createCell(columnMap.get(monthYearHeader));
-                    Double total = entry.getValue().stream().filter(e->e.getMonthYear().equalsIgnoreCase(monthYearHeader)).mapToDouble(PaymentPendingMasterWiseData :: getTotalNetAmt).sum();
+                    Double total = entry.getValue().stream().filter(e -> e.getMonthYear().equalsIgnoreCase(monthYearHeader)).mapToDouble(PaymentPendingMasterWiseData::getTotalNetAmt).sum();
                     cell.setCellValue(total);
                     cell.setCellStyle(dataStyle);
                 }
@@ -3017,12 +2977,11 @@ public class DispatchMastImpl {
             //System.out.println(columnMap);
             //store in file
             File file = new File("excel");
-            if(!file.exists())
-            {
+            if (!file.exists()) {
                 file.mkdir();
             }
-            String fileName = String.valueOf(new Date().getTime())+".xlsx";
-            File outputFile = new File(file+"/"+fileName);
+            String fileName = String.valueOf(new Date().getTime()) + ".xlsx";
+            File outputFile = new File(file + "/" + fileName);
             try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                 workbook.write(fos);
             }
@@ -3060,31 +3019,31 @@ public class DispatchMastImpl {
         }
         String fromDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
         String toDate = StockBatchServiceImpl.getDateInRespectedDateFormat(from);
-        List<PaymentPendingMasterWiseData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponseBasedOnDiscountAndMonthYear(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+        List<PaymentPendingMasterWiseData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponseBasedOnDiscountAndMonthYear(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getQualityNameId(),
                 filter.getQualityEntryId());
         //List<PaymentPendingExcelReportData> responseList = dispatchMastDao.getAllPendingPaymentDispatchResponse();
 
 
-        Set<String> stringSet = dispatchMastDao.getAllPendingPaymentDispatchMonthYearResponse(from, to, filter.getUserHeadId(),filter.getPartyId(), filter.getQualityNameId(),
+        Set<String> stringSet = dispatchMastDao.getAllPendingPaymentDispatchMonthYearResponse(from, to, filter.getUserHeadId(), filter.getPartyId(), filter.getQualityNameId(),
                 filter.getQualityEntryId());
 
 
-        PaymentPendingExcelBasedOnPartyandMasterMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelBasedOnPartyandMasterMast(stringSet,responseList);
+        PaymentPendingExcelBasedOnPartyandMasterMast paymentPendingExcelReportSuperMast = new PaymentPendingExcelBasedOnPartyandMasterMast(stringSet, responseList);
 
         return paymentPendingExcelReportSuperMast;
     }
 
     public String createPdfFileAndReturnBase64(PartyDataByInvoiceNumber partyDataByInvoiceNumber) throws IOException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String[] copyType = {"Original","Duplicate","Triplicate"};
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String[] copyType = {"Original", "Duplicate", "Triplicate"};
         File pdfDirectory = new File("pdf");
         String logoUrl = "assest/glory_symbol.png";
-        if(!pdfDirectory.exists())
+        if (!pdfDirectory.exists())
             pdfDirectory.mkdir();
         File imageFile = new File(logoUrl);
-        String fileName = String.valueOf(new Date().getTime())+".pdf";
+        String fileName = String.valueOf(new Date().getTime()) + ".pdf";
         OutputStream outputStream =
-                new FileOutputStream(new File(pdfDirectory+"/"+fileName));
+                new FileOutputStream(new File(pdfDirectory + "/" + fileName));
         Document document = new Document(PageSize.A4);
         //PdfWriter.getInstance(document, servletResponse.getOutputStream());
         PdfWriter writer = PdfWriter.getInstance(document, outputStream);
@@ -3095,6 +3054,9 @@ public class DispatchMastImpl {
         com.lowagie.text.Font fontWithBoldAndEightSize = FontFactory.getFont(FontFactory.HELVETICA);
         fontWithBoldAndEightSize.setSize(8);
         fontWithBoldAndEightSize.setStyle(com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font fontWithBoldAndSevenSize = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithBoldAndSevenSize.setSize(7);
+        fontWithBoldAndSevenSize.setStyle(com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font fontWithBoldAndTwelveSize = FontFactory.getFont(FontFactory.HELVETICA);
         fontWithBoldAndTwelveSize.setSize(12);
         fontWithBoldAndTwelveSize.setStyle(com.lowagie.text.Font.BOLD);
@@ -3102,171 +3064,171 @@ public class DispatchMastImpl {
         fontWithSizeFour.setSize(4);
         com.lowagie.text.Font fontWithSizeEight = FontFactory.getFont(FontFactory.HELVETICA);
         fontWithSizeEight.setSize(8);
-        com.lowagie.text.Font fontWithSizeSix = FontFactory.getFont(FontFactory.HELVETICA);
-        fontWithSizeEight.setSize(6);
+        com.lowagie.text.Font fontWithSizeSeven = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithSizeSeven.setSize(8);
 
+        com.lowagie.text.Font fontWithSizeSix = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithSizeSix.setSize(6);
+        com.lowagie.text.Font fontWithBoldAndSizeSix = FontFactory.getFont(FontFactory.HELVETICA);
+        fontWithBoldAndSizeSix.setSize(6);
+        fontWithBoldAndSizeSix.setStyle(com.lowagie.text.Font.BOLD);
+
+//        for(String copy : copyType) {
 
         //Main Table
         PdfPTable mainTable = new PdfPTable(1);
+        mainTable.setWidthPercentage(100f);
         PdfPCell mainCell = new PdfPCell();
-        for(String copy : copyType) {
+        PdfPTable masterTable = new PdfPTable(2);
+        masterTable.setWidthPercentage(100f);
+        masterTable.setSpacingBefore(1);
+        masterTable.setWidths(new float[]{8f, 2f});
+        PdfPCell masterCell = new PdfPCell();
+//        masterCell.setBorder(Rectangle.LEFT | Rectangle.TOP | Rectangle.BOTTOM);
+        masterCell.setBorder(Rectangle.NO_BORDER);
 
-            //invoice header
-            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN", fontWithBoldAndEightSize);
-            report.setAlignment("Center");
-            document.add(report);
+        //table header
+        PdfPTable headerTable = new PdfPTable(1);
+        headerTable.setWidthPercentage(100f);
+        headerTable.setSpacingBefore(1);
+        PdfPCell headerCell = new PdfPCell(new Phrase("                     GLORY DYEING MILLS PVT. LTD.", fontWithBoldAndTwelveSize));
+        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        headerCell.setBorder(Rectangle.NO_BORDER);
+        headerTable.addCell(headerCell);
 
-            report = new Paragraph(copy, fontWithSizeEight);
-            report.setAlignment("Right");
-            document.add(report);
+        headerCell.setPhrase(new Phrase("                                           FORMALLY KNOWN AS : MUKESH PROCESSORS PVT. LTD.", fontWithSizeSix));
+        headerTable.addCell(headerCell);
+        headerCell.setPhrase(new Phrase("                       A-31, G.E.T.P, (Kala Ghoda), Palsana, Surat E-Mail : dyeing@gloryfab.com", fontWithSizeEight));
+        headerTable.addCell(headerCell);
+        headerCell.setPhrase(new Phrase("                       GSTIN :- 24AAFCM5028A1Z1 Place Of Supply : Surat", fontWithSizeEight));
+        headerTable.addCell(headerCell);
+        headerCell.setPhrase(new Phrase("                       Mo :- 7984289798, 9377784442", fontWithSizeEight));
+        headerTable.addCell(headerCell);
+        masterCell.addElement(headerTable);
+        masterTable.addCell(masterCell);
 
-            PdfPTable masterTable = new PdfPTable(2);
-            masterTable.setWidthPercentage(100f);
-            masterTable.setSpacingBefore(1);
-            masterTable.setWidths(new float[]{8f, 2f});
-            PdfPCell masterCell = new PdfPCell();
-            masterCell.setBorder(Rectangle.LEFT | Rectangle.TOP | Rectangle.BOTTOM);
+        masterCell = new PdfPCell();
+        masterCell.setPadding(1f);
+//        masterCell.setBorder(Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM);
+        masterCell.setBorder(Rectangle.NO_BORDER);
+        masterCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        masterCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        Image imageLogo = Image.getInstance(imageFile.getPath());
+        imageLogo.scaleToFit(50, 25);
+        masterCell.addElement(imageLogo);
+        masterTable.addCell(masterCell);
+        mainCell = new PdfPCell();
+        mainCell.addElement(masterTable);
+        mainTable.addCell(mainCell);
 
+        //party detail
+        masterTable = new PdfPTable(2);
+        masterTable.setWidthPercentage(100f);
+        masterTable.setSpacingBefore(1);
+        masterTable.setWidths(new float[]{7f, 3f});
+        PdfPTable partyTable = new PdfPTable(2);
+        partyTable.setWidthPercentage(100f);
+        //partyTable.setSpacingBefore(1);
+        partyTable.setWidths(new float[]{2f, 8f});
+        PdfPCell partyCell = new PdfPCell(new Phrase("Party Name", fontWithBoldAndEightSize));
+//        partyCell.setBorder(Rectangle.NO_BORDER);
+        partyCell.setBorder(Rectangle.RIGHT | Rectangle.LEFT);
+        partyTable.addCell(partyCell);
+        partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getPartyName(), fontWithSizeEight));
+        partyTable.addCell(partyCell);
+        partyCell.setPhrase(new Phrase("Address", fontWithBoldAndEightSize));
+        partyTable.addCell(partyCell);
+        partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getAddress().toString(), fontWithSizeEight));
+        partyTable.addCell(partyCell);
+        partyCell.setPhrase(new Phrase("GSTIN", fontWithBoldAndEightSize));
+        partyTable.addCell(partyCell);
+        //GST TABLE
+        PdfPTable gstTable = new PdfPTable(3);
+        PdfPCell gstCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getGST(), fontWithSizeEight));
+        gstCell.setBorder(Rectangle.NO_BORDER);
+        gstTable.addCell(gstCell);
+        gstCell = new PdfPCell(new Phrase("Phn No:", fontWithBoldAndEightSize));
+        gstTable.addCell(gstCell);
+        gstCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getContactNo(), fontWithSizeEight));
+        gstTable.addCell(gstCell);
+        partyTable.addCell(gstTable);
 
-            //table header
-            PdfPTable headerTable = new PdfPTable(1);
-            headerTable.setWidthPercentage(100f);
-            headerTable.setSpacingBefore(1);
-            PdfPCell headerCell = new PdfPCell(new Phrase("GLORY DYEING MILLS PVT. LTD.", fontWithBoldAndTwelveSize));
-            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            headerCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            headerCell.setBorder(Rectangle.NO_BORDER);
-            headerTable.addCell(headerCell);
+        masterCell = new PdfPCell();
+        //masterCell.setBorder(Rectangle.NO_BORDER);
+        masterCell.addElement(partyTable);
+        masterTable.addCell(masterCell);
 
-            headerCell.setPhrase(new Phrase("FORMALLY KNOWN AS : MUKESH PROCESSORS PVT. LTD.", fontWithSizeFour));
-            headerTable.addCell(headerCell);
-            headerCell.setPhrase(new Phrase("A-31, G.E.T.P, (Kala Ghoda), Palsana, Surat E-Mail : dyeing@gloryfab.com", fontWithSizeEight));
-            headerTable.addCell(headerCell);
-            headerCell.setPhrase(new Phrase("GSTIN :- 24AAFCM5028A1Z1 Place Of Supply : Surat", fontWithSizeEight));
-            headerTable.addCell(headerCell);
-            masterCell.addElement(headerTable);
-            masterTable.addCell(masterCell);
-
-            masterCell = new PdfPCell();
-            masterCell.setPadding(1f);
-            masterCell.setBorder(Rectangle.RIGHT | Rectangle.TOP | Rectangle.BOTTOM);
-            masterCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            masterCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            Image imageLogo = Image.getInstance(imageFile.getPath());
-            imageLogo.scaleToFit(50, 25);
-            masterCell.addElement(imageLogo);
-            masterTable.addCell(masterCell);
-            mainCell.addElement(masterTable);
-            mainTable.addCell(mainCell);
-
-            //party detail
-            masterTable = new PdfPTable(2);
-            masterTable.setWidthPercentage(100f);
-            masterTable.setSpacingBefore(1);
-            masterTable.setWidths(new float[]{7f, 3f});
-            PdfPTable partyTable = new PdfPTable(2);
-            partyTable.setWidthPercentage(100f);
-            //partyTable.setSpacingBefore(1);
-            partyTable.setWidths(new float[]{2f, 8f});
-            PdfPCell partyCell = new PdfPCell(new Phrase("Party Name", fontWithBoldAndEightSize));
-            partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getPartyName(), fontWithSizeEight));
-            partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase("Address", fontWithBoldAndEightSize));
-            partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getAddress().toString(), fontWithSizeEight));
-            partyTable.addCell(partyCell);
-            partyCell.setPhrase(new Phrase("GSTIN", fontWithBoldAndEightSize));
-            partyTable.addCell(partyCell);
-            //GST TABLE
-            PdfPTable gstTable = new PdfPTable(3);
-            PdfPCell gstCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getGST(), fontWithSizeEight));
-            gstCell.setBorder(Rectangle.NO_BORDER);
-            gstTable.addCell(gstCell);
-            gstCell = new PdfPCell(new Phrase("Phn No:", fontWithBoldAndEightSize));
-            gstTable.addCell(gstCell);
-            gstCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getContactNo(), fontWithSizeEight));
-            gstTable.addCell(gstCell);
-            partyTable.addCell(gstTable);
-
-            masterCell = new PdfPCell();
-            masterCell.addElement(partyTable);
-            masterTable.addCell(masterCell);
-
-            //table for invoice detail
-            PdfPTable invoiceDetailTable = new PdfPTable(2);
-            PdfPCell invoiceDetailCell = new PdfPCell(new Phrase("Invoice No", fontWithBoldAndEightSize));
-            invoiceDetailTable.addCell(invoiceDetailCell);
-            invoiceDetailCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getInvoiceNo().toString(), fontWithBoldAndEightSize));
-            invoiceDetailTable.addCell(invoiceDetailCell);
-            invoiceDetailCell.setPhrase(new Phrase("Date", fontWithBoldAndEightSize));
-            invoiceDetailTable.addCell(invoiceDetailCell);
-            invoiceDetailCell.setPhrase(new Phrase(simpleDateFormat.format(partyDataByInvoiceNumber.getCreatedDate()), fontWithBoldAndEightSize));
-            invoiceDetailTable.addCell(invoiceDetailCell);
-            masterTable.addCell(invoiceDetailTable);
-            mainCell = new PdfPCell();
-            mainCell.addElement(masterTable);
-            mainTable.addCell(mainCell);
+        //table for invoice detail
+        PdfPTable invoiceDetailTable = new PdfPTable(2);
+        PdfPCell invoiceDetailCell = new PdfPCell(new Phrase("Invoice No", fontWithBoldAndEightSize));
+        invoiceDetailCell.setBorder(Rectangle.RIGHT | Rectangle.LEFT);
+        invoiceDetailTable.addCell(invoiceDetailCell);
+        invoiceDetailCell.setPhrase(new Phrase(partyDataByInvoiceNumber.getInvoiceNo().toString(), fontWithBoldAndEightSize));
+        invoiceDetailTable.addCell(invoiceDetailCell);
+        invoiceDetailCell.setPhrase(new Phrase("Date", fontWithBoldAndEightSize));
+        invoiceDetailTable.addCell(invoiceDetailCell);
+        invoiceDetailCell.setPhrase(new Phrase(simpleDateFormat.format(partyDataByInvoiceNumber.getCreatedDate()), fontWithBoldAndEightSize));
+        invoiceDetailTable.addCell(invoiceDetailCell);
+        masterCell = new PdfPCell();
+        //masterCell.setBorder(Rectangle.NO_BORDER);
+        masterCell.addElement(invoiceDetailTable);
+        masterTable.addCell(masterCell);
+        mainCell = new PdfPCell();
+        mainCell.addElement(masterTable);
+        mainTable.addCell(mainCell);
 
 
-            //quality table
+        //quality table
 
-            PdfPTable qualityTable = new PdfPTable(10);
-            qualityTable.setWidthPercentage(100f);
-            qualityTable.setWidths(new float[]{0.5f, 3f, 1f, 1f, 1f, 1f, 0.5f, 1f, 0.5f, 1f});
-            PdfPCell qualityCell = new PdfPCell();
-            qualityCell.setPhrase(new Phrase("Sr.no", fontWithBoldAndEightSize));
+        PdfPTable qualityTable = new PdfPTable(10);
+        qualityTable.setWidthPercentage(100f);
+        qualityTable.setWidths(new float[]{0.5f, 3f, 1f, 1f, 1f, 1f, 0.5f, 1f, 0.5f, 1f});
+        PdfPCell qualityCell = new PdfPCell();
+        qualityCell.setPhrase(new Phrase("Sr.no", fontWithBoldAndSizeSix));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Quality", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("HSN", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("P.Chl No ", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Lot No", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Grey(Mtr/Kg)", fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Pcs", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Finish(Mtr/kg)", fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Rate", fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase("Amount", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        for (int i = 0; i < 4; i++) {
+            qualityCell.setPhrase(new Phrase(String.valueOf(i + 1), fontWithBoldAndSevenSize));
             qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Quality", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("HSN", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("P.Chl No ", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Lot No", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Grey(Mtr/Kg)", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Pcs", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Finish(Mtr/kg)", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Rate", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase("Amount", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            for (int i = 0; i < 4; i++) {
-                qualityCell.setPhrase(new Phrase(String.valueOf(i + 1), fontWithBoldAndEightSize));
-                qualityTable.addCell(qualityCell);
-                if (partyDataByInvoiceNumber.getQualityList().size() > i) {
-                    QualityBillByInvoiceNumber qualityBillByInvoiceNumber = partyDataByInvoiceNumber.getQualityList().get(i);
-                    if (qualityBillByInvoiceNumber != null) {
-                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getQualityId(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getHsn(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getPchallanRef(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getBatchId(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getTotalMtr()).toString(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getPcs().toString(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getFinishMtr()).toString(), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(String.format("%.2f", qualityBillByInvoiceNumber.getRate()), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                        qualityCell.setPhrase(new Phrase(String.format("%.2f", qualityBillByInvoiceNumber.getAmt()), fontWithSizeEight));
-                        qualityTable.addCell(qualityCell);
-                    } else {
-                        int k = 0;
-                        while (k < 9) {
-                            qualityTable.addCell(blankCell);
-                            k++;
-                        }
-                    }
-
+            if (partyDataByInvoiceNumber.getQualityList().size() > i) {
+                QualityBillByInvoiceNumber qualityBillByInvoiceNumber = partyDataByInvoiceNumber.getQualityList().get(i);
+                if (qualityBillByInvoiceNumber != null) {
+                    qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getQualityId(), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getHsn(), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getPchallanRef(), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getBatchId(), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(String.format("%.2f",StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getTotalMtr())), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(qualityBillByInvoiceNumber.getPcs().toString(), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(String.format("%.2f",StockBatchServiceImpl.changeInFormattedDecimal(qualityBillByInvoiceNumber.getFinishMtr())), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(String.format("%.2f", qualityBillByInvoiceNumber.getRate()), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
+                    qualityCell.setPhrase(new Phrase(String.format("%.2f", qualityBillByInvoiceNumber.getAmt()), fontWithSizeSeven));
+                    qualityTable.addCell(qualityCell);
                 } else {
                     int k = 0;
                     while (k < 9) {
@@ -3274,103 +3236,309 @@ public class DispatchMastImpl {
                         k++;
                     }
                 }
-            }
 
-            //TOTAL QUALITY
-            qualityTable.addCell(blankCell);
-            qualityTable.addCell(blankCell);
-            qualityTable.addCell(blankCell);
-            qualityTable.addCell(blankCell);
-            qualityCell.setPhrase(new Phrase("TOTAL", fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getTotalMtr).sum()), fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase(String.valueOf(partyDataByInvoiceNumber.getQualityList().stream().mapToLong(QualityBillByInvoiceNumber::getPcs).sum()), fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getFinishMtr).sum()), fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            qualityTable.addCell(blankCell);
-            qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getAmt).sum()), fontWithBoldAndEightSize));
-            qualityTable.addCell(qualityCell);
-            mainTable.addCell(qualityTable);
-
-
-            //REMARK AND TOTAL TABLE
-            PdfPTable remarkAndTotalTable = new PdfPTable(2);
-            remarkAndTotalTable.setWidthPercentage(100f);
-            remarkAndTotalTable.setWidths(new float[]{6f, 4f});
-            PdfPCell remarkAndTotalCell = new PdfPCell();
-
-            //REMARK TABLE
-            PdfPTable remarkTable = new PdfPTable(1);
-            remarkTable.setWidthPercentage(100f);
-            PdfPCell remarkCell = new PdfPCell(new Phrase("REMARK", fontWithBoldAndEightSize));
-            remarkTable.addCell(remarkCell);
-            //remarkCell.setBorder(Rectangle.NO_BORDER);
-            remarkCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getRemark(), fontWithSizeEight));
-            remarkCell.setFixedHeight(25);
-            remarkTable.addCell(remarkCell);
-            remarkAndTotalCell.addElement(remarkTable);
-            remarkAndTotalTable.addCell(remarkAndTotalCell);
-
-
-            //Total Table
-            PdfPTable invoiceTotalTable = new PdfPTable(2);
-            invoiceTotalTable.setWidthPercentage(100f);
-            PdfPCell invoiceTotalCell = new PdfPCell(new Phrase("Discount @3%", fontWithBoldAndEightSize));
-            invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getDiscount()), fontWithBoldAndEightSize));
-            invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase("Taxable Amount", fontWithBoldAndEightSize));
-            invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getTaxAmt()), fontWithBoldAndEightSize));
-            invoiceTotalTable.addCell(invoiceTotalCell);
-            if (partyDataByInvoiceNumber.getState().equalsIgnoreCase("Gujarat")) {
-                invoiceTotalCell.setPhrase(new Phrase("CGST: @2.5% ", fontWithBoldAndEightSize));
-                invoiceTotalTable.addCell(invoiceTotalCell);
-                invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getCgst()), fontWithBoldAndEightSize));
-                invoiceTotalTable.addCell(invoiceTotalCell);
-                invoiceTotalCell.setPhrase(new Phrase("SGST: @2.5% ", fontWithBoldAndEightSize));
-                invoiceTotalTable.addCell(invoiceTotalCell);
-                invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getSgst()), fontWithBoldAndEightSize));
-                invoiceTotalTable.addCell(invoiceTotalCell);
             } else {
-                invoiceTotalCell.setPhrase(new Phrase("IGST: @5% ", fontWithBoldAndEightSize));
-                invoiceTotalTable.addCell(invoiceTotalCell);
-                invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getIgst()), fontWithBoldAndEightSize));
-                invoiceTotalTable.addCell(invoiceTotalCell);
+                int k = 0;
+                while (k < 9) {
+                    qualityTable.addCell(blankCell);
+                    k++;
+                }
             }
-            invoiceTotalCell.setPhrase(new Phrase("Net Amount", fontWithBoldAndEightSize));
+        }
+
+        //TOTAL QUALITY
+        qualityTable.addCell(blankCell);
+        qualityTable.addCell(blankCell);
+        qualityTable.addCell(blankCell);
+        qualityTable.addCell(blankCell);
+        qualityCell.setPhrase(new Phrase("TOTAL", fontWithBoldAndEightSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getTotalMtr).sum()), fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase(String.valueOf(partyDataByInvoiceNumber.getQualityList().stream().mapToLong(QualityBillByInvoiceNumber::getPcs).sum()), fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getFinishMtr).sum()), fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        qualityTable.addCell(blankCell);
+        qualityCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getQualityList().stream().mapToDouble(QualityBillByInvoiceNumber::getAmt).sum()), fontWithBoldAndSevenSize));
+        qualityTable.addCell(qualityCell);
+        mainTable.addCell(qualityTable);
+
+
+        //REMARK AND TOTAL TABLE
+        PdfPTable remarkAndTotalTable = new PdfPTable(2);
+        remarkAndTotalTable.setWidthPercentage(100f);
+        remarkAndTotalTable.setWidths(new float[]{6f, 4f});
+        PdfPCell remarkAndTotalCell = new PdfPCell();
+
+        //REMARK TABLE
+        PdfPTable remarkTable = new PdfPTable(1);
+        remarkTable.setWidthPercentage(100f);
+        PdfPCell remarkCell = new PdfPCell(new Phrase("REMARK", fontWithBoldAndEightSize));
+        remarkTable.addCell(remarkCell);
+        //remarkCell.setBorder(Rectangle.NO_BORDER);
+        remarkCell = new PdfPCell(new Phrase(partyDataByInvoiceNumber.getRemark(), fontWithSizeEight));
+        remarkCell.setFixedHeight(25);
+        remarkTable.addCell(remarkCell);
+        remarkAndTotalCell.addElement(remarkTable);
+        remarkAndTotalTable.addCell(remarkAndTotalCell);
+
+
+        //Total Table
+        PdfPTable invoiceTotalTable = new PdfPTable(2);
+        invoiceTotalTable.setWidthPercentage(100f);
+        PdfPCell invoiceTotalCell = new PdfPCell(new Phrase("Discount @" + partyDataByInvoiceNumber.getPercentageDiscount() + "%", fontWithBoldAndEightSize));
+        invoiceTotalTable.addCell(invoiceTotalCell);
+        invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getDiscount()), fontWithBoldAndEightSize));
+        invoiceTotalTable.addCell(invoiceTotalCell);
+        invoiceTotalCell.setPhrase(new Phrase("Taxable Amount", fontWithBoldAndEightSize));
+        invoiceTotalTable.addCell(invoiceTotalCell);
+        invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getTaxAmt()), fontWithBoldAndEightSize));
+        invoiceTotalTable.addCell(invoiceTotalCell);
+        if (partyDataByInvoiceNumber.getState().equalsIgnoreCase("Gujarat")) {
+            invoiceTotalCell.setPhrase(new Phrase("CGST: @2.5% ", fontWithBoldAndEightSize));
             invoiceTotalTable.addCell(invoiceTotalCell);
-            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getNetAmt()), fontWithBoldAndEightSize));
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getCgst()), fontWithBoldAndEightSize));
             invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase("SGST: @2.5% ", fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getSgst()), fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+        } else {
+            invoiceTotalCell.setPhrase(new Phrase("IGST: @5% ", fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+            invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getIgst()), fontWithBoldAndEightSize));
+            invoiceTotalTable.addCell(invoiceTotalCell);
+        }
+        invoiceTotalCell.setPhrase(new Phrase("Net Amount", fontWithBoldAndEightSize));
+        invoiceTotalTable.addCell(invoiceTotalCell);
+        invoiceTotalCell.setPhrase(new Phrase(String.format("%.2f", partyDataByInvoiceNumber.getNetAmt()), fontWithBoldAndEightSize));
+        invoiceTotalTable.addCell(invoiceTotalCell);
 
-            remarkAndTotalCell = new PdfPCell();
-            remarkAndTotalCell.addElement(invoiceTotalTable);
-            remarkAndTotalTable.addCell(remarkAndTotalCell);
+        remarkAndTotalCell = new PdfPCell();
+        remarkAndTotalCell.addElement(invoiceTotalTable);
+        remarkAndTotalTable.addCell(remarkAndTotalCell);
 
 
-            mainCell = new PdfPCell();
-            mainCell.addElement(remarkAndTotalTable);
-            mainTable.addCell(mainCell);
+        mainCell = new PdfPCell();
+        mainCell.addElement(remarkAndTotalTable);
+        mainTable.addCell(mainCell);
 
 
-            //batch gr table
-            PdfPTable batchMastTable = new PdfPTable(4);
-            batchMastTable.setWidthPercentage(100f);
-            batchMastTable.setWidths(new float[]{25f,25f,25f,25f});
-            //batch data table
-            for (int i = 0; i < 4; i++)
-            {
-                PdfPTable batchDataTable = new PdfPTable(3);
-                PdfPCell batchDataCell = new PdfPCell();
+        //batch gr table
+        PdfPTable batchMastTable = new PdfPTable(4);
+        batchMastTable.setWidthPercentage(100f);
+        batchMastTable.setWidths(new float[]{25f, 25f, 25f, 25f});
+        PdfPCell batchMastCell;
+        //batch data table
+        for (int i = 0; i < 4; i++) {
+            PdfPTable batchDataTable = new PdfPTable(3);
+            PdfPCell batchDataCell = new PdfPCell();
 
+            if (partyDataByInvoiceNumber.getBatchWithGrList().size() > i) {
+                BatchWithGr batchWithGr = partyDataByInvoiceNumber.getBatchWithGrList().get(i);
+                List<BatchData> batchDataList = batchWithGr.getBatchDataList();
+                batchDataCell = new PdfPCell();
+                batchDataCell.setColspan(3);
+                batchDataCell.setPhrase(new Phrase("Lot No: " + batchWithGr.getPchallanRef() + "--" + batchWithGr.getBatchId(), fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+
+                batchDataCell = new PdfPCell();
+                batchDataCell.setPhrase(new Phrase("Cops", fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+                if (batchWithGr.getBillingUnit().equalsIgnoreCase("meter")) {
+                    batchDataCell.setPhrase(new Phrase("GryMtr", fontWithBoldAndSizeSix));
+                    batchDataTable.addCell(batchDataCell);
+                    batchDataCell.setPhrase(new Phrase("FinMtr", fontWithBoldAndSizeSix));
+                    batchDataTable.addCell(batchDataCell);
+                } else {
+                    batchDataCell.setPhrase(new Phrase("GryWt", fontWithBoldAndSizeSix));
+                    batchDataTable.addCell(batchDataCell);
+                    batchDataCell.setPhrase(new Phrase("FinWt", fontWithBoldAndSizeSix));
+                    batchDataTable.addCell(batchDataCell);
+                }
+
+                for (int k = 0; k < 20; k++) {
+                    if (batchDataList.size() > k) {
+                        BatchData batchData = batchDataList.get(k);
+                        batchDataCell.setPhrase(new Phrase("" + (k + 1), fontWithSizeSix));
+                        batchDataTable.addCell(batchDataCell);
+                        batchDataCell.setPhrase(new Phrase("" + (batchData.getMtr() == 0.0 ? "-" : batchData.getMtr()), fontWithSizeSix));
+                        batchDataTable.addCell(batchDataCell);
+                        batchDataCell.setPhrase(new Phrase("" + batchDataList.get(k).getFinishMtr(), fontWithSizeSix));
+                        batchDataTable.addCell(batchDataCell);
+                    } else {
+                        blankCell = new PdfPCell(new Phrase(" ", fontWithSizeSix));
+                        batchDataTable.addCell(blankCell);
+                        batchDataTable.addCell(blankCell);
+                        batchDataTable.addCell(blankCell);
+                    }
+                }
+
+                Double totalMtr = StockBatchServiceImpl.changeInFormattedDecimal(batchDataList.stream().mapToDouble(BatchData::getMtr).sum());
+                Double totalFMtr = StockBatchServiceImpl.changeInFormattedDecimal(batchDataList.stream().mapToDouble(BatchData::getFinishMtr).sum());
+                //total batch table wise
+                batchDataCell.setPhrase(new Phrase("" + batchDataList.size(), fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+                batchDataCell.setPhrase(new Phrase("" + totalMtr, fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+                batchDataCell.setPhrase(new Phrase("" + totalFMtr, fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+
+                Double shrinkage = StockBatchServiceImpl.changeInFormattedDecimal(((totalMtr - totalFMtr) / totalMtr) * 100);
+
+                //for shrinkage
+                blankCell = new PdfPCell(new Phrase("Sh_% : " + shrinkage, fontWithBoldAndSizeSix));
+                blankCell.setColspan(3);
+                batchDataTable.addCell(blankCell);
+
+                batchMastCell = new PdfPCell();
+                batchMastCell.addElement(batchDataTable);
+                batchMastTable.addCell(batchMastCell);
+
+            } else {
+                batchDataCell = new PdfPCell();
+                batchDataCell.setColspan(3);
+                batchDataCell.setPhrase(new Phrase("Lot No: --", fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+
+                batchDataCell = new PdfPCell();
+                batchDataCell.setPhrase(new Phrase("Cops", fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+
+                batchDataCell.setPhrase(new Phrase("GryMtr", fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+                batchDataCell.setPhrase(new Phrase("FinMtr", fontWithBoldAndSizeSix));
+                batchDataTable.addCell(batchDataCell);
+
+                for (int k = 0; k < 20; k++) {
+                    blankCell = new PdfPCell(new Phrase(" ", fontWithSizeSix));
+                    batchDataTable.addCell(blankCell);
+                    batchDataTable.addCell(blankCell);
+                    batchDataTable.addCell(blankCell);
+                }
+                //for total
+                blankCell = new PdfPCell(new Phrase("0", fontWithBoldAndSizeSix));
+                batchDataTable.addCell(blankCell);
+                batchDataTable.addCell(blankCell);
+                batchDataTable.addCell(blankCell);
+                //for shrinkage
+                blankCell = new PdfPCell(new Phrase("Sh_% : 0", fontWithBoldAndSizeSix));
+                blankCell.setColspan(3);
+                batchDataTable.addCell(blankCell);
+
+
+                batchMastCell = new PdfPCell();
+                batchMastCell.addElement(batchDataTable);
+                batchMastTable.addCell(batchMastCell);
 
 
             }
+        }
+
+        mainCell = new PdfPCell();
+        mainCell.addElement(batchMastTable);
+        mainTable.addCell(mainCell);
 
 
-            mainTable.addCell(batchMastTable);
+        //footer detail
+        PdfPTable footerTable = new PdfPTable(2);
+        footerTable.setWidthPercentage(100f);
+        PdfPCell footerCell = new PdfPCell();
+
+        //LEFT PART OF FOOTER
+        PdfPTable bankAndConditionMastTable = new PdfPTable(1);
+        bankAndConditionMastTable.setWidthPercentage(100f);
+
+        //bank detail
+        PdfPTable bankTable = new PdfPTable(2);
+        bankTable.setWidthPercentage(100f);
+        bankTable.setWidths(new float[]{6f, 4f});
+        PdfPCell bankCell = new PdfPCell();
+        bankCell.setPhrase(new Phrase("BANK NAME", fontWithBoldAndEightSize));
+        bankTable.addCell(bankCell);
+        blankCell = new PdfPCell(new Phrase(": HDFC BANK LTD..", fontWithSizeEight));
+        bankTable.addCell(blankCell);
+        bankCell.setPhrase(new Phrase("A/c No.", fontWithBoldAndEightSize));
+        bankTable.addCell(bankCell);
+        blankCell.setPhrase(new Phrase(": 59227111222333", fontWithSizeEight));
+        bankTable.addCell(blankCell);
+        bankCell.setPhrase(new Phrase("Branch IFS Code", fontWithBoldAndEightSize));
+        bankTable.addCell(bankCell);
+        blankCell.setPhrase(new Phrase(": HDFC0001706, SACHIN", fontWithSizeEight));
+        bankTable.addCell(blankCell);
+
+        //term and condition
+        PdfPTable conditionTable = new PdfPTable(1);
+        conditionTable.setWidthPercentage(100f);
+
+        PdfPCell conditionCell = new PdfPCell(new Phrase("TERMS CONDITION :", fontWithBoldAndEightSize));
+        conditionTable.addCell(conditionCell);
+
+        conditionCell = new PdfPCell(new Phrase("1. Goods once sold will not be taken back .", fontWithSizeEight));
+        conditionTable.addCell(conditionCell);
+        conditionCell = new PdfPCell(new Phrase("2. Our responsibility ceases once the goods is delivered to the carrier.", fontWithSizeEight));
+        conditionTable.addCell(conditionCell);
+        conditionCell = new PdfPCell(new Phrase("3. GST Payable on Reverse Charge : No .", fontWithSizeEight));
+        conditionTable.addCell(conditionCell);
+        conditionCell = new PdfPCell(new Phrase("4. If any complaint regarding Goods/Bill kindly contact within 7 days, after that we are not responsible for anything.", fontWithSizeEight));
+        conditionTable.addCell(conditionCell);
+        conditionCell = new PdfPCell(new Phrase("5. Payment Within 15 Days from Bill Date.", fontWithSizeEight));
+        conditionTable.addCell(conditionCell);
+        PdfPCell bankAndConditionMastCell = new PdfPCell();
+        bankAndConditionMastCell.addElement(bankTable);
+        bankAndConditionMastTable.addCell(bankAndConditionMastCell);
+        bankAndConditionMastCell = new PdfPCell();
+        bankAndConditionMastCell.addElement(conditionTable);
+        bankAndConditionMastTable.addCell(bankAndConditionMastCell);
+
+        footerCell = new PdfPCell();
+        footerCell.addElement(bankAndConditionMastTable);
+        footerTable.addCell(footerCell);
+
+        //right part of footer
+        PdfPTable signatureTable = new PdfPTable(1);
+        signatureTable.setWidthPercentage(100f);
+        PdfPCell signatureCell = new PdfPCell();
+        blankCell = new PdfPCell(new Phrase(" ", fontWithSizeEight));
+        blankCell.setBorder(Rectangle.NO_BORDER);
+        signatureTable.addCell(blankCell);
+        signatureCell.setPhrase(new Phrase("GLORY DYEING MILLS PVT. LTD.", fontWithBoldAndTwelveSize));
+        signatureCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        signatureCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        signatureCell.setBorder(Rectangle.NO_BORDER);
+        signatureTable.addCell(signatureCell);
+        signatureCell = new PdfPCell();
+        signatureCell.setBorder(Rectangle.NO_BORDER);
+        signatureCell.setPhrase(new Phrase(" ", fontWithBoldAndTwelveSize));
+        signatureTable.addCell(signatureCell);
+        signatureCell = new PdfPCell(new Phrase("Authorised Signatory", fontWithSizeEight));
+        signatureCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        signatureCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        signatureCell.setBorder(Rectangle.NO_BORDER);
+        signatureTable.addCell(signatureCell);
+        footerCell = new PdfPCell();
+        footerCell.addElement(signatureTable);
+        footerTable.addCell(footerCell);
+
+
+        //footerCell.addElement();
+        mainCell = new PdfPCell();
+        mainCell.addElement(footerTable);
+        mainTable.addCell(mainCell);
+        //create 3 file
+        for (String copy : copyType) {
+            //invoice header
+            Paragraph report = new Paragraph("TAX INVOICE CUM DELIVERY CHALLAN", fontWithBoldAndEightSize);
+            report.setAlignment("Center");
+            document.add(report);
+
+            PdfPTable table = new PdfPTable(1);
+            table.setWidthPercentage(8f);
+            PdfPCell cell = new PdfPCell(new Phrase(copy,fontWithBoldAndEightSize));
+            table.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table.addCell(cell);
+            document.add(table);
             document.add(mainTable);
             document.newPage();
         }
